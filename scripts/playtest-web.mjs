@@ -1,16 +1,20 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
 import { createRequire } from "node:module";
 import { resolve } from "node:path";
+import { promisify } from "node:util";
 
 const cdpPort = Number(process.env.SHI_CDP_PORT ?? 9321);
 const gameUrl = process.env.SHI_PLAYTEST_URL ?? "http://127.0.0.1:4173/";
 const testUrl = new URL(gameUrl);
 testUrl.searchParams.set("seed", process.env.SHI_PLAYTEST_SEED ?? "5EED2026");
 const testedCommit = process.env.SHI_TESTED_COMMIT ?? "working-tree";
+const xDisplay = process.env.SHI_X_DISPLAY ?? ":121";
 const outputDir = resolve(import.meta.dirname, "../docs/production/evidence");
 const localeEvidenceDir = resolve(outputDir, "locales");
 const require = createRequire(import.meta.url);
 const axeSource = await readFile(require.resolve("axe-core/axe.min.js"), "utf8");
+const runFile = promisify(execFile);
 await mkdir(outputDir, { recursive: true });
 await mkdir(localeEvidenceDir, { recursive: true });
 
@@ -87,6 +91,23 @@ const altShortcut = async (keyName, code) => {
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: keyName, code, modifiers: 1 });
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: keyName, code, modifiers: 1 });
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Alt", code: "AltLeft" });
+};
+const browserZoomShortcut = async (shortcut) => {
+  await send("Page.bringToFront");
+  await runFile("xdotool", ["key", "--clearmodifiers", shortcut], { env: { ...process.env, DISPLAY: xDisplay } });
+  await wait(180);
+};
+const readBrowserZoom = () => evaluate(`({
+  dpr: devicePixelRatio,
+  width: innerWidth,
+  height: innerHeight,
+  outerWidth,
+  outerHeight,
+  visualScale: visualViewport.scale
+})`);
+const resetBrowserZoom = async () => {
+  await browserZoomShortcut("ctrl+0");
+  await wait(220);
 };
 const shiftDigit = async (digit) => {
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Shift", code: "ShiftLeft", modifiers: 8 });
@@ -215,6 +236,8 @@ const report = {
   targetAudits: [],
   fontAudits: [],
   reflowAudits: [],
+  browserZoomAudits: [],
+  browserZoomReset: null,
   forcedColorsAudit: null,
   accessibilityEngine: { name: "axe-core", version: await evaluate("axe.version") },
   consoleErrors
@@ -742,19 +765,109 @@ snapshot = await evaluate(`(() => {
 })()`);
 check(snapshot.visible && snapshot.overflow <= 1, "forced-colors selected decision is visibly framed without horizontal scrolling");
 await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }, { name: "forced-colors", value: "none" }] });
-await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
+await send("Emulation.clearDeviceMetricsOverride");
+
+let browserZoomBaseline;
+try {
+  await resetBrowserZoom();
+  browserZoomBaseline = await readBrowserZoom();
+  check(browserZoomBaseline.dpr === 1 && browserZoomBaseline.width === 1600, "actual browser zoom starts from the dedicated 1600 CSS pixel, DPR 1 baseline");
+  let browserZoom = browserZoomBaseline;
+  let zoomIncrements = 0;
+  while (browserZoom.dpr < 3.95 && zoomIncrements < 12) {
+    await browserZoomShortcut("ctrl+plus");
+    browserZoom = await readBrowserZoom();
+    zoomIncrements += 1;
+  }
+  const zoomPercent = Math.round((browserZoom.dpr / browserZoomBaseline.dpr) * 100);
+  check(zoomPercent === 400 && browserZoom.width === 400 && browserZoom.outerWidth === 1600, "Chrome reaches an actual 400% page zoom with a 400 CSS pixel layout viewport");
+  await evaluate("scrollTo(0, 0); true");
+  await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+  await screenshot("web-24-browser-zoom-400-gameplay.png");
+  snapshot = await evaluate(`(() => {
+    const header = document.querySelector('.game-header')?.getBoundingClientRect();
+    const map = document.querySelector('.map-column')?.getBoundingClientRect();
+    const story = document.querySelector('.story-panel')?.getBoundingClientRect();
+    const cards = [...document.querySelectorAll('.choice-card')].map((element) => element.getBoundingClientRect());
+    const controls = [...document.querySelectorAll('button, select, a[href]')].filter((element) => {
+      const style = getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && box.width > 0 && box.height > 0;
+    }).map((element) => element.getBoundingClientRect());
+    return {
+      overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+      scrollHeight: document.documentElement.scrollHeight,
+      headerFit: Boolean(header && header.left >= 0 && header.right <= innerWidth),
+      mapFit: Boolean(map && map.left >= 0 && map.right <= innerWidth),
+      storyFit: Boolean(story && story.left >= 0 && story.right <= innerWidth),
+      cardFit: cards.length > 0 && cards.every((box) => box.left >= 0 && box.right <= innerWidth),
+      controlFit: controls.length > 0 && controls.every((box) => box.left >= 0 && box.right <= innerWidth)
+    };
+  })()`);
+  report.browserZoomAudits.push({ state: "gameplay", zoomPercent, zoomIncrements, ...browserZoom, ...snapshot });
+  check(snapshot.overflow <= 1 && snapshot.headerFit && snapshot.mapFit && snapshot.storyFit, "actual 400% gameplay keeps header, wartable and narrative inside the zoomed viewport");
+  check(snapshot.cardFit && snapshot.controlFit && snapshot.scrollHeight > browserZoom.height, "actual 400% gameplay keeps every decision/control fitted and vertically reachable");
+  await auditAccessibility("gameplay-browser-zoom-400");
+  await auditTargets("gameplay-browser-zoom-400");
+  await evaluate("document.querySelector('.choice-card.is-gamepad-selected')?.scrollIntoView({ block: 'center' }); true");
+  await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+  await screenshot("web-25-browser-zoom-400-decisions.png");
+  snapshot = await evaluate(`(() => {
+    const box = document.querySelector('.choice-card.is-gamepad-selected')?.getBoundingClientRect();
+    return { visible: Boolean(box && box.top >= 0 && box.bottom <= innerHeight), overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth) };
+  })()`);
+  check(snapshot.visible && snapshot.overflow <= 1, "actual 400% keeps the selected decision fully visible without horizontal scrolling");
+
+  await evaluate("scrollTo(0, 0); true");
+  await click(".brand-button");
+  await waitForSelector(".primary-button");
+  await waitForFontReady();
+  await evaluate("scrollTo(0, 0); true");
+  await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+  await screenshot("web-26-browser-zoom-400-title.png");
+  snapshot = await evaluate(`(() => {
+    const copy = document.querySelector('.title-copy')?.getBoundingClientRect();
+    const action = document.querySelector('.primary-button')?.getBoundingClientRect();
+    const footer = document.querySelector('.title-footer')?.getBoundingClientRect();
+    return {
+      overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+      scrollHeight: document.documentElement.scrollHeight,
+      copyFit: Boolean(copy && copy.left >= 0 && copy.right <= innerWidth && copy.bottom <= document.documentElement.scrollHeight),
+      actionFit: Boolean(action && action.left >= 0 && action.right <= innerWidth && action.bottom <= document.documentElement.scrollHeight),
+      footerFit: Boolean(footer && footer.left >= 0 && footer.right <= innerWidth && footer.bottom <= document.documentElement.scrollHeight)
+    };
+  })()`);
+  report.browserZoomAudits.push({ state: "title", zoomPercent, zoomIncrements, ...browserZoom, ...snapshot });
+  check(snapshot.overflow <= 1 && snapshot.copyFit && snapshot.actionFit && snapshot.footerFit, "actual 400% title keeps its promise, primary action and footer fitted and vertically reachable");
+  await auditAccessibility("title-browser-zoom-400");
+  await auditTargets("title-browser-zoom-400");
+  await evaluate("document.querySelector('.primary-button')?.scrollIntoView({ block: 'center' }); true");
+  await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+  await screenshot("web-27-browser-zoom-400-title-action.png");
+  snapshot = await evaluate(`(() => {
+    const box = document.querySelector('.primary-button')?.getBoundingClientRect();
+    return { visible: Boolean(box && box.top >= 0 && box.bottom <= innerHeight), overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth) };
+  })()`);
+  check(snapshot.visible && snapshot.overflow <= 1, "actual 400% keeps the primary title action fully visible without horizontal scrolling");
+} finally {
+  await resetBrowserZoom();
+  report.browserZoomReset = await readBrowserZoom();
+  await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
+}
+check(report.browserZoomReset.dpr === 1 && report.browserZoomReset.width === 1600, "actual browser zoom resets to the DPR 1, 1600 CSS pixel baseline after evidence capture");
 
 const accessibilityViolations = report.accessibilityAudits.flatMap((audit) => audit.violations.map((violation) => ({ state: audit.label, ...violation })));
 if (accessibilityViolations.length > 0) {
   await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
   throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
 }
-check(report.accessibilityAudits.length === 21, "WCAG 2.2 AA automation passes across twenty-one visible interface states");
+check(report.accessibilityAudits.length === 23, "WCAG 2.2 AA automation passes across twenty-three visible interface states");
 const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
 check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
-check(report.targetAudits.length === 13, "24 CSS pixel target checks pass across thirteen interaction states");
+check(report.targetAudits.length === 15, "24 CSS pixel target checks pass across fifteen interaction states");
 check(report.fontAudits.length === 11, "all eleven interface locales pass their self-hosted font, direction and fit contracts");
 check(report.reflowAudits.length === 2 && report.reflowAudits.every((audit) => audit.width === 320 && audit.overflow <= 1), "title and gameplay pass the 320 CSS pixel 400% equivalent reflow gate");
+check(report.browserZoomAudits.length === 2 && report.browserZoomAudits.every((audit) => audit.zoomPercent === 400 && audit.overflow <= 1), "title and gameplay pass the actual Chrome 400% page-zoom gate");
 check(Boolean(report.forcedColorsAudit?.active), "forced-colors visual contract is recorded in the machine-readable report");
 const remoteRequests = networkRequests.filter((request) => {
   try { const url = new URL(request.url); return ["http:", "https:"].includes(url.protocol) && url.origin !== testUrl.origin; } catch { return false; }
