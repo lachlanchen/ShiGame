@@ -24,6 +24,7 @@ namespace SHI.Editor
         private static readonly string[] ClaimReviewStatuses = { "evidence-located", "specialist-review-required", "authored-reconstruction" };
         private static readonly string[] ClaimConfidences = { "high", "medium", "low", "not-applicable" };
         private static readonly string[] RightsStatuses = { "public-link-metadata-only", "project-original" };
+        private static readonly string[] SiteStatuses = { "known", "reported", "reference" };
         private static readonly string[] PressureKinds = { "state", "terrain", "supply", "network" };
 
         [MenuItem("SHI/Validate Production Content")]
@@ -120,6 +121,29 @@ namespace SHI.Editor
                 {
                     if (claim.ReviewStatus == "authored-reconstruction") errors.Add($"Historical claim '{claim.Id}' cannot be classified as authored reconstruction.");
                     if (claim.Confidence == "not-applicable") errors.Add($"Historical claim '{claim.Id}' requires a confidence assessment.");
+                }
+            }
+            foreach (var site in campaign.Sites)
+            {
+                if (!Regex.IsMatch(site.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Site '{site.Id}' must use an ASCII kebab-case id.");
+                if (!SiteStatuses.Contains(site.Status)) errors.Add($"Site '{site.Id}' has invalid intelligence status '{site.Status}'.");
+                if (site.X < 0 || site.X > 100 || site.Z < 0 || site.Z > 80) errors.Add($"Site '{site.Id}' is outside the schematic coordinate bounds.");
+                RequireText(site.Name, $"site '{site.Id}' name", errors);
+                RequireText(site.Summary, $"site '{site.Id}' summary", errors);
+                RequireText(site.Uncertainty, $"site '{site.Id}' uncertainty", errors);
+                if (site.SourceRefs.Count == 0) errors.Add($"Site '{site.Id}' must cite at least one source record.");
+                if (site.ClaimRefs.Count == 0) errors.Add($"Site '{site.Id}' must expose at least one claim record.");
+                foreach (var sourceRef in site.SourceRefs.Where(sourceRef => !sourceIds.Contains(sourceRef))) errors.Add($"Site '{site.Id}' references unknown source '{sourceRef}'.");
+                foreach (var claimRef in site.ClaimRefs)
+                {
+                    if (!claimIds.Contains(claimRef))
+                    {
+                        errors.Add($"Site '{site.Id}' references unknown claim '{claimRef}'.");
+                        continue;
+                    }
+                    var claim = campaign.Claims.First(candidate => candidate.Id == claimRef);
+                    foreach (var sourceRef in claim.SourceRefs.Where(sourceRef => !site.SourceRefs.Contains(sourceRef)))
+                        errors.Add($"Site '{site.Id}' claim '{claimRef}' requires missing source '{sourceRef}'.");
                 }
             }
 

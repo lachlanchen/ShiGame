@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Wartable intelligence interaction checkpoint
+
+- Replaced the decorative site layer with an authored intelligence model shared by web and Unity: `known`, `reported` and `reference` sites now carry bounded summaries, explicit uncertainty, schematic coordinates, source records and claim records.
+- Preserved Chapter I's information horizon. Pei and Kuaiji explicitly reject retroactive knowledge of Liu Bang's or Xiang Yu's later victory; Xianyang remains orientation only; no route, distance, scale or historical-GIS precision is asserted.
+- Added pointer, keyboard and standard-gamepad inspection to the web wartable, including site cycling, selected-state semantics, filtered evidence, evidence-to-map return and zero campaign-state mutation. Desktop and 390×844 layouts were visually reviewed.
+- Added the equivalent Unity baseline: status-specific 3D marker materials, camera raycasting, inspected-marker feedback, keyboard/controller cycling, localized uncertainty panel and filtered source/claim drawer. Runtime, editor and EditMode-test sources compile offline with warnings as errors; licensed Editor execution remains open.
+- Expanded schema, JavaScript validation, Unity preflight and tests to reject invalid statuses, out-of-bounds schematic coordinates, missing site text, unknown references and claims whose required source is not exposed on the site.
+- Kept startup performance inside budget by loading the map and detail inspector on demand. The production build measures 99.38 KiB gzip initial JavaScript, 2.36 KiB map, 0.59 KiB inspector, 7.44 KiB evidence UI and 184.72 KiB Three.js.
+- Expanded dedicated visible-browser QA to 68 checks with zero console errors, including known/reported/reference rendering, controller navigation, no-state-mutation, hindsight-boundary copy, site-filtered evidence and mobile panel containment. Exact implementation, deployment and public evidence commits are recorded after the release boundary is pushed.
+
+Next gate: complete licensed Unity import/execution and observed physical-controller/player sessions, then obtain Qin-law and historical-GIS specialist decisions. Chapter II remains gated.
+
 ## 2026-08-09 · Historical production cell checkpoint
 
 - Upgraded the canonical campaign to schema v3 with a five-edition rights-aware register, seven source records and thirteen stable claim records. Every claim carries a precise locator, evidence/review state, bounded confidence, uncertainty, gameplay use and pending/completed review role.

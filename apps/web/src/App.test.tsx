@@ -56,6 +56,15 @@ describe("playable web shell", () => {
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-controller")).toBe("connected"));
     await press(0);
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-screen")).toBe("play"));
+    await press(3);
+    expect(view.getByTestId("map-intel").textContent).toContain("Daze Village");
+    await press(15);
+    expect(view.getByTestId("map-intel").textContent).toContain("Chen");
+    await press(0);
+    await view.findByTestId("sources-drawer");
+    await press(1);
+    await press(3);
+    expect(view.queryByTestId("map-intel")).toBeNull();
     await press(15);
     expect(document.querySelector("[data-choice-id='take-the-beacon']")?.className).toContain("is-gamepad-selected");
     await press(0);
@@ -96,6 +105,32 @@ describe("playable web shell", () => {
 
     fireEvent.keyDown(window, { key: "r", altKey: true });
     expect(view.getByTestId("record-drawer").getAttribute("role")).toBe("dialog");
+  });
+
+  it("inspects reported map intelligence without leaking hindsight or changing game state", async () => {
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+
+    fireEvent.keyDown(window, { key: "m", altKey: true });
+    expect(view.getByTestId("map-intel").textContent).toContain("Daze Village");
+    fireEvent.keyDown(window, { key: "m", altKey: true });
+    expect(view.queryByTestId("map-intel")).toBeNull();
+    fireEvent.click(document.querySelector("[data-site-id='pei']")!);
+    expect(view.getByTestId("map-intel").textContent).toContain("Reported network");
+    expect(view.getByTestId("map-intel").textContent).toContain("not knowledge available to the opening council");
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    expect(view.getByTestId("map-intel").textContent).toContain("Kuaiji");
+    expect(view.getByTestId("map-intel").textContent).toContain("not a route, scale claim or predetermined Xiang path");
+    fireEvent.keyDown(window, { key: "Enter" });
+    const sources = await view.findByTestId("sources-drawer");
+    expect(sources.textContent).toContain("Kuaiji");
+    expect(sources.querySelectorAll(".claim")).toHaveLength(3);
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(view.queryByTestId("sources-drawer")).toBeNull();
+    expect(view.getByTestId("map-intel")).not.toBeNull();
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(view.queryByTestId("map-intel")).toBeNull();
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "{}")?.history ?? []).toHaveLength(0);
   });
 
   it("migrates a version-one save by replaying its decision history", async () => {

@@ -26,10 +26,13 @@ Closing the guide records a local onboarding preference, not campaign progress. 
 | Decision record | `Alt+R` | Left shoulder | Header control |
 | Source ledger | `Alt+S` | Right shoulder | Header control |
 | Field guide | Header control | Start / Menu | Header control |
+| Inspect wartable | `Alt+M`, arrows, `Enter` | `Y` / Triangle, D-pad/stick, south button | Site markers and evidence control |
 
 Controller navigation wraps only across enabled choices. A held axis cannot run away: the direction must return through the dead zone before another move is emitted. A controller command calls the same `choose`, drawer and restart functions as keyboard/pointer input; it cannot write game state directly.
 
 The title accepts the south button, and a completed/failed run exposes restart as the selected primary action. A transient result, guide or ledger consumes close/confirm before gameplay can receive another commitment.
+
+Wartable inspection is a separate read mode. Directional input cycles sites rather than choices, confirm opens that site's filtered evidence, and close returns first from evidence to the inspected place and then to normal decision control. Inspection never writes campaign state.
 
 ## Feedback and accessibility
 

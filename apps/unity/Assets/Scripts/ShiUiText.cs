@@ -71,6 +71,26 @@ namespace SHI
             ["zh-Hant"] = new[] { "戲劇性重構", "後世編纂", "古典兵學文本", "傳世史籍記載", "史實主張簿", "已定位證據", "需要專家審閱", "原創重構", "打開公開版本", "證據與不確定性" },
         };
 
+        private static readonly string[] MapKeys =
+        {
+            "mapIntel", "inspectMap", "knownGround", "reportedGround", "referenceOnly", "uncertainty",
+        };
+
+        private static readonly Dictionary<string, string[]> MapValues = new()
+        {
+            ["en"] = new[] { "Strategic intelligence map", "Inspect map", "Known ground", "Reported network", "Reference only", "Uncertainty" },
+            ["ar"] = new[] { "خريطة الاستخبارات الاستراتيجية", "تفحّص الخريطة", "أرض معروفة", "شبكة منقولة", "مرجع فقط", "موضع الشك" },
+            ["de"] = new[] { "Strategische Lagekarte", "Karte prüfen", "Bekanntes Gebiet", "Gemeldetes Netzwerk", "Nur Orientierung", "Unsicherheit" },
+            ["es"] = new[] { "Mapa de inteligencia estratégica", "Examinar mapa", "Terreno conocido", "Red informada", "Solo referencia", "Incertidumbre" },
+            ["fr"] = new[] { "Carte de renseignement stratégique", "Examiner la carte", "Terrain connu", "Réseau signalé", "Repère seulement", "Incertitude" },
+            ["ja"] = new[] { "戦略情報図", "地図を調べる", "既知の地", "伝聞の勢力", "参照のみ", "不確実性" },
+            ["ko"] = new[] { "전략 정보 지도", "지도 살피기", "알려진 땅", "전해진 세력망", "참조 전용", "불확실성" },
+            ["ru"] = new[] { "Карта стратегических сведений", "Изучить карту", "Известная местность", "Сеть по донесениям", "Только ориентир", "Неопределённость" },
+            ["vi"] = new[] { "Bản đồ tình báo chiến lược", "Xem xét bản đồ", "Địa bàn đã biết", "Mạng lưới được báo", "Chỉ để tham chiếu", "Điều chưa chắc" },
+            ["zh-Hans"] = new[] { "战略情报图", "查看地图", "已知地点", "传闻网络", "仅作参照", "不确定之处" },
+            ["zh-Hant"] = new[] { "戰略情報圖", "查看地圖", "已知地點", "傳聞網絡", "僅作參照", "不確定之處" },
+        };
+
         private static readonly Dictionary<string, string> LocaleNames = new()
         {
             ["en"] = "English", ["ar"] = "العربية", ["de"] = "Deutsch", ["es"] = "Español",
@@ -93,9 +113,15 @@ namespace SHI
                 return guideValues[index];
             }
             index = Array.IndexOf(EvidenceKeys, key);
+            if (index >= 0)
+            {
+                var evidenceValues = EvidenceValues.TryGetValue(locale, out var localizedEvidence) ? localizedEvidence : EvidenceValues["en"];
+                return evidenceValues[index];
+            }
+            index = Array.IndexOf(MapKeys, key);
             if (index < 0) return key;
-            var evidenceValues = EvidenceValues.TryGetValue(locale, out var localizedEvidence) ? localizedEvidence : EvidenceValues["en"];
-            return evidenceValues[index];
+            var mapValues = MapValues.TryGetValue(locale, out var localizedMap) ? localizedMap : MapValues["en"];
+            return mapValues[index];
         }
 
         public static string LocaleName(string locale) => LocaleNames.TryGetValue(locale, out var name) ? name : locale;

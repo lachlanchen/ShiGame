@@ -30,6 +30,8 @@ Month 2 status on 2026-08-09: authored countermoves, disclosed seed-selected fie
 
 Month 3 status on 2026-08-09: schema v3, a five-edition rights-aware register, seven source records, thirteen scene-linked claim records, exact public locators, player-facing uncertainty, web/Unity claim ledgers and automated claim/source closure are implemented. The Qin-law and historical-GIS P0 specialist gates remain open, so this milestone is in progress rather than complete.
 
+Month 4 status on 2026-08-09: the first bounded interaction slice is implemented in both clients. The web wartable and Unity 3D markers share known/reported/reference intelligence, uncertainty, filtered site evidence, pointer/keyboard/controller navigation and automated closure checks. Web desktop/mobile visible operation passes; Unity source assemblies pass offline type compilation. UI Toolkit replacement, camera/audio language, licensed Unity import and execution, Linux/WebGL players, and performance capture remain open, so Month 4 is not complete.
+
 ## Weekly operating cadence
 
 - Monday: player problem, evidence and scope review.

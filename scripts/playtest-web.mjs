@@ -202,6 +202,55 @@ check(snapshot.onboarding === "complete", "dismissed onboarding preference is st
 check(snapshot.saveVersion === "3", "web client advertises save contract version 3");
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 
+await gamepadButton(3);
+await waitForSelector("[data-testid=map-intel]");
+await wait(250);
+await screenshot("web-13-wartable-intel-daze.png");
+snapshot = await evaluate(`({
+  title: document.querySelector('[data-testid=map-intel] h2')?.textContent?.trim(),
+  status: document.querySelector('[data-testid=map-intel] .map-intel-head span')?.textContent?.trim(),
+  known: document.querySelectorAll('.site-known').length,
+  reported: document.querySelectorAll('.site-reported').length,
+  reference: document.querySelectorAll('.site-reference').length,
+  selected: document.querySelector('.site-marker[aria-pressed=true]')?.getAttribute('data-site-id'),
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length ?? 0
+})`);
+check(snapshot.title === "Daze Village" && snapshot.status === "Known ground", "Y/Triangle opens intelligence on the active known site");
+check(snapshot.known === 2 && snapshot.reported === 2 && snapshot.reference === 1, "wartable differentiates known, reported and reference-only sites");
+check(snapshot.selected === "daze", "inspected marker exposes its selected state accessibly");
+check(snapshot.history === 0, "opening the intelligence map does not mutate campaign history");
+
+await gamepadButton(15);
+await gamepadButton(15);
+await wait(250);
+await screenshot("web-14-wartable-reported-pei.png");
+snapshot = await evaluate(`({
+  title: document.querySelector('[data-testid=map-intel] h2')?.textContent?.trim(),
+  copy: document.querySelector('[data-testid=map-intel]')?.textContent?.trim(),
+  selected: document.querySelector('.site-marker[aria-pressed=true]')?.getAttribute('data-site-id')
+})`);
+check(snapshot.title === "Pei" && snapshot.selected === "pei", "D-pad cycles intelligence sites without moving the campaign");
+check(snapshot.copy.includes("Reported network") && snapshot.copy.includes("not knowledge available to the opening council"), "reported intelligence discloses its hindsight boundary");
+
+await gamepadButton(0);
+await waitForSelector("[data-testid=sources-drawer]");
+await wait(250);
+await screenshot("web-15-wartable-site-evidence.png");
+snapshot = await evaluate(`({
+  context: document.querySelector('[data-testid=sources-drawer] .eyebrow')?.textContent?.trim(),
+  sources: document.querySelectorAll('.source').length,
+  claims: document.querySelectorAll('.claim').length
+})`);
+check(snapshot.context === "Pei", "site evidence drawer retains the inspected place as context");
+check(snapshot.sources === 5 && snapshot.claims === 3, "site evidence is filtered to the place's five records and three claims");
+await gamepadButton(1);
+await wait(250);
+snapshot = await evaluate(`document.querySelector('[data-testid=map-intel] h2')?.textContent?.trim()`);
+check(snapshot === "Pei", "closing site evidence returns to the inspected wartable position");
+await gamepadButton(3);
+snapshot = await evaluate(`Boolean(document.querySelector('[data-testid=map-intel]'))`);
+check(snapshot === false, "Y/Triangle closes wartable inspection cleanly");
+
 await gamepadButton(15);
 snapshot = await evaluate(`document.querySelector('[data-choice-id=take-the-beacon]')?.classList.contains('is-gamepad-selected')`);
 check(snapshot === true, "D-pad moves the highlighted enabled decision");
@@ -305,6 +354,19 @@ await screenshot("web-06-mobile-gameplay.png");
 snapshot = await evaluate(`({ choices: document.querySelectorAll('.choice-card').length, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, width: innerWidth })`);
 check(snapshot.width === 390 && snapshot.choices === 2, "mobile viewport retains the active branch choices");
 check(snapshot.overflow <= 1, "mobile gameplay has no horizontal overflow");
+await evaluate("scrollTo(0, 0); true");
+await gamepadButton(3);
+await waitForSelector("[data-testid=map-intel]");
+await wait(250);
+await screenshot("web-16-mobile-wartable-intel.png");
+snapshot = await evaluate(`(() => {
+  const column = document.querySelector('.map-column')?.getBoundingClientRect();
+  const panel = document.querySelector('[data-testid=map-intel]')?.getBoundingClientRect();
+  return { columnHeight: column?.height, panelTop: panel?.top, panelBottom: panel?.bottom, columnTop: column?.top, columnBottom: column?.bottom, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+})()`);
+check(snapshot.columnHeight >= 400 && snapshot.panelTop >= snapshot.columnTop && snapshot.panelBottom <= snapshot.columnBottom, "mobile wartable expands to keep the intelligence panel fully visible");
+check(snapshot.overflow <= 1, "mobile wartable inspection has no horizontal overflow");
+await gamepadButton(3);
 await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: 360, y: 760, deltaX: 0, deltaY: 650 });
 await wait(450);
 await screenshot("web-08-mobile-choices.png");

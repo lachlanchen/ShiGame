@@ -92,6 +92,15 @@ namespace SHI.Tests
             var pending = new Queue<string>();
             pending.Enqueue(campaign.StartNodeId);
 
+            foreach (var site in campaign.Sites)
+            {
+                Assert.That(site.SourceRefs.All(sources.Contains), Is.True, $"Unknown source on site {site.Id}");
+                Assert.That(site.ClaimRefs.All(claims.Contains), Is.True, $"Unknown claim on site {site.Id}");
+                foreach (var claimRef in site.ClaimRefs)
+                    Assert.That(campaign.Claims.First(claim => claim.Id == claimRef).SourceRefs.All(site.SourceRefs.Contains), Is.True, $"Claim source is not exposed on site {site.Id}");
+                Assert.That(site.Status, Is.AnyOf("known", "reported", "reference"));
+            }
+
             while (pending.Count > 0)
             {
                 var id = pending.Dequeue();
@@ -142,11 +151,15 @@ namespace SHI.Tests
                 "newGame", "fieldSignal", "chronicleSeed", "fieldApplied",
                 "reconstruction", "later", "strategicText", "received", "claimRegister", "evidenceLocated",
                 "specialistReview", "authoredClaim", "openEdition", "publicSource",
+                "mapIntel", "inspectMap", "knownGround", "reportedGround", "referenceOnly", "uncertainty",
             };
 
             foreach (var locale in locales)
             foreach (var key in keys)
+            {
                 Assert.That(ShiUiText.Get(locale, key), Is.Not.Empty, $"Missing Unity UI text: {locale}.{key}");
+                Assert.That(ShiUiText.Get(locale, key), Is.Not.EqualTo(key), $"Unity UI text fell through: {locale}.{key}");
+            }
         }
 
         [Test]

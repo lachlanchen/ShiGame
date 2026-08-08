@@ -17,8 +17,8 @@ The web client is the fastest playable delivery path. Unity 6 LTS is the selecte
 ## Shared-content contract
 
 - `content/campaigns/chapter-01-daze.json` is narrative truth; `content/research/editions.json` is the edition/rights metadata authority.
-- Schema v3 binds each playable node to both source records and inspectable historical/reconstruction claims. It records locators, review state, bounded confidence, uncertainty and game use without embedding source books.
-- `scripts/validate-content.mjs` checks edition/right pairings, HTTPS public links, identifiers, claim/source/node closure, reconstruction boundaries, translations, action/pressure/field effects, requirements, reachability, cycles, deadlocks, every field-condition branch, real failure reachability, and all three conclusions.
+- Schema v3 binds each playable node and wartable site to source records and inspectable historical/reconstruction claims. Sites add a `known`/`reported`/`reference` intelligence state, bounded summary, uncertainty and schematic coordinates; claims retain locators, review state, confidence and game use without embedding source books.
+- `scripts/validate-content.mjs` checks edition/right pairings, HTTPS public links, identifiers, claim/source/node/site closure, site coordinate/status bounds, reconstruction boundaries, translations, action/pressure/field effects, requirements, reachability, cycles, deadlocks, every field-condition branch, real failure reachability, and all three conclusions.
 - `scripts/sync-unity-content.mjs` copies the canonical bytes to Unity and a full browser mirror, writes a SHA-256 record, and emits lossless gameplay/claim browser slices. The claim slice is loaded with the evidence drawer so the release stays inside its initial-JavaScript budget; repository validation proves that recombining both slices exactly reconstructs the canonical JSON object.
 - Client-specific code may format or animate content; it may not silently change narrative outcomes.
 - Schema changes require a migration, updated validator, both clients, and tests.
@@ -35,6 +35,7 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 - Browser state is namespaced in `localStorage`. Save format 3 rebuilds state from decision history, migrates version-1 and version-2 histories under documented legacy seed zero, and rejects impossible or seed-inconsistent sequences rather than trusting stored totals.
 - All eleven UI locales are compile-time/test validated. Narrative falls back to English or Simplified Chinese and preserves LTR direction inside Arabic layouts.
 - A pure standard-gamepad adapter edge-detects buttons/axes; the polling hook resets on disconnect. Commands call the same React actions as pointer/keyboard input. Onboarding preference is namespaced separately from campaign state.
+- The strategic map and detail inspector are lazy chunks. Pointer, keyboard and standard-gamepad selection open status/uncertainty and site-filtered evidence without changing deterministic game state.
 
 ## Unity client
 
@@ -42,7 +43,7 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 - Code-built bootstrap scene keeps the initial client diffable.
 - Newtonsoft JSON reads the shared payload without renaming locale keys.
 - PlayerPrefs stores the pre-alpha state in the same replayable save format 3 contract; production saves will later move to signed files without changing decision-history authority.
-- A 3D wartable, site markers, lighting and rain are built at runtime.
+- A 3D wartable, status-specific site markers, lighting and rain are built at runtime. Marker colliders feed the same inspected-site/evidence state used by keyboard and controller navigation.
 - The immediate-mode UI is a functional import baseline, not final presentation. UI Toolkit replacement is scheduled before alpha.
 - The committed input-axis map and runtime controller layer provide selected-choice feedback, field guide, source/record overlays and shared commit/close commands; physical-device proof remains an observed-player gate.
 - Runtime, editor and EditMode-test sources pass an offline Roslyn type compile against installed Unity/NUnit reference assemblies. This narrows source-level risk but does not replace the license-gated Unity import, EditMode execution and player-build gates.
@@ -73,4 +74,4 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 | Input-to-feedback | < 100 ms | < 100 ms |
 | Save operation | < 50 ms | < 50 ms |
 
-The current web build is 98.53 KiB gzip initial JavaScript, 7.44 KiB gzip lazy evidence/claim UI, 0.62 KiB gzip lazy field guide, and 184.72 KiB gzip lazy Three.js.
+The current web build is 99.38 KiB gzip initial JavaScript, 2.36 KiB gzip lazy strategic map, 0.59 KiB gzip lazy map inspector, 7.44 KiB gzip lazy evidence/claim UI, 0.62 KiB gzip lazy field guide, and 184.72 KiB gzip lazy Three.js.

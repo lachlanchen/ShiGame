@@ -6,19 +6,27 @@ namespace SHI
     public sealed class WarTableWorld : MonoBehaviour
     {
         private readonly Dictionary<string, Renderer> markers = new();
+        private readonly Dictionary<string, Material> baseMaterials = new();
+        private readonly Dictionary<Collider, string> markerColliders = new();
         private Material? activeMaterial;
+        private Material? inspectedMaterial;
         private Material? knownMaterial;
+        private Material? reportedMaterial;
+        private Material? referenceMaterial;
+        private Camera? wartableCamera;
+        private string activeSiteId = "";
+        private string inspectedSiteId = "";
 
         public void Build(ShiCampaign campaign)
         {
             var cameraObject = new GameObject("Wartable Camera");
             cameraObject.transform.SetParent(transform);
-            var camera = cameraObject.AddComponent<Camera>();
-            camera.transform.position = new Vector3(-2.3f, 7.8f, -8.5f);
-            camera.transform.rotation = Quaternion.Euler(34, 12, 0);
-            camera.fieldOfView = 43;
-            camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = new Color(0.045f, 0.049f, 0.042f);
+            wartableCamera = cameraObject.AddComponent<Camera>();
+            wartableCamera.transform.position = new Vector3(-2.3f, 7.8f, -8.5f);
+            wartableCamera.transform.rotation = Quaternion.Euler(34, 12, 0);
+            wartableCamera.fieldOfView = 43;
+            wartableCamera.clearFlags = CameraClearFlags.SolidColor;
+            wartableCamera.backgroundColor = new Color(0.045f, 0.049f, 0.042f);
 
             var lightObject = new GameObject("Warm Key");
             lightObject.transform.SetParent(transform);
@@ -36,17 +44,23 @@ namespace SHI
             table.GetComponent<Renderer>().material = CreateMaterial(new Color(0.11f, 0.1f, 0.075f), 0.16f);
 
             activeMaterial = CreateMaterial(new Color(0.72f, 0.43f, 0.16f), 0.55f);
+            inspectedMaterial = CreateMaterial(new Color(0.84f, 0.68f, 0.37f), 0.72f);
             knownMaterial = CreateMaterial(new Color(0.25f, 0.31f, 0.27f), 0.35f);
+            reportedMaterial = CreateMaterial(new Color(0.34f, 0.29f, 0.2f), 0.28f);
+            referenceMaterial = CreateMaterial(new Color(0.18f, 0.2f, 0.18f), 0.16f);
             foreach (var site in campaign.Sites)
             {
                 var marker = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 marker.name = $"Site · {site.Id}";
                 marker.transform.SetParent(transform);
                 marker.transform.position = new Vector3(-7.1f + site.X / 10f, 0, -3.2f + site.Z / 11f);
-                marker.transform.localScale = site.Status == "future" ? new Vector3(.13f, .07f, .13f) : new Vector3(.19f, .12f, .19f);
+                marker.transform.localScale = site.Status == "reference" ? new Vector3(.13f, .07f, .13f) : new Vector3(.19f, .12f, .19f);
                 var renderer = marker.GetComponent<Renderer>();
-                renderer.material = knownMaterial;
+                var baseMaterial = site.Status == "reported" ? reportedMaterial : site.Status == "reference" ? referenceMaterial : knownMaterial;
+                renderer.material = baseMaterial;
                 markers.Add(site.Id, renderer);
+                baseMaterials.Add(site.Id, baseMaterial);
+                markerColliders.Add(marker.GetComponent<Collider>(), site.Id);
             }
 
             var rainObject = new GameObject("Rain");
@@ -69,7 +83,33 @@ namespace SHI
 
         public void SetActiveSite(string siteId)
         {
-            foreach (var marker in markers) marker.Value.material = marker.Key == siteId ? activeMaterial : knownMaterial;
+            activeSiteId = siteId;
+            RefreshMarkers();
+        }
+
+        public void SetInspectedSite(string? siteId)
+        {
+            inspectedSiteId = siteId ?? "";
+            RefreshMarkers();
+        }
+
+        public bool TryPickSite(Vector3 screenPosition, out string siteId)
+        {
+            siteId = "";
+            if (wartableCamera == null || !Physics.Raycast(wartableCamera.ScreenPointToRay(screenPosition), out var hit, 100f)) return false;
+            if (!markerColliders.TryGetValue(hit.collider, out var pickedSiteId)) return false;
+            siteId = pickedSiteId;
+            return true;
+        }
+
+        private void RefreshMarkers()
+        {
+            foreach (var marker in markers)
+            {
+                if (marker.Key == inspectedSiteId) marker.Value.material = inspectedMaterial;
+                else if (marker.Key == activeSiteId) marker.Value.material = activeMaterial;
+                else marker.Value.material = baseMaterials[marker.Key];
+            }
         }
 
         private static Material CreateMaterial(Color color, float smoothness)

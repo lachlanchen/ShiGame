@@ -16,13 +16,13 @@ const claimStatusLabel = (claim: HistoricalClaim, locale: Locale) => {
   return translateEvidence(locale, "evidenceLocated");
 };
 
-export function SourceLedger({ campaign, locale, activeIds, activeClaimIds, onClose }: { campaign: Campaign; locale: Locale; activeIds: string[]; activeClaimIds: string[]; onClose: () => void }) {
+export function SourceLedger({ campaign, locale, activeIds, activeClaimIds, contextTitle, onClose }: { campaign: Campaign; locale: Locale; activeIds: string[]; activeClaimIds: string[]; contextTitle?: string; onClose: () => void }) {
   const sources = campaign.sources.filter((source) => activeIds.includes(source.id));
   const claims = (claimsJson as HistoricalClaim[]).filter((claim) => activeClaimIds.includes(claim.id));
   return (
     <aside className="drawer" data-testid="sources-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "sources")}>
       <div className="drawer-head">
-        <div><span className="eyebrow">{translate(locale, "sourceBasis")}</span><h2>{translate(locale, "sources")}</h2></div>
+        <div><span className="eyebrow">{contextTitle ?? translate(locale, "sourceBasis")}</span><h2>{translate(locale, "sources")}</h2></div>
         <button className="icon-button" autoFocus onClick={onClose} aria-label={translate(locale, "close")}>×</button>
       </div>
       <div className="source-list">

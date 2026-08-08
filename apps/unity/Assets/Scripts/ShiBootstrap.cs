@@ -39,6 +39,8 @@ namespace SHI
         private bool recordOpen;
         private bool guideOpen;
         private bool showGuideOnEntry;
+        private string inspectedSiteId = "";
+        private string sourceSiteId = "";
         private int selectedChoiceIndex;
         private float previousHorizontal;
         private float previousVertical;
@@ -81,6 +83,11 @@ namespace SHI
                 CloseTransient();
                 return;
             }
+            if (back && !string.IsNullOrEmpty(inspectedSiteId))
+            {
+                ClearMapInspection();
+                return;
+            }
             if (title)
             {
                 if (confirm) EnterPlay();
@@ -89,6 +96,7 @@ namespace SHI
             if (Input.GetKeyDown(KeyCode.JoystickButton9)) { ToggleGuide(); return; }
             if (Input.GetKeyDown(KeyCode.JoystickButton4)) { ToggleRecord(); return; }
             if (Input.GetKeyDown(KeyCode.JoystickButton5)) { ToggleSources(); return; }
+            if (Input.GetKeyDown(KeyCode.M) || Input.GetKeyDown(KeyCode.JoystickButton3)) { ToggleMapInspection(); return; }
             if (guideOpen || sourcesOpen || recordOpen)
             {
                 if (confirm && guideOpen) CloseGuide();
@@ -97,6 +105,25 @@ namespace SHI
             if (resolution != null)
             {
                 if (confirm) resolution = null;
+                return;
+            }
+            if (Input.GetMouseButtonDown(0)
+                && Input.mousePosition.x < Screen.width * .43f
+                && Input.mousePosition.y > 240
+                && Input.mousePosition.y < Screen.height - 130
+                && world != null
+                && world.TryPickSite(Input.mousePosition, out var pickedSiteId))
+            {
+                InspectSite(pickedSiteId);
+                return;
+            }
+            if (!string.IsNullOrEmpty(inspectedSiteId))
+            {
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.JoystickButton12) || Input.GetKeyDown(KeyCode.JoystickButton14)) CycleMapInspection(-1);
+                else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.JoystickButton13) || Input.GetKeyDown(KeyCode.JoystickButton15)) CycleMapInspection(1);
+                else if (Mathf.Abs(horizontal) >= .65f && Mathf.Abs(lastHorizontal) <= .35f) CycleMapInspection(horizontal > 0 ? 1 : -1);
+                else if (Mathf.Abs(vertical) >= .65f && Mathf.Abs(lastVertical) <= .35f) CycleMapInspection(vertical > 0 ? 1 : -1);
+                if (confirm) OpenInspectedSources();
                 return;
             }
             if (state.Completed)
@@ -249,6 +276,7 @@ namespace SHI
             if (GUI.Button(new Rect(260, 20, 105, 30), T("guide"))) ToggleGuide();
             if (GUI.Button(new Rect(375, 20, 105, 30), T("record") + $"  {state.History.Count}")) ToggleRecord();
             if (GUI.Button(new Rect(490, 20, 105, 30), T("sources") + $"  {node.SourceRefs.Count}")) ToggleSources();
+            if (GUI.Button(new Rect(605, 20, 130, 30), T("inspectMap"))) ToggleMapInspection();
             DrawLocale(new Rect(Screen.width - 355, 20, 320, 30));
             var railWidth = (Screen.width - 64f) / resources.Length;
             for (var index = 0; index < resources.Length; index++)
@@ -302,6 +330,7 @@ namespace SHI
                 if (GUI.Button(new Rect(storyX + storyWidth - 180, Screen.height - 150, 150, 50), T("restart") + "  ↺")) Restart();
             }
 
+            if (!string.IsNullOrEmpty(inspectedSiteId)) DrawSiteInspector();
             if (resolution != null) DrawResolution();
             if (sourcesOpen) DrawSources(node);
             if (recordOpen) DrawRecord();
@@ -327,21 +356,46 @@ namespace SHI
             if (GUI.Button(new Rect(rect.x + width - 38, rect.y + 8, 28, 28), "×")) resolution = null;
         }
 
+        private void DrawSiteInspector()
+        {
+            if (campaign == null) return;
+            var site = campaign.Sites.Find(candidate => candidate.Id == inspectedSiteId);
+            if (site == null) return;
+            var storyX = Screen.width * .43f;
+            var height = Mathf.Clamp(Screen.height - 565, 240, 320);
+            var rect = new Rect(32, 292, storyX - 64, height);
+            GUI.Box(rect, "");
+            GUI.Label(new Rect(rect.x + 18, rect.y + 13, rect.width - 64, 20), SiteStatus(site).ToUpperInvariant(), smallStyle);
+            GUI.Label(new Rect(rect.x + 18, rect.y + 38, rect.width - 58, 36), campaign.Text(site.Name, locale), bodyStyle);
+            if (GUI.Button(new Rect(rect.x + rect.width - 38, rect.y + 10, 27, 27), "×")) { ClearMapInspection(); return; }
+            GUI.Label(new Rect(rect.x + 18, rect.y + 79, rect.width - 36, 64), campaign.Text(site.Summary, locale), bodyStyle);
+            GUI.Label(new Rect(rect.x + 18, rect.y + 147, rect.width - 36, 18), T("uncertainty").ToUpperInvariant(), smallStyle);
+            GUI.Label(new Rect(rect.x + 18, rect.y + 168, rect.width - 36, 50), campaign.Text(site.Uncertainty, locale), smallStyle);
+            var buttonY = rect.y + rect.height - 46;
+            if (GUI.Button(new Rect(rect.x + 18, buttonY, 210, 30), T("sources") + $"  {site.SourceRefs.Count}")) OpenInspectedSources();
+            var index = campaign.Sites.FindIndex(candidate => candidate.Id == site.Id) + 1;
+            GUI.Label(new Rect(rect.x + 240, buttonY + 6, rect.width - 258, 23), $"← → · Enter / A · {index}/{campaign.Sites.Count}", smallStyle);
+        }
+
         private void DrawSources(ShiNode node)
         {
             if (campaign == null) return;
+            var site = string.IsNullOrEmpty(sourceSiteId) ? null : campaign.Sites.Find(candidate => candidate.Id == sourceSiteId);
+            var sourceIds = site == null ? node.SourceRefs : site.SourceRefs;
+            var claimIds = site == null ? node.ClaimRefs : site.ClaimRefs;
             var width = Mathf.Min(640, Screen.width * 0.62f);
             GUI.Box(new Rect(Screen.width - width, 0, width, Screen.height), "");
             GUI.Label(new Rect(Screen.width - width + 25, 22, width - 90, 50), T("sources"), titleStyle);
-            if (GUI.Button(new Rect(Screen.width - 55, 22, 32, 32), "×")) sourcesOpen = false;
-            var sources = node.SourceRefs
+            if (site != null) GUI.Label(new Rect(Screen.width - width + 27, 65, width - 86, 22), campaign.Text(site.Name, locale) + " · " + T("publicSource"), smallStyle);
+            if (GUI.Button(new Rect(Screen.width - 55, 22, 32, 32), "×")) CloseSources();
+            var sources = sourceIds
                 .ConvertAll(id => campaign.Sources.Find(item => item.Id == id))
                 .FindAll(source => source != null);
-            var claims = node.ClaimRefs
+            var claims = claimIds
                 .ConvertAll(id => campaign.Claims.Find(item => item.Id == id))
                 .FindAll(claim => claim != null);
             var contentHeight = sources.Count * 168 + claims.Count * 174 + 135;
-            var viewport = new Rect(Screen.width - width + 18, 82, width - 30, Screen.height - 94);
+            var viewport = new Rect(Screen.width - width + 18, site == null ? 82 : 92, width - 30, Screen.height - (site == null ? 94 : 104));
             sourceScroll = GUI.BeginScrollView(viewport, sourceScroll, new Rect(0, 0, width - 55, contentHeight));
             var y = 8f;
             foreach (var source in sources)
@@ -384,6 +438,13 @@ namespace SHI
             "specialist-review-required" => T("specialistReview"),
             "authored-reconstruction" => T("authoredClaim"),
             _ => T("evidenceLocated"),
+        };
+
+        private string SiteStatus(ShiSite site) => site.Status switch
+        {
+            "known" => T("knownGround"),
+            "reported" => T("reportedGround"),
+            _ => T("referenceOnly"),
         };
 
         private void DrawRecord()
@@ -434,7 +495,7 @@ namespace SHI
             y += 128;
             GUI.Box(new Rect(x + 28, y, width - 56, 74), "");
             GUI.Label(new Rect(x + 43, y + 10, width - 86, 22), ControllerConnected ? T("controllerReady") : T("controllerOptional"), smallStyle);
-            GUI.Label(new Rect(x + 43, y + 32, width - 86, 35), T("controllerHint"), smallStyle);
+            GUI.Label(new Rect(x + 43, y + 32, width - 86, 35), T("controllerHint") + " · Y/△ " + T("inspectMap"), smallStyle);
             if (GUI.Button(new Rect(x + 28, Screen.height - 78, width - 56, 50), T("guideContinue") + "  →", buttonStyle)) CloseGuide();
         }
 
@@ -461,8 +522,10 @@ namespace SHI
         private void ToggleGuide()
         {
             if (guideOpen) { CloseGuide(); return; }
+            ClearMapInspection();
             guideOpen = true;
             sourcesOpen = false;
+            sourceSiteId = "";
             recordOpen = false;
         }
 
@@ -471,7 +534,9 @@ namespace SHI
             if (guideOpen) CloseGuide();
             recordOpen = !recordOpen;
             if (!recordOpen) return;
+            ClearMapInspection();
             sourcesOpen = false;
+            sourceSiteId = "";
             guideOpen = false;
         }
 
@@ -479,10 +544,59 @@ namespace SHI
         {
             if (guideOpen) CloseGuide();
             sourcesOpen = !sourcesOpen;
-            if (!sourcesOpen) return;
+            if (!sourcesOpen) { sourceSiteId = ""; return; }
+            ClearMapInspection();
+            sourceSiteId = "";
             sourceScroll = Vector2.zero;
             recordOpen = false;
             guideOpen = false;
+        }
+
+        private void ToggleMapInspection()
+        {
+            if (campaign == null || state == null) return;
+            if (!string.IsNullOrEmpty(inspectedSiteId)) { ClearMapInspection(); return; }
+            CloseTransient();
+            InspectSite(campaign.Node(state.CurrentNodeId).SiteId);
+        }
+
+        private void InspectSite(string siteId)
+        {
+            if (campaign == null || campaign.Sites.Find(candidate => candidate.Id == siteId) == null) return;
+            inspectedSiteId = siteId;
+            sourceSiteId = "";
+            world?.SetInspectedSite(siteId);
+        }
+
+        private void ClearMapInspection()
+        {
+            inspectedSiteId = "";
+            sourceSiteId = "";
+            world?.SetInspectedSite(null);
+        }
+
+        private void CycleMapInspection(int step)
+        {
+            if (campaign == null || campaign.Sites.Count == 0) return;
+            var index = campaign.Sites.FindIndex(candidate => candidate.Id == inspectedSiteId);
+            var next = index < 0 ? 0 : (index + step + campaign.Sites.Count) % campaign.Sites.Count;
+            InspectSite(campaign.Sites[next].Id);
+        }
+
+        private void OpenInspectedSources()
+        {
+            if (string.IsNullOrEmpty(inspectedSiteId)) return;
+            sourceSiteId = inspectedSiteId;
+            sourceScroll = Vector2.zero;
+            sourcesOpen = true;
+            recordOpen = false;
+            guideOpen = false;
+        }
+
+        private void CloseSources()
+        {
+            sourcesOpen = false;
+            sourceSiteId = "";
         }
 
         private void CloseGuide()
@@ -497,6 +611,7 @@ namespace SHI
         {
             if (guideOpen) CloseGuide();
             sourcesOpen = false;
+            sourceSiteId = "";
             recordOpen = false;
             resolution = null;
         }
@@ -527,6 +642,7 @@ namespace SHI
         private void CommitChoice(ShiNode node, ShiChoice choice)
         {
             if (campaign == null || state == null || !state.CanChoose(choice)) return;
+            ClearMapInspection();
             resolution = state.Resolve(node, choice);
             Save();
             if (!state.Completed)
@@ -557,6 +673,7 @@ namespace SHI
             sourcesOpen = false;
             recordOpen = false;
             guideOpen = false;
+            ClearMapInspection();
             selectedChoiceIndex = 0;
             world?.SetActiveSite(campaign.Node(campaign.StartNodeId).SiteId);
         }
@@ -576,6 +693,7 @@ namespace SHI
             sourcesOpen = false;
             recordOpen = false;
             guideOpen = false;
+            ClearMapInspection();
             selectedChoiceIndex = 0;
             world?.SetActiveSite(campaign.Node(campaign.StartNodeId).SiteId);
         }

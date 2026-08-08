@@ -74,13 +74,17 @@
     },
     "site": {
       "type": "object",
-      "required": ["id", "name", "x", "z", "status"],
+      "required": ["id", "name", "x", "z", "status", "summary", "uncertainty", "sourceRefs", "claimRefs"],
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "name": { "$ref": "#/$defs/localizedText" },
         "x": { "type": "number" },
         "z": { "type": "number" },
-        "status": { "enum": ["active", "known", "future"] }
+        "status": { "enum": ["known", "reported", "reference"] },
+        "summary": { "$ref": "#/$defs/localizedText" },
+        "uncertainty": { "$ref": "#/$defs/localizedText" },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "claimRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
       },
       "additionalProperties": false
     },

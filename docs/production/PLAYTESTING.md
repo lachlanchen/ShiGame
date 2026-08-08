@@ -21,11 +21,11 @@ npm run build
 SHI_CDP_PORT=9321 node scripts/playtest-web.mjs
 ```
 
-The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, controller detection/D-pad/face/shoulder/Start commands, opening content, five resources, choices, pressure warnings, keyboard decisions, source classifications, exact locators, public-edition links, claim counts, unresolved specialist states, authored-reconstruction boundaries, save format 3, disclosed field signal/classification/effects, fixed-seed selection, three-stage response deltas, seed persistence, Arabic RTL, resume, desktop/mobile layout, scrolled mobile cards, and console errors.
+The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, controller detection/D-pad/face/shoulder/Start/Y commands, opening content, five resources, choices, pressure warnings, keyboard decisions, known/reported/reference wartable states, selected-marker semantics, hindsight boundaries, no-state-mutation, site-filtered evidence and return behavior, source classifications, exact locators, public-edition links, claim counts, unresolved specialist states, authored-reconstruction boundaries, save format 3, disclosed field signal/classification/effects, fixed-seed selection, three-stage response deltas, seed persistence, Arabic RTL, resume, desktop/mobile layout and map containment, scrolled mobile cards, and console errors.
 
 ## Current result
 
-2026-08-09 historical-production-cell checkpoint: localhost passes all 56 checks with fixed seed `5EED2026` and zero page console errors against implementation commit `1e89bec0fb0dba6d33bd898e3c34746f14e99135`. Clean-checkout validation and Pages deployment then passed, and the public build passed the same 56 checks with zero console errors at deployment/evidence boundary `c70972634e4e9e0228228df3a734bce74905adf2`. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
+2026-08-09 wartable-intelligence checkpoint: localhost passes all 68 checks with fixed seed `5EED2026` and zero page console errors. The exact implementation and deployment/evidence hashes are recorded after push and public Pages replay. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
 
 Visual review after automation:
 
@@ -38,7 +38,9 @@ Visual review after automation:
 - First-run guide: pass on desktop/mobile; copy hierarchy is readable, dismissal changes no campaign state, and the guide remains available from the header/Start button.
 - Synthetic standard gamepad: pass for title confirm, D-pad selection, face-button close/commit, shoulders and Start. This is API-path evidence, not physical-controller certification.
 - Fixed-seed contract: pass for pre-choice condition/effects, post-choice field delta, save-v3 seed persistence, and decision-record condition retention.
+- Wartable intelligence: pass for two known, two reported and one reference-only site; D-pad cycling; textual/shape status; no campaign mutation; Pei hindsight boundary; five-source/three-claim filtered evidence; and return to the same inspected place.
 - Mobile structure: pass after correcting the two-card selector; page scroll is intentional, full-width cards are readable, horizontal overflow is zero.
+- Mobile wartable: pass at 390×844; the map expands to contain the full inspector and retains zero horizontal overflow.
 - Small tactical copy: monitored; secondary labels remain readable in the reviewed captures.
 
 Evidence must be regenerated when layout, campaign content, localization direction, Three.js, input mapping, onboarding or save behavior changes.

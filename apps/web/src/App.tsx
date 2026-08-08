@@ -17,17 +17,18 @@ import {
   type GameState,
   type Locale,
   type LocalizedText,
+  type MapSite,
   type ResourceKey,
 } from "@shi/game-core";
 import campaignJson from "./generated/chapter-01-gameplay.json";
 import { isRtl, localeNames, translate } from "./i18n";
 import { ResourceRail } from "./components/ResourceRail";
-import { StrategicMap } from "./components/StrategicMap";
 import { ThreeBackdrop } from "./components/ThreeBackdrop";
 import { useGamepad } from "./useGamepad";
 import type { GamepadCommand } from "./gamepad";
 
 const campaign = campaignJson as unknown as Campaign;
+const StrategicMap = lazy(() => import("./components/StrategicMap").then((module) => ({ default: module.StrategicMap })));
 const FieldGuide = lazy(() => import("./components/FieldGuide").then((module) => ({ default: module.FieldGuide })));
 const SourceLedger = lazy(() => import("./components/SourceLedger").then((module) => ({ default: module.SourceLedger })));
 const SAVE_KEY = "shi.chapter-01.save.v3";
@@ -92,6 +93,8 @@ export function App() {
   const [state, setState] = useState<GameState>(() => restoredState ?? createInitialState(campaign, initialSeed()));
   const [screen, setScreen] = useState<"title" | "play">("title");
   const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | null>(null);
+  const [mapSiteId, setMapSiteId] = useState<string | null>(null);
+  const [sourceSiteId, setSourceSiteId] = useState<string | null>(null);
   const [resolution, setResolution] = useState<ChoiceResolution | null>(null);
   const [reducedMotion, setReducedMotion] = useState(() => localStorage.getItem(MOTION_KEY) === "true" || window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [hasSave, setHasSave] = useState(restoredState !== null);
@@ -105,6 +108,7 @@ export function App() {
   const speaker = campaign.characters.find((character) => character.id === node.speakerId)!;
   const ending = state.completed ? deriveEnding(state) : null;
   const nodeNumber = campaign.nodes.findIndex((candidate) => candidate.id === node.id) + 1;
+  const sourceSite = campaign.sites.find((site) => site.id === sourceSiteId) ?? null;
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -157,6 +161,23 @@ export function App() {
     focusChoice(next);
   };
 
+  const moveMapInspection = (step: -1 | 1) => {
+    const current = campaign.sites.findIndex((site) => site.id === mapSiteId);
+    const next = current < 0 ? 0 : (current + step + campaign.sites.length) % campaign.sites.length;
+    setMapSiteId(campaign.sites[next]!.id);
+  };
+
+  const openNodeSources = () => {
+    setSourceSiteId(null);
+    setMapSiteId(null);
+    setDrawer("sources");
+  };
+
+  const openSiteEvidence = (site: MapSite) => {
+    setSourceSiteId(site.id);
+    setDrawer("sources");
+  };
+
   const handleGamepad = (command: GamepadCommand) => {
     if (screen === "title") {
       if (command === "confirm") beginButtonRef.current?.click();
@@ -168,16 +189,33 @@ export function App() {
         if (drawer === "guide") closeTransient(); else setDrawer("guide");
       }
       else if (command === "record") setDrawer(drawer === "record" ? null : "record");
-      else if (command === "sources") setDrawer(drawer === "sources" ? null : "sources");
+      else if (command === "sources") {
+        if (drawer === "sources") closeTransient(); else openNodeSources();
+      }
+      else if (command === "map") { setDrawer(null); setMapSiteId(node.siteId); }
       return;
     }
     if (resolution) {
       if (command === "back" || command === "confirm") closeTransient();
       return;
     }
+    if (mapSiteId) {
+      if (command === "back" || command === "map") { setMapSiteId(null); setSourceSiteId(null); return; }
+      if (command === "previous") { moveMapInspection(-1); return; }
+      if (command === "next") { moveMapInspection(1); return; }
+      if (command === "confirm" || command === "sources") {
+        const site = campaign.sites.find((candidate) => candidate.id === mapSiteId);
+        if (site) openSiteEvidence(site);
+        return;
+      }
+      if (command === "guide") { setDrawer("guide"); return; }
+      if (command === "record") { setDrawer("record"); return; }
+      return;
+    }
     if (command === "guide") { setDrawer("guide"); return; }
     if (command === "record") { setDrawer("record"); return; }
-    if (command === "sources") { setDrawer("sources"); return; }
+    if (command === "sources") { openNodeSources(); return; }
+    if (command === "map") { setMapSiteId(node.siteId); return; }
     if (state.completed) {
       if (command === "confirm") endingRestartRef.current?.click();
       return;
@@ -195,6 +233,8 @@ export function App() {
   useEffect(() => {
     const firstEnabled = node.choices.findIndex((choice) => canChoose(choice, state.resources));
     setSelectedChoiceIndex(firstEnabled < 0 ? 0 : firstEnabled);
+    setMapSiteId(null);
+    setSourceSiteId(null);
   }, [node.id]);
 
   useEffect(() => {
@@ -207,22 +247,48 @@ export function App() {
     const handleShortcut = (event: KeyboardEvent) => {
       const target = event.target;
       if (target instanceof Element && target.matches("input, textarea, select, [contenteditable='true']")) return;
-      if (event.key === "Escape" && (drawer || resolution)) {
-        event.preventDefault();
-        closeTransient();
-        return;
+      if (event.key === "Escape") {
+        if (drawer || resolution) {
+          event.preventDefault();
+          closeTransient();
+          return;
+        }
+        if (mapSiteId) {
+          event.preventDefault();
+          setMapSiteId(null);
+          setSourceSiteId(null);
+          return;
+        }
       }
       if (screen !== "play" || event.ctrlKey || event.metaKey) return;
       const key = event.key.toLowerCase();
       if (event.altKey && key === "s") {
         event.preventDefault();
-        setDrawer((current) => current === "sources" ? null : "sources");
+        if (drawer === "sources") closeTransient(); else openNodeSources();
         return;
       }
       if (event.altKey && key === "r") {
         event.preventDefault();
         setDrawer((current) => current === "record" ? null : "record");
         return;
+      }
+      if (event.altKey && key === "m") {
+        event.preventDefault();
+        setDrawer(null);
+        setResolution(null);
+        setSourceSiteId(null);
+        setMapSiteId(mapSiteId ? null : node.siteId);
+        return;
+      }
+      if (mapSiteId && !event.altKey) {
+        if (["ArrowLeft", "ArrowUp"].includes(event.key)) { event.preventDefault(); moveMapInspection(-1); return; }
+        if (["ArrowRight", "ArrowDown"].includes(event.key)) { event.preventDefault(); moveMapInspection(1); return; }
+        if (event.key === "Enter") {
+          event.preventDefault();
+          const site = campaign.sites.find((candidate) => candidate.id === mapSiteId);
+          if (site) openSiteEvidence(site);
+          return;
+        }
       }
       if (!event.shiftKey || event.altKey || drawer || state.completed) return;
       const match = event.code.match(/^Digit([1-3])$/);
@@ -235,7 +301,7 @@ export function App() {
     };
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
-  }, [drawer, node, resolution, screen, state]);
+  }, [drawer, mapSiteId, node, resolution, screen, state]);
 
   const clearSaves = () => {
     localStorage.removeItem(SAVE_KEY);
@@ -248,6 +314,8 @@ export function App() {
     localStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
     setResolution(null);
     setDrawer(null);
+    setMapSiteId(null);
+    setSourceSiteId(null);
     setScreen("play");
     setHasSave(false);
   };
@@ -259,6 +327,8 @@ export function App() {
     setState(createInitialState(campaign, seed));
     setResolution(null);
     setDrawer(null);
+    setMapSiteId(null);
+    setSourceSiteId(null);
     setScreen("play");
     setHasSave(false);
   };
@@ -306,7 +376,7 @@ export function App() {
           <span className="save-state"><i />{translate(locale, "save")}</span>
           <button className="header-button guide-button" data-icon="?" data-testid="guide-toggle" aria-label={translate(locale, "guide")} onClick={() => setDrawer(drawer === "guide" ? null : "guide")}><span className="header-button-label">{translate(locale, "guide")}</span></button>
           <button className="header-button" data-icon="▤" data-testid="record-toggle" aria-label={translate(locale, "record")} aria-keyshortcuts="Alt+R" onClick={() => setDrawer(drawer === "record" ? null : "record")}><span className="header-button-label">{translate(locale, "record")}</span> <b>{state.history.length}</b></button>
-          <button className="header-button" data-icon="◫" data-testid="sources-toggle" aria-label={translate(locale, "sources")} aria-keyshortcuts="Alt+S" onClick={() => setDrawer(drawer === "sources" ? null : "sources")}><span className="header-button-label">{translate(locale, "sources")}</span> <b>{node.sourceRefs.length}</b></button>
+          <button className="header-button" data-icon="◫" data-testid="sources-toggle" aria-label={translate(locale, "sources")} aria-keyshortcuts="Alt+S" onClick={() => drawer === "sources" ? closeTransient() : openNodeSources()}><span className="header-button-label">{translate(locale, "sources")}</span> <b>{node.sourceRefs.length}</b></button>
           <select className="header-select" value={locale} onChange={(event) => setLocale(event.target.value as Locale)} aria-label={translate(locale, "language")}>{supportedLocales.map((item) => <option value={item} key={item}>{localeNames[item]}</option>)}</select>
         </div>
       </header>
@@ -315,7 +385,7 @@ export function App() {
 
       <div className="game-grid">
         <div className="map-column">
-          <StrategicMap campaign={campaign} locale={locale} activeSiteId={node.siteId} />
+          <Suspense fallback={<div className="map-card map-loading" aria-busy="true" />}><StrategicMap campaign={campaign} locale={locale} activeSiteId={node.siteId} selectedSiteId={mapSiteId} onSelectSite={setMapSiteId} onCloseInspection={() => { setMapSiteId(null); setSourceSiteId(null); }} onOpenEvidence={openSiteEvidence} /></Suspense>
           <div className="map-legend"><span><i className="dot active" />{localize(campaign.sites.find((site) => site.id === node.siteId)!.name, locale)}</span><span>{node.dateLabel && localize(node.dateLabel, locale)}</span></div>
         </div>
 
@@ -334,7 +404,7 @@ export function App() {
             <p dir={contentDirection(node.dialogue, locale)}>{localize(node.dialogue, locale)}</p>
             <footer><strong dir={contentDirection(speaker.name, locale)}>{localize(speaker.name, locale)}</strong><span dir={contentDirection(speaker.role, locale)}>{localize(speaker.role, locale)}</span>{!speaker.historical && <em>{translate(locale, "reconstruction")}</em>}</footer>
           </blockquote>
-          <button className="source-link" onClick={() => setDrawer("sources")}><span>◫</span>{translate(locale, "openSources")} · {node.sourceRefs.length}</button>
+          <button className="source-link" onClick={openNodeSources}><span>◫</span>{translate(locale, "openSources")} · {node.sourceRefs.length}</button>
         </article>
       </div>
 
@@ -356,7 +426,7 @@ export function App() {
 
       {!state.completed ? (
         <section className="choices-panel">
-          <div className="choices-heading"><span>{translate(locale, "choice")} · {translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1} · {controllerConnected ? `${translate(locale, "controllerReady")} · ${translate(locale, "controllerHint")}` : translate(locale, "keyboardHint")}</small></div>
+          <div className="choices-heading"><span>{translate(locale, "choice")} · {translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1} · {controllerConnected ? `${translate(locale, "controllerReady")} · ${translate(locale, "controllerHint")} · Y/△ · M` : translate(locale, "keyboardHint")}</small></div>
           <div className="choices-grid">
             {node.choices.map((choice, index) => {
               const enabled = canChoose(choice, state.resources);
@@ -385,7 +455,7 @@ export function App() {
       )}
 
       {drawer === "guide" && <Suspense fallback={null}><FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} /></Suspense>}
-      {drawer === "sources" && <Suspense fallback={null}><SourceLedger campaign={campaign} locale={locale} activeIds={node.sourceRefs} activeClaimIds={node.claimRefs} onClose={closeTransient} /></Suspense>}
+      {drawer === "sources" && <Suspense fallback={null}><SourceLedger campaign={campaign} locale={locale} activeIds={sourceSite?.sourceRefs ?? node.sourceRefs} activeClaimIds={sourceSite?.claimRefs ?? node.claimRefs} contextTitle={sourceSite ? localize(sourceSite.name, locale) : undefined} onClose={closeTransient} /></Suspense>}
       {drawer === "record" && (
         <aside className="drawer record-drawer" data-testid="record-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "record")}>
           <div className="drawer-head"><div><span className="eyebrow">SHI</span><h2>{translate(locale, "record")}</h2></div><button className="icon-button" autoFocus onClick={closeTransient}>×</button></div>

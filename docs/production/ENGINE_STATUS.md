@@ -1,6 +1,6 @@
 # Engine and workstation status
 
-Last checked: 2026-08-08, Asia/Hong_Kong.
+Last checked: 2026-08-09, Asia/Hong_Kong.
 
 ## Selected engine
 
@@ -26,6 +26,8 @@ Unity 6 LTS is selected for the first production year. Project pin: `6000.0.80f1
 The workstation is not authenticated to Unity. On 2026-08-08, Unity CLI installs for available 6000.x releases and direct official archive links redirected to `download.unitychina.cn` paths that returned HTTP 404. The Hub-visible 2022 LTS compatibility build did download from the regional service; its interrupted main transfer was reconstructed from exact HTTP ranges, checked for byte count and XZ integrity, installed, and detected automatically by Hub with Linux and Web modules.
 
 The compatibility executable reports `2022.3.62f3c1` and its licensing client launches successfully. A batch preflight against an ignored compatibility copy then exits before project import with “No valid Unity Editor license found.” Hub's license panel requires Unity sign-in; the manual portal redirects to Unity ID. A private `.alf` request exists only under ignored `.runtime/`. No credentials, machine identifiers, tokens or license files are committed. The pinned Unity project has therefore **not** passed editor import, C# compilation, test runner, or player build. That gate stays red.
+
+As of 2026-08-09, the expanded runtime, editor and EditMode-test sources—including wartable marker picking, inspected-site state, localized intelligence UI and site closure validation—compile with warnings treated as errors against the installed Unity/Newtonsoft/NUnit reference assemblies. This is an offline source-type check, not an Editor import or test run, and does not change the red gate above.
 
 Visible evidence:
 

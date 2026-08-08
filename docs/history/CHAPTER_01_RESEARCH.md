@@ -32,3 +32,5 @@ The Keeper, Aunt Yu, Courier Han, grain tallies, the damaged ford decision, and 
 Thirteen claim records now bind these questions to exact edition locators and active playable nodes. *Shiji* 48/7/8, *Hanshu* 31, *Zizhi Tongjian* 7, and *Sunzi* 1 have public metadata/link records; no book text or modern translation is embedded. The legal-penalty and historical-GIS claims remain visibly `specialist-review-required` rather than approved.
 
 The public pre-alpha may expose incomplete P0 work only with the current explicit uncertainty labels. The historical alpha gate may pass only after the P0 review roles record decisions. See [HISTORICAL_REVIEW_SYSTEM.md](HISTORICAL_REVIEW_SYSTEM.md).
+
+Chapter I's wartable now exposes these limits directly. Daze and Chen are `known`; Pei and Kuaiji are `reported` with explicit warnings against retroactive Liu/Xiang destiny; Xianyang is `reference` only. Every site links to existing claim records, and all coordinates remain schematic pending the historical-GIS decision. See [WARTABLE_INTELLIGENCE.md](../design/WARTABLE_INTELLIGENCE.md).

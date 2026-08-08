@@ -41,35 +41,85 @@
       "name": { "en": "Daze Village", "zh-Hans": "大泽乡", "zh-Hant": "大澤鄉", "ja": "大沢郷" },
       "x": 68,
       "z": 62,
-      "status": "active"
+      "status": "known",
+      "summary": {
+        "en": "Current operational ground. The received accounts place the delayed conscripts and uprising at Daze; the exact administrative geography remains under specialist review.",
+        "zh-Hans": "当前行动地点。传世记载把戍卒受阻与起事置于大泽乡；其确切行政地理仍待专家审阅。"
+      },
+      "uncertainty": {
+        "en": "The marker, river and roads are schematic. They do not assert coordinates, distance, route or scale.",
+        "zh-Hans": "地点标记、河道与道路均为示意，不声称对应坐标、距离、路线或尺度。"
+      },
+      "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin", "dramatic-daze-keeper"],
+      "claimRefs": ["daze-chronology-seventh-month", "daze-nine-hundred-yuyang", "daze-rain-road-delay", "daze-delay-penalty-account", "daze-chen-wu-tunzhang", "daze-qi-geography", "schematic-campaign-map"]
     },
     {
       "id": "chen",
       "name": { "en": "Chen", "zh-Hans": "陈县", "zh-Hant": "陳縣", "ja": "陳県" },
       "x": 49,
       "z": 49,
-      "status": "known"
+      "status": "known",
+      "summary": {
+        "en": "A known campaign marker that becomes the next playable ground. Its relation to Daze is presented as a strategic diagram, not measured travel.",
+        "zh-Hans": "一个已知的战役标记，也是接下来的可玩地点。它与大泽乡的关系只是战略示意，不是测定行程。"
+      },
+      "uncertainty": {
+        "en": "Route, distance, administrative extent and travel time are intentionally unstated pending historical-GIS review.",
+        "zh-Hans": "路线、距离、行政范围与行程时间均不作断言，等待历史地理审阅。"
+      },
+      "sourceRefs": ["dramatic-daze-keeper"],
+      "claimRefs": ["schematic-campaign-map"]
     },
     {
       "id": "pei",
       "name": { "en": "Pei", "zh-Hans": "沛县", "zh-Hant": "沛縣", "ja": "沛県" },
       "x": 58,
       "z": 36,
-      "status": "future"
+      "status": "reported",
+      "summary": {
+        "en": "A distant network reported after Daze. Its later association with Liu Bang is not knowledge available to the opening council.",
+        "zh-Hans": "大泽乡起事后才进入消息网络的远方力量。它后来与刘邦的关系并非开局议事者能够预知。"
+      },
+      "uncertainty": {
+        "en": "The report is a horizon of possibility, not a selectable destination or promise of Liu Bang's later victory.",
+        "zh-Hans": "这条消息只代表一种可能性边界，不是可选目的地，也不预示刘邦后来的胜利。"
+      },
+      "sourceRefs": ["shiji-7-xiang", "shiji-8-liu", "hanshu-31-chen-sheng", "zztj-7-qin", "dramatic-daze-keeper"],
+      "claimRefs": ["pei-response-after-daze", "no-future-foreknowledge", "schematic-campaign-map"]
     },
     {
       "id": "kuaiji",
       "name": { "en": "Kuaiji", "zh-Hans": "会稽", "zh-Hant": "會稽", "ja": "会稽" },
       "x": 82,
       "z": 30,
-      "status": "future"
+      "status": "reported",
+      "summary": {
+        "en": "A distant rising reported after Daze. Xiang Yu's later role is not knowledge available to the opening council.",
+        "zh-Hans": "大泽乡起事后才传来的远方起兵消息。项羽后来的地位并非开局议事者能够预知。"
+      },
+      "uncertainty": {
+        "en": "The marker preserves an uncertain political horizon; it is not a route, scale claim or predetermined Xiang path.",
+        "zh-Hans": "该标记只保留不确定的政治远景，不表示路线、尺度或预定的项氏道路。"
+      },
+      "sourceRefs": ["shiji-7-xiang", "shiji-8-liu", "hanshu-31-chen-sheng", "zztj-7-qin", "dramatic-daze-keeper"],
+      "claimRefs": ["kuaiji-response-after-daze", "no-future-foreknowledge", "schematic-campaign-map"]
     },
     {
       "id": "xianyang",
       "name": { "en": "Xianyang", "zh-Hans": "咸阳", "zh-Hant": "咸陽", "ja": "咸陽" },
       "x": 18,
       "z": 26,
-      "status": "future"
+      "status": "reference",
+      "summary": {
+        "en": "A state-center reference marker outside the current playable horizon. No Chapter I route or destination is attached to it.",
+        "zh-Hans": "当前可玩范围之外的国家中心参照标记。第一章没有赋予它路线或目的地功能。"
+      },
+      "uncertainty": {
+        "en": "Its placement supplies orientation only and makes no claim about scale, travel or operational reach.",
+        "zh-Hans": "其位置只用于方向参照，不声称对应尺度、行程或行动范围。"
+      },
+      "sourceRefs": ["dramatic-daze-keeper"],
+      "claimRefs": ["schematic-campaign-map"]
     }
   ],
   "characters": [

@@ -15,6 +15,10 @@ describe("standard gamepad command adapter", () => {
     expect(readGamepadCommand(sample([0, 1]), sample())).toBe("back");
   });
 
+  it("maps Y/Triangle to the wartable inspection mode", () => {
+    expect(readGamepadCommand(sample([3]), sample())).toBe("map");
+  });
+
   it("does not repeat a held button", () => {
     expect(readGamepadCommand(sample([0]), sample([0]))).toBeNull();
   });

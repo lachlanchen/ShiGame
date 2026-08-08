@@ -112,6 +112,25 @@ for (const claim of campaign.claims ?? []) {
     assert(claim.confidence !== "not-applicable", `historical claim ${claim.id} requires a confidence assessment`);
   }
 }
+for (const site of campaign.sites ?? []) {
+  assert(typeof site.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(site.id), `site ${site.id} must use an ASCII kebab-case id`);
+  hasRequiredText(site.name, `site ${site.id}.name`);
+  hasRequiredText(site.summary, `site ${site.id}.summary`);
+  hasRequiredText(site.uncertainty, `site ${site.id}.uncertainty`);
+  assert(Number.isFinite(site.x) && site.x >= 0 && site.x <= 100, `site ${site.id}.x must be between 0 and 100`);
+  assert(Number.isFinite(site.z) && site.z >= 0 && site.z <= 80, `site ${site.id}.z must be between 0 and 80`);
+  assert(["known", "reported", "reference"].includes(site.status), `site ${site.id} has invalid intelligence status ${site.status}`);
+  assert(Array.isArray(site.sourceRefs) && site.sourceRefs.length > 0, `site ${site.id} must cite at least one source record`);
+  assert(Array.isArray(site.claimRefs) && site.claimRefs.length > 0, `site ${site.id} must expose at least one claim record`);
+  for (const sourceRef of site.sourceRefs ?? []) assert(sourceIds.has(sourceRef), `site ${site.id} references unknown source ${sourceRef}`);
+  for (const claimRef of site.claimRefs ?? []) {
+    assert(claimIds.has(claimRef), `site ${site.id} references unknown claim ${claimRef}`);
+    const claim = campaign.claims.find((candidate) => candidate.id === claimRef);
+    for (const sourceRef of claim?.sourceRefs ?? []) {
+      assert(site.sourceRefs.includes(sourceRef), `site ${site.id} claim ${claimRef} requires missing source ${sourceRef}`);
+    }
+  }
+}
 const allChoiceIds = new Set();
 const allConditionIds = new Set();
 const referencedClaimIds = new Set();

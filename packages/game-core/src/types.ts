@@ -52,7 +52,11 @@ export interface MapSite {
   name: LocalizedText;
   x: number;
   z: number;
-  status: "active" | "known" | "future";
+  status: "known" | "reported" | "reference";
+  summary: LocalizedText;
+  uncertainty: LocalizedText;
+  sourceRefs: string[];
+  claimRefs: string[];
 }
 
 export interface Character {
