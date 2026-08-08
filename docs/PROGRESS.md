@@ -8,8 +8,9 @@
 - Added deterministic built-artifact budgets: 96.67 KiB initial JavaScript, 8.38 KiB initial CSS, 178.95 KiB largest lazy JavaScript, 43.14 KiB largest locale CSS, 22.94 MiB/565 files of complete font coverage and a 26.74 MiB deployable site all pass their hard limits. Public builds omit source maps; internal hidden maps remain opt-in.
 - Expanded visible noVNC QA to 132 checks and eighteen axe states. All eleven locale captures prove the required face, direction, localized control labels, complete painted header geometry and zero horizontal overflow. Cache-disabled traversal records zero remote HTTP(S) requests/resources, zero non-cancelled failures and zero console errors.
 - Rejected an initially cropped French evidence frame even though the coarse box check passed. The harness now settles two painted frames and validates each header child before capture. Exact localhost evidence is pinned to implementation `320fbde42eaf239cf6d0ed38b311b649549410cd`.
+- Passed clean-checkout GitHub validation and Pages deployment at `44bc2e4908a61e58889c180cc7e2b7bc4191019b`, then repeated all 132 checks on the public build with eighteen axe, eleven locale-font and ten target audits, zero console errors, zero remote HTTP(S) requests/resources and zero non-cancelled network failures.
 
-Next gate: publish the evidence boundary, pass clean-checkout CI and Pages deployment, repeat all 132 checks on the exact public build, then continue the licensed Unity, human screen-reader, physical-controller, forced-colors/400% and observed first-time-player gates. Chapter II remains gated.
+Next gate: continue the licensed Unity, human screen-reader, physical-controller, forced-colors/400% and observed first-time-player gates. Chapter II remains gated.
 
 ## 2026-08-09 · Accessibility and presentation-resilience checkpoint
 
