@@ -1,16 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shi.game/schema/campaign-v3.json",
-  "title": "SHI Campaign v3",
+  "$id": "https://shi.game/schema/campaign-v4.json",
+  "title": "SHI Campaign v4",
   "type": "object",
-  "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "initialResources", "sites", "characters", "sources", "claims", "nodes"],
+  "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "initialResources", "opposition", "sites", "characters", "sources", "claims", "nodes"],
   "properties": {
-    "schemaVersion": { "const": 3 },
+    "schemaVersion": { "const": 4 },
     "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
     "title": { "$ref": "#/$defs/localizedText" },
     "subtitle": { "$ref": "#/$defs/localizedText" },
     "startNodeId": { "type": "string" },
     "initialResources": { "$ref": "#/$defs/resources" },
+    "opposition": { "$ref": "#/$defs/opposition" },
     "sites": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/site" } },
     "characters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/character" } },
     "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
@@ -61,6 +62,17 @@
       },
       "additionalProperties": false
     },
+    "optionalResourceEffects": {
+      "type": "object",
+      "properties": {
+        "grain": { "type": "number", "minimum": -4, "maximum": 4 },
+        "trust": { "type": "number", "minimum": -4, "maximum": 4 },
+        "momentum": { "type": "number", "minimum": -4, "maximum": 4 },
+        "people": { "type": "number", "minimum": -4, "maximum": 4 },
+        "danger": { "type": "number", "minimum": -4, "maximum": 4 }
+      },
+      "additionalProperties": false
+    },
     "resourceRequirements": {
       "type": "object",
       "properties": {
@@ -69,6 +81,33 @@
         "momentum": { "type": "number", "minimum": 0, "maximum": 100 },
         "people": { "type": "number", "minimum": 0, "maximum": 100 },
         "danger": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "opposition": {
+      "type": "object",
+      "required": ["id", "claimStatus", "title", "description", "stages"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "claimStatus": { "const": "dramatic-reconstruction" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "description": { "$ref": "#/$defs/localizedText" },
+        "stages": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/oppositionStage" } }
+      },
+      "additionalProperties": false
+    },
+    "oppositionStage": {
+      "type": "object",
+      "required": ["id", "minDanger", "maxDanger", "title", "forecast", "response", "counterplay", "effects"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "minDanger": { "type": "integer", "minimum": 0, "maximum": 99 },
+        "maxDanger": { "type": "integer", "minimum": 0, "maximum": 99 },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "forecast": { "$ref": "#/$defs/localizedText" },
+        "response": { "$ref": "#/$defs/localizedText" },
+        "counterplay": { "$ref": "#/$defs/localizedText" },
+        "effects": { "$ref": "#/$defs/optionalResourceEffects" }
       },
       "additionalProperties": false
     },

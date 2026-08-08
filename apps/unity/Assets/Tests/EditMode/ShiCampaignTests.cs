@@ -13,11 +13,11 @@ namespace SHI.Tests
         [Test]
         public void ResolveClampsResourcesAndRecordsHistory()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":3,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":4,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"opposition\":{\"id\":\"watch\",\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
             var state = ShiState.Create(campaign);
             var node = campaign.Node("start");
 
-            state.Resolve(node, node.Choices[0]);
+            state.Resolve(campaign, node, node.Choices[0]);
 
             Assert.That(state.Resources["grain"], Is.EqualTo(100));
             Assert.That(state.History, Has.Count.EqualTo(1));
@@ -27,10 +27,10 @@ namespace SHI.Tests
         [Test]
         public void ResolveAppliesPressureAfterThePlayerAction()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":3,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":4,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"opposition\":{\"id\":\"watch\",\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
             var state = ShiState.Create(campaign);
 
-            var result = state.Resolve(campaign.Node("start"), campaign.Node("start").Choices[0]);
+            var result = state.Resolve(campaign, campaign.Node("start"), campaign.Node("start").Choices[0]);
 
             Assert.That(state.History[0].AfterChoice["grain"], Is.EqualTo(100));
             Assert.That(state.Resources["grain"], Is.EqualTo(90));
@@ -53,11 +53,19 @@ namespace SHI.Tests
             var replayed = ShiState.Replay(campaign, legacy);
 
             Assert.That(replayed, Is.Not.Null);
-            Assert.That(replayed!.SaveVersion, Is.EqualTo(3));
+            Assert.That(replayed!.SaveVersion, Is.EqualTo(4));
+            Assert.That(replayed.LegacyDecisionCount, Is.EqualTo(1));
             Assert.That(replayed.Seed, Is.Zero);
             Assert.That(replayed.CurrentNodeId, Is.EqualTo("open-council"));
             Assert.That(replayed.Resources["danger"], Is.EqualTo(61));
             Assert.That(replayed.History[0].ConditionId, Is.EqualTo("water-over-axle"));
+            legacy.SaveVersion = 3;
+            legacy.Seed = 0;
+            legacy.History[0].ConditionId = "water-over-axle";
+            var versionThree = ShiState.Replay(campaign, legacy);
+            Assert.That(versionThree, Is.Not.Null);
+            Assert.That(versionThree!.LegacyDecisionCount, Is.EqualTo(1));
+            Assert.That(versionThree.History[0].OppositionStageId, Is.Null.Or.Empty);
             legacy.SaveVersion = 99;
             Assert.That(ShiState.Replay(campaign, legacy), Is.Null);
             legacy.SaveVersion = 0;
@@ -68,7 +76,7 @@ namespace SHI.Tests
         [Test]
         public void TextFallsBackToEnglish()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":3,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":4,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"opposition\":{\"id\":\"watch\",\"stages\":[]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
             Assert.That(campaign.Text(campaign.Title, "fr"), Is.EqualTo("Test"));
         }
 
@@ -134,8 +142,31 @@ namespace SHI.Tests
             Assert.That(campaign.Sources, Has.Count.EqualTo(7));
             Assert.That(campaign.Claims, Has.Count.EqualTo(13));
             Assert.That(campaign.Claims.Count(claim => claim.ReviewStatus == "specialist-review-required"), Is.EqualTo(2));
+            Assert.That(campaign.SchemaVersion, Is.EqualTo(4));
+            Assert.That(campaign.Opposition.ClaimStatus, Is.EqualTo("dramatic-reconstruction"));
+            Assert.That(campaign.Opposition.Stages.Select(stage => stage.Id), Is.EquivalentTo(new[] { "scattered-watch", "road-search", "closing-cordon" }));
             Assert.That(campaign.Nodes.SelectMany(node => node.Choices).Count(choice => string.IsNullOrEmpty(choice.NextNodeId)), Is.GreaterThanOrEqualTo(3));
             Assert.That(global::SHI.Editor.ShiBuild.Validate(campaign), Is.Empty);
+        }
+
+        [Test]
+        public void ProductionOppositionPostureIsVisibleDeterministicAndCounterable()
+        {
+            var campaign = LoadProductionCampaign();
+            var state = ShiState.Create(campaign);
+            state.Resources["danger"] = 60;
+            var node = campaign.Node("rain-order");
+            var choice = node.Choices.Find(candidate => candidate.Id == "hide-the-register")!;
+
+            Assert.That(state.ActiveOppositionStage(campaign).Id, Is.EqualTo("road-search"));
+            var result = state.Resolve(campaign, node, choice);
+
+            Assert.That(result.OppositionStage, Is.Not.Null);
+            Assert.That(result.OppositionStage!.Id, Is.EqualTo("road-search"));
+            Assert.That(result.OppositionDeltas["danger"], Is.EqualTo(2));
+            Assert.That(state.History[0].OppositionStageId, Is.EqualTo("road-search"));
+            state.Resources["danger"] = 54;
+            Assert.That(state.ActiveOppositionStage(campaign).Id, Is.EqualTo("scattered-watch"));
         }
 
         [Test]
@@ -154,6 +185,7 @@ namespace SHI.Tests
                 "reconstruction", "later", "strategicText", "received", "claimRegister", "evidenceLocated",
                 "specialistReview", "authoredClaim", "openEdition", "publicSource",
                 "mapIntel", "inspectMap", "knownGround", "reportedGround", "referenceOnly", "uncertainty",
+                "opponentPosture", "opponentResponse", "counterplay", "noAddedPressure",
             };
 
             foreach (var locale in locales)
@@ -233,7 +265,7 @@ namespace SHI.Tests
             foreach (var choice in node.Choices.Where(state.CanChoose))
             {
                 var branch = Clone(state);
-                branch.Resolve(node, choice);
+                branch.Resolve(campaign, node, choice);
                 if (branch.Completed)
                 {
                     completedRoutes++;
@@ -256,6 +288,7 @@ namespace SHI.Tests
             History = new List<ShiChoiceRecord>(state.History),
             Completed = state.Completed,
             SaveVersion = state.SaveVersion,
+            LegacyDecisionCount = state.LegacyDecisionCount,
             FailureReason = state.FailureReason,
         };
     }

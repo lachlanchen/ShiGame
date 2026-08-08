@@ -66,6 +66,25 @@ export interface Character {
   historical: boolean;
 }
 
+export interface OppositionStage {
+  id: string;
+  minDanger: number;
+  maxDanger: number;
+  title?: LocalizedText;
+  forecast?: LocalizedText;
+  response?: LocalizedText;
+  counterplay?: LocalizedText;
+  effects: Partial<Resources>;
+}
+
+export interface OppositionModel {
+  id: string;
+  claimStatus: "dramatic-reconstruction";
+  title?: LocalizedText;
+  description?: LocalizedText;
+  stages: OppositionStage[];
+}
+
 export type PressureKind = "state" | "terrain" | "supply" | "network";
 
 export interface PressureResponse {
@@ -121,6 +140,7 @@ export interface Campaign {
   subtitle: LocalizedText;
   startNodeId: string;
   initialResources: Resources;
+  opposition: OppositionModel;
   sites: MapSite[];
   characters: Character[];
   sources: SourceRef[];
@@ -136,12 +156,16 @@ export interface ChoiceRecord {
   afterChoice: Resources;
   pressureEffects: Partial<Resources>;
   afterPressure: Resources;
+  oppositionStageId?: string;
+  oppositionEffects: Partial<Resources>;
+  afterOpposition: Resources;
   conditionEffects: Partial<Resources>;
   after: Resources;
 }
 
 export interface GameState {
-  saveVersion: 3;
+  saveVersion: 4;
+  legacyDecisionCount: number;
   campaignId: string;
   seed: number;
   currentNodeId: string;
@@ -157,8 +181,10 @@ export interface ChoiceResolution {
   node: CampaignNode;
   choice: Choice;
   condition: FieldCondition;
+  oppositionStage?: OppositionStage;
   playerDeltas: Partial<Resources>;
   pressureDeltas: Partial<Resources>;
+  oppositionDeltas: Partial<Resources>;
   fieldDeltas: Partial<Resources>;
   deltas: Partial<Resources>;
 }

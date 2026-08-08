@@ -14,7 +14,7 @@ No current Chapter I historical claim is called `approved`. A pinpoint locator i
 
 ## Claim record contract
 
-Schema v3 requires each record to contain:
+Schema v4 requires each claim record to contain:
 
 - stable ASCII claim ID and claim kind;
 - original English and Simplified-Chinese statement;

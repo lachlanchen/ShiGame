@@ -34,6 +34,10 @@ const contrastPairs = [
   ["map shortcut", ".map-inspect-hint span", "color", "#141512"],
   ["map position metadata", ".map-intel footer span", "color", "#141512"],
   ["story number", ".story-number", "color", "#1d1d18"],
+  ["opponent posture metadata", ".opposition-identity span", "color", "#181914"],
+  ["opponent posture forecast", ".opposition-panel > p", "color", "#181914"],
+  ["opponent counterplay", ".opposition-panel > small", "color", "#181914"],
+  ["opponent modifier", ".opposition-effects span", "color", "#181914"],
   ["field seed", ".field-signal-head code", "color", "#1d1d18"],
   ["dialogue metadata", ".dialogue footer", "color", "#1d1d18"],
   ["choice input hint", ".choices-heading small", "color", "#181915"],
@@ -42,6 +46,7 @@ const contrastPairs = [
   ["claim confidence", ".claim-meta code", "color", "#171713"],
   ["record number", ".record-list li > span", "color", "#171713"],
   ["record scene", ".record-list small", "color", "#171713"],
+  ["record opponent posture", ".record-opposition b", "color", "#171713"],
   ["restart action", ".restart-button", "color", "#171713"],
   ["audio introduction", ".audio-intro", "color", "#171713"],
   ["audio channel label", ".audio-enable strong, .audio-channel strong", "color", "#211e18"],
@@ -59,11 +64,12 @@ for (const [label, selector, property, background] of contrastPairs) {
 
 const microtypeSelectors = [
   ".map-inspect-hint", ".map-intel-head span", ".map-intel-uncertainty b", ".map-intel footer span",
+  ".opposition-identity span", ".opposition-panel > p", ".opposition-effects span", ".opposition-panel > small", ".opposition-panel > small b",
   ".field-signal-head", ".field-signal-head code", ".field-effects span", ".dialogue footer em",
   ".choice-reading span", ".pressure-warning > span", ".effects span, .delta-list span", ".locked",
   ".resolution-copy span", ".controller-callout span", ".controller-callout p", ".source-status",
   ".source-section", ".source-external", ".claim-meta span", ".claim-meta code", ".claim p",
-  ".record-list small", ".record-pressure b", ".record-field b",
+  ".record-list small", ".record-pressure b", ".record-opposition b", ".record-field b",
   ".audio-intro", ".audio-enable strong, .audio-channel strong", ".audio-enable small",
   ".audio-channel output", ".audio-preview", ".audio-review",
 ];
@@ -93,6 +99,7 @@ const forcedColorSelectors = [
   ".three-backdrop", ".title-image", ".map-sweep", ".meter", ".resource.danger",
   ".site-marker.site-reported i", ".site-marker.site-reference i", ".site-marker.active i",
   ".choice-card.is-gamepad-selected:not(:disabled)", ".choice-card:disabled", ".effects span", ".map-intel-uncertainty",
+  ".opposition-panel", ".opposition-effects span",
   ".audio-enable input, .audio-channel input", ".audio-preview",
 ];
 for (const selector of forcedColorSelectors) {

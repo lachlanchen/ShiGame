@@ -42,6 +42,7 @@ namespace SHI.Editor
             Debug.Log($"SHI preflight passed: {campaign.Nodes.Count} nodes, " +
                       $"{campaign.Nodes.Sum(node => node.Choices.Count)} choices, " +
                       $"{campaign.Nodes.Sum(node => node.Conditions.Count)} field conditions, " +
+                      $"{campaign.Opposition.Stages.Count} opponent postures, " +
                       $"{campaign.Sources.Count} sources, {campaign.Claims.Count} claim records, " +
                       $"{audio.Cues.Count} procedural audio cues.");
         }
@@ -69,6 +70,7 @@ namespace SHI.Editor
             var choiceIds = new HashSet<string>();
             var referencedClaimIds = new HashSet<string>();
 
+            if (campaign.SchemaVersion != 4) errors.Add($"Campaign schema must be 4; found {campaign.SchemaVersion}.");
             if (!Regex.IsMatch(campaign.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add("Campaign id must use ASCII kebab-case.");
 
             RequireUnique(campaign.Nodes.Select(node => node.Id), "node", errors);
@@ -88,6 +90,33 @@ namespace SHI.Editor
                 if (!ResourceKeys.Contains(resource.Key)) errors.Add($"Unknown initial resource '{resource.Key}'.");
                 if (resource.Value < 0 || resource.Value > 100) errors.Add($"Initial resource '{resource.Key}' is outside 0–100.");
             }
+
+            if (!Regex.IsMatch(campaign.Opposition.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add("Opposition id must use ASCII kebab-case.");
+            if (campaign.Opposition.ClaimStatus != "dramatic-reconstruction") errors.Add("Opposition must be classified as dramatic-reconstruction.");
+            RequireText(campaign.Opposition.Title, "opposition title", errors);
+            RequireText(campaign.Opposition.Description, "opposition description", errors);
+            if (campaign.Opposition.Stages.Count < 2) errors.Add("Opposition requires at least two postures.");
+            RequireUnique(campaign.Opposition.Stages.Select(stage => stage.Id), "opposition stage", errors);
+            var dangerCoverage = new int[100];
+            foreach (var stage in campaign.Opposition.Stages)
+            {
+                if (!Regex.IsMatch(stage.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Opposition stage '{stage.Id}' must use an ASCII kebab-case id.");
+                if (stage.MinDanger < 0 || stage.MinDanger > 99 || stage.MaxDanger < 0 || stage.MaxDanger > 99 || stage.MinDanger > stage.MaxDanger)
+                    errors.Add($"Opposition stage '{stage.Id}' has an invalid Exposure range.");
+                RequireText(stage.Title, $"opposition stage '{stage.Id}' title", errors);
+                RequireText(stage.Forecast, $"opposition stage '{stage.Id}' forecast", errors);
+                RequireText(stage.Response, $"opposition stage '{stage.Id}' response", errors);
+                RequireText(stage.Counterplay, $"opposition stage '{stage.Id}' counterplay", errors);
+                ValidateEffects(stage.Effects, $"Opposition stage '{stage.Id}'", errors);
+                foreach (var effect in stage.Effects)
+                {
+                    if (effect.Value < -4 || effect.Value > 4) errors.Add($"Opposition stage '{stage.Id}' effect '{effect.Key}' is outside -4–4.");
+                    if (effect.Key == "danger" ? effect.Value < 0 : effect.Value > 0) errors.Add($"Opposition stage '{stage.Id}' effect '{effect.Key}' benefits the player.");
+                }
+                for (var danger = Math.Max(0, stage.MinDanger); danger <= Math.Min(99, stage.MaxDanger); danger++) dangerCoverage[danger]++;
+            }
+            for (var danger = 0; danger <= 99; danger++)
+                if (dangerCoverage[danger] != 1) errors.Add($"Opposition stages must cover Exposure {danger} exactly once.");
 
             RequireText(campaign.Title, "campaign title", errors);
             RequireText(campaign.Subtitle, "campaign subtitle", errors);

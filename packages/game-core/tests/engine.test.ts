@@ -1,14 +1,30 @@
 import { describe, expect, it } from "vitest";
-import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, migrateGameState, resolveChoice, selectFieldCondition } from "../src";
+import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, migrateGameState, resolveChoice, selectFieldCondition, selectOppositionStage } from "../src";
 import type { Campaign } from "../src";
 
 const campaign: Campaign = {
-  schemaVersion: 3,
+  schemaVersion: 4,
   id: "test",
   title: { en: "Test", "zh-Hans": "测试" },
   subtitle: { en: "Test", "zh-Hans": "测试" },
   startNodeId: "start",
   initialResources: { grain: 50, trust: 50, momentum: 50, people: 50, danger: 50 },
+  opposition: {
+    id: "test-pursuit",
+    claimStatus: "dramatic-reconstruction",
+    title: { en: "Pursuit", "zh-Hans": "追捕" },
+    description: { en: "Test opposition.", "zh-Hans": "测试追捕。" },
+    stages: [{
+      id: "watch",
+      minDanger: 0,
+      maxDanger: 99,
+      title: { en: "Watch", "zh-Hans": "监视" },
+      forecast: { en: "No modifier.", "zh-Hans": "没有修正。" },
+      response: { en: "The watch waits.", "zh-Hans": "监视仍在等待。" },
+      counterplay: { en: "Stay unseen.", "zh-Hans": "保持隐蔽。" },
+      effects: {},
+    }],
+  },
   sites: [],
   characters: [],
   sources: [],
@@ -45,7 +61,8 @@ describe("campaign engine", () => {
     expect(result.state.resources.danger).toBe(0);
     expect(result.state.history).toHaveLength(1);
     expect(result.state.history.at(0)!.afterChoice.grain).toBe(100);
-    expect(result.state.saveVersion).toBe(3);
+    expect(result.state.saveVersion).toBe(4);
+    expect(result.state.legacyDecisionCount).toBe(0);
     expect(result.state.completed).toBe(true);
   });
 
@@ -64,6 +81,27 @@ describe("campaign engine", () => {
     expect(result.state.resources).toEqual({ grain: 90, trust: 50, momentum: 50, people: 50, danger: 25 });
     expect(result.playerDeltas).toEqual({ grain: 50, danger: -50 });
     expect(result.pressureDeltas).toEqual({ grain: -10, danger: 25 });
+  });
+
+  it("applies the disclosed opposition posture after authored pressure", () => {
+    const opposed = structuredClone(campaign);
+    opposed.nodes[0]!.choices[0]!.effects = { grain: 10 };
+    opposed.nodes[0]!.choices[0]!.pressure = {
+      kind: "state",
+      warning: { en: "The road answers.", "zh-Hans": "道路会回应。" },
+      reveal: { en: "A patrol moves.", "zh-Hans": "巡卒开始移动。" },
+      effects: { danger: 5 },
+    };
+    opposed.opposition.stages[0]!.effects = { danger: 3, grain: -1 };
+
+    const result = resolveChoice(opposed, createInitialState(opposed), "choose");
+
+    expect(selectOppositionStage(opposed, createInitialState(opposed).resources).id).toBe("watch");
+    expect(result.oppositionStage?.id).toBe("watch");
+    expect(result.state.history[0]!.afterPressure).toEqual({ grain: 60, trust: 50, momentum: 50, people: 50, danger: 55 });
+    expect(result.state.history[0]!.afterOpposition).toEqual({ grain: 59, trust: 50, momentum: 50, people: 50, danger: 58 });
+    expect(result.oppositionDeltas).toEqual({ grain: -1, danger: 3 });
+    expect(result.state.resources).toEqual({ grain: 59, trust: 50, momentum: 50, people: 50, danger: 58 });
   });
 
   it("does not reveal the next scene when pressure ends the run", () => {
@@ -100,11 +138,44 @@ describe("campaign engine", () => {
 
     const migrated = migrateGameState(campaign, legacy);
 
-    expect(migrated?.saveVersion).toBe(3);
+    expect(migrated?.saveVersion).toBe(4);
+    expect(migrated?.legacyDecisionCount).toBe(1);
     expect(migrated?.seed).toBe(0);
     expect(migrated?.resources.grain).toBe(100);
     expect(migrated?.flags).toEqual([]);
     expect(migrated?.completed).toBe(true);
+  });
+
+  it("preserves legacy version-three decisions and activates opposition only afterward", () => {
+    const opposed = structuredClone(campaign);
+    opposed.nodes[0]!.choices[0]!.effects = { danger: 5 };
+    opposed.nodes[0]!.choices[0]!.nextNodeId = "second";
+    opposed.nodes[0]!.choices[0]!.pressure = {
+      kind: "state",
+      warning: { en: "Warning", "zh-Hans": "警告" },
+      reveal: { en: "Response", "zh-Hans": "回应" },
+      effects: { danger: 1 },
+    };
+    opposed.nodes.push({ ...structuredClone(opposed.nodes[0]!), id: "second", choices: [structuredClone(opposed.nodes[0]!.choices[0]!)] });
+    opposed.nodes[1]!.choices[0]!.id = "finish";
+    delete opposed.nodes[1]!.choices[0]!.nextNodeId;
+    delete opposed.nodes[1]!.choices[0]!.pressure;
+    opposed.opposition.stages[0]!.effects = { danger: 4 };
+    const legacy = {
+      saveVersion: 3,
+      campaignId: opposed.id,
+      seed: 7,
+      history: [{ nodeId: "start", choiceId: "choose", conditionId: selectFieldCondition(opposed, opposed.nodes[0]!, 7, 0).id }],
+    };
+
+    const migrated = migrateGameState(opposed, legacy);
+
+    expect(migrated?.legacyDecisionCount).toBe(1);
+    expect(migrated?.resources.danger).toBe(56);
+    expect(migrated?.history[0]!.oppositionStageId).toBeUndefined();
+    const next = resolveChoice(opposed, migrated!, "finish");
+    expect(next.oppositionDeltas).toEqual({ danger: 4 });
+    expect(next.state.history[1]!.oppositionStageId).toBe("watch");
   });
 
   it("rejects impossible save histories", () => {

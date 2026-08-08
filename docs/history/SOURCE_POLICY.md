@@ -9,7 +9,7 @@ SHI is historical fiction with an inspectable evidence layer. The project aims f
 3. **Strategic lens:** works such as the *Sunzi* can frame a mechanic; they do not become evidence that a specific character applied that doctrine in a particular scene.
 4. **Dramatic reconstruction:** invented characters, private councils, exact words, motives, and player alternatives. These are always labeled.
 
-Schema v3 removes the ambiguous `primary-account` label. Runtime source records now use `received-account`, `later-compilation`, `strategic-text`, or `dramatic-reconstruction`. A source classification describes how SHI uses a record; it never converts a later text into an eyewitness account.
+Schema v4 retains the explicit replacement for the ambiguous `primary-account` label. Runtime source records use `received-account`, `later-compilation`, `strategic-text`, or `dramatic-reconstruction`. A source classification describes how SHI uses a record; it never converts a later text into an eyewitness account.
 
 ## Corpus workflow
 

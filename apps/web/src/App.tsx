@@ -10,6 +10,7 @@ import {
   migrateGameState,
   resolveChoice,
   selectFieldCondition,
+  selectOppositionStage,
   supportedLocales,
   type Campaign,
   type Choice,
@@ -35,8 +36,12 @@ const StrategicMap = lazy(() => import("./components/StrategicMap").then((module
 const FieldGuide = lazy(() => import("./components/FieldGuide").then((module) => ({ default: module.FieldGuide })));
 const SourceLedger = lazy(() => import("./components/SourceLedger").then((module) => ({ default: module.SourceLedger })));
 const AudioSettings = lazy(() => import("./components/AudioSettings").then((module) => ({ default: module.AudioSettings })));
-const SAVE_KEY = "shi.chapter-01.save.v3";
-const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
+const OppositionPanel = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionPanel })));
+const OppositionResolutionCopy = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionResolutionCopy })));
+const OppositionResolutionDeltas = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionResolutionDeltas })));
+const OppositionRecord = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionRecord })));
+const SAVE_KEY = "shi.chapter-01.save.v4";
+const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v3", "shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
 const LOCALE_KEY = "shi.locale";
 const MOTION_KEY = "shi.reduced-motion";
@@ -120,6 +125,7 @@ export function App() {
   const screenRef = useRef(screen);
   const node = getNode(campaign, state.currentNodeId);
   const activeCondition = selectFieldCondition(campaign, node, state.seed, state.history.length);
+  const oppositionStage = selectOppositionStage(campaign, state.resources);
   const speaker = campaign.characters.find((character) => character.id === node.speakerId)!;
   const ending = state.completed ? deriveEnding(state) : null;
   const nodeNumber = campaign.nodes.findIndex((candidate) => candidate.id === node.id) + 1;
@@ -518,7 +524,7 @@ export function App() {
   }
 
   return (
-    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
+    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-opposition-stage={oppositionStage.id} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
       <ThreeBackdrop reducedMotion={reducedMotion} />
       <div className="game-stage" data-testid="game-stage" inert={Boolean(drawer)}>
       <header className="game-header">
@@ -534,6 +540,8 @@ export function App() {
       </header>
 
       <ResourceRail resources={state.resources} locale={locale} />
+
+      <Suspense fallback={<section className="opposition-panel opposition-loading" aria-busy="true" />}><OppositionPanel stageId={oppositionStage.id} locale={locale} /></Suspense>
 
       <div className="game-grid">
         <div className="map-column">
@@ -565,11 +573,13 @@ export function App() {
           <div className="resolution-copy">
             <div><span>{translate(locale, "consequence")}</span><p>{localize(resolution.choice.consequence, locale)}</p></div>
             {resolution.choice.pressure && <div className="pressure-reveal"><span>{translate(locale, "pressureResponse")}</span><p dir={contentDirection(resolution.choice.pressure.reveal, locale)}>{localize(resolution.choice.pressure.reveal, locale)}</p></div>}
+            {resolution.oppositionStage && <Suspense fallback={null}><OppositionResolutionCopy stageId={resolution.oppositionStage.id} locale={locale} /></Suspense>}
             <div className="field-reveal"><span>{translate(locale, "fieldApplied")}</span><p dir={contentDirection(resolution.condition.title, locale)}>{localize(resolution.condition.title, locale)}</p></div>
           </div>
           <div className="resolution-deltas">
             <div className="delta-list action-deltas">{Object.entries(resolution.playerDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
             {Object.keys(resolution.pressureDeltas).length > 0 && <div className="delta-list pressure-deltas">{Object.entries(resolution.pressureDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
+            <Suspense fallback={null}><OppositionResolutionDeltas effects={resolution.oppositionDeltas} locale={locale} /></Suspense>
             {Object.keys(resolution.fieldDeltas).length > 0 && <div className="delta-list field-deltas">{Object.entries(resolution.fieldDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
           </div>
           <button onClick={() => setResolution(null)} aria-label={translate(locale, "close")}>×</button>
@@ -618,7 +628,7 @@ export function App() {
               const pastNode = getNode(campaign, record.nodeId);
               const pastChoice = pastNode.choices.find((choice) => choice.id === record.choiceId)!;
               const pastCondition = pastNode.conditions.find((condition) => condition.id === record.conditionId)!;
-              return <li key={`${record.nodeId}-${record.choiceId}`}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{localize(pastNode.title, locale)}</small><strong>{localize(pastChoice.label, locale)}</strong><p>{localize(pastChoice.consequence, locale)}</p>{pastChoice.pressure && <p className="record-pressure"><b>{translate(locale, "pressureResponse")}</b>{localize(pastChoice.pressure.reveal, locale)}</p>}<p className="record-field"><b>{translate(locale, "fieldApplied")}</b>{localize(pastCondition.title, locale)} · {Object.entries(record.conditionEffects).map(([key, value]) => effectLabel(key as ResourceKey, value ?? 0, locale)).join(" · ")}</p></div></li>;
+              return <li key={`${record.nodeId}-${record.choiceId}`}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{localize(pastNode.title, locale)}</small><strong>{localize(pastChoice.label, locale)}</strong><p>{localize(pastChoice.consequence, locale)}</p>{pastChoice.pressure && <p className="record-pressure"><b>{translate(locale, "pressureResponse")}</b>{localize(pastChoice.pressure.reveal, locale)}</p>}{record.oppositionStageId && <Suspense fallback={null}><OppositionRecord stageId={record.oppositionStageId} effects={record.oppositionEffects} locale={locale} /></Suspense>}<p className="record-field"><b>{translate(locale, "fieldApplied")}</b>{localize(pastCondition.title, locale)} · {Object.entries(record.conditionEffects).map(([key, value]) => effectLabel(key as ResourceKey, value ?? 0, locale)).join(" · ")}</p></div></li>;
             })}</ol>
           )}
           <button className="text-button restart-button" onClick={restart}>{translate(locale, "restart")}</button>

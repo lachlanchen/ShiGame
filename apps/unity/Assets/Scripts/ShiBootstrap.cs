@@ -22,7 +22,8 @@ namespace SHI
 
     public sealed class ShiGameController : MonoBehaviour
     {
-        private const string SaveKey = "shi.chapter-01.state.v3";
+        private const string SaveKey = "shi.chapter-01.state.v4";
+        private const string LegacySaveKeyV3 = "shi.chapter-01.state.v3";
         private const string LegacySaveKeyV2 = "shi.chapter-01.state.v2";
         private const string LegacySaveKeyV1 = "shi.chapter-01.state.v1";
         private const string DraftSeedKey = "shi.chapter-01.seed.v1";
@@ -49,6 +50,7 @@ namespace SHI
         private string error = "";
         private ShiResolution? resolution;
         private Vector2 sourceScroll;
+        private Vector2 recordScroll;
         private GUIStyle? titleStyle;
         private GUIStyle? bodyStyle;
         private GUIStyle? smallStyle;
@@ -171,7 +173,7 @@ namespace SHI
 
         private ShiState? LoadState()
         {
-            foreach (var key in new[] { SaveKey, LegacySaveKeyV2, LegacySaveKeyV1 })
+            foreach (var key in new[] { SaveKey, LegacySaveKeyV3, LegacySaveKeyV2, LegacySaveKeyV1 })
             {
                 if (!PlayerPrefs.HasKey(key)) continue;
                 try
@@ -180,6 +182,7 @@ namespace SHI
                     var replayed = campaign == null ? null : ShiState.Replay(campaign, loaded);
                     if (replayed == null || replayed.History.Count == 0) continue;
                     PlayerPrefs.SetString(SaveKey, JsonConvert.SerializeObject(replayed));
+                    PlayerPrefs.DeleteKey(LegacySaveKeyV3);
                     PlayerPrefs.SetString(DraftSeedKey, replayed.Seed.ToString());
                     PlayerPrefs.DeleteKey(LegacySaveKeyV2);
                     PlayerPrefs.DeleteKey(LegacySaveKeyV1);
@@ -285,6 +288,7 @@ namespace SHI
         {
             var node = campaign!.Node(state!.CurrentNodeId);
             var condition = state.ActiveCondition(node);
+            var oppositionStage = state.ActiveOppositionStage(campaign);
             GUI.Box(new Rect(0, 0, Screen.width, 74), "");
             if (GUI.Button(new Rect(32, 16, 205, 40), "勢  SHI", GUI.skin.button)) { title = true; audioDirector?.SetAmbienceActive(false); }
             if (GUI.Button(new Rect(260, 20, 105, 30), T("guide"))) ToggleGuide();
@@ -308,6 +312,12 @@ namespace SHI
             GUI.Label(new Rect(48, 181, storyX - 96, 28), campaign.Text(condition.Title, locale), bodyStyle);
             GUI.Label(new Rect(48, 211, storyX - 96, 42), campaign.Text(condition.Signal, locale), smallStyle);
             GUI.Label(new Rect(48, 251, storyX - 96, 20), EffectsText(condition.Effects), smallStyle);
+            GUI.Box(new Rect(32, 286, storyX - 64, 142), "");
+            GUI.Label(new Rect(48, 296, storyX - 96, 18), T("opponentPosture") + " · " + T("reconstruction"), smallStyle);
+            GUI.Label(new Rect(48, 317, storyX - 96, 25), campaign.Text(campaign.Opposition.Title, locale) + " · " + campaign.Text(oppositionStage.Title, locale), bodyStyle);
+            GUI.Label(new Rect(48, 344, storyX - 96, 36), campaign.Text(oppositionStage.Forecast, locale), smallStyle);
+            GUI.Label(new Rect(48, 382, storyX - 96, 18), oppositionStage.Effects.Count == 0 ? T("noAddedPressure") : EffectsText(oppositionStage.Effects), smallStyle);
+            GUI.Label(new Rect(48, 403, storyX - 96, 20), T("counterplay") + ": " + campaign.Text(oppositionStage.Counterplay, locale), smallStyle);
             GUI.Label(new Rect(storyX, 145, storyWidth, 28), campaign.Text(node.DateLabel, locale).ToUpperInvariant(), smallStyle);
             GUI.Label(new Rect(storyX, 177, storyWidth, 75), campaign.Text(node.Title, locale), titleStyle);
             GUI.Label(new Rect(storyX, 258, storyWidth, 110), campaign.Text(node.Context, locale), bodyStyle);
@@ -357,7 +367,8 @@ namespace SHI
         {
             if (campaign == null || resolution == null) return;
             var width = Mathf.Min(940, Screen.width - 80);
-            var fieldY = resolution.Choice.Pressure == null ? 80 : 142;
+            var oppositionY = resolution.Choice.Pressure == null ? 80 : 142;
+            var fieldY = oppositionY + 62;
             var rect = new Rect((Screen.width - width) / 2, 125, width, fieldY + 52);
             GUI.Box(rect, "");
             GUI.Label(new Rect(rect.x + 18, rect.y + 12, width - 80, 22), T("consequence"), smallStyle);
@@ -366,6 +377,12 @@ namespace SHI
             {
                 GUI.Label(new Rect(rect.x + 18, rect.y + 80, width - 80, 20), T("pressureResponse"), smallStyle);
                 GUI.Label(new Rect(rect.x + 18, rect.y + 101, width - 50, 38), campaign.Text(resolution.Choice.Pressure.Reveal, locale), smallStyle);
+            }
+            if (resolution.OppositionStage != null)
+            {
+                GUI.Label(new Rect(rect.x + 18, rect.y + oppositionY, width - 80, 20), T("opponentResponse") + " · " + campaign.Text(resolution.OppositionStage.Title, locale), smallStyle);
+                var effects = resolution.OppositionDeltas.Count == 0 ? T("noAddedPressure") : EffectsText(resolution.OppositionDeltas);
+                GUI.Label(new Rect(rect.x + 18, rect.y + oppositionY + 21, width - 50, 38), campaign.Text(resolution.OppositionStage.Response, locale) + " · " + effects, smallStyle);
             }
             GUI.Label(new Rect(rect.x + 18, rect.y + fieldY, width - 80, 20), T("fieldApplied"), smallStyle);
             GUI.Label(new Rect(rect.x + 18, rect.y + fieldY + 21, width - 50, 26), campaign.Text(resolution.Condition.Title, locale) + " · " + EffectsText(resolution.FieldDeltas), smallStyle);
@@ -378,8 +395,8 @@ namespace SHI
             var site = campaign.Sites.Find(candidate => candidate.Id == inspectedSiteId);
             if (site == null) return;
             var storyX = Screen.width * .43f;
-            var height = Mathf.Clamp(Screen.height - 565, 240, 320);
-            var rect = new Rect(32, 292, storyX - 64, height);
+            var height = Mathf.Clamp(Screen.height - 688, 140, 320);
+            var rect = new Rect(32, 438, storyX - 64, height);
             GUI.Box(rect, "");
             GUI.Label(new Rect(rect.x + 18, rect.y + 13, rect.width - 64, 20), SiteStatus(site).ToUpperInvariant(), smallStyle);
             GUI.Label(new Rect(rect.x + 18, rect.y + 38, rect.width - 58, 36), campaign.Text(site.Name, locale), bodyStyle);
@@ -467,15 +484,18 @@ namespace SHI
         {
             if (campaign == null || state == null) return;
             var width = Mathf.Min(540, Screen.width * 0.58f);
+            var x = Screen.width - width;
             GUI.Box(new Rect(Screen.width - width, 0, width, Screen.height), "");
-            GUI.Label(new Rect(Screen.width - width + 25, 22, width - 90, 50), T("record"), titleStyle);
+            GUI.Label(new Rect(x + 25, 22, width - 90, 50), T("record"), titleStyle);
             if (GUI.Button(new Rect(Screen.width - 55, 22, 32, 32), "×")) CloseTransient();
             if (state.History.Count == 0)
             {
-                GUI.Label(new Rect(Screen.width - width + 25, 95, width - 50, 90), T("recordEmpty"), bodyStyle);
+                GUI.Label(new Rect(x + 25, 95, width - 50, 90), T("recordEmpty"), bodyStyle);
                 return;
             }
-            var y = 92f;
+            var contentHeight = state.History.Count * 215 + 70;
+            recordScroll = GUI.BeginScrollView(new Rect(x + 18, 82, width - 30, Screen.height - 94), recordScroll, new Rect(0, 0, width - 55, contentHeight));
+            var y = 8f;
             for (var index = 0; index < state.History.Count; index++)
             {
                 var entry = state.History[index];
@@ -483,15 +503,27 @@ namespace SHI
                 var choice = pastNode.Choices.Find(candidate => candidate.Id == entry.ChoiceId);
                 var condition = pastNode.Conditions.Find(candidate => candidate.Id == entry.ConditionId);
                 if (choice == null || condition == null) continue;
-                GUI.Label(new Rect(Screen.width - width + 25, y, 32, 24), (index + 1).ToString("00"), smallStyle);
-                GUI.Label(new Rect(Screen.width - width + 62, y, width - 87, 28), campaign.Text(choice.Label, locale), bodyStyle);
-                GUI.Label(new Rect(Screen.width - width + 62, y + 30, width - 87, 42), campaign.Text(choice.Consequence, locale), smallStyle);
+                var opposition = string.IsNullOrEmpty(entry.OppositionStageId) ? null : campaign.Opposition.Stages.Find(stage => stage.Id == entry.OppositionStageId);
+                GUI.Label(new Rect(7, y, 32, 24), (index + 1).ToString("00"), smallStyle);
+                GUI.Label(new Rect(44, y, width - 99, 28), campaign.Text(choice.Label, locale), bodyStyle);
+                GUI.Label(new Rect(44, y + 30, width - 99, 42), campaign.Text(choice.Consequence, locale), smallStyle);
+                var detailY = y + 72;
                 if (choice.Pressure != null)
-                    GUI.Label(new Rect(Screen.width - width + 62, y + 72, width - 87, 45), T("pressureResponse") + ": " + campaign.Text(choice.Pressure.Reveal, locale), smallStyle);
-                var fieldY = choice.Pressure == null ? y + 72 : y + 116;
-                GUI.Label(new Rect(Screen.width - width + 62, fieldY, width - 87, 42), T("fieldApplied") + ": " + campaign.Text(condition.Title, locale) + " · " + EffectsText(entry.ConditionEffects), smallStyle);
-                y += choice.Pressure == null ? 124 : 168;
+                {
+                    GUI.Label(new Rect(44, detailY, width - 99, 40), T("pressureResponse") + ": " + campaign.Text(choice.Pressure.Reveal, locale), smallStyle);
+                    detailY += 42;
+                }
+                if (opposition != null)
+                {
+                    var effects = entry.OppositionEffects.Count == 0 ? T("noAddedPressure") : EffectsText(entry.OppositionEffects);
+                    GUI.Label(new Rect(44, detailY, width - 99, 40), T("opponentResponse") + ": " + campaign.Text(opposition.Title, locale) + " · " + effects, smallStyle);
+                    detailY += 42;
+                }
+                GUI.Label(new Rect(44, detailY, width - 99, 40), T("fieldApplied") + ": " + campaign.Text(condition.Title, locale) + " · " + EffectsText(entry.ConditionEffects), smallStyle);
+                y = detailY + 54;
             }
+            if (GUI.Button(new Rect(44, y + 2, 190, 32), T("restart") + "  ↺")) Restart();
+            GUI.EndScrollView();
         }
 
         private void DrawGuide()
@@ -584,6 +616,7 @@ namespace SHI
             if (guideOpen) CloseGuide();
             recordOpen = !recordOpen;
             if (!recordOpen) return;
+            recordScroll = Vector2.zero;
             ClearMapInspection();
             sourcesOpen = false;
             sourceSiteId = "";
@@ -716,7 +749,7 @@ namespace SHI
         {
             if (campaign == null || state == null || !state.CanChoose(choice)) return;
             ClearMapInspection();
-            resolution = state.Resolve(node, choice);
+            resolution = state.Resolve(campaign, node, choice);
             Save();
             audioDirector?.PlayCue(state.Completed ? (state.FailureReason != null ? "failure" : "ending") : "commit");
             if (!state.Completed)
@@ -738,6 +771,7 @@ namespace SHI
         {
             if (campaign == null || state == null) return;
             PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV3);
             PlayerPrefs.DeleteKey(LegacySaveKeyV2);
             PlayerPrefs.DeleteKey(LegacySaveKeyV1);
             PlayerPrefs.SetString(DraftSeedKey, state.Seed.ToString());
@@ -757,6 +791,7 @@ namespace SHI
         {
             if (campaign == null) return;
             PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV3);
             PlayerPrefs.DeleteKey(LegacySaveKeyV2);
             PlayerPrefs.DeleteKey(LegacySaveKeyV1);
             var seed = NewSeed();

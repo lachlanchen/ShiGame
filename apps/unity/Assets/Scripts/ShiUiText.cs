@@ -76,6 +76,26 @@ namespace SHI
             "mapIntel", "inspectMap", "knownGround", "reportedGround", "referenceOnly", "uncertainty",
         };
 
+        private static readonly string[] OppositionKeys =
+        {
+            "opponentPosture", "opponentResponse", "counterplay", "noAddedPressure",
+        };
+
+        private static readonly Dictionary<string, string[]> OppositionValues = new()
+        {
+            ["en"] = new[] { "Pursuit posture", "Pursuit acts", "Counterplay", "No added pressure" },
+            ["ar"] = new[] { "وضع المطاردة", "المطاردة تتحرك", "إجراء مضاد", "لا ضغط إضافي" },
+            ["de"] = new[] { "Verfolgungslage", "Die Verfolgung reagiert", "Gegenmittel", "Kein Zusatzdruck" },
+            ["es"] = new[] { "Postura de persecución", "La persecución responde", "Contrajuego", "Sin presión añadida" },
+            ["fr"] = new[] { "Dispositif de poursuite", "La poursuite agit", "Contre-jeu", "Aucune pression ajoutée" },
+            ["ja"] = new[] { "追撃態勢", "追撃の応手", "対抗策", "追加圧力なし" },
+            ["ko"] = new[] { "추격 태세", "추격의 응수", "대응책", "추가 압박 없음" },
+            ["ru"] = new[] { "Состояние погони", "Погоня действует", "Контрмера", "Без дополнительного давления" },
+            ["vi"] = new[] { "Thế truy đuổi", "Truy đuổi đáp trả", "Cách hóa giải", "Không thêm áp lực" },
+            ["zh-Hans"] = new[] { "追捕态势", "追捕应手", "反制", "无追加压力" },
+            ["zh-Hant"] = new[] { "追捕態勢", "追捕應手", "反制", "無追加壓力" },
+        };
+
         private static readonly Dictionary<string, string[]> MapValues = new()
         {
             ["en"] = new[] { "Strategic intelligence map", "Inspect map", "Known ground", "Reported network", "Reference only", "Uncertainty" },
@@ -117,6 +137,12 @@ namespace SHI
             {
                 var evidenceValues = EvidenceValues.TryGetValue(locale, out var localizedEvidence) ? localizedEvidence : EvidenceValues["en"];
                 return evidenceValues[index];
+            }
+            index = Array.IndexOf(OppositionKeys, key);
+            if (index >= 0)
+            {
+                var oppositionValues = OppositionValues.TryGetValue(locale, out var localizedOpposition) ? localizedOpposition : OppositionValues["en"];
+                return oppositionValues[index];
             }
             index = Array.IndexOf(MapKeys, key);
             if (index < 0) return key;

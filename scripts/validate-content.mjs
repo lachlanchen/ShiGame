@@ -42,8 +42,9 @@ const canChoose = (choice, resources) => resourceKeys.every((key) => {
   return (minimum === undefined || resources[key] >= minimum) && (maximum === undefined || resources[key] <= maximum);
 });
 const applyEffects = (resources, effects = {}) => Object.fromEntries(resourceKeys.map((key) => [key, Math.max(0, Math.min(100, Math.round(resources[key] + (effects[key] ?? 0))))]));
+const oppositionStageFor = (resources) => campaign.opposition.stages.find((stage) => resources.danger >= stage.minDanger && resources.danger <= stage.maxDanger);
 
-assert(campaign.schemaVersion === 3, "campaign schemaVersion must be 3");
+assert(campaign.schemaVersion === 4, "campaign schemaVersion must be 4");
 assert(editionRegister.schemaVersion === 1, "edition register schemaVersion must be 1");
 assert(typeof campaign.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(campaign.id), "campaign.id must use ASCII kebab-case");
 hasRequiredText(campaign.title, "campaign.title");
@@ -62,6 +63,28 @@ const nodeIds = unique(campaign.nodes ?? [], "nodes");
 assert(nodeIds.has(campaign.startNodeId), `start node does not exist: ${campaign.startNodeId}`);
 
 validateResourceMap(campaign.initialResources, "initialResources", 0, 100, true);
+assert(typeof campaign.opposition?.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(campaign.opposition.id), "campaign.opposition.id must use ASCII kebab-case");
+assert(campaign.opposition?.claimStatus === "dramatic-reconstruction", "campaign.opposition must be classified as dramatic-reconstruction");
+hasRequiredText(campaign.opposition?.title, "campaign.opposition.title");
+hasRequiredText(campaign.opposition?.description, "campaign.opposition.description");
+const oppositionStageIds = unique(campaign.opposition?.stages ?? [], "opposition stages");
+assert(oppositionStageIds.size >= 2, "campaign.opposition requires at least two stages");
+const dangerCoverage = Array.from({ length: 100 }, () => 0);
+for (const stage of campaign.opposition?.stages ?? []) {
+  assert(Number.isInteger(stage.minDanger) && stage.minDanger >= 0 && stage.minDanger <= 99, `opposition stage ${stage.id}.minDanger must be an integer from 0 to 99`);
+  assert(Number.isInteger(stage.maxDanger) && stage.maxDanger >= 0 && stage.maxDanger <= 99, `opposition stage ${stage.id}.maxDanger must be an integer from 0 to 99`);
+  assert(stage.minDanger <= stage.maxDanger, `opposition stage ${stage.id} has an inverted range`);
+  hasRequiredText(stage.title, `opposition stage ${stage.id}.title`);
+  hasRequiredText(stage.forecast, `opposition stage ${stage.id}.forecast`);
+  hasRequiredText(stage.response, `opposition stage ${stage.id}.response`);
+  hasRequiredText(stage.counterplay, `opposition stage ${stage.id}.counterplay`);
+  validateResourceMap(stage.effects, `opposition stage ${stage.id}.effects`, -4, 4);
+  for (const [key, amount] of Object.entries(stage.effects ?? {})) {
+    assert(key === "danger" ? amount >= 0 : amount <= 0, `opposition stage ${stage.id}.${key} must not benefit the player`);
+  }
+  for (let danger = stage.minDanger; danger <= stage.maxDanger; danger++) dangerCoverage[danger]++;
+}
+for (let danger = 0; danger <= 99; danger++) assert(dangerCoverage[danger] === 1, `opposition stages must cover Exposure ${danger} exactly once`);
 for (const edition of editionRegister.editions ?? []) {
   assert(typeof edition.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(edition.id), `edition ${edition.id} must use an ASCII kebab-case id`);
   assert(typeof edition.workId === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(edition.workId), `edition ${edition.id} has an invalid workId`);
@@ -210,7 +233,7 @@ for (const id of nodeIds) assert(reachable.has(id), `node is unreachable: ${id}`
 const finaleCount = campaign.nodes.flatMap((node) => node.choices).filter((choice) => !choice.nextNodeId).length;
 assert(finaleCount >= 3, "campaign requires at least three authored conclusions");
 
-const routeStats = { successful: 0, failed: 0, endings: new Set(), deadlocks: 0 };
+const routeStats = { successful: 0, failed: 0, endings: new Set(), deadlocks: 0, oppositionVisits: Object.fromEntries([...oppositionStageIds].map((id) => [id, 0])) };
 const walkRoutes = (nodeId, resources, flags, path = []) => {
   const node = campaign.nodes.find((candidate) => candidate.id === nodeId);
   const available = (node?.choices ?? []).filter((choice) => canChoose(choice, resources));
@@ -222,9 +245,14 @@ const walkRoutes = (nodeId, resources, flags, path = []) => {
 
   for (const condition of node.conditions ?? []) {
     for (const choice of available) {
+      const oppositionStage = oppositionStageFor(resources);
+      assert(oppositionStage, `no opposition stage covers Exposure ${resources.danger}`);
+      if (!oppositionStage) continue;
+      routeStats.oppositionVisits[oppositionStage.id]++;
       const afterChoice = applyEffects(resources, choice.effects);
       const afterPressure = applyEffects(afterChoice, choice.pressure?.effects);
-      const after = applyEffects(afterPressure, condition.effects);
+      const afterOpposition = applyEffects(afterPressure, oppositionStage.effects);
+      const after = applyEffects(afterOpposition, condition.effects);
       const nextFlags = new Set([...flags, ...(choice.flags ?? [])]);
       const nextPath = [...path, `${condition.id}:${choice.id}`];
       if (after.danger >= 100 || after.people <= 0) {
@@ -244,6 +272,7 @@ for (const ending of ["ending-wildfire", "ending-deep-roots", "ending-watchful"]
 }
 assert(routeStats.successful >= 3, "campaign requires at least three successful playable routes");
 assert(routeStats.failed >= 1, "campaign pressure must expose at least one real failure route");
+for (const [stage, visits] of Object.entries(routeStats.oppositionVisits)) assert(visits > 0, `opposition stage ${stage} is never reached by exhaustive traversal`);
 
 if (errors.length) {
   console.error(`Content validation failed with ${errors.length} error(s):`);
@@ -251,4 +280,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${allConditionIds.size} field conditions, ${campaign.sources.length} source records, ${campaign.claims.length} claim records, ${editionRegister.editions.length} registered editions, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);
+console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${allConditionIds.size} field conditions, ${oppositionStageIds.size} opponent postures, ${campaign.sources.length} source records, ${campaign.claims.length} claim records, ${editionRegister.editions.length} registered editions, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);

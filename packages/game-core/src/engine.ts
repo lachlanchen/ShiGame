@@ -1,7 +1,7 @@
-import type { Campaign, CampaignNode, Choice, ChoiceResolution, FieldCondition, GameState, Locale, LocalizedText, Resources } from "./types";
+import type { Campaign, CampaignNode, Choice, ChoiceResolution, FieldCondition, GameState, Locale, LocalizedText, OppositionStage, Resources } from "./types";
 import { resourceKeys } from "./types";
 
-export const currentSaveVersion = 3 as const;
+export const currentSaveVersion = 4 as const;
 const clamp = (value: number): number => Math.max(0, Math.min(100, Math.round(value)));
 
 const applyEffects = (resources: Resources, effects: Partial<Resources>): Resources => resourceKeys.reduce<Resources>((result, key) => {
@@ -43,9 +43,16 @@ export function selectFieldCondition(campaign: Campaign, node: CampaignNode, see
   throw new Error(`Node ${node.id} field-condition selection overflowed.`);
 }
 
+export function selectOppositionStage(campaign: Campaign, resources: Resources): OppositionStage {
+  const stage = campaign.opposition.stages.find((candidate) => resources.danger >= candidate.minDanger && resources.danger <= candidate.maxDanger);
+  if (!stage) throw new Error(`No ${campaign.opposition.id} stage covers Exposure ${resources.danger}.`);
+  return stage;
+}
+
 export function createInitialState(campaign: Campaign, seed = 0): GameState {
   return {
     saveVersion: currentSaveVersion,
+    legacyDecisionCount: 0,
     campaignId: campaign.id,
     seed: normalizeSeed(seed),
     currentNodeId: campaign.startNodeId,
@@ -73,18 +80,20 @@ export function canChoose(choice: Choice, resources: Resources): boolean {
   });
 }
 
-export function resolveChoice(campaign: Campaign, state: GameState, choiceId: string): ChoiceResolution {
+function resolveChoiceWithRules(campaign: Campaign, state: GameState, choiceId: string, includeOpposition: boolean): ChoiceResolution {
   if (state.completed) throw new Error("The campaign is already complete.");
   const node = getNode(campaign, state.currentNodeId);
   const choice = node.choices.find((candidate) => candidate.id === choiceId);
   if (!choice) throw new Error(`Unknown choice ${choiceId} at node ${node.id}`);
   if (!canChoose(choice, state.resources)) throw new Error(`Choice ${choiceId} is not currently available.`);
   const condition = selectFieldCondition(campaign, node, state.seed, state.history.length);
+  const oppositionStage = includeOpposition ? selectOppositionStage(campaign, state.resources) : undefined;
 
   const before = { ...state.resources };
   const afterChoice = applyEffects(before, choice.effects);
   const afterPressure = applyEffects(afterChoice, choice.pressure?.effects ?? {});
-  const after = applyEffects(afterPressure, condition.effects);
+  const afterOpposition = applyEffects(afterPressure, oppositionStage?.effects ?? {});
+  const after = applyEffects(afterOpposition, condition.effects);
   const failureReason = after.danger >= 100 ? "captured" : after.people <= 0 ? "scattered" : undefined;
   const completed = !choice.nextNodeId || failureReason !== undefined;
   const nextState: GameState = {
@@ -100,7 +109,10 @@ export function resolveChoice(campaign: Campaign, state: GameState, choiceId: st
       afterChoice,
       pressureEffects: resourceDeltas(afterChoice, afterPressure),
       afterPressure,
-      conditionEffects: resourceDeltas(afterPressure, after),
+      oppositionStageId: oppositionStage?.id,
+      oppositionEffects: resourceDeltas(afterPressure, afterOpposition),
+      afterOpposition,
+      conditionEffects: resourceDeltas(afterOpposition, after),
       after,
     }],
     completed,
@@ -112,34 +124,47 @@ export function resolveChoice(campaign: Campaign, state: GameState, choiceId: st
     node,
     choice,
     condition,
+    oppositionStage,
     playerDeltas: resourceDeltas(before, afterChoice),
     pressureDeltas: resourceDeltas(afterChoice, afterPressure),
-    fieldDeltas: resourceDeltas(afterPressure, after),
+    oppositionDeltas: resourceDeltas(afterPressure, afterOpposition),
+    fieldDeltas: resourceDeltas(afterOpposition, after),
     deltas: resourceDeltas(before, after),
   };
 }
 
+export function resolveChoice(campaign: Campaign, state: GameState, choiceId: string): ChoiceResolution {
+  return resolveChoiceWithRules(campaign, state, choiceId, true);
+}
+
 /**
  * Rebuild a save from its decision history. Stored resource totals are never
- * trusted, which makes old saves deterministic under the current campaign and
- * rejects impossible or tampered routes.
+ * trusted. Decisions from older formats replay under their original layer
+ * contract; current-format decisions verify both field and pursuit identity.
+ * Impossible or tampered routes fail closed.
  */
 export function migrateGameState(campaign: Campaign, input: unknown): GameState | null {
   if (!input || typeof input !== "object") return null;
-  const saved = input as { saveVersion?: unknown; campaignId?: unknown; seed?: unknown; history?: unknown };
+  const saved = input as { saveVersion?: unknown; legacyDecisionCount?: unknown; campaignId?: unknown; seed?: unknown; history?: unknown };
   if (saved.campaignId !== campaign.id || !Array.isArray(saved.history)) return null;
-  if (saved.saveVersion !== undefined && saved.saveVersion !== 1 && saved.saveVersion !== 2 && saved.saveVersion !== currentSaveVersion) return null;
-  const modern = saved.saveVersion === currentSaveVersion;
-  if (modern && (typeof saved.seed !== "number" || !Number.isInteger(saved.seed) || saved.seed < 0 || saved.seed > 0xffffffff)) return null;
+  if (saved.saveVersion !== undefined && saved.saveVersion !== 1 && saved.saveVersion !== 2 && saved.saveVersion !== 3 && saved.saveVersion !== currentSaveVersion) return null;
+  const seeded = saved.saveVersion === 3 || saved.saveVersion === currentSaveVersion;
+  if (seeded && (typeof saved.seed !== "number" || !Number.isInteger(saved.seed) || saved.seed < 0 || saved.seed > 0xffffffff)) return null;
+  const legacyDecisionCount = saved.saveVersion === currentSaveVersion ? saved.legacyDecisionCount : saved.history.length;
+  if (!Number.isInteger(legacyDecisionCount) || (legacyDecisionCount as number) < 0 || (legacyDecisionCount as number) > saved.history.length) return null;
 
-  let state = createInitialState(campaign, modern ? saved.seed as number : 0);
+  let state = createInitialState(campaign, seeded ? saved.seed as number : 0);
+  state.legacyDecisionCount = legacyDecisionCount as number;
   try {
-    for (const value of saved.history) {
+    for (const [index, value] of saved.history.entries()) {
       if (!value || typeof value !== "object" || state.completed) return null;
-      const record = value as { nodeId?: unknown; choiceId?: unknown; conditionId?: unknown };
+      const record = value as { nodeId?: unknown; choiceId?: unknown; conditionId?: unknown; oppositionStageId?: unknown };
       if (record.nodeId !== state.currentNodeId || typeof record.choiceId !== "string") return null;
-      const resolution = resolveChoice(campaign, state, record.choiceId);
-      if (modern && record.conditionId !== resolution.condition.id) return null;
+      const includeOpposition = index >= state.legacyDecisionCount;
+      const resolution = resolveChoiceWithRules(campaign, state, record.choiceId, includeOpposition);
+      if (seeded && record.conditionId !== resolution.condition.id) return null;
+      if (includeOpposition && record.oppositionStageId !== resolution.oppositionStage?.id) return null;
+      if (!includeOpposition && record.oppositionStageId !== undefined && record.oppositionStageId !== "") return null;
       state = resolution.state;
     }
   } catch {

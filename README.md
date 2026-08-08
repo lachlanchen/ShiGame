@@ -20,6 +20,7 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 
 - Power is positional: grain, trust, momentum, people, and exposure create opportunities and obligations rather than a single “strength” score.
 - Choices create counterplay and recovery problems. Every nonterminal decision warns about one exposed weakness, then reveals and records an authored state, terrain, supply, or network response.
+- Qin pursuit is a persistent, readable opponent: the current Exposure band, exact added pressure and a concrete counterplay are disclosed before commitment and recorded afterward.
 - Every new chronicle receives a shareable seed that selects a small authored field condition. The exact signal and effects are disclosed before commitment, recorded afterward, and explicitly labeled dramatic reconstruction.
 - Historical accounts, later compilations, strategic texts, and dramatic reconstructions are visibly separated.
 - The wartable is playable intelligence, not decoration: known ground, reported networks and reference-only places expose uncertainty and claim-filtered evidence without leaking later victory into the opening scene.
@@ -32,10 +33,10 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 
 | Path | What is real now |
 | --- | --- |
-| [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere/intelligence map and Web Audio soundscape, replayable save-v3 migration, seeded field signals, first-run guide, three-stage decision records, keyboard/gamepad/touch input, responsive and RTL layouts |
+| [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere/intelligence map and Web Audio soundscape, replayable save-v4 migration, persistent pursuit and seeded field signals, first-run guide, four-stage decision records, keyboard/gamepad/touch input, responsive and RTL layouts |
 | [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign/audio contracts, selectable/raycasted 3D wartable markers, procedural rain/cues, localized mixer/intelligence/guide/record/gamepad UI, native preflight/build automation and EditMode tests; license/import gate is documented |
-| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 12 classified field conditions, 5 resources, a recovery turn, 3 conclusions, 7 source records, 13 claim records, 5 registered editions, and one versioned procedural-audio contract |
-| [`packages/game-core`](packages/game-core/) | Seed-reproducible three-stage resolution, authoritative save replay/migration, requirements, failure thresholds, exhaustive condition-route validation, localization fallback, and tests |
+| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 3 classified pursuit postures, 12 classified field conditions, 5 resources, a recovery turn, 3 conclusions, 7 source records, 13 claim records, 5 registered editions, and one versioned procedural-audio contract |
+| [`packages/game-core`](packages/game-core/) | Seed-reproducible four-stage resolution, authoritative save replay/migration, requirements, failure thresholds, exhaustive condition-route validation, localization fallback, and tests |
 | [`assets`](assets/) | Reviewed Daze key art and AgenticApp/Blender wartable source, preview, `.blend`, GLB, FBX, and provenance |
 | [`docs`](docs/) | Game design, history policy, architecture, localization, accessibility/audio contracts, art direction, engine status, release gates, measured QA evidence, and one-year roadmap |
 
@@ -69,7 +70,7 @@ TypeScript seed-reproducible core  Unity 6 runtime
  React/Vite/Three.js/Web Audio     3D wartable/audio client
 ```
 
-Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [wartable intelligence contract](docs/design/WARTABLE_INTELLIGENCE.md), [historical review system](docs/history/HISTORICAL_REVIEW_SYSTEM.md), [edition register](docs/history/EDITION_REGISTER.md), [seeded uncertainty contract](docs/design/SEEDED_UNCERTAINTY.md), [audio direction](docs/art/AUDIO_DIRECTION.md), [source policy](docs/history/SOURCE_POLICY.md), [accessibility contract](docs/production/ACCESSIBILITY.md), and [one-year roadmap](docs/production/ROADMAP.md).
+Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [opposition posture contract](docs/design/OPPOSITION_POSTURE.md), [wartable intelligence contract](docs/design/WARTABLE_INTELLIGENCE.md), [historical review system](docs/history/HISTORICAL_REVIEW_SYSTEM.md), [edition register](docs/history/EDITION_REGISTER.md), [seeded uncertainty contract](docs/design/SEEDED_UNCERTAINTY.md), [audio direction](docs/art/AUDIO_DIRECTION.md), [source policy](docs/history/SOURCE_POLICY.md), [accessibility contract](docs/production/ACCESSIBILITY.md), and [one-year roadmap](docs/production/ROADMAP.md).
 
 ## Build and validation
 

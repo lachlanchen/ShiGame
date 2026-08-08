@@ -373,7 +373,7 @@ snapshot = await evaluate(`({
   modal: document.querySelector('[data-testid=guide-drawer]')?.getAttribute('aria-modal'),
   steps: document.querySelectorAll('.guide-steps li').length,
   controller: document.querySelector('.controller-callout')?.textContent?.trim(),
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length ?? 0,
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').history?.length ?? 0,
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   stageInert: document.querySelector('[data-testid=game-stage]')?.inert,
   active: document.activeElement?.className,
@@ -403,6 +403,8 @@ snapshot = await evaluate(`({
   pressureWarnings: document.querySelectorAll('.pressure-warning').length,
   fieldTitle: document.querySelector('.field-signal h2')?.textContent?.trim(),
   fieldEffects: document.querySelector('.field-effects')?.textContent?.trim(),
+  oppositionStage: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-opposition-stage'),
+  opposition: document.querySelector('[data-testid=opposition-posture]')?.textContent?.trim(),
   seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'),
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   saveVersion: document.querySelector('[data-save-version]')?.getAttribute('data-save-version'),
@@ -416,9 +418,10 @@ check(snapshot.sourceButton.includes("4"), "node source count is visible");
 check(snapshot.pressureWarnings === 3, "every opening choice exposes a qualitative pressure warning");
 check(snapshot.fieldTitle === "Water over the axle", "seeded field signal is disclosed before commitment");
 check(snapshot.fieldEffects.includes("-3 Grain") && snapshot.fieldEffects.includes("+2 Exposure"), "field signal exposes its exact resource effects");
+check(snapshot.oppositionStage === "scattered-watch" && snapshot.opposition.includes("Scattered watch") && snapshot.opposition.includes("No added pressure"), "opening pursuit posture discloses its stage, exact modifier and reconstruction boundary");
 check(snapshot.seed === "5EED2026", "shareable hexadecimal chronicle seed is visible");
 check(snapshot.onboarding === "complete", "dismissed onboarding preference is stored outside campaign state");
-check(snapshot.saveVersion === "3", "web client advertises save contract version 3");
+check(snapshot.saveVersion === "4", "web client advertises save contract version 4");
 check(String(snapshot.active).includes("story-panel"), "closing first-run guidance restores focus to the narrative");
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 await auditAccessibility("gameplay-en");
@@ -520,7 +523,7 @@ snapshot = await evaluate(`({
   reported: document.querySelectorAll('.site-reported').length,
   reference: document.querySelectorAll('.site-reference').length,
   selected: document.querySelector('.site-marker[aria-pressed=true]')?.getAttribute('data-site-id'),
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length ?? 0
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').history?.length ?? 0
 })`);
 check(snapshot.title === "Daze Village" && snapshot.status === "Known ground", "Y/Triangle opens intelligence on the active known site");
 check(snapshot.known === 2 && snapshot.reported === 2 && snapshot.reference === 1, "wartable differentiates known, reported and reference-only sites");
@@ -632,27 +635,33 @@ snapshot = await evaluate(`({
   heading: document.querySelector('.story-panel h1')?.textContent?.trim(),
   resolution: document.querySelector('.resolution-banner')?.textContent?.trim(),
   pressure: document.querySelector('.pressure-reveal')?.textContent?.trim(),
+  opposition: document.querySelector('.opposition-reveal')?.textContent?.trim(),
+  oppositionStage: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-opposition-stage'),
+  oppositionDeltas: [...document.querySelectorAll('.opposition-deltas span')].map((item) => item.textContent?.trim()),
   field: document.querySelector('.field-reveal')?.textContent?.trim(),
   pressureDeltas: document.querySelectorAll('.pressure-deltas span').length,
   fieldDeltas: document.querySelectorAll('.field-deltas span').length,
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length,
-  conditionId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.[0]?.conditionId,
-  seed: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').seed,
-  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').saveVersion,
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').history?.length,
+  conditionId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').history?.[0]?.conditionId,
+  savedOppositionStage: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').history?.[0]?.oppositionStageId,
+  seed: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').seed,
+  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').saveVersion,
   choicesInert: document.querySelector('.choices-panel')?.inert
 })`);
 check(snapshot.heading === "A covenant must eat", "choice advances to the authored branch");
 check(snapshot.resolution.includes("The ranks see one another"), "choice consequence remains visible after transition");
 check(snapshot.pressure.includes("relay clerk"), "authored pressure response is revealed after commitment");
 check(snapshot.pressureDeltas === 2, "pressure resource deltas remain visually separate");
-check(snapshot.field.includes("Water over the axle") && snapshot.fieldDeltas === 2, "disclosed field condition resolves as a separate third stage");
+check(snapshot.opposition.includes("Scattered watch") && snapshot.oppositionDeltas.includes("No added pressure"), "the pre-commit pursuit posture resolves separately without inventing a modifier");
+check(snapshot.oppositionStage === "road-search", "the resulting Exposure escalates the next visible pursuit posture");
+check(snapshot.field.includes("Water over the axle") && snapshot.fieldDeltas === 2, "disclosed field condition resolves as a separate fourth stage");
 check(snapshot.history === 1, "choice is persisted locally");
-check(snapshot.conditionId === "water-over-axle" && snapshot.seed === 0x5eed2026, "save records the matching seed and condition identity");
-check(snapshot.saveVersion === 3, "persisted save uses replayable format 3");
-check(snapshot.choicesInert === true, "decision controls become inert while the three-stage consequence is open");
+check(snapshot.conditionId === "water-over-axle" && snapshot.savedOppositionStage === "scattered-watch" && snapshot.seed === 0x5eed2026, "save records the matching seed, field condition and opponent posture identities");
+check(snapshot.saveVersion === 4, "persisted save uses replayable format 4");
+check(snapshot.choicesInert === true, "decision controls become inert while the four-stage consequence is open");
 await click(".choice-card", 0);
 await wait(250);
-snapshot = await evaluate(`({ node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'), history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length })`);
+snapshot = await evaluate(`({ node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'), history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').history?.length })`);
 check(snapshot.node === "open-council" && snapshot.history === 1, "pointer input cannot commit another decision through an open consequence");
 await auditAccessibility("resolution-en");
 await auditTargets("resolution-en");
@@ -671,9 +680,10 @@ check(snapshot.seed === "5EED2026" && Boolean(snapshot.condition), "reload prese
 await gamepadButton(4);
 await wait(300);
 await screenshot("web-07-pressure-record.png");
-snapshot = await evaluate(`({ records: document.querySelectorAll('.record-list li').length, pressure: document.querySelector('.record-pressure')?.textContent?.trim(), field: document.querySelector('.record-field')?.textContent?.trim() })`);
+snapshot = await evaluate(`({ records: document.querySelectorAll('.record-list li').length, pressure: document.querySelector('.record-pressure')?.textContent?.trim(), opposition: document.querySelector('.record-opposition')?.textContent?.trim(), field: document.querySelector('.record-field')?.textContent?.trim() })`);
 check(snapshot.records === 1, "decision record contains the migrated turn");
 check(snapshot.pressure.includes("relay clerk"), "decision record preserves the revealed pressure response");
+check(snapshot.opposition.includes("Scattered watch") && snapshot.opposition.includes("No added pressure"), "decision record preserves the opponent posture and exact modifier");
 check(snapshot.field.includes("Water over the axle"), "decision record preserves the applied field condition");
 await gamepadButton(1);
 
@@ -981,15 +991,38 @@ try {
 }
 check(report.browserZoomReset.dpr === 1 && report.browserZoomReset.width === 1600, "actual browser zoom resets to the DPR 1, 1600 CSS pixel baseline after evidence capture");
 
+await click(".primary-button");
+await waitForSelector("[data-choice-id=issue-grain-tallies]");
+await waitForSelector("[data-testid=opposition-posture]");
+snapshot = await evaluate(`({ stage: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-opposition-stage'), posture: document.querySelector('[data-testid=opposition-posture]')?.textContent?.trim() })`);
+check(snapshot.stage === "road-search" && snapshot.posture.includes("+2 Exposure") && snapshot.posture.includes("Reduce Exposure below 55"), "escalated pursuit discloses the exact road-search modifier and actionable counterplay before commitment");
+await click("[data-choice-id=issue-grain-tallies]");
+await waitForSelector(".opposition-reveal");
+await evaluate("document.querySelector('.resolution-banner')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-30-opposition-road-search.png");
+snapshot = await evaluate(`({
+  node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'),
+  response: document.querySelector('.opposition-reveal')?.textContent?.trim(),
+  deltas: [...document.querySelectorAll('.opposition-deltas span')].map((item) => item.textContent?.trim()),
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v4') || '{}').history,
+  choicesInert: document.querySelector('.choices-panel')?.inert
+})`);
+check(snapshot.node === "broken-crossing" && snapshot.response.includes("Road search") && snapshot.response.includes("Cross-checked reports"), "road-search pursuit answers the committed order as disclosed");
+check(snapshot.deltas.includes("+2 Exposure") && snapshot.history?.[1]?.oppositionStageId === "road-search" && snapshot.history?.[1]?.oppositionEffects?.danger === 2, "road-search applies and records its exact Exposure modifier as a separate layer");
+check(snapshot.choicesInert === true && snapshot.history?.length === 2, "the escalated pursuit result preserves decision isolation and one-record-per-commit semantics");
+await auditAccessibility("resolution-road-search");
+await auditTargets("resolution-road-search");
+
 const accessibilityViolations = report.accessibilityAudits.flatMap((audit) => audit.violations.map((violation) => ({ state: audit.label, ...violation })));
 if (accessibilityViolations.length > 0) {
   await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
   throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
 }
-check(report.accessibilityAudits.length === 26, "WCAG 2.2 AA automation passes across twenty-six visible interface states");
+check(report.accessibilityAudits.length === 27, "WCAG 2.2 AA automation passes across twenty-seven visible interface states");
 const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
 check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
-check(report.targetAudits.length === 18, "24 CSS pixel target checks pass across eighteen interaction states");
+check(report.targetAudits.length === 19, "24 CSS pixel target checks pass across nineteen interaction states");
 check(report.audioAudits.length === 3, "audio consent, independent mixing and responsive layout have three visible audit records");
 check(report.fontAudits.length === 11, "all eleven interface locales pass their self-hosted font, direction and fit contracts");
 check(report.reflowAudits.length === 2 && report.reflowAudits.every((audit) => audit.width === 320 && audit.overflow <= 1), "title and gameplay pass the 320 CSS pixel 400% equivalent reflow gate");

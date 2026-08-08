@@ -4,6 +4,7 @@ import { isRtl, ui } from "./i18n";
 import { mapUi } from "./map-i18n";
 import { audioUi } from "./audio-i18n";
 import { translateSound } from "./audio-labels";
+import { oppositionUi } from "./opposition-i18n";
 
 describe("interface localization", () => {
   it("covers every interface key in every supported locale", () => {
@@ -35,6 +36,14 @@ describe("interface localization", () => {
       expect(translateSound(locale, "sound"), `${locale}.audio.compact.sound`).toBe(audioUi[locale].sound);
       expect(translateSound(locale, "on"), `${locale}.audio.compact.on`).toBe(audioUi[locale].soundOn);
       expect(translateSound(locale, "off"), `${locale}.audio.compact.off`).toBe(audioUi[locale].soundOff);
+    }
+  });
+
+  it("covers every opponent-posture label in every locale", () => {
+    const keys = Object.keys(oppositionUi.en);
+    for (const locale of supportedLocales) {
+      expect(Object.keys(oppositionUi[locale]).sort(), locale).toEqual([...keys].sort());
+      for (const key of keys) expect(oppositionUi[locale][key as keyof typeof oppositionUi.en].trim(), `${locale}.opposition.${key}`).not.toBe("");
     }
   });
 });

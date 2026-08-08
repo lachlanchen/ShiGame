@@ -143,6 +143,9 @@ describe("playable web shell", () => {
 
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("rain-order");
     expect(view.getByTestId("shi-app").getAttribute("data-seed")).toBe("00000000");
+    expect(view.getByTestId("shi-app").getAttribute("data-opposition-stage")).toBe("scattered-watch");
+    expect(view.getByTestId("opposition-posture").textContent).toContain("Scattered watch");
+    expect(view.getByTestId("opposition-posture").textContent).toContain("No added pressure");
     expect(view.getByTestId("field-signal").textContent).toContain("Water over the axle");
     expect(view.getByTestId("field-signal").textContent).toContain("-3 Grain");
     fireEvent.keyDown(window, { key: "!", code: "Digit1", shiftKey: true });
@@ -150,12 +153,14 @@ describe("playable web shell", () => {
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council"));
     expect(view.getByTestId("resolution").textContent).toContain("The position answers");
     expect(view.getByTestId("resolution").textContent).toContain("relay clerk");
+    expect(view.getByTestId("resolution").textContent).toContain("Pursuit acts");
+    expect(view.getByTestId("resolution").textContent).toContain("Scattered watch");
     expect(view.getByTestId("resolution").textContent).toContain("Field condition resolves");
     expect(document.querySelector(".choices-panel")?.hasAttribute("inert")).toBe(true);
     fireEvent.click(document.querySelector("[data-choice-id='issue-grain-tallies']")!);
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council");
-    await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "null")?.saveVersion).toBe(3));
-    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "null")?.history).toHaveLength(1);
+    await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v4") ?? "null")?.saveVersion).toBe(4));
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v4") ?? "null")?.history).toHaveLength(1);
   });
 
   it("opens accessible drawers with shortcuts and closes them with Escape", async () => {
@@ -199,7 +204,7 @@ describe("playable web shell", () => {
     expect(view.getByTestId("map-intel")).not.toBeNull();
     fireEvent.keyDown(window, { key: "Escape" });
     expect(view.queryByTestId("map-intel")).toBeNull();
-    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "{}")?.history ?? []).toHaveLength(0);
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v4") ?? "{}")?.history ?? []).toHaveLength(0);
   });
 
   it("migrates a version-one save by replaying its decision history", async () => {
@@ -219,9 +224,11 @@ describe("playable web shell", () => {
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council");
     expect(localStorage.getItem("shi.chapter-01.save.v1")).toBeNull();
     await waitFor(() => {
-      const migrated = JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "null");
+      const migrated = JSON.parse(localStorage.getItem("shi.chapter-01.save.v4") ?? "null");
       expect(migrated?.resources.danger).toBe(61);
       expect(migrated?.seed).toBe(0);
+      expect(migrated?.saveVersion).toBe(4);
+      expect(migrated?.legacyDecisionCount).toBe(1);
       expect(migrated?.history[0]?.conditionId).toBe("water-over-axle");
     });
   });

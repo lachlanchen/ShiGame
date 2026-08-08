@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "id": "chapter-01-daze",
   "title": {
     "en": "SHI — The Shape of Power",
@@ -34,6 +34,105 @@
     "momentum": 22,
     "people": 58,
     "danger": 46
+  },
+  "opposition": {
+    "id": "qin-pursuit",
+    "claimStatus": "dramatic-reconstruction",
+    "title": {
+      "en": "Qin pursuit",
+      "zh-Hans": "秦吏追捕",
+      "zh-Hant": "秦吏追捕"
+    },
+    "description": {
+      "en": "A systemic reconstruction of how relay posts, witnesses and patrols may turn exposure into coordinated pursuit. It is not a claim about one documented patrol route.",
+      "zh-Hans": "对亭驿、见证人与巡卒如何把暴露转化为协同追捕的系统性重构；它不声称存在一条有史料记载的具体巡逻路线。",
+      "zh-Hant": "對亭驛、見證人與巡卒如何把暴露轉化為協同追捕的系統性重構；它不聲稱存在一條有史料記載的具體巡邏路線。"
+    },
+    "stages": [
+      {
+        "id": "scattered-watch",
+        "minDanger": 0,
+        "maxDanger": 54,
+        "title": {
+          "en": "Scattered watch",
+          "zh-Hans": "耳目分散",
+          "zh-Hant": "耳目分散"
+        },
+        "forecast": {
+          "en": "Posts hold incomplete reports. This decision receives no added pursuit modifier.",
+          "zh-Hans": "各亭只握有零散消息。本次决策不追加追捕修正。",
+          "zh-Hant": "各亭只握有零散消息。本次決策不追加追捕修正。"
+        },
+        "response": {
+          "en": "The posts fail to coordinate before the order clears their view.",
+          "zh-Hans": "各亭未能在命令脱离视野前完成协同。",
+          "zh-Hant": "各亭未能在命令脫離視野前完成協同。"
+        },
+        "counterplay": {
+          "en": "Keep Exposure below 55 to prevent a coordinated road search.",
+          "zh-Hans": "把险维持在55以下，阻止各亭形成道路搜捕。",
+          "zh-Hant": "把險維持在55以下，阻止各亭形成道路搜捕。"
+        },
+        "effects": {}
+      },
+      {
+        "id": "road-search",
+        "minDanger": 55,
+        "maxDanger": 74,
+        "title": {
+          "en": "Road search",
+          "zh-Hans": "沿途搜捕",
+          "zh-Hant": "沿途搜捕"
+        },
+        "forecast": {
+          "en": "Relay reports are being compared. This decision receives +2 Exposure after its authored response.",
+          "zh-Hans": "亭驿正在核对消息。本次决策在既定应手后追加+2险。",
+          "zh-Hant": "亭驛正在核對消息。本次決策在既定應手後追加+2險。"
+        },
+        "response": {
+          "en": "Cross-checked reports narrow the road behind the column.",
+          "zh-Hans": "相互核对的报告缩窄了队伍身后的道路。",
+          "zh-Hant": "相互核對的報告縮窄了隊伍身後的道路。"
+        },
+        "counterplay": {
+          "en": "Reduce Exposure below 55 to break coordination before the next order.",
+          "zh-Hans": "在下一道命令前把险降到55以下，打断协同。",
+          "zh-Hant": "在下一道命令前把險降到55以下，打斷協同。"
+        },
+        "effects": {
+          "danger": 2
+        }
+      },
+      {
+        "id": "closing-cordon",
+        "minDanger": 75,
+        "maxDanger": 99,
+        "title": {
+          "en": "Closing cordon",
+          "zh-Hans": "合围渐成",
+          "zh-Hant": "合圍漸成"
+        },
+        "forecast": {
+          "en": "Patrols now share witnesses and supplies. This decision receives +4 Exposure and −1 Grain after its authored response.",
+          "zh-Hans": "巡卒已共享证人与补给。本次决策在既定应手后追加+4险、−1粮。",
+          "zh-Hant": "巡卒已共享證人與補給。本次決策在既定應手後追加+4險、−1糧。"
+        },
+        "response": {
+          "en": "Mounted patrols close another road and consume the column's remaining margin.",
+          "zh-Hans": "骑卒又封住一条道路，并消耗队伍仅剩的余地。",
+          "zh-Hant": "騎卒又封住一條道路，並消耗隊伍僅剩的餘地。"
+        },
+        "counterplay": {
+          "en": "Reduce Exposure below 75 before the next order to break the cordon.",
+          "zh-Hans": "在下一道命令前把险降到75以下，撕开合围。",
+          "zh-Hant": "在下一道命令前把險降到75以下，撕開合圍。"
+        },
+        "effects": {
+          "danger": 4,
+          "grain": -1
+        }
+      }
+    ]
   },
   "sites": [
     {

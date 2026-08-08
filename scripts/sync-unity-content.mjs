@@ -24,9 +24,18 @@ for (const output of [
   await mkdir(dirname(output), { recursive: true });
   await copyFile(audioSource, output);
 }
-const webGameplay = { ...campaign, claims: [] };
+const webGameplay = {
+  ...campaign,
+  claims: [],
+  opposition: {
+    id: campaign.opposition.id,
+    claimStatus: campaign.opposition.claimStatus,
+    stages: campaign.opposition.stages.map(({ id, minDanger, maxDanger, effects }) => ({ id, minDanger, maxDanger, effects })),
+  },
+};
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-gameplay.json"), `${JSON.stringify(webGameplay)}\n`);
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-claims.json"), `${JSON.stringify(campaign.claims)}\n`);
+await writeFile(resolve(root, "apps/web/src/generated/chapter-01-opposition.json"), `${JSON.stringify(campaign.opposition)}\n`);
 const webKeyArt = resolve(root, "apps/web/public/art/keyart/daze-village-rain-v1.png");
 await mkdir(dirname(webKeyArt), { recursive: true });
 await copyFile(resolve(root, "assets/art/keyart/daze-village-rain-v1.png"), webKeyArt);
