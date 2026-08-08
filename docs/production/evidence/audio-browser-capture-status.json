@@ -3,8 +3,8 @@
   "kind": "visible-browser-audio-capture",
   "contractId": "chapter-01-daze-audio",
   "contractSha256": "70827d7b11b8b58217cd38dc2c4afb9217253b6c8c342bd92a21cd018d7a1807",
-  "capturedAt": "2026-08-08T22:16:05.908Z",
-  "testedCommit": "working-tree",
+  "capturedAt": "2026-08-08T22:24:07.881Z",
+  "testedCommit": "b61592397668f108910af1b1b8a1ef6539a57036",
   "url": "http://127.0.0.1:4173/?seed=5EED2026",
   "cdpPort": 9323,
   "sink": "shi-game-audio-capture",
@@ -24,12 +24,12 @@
         }
       ],
       "format": {
-        "duration": "2.017417",
-        "size": "581118"
+        "duration": "2.017208",
+        "size": "581058"
       }
     },
     "metrics": {
-      "frames": 96836,
+      "frames": 96826,
       "samplePeakDbfs": "-inf",
       "rmsDbfs": "-inf",
       "integratedLufs": -70,
@@ -37,9 +37,9 @@
       "dcOffsetAbsolute": 0,
       "stereoDifferenceRms": 0
     },
-    "sha256": "2944559cb5c9e41bd3a8dbbdde6409b46c9d56f08dcbcc59a12236d1e4d93489",
-    "bytes": 581118,
-    "seconds": 2.017417,
+    "sha256": "8b68fbbaf9ff1976af0a58b717eeb2942d4e24d9181b4d8a27488d890f56a57a",
+    "bytes": 581058,
+    "seconds": 2.017208,
     "sampleRate": 48000,
     "channels": 2,
     "codec": "pcm_s24le",
@@ -57,22 +57,22 @@
         }
       ],
       "format": {
-        "duration": "16.009646",
-        "size": "4610880"
+        "duration": "16.009958",
+        "size": "4610970"
       }
     },
     "metrics": {
-      "frames": 768463,
-      "samplePeakDbfs": -22.3815,
-      "rmsDbfs": -41.0128,
+      "frames": 768478,
+      "samplePeakDbfs": -21.7625,
+      "rmsDbfs": -41.0181,
       "integratedLufs": -35.7,
-      "truePeakDbtp": -22.4,
-      "dcOffsetAbsolute": 2.9e-7,
+      "truePeakDbtp": -21.7,
+      "dcOffsetAbsolute": 3.6e-7,
       "stereoDifferenceRms": 0
     },
-    "sha256": "73604c3d1de4f034cb41ead91316c0b9332db9942a3fb1aeb2b8e7957227feeb",
-    "bytes": 4610880,
-    "seconds": 16.009646,
+    "sha256": "ec5ad60a789bc835037fc32e7f6e50c93aaf7be66b6682bcf375417023a65123",
+    "bytes": 4610970,
+    "seconds": 16.009958,
     "sampleRate": 48000,
     "channels": 2,
     "codec": "pcm_s24le",
@@ -82,27 +82,27 @@
   "events": [
     {
       "event": "enable-sound-and-drawer-cue",
-      "atSeconds": 0.656
+      "atSeconds": 0.68
     },
     {
       "event": "commit-preview-cue",
-      "atSeconds": 4.389
+      "atSeconds": 4.548
     },
     {
       "event": "close-cue",
-      "atSeconds": 6.402
+      "atSeconds": 6.559
     },
     {
       "event": "inspect-cue",
-      "atSeconds": 8.512
+      "atSeconds": 8.675
     },
     {
       "event": "close-map-cue",
-      "atSeconds": 10.319
+      "atSeconds": 10.484
     },
     {
       "event": "select-cue",
-      "atSeconds": 11.843
+      "atSeconds": 11.988
     }
   ],
   "checks": [
@@ -114,14 +114,14 @@
     },
     {
       "id": "active-sample-peak",
-      "value": -22.3815,
+      "value": -21.7625,
       "rule": "<=",
       "limit": -12,
       "pass": true
     },
     {
       "id": "active-true-peak",
-      "value": -22.4,
+      "value": -21.7,
       "rule": "<=",
       "limit": -10,
       "pass": true
@@ -142,7 +142,7 @@
     },
     {
       "id": "active-dc-offset",
-      "value": 2.9e-7,
+      "value": 3.6e-7,
       "rule": "<=",
       "limit": 0.001,
       "pass": true
