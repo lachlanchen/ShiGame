@@ -496,10 +496,12 @@ await auditTargets("audio-drawer-enabled-en");
 await click(".audio-drawer .icon-button");
 const audioCloseSettled = await waitForCondition(`!document.querySelector('[data-testid=audio-drawer]') && document.activeElement?.getAttribute('data-testid') === 'audio-toggle' && document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-cue') === 'close'`, 2000);
 snapshot = await evaluate(`({ drawer: Boolean(document.querySelector('[data-testid=audio-drawer]')), focused: document.activeElement?.getAttribute('data-testid'), cue: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-cue') })`);
-check(
+const audioCloseMessage = "closing the mixer returns focus and emits its nonessential close cue";
+assert(
   audioCloseSettled && !snapshot.drawer && snapshot.focused === "audio-toggle" && snapshot.cue === "close",
-  `closing the mixer returns focus and emits its nonessential close cue (actual: ${JSON.stringify(snapshot)})`,
+  `${audioCloseMessage} (actual: ${JSON.stringify(snapshot)})`,
 );
+report.checks.push(audioCloseMessage);
 await click("[data-testid=audio-toggle]");
 await waitForSelector("[data-testid=audio-drawer]");
 snapshot = await evaluate(`({ enabled: document.querySelector('[data-testid=audio-enabled]')?.checked, ambience: Number(document.querySelector('[data-testid=audio-ambience]')?.value), effects: Number(document.querySelector('[data-testid=audio-effects]')?.value) })`);
