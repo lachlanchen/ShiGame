@@ -8,7 +8,7 @@
 - Added the equivalent Unity baseline: status-specific 3D marker materials, camera raycasting, inspected-marker feedback, keyboard/controller cycling, localized uncertainty panel and filtered source/claim drawer. Runtime, editor and EditMode-test sources compile offline with warnings as errors; licensed Editor execution remains open.
 - Expanded schema, JavaScript validation, Unity preflight and tests to reject invalid statuses, out-of-bounds schematic coordinates, missing site text, unknown references and claims whose required source is not exposed on the site.
 - Kept startup performance inside budget by loading the map and detail inspector on demand. The production build measures 99.38 KiB gzip initial JavaScript, 2.36 KiB map, 0.59 KiB inspector, 7.44 KiB evidence UI and 184.72 KiB Three.js.
-- Expanded dedicated visible-browser QA to 68 checks with zero console errors, including known/reported/reference rendering, controller navigation, no-state-mutation, hindsight-boundary copy, site-filtered evidence and mobile panel containment. Local evidence is pinned to implementation `f99143d`; deployment and public replay remain the next release boundary.
+- Expanded dedicated visible-browser QA to 68 checks with zero console errors, including known/reported/reference rendering, controller navigation, no-state-mutation, hindsight-boundary copy, site-filtered evidence and mobile panel containment. Local evidence is pinned to implementation `f99143d`; clean-checkout validation, Pages deployment and the public replay pass at evidence boundary `48e2df9`.
 
 Next gate: complete licensed Unity import/execution and observed physical-controller/player sessions, then obtain Qin-law and historical-GIS specialist decisions. Chapter II remains gated.
 
