@@ -4,12 +4,12 @@ Supported locales: English, Arabic, German, Spanish, French, Japanese, Korean, R
 
 ## Current state
 
-- All interface keys have all eleven translations and an automated equality/non-empty test.
+- All interface keys, including the sound toggle, mixer, runtime states, independent bus labels, preview and review disclosure, have all eleven translations and automated equality/non-empty tests.
 - Campaign title and subtitle have all eleven translations.
 - Chapter prose currently has English and Simplified Chinese, with selected Traditional Chinese/Japanese names. Other locales fall back to English.
 - Arabic switches the document to RTL; untranslated fallback prose is explicitly LTR to prevent punctuation/order corruption.
 - All runtime faces are same-origin assets with pinned versions and recorded OFL-1.1 rights. Inter covers the Latin, Cyrillic and Vietnamese UI; Noto Sans Arabic, JP, KR, SC and TC load on demand for their scripts; Cormorant Garamond supplies the Latin display voice; Noto Serif SC supplies the SHI seal and Chinese narrative hierarchy.
-- Visible 800×650 evidence exists for every locale. The gate waits for a real script sample through `document.fonts`, checks `lang`/`dir`, localized control names, full header-child geometry and horizontal overflow, then runs axe on every non-English state.
+- Visible 800×650 evidence exists for every locale. The gate waits for a real script sample through `document.fonts`, checks `lang`/`dir`, localized sound/guide/source control names, full header-child geometry and horizontal overflow, then runs axe on every non-English state. The complete detailed mixer string matrix is unit-tested; every locale's opened mixer still requires native linguistic review.
 
 This is localization infrastructure, not a claim that the entire narrative is translated.
 

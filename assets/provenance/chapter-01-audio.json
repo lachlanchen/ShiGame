@@ -1,0 +1,26 @@
+{
+  "assetId": "chapter-01-daze-audio",
+  "file": "../../content/audio/chapter-01-audio.json",
+  "createdAt": "2026-08-09",
+  "creator": "SHI project",
+  "generator": "Deterministic Web Audio and Unity AudioClip source synthesis",
+  "rightsStatus": "project-original",
+  "sourceMedia": [],
+  "intendedUse": ["web-runtime", "unity-runtime", "chapter-01-pre-alpha"],
+  "reviewStatus": "engineering-pass-human-listening-required",
+  "review": {
+    "contractValidation": "pass",
+    "determinism": "pass",
+    "remoteDependencies": "none",
+    "historicalClaim": "none",
+    "humanListening": "required",
+    "monoAndDeviceMatrix": "required",
+    "loudnessMeasurement": "required"
+  },
+  "constraints": [
+    "Sound is opt-in and cannot carry exclusive gameplay information",
+    "Do not describe the synthesized ambience as an authentic historical recording",
+    "Do not mark release audio complete before human listening, loudness and device review",
+    "No third-party samples, generated music or remote audio are used"
+  ]
+}

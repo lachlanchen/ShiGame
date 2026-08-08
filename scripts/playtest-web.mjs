@@ -239,6 +239,7 @@ const report = {
   browserZoomAudits: [],
   browserZoomReset: null,
   forcedColorsAudit: null,
+  audioAudits: [],
   accessibilityEngine: { name: "axe-core", version: await evaluate("axe.version") },
   consoleErrors
 };
@@ -259,7 +260,7 @@ const auditAccessibility = async (label) => {
 };
 const auditTargets = async (label) => {
   const result = await evaluate(`(() => {
-    const elements = [...document.querySelectorAll('button, select, a[href], [role="button"]')];
+    const elements = [...document.querySelectorAll('button, input, select, a[href], [role="button"]')];
     const visible = elements.filter((element) => {
       const style = getComputedStyle(element);
       const box = element.getBoundingClientRect();
@@ -305,6 +306,7 @@ const auditLocaleFont = async (contract) => {
       status: document.querySelector('[data-testid="shi-app"]')?.getAttribute('data-font-status'),
       bodyFamily: getComputedStyle(document.documentElement).fontFamily,
       fontAvailable: document.fonts.check(${JSON.stringify(`400 1em "${contract.family}"`)}, ${JSON.stringify(contract.sample)}),
+      audioLabel: document.querySelector('[data-testid="audio-toggle"]')?.getAttribute('aria-label'),
       guideLabel: document.querySelector('[data-testid="guide-toggle"]')?.getAttribute('aria-label'),
       sourceLabel: document.querySelector('[data-testid="sources-toggle"]')?.getAttribute('aria-label'),
       headerContained: Boolean(header && brand && actions && brand.left >= header.left && brand.right <= header.right && actions.left >= header.left && actions.right <= header.right),
@@ -318,7 +320,7 @@ const auditLocaleFont = async (contract) => {
   report.fontAudits.push({ ...contract, ...result });
   check(result.locale === contract.locale && result.direction === contract.direction, `${contract.locale} applies its language and direction contract`);
   check(result.status === "ready" && result.fontAvailable && result.bodyFamily.includes(contract.family), `${contract.locale} loads its self-hosted ${contract.family} face`);
-  check(Boolean(result.guideLabel) && Boolean(result.sourceLabel) && result.headerContained && result.headerSeparated && result.headerInViewport && result.headerContentInViewport && result.overflow <= 1, `${contract.locale} keeps localized header controls present, separated and within the viewport`);
+  check(Boolean(result.audioLabel) && Boolean(result.guideLabel) && Boolean(result.sourceLabel) && result.headerContained && result.headerSeparated && result.headerInViewport && result.headerContentInViewport && result.overflow <= 1, `${contract.locale} keeps localized header controls present, separated and within the viewport`);
   await screenshot(`locales/web-locale-${contract.locale.toLowerCase()}.png`);
   if (contract.locale !== "en") await auditAccessibility(`gameplay-locale-${contract.locale}`);
 };
@@ -329,12 +331,16 @@ let snapshot = await evaluate(`({
   primary: document.querySelector('.primary-button')?.textContent?.trim(),
   canvas: document.querySelectorAll('canvas').length,
   controller: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-controller'),
+  audioEnabled: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-enabled'),
+  audioStatus: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-status'),
+  audioPressed: document.querySelector('[data-testid=title-audio-toggle]')?.getAttribute('aria-pressed'),
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
 check(snapshot.title === "SHI · The Shape of Power", "title metadata is present");
 check(snapshot.primary.includes("Enter the rain"), "new game call-to-action is visible");
 check(snapshot.canvas === 1, "Three.js atmosphere rendered to a canvas");
 check(snapshot.controller === "connected", "standard Gamepad API device is detected on the title");
+check(snapshot.audioEnabled === "false" && snapshot.audioStatus === "off" && snapshot.audioPressed === "false", "sound is visibly opt-in and remains off on first launch");
 check(snapshot.overflow <= 1, "desktop title has no horizontal overflow");
 await auditAccessibility("title-en");
 await auditTargets("title-en");
@@ -409,6 +415,86 @@ check(String(snapshot.active).includes("story-panel"), "closing first-run guidan
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 await auditAccessibility("gameplay-en");
 await auditTargets("gameplay-en");
+
+await click("[data-testid=audio-toggle]");
+await waitForSelector("[data-testid=audio-drawer]");
+await wait(450);
+snapshot = await evaluate(`(() => {
+  const drawer = document.querySelector('[data-testid=audio-drawer]');
+  const checkbox = document.querySelector('[data-testid=audio-enabled]');
+  const ambience = document.querySelector('[data-testid=audio-ambience]');
+  const effects = document.querySelector('[data-testid=audio-effects]');
+  const preview = document.querySelector('[data-testid=audio-preview]');
+  const box = drawer?.getBoundingClientRect();
+  return {
+    title: drawer?.querySelector('h2')?.textContent?.trim(),
+    review: drawer?.querySelector('.audio-review')?.textContent?.trim(),
+    enabled: checkbox?.checked,
+    ambienceDisabled: ambience?.disabled,
+    effectsDisabled: effects?.disabled,
+    previewDisabled: preview?.disabled,
+    status: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-status'),
+    geometry: box && { left: box.left, right: box.right, top: box.top, bottom: box.bottom, innerWidth, innerHeight },
+    fitted: Boolean(box && box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight),
+    controlSizes: [checkbox, ambience, effects, preview].map((element) => { const rect = element?.getBoundingClientRect(); return { width: rect?.width ?? 0, height: rect?.height ?? 0 }; }),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+  };
+})()`);
+report.audioAudits.push({ state: "desktop-disabled", ...snapshot });
+check(snapshot.title === "Soundscape" && snapshot.enabled === false && snapshot.status === "off", "soundscape drawer opens in the disclosed off state");
+check(snapshot.ambienceDisabled && snapshot.effectsDisabled && snapshot.previewDisabled, "opt-in controls cannot synthesize audio before consent");
+check(snapshot.review.includes("human listening"), "desktop mixer discloses the human listening gate");
+check(snapshot.fitted && snapshot.overflow <= 1, "desktop mixer fits the viewport without horizontal overflow");
+check(snapshot.controlSizes.every((size) => size.width >= 24 && size.height >= 24), "mixer inputs and preview meet the 24 CSS pixel control floor");
+await auditAccessibility("audio-drawer-disabled-en");
+await auditTargets("audio-drawer-disabled-en");
+
+await click("[data-testid=audio-enabled]");
+for (let attempt = 0; attempt < 50; attempt += 1) {
+  if (await evaluate(`document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-status') === 'ready'`)) break;
+  await wait(100);
+}
+await click("[data-testid=audio-ambience]");
+await key("Home", "Home");
+await click("[data-testid=audio-effects]");
+await key("End", "End");
+await wait(250);
+snapshot = await evaluate(`(() => {
+  const stored = JSON.parse(localStorage.getItem('shi.audio.v1') || 'null');
+  const scripts = performance.getEntriesByType('resource').map((entry) => entry.name);
+  return {
+    enabled: document.querySelector('[data-testid=audio-enabled]')?.checked,
+    status: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-status'),
+    ambience: Number(document.querySelector('[data-testid=audio-ambience]')?.value),
+    effects: Number(document.querySelector('[data-testid=audio-effects]')?.value),
+    outputs: [...document.querySelectorAll('.audio-channel output')].map((output) => output.textContent?.trim()),
+    stored,
+    loadedSettings: scripts.some((url) => url.includes('AudioSettings-')),
+    loadedEngine: scripts.some((url) => url.includes('audioEngine-'))
+  };
+})()`);
+report.audioAudits.push({ state: "desktop-enabled", ...snapshot });
+check(snapshot.enabled === true && snapshot.status === "ready", "a visible user gesture arms and starts the Web Audio runtime");
+check(snapshot.ambience === 0 && snapshot.effects === 0.8 && snapshot.outputs.join("|") === "0%|100%", "ambience and effects buses mix independently across their contract range");
+check(snapshot.stored?.enabled === true && snapshot.stored?.ambience === 0 && snapshot.stored?.effects === 0.8, "audio consent and mixer preferences persist in the versioned local record");
+check(snapshot.loadedSettings && snapshot.loadedEngine, "mixer and synthesis code load lazily only when the soundscape is used");
+await click("[data-testid=audio-preview]");
+await wait(150);
+snapshot = await evaluate(`document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-cue')`);
+check(snapshot === "commit", "preview produces the semantic commit cue without carrying exclusive game information");
+await screenshot("web-28-audio-mixer.png");
+await auditAccessibility("audio-drawer-enabled-en");
+await auditTargets("audio-drawer-enabled-en");
+await click(".audio-drawer .icon-button");
+await wait(250);
+snapshot = await evaluate(`({ drawer: Boolean(document.querySelector('[data-testid=audio-drawer]')), focused: document.activeElement?.getAttribute('data-testid'), cue: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-cue') })`);
+check(!snapshot.drawer && snapshot.focused === "audio-toggle" && snapshot.cue === "close", "closing the mixer returns focus and emits its nonessential close cue");
+await click("[data-testid=audio-toggle]");
+await waitForSelector("[data-testid=audio-drawer]");
+snapshot = await evaluate(`({ enabled: document.querySelector('[data-testid=audio-enabled]')?.checked, ambience: Number(document.querySelector('[data-testid=audio-ambience]')?.value), effects: Number(document.querySelector('[data-testid=audio-effects]')?.value) })`);
+check(snapshot.enabled === true && snapshot.ambience === 0 && snapshot.effects === 0.8, "reopening the mixer restores the exact independent bus settings");
+await click(".audio-drawer .icon-button");
+await wait(200);
 
 await gamepadButton(3);
 await waitForSelector("[data-testid=map-intel]");
@@ -623,6 +709,32 @@ check(snapshot.steps === 3 && snapshot.left >= 0 && snapshot.right <= snapshot.w
 check(snapshot.overflow <= 1, "mobile field guide has no horizontal overflow");
 await auditTargets("field-guide-mobile");
 await gamepadButton(1);
+await evaluate("scrollTo(0, 0); true");
+await wait(200);
+await click("[data-testid=audio-toggle]");
+await waitForSelector("[data-testid=audio-drawer]");
+await wait(450);
+await screenshot("web-29-mobile-audio-mixer.png");
+snapshot = await evaluate(`(() => {
+  const drawer = document.querySelector('[data-testid=audio-drawer]');
+  const box = drawer?.getBoundingClientRect();
+  const controls = [...drawer.querySelectorAll('button, input')].map((element) => element.getBoundingClientRect());
+  return {
+    width: innerWidth,
+    enabled: document.querySelector('[data-testid=audio-enabled]')?.checked,
+    status: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-status'),
+    fitted: Boolean(box && box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight),
+    controlsFit: controls.length === 5 && controls.every((control) => control.left >= 0 && control.right <= innerWidth && control.width >= 24 && control.height >= 24),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+  };
+})()`);
+report.audioAudits.push({ state: "mobile-enabled", ...snapshot });
+check(snapshot.width === 390 && snapshot.enabled === true && snapshot.status === "ready", "mobile mixer retains the enabled runtime and exact persisted consent");
+check(snapshot.fitted && snapshot.controlsFit && snapshot.overflow <= 1, "mobile soundscape drawer and all five controls fit without horizontal scrolling");
+await auditAccessibility("audio-drawer-mobile-en");
+await auditTargets("audio-drawer-mobile-en");
+await click(".audio-drawer .icon-button");
+await wait(200);
 await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
 await evaluate("document.documentElement.style.fontSize = '200%'; scrollTo(0, 0); true");
 await wait(450);
@@ -861,10 +973,11 @@ if (accessibilityViolations.length > 0) {
   await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
   throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
 }
-check(report.accessibilityAudits.length === 23, "WCAG 2.2 AA automation passes across twenty-three visible interface states");
+check(report.accessibilityAudits.length === 26, "WCAG 2.2 AA automation passes across twenty-six visible interface states");
 const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
 check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
-check(report.targetAudits.length === 15, "24 CSS pixel target checks pass across fifteen interaction states");
+check(report.targetAudits.length === 18, "24 CSS pixel target checks pass across eighteen interaction states");
+check(report.audioAudits.length === 3, "audio consent, independent mixing and responsive layout have three visible audit records");
 check(report.fontAudits.length === 11, "all eleven interface locales pass their self-hosted font, direction and fit contracts");
 check(report.reflowAudits.length === 2 && report.reflowAudits.every((audit) => audit.width === 320 && audit.overflow <= 1), "title and gameplay pass the 320 CSS pixel 400% equivalent reflow gate");
 check(report.browserZoomAudits.length === 2 && report.browserZoomAudits.every((audit) => audit.zoomPercent === 400 && audit.overflow <= 1), "title and gameplay pass the actual Chrome 400% page-zoom gate");

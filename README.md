@@ -23,6 +23,7 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 - Every new chronicle receives a shareable seed that selects a small authored field condition. The exact signal and effects are disclosed before commitment, recorded afterward, and explicitly labeled dramatic reconstruction.
 - Historical accounts, later compilations, strategic texts, and dramatic reconstructions are visibly separated.
 - The wartable is playable intelligence, not decoration: known ground, reported networks and reference-only places expose uncertainty and claim-filtered evidence without leaking later victory into the opening scene.
+- A shared opt-in soundscape gives rain, focus, inspection and consequence a restrained procedural language. Ambience and effects mix independently, sound never carries exclusive information, and human listening approval remains an open release gate.
 - One versioned campaign payload drives both the polished web client and a real pinned Unity 6 project.
 - English, Arabic, German, Spanish, French, Japanese, Korean, Russian, Vietnamese, Simplified Chinese, and Traditional Chinese UI foundations are present, including Arabic RTL.
 - Every generated art or 3D asset keeps provenance and a review trail; rejected revisions remain documented.
@@ -31,9 +32,9 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 
 | Path | What is real now |
 | --- | --- |
-| [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere and intelligence map, replayable save-v3 migration, seeded field signals, first-run guide, three-stage decision records, keyboard/gamepad/touch input, responsive and RTL layouts |
-| [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign, selectable/raycasted 3D wartable markers, localized intelligence/guide/record/gamepad UI, native preflight/build automation and EditMode tests; license/import gate is documented |
-| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 12 classified field conditions, 5 resources, a recovery turn, 3 conclusions, 7 source records, 13 claim records, and 5 registered editions |
+| [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere/intelligence map and Web Audio soundscape, replayable save-v3 migration, seeded field signals, first-run guide, three-stage decision records, keyboard/gamepad/touch input, responsive and RTL layouts |
+| [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign/audio contracts, selectable/raycasted 3D wartable markers, procedural rain/cues, localized mixer/intelligence/guide/record/gamepad UI, native preflight/build automation and EditMode tests; license/import gate is documented |
+| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 12 classified field conditions, 5 resources, a recovery turn, 3 conclusions, 7 source records, 13 claim records, 5 registered editions, and one versioned procedural-audio contract |
 | [`packages/game-core`](packages/game-core/) | Seed-reproducible three-stage resolution, authoritative save replay/migration, requirements, failure thresholds, exhaustive condition-route validation, localization fallback, and tests |
 | [`assets`](assets/) | Reviewed Daze key art and AgenticApp/Blender wartable source, preview, `.blend`, GLB, FBX, and provenance |
 | [`docs`](docs/) | Game design, history policy, architecture, localization, accessibility contract, art direction, engine status, release gates, QA evidence, and one-year roadmap |
@@ -59,20 +60,20 @@ Unity instructions and the honest editor-status gate are in [`apps/unity/README.
 ## Architecture and research baseline
 
 ```text
-historical claim records + authored reconstruction
-                    ↓
-      versioned campaign JSON + SHA-256
-          ↙                         ↘
+historical claims + authored reconstruction + audio contract
+                         ↓
+       versioned shared JSON + validation + SHA-256
+          ↙                                  ↘
 TypeScript seed-reproducible core  Unity 6 runtime
-          ↓                         ↓
- React/Vite/Three.js web        3D wartable client
+          ↓                                  ↓
+ React/Vite/Three.js/Web Audio     3D wartable/audio client
 ```
 
-Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [wartable intelligence contract](docs/design/WARTABLE_INTELLIGENCE.md), [historical review system](docs/history/HISTORICAL_REVIEW_SYSTEM.md), [edition register](docs/history/EDITION_REGISTER.md), [seeded uncertainty contract](docs/design/SEEDED_UNCERTAINTY.md), [source policy](docs/history/SOURCE_POLICY.md), [accessibility contract](docs/production/ACCESSIBILITY.md), and [one-year roadmap](docs/production/ROADMAP.md).
+Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [wartable intelligence contract](docs/design/WARTABLE_INTELLIGENCE.md), [historical review system](docs/history/HISTORICAL_REVIEW_SYSTEM.md), [edition register](docs/history/EDITION_REGISTER.md), [seeded uncertainty contract](docs/design/SEEDED_UNCERTAINTY.md), [audio direction](docs/art/AUDIO_DIRECTION.md), [source policy](docs/history/SOURCE_POLICY.md), [accessibility contract](docs/production/ACCESSIBILITY.md), and [one-year roadmap](docs/production/ROADMAP.md).
 
 ## Build and validation
 
-`npm run validate` checks the edition/rights register, campaign graph, source-to-claim-to-scene/site closure, intelligence states and coordinate bounds, reconstruction boundaries, identifiers, localization keys, seeded rules, save migration, every field-condition branch, curated contrast/microtype/target/forced-colors contracts, pinned font licenses/routes/CSP, types, 29 tests and representative axe scans. `npm run build` additionally enforces initial/lazy/font/deployment size budgets. The visible noVNC/Chrome gate adds 158 checks across gameplay, onboarding, modal focus/isolation, duplicate-choice prevention, synthetic standard-gamepad input, wartable intelligence/evidence, pressure/field counterplay, seeded persistence, exact locators and uncertainty states, keyboard input, all eleven locale fonts/directions/header layouts, remote-network absence, Arabic RTL, 200% title/game text, 320 CSS pixel 400%-equivalent reflow, actual Chrome 400% page zoom/reset, forced colors, reduced motion, control geometry, mobile layout, WebGL and console errors. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
+`npm run validate` checks the edition/rights register, campaign graph, source-to-claim-to-scene/site closure, intelligence states and coordinate bounds, reconstruction boundaries, identifiers, localization keys, seeded rules, save migration, every field-condition branch, the exact audio/provenance/synchronization contract, curated contrast/microtype/target/forced-colors contracts, pinned font licenses/routes/CSP, types, 33 tests and representative axe scans. `npm run build` additionally enforces initial/lazy/font/deployment size budgets. The visible noVNC/Chrome gate adds 177 checks across gameplay, onboarding, modal focus/isolation, opt-in audio consent/mixing/persistence, duplicate-choice prevention, synthetic standard-gamepad input, wartable intelligence/evidence, pressure/field counterplay, seeded persistence, exact locators and uncertainty states, keyboard input, all eleven locale fonts/directions/header layouts, remote-network absence, Arabic RTL, 200% title/game text, 320 CSS pixel 400%-equivalent reflow, actual Chrome 400% page zoom/reset, forced colors, reduced motion, control geometry, mobile layout, WebGL and console errors. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
 
 ## Citation
 

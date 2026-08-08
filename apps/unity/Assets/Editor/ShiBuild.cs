@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace SHI.Editor
 {
@@ -16,6 +17,7 @@ namespace SHI.Editor
     public static class ShiBuild
     {
         private const string CampaignFile = "chapter-01-daze.json";
+        private const string AudioFile = "chapter-01-audio.json";
         private const string BootScene = "Assets/Scenes/Boot.unity";
         private static readonly string[] BaselineLocales = { "en", "zh-Hans" };
         private static readonly string[] ResourceKeys = { "grain", "trust", "momentum", "people", "danger" };
@@ -31,14 +33,17 @@ namespace SHI.Editor
         public static void Preflight()
         {
             var campaign = ReadCampaign();
-            var errors = Validate(campaign);
+            var errors = Validate(campaign).ToList();
+            var audio = ReadAudio();
+            errors.AddRange(Validate(audio));
             if (errors.Count > 0)
                 throw new InvalidOperationException("SHI preflight failed:\n- " + string.Join("\n- ", errors));
 
             Debug.Log($"SHI preflight passed: {campaign.Nodes.Count} nodes, " +
                       $"{campaign.Nodes.Sum(node => node.Choices.Count)} choices, " +
                       $"{campaign.Nodes.Sum(node => node.Conditions.Count)} field conditions, " +
-                      $"{campaign.Sources.Count} sources, {campaign.Claims.Count} claim records.");
+                      $"{campaign.Sources.Count} sources, {campaign.Claims.Count} claim records, " +
+                      $"{audio.Cues.Count} procedural audio cues.");
         }
 
         [MenuItem("SHI/Build/Linux Player")]
@@ -230,11 +235,58 @@ namespace SHI.Editor
             return errors;
         }
 
+        public static IReadOnlyList<string> Validate(ShiAudioContract audio)
+        {
+            var errors = new List<string>();
+            var cues = new[] { "select", "inspect", "drawer", "close", "commit", "ending", "failure" };
+            if (audio.SchemaVersion != 1) errors.Add($"Audio schema must be 1; found {audio.SchemaVersion}.");
+            if (audio.Id != "chapter-01-daze-audio") errors.Add($"Unexpected audio contract id '{audio.Id}'.");
+            if (string.IsNullOrWhiteSpace(audio.Title)) errors.Add("Audio title is missing.");
+            if (audio.Synthesis != "project-original-procedural") errors.Add($"Unsupported audio synthesis '{audio.Synthesis}'.");
+            if (audio.Mix.Defaults.Enabled) errors.Add("Audio must remain opt-in.");
+            foreach (var bus in new[]
+            {
+                ("master", audio.Mix.Defaults.Master, audio.Mix.Caps.Master),
+                ("ambience", audio.Mix.Defaults.Ambience, audio.Mix.Caps.Ambience),
+                ("effects", audio.Mix.Defaults.Effects, audio.Mix.Caps.Effects),
+            })
+            {
+                if (bus.Item2 < 0 || bus.Item2 > bus.Item3 || bus.Item3 > 1) errors.Add($"Audio {bus.Item1} default/cap is unsafe.");
+            }
+            if (audio.Mix.FadeSeconds < .05f || audio.Mix.FadeSeconds > 3) errors.Add("Audio fade is outside 0.05–3 seconds.");
+            if (audio.Ambience.Seed == 0) errors.Add("Audio ambience seed must be nonzero.");
+            if (audio.Ambience.SampleRate < 16000 || audio.Ambience.SampleRate > 48000) errors.Add("Audio sample rate is outside 16000–48000.");
+            if (audio.Ambience.LoopSeconds < 2 || audio.Ambience.LoopSeconds > 30) errors.Add("Audio loop is outside 2–30 seconds.");
+            if (audio.Ambience.HighpassHz < 20 || audio.Ambience.HighpassHz > 1000 || audio.Ambience.LowpassHz < 1000 || audio.Ambience.LowpassHz > 12000 || audio.Ambience.HighpassHz >= audio.Ambience.LowpassHz) errors.Add("Audio filter band is unsafe.");
+            if (audio.Ambience.Gain < 0 || audio.Ambience.Gain > .5f) errors.Add("Audio ambience gain is unsafe.");
+            if (!audio.Cues.Keys.OrderBy(value => value).SequenceEqual(cues.OrderBy(value => value))) errors.Add("Audio cue set drifted from version 1.");
+            foreach (var cue in audio.Cues)
+            {
+                if (cue.Value.Count < 1 || cue.Value.Count > 4) errors.Add($"Audio cue '{cue.Key}' must contain 1–4 tones.");
+                foreach (var tone in cue.Value)
+                {
+                    if (tone.OffsetMs < 0 || tone.OffsetMs > 1000 || tone.DurationMs < 20 || tone.DurationMs > 1000) errors.Add($"Audio cue '{cue.Key}' timing is unsafe.");
+                    if (tone.FrequencyHz < 80 || tone.FrequencyHz > 1600 || tone.EndFrequencyHz < 80 || tone.EndFrequencyHz > 1600) errors.Add($"Audio cue '{cue.Key}' frequency is unsafe.");
+                    if (tone.Gain < .001f || tone.Gain > .15f) errors.Add($"Audio cue '{cue.Key}' gain is unsafe.");
+                    if (tone.Wave != "sine" && tone.Wave != "triangle") errors.Add($"Audio cue '{cue.Key}' waveform is unsupported.");
+                }
+            }
+            return errors;
+        }
+
         private static ShiCampaign ReadCampaign()
         {
             var path = Path.Combine(Application.streamingAssetsPath, CampaignFile);
             if (!File.Exists(path)) throw new FileNotFoundException("Run npm run sync:content before opening Unity.", path);
             return ShiCampaign.Parse(File.ReadAllText(path));
+        }
+
+        private static ShiAudioContract ReadAudio()
+        {
+            var path = Path.Combine(Application.streamingAssetsPath, AudioFile);
+            if (!File.Exists(path)) throw new FileNotFoundException("Run npm run sync:content before opening Unity.", path);
+            return JsonConvert.DeserializeObject<ShiAudioContract>(File.ReadAllText(path))
+                   ?? throw new InvalidDataException("Audio contract did not deserialize.");
         }
 
         private static void Build(BuildTargetGroup group, BuildTarget target, string location)

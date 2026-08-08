@@ -22,3 +22,7 @@ The following Fontsource variable packages are pinned to `5.3.0`. The included f
 Inter and Cormorant Garamond form the small baseline layer. The Chinese serif seal face and locale-specific Arabic/CJK sans faces load as separate CSS chunks. Unicode-range declarations ensure the browser requests only slices needed by visible text; release validation measures real requests rather than inferring that behavior from package structure.
 
 This notice supplements, and does not replace, the license files and metadata distributed in the exact npm packages and source repositories maintained by [Fontsource](https://fontsource.org/).
+
+## Audio media boundary
+
+The Chapter I soundscape contains no third-party recording, sample pack, music file or generated media. Both clients synthesize it from the project-authored numeric contract at runtime; rights and the open human-review state are recorded in [`assets/provenance/chapter-01-audio.json`](../../assets/provenance/chapter-01-audio.json). Future recordings, instruments, voices or generated music require their own entries here before packaging.

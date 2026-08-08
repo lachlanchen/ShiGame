@@ -5,8 +5,8 @@
 SHI uses one authored campaign payload with two clients:
 
 ```text
-content/research/editions.json + content/campaigns/*.json
-        │ rights/claim validation + SHA-256
+content/research/editions.json + content/campaigns/*.json + content/audio/*.json
+        │ rights/claim/audio validation + SHA-256
         ├── packages/game-core (deterministic TypeScript rules)
         ├── apps/web (React + Vite + lazy Three.js atmosphere)
         └── apps/unity (Unity 6 + Newtonsoft JSON + 3D wartable)
@@ -17,9 +17,10 @@ The web client is the fastest playable delivery path. Unity 6 LTS is the selecte
 ## Shared-content contract
 
 - `content/campaigns/chapter-01-daze.json` is narrative truth; `content/research/editions.json` is the edition/rights metadata authority.
+- `content/audio/chapter-01-audio.json` is the Web/Unity sound truth. It fixes opt-in defaults, mix caps, deterministic rain synthesis and the seven semantic cue envelopes; its provenance record contains no source media and keeps human listening review open.
 - Schema v3 binds each playable node and wartable site to source records and inspectable historical/reconstruction claims. Sites add a `known`/`reported`/`reference` intelligence state, bounded summary, uncertainty and schematic coordinates; claims retain locators, review state, confidence and game use without embedding source books.
 - `scripts/validate-content.mjs` checks edition/right pairings, HTTPS public links, identifiers, claim/source/node/site closure, site coordinate/status bounds, reconstruction boundaries, translations, action/pressure/field effects, requirements, reachability, cycles, deadlocks, every field-condition branch, real failure reachability, and all three conclusions.
-- `scripts/sync-unity-content.mjs` copies the canonical bytes to Unity and a full browser mirror, writes a SHA-256 record, and emits lossless gameplay/claim browser slices. The claim slice is loaded with the evidence drawer so the release stays inside its initial-JavaScript budget; repository validation proves that recombining both slices exactly reconstructs the canonical JSON object.
+- `scripts/sync-unity-content.mjs` copies the canonical campaign and audio bytes to Unity and browser mirrors, writes the campaign SHA-256 record, and emits lossless gameplay/claim browser slices. The claim slice and detailed audio settings are lazy boundaries so the release stays inside its initial-JavaScript budget; repository validation proves exact byte synchronization and campaign reconstruction.
 - Client-specific code may format or animate content; it may not silently change narrative outcomes.
 - Schema changes require a migration, updated validator, both clients, and tests.
 
@@ -37,6 +38,7 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 - Inter and Cormorant Garamond are the self-hosted baseline faces. A lazy locale-font boundary loads Noto Sans Arabic/JP/KR/SC/TC only for the active script, while the seal/Chinese narrative layer loads Noto Serif SC. The app exposes loading/ready/error state and treats a missing required face as a visible runtime error rather than silently certifying a fallback.
 - A pure standard-gamepad adapter edge-detects buttons/axes; the polling hook resets on disconnect. Commands call the same React actions as pointer/keyboard input. Onboarding preference is namespaced separately from campaign state.
 - The strategic map and detail inspector are lazy chunks. Pointer, keyboard and standard-gamepad selection open status/uncertainty and site-filtered evidence without changing deterministic game state.
+- The procedural audio engine and detailed eleven-locale mixer are separate lazy chunks. Web Audio is created only from a player gesture; ambience/effects buses persist independently, respect shared caps and never replace visual/text feedback.
 - Modal drawers use native dialog semantics plus an inert game-stage boundary, explicit focus containment and invoker/story focus restoration. Consequence presentation independently makes the choice region inert and the shared action guard rejects re-entry.
 - Accessibility is a build input: a static validator enforces curated contrast/microtype/target contracts, jsdom runs axe against representative components, and the visible Chrome gate repeats axe plus real focus, target geometry, 200% text and reduced-motion checks. Human assistive-technology certification remains a release gate.
 
@@ -47,6 +49,7 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 - Newtonsoft JSON reads the shared payload without renaming locale keys.
 - PlayerPrefs stores the pre-alpha state in the same replayable save format 3 contract; production saves will later move to signed files without changing decision-history authority.
 - A 3D wartable, status-specific site markers, lighting and rain are built at runtime. Marker colliders feed the same inspected-site/evidence state used by keyboard and controller navigation.
+- `ShiAudioDirector` reconstructs the shared seeded rain loop and semantic tones with native `AudioSource`, filter and generated `AudioClip` primitives. PlayerPrefs stores opt-in ambience/effects values under a versioned key; the localized immediate-mode mixer exposes the same bus contract as the web client.
 - The immediate-mode UI is a functional import baseline, not final presentation. UI Toolkit replacement is scheduled before alpha.
 - The committed input-axis map and runtime controller layer provide selected-choice feedback, field guide, source/record overlays and shared commit/close commands; physical-device proof remains an observed-player gate.
 - Runtime, editor and EditMode-test sources pass an offline Roslyn type compile against installed Unity/NUnit reference assemblies. This narrows source-level risk but does not replace the license-gated Unity import, EditMode execution and player-build gates.
@@ -82,4 +85,4 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 | Input-to-feedback | < 100 ms | < 100 ms |
 | Save operation | < 50 ms | < 50 ms |
 
-`scripts/validate-web-build.mjs` measures the built bytes with one deterministic gzip implementation and fails the build on regression. The current build is 96.68 KiB initial JavaScript, 8.83 KiB initial CSS, 2.28 KiB strategic map, 0.54 KiB map inspector, 7.22 KiB evidence/claim UI, 0.57 KiB field guide, 0.92 KiB font loader and 178.95 KiB Three.js, all gzip. The complete 565-file Unicode-range font artifact is 22.94 MiB and the source-map-free deployable site is 26.75 MiB. That artifact size is not an initial player transfer: browser requests are limited by active locale and visible glyph ranges. Axe-core is development-only and does not enter the player bundle.
+`scripts/validate-web-build.mjs` measures the built bytes with one deterministic gzip implementation and fails the build on regression. The current build is 98.41 KiB initial JavaScript, 9.20 KiB initial CSS, 2.27 KiB strategic map, 0.54 KiB map inspector, 7.23 KiB evidence/claim UI, 0.57 KiB field guide, 3.99 KiB detailed audio settings, 1.17 KiB audio engine, 0.92 KiB font loader and 178.95 KiB Three.js, all gzip. The complete 565-file Unicode-range font artifact is 22.94 MiB and the source-map-free deployable site is 26.76 MiB. That artifact size is not an initial player transfer: browser requests are limited by active locale, visible glyph ranges and invoked feature boundaries. Axe-core is development-only and does not enter the player bundle.

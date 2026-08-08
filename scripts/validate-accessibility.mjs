@@ -43,6 +43,12 @@ const contrastPairs = [
   ["record number", ".record-list li > span", "color", "#171713"],
   ["record scene", ".record-list small", "color", "#171713"],
   ["restart action", ".restart-button", "color", "#171713"],
+  ["audio introduction", ".audio-intro", "color", "#171713"],
+  ["audio channel label", ".audio-enable strong, .audio-channel strong", "color", "#211e18"],
+  ["audio runtime status", ".audio-enable small", "color", "#211e18"],
+  ["audio channel output", ".audio-channel output", "color", "#171713"],
+  ["audio preview", ".audio-preview", "color", "#171713"],
+  ["audio review gate", ".audio-review", "color", "#171713"],
 ];
 
 for (const [label, selector, property, background] of contrastPairs) {
@@ -58,6 +64,8 @@ const microtypeSelectors = [
   ".resolution-copy span", ".controller-callout span", ".controller-callout p", ".source-status",
   ".source-section", ".source-external", ".claim-meta span", ".claim-meta code", ".claim p",
   ".record-list small", ".record-pressure b", ".record-field b",
+  ".audio-intro", ".audio-enable strong, .audio-channel strong", ".audio-enable small",
+  ".audio-channel output", ".audio-preview", ".audio-review",
 ];
 for (const selector of microtypeSelectors) {
   const size = declaration(selector, "font-size");
@@ -70,6 +78,7 @@ const targetSelectors = [
   [".site-marker", "min-height"], [".map-inspect-hint", "min-height"], [".map-intel-head button", "height"],
   [".map-intel footer button", "min-height"], [".source-link", "min-height"], [".resolution-banner > button", "min-height"],
   [".icon-button", "height"], [".source-external", "min-height"],
+  [".audio-enable input", "width"], [".audio-channel input[type=\"range\"]", "height"], [".audio-preview", "min-height"],
 ];
 for (const [selector, property] of targetSelectors) {
   const size = declaration(selector, property);
@@ -84,6 +93,7 @@ const forcedColorSelectors = [
   ".three-backdrop", ".title-image", ".map-sweep", ".meter", ".resource.danger",
   ".site-marker.site-reported i", ".site-marker.site-reference i", ".site-marker.active i",
   ".choice-card.is-gamepad-selected:not(:disabled)", ".choice-card:disabled", ".effects span", ".map-intel-uncertainty",
+  ".audio-enable input, .audio-channel input", ".audio-preview",
 ];
 for (const selector of forcedColorSelectors) {
   if (!forcedColors.includes(selector)) throw new Error(`Forced-colors contract selector is missing: ${selector}`);

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace SHI.Tests
 {
@@ -160,6 +161,35 @@ namespace SHI.Tests
                 Assert.That(ShiUiText.Get(locale, key), Is.Not.Empty, $"Missing Unity UI text: {locale}.{key}");
                 Assert.That(ShiUiText.Get(locale, key), Is.Not.EqualTo(key), $"Unity UI text fell through: {locale}.{key}");
             }
+
+            var audioKeys = new[] { "sound", "soundOn", "soundOff", "audioTitle", "audioIntro", "enableSound", "ambience", "effects", "preview", "audioReview" };
+            foreach (var locale in locales)
+            foreach (var key in audioKeys)
+            {
+                Assert.That(ShiAudioUiText.Get(locale, key), Is.Not.Null.And.Not.Empty, $"Missing Unity audio UI text: {locale}.{key}");
+                Assert.That(ShiAudioUiText.Get(locale, key), Is.Not.EqualTo(key), $"Unity audio UI text fell through: {locale}.{key}");
+            }
+        }
+
+        [Test]
+        public void ProductionAudioContractIsOptInAndDeterministic()
+        {
+            var path = Path.Combine(Application.streamingAssetsPath, "chapter-01-audio.json");
+            Assert.That(File.Exists(path), Is.True, "Run npm run sync:content before the Unity tests.");
+            var audio = JsonConvert.DeserializeObject<ShiAudioContract>(File.ReadAllText(path));
+            Assert.That(audio, Is.Not.Null);
+            Assert.That(audio!.Synthesis, Is.EqualTo("project-original-procedural"));
+            Assert.That(audio.Mix.Defaults.Enabled, Is.False);
+            Assert.That(audio.Cues.Keys, Is.EquivalentTo(new[] { "select", "inspect", "drawer", "close", "commit", "ending", "failure" }));
+            Assert.That(global::SHI.Editor.ShiBuild.Validate(audio), Is.Empty);
+
+            var first = ShiAudioDirector.CreateRainSamples(24000, audio.Ambience.Seed);
+            var repeated = ShiAudioDirector.CreateRainSamples(24000, audio.Ambience.Seed);
+            var other = ShiAudioDirector.CreateRainSamples(24000, audio.Ambience.Seed + 1);
+            Assert.That(first, Is.EqualTo(repeated));
+            Assert.That(first, Is.Not.EqualTo(other));
+            Assert.That(first.All(sample => !float.IsNaN(sample) && sample >= -1 && sample <= 1), Is.True);
+            Assert.That(first[^1], Is.EqualTo(first[0]).Within(.000001f));
         }
 
         [Test]

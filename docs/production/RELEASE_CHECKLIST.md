@@ -30,6 +30,8 @@ The web pre-alpha automated subset currently passes semantic axe scans, conserva
 - [ ] 3D assets pass scale, normals, LOD, collision, UV and memory checks.
 - [ ] Music/SFX licenses and loudness/loop checks pass.
 
+Chapter I now has a shared opt-in procedural rain/effects contract, independent ambience/effects controls, deterministic source synthesis and project-original provenance. No third-party or AI-generated audio media is packaged. This is an engineering vertical slice only: human listening, loop, mono, loudness, sensory-load and Web/Unity device review remain open in [`AUDIO_DIRECTION.md`](../art/AUDIO_DIRECTION.md).
+
 ## Engineering
 
 - [ ] Clean checkout installs, validates and builds.

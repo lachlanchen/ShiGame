@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Shared procedural soundscape checkpoint
+
+- Added one versioned Web/Unity audio contract with opt-in defaults, conservative master/bus caps, deterministic eight-second rain, seven semantic interaction cues and project-original provenance. No recording, sample pack, generated song or historical-authenticity claim enters the build.
+- Added a lazy Web Audio runtime and eleven-locale mixer. Sound begins only after a player gesture; ambience and effects persist independently; UI state, focus, consequence and failure remain complete when sound is disabled. The initial player bundle remains below the unchanged 100 KiB hard cap.
+- Added native Unity parity with deterministic rain `AudioClip` construction, filtered ambience/effects buses, semantic cue synthesis, versioned `PlayerPrefs`, localized immediate-mode mixer UI and production preflight checks. Runtime, editor and EditMode-test assemblies compile offline with warnings treated as errors; licensed import, execution and device listening remain open.
+- Expanded repository validation to an exact audio schema/provenance/synchronization gate and 33 automated TypeScript/web tests. The static accessibility contract now covers 22 contrast pairs, 30 microtype floors, 14 target dimensions and 14 forced-colors selectors.
+- Expanded the dedicated visible-Chrome run to 177 checks, twenty-six axe states, eighteen target states, eleven locale-font states and three audio audits. Localhost proves first-launch silence, gesture consent, lazy engine loading, independent bus extremes, persistence, semantic preview, focus return and desktop/mobile fit with zero console errors, cross-origin requests/resources or non-cancelled network failures.
+- Visually reviewed the 1600×1000 and 390×844 mixer captures. An initial geometry failure was preserved and diagnosed as sampling during the 300 ms entrance transform; the gate now waits for the settled painted state without weakening its viewport assertion.
+- The production build passes at 98.41 KiB initial JavaScript, 9.20 KiB initial CSS, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete fonts and 26.76 MiB total deployable output.
+
+Next gate: publish and replay this exact checkpoint, then complete human listening/mono/loudness/device/sensory-load review alongside the existing Unity-license, assistive-technology, physical-controller and observed-player gates. Chapter II remains gated.
+
 ## 2026-08-09 · Actual Chrome 400% page-zoom checkpoint
 
 - Added a browser-level zoom gate to the dedicated visible desktop. It brings the real Chrome window forward and sends `Ctrl+0`/`Ctrl++` through `xdotool`, rather than substituting a device-metric override for browser zoom.

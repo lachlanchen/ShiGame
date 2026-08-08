@@ -4,6 +4,7 @@ import { dirname, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
 const source = resolve(root, "content/campaigns/chapter-01-daze.json");
+const audioSource = resolve(root, "content/audio/chapter-01-audio.json");
 const outputs = [
   resolve(root, "apps/web/src/generated/chapter-01-daze.json"),
   resolve(root, "apps/unity/Assets/StreamingAssets/chapter-01-daze.json"),
@@ -15,6 +16,13 @@ const sha256 = createHash("sha256").update(contents).digest("hex");
 for (const output of outputs) {
   await mkdir(dirname(output), { recursive: true });
   await copyFile(source, output);
+}
+for (const output of [
+  resolve(root, "apps/web/src/generated/chapter-01-audio.json"),
+  resolve(root, "apps/unity/Assets/StreamingAssets/chapter-01-audio.json"),
+]) {
+  await mkdir(dirname(output), { recursive: true });
+  await copyFile(audioSource, output);
 }
 const webGameplay = { ...campaign, claims: [] };
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-gameplay.json"), `${JSON.stringify(webGameplay)}\n`);
@@ -32,4 +40,4 @@ await copyFile(
   resolve(root, "assets/3d/export/shi-daze-wartable-v1.fbx"),
   resolve(root, "apps/unity/Assets/StreamingAssets/shi-daze-wartable-v1.fbx"),
 );
-console.log(`Synced campaign ${sha256.slice(0, 12)} to Unity and lossless web transport slices.`);
+console.log(`Synced campaign ${sha256.slice(0, 12)} and procedural audio contract to Unity and web transport slices.`);

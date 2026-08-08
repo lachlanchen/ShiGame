@@ -26,11 +26,15 @@ import { ResourceRail } from "./components/ResourceRail";
 import { ThreeBackdrop } from "./components/ThreeBackdrop";
 import { useGamepad } from "./useGamepad";
 import type { GamepadCommand } from "./gamepad";
+import { audioCaps, audioDefaults, readAudioPreferences, storeAudioPreferences, type AudioCue, type AudioPreferences, type AudioRuntimeStatus } from "./audio-types";
+import { translateSound } from "./audio-labels";
+import type { ShiAudioEngine } from "./audioEngine";
 
 const campaign = campaignJson as unknown as Campaign;
 const StrategicMap = lazy(() => import("./components/StrategicMap").then((module) => ({ default: module.StrategicMap })));
 const FieldGuide = lazy(() => import("./components/FieldGuide").then((module) => ({ default: module.FieldGuide })));
 const SourceLedger = lazy(() => import("./components/SourceLedger").then((module) => ({ default: module.SourceLedger })));
+const AudioSettings = lazy(() => import("./components/AudioSettings").then((module) => ({ default: module.AudioSettings })));
 const SAVE_KEY = "shi.chapter-01.save.v3";
 const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
@@ -92,7 +96,7 @@ export function App() {
   const [locale, setLocale] = useState<Locale>(initialLocale);
   const [state, setState] = useState<GameState>(() => restoredState ?? createInitialState(campaign, initialSeed()));
   const [screen, setScreen] = useState<"title" | "play">("title");
-  const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | null>(null);
+  const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | "audio" | null>(null);
   const [mapSiteId, setMapSiteId] = useState<string | null>(null);
   const [sourceSiteId, setSourceSiteId] = useState<string | null>(null);
   const [resolution, setResolution] = useState<ChoiceResolution | null>(null);
@@ -100,11 +104,20 @@ export function App() {
   const [fontStatus, setFontStatus] = useState<"loading" | "ready" | "error">("loading");
   const [hasSave, setHasSave] = useState(restoredState !== null);
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState(0);
+  const [audioPreferences, setAudioPreferences] = useState<AudioPreferences>(readAudioPreferences);
+  const [audioStatus, setAudioStatus] = useState<AudioRuntimeStatus>(() => readAudioPreferences().enabled ? "armed" : "off");
+  const [lastAudioCue, setLastAudioCue] = useState<AudioCue | "none">("none");
   const storyRef = useRef<HTMLElement>(null);
   const beginButtonRef = useRef<HTMLButtonElement>(null);
   const endingRestartRef = useRef<HTMLButtonElement>(null);
   const choiceRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioEngineRef = useRef<ShiAudioEngine | null>(null);
+  const audioLoadingRef = useRef<Promise<void> | null>(null);
+  const pendingAudioCueRef = useRef<AudioCue | null>(null);
+  const audioPreferencesRef = useRef(audioPreferences);
+  const screenRef = useRef(screen);
   const node = getNode(campaign, state.currentNodeId);
   const activeCondition = selectFieldCondition(campaign, node, state.seed, state.history.length);
   const speaker = campaign.characters.find((character) => character.id === node.speakerId)!;
@@ -137,23 +150,111 @@ export function App() {
     }
   }, [state]);
 
+  useEffect(() => {
+    screenRef.current = screen;
+    audioEngineRef.current?.setAmbienceActive(screen === "play");
+  }, [screen]);
+
+  useEffect(() => () => {
+    audioEngineRef.current?.dispose();
+    audioEngineRef.current = null;
+    const context = audioContextRef.current;
+    audioContextRef.current = null;
+    if (context && context.state !== "closed") void context.close();
+  }, []);
+
+  const applyAudioPreferences = (next: AudioPreferences) => {
+    audioPreferencesRef.current = next;
+    setAudioPreferences(next);
+    storeAudioPreferences(next);
+    audioEngineRef.current?.setPreferences(next);
+  };
+
+  const playAudioCue = (cue: AudioCue) => {
+    if (!audioPreferencesRef.current.enabled) return;
+    pendingAudioCueRef.current = cue;
+    let context = audioContextRef.current;
+    if (!context || context.state === "closed") {
+      try {
+        context = new AudioContext({ latencyHint: "interactive" });
+        audioContextRef.current = context;
+      } catch {
+        setAudioStatus(typeof AudioContext === "undefined" ? "unsupported" : "error");
+        return;
+      }
+    }
+    const resume = context.state === "suspended" ? context.resume() : Promise.resolve();
+    if (audioEngineRef.current) {
+      void resume.then(() => {
+        const pending = pendingAudioCueRef.current;
+        pendingAudioCueRef.current = null;
+        audioEngineRef.current?.setPreferences(audioPreferencesRef.current);
+        audioEngineRef.current?.setAmbienceActive(screenRef.current === "play");
+        if (pending) { audioEngineRef.current?.playCue(pending); setLastAudioCue(pending); }
+        setAudioStatus("ready");
+      }).catch(() => setAudioStatus("error"));
+      return;
+    }
+    if (audioLoadingRef.current) return;
+    setAudioStatus("starting");
+    audioLoadingRef.current = Promise.all([resume, import("./audioEngine")]).then(([, module]) => {
+      if (audioEngineRef.current) return;
+      const engine = new module.ShiAudioEngine(context!, audioPreferencesRef.current);
+      audioEngineRef.current = engine;
+      engine.setAmbienceActive(screenRef.current === "play");
+      if (!audioPreferencesRef.current.enabled) {
+        pendingAudioCueRef.current = null;
+        setAudioStatus("off");
+        return;
+      }
+      const pending = pendingAudioCueRef.current;
+      pendingAudioCueRef.current = null;
+      if (pending) { engine.playCue(pending); setLastAudioCue(pending); }
+      setAudioStatus("ready");
+    }).catch(() => {
+      setAudioStatus("error");
+    }).finally(() => { audioLoadingRef.current = null; });
+  };
+
+  const setAudioEnabled = (enabled: boolean) => {
+    const next = { ...audioPreferencesRef.current, enabled };
+    applyAudioPreferences(next);
+    if (enabled) {
+      setAudioStatus("armed");
+      playAudioCue("drawer");
+    } else {
+      pendingAudioCueRef.current = null;
+      setAudioStatus("off");
+      setLastAudioCue("none");
+    }
+  };
+
+  const setAudioLevel = (bus: "ambience" | "effects", value: number) => {
+    const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(audioCaps[bus], value)) : audioDefaults[bus];
+    applyAudioPreferences({ ...audioPreferencesRef.current, [bus]: safeValue });
+  };
+
   const choose = (choice: Choice) => {
     if (resolution || drawer || !canChoose(choice, state.resources)) return;
     const result = resolveChoice(campaign, state, choice.id);
     setResolution(result);
     setState(result.state);
+    playAudioCue(result.state.completed ? (result.state.failureReason ? "failure" : "ending") : "commit");
   };
 
-  const openDrawer = (next: "sources" | "record" | "guide") => {
+  const openDrawer = (next: "sources" | "record" | "guide" | "audio") => {
     if (!drawer) {
       const active = document.activeElement;
       returnFocusRef.current = active instanceof HTMLElement && active !== document.body && active !== document.documentElement ? active : null;
     }
     setDrawer(next);
+    playAudioCue("drawer");
   };
 
   const enterPlay = () => {
+    screenRef.current = "play";
     setScreen("play");
+    if (audioPreferencesRef.current.enabled) playAudioCue("drawer");
     if (!hasSave && localStorage.getItem(ONBOARDING_KEY) !== "complete") openDrawer("guide");
   };
 
@@ -163,6 +264,7 @@ export function App() {
     returnFocusRef.current = null;
     setDrawer(null);
     setResolution(null);
+    playAudioCue("close");
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
       const story = document.querySelector<HTMLElement>(".story-panel");
       const target = returnTarget?.isConnected ? returnTarget : story;
@@ -186,12 +288,14 @@ export function App() {
     const current = enabled.indexOf(selectedChoiceIndex);
     const next = current < 0 ? enabled[0]! : enabled[(current + step + enabled.length) % enabled.length]!;
     focusChoice(next);
+    playAudioCue("select");
   };
 
   const moveMapInspection = (step: -1 | 1) => {
     const current = campaign.sites.findIndex((site) => site.id === mapSiteId);
     const next = current < 0 ? 0 : (current + step + campaign.sites.length) % campaign.sites.length;
     setMapSiteId(campaign.sites[next]!.id);
+    playAudioCue("inspect");
   };
 
   const openNodeSources = () => {
@@ -276,7 +380,7 @@ export function App() {
       if (event.key !== "Tab") return;
       const panel = document.querySelector<HTMLElement>(".drawer[role='dialog']");
       if (!panel) { event.preventDefault(); return; }
-      const controls = [...panel.querySelectorAll<HTMLElement>("button:not(:disabled), a[href], select:not(:disabled), [tabindex]:not([tabindex='-1'])")]
+      const controls = [...panel.querySelectorAll<HTMLElement>("button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), [tabindex]:not([tabindex='-1'])")]
         .filter((element) => !element.hidden && getComputedStyle(element).display !== "none" && getComputedStyle(element).visibility !== "hidden");
       if (controls.length === 0) { event.preventDefault(); panel.focus({ preventScroll: true }); return; }
       const first = controls[0]!;
@@ -388,7 +492,7 @@ export function App() {
 
   if (screen === "title") {
     return (
-      <main className="title-screen" data-testid="shi-app" data-screen="title" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-controller={controllerConnected ? "connected" : "none"}>
+      <main className="title-screen" data-testid="shi-app" data-screen="title" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
         <ThreeBackdrop reducedMotion={reducedMotion} />
         <div className="title-image" />
         <div className="title-vignette" />
@@ -408,19 +512,20 @@ export function App() {
             {hasSave && <button className="text-button" onClick={newChronicle}>{translate(locale, "newGame")}</button>}
           </div>
         </section>
-        <footer className="title-footer"><span>209 BCE</span><span>DAZE VILLAGE · 大澤鄉</span>{controllerConnected && <span className="controller-status">● {translate(locale, "controllerReady")}</span>}<button className={reducedMotion ? "active" : ""} onClick={toggleMotion}>{translate(locale, "reducedMotion")}</button></footer>
+        <footer className="title-footer"><span>209 BCE</span><span>DAZE VILLAGE · 大澤鄉</span>{controllerConnected && <span className="controller-status">● {translate(locale, "controllerReady")}</span>}<button data-testid="title-audio-toggle" className={audioPreferences.enabled ? "active" : ""} aria-pressed={audioPreferences.enabled} onClick={() => setAudioEnabled(!audioPreferences.enabled)}>{translateSound(locale, audioPreferences.enabled ? "on" : "off")}</button><button className={reducedMotion ? "active" : ""} onClick={toggleMotion}>{translate(locale, "reducedMotion")}</button></footer>
       </main>
     );
   }
 
   return (
-    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-controller={controllerConnected ? "connected" : "none"}>
+    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
       <ThreeBackdrop reducedMotion={reducedMotion} />
       <div className="game-stage" data-testid="game-stage" inert={Boolean(drawer)}>
       <header className="game-header">
         <button className="brand-button" onClick={() => setScreen("title")} aria-label="SHI title screen"><span>勢</span><div><strong>SHI</strong><small>{localize(campaign.subtitle, locale)}</small></div></button>
         <div className="header-actions">
           <span className="save-state"><i />{translate(locale, "save")}</span>
+          <button className={`header-button audio-button ${audioPreferences.enabled ? "active" : ""}`} data-icon="◌" data-testid="audio-toggle" aria-label={translateSound(locale, "sound")} aria-pressed={audioPreferences.enabled} onClick={() => drawer === "audio" ? closeTransient() : openDrawer("audio")}><span className="header-button-label">{translateSound(locale, "sound")}</span></button>
           <button className="header-button guide-button" data-icon="?" data-testid="guide-toggle" aria-label={translate(locale, "guide")} onClick={() => drawer === "guide" ? closeTransient() : openDrawer("guide")}><span className="header-button-label">{translate(locale, "guide")}</span></button>
           <button className="header-button" data-icon="▤" data-testid="record-toggle" aria-label={translate(locale, "record")} aria-keyshortcuts="Alt+R" onClick={() => drawer === "record" ? closeTransient() : openDrawer("record")}><span className="header-button-label">{translate(locale, "record")}</span> <b>{state.history.length}</b></button>
           <button className="header-button" data-icon="◫" data-testid="sources-toggle" aria-label={translate(locale, "sources")} aria-keyshortcuts="Alt+S" onClick={() => drawer === "sources" ? closeTransient() : openNodeSources()}><span className="header-button-label">{translate(locale, "sources")}</span> <b>{node.sourceRefs.length}</b></button>
@@ -432,7 +537,7 @@ export function App() {
 
       <div className="game-grid">
         <div className="map-column">
-          <Suspense fallback={<div className="map-card map-loading" aria-busy="true" />}><StrategicMap campaign={campaign} locale={locale} activeSiteId={node.siteId} selectedSiteId={mapSiteId} onSelectSite={setMapSiteId} onCloseInspection={() => { setMapSiteId(null); setSourceSiteId(null); }} onOpenEvidence={openSiteEvidence} /></Suspense>
+          <Suspense fallback={<div className="map-card map-loading" aria-busy="true" />}><StrategicMap campaign={campaign} locale={locale} activeSiteId={node.siteId} selectedSiteId={mapSiteId} onSelectSite={(siteId) => { setMapSiteId(siteId); playAudioCue("inspect"); }} onCloseInspection={() => { setMapSiteId(null); setSourceSiteId(null); playAudioCue("close"); }} onOpenEvidence={openSiteEvidence} /></Suspense>
           <div className="map-legend"><span><i className="dot active" />{localize(campaign.sites.find((site) => site.id === node.siteId)!.name, locale)}</span><span>{node.dateLabel && localize(node.dateLabel, locale)}</span></div>
         </div>
 
@@ -504,6 +609,7 @@ export function App() {
 
       {drawer === "guide" && <Suspense fallback={null}><FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} /></Suspense>}
       {drawer === "sources" && <Suspense fallback={null}><SourceLedger campaign={campaign} locale={locale} activeIds={sourceSite?.sourceRefs ?? node.sourceRefs} activeClaimIds={sourceSite?.claimRefs ?? node.claimRefs} contextTitle={sourceSite ? localize(sourceSite.name, locale) : undefined} onClose={closeTransient} /></Suspense>}
+      {drawer === "audio" && <Suspense fallback={null}><AudioSettings locale={locale} preferences={audioPreferences} status={audioStatus} onEnabledChange={setAudioEnabled} onLevelChange={setAudioLevel} onPreview={() => playAudioCue("commit")} onClose={closeTransient} /></Suspense>}
       {drawer === "record" && (
         <aside className="drawer record-drawer" data-testid="record-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "record")}>
           <div className="drawer-head"><div><span className="eyebrow">SHI</span><h2>{translate(locale, "record")}</h2></div><button className="icon-button" autoFocus onClick={closeTransient} aria-label={translate(locale, "close")}>×</button></div>

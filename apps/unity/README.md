@@ -7,9 +7,9 @@ This is a Unity 6 LTS project, pinned to `6000.0.80f1`. It is a real second clie
 1. Install Unity `6000.0.80f1` with Linux Build Support and WebGL Build Support.
 2. Run `npm run sync:content` at the repository root.
 3. Open this directory in Unity Hub and load `Assets/Scenes/Boot.unity`.
-4. Press Play. `ShiBootstrap` creates the 3D wartable, rain field, map markers, and game UI at runtime.
+4. Press Play. `ShiBootstrap` creates the 3D wartable, visual rain field, map markers, opt-in procedural soundscape, and game UI at runtime.
 
-The native input baseline uses the committed legacy-input axis map for broad compatibility: arrows or left stick/D-pad move across enabled decisions, Enter/Space or the south face button commits, Escape/east face button closes, shoulders open record/sources, and Start/Menu opens the field guide. `M` or Y/Triangle enters wartable inspection; arrows/D-pad/stick cycle known, reported and reference-only sites; confirm opens that site's evidence; and clicking a 3D marker uses camera raycasting. The one-time guide preference is separate from campaign saves, and guide/record/controller/map text exists in all eleven UI locales.
+The native input baseline uses the committed legacy-input axis map for broad compatibility: arrows or left stick/D-pad move across enabled decisions, Enter/Space or the south face button commits, Escape/east face button closes, shoulders open record/sources, and Start/Menu opens the field guide. `M` or Y/Triangle enters wartable inspection; arrows/D-pad/stick cycle known, reported and reference-only sites; confirm opens that site's evidence; and clicking a 3D marker uses camera raycasting. The one-time guide preference is separate from campaign saves. Guide/record/controller/map/audio text exists in all eleven UI locales. Sound starts off; the header mixer persists independently capped ambience/effects buses and previews the shared semantic commit cue.
 
 ## Reproducible verification and builds
 
@@ -22,7 +22,7 @@ Set `UNITY_EDITOR` when the pinned editor is outside Unity Hub's default locatio
 ./scripts/unity-pipeline.sh web
 ```
 
-`SHI/Validate Production Content` exposes the same preflight in the editor. It checks cross-engine ASCII IDs, cycles and reachability, site/speaker/source references, intelligence status and coordinate bounds, site claim/source closure, source and field classifications, resource and requirement bounds, pressure responses, bounded field effects, baseline English and Simplified Chinese text, and three authored endings. The runtime uses the shared FNV-1a seed contract, applies action → pressure → disclosed field effects, replays save-v3 history (including v1/v2 migration), records failure consistently with the TypeScript core, and routes pointer/keyboard/controller commitment through the same resolver. Successful player builds write a receipt under `apps/unity/Builds/`; local builds and test output remain ignored by Git.
+`SHI/Validate Production Content` exposes the same preflight in the editor. It checks cross-engine ASCII IDs, cycles and reachability, site/speaker/source references, intelligence status and coordinate bounds, site claim/source closure, source and field classifications, resource and requirement bounds, pressure responses, bounded field effects, baseline English and Simplified Chinese text, three authored endings, and the exact audio schema/defaults/mix/rain/cue ranges. The runtime uses the shared FNV-1a seed contract, applies action → pressure → disclosed field effects, replays save-v3 history (including v1/v2 migration), records failure consistently with the TypeScript core, and routes pointer/keyboard/controller commitment through the same resolver. Successful player builds write a receipt under `apps/unity/Builds/`; local builds and test output remain ignored by Git.
 
 The project currently uses a code-built scene so campaign iteration does not depend on opaque binary assets. A later art pass will replace the immediate-mode UI with reviewed UI Toolkit documents while retaining the deterministic campaign rules.
 

@@ -31,6 +31,7 @@ namespace SHI
         private readonly string[] resources = { "grain", "trust", "momentum", "people", "danger" };
         private ShiCampaign? campaign;
         private ShiState? state;
+        private ShiAudioDirector? audioDirector;
         private WarTableWorld? world;
         private Texture2D? keyArt;
         private string locale = "en";
@@ -38,6 +39,7 @@ namespace SHI
         private bool sourcesOpen;
         private bool recordOpen;
         private bool guideOpen;
+        private bool audioOpen;
         private bool showGuideOnEntry;
         private string inspectedSiteId = "";
         private string sourceSiteId = "";
@@ -58,8 +60,15 @@ namespace SHI
         {
             Application.targetFrameRate = 60;
             yield return LoadText("chapter-01-daze.json", text => campaign = ShiCampaign.Parse(text));
+            ShiAudioContract? audioContract = null;
+            yield return LoadText("chapter-01-audio.json", text => audioContract = JsonConvert.DeserializeObject<ShiAudioContract>(text));
             yield return LoadTexture("daze-village-rain-v1.png", texture => keyArt = texture);
             if (campaign == null) yield break;
+            if (audioContract != null)
+            {
+                audioDirector = gameObject.AddComponent<ShiAudioDirector>();
+                audioDirector.Initialize(audioContract);
+            }
             state = LoadState() ?? ShiState.Create(campaign, LoadOrCreateSeed());
             showGuideOnEntry = state.History.Count == 0 && PlayerPrefs.GetInt(GuideKey, 0) == 0;
             world = gameObject.AddComponent<WarTableWorld>();
@@ -78,7 +87,7 @@ namespace SHI
             previousVertical = vertical;
             var confirm = Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0);
             var back = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton1);
-            if (back && (guideOpen || sourcesOpen || recordOpen || resolution != null))
+            if (back && (guideOpen || sourcesOpen || recordOpen || audioOpen || resolution != null))
             {
                 CloseTransient();
                 return;
@@ -97,7 +106,7 @@ namespace SHI
             if (Input.GetKeyDown(KeyCode.JoystickButton4)) { ToggleRecord(); return; }
             if (Input.GetKeyDown(KeyCode.JoystickButton5)) { ToggleSources(); return; }
             if (Input.GetKeyDown(KeyCode.M) || Input.GetKeyDown(KeyCode.JoystickButton3)) { ToggleMapInspection(); return; }
-            if (guideOpen || sourcesOpen || recordOpen)
+            if (guideOpen || sourcesOpen || recordOpen || audioOpen)
             {
                 if (confirm && guideOpen) CloseGuide();
                 return;
@@ -254,6 +263,11 @@ namespace SHI
             if (GUI.Button(new Rect(panel.x, panel.y + 280, 250, 58), (state!.History.Count > 0 ? T("continue") : T("begin")) + "  →", buttonStyle)) EnterPlay();
             if (state.History.Count > 0 && GUI.Button(new Rect(panel.x + 270, panel.y + 280, 220, 58), T("newGame"), buttonStyle)) NewChronicle();
             DrawLocale(new Rect(panel.x, panel.y + 360, 310, 32));
+            if (audioDirector != null && GUI.Button(new Rect(panel.x + 330, panel.y + 360, 175, 32), audioDirector.Enabled ? T("soundOn") : T("soundOff")))
+            {
+                audioDirector.SetEnabled(!audioDirector.Enabled);
+                if (audioDirector.Enabled) audioDirector.PlayCue("drawer");
+            }
             GUI.Label(new Rect(panel.x, panel.y + 410, panel.width, 44), (ControllerConnected ? T("controllerReady") : T("controllerOptional")) + " · A / Cross · " + T("chronicleSeed") + " " + ShiState.FormatSeed(state.Seed), smallStyle);
         }
 
@@ -272,11 +286,12 @@ namespace SHI
             var node = campaign!.Node(state!.CurrentNodeId);
             var condition = state.ActiveCondition(node);
             GUI.Box(new Rect(0, 0, Screen.width, 74), "");
-            if (GUI.Button(new Rect(32, 16, 205, 40), "勢  SHI", GUI.skin.button)) title = true;
+            if (GUI.Button(new Rect(32, 16, 205, 40), "勢  SHI", GUI.skin.button)) { title = true; audioDirector?.SetAmbienceActive(false); }
             if (GUI.Button(new Rect(260, 20, 105, 30), T("guide"))) ToggleGuide();
             if (GUI.Button(new Rect(375, 20, 105, 30), T("record") + $"  {state.History.Count}")) ToggleRecord();
             if (GUI.Button(new Rect(490, 20, 105, 30), T("sources") + $"  {node.SourceRefs.Count}")) ToggleSources();
             if (GUI.Button(new Rect(605, 20, 130, 30), T("inspectMap"))) ToggleMapInspection();
+            if (GUI.Button(new Rect(745, 20, 100, 30), T("sound"))) ToggleAudio();
             DrawLocale(new Rect(Screen.width - 355, 20, 320, 30));
             var railWidth = (Screen.width - 64f) / resources.Length;
             for (var index = 0; index < resources.Length; index++)
@@ -335,6 +350,7 @@ namespace SHI
             if (sourcesOpen) DrawSources(node);
             if (recordOpen) DrawRecord();
             if (guideOpen) DrawGuide();
+            if (audioOpen) DrawAudio();
         }
 
         private void DrawResolution()
@@ -499,6 +515,35 @@ namespace SHI
             if (GUI.Button(new Rect(x + 28, Screen.height - 78, width - 56, 50), T("guideContinue") + "  →", buttonStyle)) CloseGuide();
         }
 
+        private void DrawAudio()
+        {
+            if (audioDirector == null) return;
+            var width = Mathf.Min(500, Screen.width * .64f);
+            var x = Screen.width - width;
+            GUI.Box(new Rect(x, 0, width, Screen.height), "");
+            GUI.Label(new Rect(x + 28, 24, width - 95, 55), T("audioTitle"), titleStyle);
+            if (GUI.Button(new Rect(Screen.width - 55, 22, 32, 32), "×")) { audioOpen = false; audioDirector.PlayCue("close"); return; }
+            GUI.Label(new Rect(x + 28, 90, width - 56, 65), T("audioIntro"), bodyStyle);
+
+            var enabled = GUI.Toggle(new Rect(x + 28, 170, width - 56, 38), audioDirector.Enabled, T("enableSound"));
+            if (enabled != audioDirector.Enabled)
+            {
+                audioDirector.SetEnabled(enabled);
+                if (enabled) audioDirector.PlayCue("drawer");
+            }
+
+            GUI.enabled = audioDirector.Enabled;
+            GUI.Label(new Rect(x + 28, 235, width - 56, 28), T("ambience") + $"  {Mathf.RoundToInt(audioDirector.Ambience / audioDirector.AmbienceCap * 100)}%", bodyStyle);
+            var ambience = GUI.HorizontalSlider(new Rect(x + 28, 272, width - 56, 28), audioDirector.Ambience, 0, audioDirector.AmbienceCap);
+            if (!Mathf.Approximately(ambience, audioDirector.Ambience)) audioDirector.SetAmbience(ambience);
+            GUI.Label(new Rect(x + 28, 325, width - 56, 28), T("effects") + $"  {Mathf.RoundToInt(audioDirector.Effects / audioDirector.EffectsCap * 100)}%", bodyStyle);
+            var effects = GUI.HorizontalSlider(new Rect(x + 28, 362, width - 56, 28), audioDirector.Effects, 0, audioDirector.EffectsCap);
+            if (!Mathf.Approximately(effects, audioDirector.Effects)) audioDirector.SetEffects(effects);
+            if (GUI.Button(new Rect(x + 28, 415, width - 56, 46), T("preview"))) audioDirector.PlayCue("commit");
+            GUI.enabled = true;
+            GUI.Label(new Rect(x + 28, 482, width - 56, 48), T("audioReview"), smallStyle);
+        }
+
         private void DrawGuideStep(Rect rect, string number, string heading, string copy)
         {
             GUI.Box(rect, "");
@@ -512,11 +557,14 @@ namespace SHI
         private void EnterPlay()
         {
             title = false;
+            audioDirector?.SetAmbienceActive(true);
+            audioDirector?.PlayCue("drawer");
             if (!showGuideOnEntry) return;
             showGuideOnEntry = false;
             guideOpen = true;
             sourcesOpen = false;
             recordOpen = false;
+            audioOpen = false;
         }
 
         private void ToggleGuide()
@@ -527,6 +575,8 @@ namespace SHI
             sourcesOpen = false;
             sourceSiteId = "";
             recordOpen = false;
+            audioOpen = false;
+            audioDirector?.PlayCue("drawer");
         }
 
         private void ToggleRecord()
@@ -538,6 +588,8 @@ namespace SHI
             sourcesOpen = false;
             sourceSiteId = "";
             guideOpen = false;
+            audioOpen = false;
+            audioDirector?.PlayCue("drawer");
         }
 
         private void ToggleSources()
@@ -550,6 +602,22 @@ namespace SHI
             sourceScroll = Vector2.zero;
             recordOpen = false;
             guideOpen = false;
+            audioOpen = false;
+            audioDirector?.PlayCue("drawer");
+        }
+
+        private void ToggleAudio()
+        {
+            if (audioDirector == null) return;
+            if (audioOpen) { audioOpen = false; audioDirector.PlayCue("close"); return; }
+            ClearMapInspection();
+            audioOpen = true;
+            sourcesOpen = false;
+            sourceSiteId = "";
+            recordOpen = false;
+            guideOpen = false;
+            resolution = null;
+            audioDirector.PlayCue("drawer");
         }
 
         private void ToggleMapInspection()
@@ -566,6 +634,7 @@ namespace SHI
             inspectedSiteId = siteId;
             sourceSiteId = "";
             world?.SetInspectedSite(siteId);
+            audioDirector?.PlayCue("inspect");
         }
 
         private void ClearMapInspection()
@@ -591,6 +660,8 @@ namespace SHI
             sourcesOpen = true;
             recordOpen = false;
             guideOpen = false;
+            audioOpen = false;
+            audioDirector?.PlayCue("drawer");
         }
 
         private void CloseSources()
@@ -613,6 +684,7 @@ namespace SHI
             sourcesOpen = false;
             sourceSiteId = "";
             recordOpen = false;
+            audioOpen = false;
             resolution = null;
         }
 
@@ -625,6 +697,7 @@ namespace SHI
             if (available.Count == 0) return;
             var current = available.IndexOf(selectedChoiceIndex);
             selectedChoiceIndex = current < 0 ? available[0] : available[(current + step + available.Count) % available.Count];
+            audioDirector?.PlayCue("select");
         }
 
         private void CommitSelectedChoice()
@@ -645,6 +718,7 @@ namespace SHI
             ClearMapInspection();
             resolution = state.Resolve(node, choice);
             Save();
+            audioDirector?.PlayCue(state.Completed ? (state.FailureReason != null ? "failure" : "ending") : "commit");
             if (!state.Completed)
             {
                 world?.SetActiveSite(campaign.Node(state.CurrentNodeId).SiteId);
@@ -673,6 +747,7 @@ namespace SHI
             sourcesOpen = false;
             recordOpen = false;
             guideOpen = false;
+            audioOpen = false;
             ClearMapInspection();
             selectedChoiceIndex = 0;
             world?.SetActiveSite(campaign.Node(campaign.StartNodeId).SiteId);
@@ -693,6 +768,7 @@ namespace SHI
             sourcesOpen = false;
             recordOpen = false;
             guideOpen = false;
+            audioOpen = false;
             ClearMapInspection();
             selectedChoiceIndex = 0;
             world?.SetActiveSite(campaign.Node(campaign.StartNodeId).SiteId);
@@ -705,7 +781,7 @@ namespace SHI
             return string.Join(" · ", parts);
         }
 
-        private string T(string key) => ShiUiText.Get(locale, key);
+        private string T(string key) => ShiAudioUiText.Get(locale, key) ?? ShiUiText.Get(locale, key);
 
         private void ApplyDirection()
         {

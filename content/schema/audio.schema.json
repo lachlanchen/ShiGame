@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shi.game/schema/audio-v1.json",
+  "title": "SHI procedural audio contract v1",
+  "type": "object",
+  "required": ["schemaVersion", "id", "title", "synthesis", "mix", "ambience", "cues"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "synthesis": { "const": "project-original-procedural" },
+    "mix": {
+      "type": "object",
+      "required": ["defaults", "caps", "fadeSeconds"],
+      "properties": {
+        "defaults": { "$ref": "#/$defs/mixValues" },
+        "caps": { "$ref": "#/$defs/mixValues" },
+        "fadeSeconds": { "type": "number", "minimum": 0.05, "maximum": 3 }
+      },
+      "additionalProperties": false
+    },
+    "ambience": {
+      "type": "object",
+      "required": ["id", "seed", "sampleRate", "loopSeconds", "highpassHz", "lowpassHz", "gain"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "seed": { "type": "integer", "minimum": 1, "maximum": 4294967295 },
+        "sampleRate": { "type": "integer", "minimum": 16000, "maximum": 48000 },
+        "loopSeconds": { "type": "integer", "minimum": 2, "maximum": 30 },
+        "highpassHz": { "type": "number", "minimum": 20, "maximum": 1000 },
+        "lowpassHz": { "type": "number", "minimum": 1000, "maximum": 12000 },
+        "gain": { "type": "number", "minimum": 0, "maximum": 0.5 }
+      },
+      "additionalProperties": false
+    },
+    "cues": {
+      "type": "object",
+      "required": ["select", "inspect", "drawer", "close", "commit", "ending", "failure"],
+      "properties": {
+        "select": { "$ref": "#/$defs/cue" },
+        "inspect": { "$ref": "#/$defs/cue" },
+        "drawer": { "$ref": "#/$defs/cue" },
+        "close": { "$ref": "#/$defs/cue" },
+        "commit": { "$ref": "#/$defs/cue" },
+        "ending": { "$ref": "#/$defs/cue" },
+        "failure": { "$ref": "#/$defs/cue" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "mixValues": {
+      "type": "object",
+      "required": ["master", "ambience", "effects"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "master": { "type": "number", "minimum": 0, "maximum": 1 },
+        "ambience": { "type": "number", "minimum": 0, "maximum": 1 },
+        "effects": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "tone": {
+      "type": "object",
+      "required": ["offsetMs", "frequencyHz", "endFrequencyHz", "durationMs", "gain", "wave"],
+      "properties": {
+        "offsetMs": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "frequencyHz": { "type": "number", "minimum": 80, "maximum": 1600 },
+        "endFrequencyHz": { "type": "number", "minimum": 80, "maximum": 1600 },
+        "durationMs": { "type": "integer", "minimum": 20, "maximum": 1000 },
+        "gain": { "type": "number", "minimum": 0.001, "maximum": 0.15 },
+        "wave": { "enum": ["sine", "triangle"] }
+      },
+      "additionalProperties": false
+    },
+    "cue": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/tone" }
+    }
+  },
+  "additionalProperties": false
+}

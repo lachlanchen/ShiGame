@@ -51,6 +51,14 @@ const webGameplay = JSON.parse(await readFile(resolve(root, "apps/web/src/genera
 const webClaims = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-claims.json"), "utf8"));
 if (JSON.stringify({ ...webGameplay, claims: webClaims }) !== JSON.stringify(parsedCampaign))
   errors.push("generated web gameplay/claim slices do not reconstruct the canonical campaign");
+const sourceAudio = await readFile(resolve(root, "content/audio/chapter-01-audio.json"));
+for (const relative of [
+  "apps/web/src/generated/chapter-01-audio.json",
+  "apps/unity/Assets/StreamingAssets/chapter-01-audio.json",
+]) {
+  const generated = await readFile(resolve(root, relative));
+  if (!sourceAudio.equals(generated)) errors.push(`generated audio contract is stale: ${relative}`);
+}
 
 for (const relative of [
   "assets/art/keyart/daze-village-rain-v1.png",
@@ -61,6 +69,7 @@ for (const relative of [
   "assets/3d/export/shi-daze-wartable-v1.glb",
   "assets/3d/export/shi-daze-wartable-v1.fbx",
   "assets/provenance/shi-daze-wartable-v1.json",
+  "assets/provenance/chapter-01-audio.json",
 ]) if (!await exists(resolve(root, relative))) errors.push(`asset pipeline output missing: ${relative}`);
 
 if (errors.length) {
@@ -69,4 +78,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Repository valid: ${expectedReadmes.length + 1} README languages, ${publicFiles.filter((path) => extname(path) === ".md").length} Markdown files, shared payloads synchronized.`);
+console.log(`Repository valid: ${expectedReadmes.length + 1} README languages, ${publicFiles.filter((path) => extname(path) === ".md").length} Markdown files, shared campaign/audio payloads synchronized.`);

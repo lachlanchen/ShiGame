@@ -21,10 +21,63 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
+class FakeAudioParam {
+  value = 0;
+  cancelScheduledValues() { /* deterministic no-op */ }
+  setValueAtTime(value: number) { this.value = value; return this; }
+  linearRampToValueAtTime(value: number) { this.value = value; return this; }
+  exponentialRampToValueAtTime(value: number) { this.value = value; return this; }
+}
+
+class FakeAudioNode {
+  connect() { return this; }
+  disconnect() { /* deterministic no-op */ }
+}
+
+class FakeAudioContext {
+  state: AudioContextState = "running";
+  currentTime = 1;
+  destination = new FakeAudioNode();
+  createGain() { return Object.assign(new FakeAudioNode(), { gain: new FakeAudioParam() }); }
+  createOscillator() { return Object.assign(new FakeAudioNode(), { type: "sine", frequency: new FakeAudioParam(), start: vi.fn(), stop: vi.fn() }); }
+  createBiquadFilter() { return Object.assign(new FakeAudioNode(), { type: "lowpass", frequency: new FakeAudioParam() }); }
+  createBuffer(_channels: number, length: number) { return { copyToChannel: vi.fn(), length }; }
+  createBufferSource() { return Object.assign(new FakeAudioNode(), { buffer: null, loop: false, start: vi.fn(), stop: vi.fn() }); }
+  resume() { this.state = "running"; return Promise.resolve(); }
+  close() { this.state = "closed"; return Promise.resolve(); }
+}
+
 describe("playable web shell", () => {
+  it("keeps sound opt-in and persists an independently mixed runtime", async () => {
+    vi.stubGlobal("AudioContext", FakeAudioContext);
+    const view = render(<App />);
+
+    expect(view.getByTestId("shi-app").getAttribute("data-audio-enabled")).toBe("false");
+    fireEvent.click(view.getByTestId("title-audio-toggle"));
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-audio-status")).toBe("ready"));
+    expect(JSON.parse(localStorage.getItem("shi.audio.v1") ?? "null")?.enabled).toBe(true);
+
+    fireEvent.click(view.getByTestId("begin-game"));
+    fireEvent.click(view.getByTestId("audio-toggle"));
+    const drawer = await view.findByTestId("audio-drawer");
+    expect(drawer.getAttribute("aria-modal")).toBe("true");
+    expect(view.getByTestId("game-stage").hasAttribute("inert")).toBe(true);
+    fireEvent.change(view.getByTestId("audio-ambience"), { target: { value: "0.17" } });
+    fireEvent.change(view.getByTestId("audio-effects"), { target: { value: "0.41" } });
+    fireEvent.click(view.getByTestId("audio-preview"));
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-audio-cue")).toBe("commit"));
+    const stored = JSON.parse(localStorage.getItem("shi.audio.v1") ?? "null");
+    expect(stored).toMatchObject({ enabled: true, ambience: 0.17, effects: 0.41 });
+
+    fireEvent.click(view.getByTestId("audio-enabled"));
+    expect(view.getByTestId("shi-app").getAttribute("data-audio-status")).toBe("off");
+    expect((view.getByTestId("audio-preview") as HTMLButtonElement).disabled).toBe(true);
+  });
+
   it("teaches the three-stage loop once and keeps the field guide replayable", async () => {
     localStorage.removeItem("shi.onboarding.field-guide.v1");
     const view = render(<App />);
