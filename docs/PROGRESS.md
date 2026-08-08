@@ -9,8 +9,9 @@
 - Expanded the dedicated visible-Chrome run to 177 checks, twenty-six axe states, eighteen target states, eleven locale-font states and three audio audits. Localhost proves first-launch silence, gesture consent, lazy engine loading, independent bus extremes, persistence, semantic preview, focus return and desktop/mobile fit with zero console errors, cross-origin requests/resources or non-cancelled network failures.
 - Visually reviewed the 1600×1000 and 390×844 mixer captures. An initial geometry failure was preserved and diagnosed as sampling during the 300 ms entrance transform; the gate now waits for the settled painted state without weakening its viewport assertion.
 - The production build passes at 98.41 KiB initial JavaScript, 9.20 KiB initial CSS, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete fonts and 26.76 MiB total deployable output.
+- Exact implementation `d248166068140b9ce74147e27f9b50def098cc94` passes three visible-browser repeatability runs and a final exact-boundary run at 177 checks with zero console errors. The close transition gate now waits for the complete drawer/focus/cue state and preserves stable machine-report labels.
 
-Next gate: publish and replay this exact checkpoint, then complete human listening/mono/loudness/device/sensory-load review alongside the existing Unity-license, assistive-technology, physical-controller and observed-player gates. Chapter II remains gated.
+Next gate: publish this evidence boundary, wait for clean-checkout validation and Pages, replay the public build, then complete human listening/mono/loudness/device/sensory-load review alongside the existing Unity-license, assistive-technology, physical-controller and observed-player gates. Chapter II remains gated.
 
 ## 2026-08-09 · Actual Chrome 400% page-zoom checkpoint
 
