@@ -10,8 +10,9 @@
 - Visually reviewed the 1600×1000 and 390×844 mixer captures. An initial geometry failure was preserved and diagnosed as sampling during the 300 ms entrance transform; the gate now waits for the settled painted state without weakening its viewport assertion.
 - The production build passes at 98.41 KiB initial JavaScript, 9.20 KiB initial CSS, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete fonts and 26.76 MiB total deployable output.
 - Exact implementation `d248166068140b9ce74147e27f9b50def098cc94` passes three visible-browser repeatability runs and a final exact-boundary run at 177 checks with zero console errors. The close transition gate now waits for the complete drawer/focus/cue state and preserves stable machine-report labels.
+- Passed clean-checkout GitHub validation and Pages deployment at evidence boundary `e83be73fd85bdab75552b18e4be73f05ff38341d`, then repeated all 177 checks on the public build with twenty-six axe, eighteen target, eleven locale-font and three audio audits, zero console errors, zero remote HTTP(S) requests/resources and zero non-cancelled failures.
 
-Next gate: publish this evidence boundary, wait for clean-checkout validation and Pages, replay the public build, then complete human listening/mono/loudness/device/sensory-load review alongside the existing Unity-license, assistive-technology, physical-controller and observed-player gates. Chapter II remains gated.
+Next gate: complete human listening/mono/loudness/device/sensory-load review alongside the existing Unity-license, assistive-technology, physical-controller and observed-player gates. Chapter II remains gated.
 
 ## 2026-08-09 · Actual Chrome 400% page-zoom checkpoint
 
