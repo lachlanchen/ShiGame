@@ -8,7 +8,7 @@
 - Kept the Qin delayed-duty penalty and Daze geography/map implications visibly marked `specialist-review-required`; no historical claim is represented as specialist-approved.
 - Added multilingual evidence labels, exact locators, public-edition links, uncertainty cards and authored-reconstruction boundaries to the web and Unity source ledgers. Unity runtime/editor/EditMode-test assemblies pass the offline reference compile; licensed import/execution/build gates remain open.
 - Split the browser transport losslessly so the evidence payload loads on demand. Repository validation reconstructs the canonical object from both slices; the initial JavaScript remains within budget at 98.53 KiB gzip.
-- Expanded dedicated visible-browser QA to 56 checks. Localhost passes with zero console errors and the new source/claim screenshots have been visually inspected; the exact public Pages rerun remains required after push.
+- Expanded dedicated visible-browser QA to 56 checks. Localhost passes implementation commit `1e89bec` with zero console errors and the new source/claim screenshots have been visually inspected; the exact public Pages rerun remains required after push.
 
 Next gate: push and repeat all 56 checks on the exact public deployment, then obtain Qin-law and historical-GIS specialist decisions while the physical-controller, observed-player and Unity-license gates remain open. Chapter II still does not expand before the player-evidence gates.
 
