@@ -38,7 +38,7 @@ The contract is measured through two distinct paths. `npm run render:audio-refer
 | Programme | Integrated | True peak | Sample peak | DC | Channels | Result |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
 | Deterministic reference | −36.7 LUFS | −23.0 dBTP | −22.96 dBFS | 0.00000028 | exact dual mono | pass |
-| Visible Chrome runtime | −35.7 LUFS | −21.7 dBTP | −21.76 dBFS | 0.00000036 | exact dual mono | pass |
+| Visible Chrome runtime | −35.7 LUFS | −22.7 dBTP | −22.69 dBFS | 0.00000006 | exact dual mono | pass |
 | Pre-consent Chrome | silence | −∞ | −∞ | 0 | exact dual mono | pass |
 
 The authored window is −45 to −24 LUFS, no more than −12 dBFS sample peak or −10 dBTP true peak, and no more than 0.001 absolute DC. The raw deterministic rain is zero-mean; its loop-boundary jump is 0.6029 of its ordinary 99th-percentile adjacent transient, below the 0.8 ceiling. Every one of the seven reference cues exceeds the −42 dBFS audibility floor. Reports and spectrograms live in [`docs/production/evidence`](../production/evidence/); reproducible WAVs stay under ignored `.runtime/audio/` and are never packaged.
