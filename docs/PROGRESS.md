@@ -1,5 +1,15 @@
 # SHI progress log
 
+## 2026-08-09 · Actual Chrome 400% page-zoom checkpoint
+
+- Added a browser-level zoom gate to the dedicated visible desktop. It brings the real Chrome window forward and sends `Ctrl+0`/`Ctrl++` through `xdotool`, rather than substituting a device-metric override for browser zoom.
+- Proved a measured DPR 1/1600 CSS pixel baseline, eight Chrome increments to DPR 4/400×228 CSS pixels, and a return to the exact baseline in a guarded `finally` path. A failing assertion cannot leave the QA profile magnified.
+- Added actual-zoom geometry, axe and target checks for the gameplay header/wartable/story/decisions and title promise/action/footer. Four reviewed full-resolution frames cover gameplay overview, selected decision, title overview and the primary title action.
+- Exact implementation `99c7e8a23df39bc91e7d55afcbd6fa4f1dcd6e03` passes 158 checks, twenty-three axe states, fifteen target states and eleven locale-font states with zero horizontal overflow, console errors, remote requests/resources or non-cancelled failures.
+- The 320 CSS pixel equivalent-reflow and forced-colors contracts remain intact. This closes an agent-observed actual-Chrome engineering gate, not the human zoom/magnifier, Windows High Contrast or disabled-player review gates.
+
+Next gate: publish and replay this exact checkpoint on Pages, then continue human screen-reader/zoom/high-contrast, physical-controller, Unity-license and observed first-time-player sessions. Chapter II remains gated.
+
 ## 2026-08-09 · 400%-equivalent reflow and forced-colors checkpoint
 
 - Added a deterministic 320×800 layout gate, corresponding to a 1280 CSS pixel viewport at 400% for WCAG reflow testing. Visible review caught a clipped language selector and Kuaiji marker; the ultra-narrow header and map labels were corrected before acceptance.
