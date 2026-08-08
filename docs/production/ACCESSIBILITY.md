@@ -2,7 +2,7 @@
 
 Status: implemented web pre-alpha baseline · 2026-08-09 · release owner: game director
 
-SHI targets WCAG 2.2 AA for the web client and input/feedback parity in both clients. Passing automation is a minimum engineering condition, not a claim that disabled players have certified the game. Screen-reader sessions, physical adaptive/controller hardware, forced-colors review and the licensed Unity client remain observed release gates.
+SHI targets WCAG 2.2 AA for the web client and input/feedback parity in both clients. Passing automation is a minimum engineering condition, not a claim that disabled players have certified the game. Screen-reader sessions, physical adaptive/controller hardware, human high-contrast/forced-colors review and the licensed Unity client remain observed release gates.
 
 ## Interaction contract
 
@@ -18,6 +18,8 @@ SHI targets WCAG 2.2 AA for the web client and input/feedback parity in both cli
 - Curated text/surface pairs must reach a 4.5:1 contrast ratio on the darkest conservative surface used by that component. `scripts/validate-accessibility.mjs` rejects regressions in the current 16-pair contract.
 - Microcopy audited by the same script cannot fall below `0.6rem`; critical body and decision copy is larger.
 - Browser text resized to 200% must retain every action, narrative block and scroll path without horizontal overflow. Frames around the title/game seals scale with their text instead of clipping it.
+- A 320 CSS pixel layout viewport provides the automated WCAG reflow equivalent of a 1280 CSS pixel viewport at 400% zoom. Title, header, wartable, narrative, decisions and controls must fit horizontally and remain vertically reachable. Actual browser-zoom and magnifier sessions remain human release gates.
+- Forced-colors mode removes non-informational art/texture, uses operating-system colors, preserves focus/selection outlines, and distinguishes danger, reported/reference/active sites and disabled actions by border shape as well as color.
 - The operating-system `prefers-reduced-motion` setting becomes the initial game preference and suppresses CSS animation, transitions and smooth controller scrolling. The player can also toggle the preference on the title screen.
 - Layered gradients, texture and key art prevent axe from computing some live color-contrast results. Those results stay visible as `incomplete`; the conservative static contrast contract and full-resolution screenshot review cover this boundary. It must not be silently reported as an axe pass.
 
@@ -29,13 +31,14 @@ The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, R
 
 | Gate | Current pre-alpha scope |
 | --- | --- |
-| `npm run validate:accessibility` | 16 contrast pairs, 24 microtype floors, 11 authored target dimensions |
+| `npm run validate:accessibility` | 16 contrast pairs, 24 microtype floors, 11 authored target dimensions, 12 forced-colors selectors and required system colors |
 | jsdom + axe-core 4.12.1 | Title, field-guide modal, gameplay and wartable semantic scans |
-| visible Chrome + axe-core | Eighteen interaction/locale/desktop/mobile states, WCAG 2.0/2.1/2.2 A/AA tags |
-| visible target geometry | Ten interaction and resize states at the 24 CSS pixel floor |
+| visible Chrome + axe-core | Twenty-one interaction/locale/desktop/mobile/reflow/forced-colors states, WCAG 2.0/2.1/2.2 A/AA tags |
+| visible target geometry | Thirteen interaction, resize, reflow and forced-colors states at the 24 CSS pixel floor |
 | visible locale typography | Eleven real script samples, same-origin face availability, direction, header-child fit and zero overflow |
 | visible privacy/network | Eleven-locale traversal, zero remote HTTP(S) requests/resources, zero non-cancelled failures and enforced CSP |
-| visible reflow | Title and active gameplay at 200% text, plus 390×844 gameplay/wartable/guide |
+| visible reflow | Title and active gameplay at 200% text; 320×800 400%-equivalent title/gameplay; 390×844 gameplay/wartable/guide |
+| visible forced colors | System palette, decorative-layer removal, structured meters, danger outline, selection outline and shape-distinct wartable markers |
 | visible motion | OS reduced-motion startup and computed animation/transition suppression |
 | input isolation | Focus wrap/return, inert modal background and duplicate-choice rejection |
 
@@ -44,7 +47,7 @@ The browser report records the axe version, every audited state, incomplete rule
 ## Open release gates
 
 - Observed screen-reader runs with at least NVDA/Firefox or Chrome on Windows, VoiceOver/Safari on Apple hardware, and a documented Linux/Orca smoke pass.
-- 400% reflow, browser zoom, forced-colors/high-contrast mode, magnifier and keyboard-only completion on release candidates.
+- Actual 400% browser zoom, magnifier, Windows high-contrast/forced-colors and keyboard-only completion with human observation on release candidates; the automated 320 CSS pixel and emulated forced-colors contracts do not replace these sessions.
 - Physical Xbox-layout, PlayStation-layout and representative adaptive/switch input, including reconnect and focus loss.
 - Photosensitivity review of lightning/rain/transition content and audio accessibility once those assets exist.
 - Caption, subtitle, dialogue-history, independent speech/music/effects volume and mono compatibility once voiced/audio content exists.

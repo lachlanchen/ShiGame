@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · 400%-equivalent reflow and forced-colors checkpoint
+
+- Added a deterministic 320×800 layout gate, corresponding to a 1280 CSS pixel viewport at 400% for WCAG reflow testing. Visible review caught a clipped language selector and Kuaiji marker; the ultra-narrow header and map labels were corrected before acceptance.
+- Added a deliberate forced-colors rendering contract: decorative Three.js/art/texture layers disappear, operating-system colors replace the art palette, meters keep bordered structure, and danger, selection, disabled actions and known/reported/reference/active wartable sites retain non-color shape cues.
+- Expanded the static contract to require twelve forced-colors selectors and the `Canvas`, `CanvasText`, `Highlight`, `HighlightText` and `GrayText` system colors. The first dynamic run rejected descendant colors that overrode the system palette; the correction now passes axe rather than suppressing the violation.
+- Hardened the visible harness against leaked diagnostic viewports by restoring an explicit 1600×1000 desktop metric. Exact implementation `73792273c6cc2bb2f55378591af2147908a9d4fd` passes 147 checks, twenty-one axe states, thirteen target states and eleven locale-font states with zero console errors, remote requests/resources or non-cancelled failures.
+- Visually approved the title/gameplay 320px and forced-colors overview/decision frames. The full production build remains within budget at 96.68 KiB initial JavaScript, 8.83 KiB initial CSS, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete font coverage and 26.75 MiB deployed output.
+- Re-audited Unity Hub and corrected the documented VNC/noVNC pair to `5934`/`6134` for display `:123`. The refreshed compatibility preflight still stops before import with no account token, entitlement or valid license; the pinned project remains untouched and the native gates remain red.
+
+Next gate: publish and replay this exact checkpoint on Pages, then continue human screen-reader, actual browser-zoom/high-contrast, physical-controller, Unity-license and observed first-time-player sessions. Chapter II remains gated.
+
 ## 2026-08-09 · Self-hosted multilingual typography and web-boundary checkpoint
 
 - Removed the runtime Google Fonts dependency. Eight exact Fontsource variable packages are pinned at `5.3.0`, registered with their OFL-1.1 rights and served from the SHI origin; the CSP permits no remote font, script or connection origin.

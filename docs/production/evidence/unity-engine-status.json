@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-08-08T23:29:00+08:00",
+  "checkedAt": "2026-08-09T04:13:15+08:00",
   "productionProjectVersion": "6000.0.80f1",
   "compatibilityEditor": {
     "version": "2022.3.62f3c1",
@@ -12,6 +12,8 @@
     "archiveIntegrity": "xz-passed"
   },
   "preflight": {
+    "lastAttempt": "2026-08-09T04:13:15+08:00",
+    "compatibilityExitCode": 1,
     "projectImportReached": false,
     "csharpCompilationReached": false,
     "editModeTestsReached": false,
@@ -20,8 +22,9 @@
   },
   "visibleDesktop": {
     "display": ":123",
-    "vnc": "127.0.0.1:5933",
-    "novnc": "http://127.0.0.1:6133/vnc.html?host=127.0.0.1&port=6133&autoconnect=1&resize=scale"
+    "vnc": "127.0.0.1:5934",
+    "novnc": "http://127.0.0.1:6134/vnc.html?host=127.0.0.1&port=6134&autoconnect=1&resize=scale",
+    "hubLicensePanelVerified": true
   },
   "evidence": [
     "unity-01-editor-installed.png",
