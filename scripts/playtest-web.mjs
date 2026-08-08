@@ -136,6 +136,14 @@ const waitForSelector = async (selector, timeout = 5000) => {
   }
   throw new Error(`Timed out waiting for ${selector}`);
 };
+const waitForCondition = async (expression, timeout = 5000) => {
+  const started = Date.now();
+  while (Date.now() - started < timeout) {
+    if (await evaluate(expression)) return true;
+    await wait(50);
+  }
+  return false;
+};
 const waitForFontReady = async (timeout = 15000) => {
   const started = Date.now();
   while (Date.now() - started < timeout) {
@@ -486,9 +494,12 @@ await screenshot("web-28-audio-mixer.png");
 await auditAccessibility("audio-drawer-enabled-en");
 await auditTargets("audio-drawer-enabled-en");
 await click(".audio-drawer .icon-button");
-await wait(250);
+const audioCloseSettled = await waitForCondition(`!document.querySelector('[data-testid=audio-drawer]') && document.activeElement?.getAttribute('data-testid') === 'audio-toggle' && document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-cue') === 'close'`, 2000);
 snapshot = await evaluate(`({ drawer: Boolean(document.querySelector('[data-testid=audio-drawer]')), focused: document.activeElement?.getAttribute('data-testid'), cue: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-audio-cue') })`);
-check(!snapshot.drawer && snapshot.focused === "audio-toggle" && snapshot.cue === "close", "closing the mixer returns focus and emits its nonessential close cue");
+check(
+  audioCloseSettled && !snapshot.drawer && snapshot.focused === "audio-toggle" && snapshot.cue === "close",
+  `closing the mixer returns focus and emits its nonessential close cue (actual: ${JSON.stringify(snapshot)})`,
+);
 await click("[data-testid=audio-toggle]");
 await waitForSelector("[data-testid=audio-drawer]");
 snapshot = await evaluate(`({ enabled: document.querySelector('[data-testid=audio-enabled]')?.checked, ambience: Number(document.querySelector('[data-testid=audio-ambience]')?.value), effects: Number(document.querySelector('[data-testid=audio-effects]')?.value) })`);
