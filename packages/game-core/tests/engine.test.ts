@@ -3,7 +3,7 @@ import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, l
 import type { Campaign } from "../src";
 
 const campaign: Campaign = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   id: "test",
   title: { en: "Test", "zh-Hans": "测试" },
   subtitle: { en: "Test", "zh-Hans": "测试" },
@@ -12,6 +12,7 @@ const campaign: Campaign = {
   sites: [],
   characters: [],
   sources: [],
+  claims: [],
   nodes: [{
     id: "start",
     dateLabel: { en: "Now", "zh-Hans": "现在" },
@@ -21,6 +22,7 @@ const campaign: Campaign = {
     context: { en: "Context", "zh-Hans": "背景" },
     dialogue: { en: "Words", "zh-Hans": "话" },
     sourceRefs: [],
+    claimRefs: [],
     conditions: [
       { id: "still", claimStatus: "dramatic-reconstruction", title: { en: "Still", "zh-Hans": "静" }, signal: { en: "Still.", "zh-Hans": "静。" }, weight: 1, effects: { momentum: 0 } },
       { id: "wind", claimStatus: "dramatic-reconstruction", title: { en: "Wind", "zh-Hans": "风" }, signal: { en: "Wind.", "zh-Hans": "风。" }, weight: 1, effects: { momentum: 0 } },

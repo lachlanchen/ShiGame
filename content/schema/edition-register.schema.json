@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shi.game/schema/edition-register-v1.json",
+  "title": "SHI edition register v1",
+  "type": "object",
+  "required": ["schemaVersion", "editions"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "editions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "workId", "title", "language", "editionType", "publisher", "accessDate", "rightsStatus", "rightsNote"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "workId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "title": { "type": "string", "minLength": 1 },
+          "language": { "enum": ["zh-Hant", "zh-Hans", "en", "project"] },
+          "editionType": { "enum": ["public-transcription", "project-original"] },
+          "publisher": { "type": "string", "minLength": 1 },
+          "sourceUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+          "accessDate": { "type": "string", "format": "date" },
+          "rightsStatus": { "enum": ["public-link-metadata-only", "project-original"] },
+          "rightsNote": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

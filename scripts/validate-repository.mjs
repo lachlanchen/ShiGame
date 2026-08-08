@@ -46,6 +46,11 @@ for (const relative of [
   const generated = await readFile(resolve(root, relative));
   if (!sourceCampaign.equals(generated)) errors.push(`generated campaign is stale: ${relative}`);
 }
+const parsedCampaign = JSON.parse(sourceCampaign.toString("utf8"));
+const webGameplay = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-gameplay.json"), "utf8"));
+const webClaims = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-claims.json"), "utf8"));
+if (JSON.stringify({ ...webGameplay, claims: webClaims }) !== JSON.stringify(parsedCampaign))
+  errors.push("generated web gameplay/claim slices do not reconstruct the canonical campaign");
 
 for (const relative of [
   "assets/art/keyart/daze-village-rain-v1.png",

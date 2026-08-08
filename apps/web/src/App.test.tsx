@@ -25,18 +25,18 @@ afterEach(() => {
 });
 
 describe("playable web shell", () => {
-  it("teaches the two-stage loop once and keeps the field guide replayable", () => {
+  it("teaches the three-stage loop once and keeps the field guide replayable", async () => {
     localStorage.removeItem("shi.onboarding.field-guide.v1");
     const view = render(<App />);
 
     fireEvent.click(view.getByTestId("begin-game"));
-    expect(view.getByTestId("guide-drawer").textContent).toContain("Every order resolves in three strokes");
+    expect((await view.findByTestId("guide-drawer")).textContent).toContain("Every order resolves in three strokes");
     fireEvent.click(view.getByTestId("guide-continue"));
 
     expect(view.queryByTestId("guide-drawer")).toBeNull();
     expect(localStorage.getItem("shi.onboarding.field-guide.v1")).toBe("complete");
     fireEvent.click(view.getByTestId("guide-toggle"));
-    expect(view.getByTestId("guide-drawer").getAttribute("aria-modal")).toBe("true");
+    expect((await view.findByTestId("guide-drawer")).getAttribute("aria-modal")).toBe("true");
   });
 
   it("navigates and commits through the standard Gamepad API surface", async () => {
@@ -80,12 +80,17 @@ describe("playable web shell", () => {
     await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "null")?.saveVersion).toBe(3));
   });
 
-  it("opens accessible drawers with shortcuts and closes them with Escape", () => {
+  it("opens accessible drawers with shortcuts and closes them with Escape", async () => {
     const view = render(<App />);
     fireEvent.click(view.getByTestId("begin-game"));
 
     fireEvent.keyDown(window, { key: "s", altKey: true });
-    expect(view.getByTestId("sources-drawer").getAttribute("aria-modal")).toBe("true");
+    const sources = await view.findByTestId("sources-drawer");
+    expect(sources.getAttribute("aria-modal")).toBe("true");
+    expect(sources.textContent).toContain("卷048 · 陳涉世家第十八 · 二世元年七月段");
+    expect(sources.textContent).toContain("Specialist review required");
+    expect(sources.querySelectorAll(".claim")).toHaveLength(9);
+    expect(sources.querySelector("a[href='https://zh.wikisource.org/wiki/史記三家註/卷048']")).not.toBeNull();
     fireEvent.keyDown(window, { key: "Escape" });
     expect(view.queryByTestId("sources-drawer")).toBeNull();
 

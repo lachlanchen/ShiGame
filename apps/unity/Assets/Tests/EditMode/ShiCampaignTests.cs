@@ -11,7 +11,7 @@ namespace SHI.Tests
         [Test]
         public void ResolveClampsResourcesAndRecordsHistory()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":2,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":3,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
             var state = ShiState.Create(campaign);
             var node = campaign.Node("start");
 
@@ -25,7 +25,7 @@ namespace SHI.Tests
         [Test]
         public void ResolveAppliesPressureAfterThePlayerAction()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":2,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":3,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
             var state = ShiState.Create(campaign);
 
             var result = state.Resolve(campaign.Node("start"), campaign.Node("start").Choices[0]);
@@ -66,7 +66,7 @@ namespace SHI.Tests
         [Test]
         public void TextFallsBackToEnglish()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":2,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":3,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
             Assert.That(campaign.Text(campaign.Title, "fr"), Is.EqualTo("Test"));
         }
 
@@ -86,6 +86,7 @@ namespace SHI.Tests
             var sites = campaign.Sites.Select(site => site.Id).ToHashSet();
             var speakers = campaign.Characters.Select(character => character.Id).ToHashSet();
             var sources = campaign.Sources.Select(source => source.Id).ToHashSet();
+            var claims = campaign.Claims.Select(claim => claim.Id).ToHashSet();
             var nodes = campaign.Nodes.Select(node => node.Id).ToHashSet();
             var reachable = new HashSet<string>();
             var pending = new Queue<string>();
@@ -99,6 +100,9 @@ namespace SHI.Tests
                 Assert.That(sites, Does.Contain(node.SiteId), $"Unknown site on {node.Id}");
                 Assert.That(speakers, Does.Contain(node.SpeakerId), $"Unknown speaker on {node.Id}");
                 Assert.That(node.SourceRefs.All(sources.Contains), Is.True, $"Unknown source on {node.Id}");
+                Assert.That(node.ClaimRefs.All(claims.Contains), Is.True, $"Unknown claim on {node.Id}");
+                foreach (var claimRef in node.ClaimRefs)
+                    Assert.That(campaign.Claims.First(claim => claim.Id == claimRef).SourceRefs.All(node.SourceRefs.Contains), Is.True, $"Claim source is not exposed on {node.Id}");
                 Assert.That(node.Conditions, Has.Count.GreaterThanOrEqualTo(2), $"Missing field conditions on {node.Id}");
                 foreach (var next in node.Choices.Select(choice => choice.NextNodeId).Where(next => !string.IsNullOrEmpty(next)))
                 {
@@ -116,7 +120,9 @@ namespace SHI.Tests
             var campaign = LoadProductionCampaign();
             Assert.That(campaign.Nodes, Has.Count.GreaterThanOrEqualTo(6));
             Assert.That(campaign.Nodes.Sum(node => node.Choices.Count), Is.GreaterThanOrEqualTo(15));
-            Assert.That(campaign.Sources, Has.Count.GreaterThanOrEqualTo(6));
+            Assert.That(campaign.Sources, Has.Count.EqualTo(7));
+            Assert.That(campaign.Claims, Has.Count.EqualTo(13));
+            Assert.That(campaign.Claims.Count(claim => claim.ReviewStatus == "specialist-review-required"), Is.EqualTo(2));
             Assert.That(campaign.Nodes.SelectMany(node => node.Choices).Count(choice => string.IsNullOrEmpty(choice.NextNodeId)), Is.GreaterThanOrEqualTo(3));
             Assert.That(global::SHI.Editor.ShiBuild.Validate(campaign), Is.Empty);
         }
@@ -134,6 +140,8 @@ namespace SHI.Tests
                 "guide", "guideTitle", "guideIntro", "guideFieldTitle", "guideFieldText", "guideMoveTitle", "guideMoveText",
                 "guideReplyTitle", "guideReplyText", "controllerReady", "controllerOptional", "controllerHint", "guideContinue", "recordEmpty",
                 "newGame", "fieldSignal", "chronicleSeed", "fieldApplied",
+                "reconstruction", "later", "strategicText", "received", "claimRegister", "evidenceLocated",
+                "specialistReview", "authoredClaim", "openEdition", "publicSource",
             };
 
             foreach (var locale in locales)

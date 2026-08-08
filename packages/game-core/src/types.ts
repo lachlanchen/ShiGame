@@ -21,12 +21,30 @@ export type Resources = Record<ResourceKey, number>;
 
 export interface SourceRef {
   id: string;
+  editionId: string;
   work: string;
   section: string;
+  locator: string;
+  url?: string;
   author?: string;
   date?: string;
   note: LocalizedText;
-  claimStatus: "primary-account" | "later-compilation" | "dramatic-reconstruction";
+  claimStatus: "received-account" | "later-compilation" | "strategic-text" | "dramatic-reconstruction";
+  rightsStatus: "public-link-metadata-only" | "project-original";
+}
+
+export type ClaimReviewStatus = "evidence-located" | "specialist-review-required" | "authored-reconstruction";
+
+export interface HistoricalClaim {
+  id: string;
+  kind: "chronology" | "event" | "institution" | "person" | "geography" | "strategic-lens" | "reconstruction";
+  statement: LocalizedText;
+  sourceRefs: string[];
+  reviewStatus: ClaimReviewStatus;
+  confidence: "high" | "medium" | "low" | "not-applicable";
+  uncertainty: LocalizedText;
+  gameUse: LocalizedText;
+  reviewer: string;
 }
 
 export interface MapSite {
@@ -87,6 +105,7 @@ export interface CampaignNode {
   context: LocalizedText;
   dialogue: LocalizedText;
   sourceRefs: string[];
+  claimRefs: string[];
   conditions: FieldCondition[];
   choices: Choice[];
 }
@@ -101,6 +120,7 @@ export interface Campaign {
   sites: MapSite[];
   characters: Character[];
   sources: SourceRef[];
+  claims: HistoricalClaim[];
   nodes: CampaignNode[];
 }
 

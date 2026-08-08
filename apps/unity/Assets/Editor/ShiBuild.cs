@@ -19,7 +19,11 @@ namespace SHI.Editor
         private const string BootScene = "Assets/Scenes/Boot.unity";
         private static readonly string[] BaselineLocales = { "en", "zh-Hans" };
         private static readonly string[] ResourceKeys = { "grain", "trust", "momentum", "people", "danger" };
-        private static readonly string[] ClaimStatuses = { "primary-account", "later-compilation", "dramatic-reconstruction" };
+        private static readonly string[] ClaimStatuses = { "received-account", "later-compilation", "strategic-text", "dramatic-reconstruction" };
+        private static readonly string[] ClaimKinds = { "chronology", "event", "institution", "person", "geography", "strategic-lens", "reconstruction" };
+        private static readonly string[] ClaimReviewStatuses = { "evidence-located", "specialist-review-required", "authored-reconstruction" };
+        private static readonly string[] ClaimConfidences = { "high", "medium", "low", "not-applicable" };
+        private static readonly string[] RightsStatuses = { "public-link-metadata-only", "project-original" };
         private static readonly string[] PressureKinds = { "state", "terrain", "supply", "network" };
 
         [MenuItem("SHI/Validate Production Content")]
@@ -33,7 +37,7 @@ namespace SHI.Editor
             Debug.Log($"SHI preflight passed: {campaign.Nodes.Count} nodes, " +
                       $"{campaign.Nodes.Sum(node => node.Choices.Count)} choices, " +
                       $"{campaign.Nodes.Sum(node => node.Conditions.Count)} field conditions, " +
-                      $"{campaign.Sources.Count} sources.");
+                      $"{campaign.Sources.Count} sources, {campaign.Claims.Count} claim records.");
         }
 
         [MenuItem("SHI/Build/Linux Player")]
@@ -55,7 +59,9 @@ namespace SHI.Editor
             var siteIds = campaign.Sites.Select(site => site.Id).ToHashSet();
             var characterIds = campaign.Characters.Select(character => character.Id).ToHashSet();
             var sourceIds = campaign.Sources.Select(source => source.Id).ToHashSet();
+            var claimIds = campaign.Claims.Select(claim => claim.Id).ToHashSet();
             var choiceIds = new HashSet<string>();
+            var referencedClaimIds = new HashSet<string>();
 
             if (!Regex.IsMatch(campaign.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add("Campaign id must use ASCII kebab-case.");
 
@@ -63,6 +69,7 @@ namespace SHI.Editor
             RequireUnique(campaign.Sites.Select(site => site.Id), "site", errors);
             RequireUnique(campaign.Characters.Select(character => character.Id), "character", errors);
             RequireUnique(campaign.Sources.Select(source => source.Id), "source", errors);
+            RequireUnique(campaign.Claims.Select(claim => claim.Id), "claim", errors);
             RequireUnique(campaign.Nodes.SelectMany(node => node.Conditions).Select(condition => condition.Id), "field condition", errors);
 
             if (!nodeIds.Contains(campaign.StartNodeId)) errors.Add($"Start node '{campaign.StartNodeId}' does not exist.");
@@ -80,10 +87,40 @@ namespace SHI.Editor
             RequireText(campaign.Subtitle, "campaign subtitle", errors);
             foreach (var source in campaign.Sources)
             {
+                if (!Regex.IsMatch(source.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Source '{source.Id}' must use an ASCII kebab-case id.");
+                if (string.IsNullOrWhiteSpace(source.EditionId)) errors.Add($"Source '{source.Id}' has no edition id.");
                 if (string.IsNullOrWhiteSpace(source.Work)) errors.Add($"Source '{source.Id}' has no work title.");
                 if (string.IsNullOrWhiteSpace(source.Section)) errors.Add($"Source '{source.Id}' has no locator.");
+                if (string.IsNullOrWhiteSpace(source.Locator)) errors.Add($"Source '{source.Id}' has no exact locator.");
                 if (!ClaimStatuses.Contains(source.ClaimStatus)) errors.Add($"Source '{source.Id}' has invalid classification '{source.ClaimStatus}'.");
+                if (!RightsStatuses.Contains(source.RightsStatus)) errors.Add($"Source '{source.Id}' has invalid rights status '{source.RightsStatus}'.");
+                if (source.RightsStatus == "public-link-metadata-only" && (!Uri.TryCreate(source.Url, UriKind.Absolute, out var sourceUrl) || sourceUrl.Scheme != Uri.UriSchemeHttps))
+                    errors.Add($"Public source '{source.Id}' requires an HTTPS URL.");
+                if (source.RightsStatus == "project-original" && !string.IsNullOrWhiteSpace(source.Url)) errors.Add($"Project source '{source.Id}' must not claim a public URL.");
                 RequireText(source.Note, $"source '{source.Id}' note", errors);
+            }
+            foreach (var claim in campaign.Claims)
+            {
+                if (!Regex.IsMatch(claim.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Claim '{claim.Id}' must use an ASCII kebab-case id.");
+                if (!ClaimKinds.Contains(claim.Kind)) errors.Add($"Claim '{claim.Id}' has invalid kind '{claim.Kind}'.");
+                if (!ClaimReviewStatuses.Contains(claim.ReviewStatus)) errors.Add($"Claim '{claim.Id}' has invalid review status '{claim.ReviewStatus}'.");
+                if (!ClaimConfidences.Contains(claim.Confidence)) errors.Add($"Claim '{claim.Id}' has invalid confidence '{claim.Confidence}'.");
+                if (claim.SourceRefs.Count == 0) errors.Add($"Claim '{claim.Id}' requires at least one source.");
+                foreach (var sourceRef in claim.SourceRefs.Where(sourceRef => !sourceIds.Contains(sourceRef))) errors.Add($"Claim '{claim.Id}' references unknown source '{sourceRef}'.");
+                if (string.IsNullOrWhiteSpace(claim.Reviewer)) errors.Add($"Claim '{claim.Id}' requires a reviewer or pending review role.");
+                RequireText(claim.Statement, $"claim '{claim.Id}' statement", errors);
+                RequireText(claim.Uncertainty, $"claim '{claim.Id}' uncertainty", errors);
+                RequireText(claim.GameUse, $"claim '{claim.Id}' game use", errors);
+                if (claim.Kind == "reconstruction")
+                {
+                    if (claim.ReviewStatus != "authored-reconstruction") errors.Add($"Reconstruction claim '{claim.Id}' must be explicitly authored.");
+                    if (claim.Confidence != "not-applicable") errors.Add($"Reconstruction claim '{claim.Id}' must use not-applicable confidence.");
+                }
+                else
+                {
+                    if (claim.ReviewStatus == "authored-reconstruction") errors.Add($"Historical claim '{claim.Id}' cannot be classified as authored reconstruction.");
+                    if (claim.Confidence == "not-applicable") errors.Add($"Historical claim '{claim.Id}' requires a confidence assessment.");
+                }
             }
 
             foreach (var node in campaign.Nodes)
@@ -102,6 +139,20 @@ namespace SHI.Editor
                 {
                     if (!sourceIds.Contains(sourceRef)) errors.Add($"Node '{node.Id}' references unknown source '{sourceRef}'.");
                 }
+                if (node.SourceRefs.Count == 0) errors.Add($"Node '{node.Id}' must cite at least one source record.");
+                if (node.ClaimRefs.Count == 0) errors.Add($"Node '{node.Id}' must expose at least one claim record.");
+                foreach (var claimRef in node.ClaimRefs)
+                {
+                    if (!claimIds.Contains(claimRef))
+                    {
+                        errors.Add($"Node '{node.Id}' references unknown claim '{claimRef}'.");
+                        continue;
+                    }
+                    referencedClaimIds.Add(claimRef);
+                    var claim = campaign.Claims.First(candidate => candidate.Id == claimRef);
+                    foreach (var sourceRef in claim.SourceRefs.Where(sourceRef => !node.SourceRefs.Contains(sourceRef)))
+                        errors.Add($"Node '{node.Id}' claim '{claimRef}' requires missing source '{sourceRef}'.");
+                }
 
                 foreach (var condition in node.Conditions)
                 {
@@ -119,7 +170,7 @@ namespace SHI.Editor
                 foreach (var choice in node.Choices)
                 {
                     if (!choiceIds.Add(choice.Id)) errors.Add($"Duplicate choice id '{choice.Id}'.");
-                    if (!string.IsNullOrEmpty(choice.NextNodeId) && !nodeIds.Contains(choice.NextNodeId))
+                    if (!string.IsNullOrEmpty(choice.NextNodeId) && !nodeIds.Contains(choice.NextNodeId!))
                         errors.Add($"Choice '{choice.Id}' references unknown next node '{choice.NextNodeId}'.");
                     ValidateEffects(choice.Effects, $"Choice '{choice.Id}'", errors);
                     if (!string.IsNullOrEmpty(choice.NextNodeId) && choice.Pressure == null)
@@ -142,6 +193,8 @@ namespace SHI.Editor
                     RequireText(choice.Strategy, $"choice '{choice.Id}' strategy", errors);
                 }
             }
+
+            foreach (var unreferenced in claimIds.Except(referencedClaimIds)) errors.Add($"Claim '{unreferenced}' is not exposed by a playable node.");
 
             var reachable = ReachableNodes(campaign);
             foreach (var unreachable in nodeIds.Except(reachable)) errors.Add($"Node '{unreachable}' is unreachable.");

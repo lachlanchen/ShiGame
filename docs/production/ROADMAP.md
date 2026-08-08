@@ -28,6 +28,8 @@ This roadmap is a sequence of quality gates, not permission for uncontrolled con
 
 Month 2 status on 2026-08-09: authored countermoves, disclosed seed-selected field conditions, save-v3 migration, localized first-run teaching, keyboard/touch layouts, web and Unity controller code, synthetic standard-gamepad browser coverage and exhaustive condition-route validation are implemented and publicly deployed. Physical Xbox/PlayStation-layout controller sessions and observed external playtests remain open, so the milestone is in progress rather than complete.
 
+Month 3 status on 2026-08-09: schema v3, a five-edition rights-aware register, seven source records, thirteen scene-linked claim records, exact public locators, player-facing uncertainty, web/Unity claim ledgers and automated claim/source closure are implemented. The Qin-law and historical-GIS P0 specialist gates remain open, so this milestone is in progress rather than complete.
+
 ## Weekly operating cadence
 
 - Monday: player problem, evidence and scope review.

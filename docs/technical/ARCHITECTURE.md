@@ -5,8 +5,8 @@
 SHI uses one authored campaign payload with two clients:
 
 ```text
-content/campaigns/*.json
-        │ validate + SHA-256
+content/research/editions.json + content/campaigns/*.json
+        │ rights/claim validation + SHA-256
         ├── packages/game-core (deterministic TypeScript rules)
         ├── apps/web (React + Vite + lazy Three.js atmosphere)
         └── apps/unity (Unity 6 + Newtonsoft JSON + 3D wartable)
@@ -16,9 +16,10 @@ The web client is the fastest playable delivery path. Unity 6 LTS is the selecte
 
 ## Shared-content contract
 
-- `content/campaigns/chapter-01-daze.json` is narrative truth.
-- `scripts/validate-content.mjs` checks identifiers, links, translations, action/pressure/field effects, requirements, reachability, cycles, deadlocks, every field-condition branch, real failure reachability, and all three conclusions.
-- `scripts/sync-unity-content.mjs` copies the same bytes to web and Unity and writes a SHA-256 record.
+- `content/campaigns/chapter-01-daze.json` is narrative truth; `content/research/editions.json` is the edition/rights metadata authority.
+- Schema v3 binds each playable node to both source records and inspectable historical/reconstruction claims. It records locators, review state, bounded confidence, uncertainty and game use without embedding source books.
+- `scripts/validate-content.mjs` checks edition/right pairings, HTTPS public links, identifiers, claim/source/node closure, reconstruction boundaries, translations, action/pressure/field effects, requirements, reachability, cycles, deadlocks, every field-condition branch, real failure reachability, and all three conclusions.
+- `scripts/sync-unity-content.mjs` copies the canonical bytes to Unity and a full browser mirror, writes a SHA-256 record, and emits lossless gameplay/claim browser slices. The claim slice is loaded with the evidence drawer so the release stays inside its initial-JavaScript budget; repository validation proves that recombining both slices exactly reconstructs the canonical JSON object.
 - Client-specific code may format or animate content; it may not silently change narrative outcomes.
 - Schema changes require a migration, updated validator, both clients, and tests.
 
@@ -72,4 +73,4 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 | Input-to-feedback | < 100 ms | < 100 ms |
 | Save operation | < 50 ms | < 50 ms |
 
-The current web build is 98 KiB gzip initial JavaScript and 185 KiB gzip lazy Three.js.
+The current web build is 98.53 KiB gzip initial JavaScript, 7.44 KiB gzip lazy evidence/claim UI, 0.62 KiB gzip lazy field guide, and 184.72 KiB gzip lazy Three.js.

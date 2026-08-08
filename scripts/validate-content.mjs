@@ -4,6 +4,8 @@ import { resolve } from "node:path";
 const root = resolve(import.meta.dirname, "..");
 const campaignPath = resolve(root, "content/campaigns/chapter-01-daze.json");
 const campaign = JSON.parse(await readFile(campaignPath, "utf8"));
+const editionRegisterPath = resolve(root, "content/research/editions.json");
+const editionRegister = JSON.parse(await readFile(editionRegisterPath, "utf8"));
 const errors = [];
 const resourceKeys = ["grain", "trust", "momentum", "people", "danger"];
 const pressureKinds = ["state", "terrain", "supply", "network"];
@@ -41,7 +43,8 @@ const canChoose = (choice, resources) => resourceKeys.every((key) => {
 });
 const applyEffects = (resources, effects = {}) => Object.fromEntries(resourceKeys.map((key) => [key, Math.max(0, Math.min(100, Math.round(resources[key] + (effects[key] ?? 0))))]));
 
-assert(campaign.schemaVersion === 2, "campaign schemaVersion must be 2");
+assert(campaign.schemaVersion === 3, "campaign schemaVersion must be 3");
+assert(editionRegister.schemaVersion === 1, "edition register schemaVersion must be 1");
 assert(typeof campaign.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(campaign.id), "campaign.id must use ASCII kebab-case");
 hasRequiredText(campaign.title, "campaign.title");
 hasRequiredText(campaign.subtitle, "campaign.subtitle");
@@ -52,19 +55,66 @@ for (const locale of ["en", "ar", "de", "es", "fr", "ja", "ko", "ru", "vi", "zh-
 
 const siteIds = unique(campaign.sites ?? [], "sites");
 const characterIds = unique(campaign.characters ?? [], "characters");
+const editionIds = unique(editionRegister.editions ?? [], "editions");
 const sourceIds = unique(campaign.sources ?? [], "sources");
+const claimIds = unique(campaign.claims ?? [], "claims");
 const nodeIds = unique(campaign.nodes ?? [], "nodes");
 assert(nodeIds.has(campaign.startNodeId), `start node does not exist: ${campaign.startNodeId}`);
 
 validateResourceMap(campaign.initialResources, "initialResources", 0, 100, true);
+for (const edition of editionRegister.editions ?? []) {
+  assert(typeof edition.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(edition.id), `edition ${edition.id} must use an ASCII kebab-case id`);
+  assert(typeof edition.workId === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(edition.workId), `edition ${edition.id} has an invalid workId`);
+  for (const field of ["title", "language", "editionType", "publisher", "accessDate", "rightsStatus", "rightsNote"]) {
+    assert(typeof edition[field] === "string" && edition[field].trim(), `edition ${edition.id} requires ${field}`);
+  }
+  assert(/^\d{4}-\d{2}-\d{2}$/.test(edition.accessDate ?? ""), `edition ${edition.id} accessDate must use YYYY-MM-DD`);
+  assert(["public-transcription", "project-original"].includes(edition.editionType), `edition ${edition.id} has an invalid editionType`);
+  assert(["public-link-metadata-only", "project-original"].includes(edition.rightsStatus), `edition ${edition.id} has an invalid rightsStatus`);
+  if (edition.rightsStatus === "public-link-metadata-only") {
+    assert(edition.editionType === "public-transcription", `public edition ${edition.id} must be classified as public-transcription`);
+    assert(/^https:\/\//.test(edition.sourceUrl ?? ""), `public edition ${edition.id} requires an HTTPS sourceUrl`);
+  } else {
+    assert(edition.editionType === "project-original", `project edition ${edition.id} must be classified as project-original`);
+    assert(!edition.sourceUrl, `project edition ${edition.id} must not claim a public sourceUrl`);
+  }
+}
 for (const source of campaign.sources ?? []) {
+  assert(typeof source.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(source.id), `source ${source.id} must use an ASCII kebab-case id`);
+  assert(editionIds.has(source.editionId), `source ${source.id} references unknown edition ${source.editionId}`);
   assert(typeof source.work === "string" && source.work.trim(), `source ${source.id} requires a work title`);
   assert(typeof source.section === "string" && source.section.trim(), `source ${source.id} requires a locator`);
+  assert(typeof source.locator === "string" && source.locator.trim(), `source ${source.id} requires an exact locator`);
   hasRequiredText(source.note, `source ${source.id}.note`);
-  assert(["primary-account", "later-compilation", "dramatic-reconstruction"].includes(source.claimStatus), `source ${source.id} has an invalid claimStatus`);
+  assert(["received-account", "later-compilation", "strategic-text", "dramatic-reconstruction"].includes(source.claimStatus), `source ${source.id} has an invalid claimStatus`);
+  assert(["public-link-metadata-only", "project-original"].includes(source.rightsStatus), `source ${source.id} has an invalid rightsStatus`);
+  const edition = editionRegister.editions.find((candidate) => candidate.id === source.editionId);
+  assert(source.rightsStatus === edition?.rightsStatus, `source ${source.id} rightsStatus does not match edition ${source.editionId}`);
+  if (source.rightsStatus === "public-link-metadata-only") assert(/^https:\/\//.test(source.url ?? ""), `public source ${source.id} requires an HTTPS URL`);
+  if (source.rightsStatus === "project-original") assert(!source.url, `project source ${source.id} must not claim a public URL`);
+}
+for (const claim of campaign.claims ?? []) {
+  assert(typeof claim.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(claim.id), `claim ${claim.id} must use an ASCII kebab-case id`);
+  assert(["chronology", "event", "institution", "person", "geography", "strategic-lens", "reconstruction"].includes(claim.kind), `claim ${claim.id} has an invalid kind`);
+  hasRequiredText(claim.statement, `claim ${claim.id}.statement`);
+  hasRequiredText(claim.uncertainty, `claim ${claim.id}.uncertainty`);
+  hasRequiredText(claim.gameUse, `claim ${claim.id}.gameUse`);
+  assert(Array.isArray(claim.sourceRefs) && claim.sourceRefs.length > 0, `claim ${claim.id} requires at least one source`);
+  for (const sourceRef of claim.sourceRefs ?? []) assert(sourceIds.has(sourceRef), `claim ${claim.id} references unknown source ${sourceRef}`);
+  assert(["evidence-located", "specialist-review-required", "authored-reconstruction"].includes(claim.reviewStatus), `claim ${claim.id} has an invalid reviewStatus`);
+  assert(["high", "medium", "low", "not-applicable"].includes(claim.confidence), `claim ${claim.id} has invalid confidence`);
+  assert(typeof claim.reviewer === "string" && claim.reviewer.trim(), `claim ${claim.id} requires a reviewer or pending review role`);
+  if (claim.kind === "reconstruction") {
+    assert(claim.reviewStatus === "authored-reconstruction", `reconstruction claim ${claim.id} must be explicitly authored`);
+    assert(claim.confidence === "not-applicable", `reconstruction claim ${claim.id} must use not-applicable confidence`);
+  } else {
+    assert(claim.reviewStatus !== "authored-reconstruction", `historical claim ${claim.id} cannot masquerade as authored reconstruction`);
+    assert(claim.confidence !== "not-applicable", `historical claim ${claim.id} requires a confidence assessment`);
+  }
 }
 const allChoiceIds = new Set();
 const allConditionIds = new Set();
+const referencedClaimIds = new Set();
 for (const node of campaign.nodes ?? []) {
   assert(typeof node.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(node.id), `node ${node.id} must use an ASCII kebab-case id`);
   hasRequiredText(node.dateLabel, `node ${node.id}.dateLabel`);
@@ -75,7 +125,17 @@ for (const node of campaign.nodes ?? []) {
   assert(characterIds.has(node.speakerId), `node ${node.id} references unknown character ${node.speakerId}`);
   assert(Array.isArray(node.choices) && node.choices.length >= 2, `node ${node.id} must offer at least two choices`);
   assert(Array.isArray(node.conditions) && node.conditions.length >= 2, `node ${node.id} must define at least two field conditions`);
+  assert(Array.isArray(node.sourceRefs) && node.sourceRefs.length > 0, `node ${node.id} must cite at least one source record`);
+  assert(Array.isArray(node.claimRefs) && node.claimRefs.length > 0, `node ${node.id} must expose at least one historical or reconstruction claim`);
   for (const sourceRef of node.sourceRefs ?? []) assert(sourceIds.has(sourceRef), `node ${node.id} references unknown source ${sourceRef}`);
+  for (const claimRef of node.claimRefs ?? []) {
+    assert(claimIds.has(claimRef), `node ${node.id} references unknown claim ${claimRef}`);
+    referencedClaimIds.add(claimRef);
+    const claim = campaign.claims.find((candidate) => candidate.id === claimRef);
+    for (const sourceRef of claim?.sourceRefs ?? []) {
+      assert(node.sourceRefs.includes(sourceRef), `node ${node.id} claim ${claimRef} requires missing source ${sourceRef}`);
+    }
+  }
   for (const condition of node.conditions ?? []) {
     assert(typeof condition.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(condition.id), `node ${node.id} has invalid field condition id ${condition.id}`);
     assert(!allConditionIds.has(condition.id), `campaign contains duplicate field condition ${condition.id}`);
@@ -116,6 +176,7 @@ for (const node of campaign.nodes ?? []) {
     }
   }
 }
+for (const id of claimIds) assert(referencedClaimIds.has(id), `claim is not exposed by any playable node: ${id}`);
 
 const reachable = new Set();
 const visit = (nodeId, stack = []) => {
@@ -171,4 +232,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${allConditionIds.size} field conditions, ${campaign.sources.length} source records, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);
+console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${allConditionIds.size} field conditions, ${campaign.sources.length} source records, ${campaign.claims.length} claim records, ${editionRegister.editions.length} registered editions, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);

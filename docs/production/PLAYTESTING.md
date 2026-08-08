@@ -21,17 +21,18 @@ npm run build
 SHI_CDP_PORT=9321 node scripts/playtest-web.mjs
 ```
 
-The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, controller detection/D-pad/face/shoulder/Start commands, opening content, five resources, choices, pressure warnings, keyboard decisions, source classifications, save format 3, disclosed field signal/classification/effects, fixed-seed selection, three-stage response deltas, seed persistence, Arabic RTL, resume, desktop/mobile layout, scrolled mobile cards, and console errors.
+The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, controller detection/D-pad/face/shoulder/Start commands, opening content, five resources, choices, pressure warnings, keyboard decisions, source classifications, exact locators, public-edition links, claim counts, unresolved specialist states, authored-reconstruction boundaries, save format 3, disclosed field signal/classification/effects, fixed-seed selection, three-stage response deltas, seed persistence, Arabic RTL, resume, desktop/mobile layout, scrolled mobile cards, and console errors.
 
 ## Current result
 
-2026-08-09 seeded-uncertainty checkpoint: localhost and the public Pages deployment both pass all 50 checks with fixed seed `5EED2026` and zero page console errors. Public gameplay implementation commit: `f17b923216db0abe10685df7b4c3b992e9e7527e`. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
+2026-08-09 historical-production-cell checkpoint: localhost passes all 56 checks with fixed seed `5EED2026` and zero page console errors. The public Pages rerun is required after the implementation commit is pushed; until then the earlier seeded-uncertainty public evidence remains the public boundary. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
 
 Visual review after automation:
 
 - Title composition: pass.
 - Desktop map/story hierarchy: pass.
 - Pressure warnings, disclosed reconstruction-classified field signal, three-stage choice feedback, source drawer and persistent decision record: pass.
+- Source/claim ledger: pass for four opening records, exact locators, three public links, nine active claims, two unresolved specialist states, and three authored-reconstruction boundaries.
 - Arabic shell: pass after isolating untranslated English narrative as LTR.
 - Keyboard contract: pass after replacing browser-reserved `Alt+1–3` with `Shift+1–3`.
 - First-run guide: pass on desktop/mobile; copy hierarchy is readable, dismissal changes no campaign state, and the guide remains available from the header/Start button.

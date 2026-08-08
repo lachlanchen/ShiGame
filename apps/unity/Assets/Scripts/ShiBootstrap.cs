@@ -44,6 +44,7 @@ namespace SHI
         private float previousVertical;
         private string error = "";
         private ShiResolution? resolution;
+        private Vector2 sourceScroll;
         private GUIStyle? titleStyle;
         private GUIStyle? bodyStyle;
         private GUIStyle? smallStyle;
@@ -328,20 +329,62 @@ namespace SHI
 
         private void DrawSources(ShiNode node)
         {
-            var width = Mathf.Min(520, Screen.width * 0.55f);
+            if (campaign == null) return;
+            var width = Mathf.Min(640, Screen.width * 0.62f);
             GUI.Box(new Rect(Screen.width - width, 0, width, Screen.height), "");
             GUI.Label(new Rect(Screen.width - width + 25, 22, width - 90, 50), T("sources"), titleStyle);
             if (GUI.Button(new Rect(Screen.width - 55, 22, 32, 32), "×")) sourcesOpen = false;
-            var y = 90f;
-            foreach (var id in node.SourceRefs)
+            var sources = node.SourceRefs
+                .ConvertAll(id => campaign.Sources.Find(item => item.Id == id))
+                .FindAll(source => source != null);
+            var claims = node.ClaimRefs
+                .ConvertAll(id => campaign.Claims.Find(item => item.Id == id))
+                .FindAll(claim => claim != null);
+            var contentHeight = sources.Count * 168 + claims.Count * 174 + 135;
+            var viewport = new Rect(Screen.width - width + 18, 82, width - 30, Screen.height - 94);
+            sourceScroll = GUI.BeginScrollView(viewport, sourceScroll, new Rect(0, 0, width - 55, contentHeight));
+            var y = 8f;
+            foreach (var source in sources)
             {
-                var source = campaign!.Sources.Find(item => item.Id == id);
                 if (source == null) continue;
-                GUI.Label(new Rect(Screen.width - width + 25, y, width - 50, 30), source.Work, bodyStyle);
-                GUI.Label(new Rect(Screen.width - width + 25, y + 34, width - 50, 90), campaign.Text(source.Note, locale), smallStyle);
-                y += 140;
+                GUI.Box(new Rect(5, y, width - 80, 155), "");
+                GUI.Label(new Rect(18, y + 10, width - 110, 20), SourceStatus(source), smallStyle);
+                GUI.Label(new Rect(18, y + 31, width - 110, 28), source.Work, bodyStyle);
+                GUI.Label(new Rect(18, y + 60, width - 110, 23), source.Locator, smallStyle);
+                GUI.Label(new Rect(18, y + 84, width - 110, 43), campaign.Text(source.Note, locale), smallStyle);
+                if (!string.IsNullOrWhiteSpace(source.Url) && GUI.Button(new Rect(18, y + 127, 180, 22), T("openEdition") + "  ↗")) Application.OpenURL(source.Url);
+                y += 168;
             }
+            GUI.Label(new Rect(8, y + 6, width - 90, 32), T("claimRegister"), titleStyle);
+            GUI.Label(new Rect(8, y + 38, width - 90, 22), T("publicSource"), smallStyle);
+            y += 66;
+            foreach (var claim in claims)
+            {
+                if (claim == null) continue;
+                GUI.Box(new Rect(5, y, width - 80, 161), "");
+                GUI.Label(new Rect(18, y + 10, width - 110, 20), ClaimStatus(claim) + " · " + claim.Confidence, smallStyle);
+                GUI.Label(new Rect(18, y + 32, width - 110, 45), campaign.Text(claim.Statement, locale), bodyStyle);
+                GUI.Label(new Rect(18, y + 80, width - 110, 42), campaign.Text(claim.Uncertainty, locale), smallStyle);
+                GUI.Label(new Rect(18, y + 124, width - 110, 32), campaign.Text(claim.GameUse, locale), smallStyle);
+                y += 174;
+            }
+            GUI.EndScrollView();
         }
+
+        private string SourceStatus(ShiSource source) => source.ClaimStatus switch
+        {
+            "dramatic-reconstruction" => T("reconstruction"),
+            "later-compilation" => T("later"),
+            "strategic-text" => T("strategicText"),
+            _ => T("received"),
+        };
+
+        private string ClaimStatus(ShiClaim claim) => claim.ReviewStatus switch
+        {
+            "specialist-review-required" => T("specialistReview"),
+            "authored-reconstruction" => T("authoredClaim"),
+            _ => T("evidenceLocated"),
+        };
 
         private void DrawRecord()
         {
@@ -437,6 +480,7 @@ namespace SHI
             if (guideOpen) CloseGuide();
             sourcesOpen = !sourcesOpen;
             if (!sourcesOpen) return;
+            sourceScroll = Vector2.zero;
             recordOpen = false;
             guideOpen = false;
         }

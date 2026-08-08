@@ -22,8 +22,14 @@
     "web client advertises save contract version 3",
     "desktop gameplay has no horizontal overflow",
     "D-pad moves the highlighted enabled decision",
-    "source ledger opens with the node's three records",
+    "source ledger opens with the node's four records",
     "dramatic reconstruction is visually distinguished",
+    "active scene exposes its nine historical and reconstruction claims",
+    "two unresolved P0 claims are visibly marked for specialist review",
+    "source ledger exposes the exact Shiji locator",
+    "public edition links are distinct from the project-original reconstruction",
+    "authored reconstruction claims remain visually distinct from historical evidence",
+    "claim register has no desktop horizontal overflow",
     "B/Circle closes the source ledger",
     "Arabic switches the document to RTL",
     "Arabic RTL gameplay has no horizontal overflow",
@@ -53,7 +59,7 @@
     "browser console remained free of errors"
   ],
   "consoleErrors": [],
-  "target": "https://lachlanchen.github.io/ShiGame/?seed=5EED2026",
-  "testedCommit": "f17b923216db0abe10685df7b4c3b992e9e7527e",
+  "target": "http://127.0.0.1:4173/?seed=5EED2026",
+  "testedCommit": "working-tree",
   "cdpPort": 9321
 }

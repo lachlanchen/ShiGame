@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   canChoose,
   createInitialState,
@@ -19,17 +19,17 @@ import {
   type LocalizedText,
   type ResourceKey,
 } from "@shi/game-core";
-import campaignJson from "./generated/chapter-01-daze.json";
+import campaignJson from "./generated/chapter-01-gameplay.json";
 import { isRtl, localeNames, translate } from "./i18n";
 import { ResourceRail } from "./components/ResourceRail";
-import { SourceLedger } from "./components/SourceLedger";
 import { StrategicMap } from "./components/StrategicMap";
 import { ThreeBackdrop } from "./components/ThreeBackdrop";
-import { FieldGuide } from "./components/FieldGuide";
 import { useGamepad } from "./useGamepad";
 import type { GamepadCommand } from "./gamepad";
 
 const campaign = campaignJson as unknown as Campaign;
+const FieldGuide = lazy(() => import("./components/FieldGuide").then((module) => ({ default: module.FieldGuide })));
+const SourceLedger = lazy(() => import("./components/SourceLedger").then((module) => ({ default: module.SourceLedger })));
 const SAVE_KEY = "shi.chapter-01.save.v3";
 const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
@@ -384,8 +384,8 @@ export function App() {
         </section>
       )}
 
-      {drawer === "guide" && <FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} />}
-      {drawer === "sources" && <SourceLedger campaign={campaign} locale={locale} activeIds={node.sourceRefs} onClose={closeTransient} />}
+      {drawer === "guide" && <Suspense fallback={null}><FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} /></Suspense>}
+      {drawer === "sources" && <Suspense fallback={null}><SourceLedger campaign={campaign} locale={locale} activeIds={node.sourceRefs} activeClaimIds={node.claimRefs} onClose={closeTransient} /></Suspense>}
       {drawer === "record" && (
         <aside className="drawer record-drawer" data-testid="record-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "record")}>
           <div className="drawer-head"><div><span className="eyebrow">SHI</span><h2>{translate(locale, "record")}</h2></div><button className="icon-button" autoFocus onClick={closeTransient}>×</button></div>

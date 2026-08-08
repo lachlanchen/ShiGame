@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Historical production cell checkpoint
+
+- Upgraded the canonical campaign to schema v3 with a five-edition rights-aware register, seven source records and thirteen stable claim records. Every claim carries a precise locator, evidence/review state, bounded confidence, uncertainty, gameplay use and pending/completed review role.
+- Located and compared the Chapter I narrative in public *Shiji* 48/7/8, *Hanshu* 31 and *Zizhi Tongjian* 7 pages, and isolated *Sunzi* 1 as a strategic design lens rather than episode evidence. Local discovery-mirror hashes are documented without publishing private books or copied source prose.
+- Bound every claim to at least one playable scene and every active claim to its required sources. Validators reject unknown editions, rights mismatches, non-HTTPS public links, orphan claims, missing claim sources, and historical claims disguised as authored reconstruction.
+- Kept the Qin delayed-duty penalty and Daze geography/map implications visibly marked `specialist-review-required`; no historical claim is represented as specialist-approved.
+- Added multilingual evidence labels, exact locators, public-edition links, uncertainty cards and authored-reconstruction boundaries to the web and Unity source ledgers. Unity runtime/editor/EditMode-test assemblies pass the offline reference compile; licensed import/execution/build gates remain open.
+- Split the browser transport losslessly so the evidence payload loads on demand. Repository validation reconstructs the canonical object from both slices; the initial JavaScript remains within budget at 98.53 KiB gzip.
+- Expanded dedicated visible-browser QA to 56 checks. Localhost passes with zero console errors and the new source/claim screenshots have been visually inspected; the exact public Pages rerun remains required after push.
+
+Next gate: push and repeat all 56 checks on the exact public deployment, then obtain Qin-law and historical-GIS specialist decisions while the physical-controller, observed-player and Unity-license gates remain open. Chapter II still does not expand before the player-evidence gates.
+
 ## 2026-08-09 · Seeded uncertainty checkpoint
 
 - Added the reviewed authored-field contract: a recorded uint32 chronicle seed selects one weighted condition using identical FNV-1a logic in TypeScript and C#, while the complete signal and exact effects are disclosed before commitment.

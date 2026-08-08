@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "id": "chapter-01-daze",
   "title": {
     "en": "SHI — The Shape of Power",
@@ -107,73 +107,374 @@
   "sources": [
     {
       "id": "shiji-48-daze",
+      "editionId": "shiji-sanjiazhu-wikisource",
       "work": "史记 · 陈涉世家 / Records of the Grand Historian, Hereditary House of Chen She",
       "section": "卷四十八：大泽乡起事叙事",
+      "locator": "卷048 · 陳涉世家第十八 · 二世元年七月段",
+      "url": "https://zh.wikisource.org/wiki/史記三家註/卷048",
       "author": "司马迁 / Sima Qian",
       "date": "c. 1st century BCE",
       "note": {
         "en": "Core received account for the delayed conscripts, rain, mortal penalty, Chen Sheng, Wu Guang, and the uprising. The game does not present every reported speech or omen as independently verified fact.",
         "zh-Hans": "关于戍卒遇雨失期、法皆斩、陈胜吴广起事的主要传世叙事。游戏不把其中每段言辞或祥异视为已独立证实的事实。"
       },
-      "claimStatus": "later-compilation"
+      "claimStatus": "later-compilation",
+      "rightsStatus": "public-link-metadata-only"
     },
     {
       "id": "shiji-7-xiang",
+      "editionId": "shiji-sanjiazhu-wikisource",
       "work": "史记 · 项羽本纪 / Records of the Grand Historian, Basic Annals of Xiang Yu",
       "section": "卷七：会稽起兵及楚汉叙事",
+      "locator": "卷007 · 項羽本紀第七 · 二世元年會稽起兵段",
+      "url": "https://zh.wikisource.org/wiki/史記三家註/卷007",
       "author": "司马迁 / Sima Qian",
       "date": "c. 1st century BCE",
       "note": {
         "en": "Basis for the later Xiang-clan route and the political memory of Chu; not evidence that the Daze characters already knew Xiang Yu's future role.",
         "zh-Hans": "用于后续项氏路线和楚地政治记忆；不能证明大泽乡人物已预知项羽后来的地位。"
       },
-      "claimStatus": "later-compilation"
+      "claimStatus": "later-compilation",
+      "rightsStatus": "public-link-metadata-only"
     },
     {
       "id": "shiji-8-liu",
+      "editionId": "shiji-sanjiazhu-wikisource",
       "work": "史记 · 高祖本纪 / Records of the Grand Historian, Basic Annals of Gaozu",
       "section": "卷八：沛县起兵及入关叙事",
+      "locator": "卷008 · 高祖本紀第八 · 秦二世元年沛縣起兵段",
+      "url": "https://zh.wikisource.org/wiki/史記三家註/卷008",
       "author": "司马迁 / Sima Qian",
       "date": "c. 1st century BCE",
       "note": {
         "en": "Basis for the later Pei network and Liu Bang route; used prospectively, without turning later victory into inevitable destiny.",
         "zh-Hans": "用于后续沛县人脉与刘邦路线；游戏避免用后来的胜利倒推成必然命运。"
       },
-      "claimStatus": "later-compilation"
+      "claimStatus": "later-compilation",
+      "rightsStatus": "public-link-metadata-only"
     },
     {
       "id": "zztj-7-qin",
+      "editionId": "zizhi-tongjian-wikisource",
       "work": "资治通鉴 / Comprehensive Mirror in Aid of Governance",
       "section": "秦纪二：二世元年",
+      "locator": "卷007 · 秦紀二 · 二世元年秋七月條",
+      "url": "https://zh.wikisource.org/wiki/資治通鑑/卷007",
       "author": "司马光等 / Sima Guang et al.",
       "date": "11th century CE",
       "note": {
         "en": "A much later synthesis used to compare chronology and political framing, never as a contemporary eyewitness record.",
         "zh-Hans": "用于比对年代与政治叙述的后世编年综合，绝不作为当时人的目击记录。"
       },
-      "claimStatus": "later-compilation"
+      "claimStatus": "later-compilation",
+      "rightsStatus": "public-link-metadata-only"
+    },
+    {
+      "id": "hanshu-31-chen-sheng",
+      "editionId": "hanshu-wikisource",
+      "work": "汉书 · 陈胜项籍传 / Book of Han, Traditions of Chen Sheng and Xiang Ji",
+      "section": "卷三十一：陈胜、吴广及项籍叙事",
+      "locator": "卷031 · 陳勝、吳廣 · 秦二世元年秋七月段",
+      "url": "https://zh.wikisource.org/wiki/漢書/卷031",
+      "author": "班固等 / Ban Gu et al.",
+      "date": "1st century CE",
+      "note": {
+        "en": "An early imperial parallel account used to compare the Daze narrative and the later Kuaiji sequence. Shared wording does not make the legal claim independently verified.",
+        "zh-Hans": "用于比对大泽乡叙事与后来会稽起兵次序的早期帝国史书。文字相近并不等于已独立证实其中的法律说法。"
+      },
+      "claimStatus": "later-compilation",
+      "rightsStatus": "public-link-metadata-only"
     },
     {
       "id": "sunzi-1-calculation",
+      "editionId": "sunzi-wikisource",
       "work": "孙子兵法 / The Art of War",
       "section": "始计篇：道、天、地、将、法",
+      "locator": "始計第一 · 五事（道、天、地、將、法）",
+      "url": "https://zh.wikisource.org/wiki/孫子",
       "date": "received text, Warring States strata debated",
       "note": {
         "en": "A design lens for explaining strategic alignment, season, terrain, command, and organization. It does not document this episode.",
         "zh-Hans": "作为解释人心、天时、地利、将领与组织的设计视角；并非本事件的史料。"
       },
-      "claimStatus": "primary-account"
+      "claimStatus": "strategic-text",
+      "rightsStatus": "public-link-metadata-only"
     },
     {
       "id": "dramatic-daze-keeper",
+      "editionId": "shi-original-2026",
       "work": "SHI narrative reconstruction",
       "section": "The Keeper, Aunt Yu, Courier Han, council details and all player choices",
+      "locator": "Chapter I authored-content register · revision 2026-08-09",
       "date": "2026",
       "note": {
         "en": "Fiction constructed to let the player reason within historical constraints. It is explicitly separated from attested persons and events.",
         "zh-Hans": "为让玩家在历史约束中推演而创作的虚构内容，与传世记载中的人物事件明确区分。"
       },
-      "claimStatus": "dramatic-reconstruction"
+      "claimStatus": "dramatic-reconstruction",
+      "rightsStatus": "project-original"
+    }
+  ],
+  "claims": [
+    {
+      "id": "daze-chronology-seventh-month",
+      "kind": "chronology",
+      "statement": {
+        "en": "The received Shiji, Hanshu, and Zizhi Tongjian traditions place Chen Sheng and Wu Guang's uprising in Qin Ershi's first year, seventh month; SHI renders the conventional date as 209 BCE.",
+        "zh-Hans": "《史记》《汉书》《资治通鉴》的传世叙事都把陈胜、吴广起事系于秦二世元年七月；《势》按通行纪年标作公元前209年。"
+      },
+      "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin"],
+      "reviewStatus": "evidence-located",
+      "confidence": "high",
+      "uncertainty": {
+        "en": "The calendrical conversion and exact day are not asserted; the interface gives a month-level dramatic date.",
+        "zh-Hans": "游戏不主张精确到日，也不把历法换算写成无争议事实；界面只采用月份层级的戏剧时间。"
+      },
+      "gameUse": {
+        "en": "Dates the opening and prevents later Chu-Han events from leaking backward into the scene.",
+        "zh-Hans": "限定开场时间，避免把后来的楚汉事件倒灌进大泽乡。"
+      },
+      "reviewer": "pending · historical chronology review"
+    },
+    {
+      "id": "daze-nine-hundred-yuyang",
+      "kind": "event",
+      "statement": {
+        "en": "The received accounts describe nine hundred conscripts or levy laborers bound for Yuyang and gathered at Daze Village.",
+        "zh-Hans": "传世叙事称九百名戍卒或被征发者前往渔阳，并屯于大泽乡。"
+      },
+      "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin"],
+      "reviewStatus": "evidence-located",
+      "confidence": "medium",
+      "uncertainty": {
+        "en": "The number and administrative composition come from related received narratives, not a surviving Qin roster.",
+        "zh-Hans": "人数与编组来自彼此相关的传世叙事，并非现存秦代名籍。"
+      },
+      "gameUse": {
+        "en": "Sets the scale of the stranded column; the player character's register remains fictional.",
+        "zh-Hans": "确定受困队伍的大致规模；玩家掌管的名籍仍属虚构。"
+      },
+      "reviewer": "pending · institutional history review"
+    },
+    {
+      "id": "daze-rain-road-delay",
+      "kind": "event",
+      "statement": {
+        "en": "The received accounts connect heavy rain, an impassable road, and an expected missed deadline at Daze.",
+        "zh-Hans": "传世叙事把大雨、道路不通与预计失期连在一起。"
+      },
+      "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin"],
+      "reviewStatus": "evidence-located",
+      "confidence": "medium",
+      "uncertainty": {
+        "en": "No surviving weather log proves the storm's exact duration, water level, or route effects.",
+        "zh-Hans": "没有现存气象记录能证实雨期、水位或道路影响的具体程度。"
+      },
+      "gameUse": {
+        "en": "Creates the opening logistical crisis; exact flood imagery is reconstruction.",
+        "zh-Hans": "构成开场的后勤危机；具体积水景象属于重构。"
+      },
+      "reviewer": "pending · environmental history review"
+    },
+    {
+      "id": "daze-delay-penalty-account",
+      "kind": "institution",
+      "statement": {
+        "en": "The received narratives state that missing the deadline carried a death penalty; whether this accurately reflects Qin statutes and enforcement is unresolved.",
+        "zh-Hans": "传世叙事称失期当斩；这一说法是否准确对应秦律条文及实际执行，尚未解决。"
+      },
+      "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin"],
+      "reviewStatus": "specialist-review-required",
+      "confidence": "low",
+      "uncertainty": {
+        "en": "This P0 claim requires comparison with excavated Qin legal texts and a legal historian before public alpha wording can be approved.",
+        "zh-Hans": "这项P0主张必须与出土秦律材料对读，并经秦汉法律史专家审阅后，方可批准公测措辞。"
+      },
+      "gameUse": {
+        "en": "The opening says the received histories report death and explicitly notes that uniform application remains debated.",
+        "zh-Hans": "开场只说传世史书称其为死罪，并明确提示是否一律执行仍有争议。"
+      },
+      "reviewer": "pending · Qin legal-history specialist"
+    },
+    {
+      "id": "daze-chen-wu-tunzhang",
+      "kind": "person",
+      "statement": {
+        "en": "The received accounts identify Chen Sheng and Wu Guang as tunzhang among the assembled conscripts.",
+        "zh-Hans": "传世叙事称陈胜、吴广在戍卒中担任屯长。"
+      },
+      "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin"],
+      "reviewStatus": "evidence-located",
+      "confidence": "medium",
+      "uncertainty": {
+        "en": "The exact duties and command relationship represented by this title still require terminological review.",
+        "zh-Hans": "屯长的具体职责与指挥关系仍需制度史和术语审校。"
+      },
+      "gameUse": {
+        "en": "Supports showing both men as organizers without making the player their commander.",
+        "zh-Hans": "支持把二人写成组织者，同时避免让玩家凌驾于其上。"
+      },
+      "reviewer": "pending · Qin institutional terminology review"
+    },
+    {
+      "id": "daze-qi-geography",
+      "kind": "geography",
+      "statement": {
+        "en": "The received and annotated traditions associate Daze Village with Qi county in the Pei commandery region.",
+        "zh-Hans": "传世文本及其注家把大泽乡与沛郡蕲县一带联系起来。"
+      },
+      "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin"],
+      "reviewStatus": "specialist-review-required",
+      "confidence": "medium",
+      "uncertainty": {
+        "en": "Administrative boundaries, modern site identification, travel distance, and the schematic map all require historical-GIS review.",
+        "zh-Hans": "政区沿革、今址对应、行程距离与游戏示意地图均需历史地理审阅。"
+      },
+      "gameUse": {
+        "en": "Names the opening site while keeping all map coordinates explicitly schematic.",
+        "zh-Hans": "为开场地点命名，同时明确所有地图坐标仅作示意。"
+      },
+      "reviewer": "pending · historical GIS specialist"
+    },
+    {
+      "id": "pei-response-after-daze",
+      "kind": "chronology",
+      "statement": {
+        "en": "Later narratives place the Pei uprising response after news of Chen Sheng's rising, not as a force already known at the Daze decision.",
+        "zh-Hans": "后世叙事把沛县响应置于陈胜起事消息传开之后，而不是大泽乡决策时已经明朗的力量。"
+      },
+      "sourceRefs": ["shiji-8-liu", "hanshu-31-chen-sheng", "zztj-7-qin"],
+      "reviewStatus": "evidence-located",
+      "confidence": "medium",
+      "uncertainty": {
+        "en": "Sequence is used at month-level only; speeches, omens, and later imperial destiny are not treated as transparent facts.",
+        "zh-Hans": "这里只采用月份层级的先后关系；言辞、祥异与后来的帝王命运不作透明事实。"
+      },
+      "gameUse": {
+        "en": "Allows Pei to appear only as an uncertain future network in the ending.",
+        "zh-Hans": "只允许沛县在结尾作为尚不确定的未来网络进入视野。"
+      },
+      "reviewer": "pending · comparative narrative review"
+    },
+    {
+      "id": "kuaiji-response-after-daze",
+      "kind": "chronology",
+      "statement": {
+        "en": "Later narratives place the Xiang clan's Kuaiji rising after Chen Sheng's uprising became known.",
+        "zh-Hans": "后世叙事把项氏在会稽起兵置于陈胜起事消息传开之后。"
+      },
+      "sourceRefs": ["shiji-7-xiang", "hanshu-31-chen-sheng", "zztj-7-qin"],
+      "reviewStatus": "evidence-located",
+      "confidence": "medium",
+      "uncertainty": {
+        "en": "The game does not carry later heroic characterization or foreknowledge of Xiang Yu into Daze.",
+        "zh-Hans": "游戏不把后来的英雄化书写或对项羽命运的预知带回大泽乡。"
+      },
+      "gameUse": {
+        "en": "Allows Kuaiji to appear as a distant emerging force rather than a predetermined route.",
+        "zh-Hans": "让会稽只作为远方正在形成的力量出现，而非预定路线。"
+      },
+      "reviewer": "pending · comparative narrative review"
+    },
+    {
+      "id": "sunzi-five-factors-design-lens",
+      "kind": "strategic-lens",
+      "statement": {
+        "en": "The received Sunzi opening organizes strategic comparison through alignment, season, terrain, command, and organization.",
+        "zh-Hans": "传世《孙子》首篇以道、天、地、将、法组织战略比较。"
+      },
+      "sourceRefs": ["sunzi-1-calculation"],
+      "reviewStatus": "evidence-located",
+      "confidence": "high",
+      "uncertainty": {
+        "en": "This is a design lens only; it is not evidence that any Daze participant applied a named Sunzi doctrine.",
+        "zh-Hans": "这只是设计视角，不能证明大泽乡任何人物曾按《孙子》学说行事。"
+      },
+      "gameUse": {
+        "en": "Shapes the five-resource field and Go-like positional explanations.",
+        "zh-Hans": "用于塑造五种资源与围棋式的形势解读。"
+      },
+      "reviewer": "pending · intellectual-history review"
+    },
+    {
+      "id": "fictional-cast-and-councils",
+      "kind": "reconstruction",
+      "statement": {
+        "en": "The Keeper, Aunt Yu, Courier Han, their dialogue, the councils, and every player choice are original dramatic reconstruction.",
+        "zh-Hans": "掌简人、妪母、韩驿使、他们的对白、议事场景与全部玩家选择均为原创戏剧性重构。"
+      },
+      "sourceRefs": ["dramatic-daze-keeper"],
+      "reviewStatus": "authored-reconstruction",
+      "confidence": "not-applicable",
+      "uncertainty": {
+        "en": "No invented line is presented as a historical quotation.",
+        "zh-Hans": "任何虚构台词都不冒充历史引文。"
+      },
+      "gameUse": {
+        "en": "Creates playable deliberation while keeping the fiction boundary inspectable.",
+        "zh-Hans": "在保持虚构边界可查的前提下形成可玩的议事过程。"
+      },
+      "reviewer": "SHI narrative team · authored boundary"
+    },
+    {
+      "id": "schematic-campaign-map",
+      "kind": "reconstruction",
+      "statement": {
+        "en": "The campaign map is a strategic diagram; its coordinates, river curve, and travel spacing are not geographic measurement.",
+        "zh-Hans": "战役地图是战略示意图；坐标、河道曲线与地点间距都不是地理测量。"
+      },
+      "sourceRefs": ["dramatic-daze-keeper"],
+      "reviewStatus": "authored-reconstruction",
+      "confidence": "not-applicable",
+      "uncertainty": {
+        "en": "Historical-GIS work remains a P0 gate before the map can imply routes or scale.",
+        "zh-Hans": "地图若要表达路线或尺度，必须先通过P0历史地理审阅。"
+      },
+      "gameUse": {
+        "en": "Prevents players from reading the wartable as a measured historical map.",
+        "zh-Hans": "避免玩家把沙盘误读为经过测绘的历史地图。"
+      },
+      "reviewer": "SHI art and history teams · schematic boundary"
+    },
+    {
+      "id": "field-conditions-reconstruction",
+      "kind": "reconstruction",
+      "statement": {
+        "en": "All seed-selected rain, road, rumor, supply, and observation conditions are authored gameplay circumstances, not claims about a recorded occurrence.",
+        "zh-Hans": "所有由种子选出的雨势、道路、传言、补给与观察条件都是原创玩法情境，不声称对应某次有记录的具体事件。"
+      },
+      "sourceRefs": ["dramatic-daze-keeper"],
+      "reviewStatus": "authored-reconstruction",
+      "confidence": "not-applicable",
+      "uncertainty": {
+        "en": "Their plausibility still requires environmental and material-culture review before alpha.",
+        "zh-Hans": "这些情境的合理性仍需在公测前接受环境史与物质文化审阅。"
+      },
+      "gameUse": {
+        "en": "Adds fair replay variation while visibly separating possibility from attested history.",
+        "zh-Hans": "在明确区分可能性与传世记载的同时，提供公平的重复游玩变化。"
+      },
+      "reviewer": "SHI systems team · authored boundary"
+    },
+    {
+      "id": "no-future-foreknowledge",
+      "kind": "reconstruction",
+      "statement": {
+        "en": "Chapter I characters do not know the later victories, offices, or reputations of Liu Bang and Xiang Yu.",
+        "zh-Hans": "第一章人物不知道刘邦、项羽后来的胜负、官号或名声。"
+      },
+      "sourceRefs": ["dramatic-daze-keeper", "shiji-7-xiang", "shiji-8-liu"],
+      "reviewStatus": "authored-reconstruction",
+      "confidence": "not-applicable",
+      "uncertainty": {
+        "en": "This is a narrative anti-hindsight rule, not a source claim about private knowledge.",
+        "zh-Hans": "这是防止后见之明的叙事规则，并非关于人物私下认知的史料主张。"
+      },
+      "gameUse": {
+        "en": "Keeps Pei and Kuaiji uncertain and prevents destiny-driven choice design.",
+        "zh-Hans": "让沛与会稽保持不确定，避免用宿命论设计选择。"
+      },
+      "reviewer": "SHI narrative team · anti-hindsight rule"
     }
   ],
   "nodes": [
@@ -191,7 +492,8 @@
         "en": "“If the register reaches the next post, we are nine hundred isolated offenders. If it does not, what are we?” Chen Sheng does not raise his voice. Rain answers for him on the roof tiles.",
         "zh-Hans": "“名籍若送到下一亭，我们便是九百个各自待罪的人。名籍若送不到——我们又是什么？”陈胜没有高声。雨点替他敲着屋瓦。"
       },
-      "sourceRefs": ["shiji-48-daze", "zztj-7-qin", "dramatic-daze-keeper"],
+      "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin", "dramatic-daze-keeper"],
+      "claimRefs": ["daze-chronology-seventh-month", "daze-nine-hundred-yuyang", "daze-rain-road-delay", "daze-delay-penalty-account", "daze-chen-wu-tunzhang", "daze-qi-geography", "fictional-cast-and-councils", "schematic-campaign-map", "field-conditions-reconstruction"],
       "conditions": [
         {
           "id": "water-over-axle",
@@ -270,6 +572,7 @@
       "context": { "en": "Public trust has given the camp a voice. It has not given it supplies. Villagers have hidden grain from tax collectors and bandits alike.", "zh-Hans": "公开结盟让营地有了共同声音，却没有凭空生出粮食。乡民把存粮藏着，既防税吏，也防盗寇。" },
       "dialogue": { "en": "Aunt Yu puts an empty scoop beside your register. “A just cause can still empty an unjustly full granary. Tell us the rule before hunger writes it for you.”", "zh-Hans": "妪母把一只空斗放在名籍旁：“义军也能掏空一座不义的粮仓。趁饥饿还没替你定规矩，先把规矩说清楚。”" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "field-conditions-reconstruction"],
       "conditions": [
         {
           "id": "barred-granaries",
@@ -332,6 +635,7 @@
       "context": { "en": "The relay guards have been disarmed. Nearby posts will see the missing signal at dawn. Momentum is high; recognition is not the same as allegiance.", "zh-Hans": "亭卒已被缴械。天亮后，邻亭就会察觉烽燧断绝。声势骤起，但被人看见不等于被人拥护。" },
       "dialogue": { "en": "Wu Guang turns the captured drum on its side. “A drum tells everyone to move. It does not tell them why they should follow us after the first mile.”", "zh-Hans": "吴广把缴来的鼓侧放在地上：“鼓能叫所有人动起来，却不能告诉他们，为何走过第一里后还要跟着我们。”" },
       "sourceRefs": ["shiji-48-daze", "dramatic-daze-keeper", "sunzi-1-calculation"],
+      "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "field-conditions-reconstruction"],
       "conditions": [
         {
           "id": "smoke-under-cloud",
@@ -394,6 +698,7 @@
       "context": { "en": "Your watch catches a relay courier searching for the register. He is frightened, observant, and useful. Every way of containing knowledge creates a witness.", "zh-Hans": "守夜者抓到一名寻找名籍的驿使。他害怕、敏锐，也可能有用。每一种封锁消息的方法，都会制造一个见证人。" },
       "dialogue": { "en": "Courier Han looks at the blank space where the register was. “A missing list is already a message. Let me choose who receives it.”", "zh-Hans": "韩驿使看着名籍原先摆放的空处：“名籍失踪，本身就是一封信。让我选它送到谁手里。”" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "field-conditions-reconstruction"],
       "conditions": [
         {
           "id": "fresh-hoofprints",
@@ -456,6 +761,7 @@
       "context": { "en": "The column reaches a damaged crossing. Scouts report patrols behind and uncertain towns ahead. Families, grain carts, and armed ranks cannot all cross at once. This is a recovery turn: reduce exposure, restore supplies, or preserve cohesion before the final commitment.", "zh-Hans": "队伍来到一处被洪水毁坏的渡口。斥候报告追兵在后，前方城邑态度不明。家户、粮车与持械队伍无法同时过河。这是一轮整顿：在最终下注前，降低暴露、补充粮草，或维系队伍。" },
       "dialogue": { "en": "You lay three tally slips on the wet rail: people, provisions, pursuit. The river will collect one kind of debt before sunset.", "zh-Hans": "你把三根筹片摆在湿漉漉的栏木上：人、粮、追兵。日落前，这条河必会来收一种债。" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "schematic-campaign-map", "field-conditions-reconstruction"],
       "conditions": [
         {
           "id": "ford-rises",
@@ -534,7 +840,8 @@
       "title": { "en": "Three roads, none yet history", "zh-Hans": "三条路，都还不是历史" },
       "context": { "en": "Rumor multiplies: old Chu names in the southeast, an unusual circle of companions around Pei, frightened county seats nearby. The future victors are not yet inevitable. Your first campaign ends with a doctrine, not a coronation.", "zh-Hans": "流言四起：东南有楚国旧族，沛县有一群不同寻常的伙伴，近处县城则惶恐不安。未来的胜者尚非必然。第一章以一种行动原则结束，而非加冕。" },
       "dialogue": { "en": "Chen Sheng draws no map. He places three stones in the mud. “Power is not inside a stone. It is in what the ground lets the stones do to one another. Keeper—what ground will we make?”", "zh-Hans": "陈胜没有展开地图，只在泥里放下三块石头：“势不在石中，而在地形让石头彼此如何作用。掌简人——我们要造出怎样的地？”" },
-      "sourceRefs": ["shiji-48-daze", "shiji-7-xiang", "shiji-8-liu", "dramatic-daze-keeper"],
+      "sourceRefs": ["shiji-48-daze", "shiji-7-xiang", "shiji-8-liu", "hanshu-31-chen-sheng", "zztj-7-qin", "sunzi-1-calculation", "dramatic-daze-keeper"],
+      "claimRefs": ["pei-response-after-daze", "kuaiji-response-after-daze", "no-future-foreknowledge", "sunzi-five-factors-design-lens", "fictional-cast-and-councils", "schematic-campaign-map", "field-conditions-reconstruction"],
       "conditions": [
         {
           "id": "county-gates-barred",

@@ -1,6 +1,6 @@
 # Chapter I research brief: Daze Village
 
-Status: pre-alpha narrative basis; specialist review incomplete.
+Status: schema-v3 evidence-location pass complete; specialist review incomplete.
 
 ## Secure baseline
 
@@ -29,4 +29,6 @@ The Keeper, Aunt Yu, Courier Han, grain tallies, the damaged ford decision, and 
 | P1 | Competing accounts in *Hanshu* and *Zizhi Tongjian* | Comparative narrative memo |
 | P2 | Chu political memory before competing restorations | Scholarship bibliography |
 
-The public chapter may ship only after P0 questions have reviewed wording or explicit uncertainty labels.
+Thirteen claim records now bind these questions to exact edition locators and active playable nodes. *Shiji* 48/7/8, *Hanshu* 31, *Zizhi Tongjian* 7, and *Sunzi* 1 have public metadata/link records; no book text or modern translation is embedded. The legal-penalty and historical-GIS claims remain visibly `specialist-review-required` rather than approved.
+
+The public pre-alpha may expose incomplete P0 work only with the current explicit uncertainty labels. The historical alpha gate may pass only after the P0 review roles record decisions. See [HISTORICAL_REVIEW_SYSTEM.md](HISTORICAL_REVIEW_SYSTEM.md).

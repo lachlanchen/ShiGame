@@ -214,7 +214,25 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 .source-dramatic-reconstruction .source-status { color: #bc7461; border-color: rgba(171,76,54,.28); }
 .source h3 { margin: 10px 0 4px; color: #ddd4c3; font-family: var(--cjk); font-size: .86rem; font-weight: 500; line-height: 1.45; }
 .source-section { color: #7c7c74 !important; font-size: .57rem !important; }
+.source-locator { padding: 7px 9px; color: #a49277 !important; border-left: 2px solid rgba(190,148,82,.28); background: rgba(190,148,82,.045); font-size: .59rem !important; }
 .source p { margin: 9px 0 0; color: #aaa69b; font-family: var(--cjk); font-size: .66rem; line-height: 1.62; }
+.source-external { display: inline-block; margin-top: 11px; color: #b89a6b; font-size: .56rem; letter-spacing: .06em; text-decoration: none; }
+.source-external:hover { color: #d9bd8a; text-decoration: underline; }
+.claim-register { margin-top: 30px; padding-top: 24px; border-top: 1px solid rgba(190,148,82,.2); }
+.claim-register-head h2 { margin: 4px 0 15px; color: #d9d0bf; font-family: var(--serif); font-size: 1.35rem; font-weight: 500; }
+.claim-list { display: grid; gap: 11px; padding-bottom: 30px; }
+.claim { padding: 15px 16px; border: 1px solid rgba(111,130,119,.21); background: linear-gradient(135deg, rgba(90,112,99,.055), rgba(255,255,255,.012)); }
+.claim-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.claim-meta span { color: #89a594; font-size: .48rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
+.claim-meta code { color: #777a73; font-size: .48rem; text-transform: uppercase; }
+.claim h3 { margin: 9px 0 8px; color: #d3cab8; font-family: var(--cjk); font-size: .72rem; font-weight: 500; line-height: 1.55; }
+.claim p { margin: 7px 0 0; font-family: var(--cjk); font-size: .61rem; line-height: 1.55; }
+.claim-uncertainty { color: #a98b78; }
+.claim-use { color: #828b83; }
+.claim-specialist-review-required { border-color: rgba(182,117,76,.36); background: linear-gradient(135deg, rgba(126,65,42,.095), rgba(255,255,255,.01)); }
+.claim-specialist-review-required .claim-meta span { color: #d09169; }
+.claim-authored-reconstruction { border-color: rgba(159,83,64,.24); }
+.claim-authored-reconstruction .claim-meta span { color: #b77a68; }
 .empty-record { margin: 36px 0; color: #85847b; font-family: var(--cjk); font-size: .76rem; line-height: 1.7; }
 .record-list { display: grid; gap: 0; margin: 24px 0 35px; padding: 0; list-style: none; }
 .record-list li { display: grid; grid-template-columns: 35px 1fr; gap: 10px; padding: 0 0 23px; }

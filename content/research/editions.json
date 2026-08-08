@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "editions": [
+    {
+      "id": "shiji-sanjiazhu-wikisource",
+      "workId": "shiji",
+      "title": "史記三家註",
+      "language": "zh-Hant",
+      "editionType": "public-transcription",
+      "publisher": "Chinese Wikisource",
+      "sourceUrl": "https://zh.wikisource.org/wiki/史記三家註",
+      "accessDate": "2026-08-09",
+      "rightsStatus": "public-link-metadata-only",
+      "rightsNote": "The game stores metadata and links only. The classical base work is public domain; Wikisource transcription and contribution terms remain governed by the source page."
+    },
+    {
+      "id": "hanshu-wikisource",
+      "workId": "hanshu",
+      "title": "漢書",
+      "language": "zh-Hant",
+      "editionType": "public-transcription",
+      "publisher": "Chinese Wikisource",
+      "sourceUrl": "https://zh.wikisource.org/wiki/漢書",
+      "accessDate": "2026-08-09",
+      "rightsStatus": "public-link-metadata-only",
+      "rightsNote": "The game stores metadata and links only. The classical base work is public domain; Wikisource transcription and contribution terms remain governed by the source page."
+    },
+    {
+      "id": "zizhi-tongjian-wikisource",
+      "workId": "zizhi-tongjian",
+      "title": "資治通鑑",
+      "language": "zh-Hant",
+      "editionType": "public-transcription",
+      "publisher": "Chinese Wikisource",
+      "sourceUrl": "https://zh.wikisource.org/wiki/資治通鑑",
+      "accessDate": "2026-08-09",
+      "rightsStatus": "public-link-metadata-only",
+      "rightsNote": "The game stores metadata and links only. The classical base work is public domain; Wikisource transcription and contribution terms remain governed by the source page."
+    },
+    {
+      "id": "sunzi-wikisource",
+      "workId": "sunzi",
+      "title": "孫子兵法",
+      "language": "zh-Hant",
+      "editionType": "public-transcription",
+      "publisher": "Chinese Wikisource",
+      "sourceUrl": "https://zh.wikisource.org/wiki/孫子",
+      "accessDate": "2026-08-09",
+      "rightsStatus": "public-link-metadata-only",
+      "rightsNote": "The game stores metadata and links only. The classical base work is public domain; Wikisource transcription and contribution terms remain governed by the source page."
+    },
+    {
+      "id": "shi-original-2026",
+      "workId": "shi",
+      "title": "SHI narrative reconstruction",
+      "language": "project",
+      "editionType": "project-original",
+      "publisher": "SHI project",
+      "accessDate": "2026-08-09",
+      "rightsStatus": "project-original",
+      "rightsNote": "Original project prose and metadata; no source-book text is embedded."
+    }
+  ]
+}

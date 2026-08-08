@@ -18,12 +18,13 @@ namespace SHI
         public List<ShiSite> Sites = new();
         public List<ShiCharacter> Characters = new();
         public List<ShiSource> Sources = new();
+        public List<ShiClaim> Claims = new();
         public List<ShiNode> Nodes = new();
 
         public static ShiCampaign Parse(string json)
         {
             var result = JsonConvert.DeserializeObject<ShiCampaign>(json) ?? throw new InvalidOperationException("Campaign JSON was empty.");
-            if (result.SchemaVersion != 2) throw new InvalidOperationException($"Unsupported SHI campaign schema {result.SchemaVersion}.");
+            if (result.SchemaVersion != 3) throw new InvalidOperationException($"Unsupported SHI campaign schema {result.SchemaVersion}.");
             if (result.Nodes.All(node => node.Id != result.StartNodeId)) throw new InvalidOperationException("Campaign start node is missing.");
             return result;
         }
@@ -35,8 +36,9 @@ namespace SHI
 
     public sealed class ShiSite { public string Id = ""; public JObject Name = new(); public float X; public float Z; public string Status = ""; }
     public sealed class ShiCharacter { public string Id = ""; public JObject Name = new(); public JObject Role = new(); public bool Historical; }
-    public sealed class ShiSource { public string Id = ""; public string Work = ""; public string Section = ""; public string Date = ""; public JObject Note = new(); public string ClaimStatus = ""; }
-    public sealed class ShiNode { public string Id = ""; public JObject DateLabel = new(); public string SiteId = ""; public string SpeakerId = ""; public JObject Title = new(); public JObject Context = new(); public JObject Dialogue = new(); public List<string> SourceRefs = new(); public List<ShiFieldCondition> Conditions = new(); public List<ShiChoice> Choices = new(); }
+    public sealed class ShiSource { public string Id = ""; public string EditionId = ""; public string Work = ""; public string Section = ""; public string Locator = ""; public string Url = ""; public string Author = ""; public string Date = ""; public JObject Note = new(); public string ClaimStatus = ""; public string RightsStatus = ""; }
+    public sealed class ShiClaim { public string Id = ""; public string Kind = ""; public JObject Statement = new(); public List<string> SourceRefs = new(); public string ReviewStatus = ""; public string Confidence = ""; public JObject Uncertainty = new(); public JObject GameUse = new(); public string Reviewer = ""; }
+    public sealed class ShiNode { public string Id = ""; public JObject DateLabel = new(); public string SiteId = ""; public string SpeakerId = ""; public JObject Title = new(); public JObject Context = new(); public JObject Dialogue = new(); public List<string> SourceRefs = new(); public List<string> ClaimRefs = new(); public List<ShiFieldCondition> Conditions = new(); public List<ShiChoice> Choices = new(); }
     public sealed class ShiFieldCondition { public string Id = ""; public string ClaimStatus = ""; public JObject Title = new(); public JObject Signal = new(); public int Weight; public Dictionary<string, int> Effects = new(); }
     public sealed class ShiChoice { public string Id = ""; public JObject Label = new(); public JObject Intent = new(); public JObject Consequence = new(); public JObject Strategy = new(); public Dictionary<string, int> Effects = new(); public ShiRequirements? Requirements; public ShiPressure? Pressure; public List<string> Flags = new(); public string? NextNodeId; }
     public sealed class ShiRequirements { public Dictionary<string, int> Min = new(); public Dictionary<string, int> Max = new(); }
@@ -96,7 +98,7 @@ namespace SHI
             });
             FailureReason = after.GetValueOrDefault("danger") >= 100 ? "captured" : after.GetValueOrDefault("people") <= 0 ? "scattered" : null;
             if (string.IsNullOrEmpty(choice.NextNodeId) || FailureReason != null) Completed = true;
-            else CurrentNodeId = choice.NextNodeId;
+            else CurrentNodeId = choice.NextNodeId!;
             return new ShiResolution
             {
                 Choice = choice,

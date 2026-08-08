@@ -193,7 +193,7 @@ snapshot = await evaluate(`({
 check(snapshot.heading === "The road has become a river", "opening story node rendered from shared content");
 check(snapshot.choices === 3, "opening offers three strategic choices");
 check(snapshot.meters === 5, "all five strategic resources are visible");
-check(snapshot.sourceButton.includes("3"), "node source count is visible");
+check(snapshot.sourceButton.includes("4"), "node source count is visible");
 check(snapshot.pressureWarnings === 3, "every opening choice exposes a qualitative pressure warning");
 check(snapshot.fieldTitle === "Water over the axle", "seeded field signal is disclosed before commitment");
 check(snapshot.fieldEffects.includes("-3 Grain") && snapshot.fieldEffects.includes("+2 Exposure"), "field signal exposes its exact resource effects");
@@ -209,9 +209,26 @@ await gamepadButton(14);
 await gamepadButton(5);
 await wait(350);
 await screenshot("web-03-source-ledger.png");
-snapshot = await evaluate(`({ sources: document.querySelectorAll('.source').length, reconstructions: document.querySelectorAll('.source-dramatic-reconstruction').length })`);
-check(snapshot.sources === 3, "source ledger opens with the node's three records");
+snapshot = await evaluate(`({
+  sources: document.querySelectorAll('.source').length,
+  reconstructions: document.querySelectorAll('.source-dramatic-reconstruction').length,
+  claims: document.querySelectorAll('.claim').length,
+  specialists: document.querySelectorAll('.claim-specialist-review-required').length,
+  locators: [...document.querySelectorAll('.source-locator')].map((item) => item.textContent?.trim()),
+  publicLinks: document.querySelectorAll('.source-external[href^="https://zh.wikisource.org/"]').length
+})`);
+check(snapshot.sources === 4, "source ledger opens with the node's four records");
 check(snapshot.reconstructions === 1, "dramatic reconstruction is visually distinguished");
+check(snapshot.claims === 9, "active scene exposes its nine historical and reconstruction claims");
+check(snapshot.specialists === 2, "two unresolved P0 claims are visibly marked for specialist review");
+check(snapshot.locators.includes("卷048 · 陳涉世家第十八 · 二世元年七月段"), "source ledger exposes the exact Shiji locator");
+check(snapshot.publicLinks === 3, "public edition links are distinct from the project-original reconstruction");
+await evaluate(`(() => { const drawer = document.querySelector('.drawer'); drawer.scrollTop = drawer.scrollHeight; return drawer.scrollTop; })()`);
+await wait(350);
+await screenshot("web-12-claim-register.png");
+snapshot = await evaluate(`({ authored: document.querySelectorAll('.claim-authored-reconstruction').length, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth })`);
+check(snapshot.authored === 3, "authored reconstruction claims remain visually distinct from historical evidence");
+check(snapshot.overflow <= 1, "claim register has no desktop horizontal overflow");
 await gamepadButton(1);
 await wait(250);
 snapshot = await evaluate(`Boolean(document.querySelector('.drawer'))`);

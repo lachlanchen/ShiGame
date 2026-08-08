@@ -9,7 +9,7 @@ SHI is historical fiction with an inspectable evidence layer. The project aims f
 3. **Strategic lens:** works such as the *Sunzi* can frame a mechanic; they do not become evidence that a specific character applied that doctrine in a particular scene.
 4. **Dramatic reconstruction:** invented characters, private councils, exact words, motives, and player alternatives. These are always labeled.
 
-`primary-account` in schema v1 means a classical text used directly as a conceptual source. It does **not** imply eyewitness status. Schema v2 should rename this value to remove that ambiguity before the first public beta.
+Schema v3 removes the ambiguous `primary-account` label. Runtime source records now use `received-account`, `later-compilation`, `strategic-text`, or `dramatic-reconstruction`. A source classification describes how SHI uses a record; it never converts a later text into an eyewitness account.
 
 ## Corpus workflow
 
@@ -45,7 +45,9 @@ game_use: "Creates the commitment crisis; UI states the uncertainty."
 reviewer: pending
 ```
 
-No claim advances from `pending` to `approved` without a pinpoint locator and reviewer.
+No claim advances from `evidence-located` or `specialist-review-required` to a future approval state without a pinpoint locator, edition record, named reviewer, decision date, and player-facing wording check. The current schema intentionally has no `approved` value.
+
+The machine-readable edition register is `content/research/editions.json`; its human-readable provenance and local discovery hashes are in [EDITION_REGISTER.md](EDITION_REGISTER.md). The status workflow and Chapter I risk queue are in [HISTORICAL_REVIEW_SYSTEM.md](HISTORICAL_REVIEW_SYSTEM.md).
 
 ## Quotation and translation
 

@@ -50,6 +50,27 @@ namespace SHI
             ["zh-Hant"] = new[] { "觀勢入門", "第一道命令之前", "每道命令分三段結算：你的落子、局勢的應手，以及事先明示的局勢條件。", "先讀全局", "糧、信、勢、民、險是五種不同的力量。任何一個數值都不等於勝利。", "再落一子", "選擇牌會顯示準確的即時變化，以及你試圖塑造的戰略形勢。", "預判應手", "壓力預兆指出你暴露的弱點。承諾之後，局勢會應手，其變化會被單獨記錄。", "手把已就緒", "支援手把", "方向鍵/搖桿選擇 · A/叉確認 · B/圈關閉 · 肩鍵打開簡牘 · Start打開入門", "開始觀勢", "重開一卷", "局勢信號", "本局種子", "局勢條件結算", "你的選擇會像濕泥上的刻痕一樣留在這裡。" },
         };
 
+        private static readonly string[] EvidenceKeys =
+        {
+            "reconstruction", "later", "strategicText", "received", "claimRegister", "evidenceLocated",
+            "specialistReview", "authoredClaim", "openEdition", "publicSource",
+        };
+
+        private static readonly Dictionary<string, string[]> EvidenceValues = new()
+        {
+            ["en"] = new[] { "Dramatic reconstruction", "Later compilation", "Classical strategy text", "Received historical account", "Claim register", "Evidence located", "Specialist review required", "Authored reconstruction", "Open public edition", "Evidence & uncertainty" },
+            ["ar"] = new[] { "بناء درامي", "مصنّف لاحق", "نص استراتيجي كلاسيكي", "رواية تاريخية منقولة", "سجل الادعاءات", "تم تحديد الدليل", "مراجعة مختص مطلوبة", "إعادة بناء مؤلفة", "فتح الطبعة العامة", "الأدلة وعدم اليقين" },
+            ["de"] = new[] { "Dramatische Rekonstruktion", "Spätere Kompilation", "Klassischer Strategietext", "Überlieferter Bericht", "Aussagenregister", "Belegstelle gefunden", "Fachprüfung erforderlich", "Verfasste Rekonstruktion", "Öffentliche Ausgabe öffnen", "Belege & Unsicherheit" },
+            ["es"] = new[] { "Reconstrucción dramática", "Compilación posterior", "Texto estratégico clásico", "Relato histórico transmitido", "Registro de afirmaciones", "Evidencia localizada", "Revisión especialista requerida", "Reconstrucción de autor", "Abrir edición pública", "Evidencia e incertidumbre" },
+            ["fr"] = new[] { "Reconstruction dramatique", "Compilation tardive", "Texte stratégique classique", "Récit historique transmis", "Registre des affirmations", "Preuve localisée", "Examen spécialiste requis", "Reconstruction d’auteur", "Ouvrir l’édition publique", "Preuves et incertitude" },
+            ["ja"] = new[] { "劇的再構成", "後世の編纂", "古典戦略書", "伝世史料", "史実主張台帳", "根拠箇所確認済み", "専門家の確認が必要", "創作再構成", "公開版を開く", "根拠と不確実性" },
+            ["ko"] = new[] { "극적 재구성", "후대 편찬", "고전 전략서", "전승 사료", "역사 주장 장부", "근거 위치 확인", "전문가 검토 필요", "창작 재구성", "공개 판본 열기", "근거와 불확실성" },
+            ["ru"] = new[] { "Художественная реконструкция", "Поздняя компиляция", "Классический трактат", "Переданный исторический рассказ", "Реестр утверждений", "Источник найден", "Нужна проверка специалиста", "Авторская реконструкция", "Открыть публичное издание", "Свидетельства и неопределённость" },
+            ["vi"] = new[] { "Tái dựng kịch tính", "Biên soạn đời sau", "Binh thư cổ điển", "Sử liệu lưu truyền", "Sổ luận điểm", "Đã xác định chứng cứ", "Cần chuyên gia thẩm định", "Tái dựng do tác giả", "Mở bản công khai", "Chứng cứ và bất định" },
+            ["zh-Hans"] = new[] { "戏剧性重构", "后世编纂", "古典兵学文本", "传世史籍记载", "史实主张簿", "已定位证据", "需要专家审阅", "原创重构", "打开公开版本", "证据与不确定性" },
+            ["zh-Hant"] = new[] { "戲劇性重構", "後世編纂", "古典兵學文本", "傳世史籍記載", "史實主張簿", "已定位證據", "需要專家審閱", "原創重構", "打開公開版本", "證據與不確定性" },
+        };
+
         private static readonly Dictionary<string, string> LocaleNames = new()
         {
             ["en"] = "English", ["ar"] = "العربية", ["de"] = "Deutsch", ["es"] = "Español",
@@ -66,9 +87,15 @@ namespace SHI
                 return values[index];
             }
             index = Array.IndexOf(GuideKeys, key);
+            if (index >= 0)
+            {
+                var guideValues = GuideValues.TryGetValue(locale, out var localizedGuide) ? localizedGuide : GuideValues["en"];
+                return guideValues[index];
+            }
+            index = Array.IndexOf(EvidenceKeys, key);
             if (index < 0) return key;
-            var guideValues = GuideValues.TryGetValue(locale, out var localizedGuide) ? localizedGuide : GuideValues["en"];
-            return guideValues[index];
+            var evidenceValues = EvidenceValues.TryGetValue(locale, out var localizedEvidence) ? localizedEvidence : EvidenceValues["en"];
+            return evidenceValues[index];
         }
 
         public static string LocaleName(string locale) => LocaleNames.TryGetValue(locale, out var name) ? name : locale;

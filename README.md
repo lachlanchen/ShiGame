@@ -32,7 +32,7 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 | --- | --- |
 | [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere, replayable save-v3 migration, seeded field signals, first-run guide, three-stage decision records, keyboard/gamepad/touch input, responsive and RTL layouts |
 | [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign, code-built 3D wartable, localized guide/record/gamepad UI, native preflight/build automation and EditMode tests; license/import gate is documented |
-| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 12 classified field conditions, 5 resources, a recovery turn, 3 conclusions, and 6 classified source records |
+| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 12 classified field conditions, 5 resources, a recovery turn, 3 conclusions, 7 source records, 13 claim records, and 5 registered editions |
 | [`packages/game-core`](packages/game-core/) | Seed-reproducible three-stage resolution, authoritative save replay/migration, requirements, failure thresholds, exhaustive condition-route validation, localization fallback, and tests |
 | [`assets`](assets/) | Reviewed Daze key art and AgenticApp/Blender wartable source, preview, `.blend`, GLB, FBX, and provenance |
 | [`docs`](docs/) | Game design, history policy, architecture, localization, art direction, engine status, release gates, QA evidence, and one-year roadmap |
@@ -67,11 +67,11 @@ TypeScript seed-reproducible core  Unity 6 runtime
  React/Vite/Three.js web        3D wartable client
 ```
 
-Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [seeded uncertainty contract](docs/design/SEEDED_UNCERTAINTY.md), [source policy](docs/history/SOURCE_POLICY.md), and [one-year roadmap](docs/production/ROADMAP.md).
+Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [historical review system](docs/history/HISTORICAL_REVIEW_SYSTEM.md), [edition register](docs/history/EDITION_REGISTER.md), [seeded uncertainty contract](docs/design/SEEDED_UNCERTAINTY.md), [source policy](docs/history/SOURCE_POLICY.md), and [one-year roadmap](docs/production/ROADMAP.md).
 
 ## Build and validation
 
-`npm run validate` checks the campaign graph, identifiers, cross-references, localization keys, seeded rules, save migration, every field-condition branch, types, and tests. The visible noVNC/Chrome gate adds 50 checks across gameplay, onboarding, synthetic standard-gamepad input, pressure/field counterplay, seeded persistence, source classifications, keyboard input, Arabic RTL, mobile layout, WebGL, and console errors. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
+`npm run validate` checks the edition/rights register, campaign graph, source-to-claim-to-scene closure, reconstruction boundaries, identifiers, localization keys, seeded rules, save migration, every field-condition branch, types, and tests. The visible noVNC/Chrome gate additionally checks gameplay, onboarding, synthetic standard-gamepad input, pressure/field counterplay, seeded persistence, exact locators and uncertainty states, keyboard input, Arabic RTL, mobile layout, WebGL, and console errors. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
 
 ## Citation
 
