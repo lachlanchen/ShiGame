@@ -30,10 +30,11 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 ## Web client
 
 - React for stateful accessible UI.
-- Vite production build with sourcemaps.
+- Vite production build without publicly deployed source maps. An internal diagnostic build can opt into hidden maps with `SHI_SOURCEMAP=1`; those maps are not part of the player-artifact budget.
 - Three.js is loaded asynchronously; the image/CSS composition remains usable if WebGL is unavailable.
 - Browser state is namespaced in `localStorage`. Save format 3 rebuilds state from decision history, migrates version-1 and version-2 histories under documented legacy seed zero, and rejects impossible or seed-inconsistent sequences rather than trusting stored totals.
 - All eleven UI locales are compile-time/test validated. Narrative falls back to English or Simplified Chinese and preserves LTR direction inside Arabic layouts.
+- Inter and Cormorant Garamond are the self-hosted baseline faces. A lazy locale-font boundary loads Noto Sans Arabic/JP/KR/SC/TC only for the active script, while the seal/Chinese narrative layer loads Noto Serif SC. The app exposes loading/ready/error state and treats a missing required face as a visible runtime error rather than silently certifying a fallback.
 - A pure standard-gamepad adapter edge-detects buttons/axes; the polling hook resets on disconnect. Commands call the same React actions as pointer/keyboard input. Onboarding preference is namespaced separately from campaign state.
 - The strategic map and detail inspector are lazy chunks. Pointer, keyboard and standard-gamepad selection open status/uncertainty and site-filtered evidence without changing deterministic game state.
 - Modal drawers use native dialog semantics plus an inert game-stage boundary, explicit focus containment and invoker/story focus restoration. Consequence presentation independently makes the choice region inert and the shared action guard rejects re-entry.
@@ -62,7 +63,8 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 
 - Private references, source books, chat histories, credentials, browser profiles and runtime logs are ignored.
 - Web content contains no remote analytics or account system.
-- Google Fonts currently load at runtime but fall back safely; self-hosted reviewed font subsets are a pre-alpha release gate.
+- Eight exact Fontsource variable packages are pinned at `5.3.0`, licensed OFL-1.1, registered in `docs/production/THIRD_PARTY_NOTICES.md`, built into the release and served from the same origin. Runtime Google/Fontsource/CDN requests are forbidden.
+- The document CSP restricts scripts, connections, fonts, images, media, workers, forms and objects to the minimum same-origin/data/blob surfaces required by this client. The visible network gate traverses all eleven locales and rejects any cross-origin HTTP(S) request or resource.
 - Dependencies are locked and audited. CI runs validation and build from a clean checkout.
 
 ## Performance budgets
@@ -70,10 +72,14 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 | Budget | Web pre-alpha | Unity desktop alpha |
 | --- | --- | --- |
 | Initial JS (gzip, excluding lazy 3D) | ≤ 100 KiB | n/a |
-| Lazy 3D JS (gzip) | ≤ 220 KiB | n/a |
+| Initial CSS (gzip) | ≤ 12 KiB | n/a |
+| Largest lazy JS (gzip) | ≤ 200 KiB | n/a |
+| Largest on-demand locale-font CSS (gzip) | ≤ 50 KiB | n/a |
+| Complete self-hosted font artifact | ≤ 24 MiB | n/a |
+| Deployable web artifact, excluding optional private maps | ≤ 30 MiB | n/a |
 | Largest reviewed texture | ≤ 4 MiB | ≤ 8 MiB per tier |
 | Frame time | 16.7 ms target, 33 ms floor | 16.7 ms target |
 | Input-to-feedback | < 100 ms | < 100 ms |
 | Save operation | < 50 ms | < 50 ms |
 
-The current web build is 99.74 KiB gzip initial JavaScript, 2.36 KiB gzip lazy strategic map, 0.59 KiB gzip lazy map inspector, 7.44 KiB gzip lazy evidence/claim UI, 0.62 KiB gzip lazy field guide, and 184.72 KiB gzip lazy Three.js. Axe-core is development-only and does not enter the player bundle.
+`scripts/validate-web-build.mjs` measures the built bytes with one deterministic gzip implementation and fails the build on regression. The current build is 96.67 KiB initial JavaScript, 8.38 KiB initial CSS, 2.28 KiB strategic map, 0.54 KiB map inspector, 7.22 KiB evidence/claim UI, 0.57 KiB field guide, 0.92 KiB font loader and 178.95 KiB Three.js, all gzip. The complete 565-file Unicode-range font artifact is 22.94 MiB and the source-map-free deployable site is 26.74 MiB. That artifact size is not an initial player transfer: browser requests are limited by active locale and visible glyph ranges. Axe-core is development-only and does not enter the player bundle.

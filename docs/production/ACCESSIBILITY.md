@@ -23,7 +23,7 @@ SHI targets WCAG 2.2 AA for the web client and input/feedback parity in both cli
 
 ## Localization and direction
 
-The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, Russian, Vietnamese, Simplified Chinese and Traditional Chinese. Missing UI strings fail validation. Arabic changes the document to RTL, while untranslated fallback narrative is isolated as LTR. Automated fit covers English desktop/mobile and Arabic desktop/modal; every locale still requires release-candidate overflow and linguistic review.
+The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, Russian, Vietnamese, Simplified Chinese and Traditional Chinese. Missing UI strings fail validation. Arabic changes the document to RTL, while untranslated fallback narrative is isolated as LTR. Visible automation now proves the required self-hosted script face, localized control names, complete header geometry and zero horizontal overflow for all eleven locales at 800×650; English/Arabic mobile and modal states have additional coverage. Every locale still requires release-candidate mobile, zoom, linguistic and native-review passes.
 
 ## Automated evidence
 
@@ -31,8 +31,10 @@ The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, R
 | --- | --- |
 | `npm run validate:accessibility` | 16 contrast pairs, 24 microtype floors, 11 authored target dimensions |
 | jsdom + axe-core 4.12.1 | Title, field-guide modal, gameplay and wartable semantic scans |
-| visible Chrome + axe-core | Eight English/Arabic/desktop/mobile interaction states, WCAG 2.0/2.1/2.2 A/AA tags |
+| visible Chrome + axe-core | Eighteen interaction/locale/desktop/mobile states, WCAG 2.0/2.1/2.2 A/AA tags |
 | visible target geometry | Ten interaction and resize states at the 24 CSS pixel floor |
+| visible locale typography | Eleven real script samples, same-origin face availability, direction, header-child fit and zero overflow |
+| visible privacy/network | Eleven-locale traversal, zero remote HTTP(S) requests/resources, zero non-cancelled failures and enforced CSP |
 | visible reflow | Title and active gameplay at 200% text, plus 390×844 gameplay/wartable/guide |
 | visible motion | OS reduced-motion startup and computed animation/transition suppression |
 | input isolation | Focus wrap/return, inert modal background and duplicate-choice rejection |

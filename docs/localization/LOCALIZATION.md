@@ -8,6 +8,8 @@ Supported locales: English, Arabic, German, Spanish, French, Japanese, Korean, R
 - Campaign title and subtitle have all eleven translations.
 - Chapter prose currently has English and Simplified Chinese, with selected Traditional Chinese/Japanese names. Other locales fall back to English.
 - Arabic switches the document to RTL; untranslated fallback prose is explicitly LTR to prevent punctuation/order corruption.
+- All runtime faces are same-origin assets with pinned versions and recorded OFL-1.1 rights. Inter covers the Latin, Cyrillic and Vietnamese UI; Noto Sans Arabic, JP, KR, SC and TC load on demand for their scripts; Cormorant Garamond supplies the Latin display voice; Noto Serif SC supplies the SHI seal and Chinese narrative hierarchy.
+- Visible 800×650 evidence exists for every locale. The gate waits for a real script sample through `document.fonts`, checks `lang`/`dir`, localized control names, full header-child geometry and horizontal overflow, then runs axe on every non-English state.
 
 This is localization infrastructure, not a claim that the entire narrative is translated.
 
@@ -18,7 +20,7 @@ This is localization infrastructure, not a claim that the entire narrative is tr
 3. Provide translators with scene, speaker, register, gender/number, length and source notes.
 4. Translate; independent linguistic editor reviews.
 5. Pseudo-localize for expansion and glyph coverage.
-6. Capture desktop/mobile screenshots in every locale.
+6. Capture desktop/mobile screenshots in every locale. The current pre-alpha gate covers all eleven desktop shells; the complete mobile matrix remains a release-candidate gate.
 7. Native reviewer plays the full chapter and signs the locale matrix.
 
 ## Language-specific gates

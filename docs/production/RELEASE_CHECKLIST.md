@@ -21,7 +21,7 @@
 - [ ] Keyboard, touch, gamepad and screen reader paths pass.
 - [ ] Reduced motion, contrast, scaling and color-independent feedback pass.
 
-The web pre-alpha automated subset currently passes semantic axe scans, conservative contrast/microtype contracts, 24 CSS pixel target geometry, modal and consequence isolation, 200% text, Arabic RTL, reduced motion and desktop/mobile reflow. These boxes remain open until every locale, human screen-reader/keyboard path, physical input path, 400%/forced-colors review and the licensed Unity runtime pass the observed gates in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
+The web pre-alpha automated subset currently passes semantic axe scans, conservative contrast/microtype contracts, 24 CSS pixel target geometry, modal and consequence isolation, 200% text, reduced motion, desktop/mobile reflow, and self-hosted face/direction/header-fit checks across all eleven desktop locale shells. These boxes remain open until every locale completes native linguistic and mobile release-candidate review, human screen-reader/keyboard paths pass, physical input paths pass, 400%/forced-colors review passes and the licensed Unity runtime passes the observed gates in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
 
 ## Art/audio
 
@@ -38,6 +38,8 @@ The web pre-alpha automated subset currently passes semantic axe scans, conserva
 - [ ] Unity import, EditMode/PlayMode tests and target builds pass.
 - [ ] Security, dependency, privacy and secret scans pass.
 - [ ] Signed artifact hashes and rollback instructions recorded.
+
+The current web checkpoint passes exact font-license/provenance validation, a restrictive same-origin CSP, an eleven-locale visible network run with no cross-origin HTTP(S) traffic, and hard initial/lazy/font/deployment size budgets. Those are pre-alpha evidence, not a substitute for the final clean release candidate, dependency/security review and rollback record.
 
 ## Release authority
 
