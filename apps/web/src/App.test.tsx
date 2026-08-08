@@ -35,8 +35,19 @@ describe("playable web shell", () => {
 
     expect(view.queryByTestId("guide-drawer")).toBeNull();
     expect(localStorage.getItem("shi.onboarding.field-guide.v1")).toBe("complete");
-    fireEvent.click(view.getByTestId("guide-toggle"));
-    expect((await view.findByTestId("guide-drawer")).getAttribute("aria-modal")).toBe("true");
+    const guideToggle = view.getByTestId("guide-toggle");
+    guideToggle.focus();
+    fireEvent.click(guideToggle);
+    const replayedGuide = await view.findByTestId("guide-drawer");
+    expect(replayedGuide.getAttribute("aria-modal")).toBe("true");
+    expect(view.getByTestId("game-stage").hasAttribute("inert")).toBe(true);
+    await waitFor(() => expect(document.activeElement).toBe(replayedGuide.querySelector(".icon-button")));
+    fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(view.getByTestId("guide-continue"));
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(document.activeElement).toBe(replayedGuide.querySelector(".icon-button"));
+    fireEvent.click(view.getByTestId("guide-continue"));
+    await waitFor(() => expect(document.activeElement).toBe(guideToggle));
   });
 
   it("navigates and commits through the standard Gamepad API surface", async () => {
@@ -86,7 +97,11 @@ describe("playable web shell", () => {
     expect(view.getByTestId("resolution").textContent).toContain("The position answers");
     expect(view.getByTestId("resolution").textContent).toContain("relay clerk");
     expect(view.getByTestId("resolution").textContent).toContain("Field condition resolves");
+    expect(document.querySelector(".choices-panel")?.hasAttribute("inert")).toBe(true);
+    fireEvent.click(document.querySelector("[data-choice-id='issue-grain-tallies']")!);
+    expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council");
     await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "null")?.saveVersion).toBe(3));
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "null")?.history).toHaveLength(1);
   });
 
   it("opens accessible drawers with shortcuts and closes them with Escape", async () => {

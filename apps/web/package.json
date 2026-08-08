@@ -13,17 +13,18 @@
   "dependencies": {
     "@shi/game-core": "0.1.0",
     "@vitejs/plugin-react": "latest",
-    "vite": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "three": "latest"
+    "three": "latest",
+    "vite": "latest"
   },
   "devDependencies": {
     "@testing-library/react": "latest",
+    "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@types/three": "latest",
-    "@types/node": "latest",
+    "axe-core": "^4.12.1",
     "jsdom": "^26.1.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"

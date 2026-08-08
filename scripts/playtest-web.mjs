@@ -1,4 +1,5 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { createRequire } from "node:module";
 import { resolve } from "node:path";
 
 const cdpPort = Number(process.env.SHI_CDP_PORT ?? 9321);
@@ -7,6 +8,8 @@ const testUrl = new URL(gameUrl);
 testUrl.searchParams.set("seed", process.env.SHI_PLAYTEST_SEED ?? "5EED2026");
 const testedCommit = process.env.SHI_TESTED_COMMIT ?? "working-tree";
 const outputDir = resolve(import.meta.dirname, "../docs/production/evidence");
+const require = createRequire(import.meta.url);
+const axeSource = await readFile(require.resolve("axe-core/axe.min.js"), "utf8");
 await mkdir(outputDir, { recursive: true });
 
 const targets = await fetch(`http://127.0.0.1:${cdpPort}/json`).then((response) => response.json());
@@ -67,6 +70,12 @@ const key = async (keyName, code = keyName) => {
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: keyName, code });
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: keyName, code });
 };
+const shiftTab = async () => {
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Shift", code: "ShiftLeft", modifiers: 8 });
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", modifiers: 8 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", modifiers: 8 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Shift", code: "ShiftLeft" });
+};
 const altShortcut = async (keyName, code) => {
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Alt", code: "AltLeft", modifiers: 1 });
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: keyName, code, modifiers: 1 });
@@ -119,6 +128,7 @@ const waitForTitleAssets = async () => {
 await send("Page.enable");
 await send("Runtime.enable");
 await send("Log.enable");
+await send("Page.addScriptToEvaluateOnNewDocument", { source: axeSource });
 await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
   const buttons = Array.from({ length: 16 }, () => ({ pressed: false, touched: false, value: 0 }));
   const gamepad = { id: 'SHI noVNC virtual standard controller', index: 0, connected: true, mapping: 'standard', timestamp: 0, axes: [0, 0, 0, 0], buttons };
@@ -132,6 +142,8 @@ await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
     }
   }});
 })()` });
+await send("Emulation.clearDeviceMetricsOverride");
+await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
 await send("Page.navigate", { url: testUrl.href });
 await waitForSelector(".primary-button", 10000);
 await evaluate("localStorage.clear(); location.reload(); true");
@@ -139,10 +151,44 @@ await waitForSelector(".primary-button");
 await waitForTitleAssets();
 await wait(250);
 
-const report = { checks: [], consoleErrors };
+const report = {
+  checks: [],
+  accessibilityAudits: [],
+  targetAudits: [],
+  accessibilityEngine: { name: "axe-core", version: await evaluate("axe.version") },
+  consoleErrors
+};
 const check = (condition, message) => {
   assert(condition, message);
   report.checks.push(message);
+};
+const auditAccessibility = async (label) => {
+  const result = await evaluate(`axe.run(document, {
+    runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
+    resultTypes: ['violations', 'incomplete']
+  }).then((audit) => ({
+    label: ${JSON.stringify(label)},
+    violations: audit.violations.map((violation) => ({ id: violation.id, impact: violation.impact, help: violation.help, nodes: violation.nodes.map((node) => ({ target: node.target, html: node.html, summary: node.failureSummary })) })),
+    incomplete: audit.incomplete.map((item) => ({ id: item.id, impact: item.impact, nodes: item.nodes.length }))
+  }))`);
+  report.accessibilityAudits.push(result);
+};
+const auditTargets = async (label) => {
+  const result = await evaluate(`(() => {
+    const elements = [...document.querySelectorAll('button, select, a[href], [role="button"]')];
+    const visible = elements.filter((element) => {
+      const style = getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && box.width > 0 && box.height > 0;
+    });
+    const failures = visible.map((element) => {
+      const box = element.getBoundingClientRect();
+      return { tag: element.tagName.toLowerCase(), text: element.textContent?.trim().slice(0, 80), width: box.width, height: box.height };
+    }).filter((item) => item.width < 24 || item.height < 24);
+    return { label: ${JSON.stringify(label)}, tested: visible.length, failures };
+  })()`);
+  report.targetAudits.push(result);
+  check(result.failures.length === 0, `${label} visible controls meet the 24 CSS pixel target floor`);
 };
 
 await screenshot("web-01-title-en.png");
@@ -158,6 +204,21 @@ check(snapshot.primary.includes("Enter the rain"), "new game call-to-action is v
 check(snapshot.canvas === 1, "Three.js atmosphere rendered to a canvas");
 check(snapshot.controller === "connected", "standard Gamepad API device is detected on the title");
 check(snapshot.overflow <= 1, "desktop title has no horizontal overflow");
+await auditAccessibility("title-en");
+await auditTargets("title-en");
+await evaluate("document.documentElement.style.fontSize = '200%'; scrollTo(0, 0); true");
+await wait(350);
+await screenshot("web-19-title-text-resize-200.png");
+snapshot = await evaluate(`(() => {
+  const action = document.querySelector('.primary-button')?.getBoundingClientRect();
+  const copy = document.querySelector('.title-copy')?.getBoundingClientRect();
+  return { actionLeft: action?.left, actionRight: action?.right, copyBottom: copy?.bottom, scrollHeight: document.documentElement.scrollHeight, viewportWidth: innerWidth, viewportHeight: innerHeight, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+})()`);
+check(snapshot.actionLeft >= 0 && snapshot.actionRight <= snapshot.viewportWidth && snapshot.copyBottom <= snapshot.scrollHeight, "200% title text remains present and scroll-reachable");
+check(snapshot.overflow <= 1, "200% title text has no horizontal overflow");
+await auditTargets("title-text-resize-200");
+await evaluate("document.documentElement.style.fontSize = ''; true");
+await wait(250);
 
 await gamepadButton(0);
 await waitForSelector("[data-testid=guide-drawer]");
@@ -168,12 +229,23 @@ snapshot = await evaluate(`({
   controller: document.querySelector('.controller-callout')?.textContent?.trim(),
   history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length ?? 0,
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
+  stageInert: document.querySelector('[data-testid=game-stage]')?.inert,
+  active: document.activeElement?.className,
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
 check(snapshot.modal === "true" && snapshot.steps === 3, "first-run field guide teaches three position-reading steps");
 check(snapshot.controller.includes("Controller ready"), "field guide reports the connected controller textually");
 check(snapshot.history === 0 && snapshot.onboarding === null, "field guide changes no campaign state before dismissal");
+check(snapshot.stageInert === true && String(snapshot.active).includes("icon-button"), "modal makes the game stage inert and receives focus");
 check(snapshot.overflow <= 1, "field guide has no desktop horizontal overflow");
+await auditAccessibility("field-guide-en");
+await auditTargets("field-guide-en");
+await shiftTab();
+snapshot = await evaluate(`document.activeElement?.getAttribute('data-testid')`);
+check(snapshot === "guide-continue", "Shift+Tab wraps focus to the last guide control");
+await key("Tab");
+snapshot = await evaluate(`document.activeElement?.classList.contains('icon-button')`);
+check(snapshot === true, "Tab wraps focus back to the first guide control");
 await gamepadButton(0);
 await wait(450);
 await screenshot("web-02-gameplay-en.png");
@@ -188,6 +260,7 @@ snapshot = await evaluate(`({
   seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'),
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   saveVersion: document.querySelector('[data-save-version]')?.getAttribute('data-save-version'),
+  active: document.activeElement?.className,
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
 check(snapshot.heading === "The road has become a river", "opening story node rendered from shared content");
@@ -200,7 +273,10 @@ check(snapshot.fieldEffects.includes("-3 Grain") && snapshot.fieldEffects.includ
 check(snapshot.seed === "5EED2026", "shareable hexadecimal chronicle seed is visible");
 check(snapshot.onboarding === "complete", "dismissed onboarding preference is stored outside campaign state");
 check(snapshot.saveVersion === "3", "web client advertises save contract version 3");
+check(String(snapshot.active).includes("story-panel"), "closing first-run guidance restores focus to the narrative");
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
+await auditAccessibility("gameplay-en");
+await auditTargets("gameplay-en");
 
 await gamepadButton(3);
 await waitForSelector("[data-testid=map-intel]");
@@ -219,6 +295,8 @@ check(snapshot.title === "Daze Village" && snapshot.status === "Known ground", "
 check(snapshot.known === 2 && snapshot.reported === 2 && snapshot.reference === 1, "wartable differentiates known, reported and reference-only sites");
 check(snapshot.selected === "daze", "inspected marker exposes its selected state accessibly");
 check(snapshot.history === 0, "opening the intelligence map does not mutate campaign history");
+await auditAccessibility("wartable-en");
+await auditTargets("wartable-en");
 
 await gamepadButton(15);
 await gamepadButton(15);
@@ -243,6 +321,8 @@ snapshot = await evaluate(`({
 })`);
 check(snapshot.context === "Pei", "site evidence drawer retains the inspected place as context");
 check(snapshot.sources === 5 && snapshot.claims === 3, "site evidence is filtered to the place's five records and three claims");
+await auditAccessibility("site-evidence-en");
+await auditTargets("site-evidence-en");
 await gamepadButton(1);
 await wait(250);
 snapshot = await evaluate(`document.querySelector('[data-testid=map-intel] h2')?.textContent?.trim()`);
@@ -300,6 +380,7 @@ snapshot = await evaluate(`(() => {
 })()`);
 check(snapshot.direction === "rtl" && snapshot.steps === 3 && snapshot.left >= 0 && snapshot.right <= snapshot.width, "Arabic field guide is RTL and fitted to the viewport");
 check(snapshot.overflow <= 1, "Arabic field guide has no horizontal overflow");
+await auditAccessibility("field-guide-ar");
 await gamepadButton(1);
 
 await selectValue(".header-select", "en");
@@ -318,7 +399,8 @@ snapshot = await evaluate(`({
   history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length,
   conditionId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.[0]?.conditionId,
   seed: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').seed,
-  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').saveVersion
+  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').saveVersion,
+  choicesInert: document.querySelector('.choices-panel')?.inert
 })`);
 check(snapshot.heading === "A covenant must eat", "choice advances to the authored branch");
 check(snapshot.resolution.includes("The ranks see one another"), "choice consequence remains visible after transition");
@@ -328,6 +410,13 @@ check(snapshot.field.includes("Water over the axle") && snapshot.fieldDeltas ===
 check(snapshot.history === 1, "choice is persisted locally");
 check(snapshot.conditionId === "water-over-axle" && snapshot.seed === 0x5eed2026, "save records the matching seed and condition identity");
 check(snapshot.saveVersion === 3, "persisted save uses replayable format 3");
+check(snapshot.choicesInert === true, "decision controls become inert while the three-stage consequence is open");
+await click(".choice-card", 0);
+await wait(250);
+snapshot = await evaluate(`({ node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'), history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length })`);
+check(snapshot.node === "open-council" && snapshot.history === 1, "pointer input cannot commit another decision through an open consequence");
+await auditAccessibility("resolution-en");
+await auditTargets("resolution-en");
 
 await send("Page.reload", { ignoreCache: true });
 await waitForSelector(".primary-button");
@@ -366,6 +455,8 @@ snapshot = await evaluate(`(() => {
 })()`);
 check(snapshot.columnHeight >= 400 && snapshot.panelTop >= snapshot.columnTop && snapshot.panelBottom <= snapshot.columnBottom, "mobile wartable expands to keep the intelligence panel fully visible");
 check(snapshot.overflow <= 1, "mobile wartable inspection has no horizontal overflow");
+await auditAccessibility("wartable-mobile");
+await auditTargets("wartable-mobile");
 await gamepadButton(3);
 await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: 360, y: 760, deltaX: 0, deltaY: 650 });
 await wait(450);
@@ -389,9 +480,56 @@ snapshot = await evaluate(`(() => {
 })()`);
 check(snapshot.steps === 3 && snapshot.left >= 0 && snapshot.right <= snapshot.width, "Start reopens a fitted mobile field guide");
 check(snapshot.overflow <= 1, "mobile field guide has no horizontal overflow");
+await auditTargets("field-guide-mobile");
 await gamepadButton(1);
 await send("Emulation.clearDeviceMetricsOverride");
+await evaluate("document.documentElement.style.fontSize = '200%'; scrollTo(0, 0); true");
+await wait(450);
+await screenshot("web-17-text-resize-200.png");
+snapshot = await evaluate(`(() => {
+  const story = document.querySelector('.story-panel')?.getBoundingClientRect();
+  return {
+    heading: document.querySelector('.story-panel h1')?.textContent?.trim(),
+    choices: document.querySelectorAll('.choice-card').length,
+    storyTop: story?.top,
+    storyBottom: story?.bottom,
+    scrollHeight: document.documentElement.scrollHeight,
+    viewportHeight: innerHeight,
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+  };
+})()`);
+check(snapshot.heading === "A covenant must eat" && snapshot.choices === 2, "200% text resize preserves the active story and its decisions");
+check(snapshot.storyTop < snapshot.viewportHeight && snapshot.storyBottom > 0 && snapshot.scrollHeight > snapshot.viewportHeight, "200% text resize keeps the narrative visible and decisions scroll-reachable");
+check(snapshot.overflow <= 1, "200% text resize has no horizontal overflow");
+await auditTargets("text-resize-200");
+await evaluate("document.documentElement.style.fontSize = ''; true");
 
+await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+await send("Page.reload", { ignoreCache: true });
+await waitForSelector(".primary-button");
+snapshot = await evaluate(`document.querySelector('[data-testid=shi-app]')?.getAttribute('data-motion')`);
+check(snapshot === "reduced", "operating-system reduced-motion preference is honored on startup");
+await click(".primary-button");
+await waitForSelector(".map-sweep");
+await wait(250);
+await screenshot("web-18-reduced-motion.png");
+snapshot = await evaluate(`(() => {
+  const sweep = getComputedStyle(document.querySelector('.map-sweep'));
+  const choice = getComputedStyle(document.querySelector('.choice-card'));
+  return { mode: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-motion'), animationDuration: parseFloat(sweep.animationDuration), transitionDuration: parseFloat(choice.transitionDuration) };
+})()`);
+check(snapshot.mode === "reduced" && snapshot.animationDuration <= 0.001 && snapshot.transitionDuration <= 0.001, "reduced-motion mode suppresses decorative animation and transitions");
+await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
+
+const accessibilityViolations = report.accessibilityAudits.flatMap((audit) => audit.violations.map((violation) => ({ state: audit.label, ...violation })));
+if (accessibilityViolations.length > 0) {
+  await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
+  throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
+}
+check(report.accessibilityAudits.length === 8, "WCAG 2.2 AA automation passes across eight visible interface states");
+const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
+check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
+check(report.targetAudits.length === 10, "24 CSS pixel target checks pass across ten interaction states");
 if (consoleErrors.length > 0) console.error("Browser console errors:", JSON.stringify(consoleErrors, null, 2));
 check(consoleErrors.length === 0, "browser console remained free of errors");
 await writeFile(resolve(outputDir, "web-playtest-status.json"), `${JSON.stringify({ ok: true, ...report, target: testUrl.href, testedCommit, cdpPort }, null, 2)}\n`);
