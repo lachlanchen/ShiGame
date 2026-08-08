@@ -25,7 +25,7 @@ The script sends actual mouse and key events through the visible Chrome target, 
 
 ## Current result
 
-2026-08-09 local systems checkpoint: 31 checks passed with zero page console errors. Chrome used ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklisted native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL. The deployed URL must repeat the same suite after publication before this checkpoint is called public-verified.
+2026-08-09 public systems checkpoint: the localhost build and deployed GitHub Pages game both passed all 31 checks with zero page console errors. The public evidence targets gameplay commit `ecdc9fe2724cf46aaf7f2a2590f8069eeb4d3d08`. Chrome used ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklisted native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit.
 
 Visual review after automation:
 

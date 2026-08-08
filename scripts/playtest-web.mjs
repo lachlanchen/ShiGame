@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 
 const cdpPort = Number(process.env.SHI_CDP_PORT ?? 9321);
 const gameUrl = process.env.SHI_PLAYTEST_URL ?? "http://127.0.0.1:4173/";
+const testedCommit = process.env.SHI_TESTED_COMMIT ?? "working-tree";
 const outputDir = resolve(import.meta.dirname, "../docs/production/evidence");
 await mkdir(outputDir, { recursive: true });
 
@@ -227,6 +228,6 @@ await send("Emulation.clearDeviceMetricsOverride");
 
 if (consoleErrors.length > 0) console.error("Browser console errors:", JSON.stringify(consoleErrors, null, 2));
 check(consoleErrors.length === 0, "browser console remained free of errors");
-await writeFile(resolve(outputDir, "web-playtest-status.json"), `${JSON.stringify({ ok: true, ...report, target: gameUrl, cdpPort }, null, 2)}\n`);
+await writeFile(resolve(outputDir, "web-playtest-status.json"), `${JSON.stringify({ ok: true, ...report, target: gameUrl, testedCommit, cdpPort }, null, 2)}\n`);
 socket.close();
 console.log(`Visible playtest passed: ${report.checks.length} checks, ${consoleErrors.length} console errors.`);

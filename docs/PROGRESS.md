@@ -10,9 +10,9 @@
 - Carried pressure resolution, failure state, save replay, validation, tests and twenty native UI strings across all eleven locales into the Unity project. Runtime and editor source assemblies pass an offline Roslyn type compile against the installed Unity assemblies; project import, official Editor compilation, EditMode execution and player builds remain account-license gated.
 - Standardized pressure-caused failure on the decision scene in both engines, preventing a captured/scattered run from revealing its unearned next scene.
 - Reworked response/ledger visuals and reviewed desktop English, Arabic RTL, and 390×844 mobile captures. The first `Alt+1` design was rejected after Chrome consumed it; the first mobile two-card layout was rejected after screenshot review.
-- Visible localhost noVNC QA now passes 31 checks with zero console errors, including pressure warnings/reveal/deltas, save-v2 persistence, keyboard paths, record retention, and scrolled mobile-card readability.
+- Visible localhost and public GitHub Pages noVNC QA pass 31 checks with zero console errors, including pressure warnings/reveal/deltas, save-v2 persistence, keyboard paths, record retention, and scrolled mobile-card readability. Public gameplay commit: `ecdc9fe`.
 
-Next gate: publish and repeat the 31-check suite against GitHub Pages, then activate Unity licensing and pass native import, official C# compilation, EditMode tests, Linux/Web builds and observed player sessions before Chapter II expansion.
+Next gate: activate Unity licensing and pass native import, official C# compilation, EditMode tests, Linux/Web builds and observed player sessions; in parallel, start the reviewed seeded-uncertainty and gamepad-accessibility design gates before Chapter II expansion.
 
 ## 2026-08-08 · Foundation checkpoint
 
