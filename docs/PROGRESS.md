@@ -1,5 +1,18 @@
 # SHI progress log
 
+## 2026-08-09 · Persistent Qin pursuit checkpoint
+
+- Added a readable persistent opponent to Chapter I. Current Exposure selects `scattered-watch`, `road-search` or `closing-cordon` before commitment; the UI discloses the exact modifier and an actionable threshold-based counterplay, then preserves the response in the result and decision record.
+- Kept the historical boundary explicit. Qin pursuit is classified as dramatic reconstruction, cannot create claims or routes, and states that it does not assert a documented patrol itinerary.
+- Upgraded the canonical campaign/schema and both engines to version 4. Resolution is now action → authored choice pressure → disclosed pursuit posture → disclosed seeded field condition, with all four layers separately recorded and identical TypeScript/C# ordering.
+- Added legacy-safe replay with `legacyDecisionCount`. Version 1–3 decisions retain their original resources and endings after migration; only later decisions receive pursuit, while version-4 records verify both posture and field identities rather than trusting stored totals.
+- Expanded validation to prove unique IDs, bilingual copy, effect direction/bounds, complete non-overlapping Exposure 0–99 coverage and reachability of every posture. Exhaustive traversal passes with all three endings, no deadlocks, 694 successful condition-routes and 82 capture/scattering routes.
+- Added localized pursuit-interface text for all eleven UI locales, a responsive/RTL/forced-colors Web presentation, a scrollable Unity decision record and native preflight/tests. Unity runtime, editor and EditMode-test sources compile offline with warnings treated as errors; licensed native import/execution/build remain open.
+- Kept the unchanged startup budgets by transporting only compact pursuit rules initially and lazy-loading the full multilingual presentation. The production build passes at 99.15 KiB initial JavaScript, 9.58 KiB CSS, 3.01 KiB pursuit UI, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete fonts and 26.78 MiB deployable output.
+- The first new visible-browser run correctly rejected an unsupported `aria-label` on the modifier container. Giving the modifier set explicit group semantics clears the finding; the complete rerun passes 186 checks, twenty-seven axe states, nineteen target states and eleven locale/font states with zero console errors, remote requests/resources or failed loads. Desktop, 390×844 mobile and the real `road-search` +2 Exposure result frames were visually reviewed.
+
+Next gate: publish and replay this exact checkpoint on Pages, then continue the open licensed-Unity, human assistive-technology/zoom/high-contrast, physical-controller, observed-player, historical-specialist and audio-listening gates. Chapter II remains gated.
+
 ## 2026-08-09 · Objective audio-engineering checkpoint
 
 - Replaced the former endpoint-matching rain workaround after reference rendering showed it introduced a −0.232 raw DC bias. Both engines and the deterministic renderer now subtract the seeded signal mean and judge the loop boundary against the ordinary 99th-percentile rain transient; the resulting DC is zero and boundary ratio 0.6029 against a 0.8 ceiling.

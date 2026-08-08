@@ -35,8 +35,8 @@ The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, R
 | --- | --- |
 | `npm run validate:accessibility` | 27 contrast pairs, 36 microtype floors, 14 authored target dimensions, 16 forced-colors selectors and required system colors |
 | jsdom + axe-core 4.12.1 | Title, field-guide modal, gameplay and wartable semantic scans |
-| visible Chrome + axe-core | Twenty-six interaction/locale/audio/desktop/mobile/reflow/zoom/forced-colors states, WCAG 2.0/2.1/2.2 A/AA tags |
-| visible target geometry | Eighteen interaction, audio, resize, reflow, browser-zoom and forced-colors states at the 24 CSS pixel floor |
+| visible Chrome + axe-core | Twenty-seven interaction/locale/audio/pursuit/desktop/mobile/reflow/zoom/forced-colors states, WCAG 2.0/2.1/2.2 A/AA tags |
+| visible target geometry | Nineteen interaction, audio, pursuit, resize, reflow, browser-zoom and forced-colors states at the 24 CSS pixel floor |
 | visible locale typography | Eleven real script samples, same-origin face availability, direction, header-child fit and zero overflow |
 | visible privacy/network | Eleven-locale traversal, zero remote HTTP(S) requests/resources, zero non-cancelled failures and enforced CSP |
 | visible reflow | Title and active gameplay at 200% text; 320×800 400%-equivalent title/gameplay; actual Chrome 400% title/gameplay/action frames; 390×844 gameplay/wartable/guide |
