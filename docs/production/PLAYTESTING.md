@@ -25,7 +25,7 @@ The script sends actual mouse/key events and a synthetic standards-shaped `navig
 
 ## Current result
 
-2026-08-09 historical-production-cell checkpoint: localhost passes all 56 checks with fixed seed `5EED2026` and zero page console errors against implementation commit `1e89bec0fb0dba6d33bd898e3c34746f14e99135`. The public Pages rerun is required after push; until then the earlier seeded-uncertainty public evidence remains the public boundary. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
+2026-08-09 historical-production-cell checkpoint: localhost passes all 56 checks with fixed seed `5EED2026` and zero page console errors against implementation commit `1e89bec0fb0dba6d33bd898e3c34746f14e99135`. Clean-checkout validation and Pages deployment then passed, and the public build passed the same 56 checks with zero console errors at deployment/evidence boundary `c70972634e4e9e0228228df3a734bce74905adf2`. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
 
 Visual review after automation:
 
