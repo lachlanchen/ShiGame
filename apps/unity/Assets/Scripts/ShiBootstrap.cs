@@ -23,8 +23,6 @@ namespace SHI
         private const string SaveKey = "shi.chapter-01.state.v1";
         private readonly string[] locales = { "en", "zh-Hans", "zh-Hant", "ja", "ko", "vi", "ar", "fr", "es", "ru", "de" };
         private readonly string[] resources = { "grain", "trust", "momentum", "people", "danger" };
-        private readonly string[] labelsEn = { "GRAIN", "TRUST", "MOMENTUM", "PEOPLE", "EXPOSURE" };
-        private readonly string[] labelsZh = { "粮", "信", "势", "民", "险" };
         private ShiCampaign? campaign;
         private ShiState? state;
         private WarTableWorld? world;
@@ -37,6 +35,7 @@ namespace SHI
         private GUIStyle? bodyStyle;
         private GUIStyle? smallStyle;
         private GUIStyle? buttonStyle;
+        private GUIStyle? overlayStyle;
 
         private IEnumerator Start()
         {
@@ -94,7 +93,7 @@ namespace SHI
             if (titleStyle != null) return;
             titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 48, fontStyle = FontStyle.Normal, wordWrap = true };
             titleStyle.normal.textColor = new Color(0.93f, 0.89f, 0.8f);
-            bodyStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, wordWrap = true, richText = true, lineHeight = 1.35f };
+            bodyStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, wordWrap = true, richText = true };
             bodyStyle.normal.textColor = new Color(0.77f, 0.75f, 0.69f);
             smallStyle = new GUIStyle(bodyStyle) { fontSize = 13 };
             smallStyle.normal.textColor = new Color(0.64f, 0.62f, 0.56f);
@@ -102,6 +101,8 @@ namespace SHI
             buttonStyle.normal.textColor = new Color(0.9f, 0.86f, 0.78f);
             buttonStyle.normal.background = Solid(new Color(0.12f, 0.12f, 0.1f, 0.94f));
             buttonStyle.hover.background = Solid(new Color(0.22f, 0.19f, 0.13f, 0.97f));
+            overlayStyle = new GUIStyle();
+            overlayStyle.normal.background = Solid(new Color(0.03f, 0.035f, 0.027f, 0.63f));
         }
 
         private static Texture2D Solid(Color color)
@@ -115,6 +116,7 @@ namespace SHI
         private void OnGUI()
         {
             PrepareStyles();
+            ApplyDirection();
             if (!string.IsNullOrEmpty(error)) { GUI.Label(new Rect(40, 40, Screen.width - 80, 100), error, bodyStyle); return; }
             if (campaign == null || state == null) { GUI.Label(new Rect(40, 40, 400, 50), "Loading SHI…", bodyStyle); return; }
             if (title) DrawTitle(); else DrawGame();
@@ -123,21 +125,23 @@ namespace SHI
         private void DrawTitle()
         {
             if (keyArt != null) GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), keyArt, ScaleMode.ScaleAndCrop);
-            GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "", new GUIStyle { normal = { background = Solid(new Color(0.03f, 0.035f, 0.027f, 0.63f)) } });
+            GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "", overlayStyle);
             var panel = new Rect(Screen.width * 0.08f, Screen.height * 0.2f, Mathf.Min(650, Screen.width * 0.62f), Screen.height * 0.62f);
             GUI.Label(new Rect(panel.x, panel.y, panel.width, 70), "勢  /  SHI", titleStyle);
             GUI.Label(new Rect(panel.x, panel.y + 75, panel.width, 45), campaign.Text(campaign.Subtitle, locale), bodyStyle);
-            GUI.Label(new Rect(panel.x, panel.y + 145, panel.width, 110), locale.StartsWith("zh") ? "势不是可以占有的东西。它是人、地、时与信念共同形成的形。" : "Power is not a possession. It is the shape made by people, terrain, time, and belief.", bodyStyle);
-            if (GUI.Button(new Rect(panel.x, panel.y + 280, 250, 58), state.History.Count > 0 ? "CONTINUE  →" : "ENTER THE RAIN  →", buttonStyle)) title = false;
+            GUI.Label(new Rect(panel.x, panel.y + 145, panel.width, 110), T("opening"), bodyStyle);
+            if (GUI.Button(new Rect(panel.x, panel.y + 280, 250, 58), (state.History.Count > 0 ? T("continue") : T("begin")) + "  →", buttonStyle)) title = false;
             DrawLocale(new Rect(panel.x, panel.y + 360, 310, 32));
         }
 
         private void DrawLocale(Rect rect)
         {
-            GUI.Label(new Rect(rect.x, rect.y, 90, rect.height), "LANGUAGE", smallStyle);
             var index = System.Array.IndexOf(locales, locale);
-            if (GUI.Button(new Rect(rect.x + 92, rect.y, 105, rect.height), "‹ " + locale, GUI.skin.button)) locale = locales[(index - 1 + locales.Length) % locales.Length];
-            if (GUI.Button(new Rect(rect.x + 205, rect.y, 105, rect.height), locale + " ›", GUI.skin.button)) locale = locales[(index + 1) % locales.Length];
+            var previous = locales[(index - 1 + locales.Length) % locales.Length];
+            var next = locales[(index + 1) % locales.Length];
+            GUI.Label(new Rect(rect.x, rect.y, 90, rect.height), T("language").ToUpperInvariant(), smallStyle);
+            if (GUI.Button(new Rect(rect.x + 92, rect.y, 105, rect.height), "‹ " + ShiUiText.LocaleName(previous), GUI.skin.button)) locale = previous;
+            if (GUI.Button(new Rect(rect.x + 205, rect.y, 105, rect.height), ShiUiText.LocaleName(next) + " ›", GUI.skin.button)) locale = next;
         }
 
         private void DrawGame()
@@ -151,7 +155,7 @@ namespace SHI
             {
                 var x = 32 + railWidth * index;
                 var key = resources[index];
-                GUI.Label(new Rect(x, 84, railWidth - 12, 22), (locale.StartsWith("zh") ? labelsZh[index] : labelsEn[index]) + $"  {state.Resources.GetValueOrDefault(key)}", smallStyle);
+                GUI.Label(new Rect(x, 84, railWidth - 12, 22), T(key).ToUpperInvariant() + $"  {state.Resources.GetValueOrDefault(key)}", smallStyle);
                 GUI.Box(new Rect(x, 108, (railWidth - 18) * state.Resources.GetValueOrDefault(key) / 100f, 3), "");
             }
             var storyX = Screen.width * 0.43f;
@@ -161,7 +165,7 @@ namespace SHI
             GUI.Label(new Rect(storyX, 258, storyWidth, 110), campaign.Text(node.Context, locale), bodyStyle);
             GUI.Box(new Rect(storyX, 380, storyWidth, 105), "");
             GUI.Label(new Rect(storyX + 18, 394, storyWidth - 36, 76), campaign.Text(node.Dialogue, locale), bodyStyle);
-            if (GUI.Button(new Rect(storyX, 495, 180, 32), $"SOURCES · {node.SourceRefs.Count}")) sourcesOpen = !sourcesOpen;
+            if (GUI.Button(new Rect(storyX, 495, 180, 32), $"{T("sources")} · {node.SourceRefs.Count}")) sourcesOpen = !sourcesOpen;
 
             if (!state.Completed)
             {
@@ -184,9 +188,9 @@ namespace SHI
             else
             {
                 GUI.Box(new Rect(storyX, Screen.height - 190, storyWidth, 135), "");
-                var ending = state.Flags.Contains("ending-wildfire") ? "WILDFIRE / 野火" : state.Flags.Contains("ending-deep-roots") ? "DEEP ROOTS / 深根" : "WATCHFUL STRATEGIST / 觀勢";
+                var ending = state.Flags.Contains("ending-wildfire") ? T("endingWildfire") : state.Flags.Contains("ending-deep-roots") ? T("endingRoots") : T("endingWatchful");
                 GUI.Label(new Rect(storyX + 20, Screen.height - 175, storyWidth - 200, 60), ending, titleStyle);
-                if (GUI.Button(new Rect(storyX + storyWidth - 180, Screen.height - 150, 150, 50), "RESTART  ↺")) Restart();
+                if (GUI.Button(new Rect(storyX + storyWidth - 180, Screen.height - 150, 150, 50), T("restart") + "  ↺")) Restart();
             }
 
             if (sourcesOpen) DrawSources(node);
@@ -196,7 +200,7 @@ namespace SHI
         {
             var width = Mathf.Min(520, Screen.width * 0.55f);
             GUI.Box(new Rect(Screen.width - width, 0, width, Screen.height), "");
-            GUI.Label(new Rect(Screen.width - width + 25, 22, width - 90, 50), "SOURCES / 史料", titleStyle);
+            GUI.Label(new Rect(Screen.width - width + 25, 22, width - 90, 50), T("sources"), titleStyle);
             if (GUI.Button(new Rect(Screen.width - 55, 22, 32, 32), "×")) sourcesOpen = false;
             var y = 90f;
             foreach (var id in node.SourceRefs)
@@ -216,6 +220,17 @@ namespace SHI
             state = ShiState.Create(campaign);
             sourcesOpen = false;
             world?.SetActiveSite(campaign.Node(campaign.StartNodeId).SiteId);
+        }
+
+        private string T(string key) => ShiUiText.Get(locale, key);
+
+        private void ApplyDirection()
+        {
+            var rtl = locale == "ar";
+            titleStyle!.alignment = rtl ? TextAnchor.UpperRight : TextAnchor.UpperLeft;
+            bodyStyle!.alignment = rtl ? TextAnchor.UpperRight : TextAnchor.UpperLeft;
+            smallStyle!.alignment = rtl ? TextAnchor.UpperRight : TextAnchor.UpperLeft;
+            buttonStyle!.alignment = rtl ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft;
         }
     }
 }

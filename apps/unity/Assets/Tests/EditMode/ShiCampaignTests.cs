@@ -1,4 +1,8 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace SHI.Tests
 {
@@ -24,5 +28,111 @@ namespace SHI.Tests
             var campaign = ShiCampaign.Parse("{\"schemaVersion\":1,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
             Assert.That(campaign.Text(campaign.Title, "fr"), Is.EqualTo("Test"));
         }
+
+        [Test]
+        public void ProductionCampaignReferencesAreConsistentAndReachable()
+        {
+            var campaign = LoadProductionCampaign();
+            var sites = campaign.Sites.Select(site => site.Id).ToHashSet();
+            var speakers = campaign.Characters.Select(character => character.Id).ToHashSet();
+            var sources = campaign.Sources.Select(source => source.Id).ToHashSet();
+            var nodes = campaign.Nodes.Select(node => node.Id).ToHashSet();
+            var reachable = new HashSet<string>();
+            var pending = new Queue<string>();
+            pending.Enqueue(campaign.StartNodeId);
+
+            while (pending.Count > 0)
+            {
+                var id = pending.Dequeue();
+                if (!reachable.Add(id)) continue;
+                var node = campaign.Node(id);
+                Assert.That(sites, Does.Contain(node.SiteId), $"Unknown site on {node.Id}");
+                Assert.That(speakers, Does.Contain(node.SpeakerId), $"Unknown speaker on {node.Id}");
+                Assert.That(node.SourceRefs.All(sources.Contains), Is.True, $"Unknown source on {node.Id}");
+                foreach (var next in node.Choices.Select(choice => choice.NextNodeId).Where(next => !string.IsNullOrEmpty(next)))
+                {
+                    Assert.That(nodes, Does.Contain(next));
+                    pending.Enqueue(next!);
+                }
+            }
+
+            Assert.That(reachable, Is.EquivalentTo(nodes));
+        }
+
+        [Test]
+        public void ProductionCampaignHasPlayableScopeAndEndings()
+        {
+            var campaign = LoadProductionCampaign();
+            Assert.That(campaign.Nodes, Has.Count.GreaterThanOrEqualTo(6));
+            Assert.That(campaign.Nodes.Sum(node => node.Choices.Count), Is.GreaterThanOrEqualTo(15));
+            Assert.That(campaign.Sources, Has.Count.GreaterThanOrEqualTo(6));
+            Assert.That(campaign.Nodes.SelectMany(node => node.Choices).Count(choice => string.IsNullOrEmpty(choice.NextNodeId)), Is.GreaterThanOrEqualTo(3));
+            Assert.That(global::SHI.Editor.ShiBuild.Validate(campaign), Is.Empty);
+        }
+
+        [Test]
+        public void EveryAdvertisedLocaleHasNativeInterfaceText()
+        {
+            var locales = new[] { "en", "zh-Hans", "zh-Hant", "ja", "ko", "vi", "ar", "fr", "es", "ru", "de" };
+            var keys = new[]
+            {
+                "begin", "continue", "language", "sources", "restart",
+                "grain", "trust", "momentum", "people", "danger",
+                "endingWildfire", "endingRoots", "endingWatchful", "opening",
+            };
+
+            foreach (var locale in locales)
+            foreach (var key in keys)
+                Assert.That(ShiUiText.Get(locale, key), Is.Not.Empty, $"Missing Unity UI text: {locale}.{key}");
+        }
+
+        [Test]
+        public void ProductionCampaignCanReachAllThreeAuthoredEndings()
+        {
+            var campaign = LoadProductionCampaign();
+            var endings = new HashSet<string>();
+            var completedRoutes = 0;
+
+            Explore(campaign, ShiState.Create(campaign), endings, ref completedRoutes);
+
+            Assert.That(completedRoutes, Is.GreaterThanOrEqualTo(3));
+            Assert.That(endings, Is.EquivalentTo(new[] { "ending-wildfire", "ending-deep-roots", "ending-watchful" }));
+        }
+
+        private static ShiCampaign LoadProductionCampaign()
+        {
+            var path = Path.Combine(Application.streamingAssetsPath, "chapter-01-daze.json");
+            Assert.That(File.Exists(path), Is.True, "Run npm run sync:content before the Unity tests.");
+            return ShiCampaign.Parse(File.ReadAllText(path));
+        }
+
+        private static void Explore(ShiCampaign campaign, ShiState state, ISet<string> endings, ref int completedRoutes)
+        {
+            var node = campaign.Node(state.CurrentNodeId);
+            foreach (var choice in node.Choices.Where(state.CanChoose))
+            {
+                var branch = Clone(state);
+                branch.Resolve(node, choice);
+                if (branch.Completed)
+                {
+                    completedRoutes++;
+                    foreach (var flag in branch.Flags.Where(flag => flag.StartsWith("ending-"))) endings.Add(flag);
+                }
+                else
+                {
+                    Explore(campaign, branch, endings, ref completedRoutes);
+                }
+            }
+        }
+
+        private static ShiState Clone(ShiState state) => new()
+        {
+            CampaignId = state.CampaignId,
+            CurrentNodeId = state.CurrentNodeId,
+            Resources = new Dictionary<string, int>(state.Resources),
+            Flags = new List<string>(state.Flags),
+            History = new List<ShiChoiceRecord>(state.History),
+            Completed = state.Completed,
+        };
     }
 }

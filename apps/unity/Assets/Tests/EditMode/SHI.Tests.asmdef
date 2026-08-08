@@ -1,7 +1,7 @@
 {
   "name": "SHI.Tests",
   "rootNamespace": "SHI.Tests",
-  "references": ["SHI.Runtime", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+  "references": ["SHI.Runtime", "SHI.Editor", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

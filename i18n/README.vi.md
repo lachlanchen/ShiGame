@@ -29,7 +29,7 @@ SHI là một trò chơi thật đang được sản xuất, không phải bản
 | Đường dẫn | Đã có |
 | --- | --- |
 | [`apps/web`](../apps/web/) | Web chơi được, lưu, sổ nguồn/quyết định, di động và RTL |
-| [`apps/unity`](../apps/unity/) | Unity 6 và bàn chiến lược 3D; nhập/build trình biên tập vẫn là chặn công khai |
+| [`apps/unity`](../apps/unity/) | Unity 6 và bàn chiến lược 3D; trình biên tập Linux/WebGL đã cài, đăng nhập giấy phép vẫn là chặn công khai |
 | [`content`](../content/) | 6 cảnh, 15 lựa chọn, 5 tài nguyên, hồi phục và 3 kết thúc |
 | [`docs`](../docs/) | Thiết kế, lịch sử, kiến trúc, bản địa hóa, mỹ thuật, QA, phát hành, kế hoạch năm |
 
@@ -65,4 +65,4 @@ Khi dùng SHI trong nghiên cứu hoặc giảng dạy, hãy trích [`CITATION.c
 
 ## Trạng thái và phạm vi
 
-Tiền alpha ngày 2026-08-08. Chương web đã build và kiểm tra trực quan. Unity chưa biên dịch vì endpoint trình biên tập Linux chính thức; cổng đỏ này được ghi rõ. Chưa gọi là hoàn tất trước khi hai client, nghiên cứu, ngôn ngữ, tài sản, chơi thử và phát hành đều đạt.
+Tiền alpha ngày 2026-08-08. Chương web đã build và kiểm tra trực quan. Trình biên tập Unity Linux/WebGL thật đã được cài và Hub nhận diện. Việc nhập và biên dịch bản gốc cần chủ tài khoản đăng nhập, kích hoạt giấy phép Unity; ghim sản xuất Unity 6 vẫn được giữ nguyên. Chưa gọi là hoàn tất trước khi hai client, nghiên cứu, ngôn ngữ, tài sản, chơi thử và phát hành đều đạt.

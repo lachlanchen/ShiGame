@@ -30,7 +30,7 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 | Path | What is real now |
 | --- | --- |
 | [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere, save/resume, source and decision ledgers, responsive and RTL layouts |
-| [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign, code-built 3D wartable and game UI; editor import/build gate is still blocked and documented |
+| [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign, code-built 3D wartable, localized game UI, native preflight/build automation and EditMode tests; license/import gate is documented |
 | [`content`](content/) | Chapter I with 6 scenes, 15 choices, 5 resources, a recovery turn, 3 conclusions, and 6 classified source records |
 | [`packages/game-core`](packages/game-core/) | Deterministic choice rules, requirements, failure thresholds, localization fallback, and tests |
 | [`assets`](assets/) | Reviewed Daze key art and AgenticApp/Blender wartable source, preview, `.blend`, GLB, FBX, and provenance |
@@ -87,6 +87,6 @@ If you use SHI in research or teaching, cite the repository. GitHub reads [CITAT
 
 ## Status and scope
 
-Pre-alpha foundation, 2026-08-08. The web chapter is built and visibly playtested. The Unity project is substantive but not yet editor-compiled because the official Linux editor download endpoint is currently blocked on this workstation; the red gate is documented rather than hidden. SHI is planned as a one-year quality-driven production, and this repository will not label the goal complete until both clients, research, localization, assets, playtests, and release checks pass.
+Pre-alpha foundation, 2026-08-08. The web chapter is built and visibly playtested. A real Unity editor with Linux and Web support is installed and visible in Hub; the exact Unity 6 artifact is still unavailable through the workstation's regional CDN, and editor import is stopped before compilation by Unity account licensing. Those gates remain red rather than hidden. SHI is planned as a one-year quality-driven production, and this repository will not label the goal complete until both clients, research, localization, assets, playtests, and release checks pass.
 
 Copyright © 2026 Lachlan Chen. Public visibility does not grant a reuse license; see [LICENSE.md](LICENSE.md).

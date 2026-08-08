@@ -9,8 +9,21 @@ This is a Unity 6 LTS project, pinned to `6000.0.80f1`. It is a real second clie
 3. Open this directory in Unity Hub and load `Assets/Scenes/Boot.unity`.
 4. Press Play. `ShiBootstrap` creates the 3D wartable, rain field, map markers, and game UI at runtime.
 
+## Reproducible verification and builds
+
+Set `UNITY_EDITOR` when the pinned editor is outside Unity Hub's default location, then use the repository wrapper:
+
+```bash
+./scripts/unity-pipeline.sh preflight
+./scripts/unity-pipeline.sh test
+./scripts/unity-pipeline.sh linux
+./scripts/unity-pipeline.sh web
+```
+
+`SHI/Validate Production Content` exposes the same preflight in the editor. It checks identifiers, cycles and reachability, site/speaker/source references, source classifications, resource and requirement bounds, baseline English and Simplified Chinese text, and three authored endings. Successful player builds write a receipt under `apps/unity/Builds/`; local builds and test output remain ignored by Git.
+
 The project currently uses a code-built scene so campaign iteration does not depend on opaque binary assets. A later art pass will replace the immediate-mode UI with reviewed UI Toolkit documents while retaining the deterministic campaign rules.
 
 ## Current environment note
 
-The official Unity Hub and experimental Unity CLI are installed on the development workstation. On 2026-08-08, official Linux editor requests were redirected to an incomplete regional mirror and returned HTTP 404, so the editor import/build has not yet passed its required gate. Do not describe the Unity client as verified until `docs/production/ENGINE_STATUS.md` records a successful editor import and player build.
+The official Unity Hub and experimental Unity CLI are installed on the development workstation. A compatibility editor (`2022.3.62f3c1`) with Linux and Web support is also installed and registered in Hub. The committed project stays pinned to Unity `6000.0.80f1`: that exact artifact still redirects to a missing regional CDN object. A disposable 2022 compatibility copy reaches the editor licensing client, but Unity refuses project import before compilation because this workstation has no account entitlement or license. Do not describe the Unity client as compiled or verified until `docs/production/ENGINE_STATUS.md` records a successful import, tests and player build.

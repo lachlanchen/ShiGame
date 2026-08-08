@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-08-08T23:29:00+08:00",
+  "productionProjectVersion": "6000.0.80f1",
+  "compatibilityEditor": {
+    "version": "2022.3.62f3c1",
+    "registeredInHub": true,
+    "linuxBuildSupport": true,
+    "webglBuildSupport": true,
+    "offlineDocumentation": true,
+    "archiveBytes": 4153503732,
+    "archiveSha256": "ee060f7d5f4753db2154eccb549ef283a08bfa36069178274165074d333f47c1",
+    "archiveIntegrity": "xz-passed"
+  },
+  "preflight": {
+    "projectImportReached": false,
+    "csharpCompilationReached": false,
+    "editModeTestsReached": false,
+    "playerBuildReached": false,
+    "gate": "Unity account sign-in and eligible license activation required"
+  },
+  "visibleDesktop": {
+    "display": ":123",
+    "vnc": "127.0.0.1:5933",
+    "novnc": "http://127.0.0.1:6133/vnc.html?host=127.0.0.1&port=6133&autoconnect=1&resize=scale"
+  },
+  "evidence": [
+    "unity-01-editor-installed.png",
+    "unity-02-license-signin-required.png"
+  ],
+  "containsCredentialsOrLicenseMaterial": false
+}

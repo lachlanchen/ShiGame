@@ -37,3 +37,15 @@ Visual review after automation:
 - Small tactical copy: raised after screenshot review.
 
 Evidence must be regenerated when layout, campaign content, localization direction, Three.js, or save behavior changes.
+
+## Dedicated Unity desktop
+
+Unity Hub is available on a separate localhost-only desktop so installation and licensing can be observed without touching the web test profile.
+
+| Service | Endpoint |
+| --- | --- |
+| X display | `:123` |
+| VNC | `127.0.0.1:5933` |
+| noVNC | `http://127.0.0.1:6133/vnc.html?host=127.0.0.1&port=6133&autoconnect=1&resize=scale` |
+
+Current evidence shows the installed editor and Linux/Web modules, followed by the login-required license boundary. No Unity gameplay result is claimed yet.

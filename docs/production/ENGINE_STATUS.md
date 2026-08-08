@@ -15,19 +15,31 @@ Unity 6 LTS is selected for the first production year. Project pin: `6000.0.80f1
 - Xvfb, x11vnc, websockify/noVNC and Chrome/CDP visible playtest stack.
 - Unity experimental CLI `0.1.0-beta.3` in the user environment.
 - Official Unity Hub AppImage at `~/.local/share/unityhub/UnityHub.AppImage`.
+- Unity `2022.3.62f3c1` compatibility editor at `~/Unity/Hub/Editor/2022.3.62f3c1`, registered in Hub with Linux and Web build support plus offline documentation.
+- Dedicated Unity desktop: display `:123`, VNC `127.0.0.1:5933`, noVNC `http://127.0.0.1:6133/vnc.html?host=127.0.0.1&port=6133&autoconnect=1&resize=scale`.
+- Verified compatibility editor archive: 4,153,503,732 bytes; XZ integrity passed; SHA-256 `ee060f7d5f4753db2154eccb549ef283a08bfa36069178274165074d333f47c1`.
 
 ## Open blockers
 
 ### Unity Editor import/build
 
-The workstation is not authenticated to Unity. On 2026-08-08, Unity CLI installs for available 6000.x releases and direct official archive links redirected to `download.unitychina.cn` paths that returned HTTP 404. Hub headless mode also did not complete successfully. The repository contains a real pinned Unity project, but it has **not** passed editor import, C# compilation, test runner, or player build. That gate stays red.
+The workstation is not authenticated to Unity. On 2026-08-08, Unity CLI installs for available 6000.x releases and direct official archive links redirected to `download.unitychina.cn` paths that returned HTTP 404. The Hub-visible 2022 LTS compatibility build did download from the regional service; its interrupted main transfer was reconstructed from exact HTTP ranges, checked for byte count and XZ integrity, installed, and detected automatically by Hub with Linux and Web modules.
+
+The compatibility executable reports `2022.3.62f3c1` and its licensing client launches successfully. A batch preflight against an ignored compatibility copy then exits before project import with “No valid Unity Editor license found.” Hub's license panel requires Unity sign-in; the manual portal redirects to Unity ID. A private `.alf` request exists only under ignored `.runtime/`. No credentials, machine identifiers, tokens or license files are committed. The pinned Unity project has therefore **not** passed editor import, C# compilation, test runner, or player build. That gate stays red.
+
+Visible evidence:
+
+- [`unity-01-editor-installed.png`](evidence/unity-01-editor-installed.png): Hub detects the editor with Linux and WebGL modules.
+- [`unity-02-license-signin-required.png`](evidence/unity-02-license-signin-required.png): Hub requires account login to manage licenses.
+- [`unity-engine-status.json`](evidence/unity-engine-status.json): machine-readable versions, module checks, archive integrity and the exact red gate; it contains no credentials or license material.
 
 Resolution path:
 
-1. Use the visible dedicated desktop to sign in to Unity Hub if licensing requires it.
-2. Install the pinned editor plus Linux and WebGL build support from a working official endpoint.
-3. Open `apps/unity`, allow package import, fix version migrations intentionally.
-4. Run EditMode tests, play the Boot scene, build Linux/WebGL players, and record hashes/screenshots here.
+1. Use the visible dedicated desktop to sign in to Unity Hub and activate an eligible Unity license. This is an account-owned action and cannot be fabricated by the build agent.
+2. Re-run the compatibility-copy preflight to obtain a compiler result without allowing an older editor to rewrite the Unity 6 project.
+3. Install the exact pinned editor plus Linux and Web build support when its official regional object becomes available.
+4. Open `apps/unity`, allow package import, and fix migrations intentionally.
+5. Run `./scripts/unity-pipeline.sh preflight`, `test`, `linux`, and `web`; then play the Boot scene and record artifact hashes/screenshots here.
 
 ### NVIDIA
 

@@ -29,7 +29,7 @@ SHI ist ein echtes Spiel in Produktion, keine Wegwerf-Demo. Das erste spielbare 
 | Pfad | Jetzt umgesetzt |
 | --- | --- |
 | [`apps/web`](../apps/web/) | Spielbares Web, Speicherung, Quellen-/Entscheidungsregister, Mobil und RTL |
-| [`apps/unity`](../apps/unity/) | Unity 6 und 3D-Kartentisch; Editorimport/-build bleibt offen dokumentiert |
+| [`apps/unity`](../apps/unity/) | Unity 6 und 3D-Kartentisch; Linux/WebGL-Editor installiert, Lizenzanmeldung bleibt offen dokumentiert |
 | [`content`](../content/) | 6 Szenen, 15 Entscheidungen, 5 Ressourcen, Erholung und 3 Enden |
 | [`docs`](../docs/) | Design, Geschichte, Architektur, Lokalisierung, Kunst, QA, Veröffentlichung, Jahresplan |
 
@@ -65,4 +65,4 @@ Für Forschung oder Lehre bitte [`CITATION.cff`](../CITATION.cff) zitieren.
 
 ## Status und Umfang
 
-Pre-Alpha vom 2026-08-08. Das Web-Kapitel ist gebaut und sichtbar getestet. Unity wurde wegen des offiziellen Linux-Editor-Endpunkts noch nicht kompiliert; dieses rote Tor bleibt offen dokumentiert. Vollständig ist das Projekt erst nach beiden Clients, Forschung, Sprachen, Assets, Playtests und Releaseprüfungen.
+Pre-Alpha vom 2026-08-08. Das Web-Kapitel ist gebaut und sichtbar getestet. Der echte Unity-Editor mit Linux/WebGL ist installiert und von Hub erkannt. Nativer Import und Kompilierung erfordern noch die Anmeldung des Kontoinhabers und die Aktivierung einer Unity-Lizenz; der Unity-6-Produktionsstand bleibt fixiert. Vollständig ist das Projekt erst nach beiden Clients, Forschung, Sprachen, Assets, Playtests und Releaseprüfungen.

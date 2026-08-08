@@ -29,7 +29,7 @@ SHI es un juego real en producción, no una demo desechable. El primer capítulo
 | Ruta | Implementado ahora |
 | --- | --- |
 | [`apps/web`](../apps/web/) | Web jugable, guardado, registros de fuentes y decisiones, móvil y RTL |
-| [`apps/unity`](../apps/unity/) | Unity 6 y mesa 3D; importación/compilación del editor sigue como bloqueo público |
+| [`apps/unity`](../apps/unity/) | Unity 6 y mesa 3D; editor Linux/WebGL instalado, inicio de sesión de licencia aún bloqueante |
 | [`content`](../content/) | 6 escenas, 15 decisiones, 5 recursos, recuperación y 3 finales |
 | [`docs`](../docs/) | Diseño, historia, arquitectura, localización, arte, QA, publicación y plan anual |
 
@@ -65,4 +65,4 @@ Si usa SHI en investigación o docencia, cite [`CITATION.cff`](../CITATION.cff).
 
 ## Estado y alcance
 
-Prealfa del 2026-08-08. El capítulo web está compilado y probado visiblemente. Unity aún no se ha compilado por un problema del endpoint oficial de Linux; la puerta roja se declara. No se considerará completo hasta superar ambos clientes, investigación, idiomas, recursos, pruebas de juego y lanzamiento.
+Prealfa del 2026-08-08. El capítulo web está compilado y probado visiblemente. El editor Unity real para Linux/WebGL está instalado y reconocido por Hub. La importación y compilación nativas requieren que el titular de la cuenta inicie sesión y active una licencia de Unity; se mantiene la versión de producción fijada en Unity 6. No se considerará completo hasta superar ambos clientes, investigación, idiomas, recursos, pruebas de juego y lanzamiento.

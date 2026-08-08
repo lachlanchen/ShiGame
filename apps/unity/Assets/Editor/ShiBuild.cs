@@ -1,0 +1,240 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEngine;
+
+namespace SHI.Editor
+{
+    /// <summary>
+    /// Reproducible preflight and player-build entry points for menus and batch mode.
+    /// Keep these methods argument-free so Unity can invoke them with -executeMethod.
+    /// </summary>
+    public static class ShiBuild
+    {
+        private const string CampaignFile = "chapter-01-daze.json";
+        private const string BootScene = "Assets/Scenes/Boot.unity";
+        private static readonly string[] BaselineLocales = { "en", "zh-Hans" };
+        private static readonly string[] ResourceKeys = { "grain", "trust", "momentum", "people", "danger" };
+        private static readonly string[] ClaimStatuses = { "primary-account", "later-compilation", "dramatic-reconstruction" };
+
+        [MenuItem("SHI/Validate Production Content")]
+        public static void Preflight()
+        {
+            var campaign = ReadCampaign();
+            var errors = Validate(campaign);
+            if (errors.Count > 0)
+                throw new InvalidOperationException("SHI preflight failed:\n- " + string.Join("\n- ", errors));
+
+            Debug.Log($"SHI preflight passed: {campaign.Nodes.Count} nodes, " +
+                      $"{campaign.Nodes.Sum(node => node.Choices.Count)} choices, " +
+                      $"{campaign.Sources.Count} sources.");
+        }
+
+        [MenuItem("SHI/Build/Linux Player")]
+        public static void BuildLinux()
+        {
+            Build(BuildTargetGroup.Standalone, BuildTarget.StandaloneLinux64, Path.Combine(BuildRoot(), "linux", "shi"));
+        }
+
+        [MenuItem("SHI/Build/Web Player")]
+        public static void BuildWeb()
+        {
+            Build(BuildTargetGroup.WebGL, BuildTarget.WebGL, Path.Combine(BuildRoot(), "web"));
+        }
+
+        public static IReadOnlyList<string> Validate(ShiCampaign campaign)
+        {
+            var errors = new List<string>();
+            var nodeIds = campaign.Nodes.Select(node => node.Id).ToHashSet();
+            var siteIds = campaign.Sites.Select(site => site.Id).ToHashSet();
+            var characterIds = campaign.Characters.Select(character => character.Id).ToHashSet();
+            var sourceIds = campaign.Sources.Select(source => source.Id).ToHashSet();
+            var choiceIds = new HashSet<string>();
+
+            RequireUnique(campaign.Nodes.Select(node => node.Id), "node", errors);
+            RequireUnique(campaign.Sites.Select(site => site.Id), "site", errors);
+            RequireUnique(campaign.Characters.Select(character => character.Id), "character", errors);
+            RequireUnique(campaign.Sources.Select(source => source.Id), "source", errors);
+
+            if (!nodeIds.Contains(campaign.StartNodeId)) errors.Add($"Start node '{campaign.StartNodeId}' does not exist.");
+            foreach (var key in ResourceKeys)
+            {
+                if (!campaign.InitialResources.ContainsKey(key)) errors.Add($"Initial resource '{key}' is missing.");
+            }
+            foreach (var resource in campaign.InitialResources)
+            {
+                if (!ResourceKeys.Contains(resource.Key)) errors.Add($"Unknown initial resource '{resource.Key}'.");
+                if (resource.Value < 0 || resource.Value > 100) errors.Add($"Initial resource '{resource.Key}' is outside 0–100.");
+            }
+
+            RequireText(campaign.Title, "campaign title", errors);
+            RequireText(campaign.Subtitle, "campaign subtitle", errors);
+            foreach (var source in campaign.Sources)
+            {
+                if (string.IsNullOrWhiteSpace(source.Work)) errors.Add($"Source '{source.Id}' has no work title.");
+                if (string.IsNullOrWhiteSpace(source.Section)) errors.Add($"Source '{source.Id}' has no locator.");
+                if (!ClaimStatuses.Contains(source.ClaimStatus)) errors.Add($"Source '{source.Id}' has invalid classification '{source.ClaimStatus}'.");
+                RequireText(source.Note, $"source '{source.Id}' note", errors);
+            }
+
+            foreach (var node in campaign.Nodes)
+            {
+                if (!siteIds.Contains(node.SiteId)) errors.Add($"Node '{node.Id}' references unknown site '{node.SiteId}'.");
+                if (!characterIds.Contains(node.SpeakerId)) errors.Add($"Node '{node.Id}' references unknown speaker '{node.SpeakerId}'.");
+                if (node.Choices.Count < 2) errors.Add($"Node '{node.Id}' must offer at least two decisions.");
+                RequireText(node.DateLabel, $"node '{node.Id}' date", errors);
+                RequireText(node.Title, $"node '{node.Id}' title", errors);
+                RequireText(node.Context, $"node '{node.Id}' context", errors);
+                RequireText(node.Dialogue, $"node '{node.Id}' dialogue", errors);
+
+                foreach (var sourceRef in node.SourceRefs)
+                {
+                    if (!sourceIds.Contains(sourceRef)) errors.Add($"Node '{node.Id}' references unknown source '{sourceRef}'.");
+                }
+
+                foreach (var choice in node.Choices)
+                {
+                    if (!choiceIds.Add(choice.Id)) errors.Add($"Duplicate choice id '{choice.Id}'.");
+                    if (!string.IsNullOrEmpty(choice.NextNodeId) && !nodeIds.Contains(choice.NextNodeId))
+                        errors.Add($"Choice '{choice.Id}' references unknown next node '{choice.NextNodeId}'.");
+                    foreach (var key in choice.Effects.Keys)
+                    {
+                        if (!ResourceKeys.Contains(key)) errors.Add($"Choice '{choice.Id}' changes unknown resource '{key}'.");
+                    }
+                    ValidateRequirements(choice, errors);
+                    RequireText(choice.Label, $"choice '{choice.Id}' label", errors);
+                    RequireText(choice.Intent, $"choice '{choice.Id}' intent", errors);
+                    RequireText(choice.Consequence, $"choice '{choice.Id}' consequence", errors);
+                    RequireText(choice.Strategy, $"choice '{choice.Id}' strategy", errors);
+                }
+            }
+
+            var reachable = ReachableNodes(campaign);
+            foreach (var unreachable in nodeIds.Except(reachable)) errors.Add($"Node '{unreachable}' is unreachable.");
+            var endingCount = campaign.Nodes.SelectMany(node => node.Choices).Count(choice => string.IsNullOrEmpty(choice.NextNodeId));
+            if (endingCount < 3) errors.Add($"Campaign needs at least three endings; found {endingCount}.");
+            if (HasCycle(campaign, campaign.StartNodeId, new HashSet<string>(), new HashSet<string>()))
+                errors.Add("Campaign graph contains a cycle.");
+
+            return errors;
+        }
+
+        private static ShiCampaign ReadCampaign()
+        {
+            var path = Path.Combine(Application.streamingAssetsPath, CampaignFile);
+            if (!File.Exists(path)) throw new FileNotFoundException("Run npm run sync:content before opening Unity.", path);
+            return ShiCampaign.Parse(File.ReadAllText(path));
+        }
+
+        private static void Build(BuildTargetGroup group, BuildTarget target, string location)
+        {
+            Preflight();
+            if (!BuildPipeline.IsBuildTargetSupported(group, target))
+                throw new InvalidOperationException($"Unity module for {target} is not installed.");
+
+            var parent = target == BuildTarget.WebGL ? location : Path.GetDirectoryName(location)!;
+            Directory.CreateDirectory(parent);
+            if (!EditorUserBuildSettings.SwitchActiveBuildTarget(group, target))
+                throw new InvalidOperationException($"Could not switch active build target to {target}.");
+
+            var scenes = EditorBuildSettings.scenes
+                .Where(scene => scene.enabled)
+                .Select(scene => scene.path)
+                .ToArray();
+            if (!scenes.Contains(BootScene)) throw new InvalidOperationException($"Build settings must include {BootScene}.");
+
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = scenes,
+                locationPathName = location,
+                target = target,
+                options = BuildOptions.StrictMode,
+            });
+            if (report.summary.result != BuildResult.Succeeded)
+                throw new InvalidOperationException($"{target} build failed: {report.summary.totalErrors} errors.");
+
+            var receipt = Path.Combine(BuildRoot(), $"receipt-{target}.txt");
+            File.WriteAllLines(receipt, new[]
+            {
+                $"product={Application.productName}",
+                $"unity={Application.unityVersion}",
+                $"target={target}",
+                $"output={location}",
+                $"bytes={report.summary.totalSize}",
+                $"duration={report.summary.totalTime}",
+                $"completedUtc={DateTime.UtcNow:O}",
+            });
+            Debug.Log($"SHI {target} build passed: {report.summary.totalSize} bytes at {location}");
+        }
+
+        private static string BuildRoot()
+        {
+            var configured = Environment.GetEnvironmentVariable("SHI_BUILD_ROOT");
+            return string.IsNullOrWhiteSpace(configured)
+                ? Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Builds"))
+                : Path.GetFullPath(configured);
+        }
+
+        private static void RequireUnique(IEnumerable<string> values, string kind, ICollection<string> errors)
+        {
+            foreach (var duplicate in values.GroupBy(value => value).Where(group => group.Count() > 1))
+                errors.Add($"Duplicate {kind} id '{duplicate.Key}'.");
+        }
+
+        private static void RequireText(Newtonsoft.Json.Linq.JObject localized, string field, ICollection<string> errors)
+        {
+            foreach (var locale in BaselineLocales)
+            {
+                if (string.IsNullOrWhiteSpace(localized.Value<string>(locale))) errors.Add($"{field} is missing locale '{locale}'.");
+            }
+        }
+
+        private static void ValidateRequirements(ShiChoice choice, ICollection<string> errors)
+        {
+            if (choice.Requirements == null) return;
+            foreach (var requirement in choice.Requirements.Min.Concat(choice.Requirements.Max))
+            {
+                if (!ResourceKeys.Contains(requirement.Key)) errors.Add($"Choice '{choice.Id}' requires unknown resource '{requirement.Key}'.");
+                if (requirement.Value < 0 || requirement.Value > 100) errors.Add($"Choice '{choice.Id}' requirement '{requirement.Key}' is outside 0–100.");
+            }
+        }
+
+        private static bool HasCycle(ShiCampaign campaign, string id, ISet<string> visiting, ISet<string> visited)
+        {
+            if (visiting.Contains(id)) return true;
+            if (visited.Contains(id)) return false;
+            visiting.Add(id);
+            var node = campaign.Nodes.FirstOrDefault(candidate => candidate.Id == id);
+            if (node != null)
+            {
+                foreach (var next in node.Choices.Select(choice => choice.NextNodeId).Where(next => !string.IsNullOrEmpty(next)))
+                {
+                    if (HasCycle(campaign, next!, visiting, visited)) return true;
+                }
+            }
+            visiting.Remove(id);
+            visited.Add(id);
+            return false;
+        }
+
+        private static HashSet<string> ReachableNodes(ShiCampaign campaign)
+        {
+            var reachable = new HashSet<string>();
+            var pending = new Queue<string>();
+            pending.Enqueue(campaign.StartNodeId);
+            while (pending.Count > 0)
+            {
+                var id = pending.Dequeue();
+                if (!reachable.Add(id)) continue;
+                var node = campaign.Nodes.FirstOrDefault(candidate => candidate.Id == id);
+                if (node == null) continue;
+                foreach (var next in node.Choices.Select(choice => choice.NextNodeId).Where(next => !string.IsNullOrEmpty(next)))
+                    pending.Enqueue(next!);
+            }
+            return reachable;
+        }
+    }
+}
