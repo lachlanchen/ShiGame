@@ -8,8 +8,9 @@
 - Hardened the visible harness against leaked diagnostic viewports by restoring an explicit 1600×1000 desktop metric. Exact implementation `73792273c6cc2bb2f55378591af2147908a9d4fd` passes 147 checks, twenty-one axe states, thirteen target states and eleven locale-font states with zero console errors, remote requests/resources or non-cancelled failures.
 - Visually approved the title/gameplay 320px and forced-colors overview/decision frames. The full production build remains within budget at 96.68 KiB initial JavaScript, 8.83 KiB initial CSS, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete font coverage and 26.75 MiB deployed output.
 - Re-audited Unity Hub and corrected the documented VNC/noVNC pair to `5934`/`6134` for display `:123`. The refreshed compatibility preflight still stops before import with no account token, entitlement or valid license; the pinned project remains untouched and the native gates remain red.
+- Passed clean-checkout GitHub validation and Pages deployment at evidence boundary `267f96d78fdfaf1b39b515f09bd3a1fbe0a6fd30`, then repeated all 147 checks on the public build with twenty-one axe, eleven locale-font and thirteen target audits, zero console errors, zero remote HTTP(S) requests/resources and zero non-cancelled network failures.
 
-Next gate: publish and replay this exact checkpoint on Pages, then continue human screen-reader, actual browser-zoom/high-contrast, physical-controller, Unity-license and observed first-time-player sessions. Chapter II remains gated.
+Next gate: continue human screen-reader, actual browser-zoom/high-contrast, physical-controller, Unity-license and observed first-time-player sessions. Chapter II remains gated.
 
 ## 2026-08-09 · Self-hosted multilingual typography and web-boundary checkpoint
 
