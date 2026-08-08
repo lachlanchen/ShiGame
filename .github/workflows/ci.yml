@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Install audio measurement toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends ffmpeg
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-artifact@v7

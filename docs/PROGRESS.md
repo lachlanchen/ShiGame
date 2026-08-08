@@ -11,6 +11,7 @@
 - Expanded `npm run validate:audio` to fresh-render and compare deterministic evidence, validate the visible capture format/sequence/limits, require traceable review boundaries and keep all full WAVs/browser state reproducible but ignored.
 - Exact implementation `4dd6a520fe7194c2d57124e8eebf1b68583395b6` passes a detached clean install/build, the complete 177-check visible-browser suite and the independent actual-output capture on localhost with zero console errors.
 - A detached clean-install rehearsal exposed a Node 22.21/npm workspace-hoisting defect: Vitest resolved from the root while its optional latest `jsdom` peer was engine-incompatible and the compatible workspace copy was nested. Root-pinning `jsdom` 26.1.0 makes `npm ci` deterministic across the supported Node 22 range; the audited dependency tree reports zero vulnerabilities.
+- The first hosted evidence-boundary build was rejected because the runner had no `/usr/bin/ffmpeg`. The renderer now discovers `ffmpeg`/`ffprobe` through `PATH` (with explicit environment overrides), and both validation and Pages workflows install the required audio measurement toolchain before building; no audio gate was bypassed.
 
 Next gate: pin exact-commit local/public captures and complete the full clean build/visible-browser deployment replay. Human listening, sensory-load, physical-device and native Unity audio review remain open after objective engineering measurement.
 

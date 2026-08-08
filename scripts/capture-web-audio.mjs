@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, relative, resolve } from "node:path";
 import { analyzeAudioArtifact, createAudioSpectrogram } from "./lib/audio-reference.mjs";
@@ -7,6 +8,7 @@ import { analyzeAudioArtifact, createAudioSpectrogram } from "./lib/audio-refere
 const root = resolve(import.meta.dirname, "..");
 const cdpPort = Number(process.env.SHI_AUDIO_CDP_PORT ?? 9323);
 const sinkName = process.env.SHI_AUDIO_SINK ?? "shi-game-audio-capture";
+const ffmpegPath = process.env.SHI_FFMPEG ?? (existsSync("/usr/bin/ffmpeg") ? "/usr/bin/ffmpeg" : "ffmpeg");
 const captureUrl = new URL(process.env.SHI_AUDIO_CAPTURE_URL ?? "http://127.0.0.1:4173/");
 captureUrl.searchParams.set("seed", process.env.SHI_PLAYTEST_SEED ?? "5EED2026");
 const runtimeDir = resolve(root, ".runtime/audio");
@@ -85,7 +87,7 @@ const recordMonitor = async (path, seconds, operation) => {
     "-y", "-hide_banner", "-loglevel", "error", "-f", "pulse", "-i", `${sinkName}.monitor`,
     "-t", String(seconds), "-ac", "2", "-ar", String(captureContract.sampleRate), "-c:a", "pcm_s24le", path,
   ];
-  const child = spawn("/usr/bin/ffmpeg", args, { stdio: ["ignore", "ignore", "pipe"] });
+  const child = spawn(ffmpegPath, args, { stdio: ["ignore", "ignore", "pipe"] });
   let stderr = "";
   child.stderr.on("data", (chunk) => { stderr += chunk; });
   await wait(500);

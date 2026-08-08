@@ -1,13 +1,14 @@
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
+import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { promisify } from "node:util";
 
 const runFile = promisify(execFile);
-const ffmpegPath = process.env.SHI_FFMPEG ?? "/usr/bin/ffmpeg";
-const ffprobePath = process.env.SHI_FFPROBE ?? "/usr/bin/ffprobe";
+const ffmpegPath = process.env.SHI_FFMPEG ?? (existsSync("/usr/bin/ffmpeg") ? "/usr/bin/ffmpeg" : "ffmpeg");
+const ffprobePath = process.env.SHI_FFPROBE ?? (existsSync("/usr/bin/ffprobe") ? "/usr/bin/ffprobe" : "ffprobe");
 
 const finiteDb = (amplitude) => amplitude > 0 ? 20 * Math.log10(amplitude) : Number.NEGATIVE_INFINITY;
 const rounded = (value, digits = 4) => Number.isFinite(value) ? Number(value.toFixed(digits)) : value;
