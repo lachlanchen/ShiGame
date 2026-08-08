@@ -109,6 +109,41 @@ const waitForSelector = async (selector, timeout = 5000) => {
   }
   throw new Error(`Timed out waiting for ${selector}`);
 };
+const reloadPage = async (timeout = 15000) => {
+  const marker = `shi-reload-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  await evaluate(`document.documentElement.dataset.shiReloadMarker = ${JSON.stringify(marker)}; location.reload(); true`);
+  const started = Date.now();
+  while (Date.now() - started < timeout) {
+    try {
+      const loaded = await evaluate(`document.readyState === 'complete' && document.documentElement.dataset.shiReloadMarker !== ${JSON.stringify(marker)}`);
+      if (loaded) return;
+    } catch {
+      // A navigation can briefly replace the execution context between polls.
+    }
+    await wait(100);
+  }
+  throw new Error("Timed out waiting for a stable page reload.");
+};
+const navigatePage = async (url, timeout = 15000) => {
+  const marker = `shi-navigate-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  try {
+    await evaluate(`document.documentElement.dataset.shiNavigateMarker = ${JSON.stringify(marker)}; true`);
+  } catch {
+    // A newly attached target may not have a stable execution context yet.
+  }
+  await send("Page.navigate", { url });
+  const started = Date.now();
+  while (Date.now() - started < timeout) {
+    try {
+      const loaded = await evaluate(`document.readyState === 'complete' && location.href === ${JSON.stringify(url)} && document.documentElement.dataset.shiNavigateMarker !== ${JSON.stringify(marker)}`);
+      if (loaded) return;
+    } catch {
+      // A navigation can briefly replace the execution context between polls.
+    }
+    await wait(100);
+  }
+  throw new Error(`Timed out waiting for navigation to ${url}`);
+};
 const waitForTitleAssets = async () => {
   await waitForSelector("canvas", 15000);
   await evaluate(`Promise.all([
@@ -144,9 +179,10 @@ await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
 })()` });
 await send("Emulation.clearDeviceMetricsOverride");
 await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
-await send("Page.navigate", { url: testUrl.href });
+await navigatePage(testUrl.href);
 await waitForSelector(".primary-button", 10000);
-await evaluate("localStorage.clear(); location.reload(); true");
+await evaluate("localStorage.clear(); true");
+await reloadPage();
 await waitForSelector(".primary-button");
 await waitForTitleAssets();
 await wait(250);
@@ -418,7 +454,7 @@ check(snapshot.node === "open-council" && snapshot.history === 1, "pointer input
 await auditAccessibility("resolution-en");
 await auditTargets("resolution-en");
 
-await send("Page.reload", { ignoreCache: true });
+await reloadPage();
 await waitForSelector(".primary-button");
 snapshot = await evaluate(`({ primary: document.querySelector('.primary-button')?.textContent?.trim() })`);
 check(snapshot.primary.includes("Continue"), "reload offers save continuation");
@@ -505,7 +541,7 @@ await auditTargets("text-resize-200");
 await evaluate("document.documentElement.style.fontSize = ''; true");
 
 await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
-await send("Page.reload", { ignoreCache: true });
+await reloadPage();
 await waitForSelector(".primary-button");
 snapshot = await evaluate(`document.querySelector('[data-testid=shi-app]')?.getAttribute('data-motion')`);
 check(snapshot === "reduced", "operating-system reduced-motion preference is honored on startup");
