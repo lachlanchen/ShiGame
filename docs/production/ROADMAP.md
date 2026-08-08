@@ -26,7 +26,7 @@ This roadmap is a sequence of quality gates, not permission for uncontrolled con
 | Month 11 | Content-complete slice | No placeholder assets, full source matrix, all supported narrative locales translated/reviewed, platform builds |
 | Month 12 | Public alpha | Signed builds, web deployment, store readiness decision, critical defects zero, post-alpha plan |
 
-Month 2 status on 2026-08-09: deterministic authored countermoves, save-v2 migration, keyboard operation, touch-responsive layouts and exhaustive route validation are implemented. Seeded uncertainty remains deliberately unimplemented until its distribution/seed contract is reviewed; gamepad support and observed external playtests also remain open. The milestone is therefore in progress, not complete.
+Month 2 status on 2026-08-09: deterministic authored countermoves, save-v2 migration, localized first-run teaching, keyboard/touch layouts, web and Unity controller code, synthetic standard-gamepad browser coverage and exhaustive route validation are implemented. Seeded uncertainty remains deliberately unimplemented until its distribution/seed contract is reviewed. Physical Xbox/PlayStation-layout controller sessions and observed external playtests remain open, so the milestone is in progress rather than complete.
 
 ## Weekly operating cadence
 

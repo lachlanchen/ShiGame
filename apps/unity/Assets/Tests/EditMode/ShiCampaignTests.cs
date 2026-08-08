@@ -116,6 +116,8 @@ namespace SHI.Tests
                 "grain", "trust", "momentum", "people", "danger",
                 "endingWildfire", "endingRoots", "endingWatchful", "opening",
                 "consequence", "pressureForecast", "pressureResponse", "failed", "captured", "scattered",
+                "guide", "guideTitle", "guideIntro", "guideFieldTitle", "guideFieldText", "guideMoveTitle", "guideMoveText",
+                "guideReplyTitle", "guideReplyText", "controllerReady", "controllerOptional", "controllerHint", "guideContinue", "recordEmpty",
             };
 
             foreach (var locale in locales)

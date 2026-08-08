@@ -48,7 +48,7 @@ JSON chiến dịch có phiên bản là nguồn tự sự duy nhất cho lõi T
 
 ## Build và xác nhận
 
-Xác nhận tự động kiểm tra đồ thị, tham chiếu, khóa ngôn ngữ, luật, kiểu và test. Bài test noVNC/Chrome hiển thị đã qua 31 mục về chơi, phản ứng áp lực, bàn phím, nguồn, lưu, RTL, di động, WebGL và console. Xem [bằng chứng](../docs/production/PLAYTESTING.md).
+Xác nhận tự động kiểm tra đồ thị, tham chiếu, khóa ngôn ngữ, luật, kiểu và test. Bài test noVNC/Chrome hiển thị đã qua 43 mục về chơi, phản ứng áp lực, bàn phím, nguồn, lưu, RTL, di động, WebGL và console. Xem [bằng chứng](../docs/production/PLAYTESTING.md).
 
 ## Trích dẫn
 
@@ -65,4 +65,4 @@ Khi dùng SHI trong nghiên cứu hoặc giảng dạy, hãy trích [`CITATION.c
 
 ## Trạng thái và phạm vi
 
-Tiền alpha chứng minh hệ thống ngày 2026-08-09. Chương web có phản ứng áp lực tất định, chuyển đổi bản lưu, điều khiển bàn phím, kiểm tra mọi tuyến và 31 kiểm tra trực quan. Trình biên tập Unity Linux/WebGL thật đã được cài và Hub nhận diện. Việc nhập và biên dịch bản gốc cần chủ tài khoản đăng nhập, kích hoạt giấy phép Unity; ghim sản xuất Unity 6 vẫn được giữ nguyên. Chưa gọi là hoàn tất trước khi hai client, nghiên cứu, ngôn ngữ, tài sản, chơi thử và phát hành đều đạt.
+Tiền alpha chứng minh hệ thống ngày 2026-08-09. Chương web có phản ứng áp lực tất định, chuyển đổi bản lưu, điều khiển bàn phím, kiểm tra mọi tuyến và 43 kiểm tra trực quan. Trình biên tập Unity Linux/WebGL thật đã được cài và Hub nhận diện. Việc nhập và biên dịch bản gốc cần chủ tài khoản đăng nhập, kích hoạt giấy phép Unity; ghim sản xuất Unity 6 vẫn được giữ nguyên. Chưa gọi là hoàn tất trước khi hai client, nghiên cứu, ngôn ngữ, tài sản, chơi thử và phát hành đều đạt.

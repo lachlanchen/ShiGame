@@ -48,7 +48,7 @@ El JSON versionado es la única fuente narrativa y lo comparten el núcleo deter
 
 ## Compilación y validación
 
-La validación comprueba grafo, referencias, claves lingüísticas, reglas, tipos y pruebas. La prueba visible noVNC/Chrome superó 31 controles de juego, respuestas de presión, teclado, fuentes, guardado, RTL, móvil, WebGL y consola. Véase la [evidencia](../docs/production/PLAYTESTING.md).
+La validación comprueba grafo, referencias, claves lingüísticas, reglas, tipos y pruebas. La prueba visible noVNC/Chrome superó 43 controles de juego, respuestas de presión, teclado, fuentes, guardado, RTL, móvil, WebGL y consola. Véase la [evidencia](../docs/production/PLAYTESTING.md).
 
 ## Cita
 
@@ -65,4 +65,4 @@ Si usa SHI en investigación o docencia, cite [`CITATION.cff`](../CITATION.cff).
 
 ## Estado y alcance
 
-Prealfa de prueba de sistemas del 2026-08-09. El capítulo web incluye respuestas de presión deterministas, migración de guardado, control por teclado, validación de todas las rutas y 31 controles visibles. El editor Unity real para Linux/WebGL está instalado y reconocido por Hub. La importación y compilación nativas requieren que el titular de la cuenta inicie sesión y active una licencia de Unity; se mantiene la versión de producción fijada en Unity 6. No se considerará completo hasta superar ambos clientes, investigación, idiomas, recursos, pruebas de juego y lanzamiento.
+Prealfa de prueba de sistemas del 2026-08-09. El capítulo web incluye respuestas de presión deterministas, migración de guardado, control por teclado, validación de todas las rutas y 43 controles visibles. El editor Unity real para Linux/WebGL está instalado y reconocido por Hub. La importación y compilación nativas requieren que el titular de la cuenta inicie sesión y active una licencia de Unity; se mantiene la versión de producción fijada en Unity 6. No se considerará completo hasta superar ambos clientes, investigación, idiomas, recursos, pruebas de juego y lanzamiento.

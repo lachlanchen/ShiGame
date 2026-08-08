@@ -69,6 +69,12 @@ const shiftDigit = async (digit) => {
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: digit === "1" ? "!" : digit, code: `Digit${digit}`, modifiers: 8 });
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Shift", code: "ShiftLeft" });
 };
+const gamepadButton = async (index) => {
+  await evaluate(`window.__SHI_VIRTUAL_GAMEPAD__.setButton(${index}, true)`);
+  await wait(500);
+  await evaluate(`window.__SHI_VIRTUAL_GAMEPAD__.setButton(${index}, false)`);
+  await wait(500);
+};
 const screenshot = async (name) => {
   const result = await send("Page.captureScreenshot", { format: "png", fromSurface: true, captureBeyondViewport: false });
   await writeFile(resolve(outputDir, name), Buffer.from(result.data, "base64"));
@@ -103,6 +109,19 @@ const waitForTitleAssets = async () => {
 await send("Page.enable");
 await send("Runtime.enable");
 await send("Log.enable");
+await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
+  const buttons = Array.from({ length: 16 }, () => ({ pressed: false, touched: false, value: 0 }));
+  const gamepad = { id: 'SHI noVNC virtual standard controller', index: 0, connected: true, mapping: 'standard', timestamp: 0, axes: [0, 0, 0, 0], buttons };
+  Object.defineProperty(navigator, 'getGamepads', { configurable: true, value: () => [gamepad] });
+  Object.defineProperty(window, '__SHI_VIRTUAL_GAMEPAD__', { configurable: true, value: {
+    setButton(index, pressed) {
+      buttons[index].pressed = pressed;
+      buttons[index].touched = pressed;
+      buttons[index].value = pressed ? 1 : 0;
+      gamepad.timestamp += 1;
+    }
+  }});
+})()` });
 await send("Page.navigate", { url: gameUrl });
 await waitForSelector(".primary-button", 10000);
 await evaluate("localStorage.clear(); location.reload(); true");
@@ -121,15 +140,32 @@ let snapshot = await evaluate(`({
   title: document.title,
   primary: document.querySelector('.primary-button')?.textContent?.trim(),
   canvas: document.querySelectorAll('canvas').length,
+  controller: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-controller'),
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
 check(snapshot.title === "SHI · The Shape of Power", "title metadata is present");
 check(snapshot.primary.includes("Enter the rain"), "new game call-to-action is visible");
 check(snapshot.canvas === 1, "Three.js atmosphere rendered to a canvas");
+check(snapshot.controller === "connected", "standard Gamepad API device is detected on the title");
 check(snapshot.overflow <= 1, "desktop title has no horizontal overflow");
 
-await click(".primary-button");
-await wait(700);
+await gamepadButton(0);
+await waitForSelector("[data-testid=guide-drawer]");
+await screenshot("web-09-field-guide.png");
+snapshot = await evaluate(`({
+  modal: document.querySelector('[data-testid=guide-drawer]')?.getAttribute('aria-modal'),
+  steps: document.querySelectorAll('.guide-steps li').length,
+  controller: document.querySelector('.controller-callout')?.textContent?.trim(),
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v2') || '{}').history?.length ?? 0,
+  onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
+  overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+})`);
+check(snapshot.modal === "true" && snapshot.steps === 3, "first-run field guide teaches three position-reading steps");
+check(snapshot.controller.includes("Controller ready"), "field guide reports the connected controller textually");
+check(snapshot.history === 0 && snapshot.onboarding === null, "field guide changes no campaign state before dismissal");
+check(snapshot.overflow <= 1, "field guide has no desktop horizontal overflow");
+await gamepadButton(0);
+await wait(450);
 await screenshot("web-02-gameplay-en.png");
 snapshot = await evaluate(`({
   heading: document.querySelector('.story-panel h1')?.textContent?.trim(),
@@ -137,6 +173,7 @@ snapshot = await evaluate(`({
   meters: document.querySelectorAll('[role=meter]').length,
   sourceButton: document.querySelector('.source-link')?.textContent?.trim(),
   pressureWarnings: document.querySelectorAll('.pressure-warning').length,
+  onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   saveVersion: document.querySelector('[data-save-version]')?.getAttribute('data-save-version'),
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
@@ -145,17 +182,24 @@ check(snapshot.choices === 3, "opening offers three strategic choices");
 check(snapshot.meters === 5, "all five strategic resources are visible");
 check(snapshot.sourceButton.includes("3"), "node source count is visible");
 check(snapshot.pressureWarnings === 3, "every opening choice exposes a qualitative pressure warning");
+check(snapshot.onboarding === "complete", "dismissed onboarding preference is stored outside campaign state");
 check(snapshot.saveVersion === "2", "web client advertises save contract version 2");
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 
-await altShortcut("s", "KeyS");
+await gamepadButton(15);
+snapshot = await evaluate(`document.querySelector('[data-choice-id=take-the-beacon]')?.classList.contains('is-gamepad-selected')`);
+check(snapshot === true, "D-pad moves the highlighted enabled decision");
+await gamepadButton(14);
+await gamepadButton(5);
 await wait(350);
 await screenshot("web-03-source-ledger.png");
 snapshot = await evaluate(`({ sources: document.querySelectorAll('.source').length, reconstructions: document.querySelectorAll('.source-dramatic-reconstruction').length })`);
 check(snapshot.sources === 3, "source ledger opens with the node's three records");
 check(snapshot.reconstructions === 1, "dramatic reconstruction is visually distinguished");
-await key("Escape");
+await gamepadButton(1);
 await wait(250);
+snapshot = await evaluate(`Boolean(document.querySelector('.drawer'))`);
+check(snapshot === false, "B/Circle closes the source ledger");
 
 await click(".header-select");
 await key("Home");
@@ -166,6 +210,18 @@ await screenshot("web-04-gameplay-ar-rtl.png");
 snapshot = await evaluate(`({ locale: document.documentElement.lang, direction: document.documentElement.dir, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth })`);
 check(snapshot.locale === "ar" && snapshot.direction === "rtl", "Arabic switches the document to RTL");
 check(snapshot.overflow <= 1, "Arabic RTL gameplay has no horizontal overflow");
+await gamepadButton(9);
+await waitForSelector("[data-testid=guide-drawer]");
+await wait(250);
+await screenshot("web-11-guide-ar-rtl.png");
+snapshot = await evaluate(`(() => {
+  const guide = document.querySelector('[data-testid=guide-drawer]');
+  const box = guide?.getBoundingClientRect();
+  return { direction: getComputedStyle(guide).direction, steps: guide?.querySelectorAll('.guide-steps li').length, left: box?.left, right: box?.right, width: innerWidth, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+})()`);
+check(snapshot.direction === "rtl" && snapshot.steps === 3 && snapshot.left >= 0 && snapshot.right <= snapshot.width, "Arabic field guide is RTL and fitted to the viewport");
+check(snapshot.overflow <= 1, "Arabic field guide has no horizontal overflow");
+await gamepadButton(1);
 
 await click(".header-select");
 await key("Home");
@@ -199,13 +255,13 @@ await wait(400);
 snapshot = await evaluate(`document.querySelector('.story-panel h1')?.textContent?.trim()`);
 check(snapshot === "A covenant must eat", "save resumes at the exact branch node");
 
-await altShortcut("r", "KeyR");
+await gamepadButton(4);
 await wait(300);
 await screenshot("web-07-pressure-record.png");
 snapshot = await evaluate(`({ records: document.querySelectorAll('.record-list li').length, pressure: document.querySelector('.record-pressure')?.textContent?.trim() })`);
 check(snapshot.records === 1, "decision record contains the migrated turn");
 check(snapshot.pressure.includes("relay clerk"), "decision record preserves the revealed pressure response");
-await key("Escape");
+await gamepadButton(1);
 
 await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
 await wait(450);
@@ -224,6 +280,18 @@ snapshot = await evaluate(`(() => {
 check(snapshot.visible >= 1, "mobile scroll reaches a complete decision card");
 check(snapshot.warnings >= 1, "mobile decision card keeps its pressure warning readable");
 check(snapshot.overflow <= 1, "scrolled mobile decisions retain horizontal fit");
+await gamepadButton(9);
+await waitForSelector("[data-testid=guide-drawer]");
+await wait(250);
+await screenshot("web-10-mobile-guide.png");
+snapshot = await evaluate(`(() => {
+  const guide = document.querySelector('[data-testid=guide-drawer]');
+  const box = guide?.getBoundingClientRect();
+  return { steps: guide?.querySelectorAll('.guide-steps li').length, left: box?.left, right: box?.right, width: innerWidth, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+})()`);
+check(snapshot.steps === 3 && snapshot.left >= 0 && snapshot.right <= snapshot.width, "Start reopens a fitted mobile field guide");
+check(snapshot.overflow <= 1, "mobile field guide has no horizontal overflow");
+await gamepadButton(1);
 await send("Emulation.clearDeviceMetricsOverride");
 
 if (consoleErrors.length > 0) console.error("Browser console errors:", JSON.stringify(consoleErrors, null, 2));

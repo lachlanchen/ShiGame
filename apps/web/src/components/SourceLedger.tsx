@@ -13,7 +13,7 @@ export function SourceLedger({ campaign, locale, activeIds, onClose }: { campaig
     <aside className="drawer" data-testid="sources-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "sources")}>
       <div className="drawer-head">
         <div><span className="eyebrow">{translate(locale, "sourceBasis")}</span><h2>{translate(locale, "sources")}</h2></div>
-        <button className="icon-button" onClick={onClose} aria-label={translate(locale, "close")}>×</button>
+        <button className="icon-button" autoFocus onClick={onClose} aria-label={translate(locale, "close")}>×</button>
       </div>
       <div className="source-list">
         {sources.map((source) => (

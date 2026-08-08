@@ -21,11 +21,11 @@ npm run build
 SHI_CDP_PORT=9321 node scripts/playtest-web.mjs
 ```
 
-The script sends actual mouse and key events through the visible Chrome target, captures screenshots, and checks title metadata, WebGL canvas, opening content, five resources, three choices, pressure warnings, `Shift+1–3` decisions, source/record shortcuts, source classifications, save format 2, response reveal and separated deltas, Arabic RTL, resume, desktop/mobile layout, scrolled mobile cards, and console errors.
+The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, controller detection/D-pad/face/shoulder/Start commands, opening content, five resources, choices, pressure warnings, keyboard decisions, source classifications, save format 2, response reveal and separated deltas, Arabic RTL, resume, desktop/mobile layout, scrolled mobile cards, and console errors.
 
 ## Current result
 
-2026-08-09 public systems checkpoint: the localhost build and deployed GitHub Pages game both passed all 31 checks with zero page console errors. The public evidence targets gameplay commit `ecdc9fe2724cf46aaf7f2a2590f8069eeb4d3d08`. Chrome used ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklisted native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit.
+2026-08-09 local input checkpoint: 43 checks pass with zero page console errors. The most recent public deployment remains the earlier 31-check systems proof until this input checkpoint is committed and deployed. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit/worktree boundary.
 
 Visual review after automation:
 
@@ -34,10 +34,12 @@ Visual review after automation:
 - Pressure warnings, two-stage choice feedback, source drawer and persistent decision record: pass.
 - Arabic shell: pass after isolating untranslated English narrative as LTR.
 - Keyboard contract: pass after replacing browser-reserved `Alt+1–3` with `Shift+1–3`.
+- First-run guide: pass on desktop/mobile; copy hierarchy is readable, dismissal changes no campaign state, and the guide remains available from the header/Start button.
+- Synthetic standard gamepad: pass for title confirm, D-pad selection, face-button close/commit, shoulders and Start. This is API-path evidence, not physical-controller certification.
 - Mobile structure: pass after correcting the two-card selector; page scroll is intentional, full-width cards are readable, horizontal overflow is zero.
 - Small tactical copy: monitored; secondary labels remain readable in the reviewed captures.
 
-Evidence must be regenerated when layout, campaign content, localization direction, Three.js, or save behavior changes.
+Evidence must be regenerated when layout, campaign content, localization direction, Three.js, input mapping, onboarding or save behavior changes.
 
 ## Dedicated Unity desktop
 

@@ -23,12 +23,16 @@ import { ResourceRail } from "./components/ResourceRail";
 import { SourceLedger } from "./components/SourceLedger";
 import { StrategicMap } from "./components/StrategicMap";
 import { ThreeBackdrop } from "./components/ThreeBackdrop";
+import { FieldGuide } from "./components/FieldGuide";
+import { useGamepad } from "./useGamepad";
+import type { GamepadCommand } from "./gamepad";
 
 const campaign = campaignJson as unknown as Campaign;
 const SAVE_KEY = "shi.chapter-01.save.v2";
 const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v1"];
 const LOCALE_KEY = "shi.locale";
 const MOTION_KEY = "shi.reduced-motion";
+const ONBOARDING_KEY = "shi.onboarding.field-guide.v1";
 
 function readSavedState(): GameState | null {
   for (const key of [SAVE_KEY, ...LEGACY_SAVE_KEYS]) {
@@ -63,11 +67,15 @@ export function App() {
   const [locale, setLocale] = useState<Locale>(initialLocale);
   const [state, setState] = useState<GameState>(() => restoredState ?? createInitialState(campaign));
   const [screen, setScreen] = useState<"title" | "play">("title");
-  const [drawer, setDrawer] = useState<"sources" | "record" | null>(null);
+  const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | null>(null);
   const [resolution, setResolution] = useState<ChoiceResolution | null>(null);
   const [reducedMotion, setReducedMotion] = useState(() => localStorage.getItem(MOTION_KEY) === "true" || window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [hasSave, setHasSave] = useState(restoredState !== null);
+  const [selectedChoiceIndex, setSelectedChoiceIndex] = useState(0);
   const storyRef = useRef<HTMLElement>(null);
+  const beginButtonRef = useRef<HTMLButtonElement>(null);
+  const endingRestartRef = useRef<HTMLButtonElement>(null);
+  const choiceRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const node = getNode(campaign, state.currentNodeId);
   const speaker = campaign.characters.find((character) => character.id === node.speakerId)!;
   const ending = state.completed ? deriveEnding(state) : null;
@@ -94,6 +102,75 @@ export function App() {
     setState(result.state);
   };
 
+  const enterPlay = () => {
+    setScreen("play");
+    if (!hasSave && localStorage.getItem(ONBOARDING_KEY) !== "complete") setDrawer("guide");
+  };
+
+  const closeTransient = () => {
+    if (drawer === "guide") localStorage.setItem(ONBOARDING_KEY, "complete");
+    setDrawer(null);
+    setResolution(null);
+    window.requestAnimationFrame(() => storyRef.current?.focus({ preventScroll: true }));
+  };
+
+  const focusChoice = (index: number) => {
+    setSelectedChoiceIndex(index);
+    window.requestAnimationFrame(() => {
+      const card = choiceRefs.current[index];
+      card?.focus({ preventScroll: true });
+      card?.scrollIntoView?.({ block: "nearest", behavior: reducedMotion ? "auto" : "smooth" });
+    });
+  };
+
+  const moveChoice = (step: -1 | 1) => {
+    const enabled = node.choices.map((choice, index) => canChoose(choice, state.resources) ? index : -1).filter((index) => index >= 0);
+    if (enabled.length === 0) return;
+    const current = enabled.indexOf(selectedChoiceIndex);
+    const next = current < 0 ? enabled[0]! : enabled[(current + step + enabled.length) % enabled.length]!;
+    focusChoice(next);
+  };
+
+  const handleGamepad = (command: GamepadCommand) => {
+    if (screen === "title") {
+      if (command === "confirm") beginButtonRef.current?.click();
+      return;
+    }
+    if (drawer) {
+      if (command === "back" || (command === "confirm" && drawer === "guide")) closeTransient();
+      else if (command === "guide") {
+        if (drawer === "guide") closeTransient(); else setDrawer("guide");
+      }
+      else if (command === "record") setDrawer(drawer === "record" ? null : "record");
+      else if (command === "sources") setDrawer(drawer === "sources" ? null : "sources");
+      return;
+    }
+    if (resolution) {
+      if (command === "back" || command === "confirm") closeTransient();
+      return;
+    }
+    if (command === "guide") { setDrawer("guide"); return; }
+    if (command === "record") { setDrawer("record"); return; }
+    if (command === "sources") { setDrawer("sources"); return; }
+    if (state.completed) {
+      if (command === "confirm") endingRestartRef.current?.click();
+      return;
+    }
+    if (command === "previous") { moveChoice(-1); return; }
+    if (command === "next") { moveChoice(1); return; }
+    if (command === "confirm") {
+      const choice = node.choices[selectedChoiceIndex];
+      if (choice && canChoose(choice, state.resources)) choose(choice);
+    }
+  };
+
+  const controllerConnected = useGamepad(handleGamepad);
+
+  useEffect(() => {
+    const firstEnabled = node.choices.findIndex((choice) => canChoose(choice, state.resources));
+    setSelectedChoiceIndex(firstEnabled < 0 ? 0 : firstEnabled);
+  }, [node.id]);
+
   useEffect(() => {
     if (screen !== "play" || state.history.length === 0) return;
     const frame = window.requestAnimationFrame(() => storyRef.current?.focus({ preventScroll: true }));
@@ -106,9 +183,7 @@ export function App() {
       if (target instanceof Element && target.matches("input, textarea, select, [contenteditable='true']")) return;
       if (event.key === "Escape" && (drawer || resolution)) {
         event.preventDefault();
-        setDrawer(null);
-        setResolution(null);
-        storyRef.current?.focus({ preventScroll: true });
+        closeTransient();
         return;
       }
       if (screen !== "play" || event.ctrlKey || event.metaKey) return;
@@ -155,7 +230,7 @@ export function App() {
 
   if (screen === "title") {
     return (
-      <main className="title-screen" data-testid="shi-app" data-screen="title">
+      <main className="title-screen" data-testid="shi-app" data-screen="title" data-controller={controllerConnected ? "connected" : "none"}>
         <ThreeBackdrop reducedMotion={reducedMotion} />
         <div className="title-image" />
         <div className="title-vignette" />
@@ -171,22 +246,23 @@ export function App() {
           <blockquote>{translate(locale, "opening")}</blockquote>
           <p className="title-note">{translate(locale, "openingNote")}</p>
           <div className="title-actions">
-            <button className="primary-button" data-testid="begin-game" onClick={() => setScreen("play")}>{hasSave ? translate(locale, "continue") : translate(locale, "begin")} <span>→</span></button>
+            <button className="primary-button" data-testid="begin-game" ref={beginButtonRef} onClick={enterPlay}>{hasSave ? translate(locale, "continue") : translate(locale, "begin")} <span>→</span></button>
             {hasSave && <button className="text-button" onClick={restart}>{translate(locale, "newGame")}</button>}
           </div>
         </section>
-        <footer className="title-footer"><span>209 BCE</span><span>DAZE VILLAGE · 大澤鄉</span><button className={reducedMotion ? "active" : ""} onClick={toggleMotion}>{translate(locale, "reducedMotion")}</button></footer>
+        <footer className="title-footer"><span>209 BCE</span><span>DAZE VILLAGE · 大澤鄉</span>{controllerConnected && <span className="controller-status">● {translate(locale, "controllerReady")}</span>}<button className={reducedMotion ? "active" : ""} onClick={toggleMotion}>{translate(locale, "reducedMotion")}</button></footer>
       </main>
     );
   }
 
   return (
-    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-node-id={node.id} data-save-version={currentSaveVersion}>
+    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-node-id={node.id} data-save-version={currentSaveVersion} data-controller={controllerConnected ? "connected" : "none"}>
       <ThreeBackdrop reducedMotion={reducedMotion} />
       <header className="game-header">
         <button className="brand-button" onClick={() => setScreen("title")} aria-label="SHI title screen"><span>勢</span><div><strong>SHI</strong><small>{localize(campaign.subtitle, locale)}</small></div></button>
         <div className="header-actions">
           <span className="save-state"><i />{translate(locale, "save")}</span>
+          <button className="header-button guide-button" data-icon="?" data-testid="guide-toggle" aria-label={translate(locale, "guide")} onClick={() => setDrawer(drawer === "guide" ? null : "guide")}><span className="header-button-label">{translate(locale, "guide")}</span></button>
           <button className="header-button" data-icon="▤" data-testid="record-toggle" aria-label={translate(locale, "record")} aria-keyshortcuts="Alt+R" onClick={() => setDrawer(drawer === "record" ? null : "record")}><span className="header-button-label">{translate(locale, "record")}</span> <b>{state.history.length}</b></button>
           <button className="header-button" data-icon="◫" data-testid="sources-toggle" aria-label={translate(locale, "sources")} aria-keyshortcuts="Alt+S" onClick={() => setDrawer(drawer === "sources" ? null : "sources")}><span className="header-button-label">{translate(locale, "sources")}</span> <b>{node.sourceRefs.length}</b></button>
           <select className="header-select" value={locale} onChange={(event) => setLocale(event.target.value as Locale)} aria-label={translate(locale, "language")}>{supportedLocales.map((item) => <option value={item} key={item}>{localeNames[item]}</option>)}</select>
@@ -230,12 +306,12 @@ export function App() {
 
       {!state.completed ? (
         <section className="choices-panel">
-          <div className="choices-heading"><span>{translate(locale, "choice")}</span><small>{translate(locale, "turn")} {state.history.length + 1} · {translate(locale, "keyboardHint")}</small></div>
+          <div className="choices-heading"><span>{translate(locale, "choice")}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1} · {controllerConnected ? `${translate(locale, "controllerReady")} · ${translate(locale, "controllerHint")}` : translate(locale, "keyboardHint")}</small></div>
           <div className="choices-grid">
             {node.choices.map((choice, index) => {
               const enabled = canChoose(choice, state.resources);
               return (
-                <button className="choice-card" data-choice-id={choice.id} aria-keyshortcuts={`Shift+${index + 1}`} key={choice.id} onClick={() => choose(choice)} disabled={!enabled}>
+                <button className={`choice-card ${controllerConnected && selectedChoiceIndex === index ? "is-gamepad-selected" : ""}`} data-choice-id={choice.id} aria-keyshortcuts={`Shift+${index + 1}`} key={choice.id} ref={(element) => { choiceRefs.current[index] = element; }} onFocus={() => setSelectedChoiceIndex(index)} onClick={() => { setSelectedChoiceIndex(index); choose(choice); }} disabled={!enabled}>
                   <span className="choice-index">{String.fromCharCode(65 + index)}</span>
                   <div className="choice-main"><h2 dir={contentDirection(choice.label, locale)}>{localize(choice.label, locale)}</h2><p dir={contentDirection(choice.intent, locale)}>{localize(choice.intent, locale)}</p><div className="choice-reading"><span>{translate(locale, "principle")}</span><span className="choice-reading-copy" dir={contentDirection(choice.strategy, locale)}>{localize(choice.strategy, locale)}</span></div>{choice.pressure && <div className={`pressure-warning pressure-${choice.pressure.kind}`}><span>{translate(locale, "pressureForecast")}</span><p dir={contentDirection(choice.pressure.warning, locale)}>{localize(choice.pressure.warning, locale)}</p></div>}</div>
                   <div className="effects">{Object.entries(choice.effects).map(([key, value]) => <span className={`${(value ?? 0) < 0 ? "negative" : "positive"} ${key === "danger" ? "risk" : ""}`} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
@@ -254,14 +330,15 @@ export function App() {
             <h2>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</h2>
             <p>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText")}</p>
           </div>
-          <button className="primary-button" onClick={restart}>{translate(locale, "restart")} <span>↺</span></button>
+          <button className="primary-button" ref={endingRestartRef} onClick={restart}>{translate(locale, "restart")} <span>↺</span></button>
         </section>
       )}
 
-      {drawer === "sources" && <SourceLedger campaign={campaign} locale={locale} activeIds={node.sourceRefs} onClose={() => setDrawer(null)} />}
+      {drawer === "guide" && <FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} />}
+      {drawer === "sources" && <SourceLedger campaign={campaign} locale={locale} activeIds={node.sourceRefs} onClose={closeTransient} />}
       {drawer === "record" && (
         <aside className="drawer record-drawer" data-testid="record-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "record")}>
-          <div className="drawer-head"><div><span className="eyebrow">SHI</span><h2>{translate(locale, "record")}</h2></div><button className="icon-button" onClick={() => setDrawer(null)}>×</button></div>
+          <div className="drawer-head"><div><span className="eyebrow">SHI</span><h2>{translate(locale, "record")}</h2></div><button className="icon-button" autoFocus onClick={closeTransient}>×</button></div>
           {state.history.length === 0 ? <p className="empty-record">{translate(locale, "historyEmpty")}</p> : (
             <ol className="record-list">{state.history.map((record, index) => {
               const pastNode = getNode(campaign, record.nodeId);
@@ -272,7 +349,7 @@ export function App() {
           <button className="text-button restart-button" onClick={restart}>{translate(locale, "restart")}</button>
         </aside>
       )}
-      {drawer && <button className="drawer-scrim" onClick={() => setDrawer(null)} aria-label={translate(locale, "close")} />}
+      {drawer && <button className="drawer-scrim" onClick={closeTransient} aria-label={translate(locale, "close")} />}
     </main>
   );
 }

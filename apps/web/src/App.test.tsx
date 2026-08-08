@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 
@@ -10,10 +10,12 @@ vi.mock("./components/ThreeBackdrop", () => ({
 
 beforeEach(() => {
   localStorage.clear();
+  localStorage.setItem("shi.onboarding.field-guide.v1", "complete");
   Object.defineProperty(window, "matchMedia", {
     configurable: true,
     value: vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }),
   });
+  Object.defineProperty(navigator, "getGamepads", { configurable: true, value: () => [] });
 });
 
 afterEach(() => {
@@ -22,6 +24,44 @@ afterEach(() => {
 });
 
 describe("playable web shell", () => {
+  it("teaches the two-stage loop once and keeps the field guide replayable", () => {
+    localStorage.removeItem("shi.onboarding.field-guide.v1");
+    const view = render(<App />);
+
+    fireEvent.click(view.getByTestId("begin-game"));
+    expect(view.getByTestId("guide-drawer").textContent).toContain("Every order changes the position twice");
+    fireEvent.click(view.getByTestId("guide-continue"));
+
+    expect(view.queryByTestId("guide-drawer")).toBeNull();
+    expect(localStorage.getItem("shi.onboarding.field-guide.v1")).toBe("complete");
+    fireEvent.click(view.getByTestId("guide-toggle"));
+    expect(view.getByTestId("guide-drawer").getAttribute("aria-modal")).toBe("true");
+  });
+
+  it("navigates and commits through the standard Gamepad API surface", async () => {
+    const buttons = Array.from({ length: 16 }, () => ({ pressed: false, touched: false, value: 0 }));
+    const gamepad = { id: "SHI test controller", index: 0, connected: true, mapping: "standard", timestamp: 0, axes: [0, 0, 0, 0], buttons } as unknown as Gamepad;
+    Object.defineProperty(navigator, "getGamepads", { configurable: true, value: () => [gamepad] });
+    const press = async (index: number) => {
+      buttons[index]!.pressed = true;
+      buttons[index]!.value = 1;
+      await act(() => new Promise((resolve) => setTimeout(resolve, 35)));
+      buttons[index]!.pressed = false;
+      buttons[index]!.value = 0;
+      await act(() => new Promise((resolve) => setTimeout(resolve, 35)));
+    };
+    const view = render(<App />);
+
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-controller")).toBe("connected"));
+    await press(0);
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-screen")).toBe("play"));
+    await press(15);
+    expect(document.querySelector("[data-choice-id='take-the-beacon']")?.className).toContain("is-gamepad-selected");
+    await press(0);
+
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("fire-council"));
+  });
+
   it("resolves a keyboard decision and reveals the authored pressure response", async () => {
     const view = render(<App />);
     fireEvent.click(view.getByTestId("begin-game"));

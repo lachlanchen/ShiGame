@@ -9,6 +9,8 @@ This is a Unity 6 LTS project, pinned to `6000.0.80f1`. It is a real second clie
 3. Open this directory in Unity Hub and load `Assets/Scenes/Boot.unity`.
 4. Press Play. `ShiBootstrap` creates the 3D wartable, rain field, map markers, and game UI at runtime.
 
+The native input baseline uses the committed legacy-input axis map for broad compatibility: arrows or left stick/D-pad move across enabled decisions, Enter/Space or the south face button commits, Escape/east face button closes, shoulders open record/sources, and Start/Menu opens the field guide. Mouse controls remain active. The one-time guide preference is separate from campaign saves, and guide/record/controller text exists in all eleven UI locales.
+
 ## Reproducible verification and builds
 
 Set `UNITY_EDITOR` when the pinned editor is outside Unity Hub's default location, then use the repository wrapper:
@@ -20,7 +22,7 @@ Set `UNITY_EDITOR` when the pinned editor is outside Unity Hub's default locatio
 ./scripts/unity-pipeline.sh web
 ```
 
-`SHI/Validate Production Content` exposes the same preflight in the editor. It checks identifiers, cycles and reachability, site/speaker/source references, source classifications, resource and requirement bounds, required two-stage pressure responses, baseline English and Simplified Chinese text, and three authored endings. The runtime applies action effects before pressure effects, migrates saves by replaying decision history, and records failure consistently with the TypeScript core. Successful player builds write a receipt under `apps/unity/Builds/`; local builds and test output remain ignored by Git.
+`SHI/Validate Production Content` exposes the same preflight in the editor. It checks identifiers, cycles and reachability, site/speaker/source references, source classifications, resource and requirement bounds, required two-stage pressure responses, baseline English and Simplified Chinese text, and three authored endings. The runtime applies action effects before pressure effects, migrates saves by replaying decision history, records failure consistently with the TypeScript core, and routes pointer/keyboard/controller commitment through the same resolver. Successful player builds write a receipt under `apps/unity/Builds/`; local builds and test output remain ignored by Git.
 
 The project currently uses a code-built scene so campaign iteration does not depend on opaque binary assets. A later art pass will replace the immediate-mode UI with reviewed UI Toolkit documents while retaining the deterministic campaign rules.
 

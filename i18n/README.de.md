@@ -48,7 +48,7 @@ Das versionierte Kampagnen-JSON ist die einzige Erzählquelle für den determini
 
 ## Build und Prüfung
 
-Die Validierung prüft Graph, Verweise, Sprachschlüssel, Regeln, Typen und Tests. Der sichtbare noVNC/Chrome-Test bestand 31 Prüfungen zu Spiel, Druckreaktionen, Tastatur, Quellen, Speicherung, RTL, Mobil, WebGL und Konsole. [Nachweise](../docs/production/PLAYTESTING.md) sind enthalten.
+Die Validierung prüft Graph, Verweise, Sprachschlüssel, Regeln, Typen und Tests. Der sichtbare noVNC/Chrome-Test bestand 43 Prüfungen zu Spiel, Druckreaktionen, Tastatur, Quellen, Speicherung, RTL, Mobil, WebGL und Konsole. [Nachweise](../docs/production/PLAYTESTING.md) sind enthalten.
 
 ## Zitieren
 
@@ -65,4 +65,4 @@ Für Forschung oder Lehre bitte [`CITATION.cff`](../CITATION.cff) zitieren.
 
 ## Status und Umfang
 
-Systemnachweis-Pre-Alpha vom 2026-08-09. Das Web-Kapitel enthält deterministische Druckreaktionen, Speichermigration, Tastatursteuerung, Prüfung aller Routen und 31 sichtbare Kontrollen. Der echte Unity-Editor mit Linux/WebGL ist installiert und von Hub erkannt. Nativer Import und Kompilierung erfordern noch die Anmeldung des Kontoinhabers und die Aktivierung einer Unity-Lizenz; der Unity-6-Produktionsstand bleibt fixiert. Vollständig ist das Projekt erst nach beiden Clients, Forschung, Sprachen, Assets, Playtests und Releaseprüfungen.
+Systemnachweis-Pre-Alpha vom 2026-08-09. Das Web-Kapitel enthält deterministische Druckreaktionen, Speichermigration, Tastatursteuerung, Prüfung aller Routen und 43 sichtbare Kontrollen. Der echte Unity-Editor mit Linux/WebGL ist installiert und von Hub erkannt. Nativer Import und Kompilierung erfordern noch die Anmeldung des Kontoinhabers und die Aktivierung einer Unity-Lizenz; der Unity-6-Produktionsstand bleibt fixiert. Vollständig ist das Projekt erst nach beiden Clients, Forschung, Sprachen, Assets, Playtests und Releaseprüfungen.

@@ -55,6 +55,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 .title-footer span:nth-child(2) { flex: 1; }
 .title-footer button { color: inherit; border: 0; background: none; cursor: pointer; font-size: inherit; letter-spacing: inherit; }
 .title-footer button.active { color: var(--bronze-bright); }
+.controller-status { color: #91aa9d; letter-spacing: .08em; }
 
 /* Game shell */
 .game-shell { position: relative; min-height: 100vh; overflow-x: hidden; background: radial-gradient(circle at 28% -10%, rgba(111,101,72,.15), transparent 34%), linear-gradient(135deg, #181914, #10110f 72%); isolation: isolate; }
@@ -129,6 +130,8 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 [dir="rtl"] .choice-card { padding-right: 17px; padding-left: 42px; text-align: right; }
 .choice-card::before { position: absolute; inset: 0; content: ""; opacity: 0; background: radial-gradient(circle at 15% 20%, rgba(184,148,89,.12), transparent 45%); transition: opacity .2s; }
 .choice-card:hover:not(:disabled) { border-color: rgba(201,164,102,.52); background: linear-gradient(140deg, rgba(47,44,34,.84), rgba(26,26,22,.9)); transform: translateY(-2px); }
+.choice-card.is-gamepad-selected:not(:disabled) { border-color: rgba(210,178,120,.72); background: linear-gradient(140deg, rgba(53,48,36,.9), rgba(27,28,23,.94)); box-shadow: inset 3px 0 0 rgba(210,178,120,.78), 0 0 0 1px rgba(210,178,120,.08); }
+[dir="rtl"] .choice-card.is-gamepad-selected:not(:disabled) { box-shadow: inset -3px 0 0 rgba(210,178,120,.78), 0 0 0 1px rgba(210,178,120,.08); }
 .choice-card:hover::before { opacity: 1; }
 .choice-card:disabled { opacity: .42; cursor: not-allowed; }
 .choice-index { position: relative; z-index: 1; display: grid; width: 29px; height: 29px; place-items: center; color: #b69a6b; border: 1px solid rgba(190,155,97,.35); font-family: var(--serif); font-size: .77rem; }
@@ -178,6 +181,19 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .drawer-head h2 { margin: 5px 0 0; font-family: var(--serif); font-size: 2rem; font-weight: 500; }
 .icon-button { width: 34px; height: 34px; color: #979488; border: 1px solid var(--line); background: none; cursor: pointer; font-size: 1.1rem; }
+.guide-drawer { width: min(535px, 95vw); }
+.guide-intro { margin: 24px 0 20px; color: #b8b0a0; font-family: var(--cjk); font-size: .82rem; line-height: 1.7; }
+.guide-steps { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.guide-steps li { display: grid; grid-template-columns: 38px 1fr; gap: 13px; padding: 15px 16px; border: 1px solid var(--line); background: linear-gradient(135deg, rgba(255,255,255,.025), rgba(255,255,255,.008)); }
+.guide-steps li > span { display: grid; width: 31px; height: 31px; place-items: center; color: var(--bronze-bright); border: 1px solid rgba(195,158,96,.32); font-family: var(--cjk); font-size: .76rem; }
+.guide-steps h3 { margin: 1px 0 5px; color: #ddd4c3; font-family: var(--cjk); font-size: .84rem; font-weight: 500; }
+.guide-steps p { margin: 0; color: #918f86; font-family: var(--cjk); font-size: .68rem; line-height: 1.55; }
+.controller-callout { margin: 14px 0 18px; padding: 12px 14px; border-left: 2px solid rgba(116,140,128,.45); background: rgba(79,104,91,.08); }
+[dir="rtl"] .controller-callout { border-right: 2px solid rgba(116,140,128,.45); border-left: 0; }
+.controller-callout.is-connected { border-color: #8baa99; background: rgba(79,104,91,.14); }
+.controller-callout span { color: #94aa9f; font-size: .55rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+.controller-callout p { margin: 5px 0 0; color: #858b83; font-size: .59rem; line-height: 1.5; }
+.guide-continue { width: 100%; }
 .source-list { display: grid; gap: 13px; margin-top: 20px; }
 .source { padding: 17px 18px; border: 1px solid var(--line); background: rgba(255,255,255,.018); }
 .source-status { display: inline-block; padding: 3px 6px; color: #aa9070; border: 1px solid rgba(174,139,83,.25); font-size: .5rem; letter-spacing: .08em; text-transform: uppercase; }
@@ -230,6 +246,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
   .primary-button { width: 100%; }
   .title-footer { right: 20px; bottom: 17px; left: 20px; }
   .title-footer span:nth-child(2) { display: none; }
+  .controller-status { max-width: 120px; overflow: hidden; font-size: .52rem; text-overflow: ellipsis; white-space: nowrap; }
   .game-header { height: 62px; }
   .brand-button small { display: none; }
   .header-button { padding-inline: 8px; font-size: 0; }
@@ -259,6 +276,9 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
   .ending-panel { grid-template-columns: auto 1fr; gap: 16px; padding: 28px 22px; }
   .ending-seal { width: 58px; height: 58px; font-size: 2.3rem; }
   .ending-panel .primary-button { grid-column: 1 / -1; }
+  .guide-drawer { padding: 25px 22px 35px; }
+  .guide-intro { margin-top: 18px; }
+  .guide-steps li { padding: 13px 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

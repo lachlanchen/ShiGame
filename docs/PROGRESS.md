@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Input and first-minute checkpoint
+
+- Added a one-time but permanently replayable field guide that teaches field → move → answer over the live opening position without changing resources, decision history or save format.
+- Localized the complete guide and controller feedback across all eleven UI languages; reviewed English desktop and 390×844 mobile captures preserve the restrained wartable hierarchy.
+- Added a pure standard-gamepad command adapter, held-axis dead-zone gating, disconnect/reconnect polling, visible enabled-choice selection, controller-aware scrolling, title/ending confirm, face-button close, shoulder ledgers and Start/Menu guide access.
+- Carried equivalent choice selection, commit/close, guide, source and decision-record controls into Unity with a committed input-axis map. Runtime/editor source assemblies pass the offline Unity reference compile; official import and execution remain license-gated.
+- Expanded web coverage to 12 tests and visible noVNC QA to 43 checks with zero console errors. The first 90 ms synthetic-button cadence was rejected after visible evidence showed a missed release edge; a final busy-frame rerun also rejected 250 ms and added an explicit close assertion. The synthetic harness now holds and releases each edge for 500 ms.
+- Preserved the distinction between synthetic Gamepad API validation and physical hardware certification. Xbox/PlayStation-layout reconnect and focus-loss sessions remain open alongside external player observation.
+
+Next gate: publish and repeat the 43-check suite on GitHub Pages, then conduct physical-controller and first-time-player sessions while progressing the reviewed seeded-uncertainty contract and Unity license activation.
+
 ## 2026-08-09 · Systems proof checkpoint
 
 - Added a shared deterministic pressure-response contract: every nonterminal choice exposes a qualitative warning, then applies and records an authored state, terrain, supply or network countermove after the player's immediate effects.

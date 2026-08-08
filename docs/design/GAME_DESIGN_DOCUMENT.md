@@ -91,6 +91,8 @@ Later tactical encounters will use spatial command and indirect control, but mus
 - The consequence and authored pressure response persist after transition with their deltas visually separated, so players can connect action, countermove and state change.
 - Source and decision ledgers are available without leaving play; the decision record preserves revealed pressure responses.
 - Modified keyboard shortcuts operate decisions and ledgers without conflicting with browser-reserved tab controls.
+- A one-time, replayable field guide teaches field → move → answer over the live opening state without changing campaign progress.
+- Standard gamepad selection, commit, close and ledger commands route through the same deterministic actions as keyboard/pointer input; connected state and selection are visible without relying on color.
 - Keyboard, touch, reduced-motion, text scaling, color-independent meters, RTL, and screen-reader labels are release gates.
 
 ## Narrative standards
