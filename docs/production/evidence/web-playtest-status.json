@@ -54,6 +54,6 @@
   ],
   "consoleErrors": [],
   "target": "http://127.0.0.1:4173/?seed=5EED2026",
-  "testedCommit": "working-tree",
+  "testedCommit": "f17b923216db0abe10685df7b4c3b992e9e7527e",
   "cdpPort": 9321
 }
