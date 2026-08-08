@@ -13,5 +13,6 @@
 - Used AgenticApp + Blender for a wartable source spec, rejected the first render, approved revision 2 as a blockout, exported GLB/FBX, and verified a 19-mesh GLB round trip.
 - Created a real pinned Unity project that consumes the same campaign payload; editor compile/build remains unverified.
 - Completed visible noVNC Chrome QA: 21 checks, zero page console errors; screenshots recorded.
+- Published the clean repository and playable GitHub Pages build, then repeated the visible QA suite against the public URL.
 
 Next gate: publish this checkpoint, restore/install a functioning Unity editor endpoint, pass C# import/tests/build, and run observed player sessions before expanding Chapter II.

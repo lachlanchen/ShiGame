@@ -24,6 +24,6 @@
     "browser console remained free of errors"
   ],
   "consoleErrors": [],
-  "target": "http://127.0.0.1:4173/",
+  "target": "https://lachlanchen.github.io/ShiGame/",
   "cdpPort": 9321
 }

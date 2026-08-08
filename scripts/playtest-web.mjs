@@ -2,11 +2,12 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const cdpPort = Number(process.env.SHI_CDP_PORT ?? 9321);
+const gameUrl = process.env.SHI_PLAYTEST_URL ?? "http://127.0.0.1:4173/";
 const outputDir = resolve(import.meta.dirname, "../docs/production/evidence");
 await mkdir(outputDir, { recursive: true });
 
 const targets = await fetch(`http://127.0.0.1:${cdpPort}/json`).then((response) => response.json());
-const target = targets.find((candidate) => candidate.type === "page" && candidate.url.startsWith("http://127.0.0.1:4173"));
+const target = targets.find((candidate) => candidate.type === "page" && /^https?:/.test(candidate.url));
 if (!target) throw new Error("SHI page target was not found on the dedicated CDP port.");
 
 const socket = new WebSocket(target.webSocketDebuggerUrl);
@@ -70,13 +71,31 @@ const waitForSelector = async (selector, timeout = 5000) => {
   }
   throw new Error(`Timed out waiting for ${selector}`);
 };
+const waitForTitleAssets = async () => {
+  await waitForSelector("canvas", 15000);
+  await evaluate(`Promise.all([
+    document.fonts.ready,
+    new Promise((resolveImage, rejectImage) => {
+      const background = getComputedStyle(document.querySelector('.title-image')).backgroundImage;
+      const url = background.match(/url\\(["']?(.*?)["']?\\)/)?.[1];
+      if (!url) return rejectImage(new Error('Title background URL is missing'));
+      const image = new Image();
+      image.onload = () => resolveImage(true);
+      image.onerror = () => rejectImage(new Error('Title background failed to load'));
+      image.src = url;
+    })
+  ]).then(() => true)`);
+};
 
 await send("Page.enable");
 await send("Runtime.enable");
 await send("Log.enable");
+await send("Page.navigate", { url: gameUrl });
+await waitForSelector(".primary-button", 10000);
 await evaluate("localStorage.clear(); location.reload(); true");
 await waitForSelector(".primary-button");
-await wait(500);
+await waitForTitleAssets();
+await wait(250);
 
 const report = { checks: [], consoleErrors };
 const check = (condition, message) => {
@@ -166,6 +185,6 @@ await send("Emulation.clearDeviceMetricsOverride");
 
 if (consoleErrors.length > 0) console.error("Browser console errors:", JSON.stringify(consoleErrors, null, 2));
 check(consoleErrors.length === 0, "browser console remained free of errors");
-await writeFile(resolve(outputDir, "web-playtest-status.json"), `${JSON.stringify({ ok: true, ...report, target: target.url, cdpPort }, null, 2)}\n`);
+await writeFile(resolve(outputDir, "web-playtest-status.json"), `${JSON.stringify({ ok: true, ...report, target: gameUrl, cdpPort }, null, 2)}\n`);
 socket.close();
 console.log(`Visible playtest passed: ${report.checks.length} checks, ${consoleErrors.length} console errors.`);

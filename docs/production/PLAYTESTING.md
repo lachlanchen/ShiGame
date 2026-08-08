@@ -25,7 +25,7 @@ The script sends actual mouse and key events through the visible Chrome target, 
 
 ## Current result
 
-2026-08-08: 21 checks passed; zero page console errors. Chrome used ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklisted native WebGL. Evidence is in `docs/production/evidence/`.
+2026-08-08: 21 checks passed; zero page console errors on both localhost and the deployed GitHub Pages build. Chrome used ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklisted native WebGL. Evidence is in `docs/production/evidence/`; its final status names the public URL.
 
 Visual review after automation:
 
