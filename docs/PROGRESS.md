@@ -11,8 +11,10 @@
 - Kept the unchanged startup budgets by transporting only compact pursuit rules initially and lazy-loading the full multilingual presentation. The production build passes at 99.15 KiB initial JavaScript, 9.58 KiB CSS, 3.01 KiB pursuit UI, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete fonts and 26.78 MiB deployable output.
 - The first new visible-browser run correctly rejected an unsupported `aria-label` on the modifier container. Giving the modifier set explicit group semantics clears the finding; the complete rerun passes 186 checks, twenty-seven axe states, nineteen target states and eleven locale/font states with zero console errors, remote requests/resources or failed loads. Desktop, 390×844 mobile and the real `road-search` +2 Exposure result frames were visually reviewed.
 - Exact evidence boundary `be077e1ebcf75d1601b04328ef052fae9a1a6a7b` repeats all 186 checks and records the immutable boundary in the machine report; the harness command now documents that traceability input explicitly.
+- Hosted validation run `31283916459` and Pages deployment run `31283916455` pass at `e59a78689239a9dd8e07e02a9b37df5f49014895`. The deployed game returns HTTP 200 and exposes the save-v4 and pursuit-stage contracts.
+- The public build repeats all 186 visible checks: twenty-seven axe states, nineteen target states, eleven locale/font states and three audio-UI states. Its cache-disabled stress traversal records 216 requests and 150 same-origin font slices with zero cross-origin requests/resources, failed loads or console errors; actual Chrome 400% zoom and 320-pixel reflow remain free of horizontal overflow.
 
-Next gate: publish and replay this exact checkpoint on Pages, then continue the open licensed-Unity, human assistive-technology/zoom/high-contrast, physical-controller, observed-player, historical-specialist and audio-listening gates. Chapter II remains gated.
+Next gate: continue the open licensed-Unity, human assistive-technology/high-contrast, physical-controller, observed-player, historical-specialist and audio-listening gates, then deepen Chapter I's systemic opposition before Chapter II is admitted.
 
 ## 2026-08-09 · Objective audio-engineering checkpoint
 
