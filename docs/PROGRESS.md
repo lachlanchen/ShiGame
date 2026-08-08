@@ -8,9 +8,10 @@
 - Added a reproducible static accessibility contract covering 16 conservative contrast pairs, 24 microtype floors and 11 authored dimensions, integrated into `npm run validate` and CI.
 - Raised low-contrast tactical copy, removed opacity-based status contrast loss, increased small control targets and corrected title/game seal frames so 200% text scales without overlap. The default art direction and information hierarchy were preserved.
 - Expanded visible noVNC QA to 94 checks with zero console errors: ten live target audits, title and active gameplay at 200% text, 390×844 mobile/guide/wartable, Arabic RTL, OS reduced motion, focus wrapping/restoration and duplicate-choice rejection. Exact local evidence is pinned to gameplay implementation `303f6d4687b5d08147d0ced7218635dc1928f854` and stable navigation harness `c19ca9e0e8552982a6add6b8df6fdd4b3969fc9c`.
+- Passed clean-checkout GitHub validation and Pages deployment, then repeated all 94 checks on the public build with zero console errors at deployed evidence boundary `3ae2371e0ccf5eebb2c7da7e14cc3ba7cea3001d`. The first remote run exposed and rejected a stale-document reload race; document-identity waits fixed the harness without weakening a gameplay assertion.
 - Kept the player bundle inside the 100 KiB initial budget at 99.74 KiB gzip; axe remains outside production output. Added the comprehensive automated/manual boundary in `docs/production/ACCESSIBILITY.md`.
 
-Next gate: publish and replay the exact public evidence boundary, then continue the licensed Unity, human screen-reader, physical-controller, forced-colors/400% and observed first-time-player gates. Chapter II remains gated.
+Next gate: continue the licensed Unity, human screen-reader, physical-controller, forced-colors/400% and observed first-time-player gates. Chapter II remains gated.
 
 ## 2026-08-09 · Wartable intelligence interaction checkpoint
 

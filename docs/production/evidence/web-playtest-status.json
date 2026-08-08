@@ -243,7 +243,7 @@
     "version": "4.12.1"
   },
   "consoleErrors": [],
-  "target": "http://127.0.0.1:4173/?seed=5EED2026",
-  "testedCommit": "c19ca9e0e8552982a6add6b8df6fdd4b3969fc9c",
+  "target": "https://lachlanchen.github.io/ShiGame/?seed=5EED2026",
+  "testedCommit": "3ae2371e0ccf5eebb2c7da7e14cc3ba7cea3001d",
   "cdpPort": 9321
 }
