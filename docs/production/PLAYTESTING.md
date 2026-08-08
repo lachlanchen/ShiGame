@@ -25,7 +25,7 @@ The script sends actual mouse/key events and a synthetic standards-shaped `navig
 
 ## Current result
 
-2026-08-09 seeded-uncertainty checkpoint: localhost passes all 50 checks at `http://127.0.0.1:4173/?seed=5EED2026` with zero page console errors. Public deployment verification is pending the checkpoint commit; the preceding input checkpoint remains publicly verified at 43 checks against `8f31ee8c1c93bab9243f381e1a0fa4e7e88bfb92`. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
+2026-08-09 seeded-uncertainty checkpoint: localhost and the public Pages deployment both pass all 50 checks with fixed seed `5EED2026` and zero page console errors. Public gameplay implementation commit: `f17b923216db0abe10685df7b4c3b992e9e7527e`. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
 
 Visual review after automation:
 

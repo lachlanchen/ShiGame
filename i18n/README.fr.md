@@ -48,7 +48,7 @@ Le JSON versionné est l'unique source narrative, partagée par le cœur déterm
 
 ## Build et validation
 
-La validation couvre graphe, références, clés linguistiques, règles, types et tests. Le test visible noVNC/Chrome a réussi 43 contrôles de jeu, réponses de pression, clavier, sources, sauvegarde, RTL, mobile, WebGL et console. Voir les [preuves](../docs/production/PLAYTESTING.md).
+La validation couvre graphe, références, clés linguistiques, règles, types et tests. Le test visible noVNC/Chrome a réussi 50 contrôles de jeu, réponses de pression, clavier, sources, sauvegarde, RTL, mobile, WebGL et console. Voir les [preuves](../docs/production/PLAYTESTING.md).
 
 ## Citation
 
@@ -65,4 +65,4 @@ Pour un usage en recherche ou enseignement, citez [`CITATION.cff`](../CITATION.c
 
 ## État et périmètre
 
-Pré-alpha de preuve des systèmes du 2026-08-09. Le chapitre Web possède des réponses de pression déterministes, une migration des sauvegardes, des commandes clavier, une validation de tous les parcours et 43 contrôles visibles. Le véritable éditeur Unity Linux/WebGL est installé et reconnu par Hub. L'import et la compilation natifs exigent encore la connexion du titulaire du compte et l'activation d'une licence Unity ; la version de production Unity 6 reste épinglée. Le projet ne sera pas déclaré achevé avant validation des deux clients, de la recherche, des langues, des ressources, des playtests et de la publication.
+Pré-alpha de preuve des systèmes du 2026-08-09. Le chapitre Web possède des réponses de pression déterministes, une migration des sauvegardes, des commandes clavier, une validation de tous les parcours et 50 contrôles visibles. Le véritable éditeur Unity Linux/WebGL est installé et reconnu par Hub. L'import et la compilation natifs exigent encore la connexion du titulaire du compte et l'activation d'une licence Unity ; la version de production Unity 6 reste épinglée. Le projet ne sera pas déclaré achevé avant validation des deux clients, de la recherche, des langues, des ressources, des playtests et de la publication.
