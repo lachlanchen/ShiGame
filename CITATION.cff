@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use SHI in research or teaching, please cite this repository."
+type: software
+title: "SHI: The Shape of Power"
+version: 0.1.0
+date-released: 2026-08-08
+abstract: "A multilingual, historically grounded strategy narrative about the late Qin collapse and the contingent formation of power."
+authors:
+  - family-names: Chen
+    given-names: Lachlan
+    alias: lachlanchen
+repository-code: "https://github.com/lachlanchen/ShiGame"
+url: "https://lazying.art"
+keywords:
+  - historical game
+  - strategy game
+  - Chinese history
+  - digital humanities
+  - Unity
+  - web game

@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "checks": [
+    "title metadata is present",
+    "new game call-to-action is visible",
+    "Three.js atmosphere rendered to a canvas",
+    "desktop title has no horizontal overflow",
+    "opening story node rendered from shared content",
+    "opening offers three strategic choices",
+    "all five strategic resources are visible",
+    "node source count is visible",
+    "desktop gameplay has no horizontal overflow",
+    "source ledger opens with the node's three records",
+    "dramatic reconstruction is visually distinguished",
+    "Arabic switches the document to RTL",
+    "Arabic RTL gameplay has no horizontal overflow",
+    "choice advances to the authored branch",
+    "choice consequence remains visible after transition",
+    "choice is persisted locally",
+    "reload offers save continuation",
+    "save resumes at the exact branch node",
+    "mobile viewport retains the active branch choices",
+    "mobile gameplay has no horizontal overflow",
+    "browser console remained free of errors"
+  ],
+  "consoleErrors": [],
+  "target": "http://127.0.0.1:4173/",
+  "cdpPort": 9321
+}

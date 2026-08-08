@@ -1,0 +1,49 @@
+{
+  "title": "SHI Daze Village strategic wartable",
+  "slug": "shi-daze-wartable-v1",
+  "description": "A restrained tabletop campaign-map asset for the late-Qin opening chapter, authored as an editable AgenticApp scene spec.",
+  "render": {
+    "width": 1800,
+    "height": 1100,
+    "world_color": [0.025, 0.028, 0.024],
+    "exposure": -0.18,
+    "camera": {
+      "type": "ortho",
+      "location": [270, -300, 245],
+      "target": [0, 0, 25],
+      "ortho_scale": 390
+    }
+  },
+  "materials": {
+    "floor": { "color": [0.018, 0.021, 0.018, 1], "roughness": 0.96 },
+    "dark_wood": { "color": [0.105, 0.075, 0.042, 1], "roughness": 0.72 },
+    "earth": { "color": [0.22, 0.19, 0.12, 1], "roughness": 0.88 },
+    "river": { "color": [0.16, 0.29, 0.29, 1], "roughness": 0.35 },
+    "road": { "color": [0.49, 0.35, 0.18, 1], "roughness": 0.74 },
+    "bronze": { "color": [0.52, 0.3, 0.09, 1], "metallic": 0.74, "roughness": 0.32 },
+    "cinnabar": { "color": [0.46, 0.065, 0.035, 1], "roughness": 0.55 },
+    "stone": { "color": [0.24, 0.25, 0.21, 1], "roughness": 0.92 },
+    "ink": { "color": [0.72, 0.61, 0.41, 1], "roughness": 0.62 }
+  },
+  "elements": [
+    { "type": "baseplate", "name": "dark wood campaign table", "size": [390, 240, 16], "holes": false, "material": "dark_wood" },
+    { "type": "box", "name": "raised earth map", "location": [0, 0, 13], "size": [355, 205, 8], "material": "earth" },
+    { "type": "wire", "name": "Huai river", "points": [[-178, 20, 19], [-128, 5, 19], [-80, 22, 19], [-28, 5, 19], [22, -17, 19], [76, -7, 19], [128, 17, 19], [178, 8, 19]], "bevel": 4.5, "material": "river" },
+    { "type": "wire", "name": "Xianyang to Chen road", "points": [[-142, -56, 20], [-100, -34, 20], [-55, -12, 20], [-8, 18, 20], [35, 36, 20], [78, 54, 20]], "bevel": 1.5, "material": "road" },
+    { "type": "wire", "name": "Chen to Kuaiji road", "points": [[35, 36, 20], [82, 15, 20], [122, -17, 20], [150, -50, 20]], "bevel": 1.2, "material": "road" },
+    { "type": "wire", "name": "Chen to Pei road", "points": [[35, 36, 20], [56, 17, 20], [70, -16, 20]], "bevel": 1.2, "material": "road" },
+    { "type": "cylinder", "name": "Xianyang marker", "location": [-142, -56, 25], "radius": 6, "depth": 14, "material": "stone" },
+    { "type": "cylinder", "name": "Chen marker", "location": [35, 36, 27], "radius": 7, "depth": 18, "material": "bronze" },
+    { "type": "cylinder", "name": "Pei marker", "location": [70, -16, 25], "radius": 5.5, "depth": 14, "material": "stone" },
+    { "type": "cylinder", "name": "Kuaiji marker", "location": [150, -50, 25], "radius": 5.5, "depth": 14, "material": "stone" },
+    { "type": "cylinder", "name": "Daze marker", "location": [78, 54, 31], "radius": 8, "depth": 26, "material": "cinnabar" },
+    { "type": "cylinder", "name": "Daze outer ring", "location": [78, 54, 20], "radius": 14, "depth": 2, "material": "bronze" },
+    { "type": "box", "name": "beacon tower base", "location": [104, 70, 27], "size": [16, 16, 16], "material": "stone" },
+    { "type": "box", "name": "beacon tower crown", "location": [104, 70, 39], "size": [23, 23, 8], "material": "dark_wood" },
+    { "type": "cylinder", "name": "signal fire", "location": [104, 70, 49], "radius": 6, "depth": 12, "material": "cinnabar" },
+    { "type": "box", "name": "bamboo tally one", "location": [-68, 73, 25], "size": [86, 8, 4], "material": "ink" },
+    { "type": "box", "name": "bamboo tally two", "location": [-72, 59, 25], "size": [78, 8, 4], "material": "ink" },
+    { "type": "box", "name": "bamboo tally three", "location": [-64, 45, 25], "size": [91, 8, 4], "material": "ink" },
+    { "type": "label", "name": "chapter label", "text": "SHI / DAZE / 209 BCE", "location": [-72, -83, 24], "size": 8.5, "rotation": [0, 0, 0], "material": "ink" }
+  ]
+}

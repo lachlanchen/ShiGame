@@ -1,0 +1,24 @@
+{
+  "name": "shi-game",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/web",
+    "packages/game-core"
+  ],
+  "scripts": {
+    "dev": "npm run sync:content && npm --workspace @shi/web run dev -- --host 127.0.0.1",
+    "build": "npm run validate && npm --workspace @shi/web run build",
+    "test": "npm run sync:content && npm run validate:content && npm --workspace @shi/game-core run test && npm --workspace @shi/web run test",
+    "typecheck": "npm run sync:content && npm --workspace @shi/game-core run typecheck && npm --workspace @shi/web run typecheck",
+    "validate": "npm run sync:content && npm run validate:repo && npm run validate:content && npm --workspace @shi/game-core run typecheck && npm --workspace @shi/web run typecheck && npm --workspace @shi/game-core run test && npm --workspace @shi/web run test",
+    "validate:repo": "node scripts/validate-repository.mjs",
+    "validate:content": "node scripts/validate-content.mjs",
+    "sync:content": "node scripts/sync-unity-content.mjs",
+    "preview": "npm --workspace @shi/web run preview -- --host 127.0.0.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

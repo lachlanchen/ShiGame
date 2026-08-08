@@ -1,0 +1,24 @@
+{
+  "assetId": "daze-village-rain-v1",
+  "file": "../art/keyart/daze-village-rain-v1.png",
+  "createdAt": "2026-08-08",
+  "generator": "Codex built-in image generation",
+  "useCase": "historical-scene",
+  "intendedUse": ["web-title-screen", "chapter-opening", "unity-key-art"],
+  "reviewStatus": "approved-for-pre-alpha",
+  "review": {
+    "composition": "pass",
+    "textAndWatermarks": "pass",
+    "historicalDetail": "pass-with-caveat",
+    "caveat": "Concept art, not reconstruction evidence. Clothing, road, tower and settlement details require continued specialist review before final marketing use.",
+    "rejectedVersion": "Initial version contained an anachronistic glass-pane lantern.",
+    "correction": "The lantern was replaced with a small earthenware oil lamp; all other composition was held stable."
+  },
+  "promptSummary": "Rain-soaked late-Qin post road near Daze Village, conscripts, reed marsh, distant fires, restrained painterly realism, no text.",
+  "constraints": [
+    "No generated text or logo",
+    "No modern objects",
+    "No fantasy armour",
+    "Do not treat as a primary historical source"
+  ]
+}

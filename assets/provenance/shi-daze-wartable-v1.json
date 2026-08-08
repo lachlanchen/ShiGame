@@ -1,0 +1,20 @@
+{
+  "assetId": "shi-daze-wartable-v1",
+  "source": "../3d/source/shi-wartable.scene.json",
+  "createdAt": "2026-08-08",
+  "generator": "AgenticApp/LabCanvas deterministic scene renderer with Blender",
+  "intendedUse": ["unity-wartable-reference", "web-development-diorama", "production-pipeline-validation"],
+  "license": "Original project asset",
+  "reviewStatus": "approved-for-pre-alpha-blockout",
+  "historicalStatus": "Abstract strategic visualization, not an archaeological reconstruction",
+  "constraints": [
+    "No unreviewed Chinese glyph geometry",
+    "Map positions are schematic and must not be used as geographic evidence",
+    "Keep editable scene JSON and Blender source with exported interchange assets"
+  ],
+  "review": {
+    "revision1": "Rejected: the default gray studio floor conflicted with the dark bronze-and-ink art direction, the table framed too loosely, and the scene was underexposed.",
+    "correction": "Added a near-black floor material, tightened the orthographic camera, and lifted exposure before interchange export.",
+    "revision2": "Approved as an intentionally abstract pre-alpha blockout. Silhouette, routes, focal hierarchy, label legibility and palette pass. It is not approved as final environment art or geographic evidence."
+  }
+}

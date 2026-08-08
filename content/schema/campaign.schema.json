@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shi.game/schema/campaign-v1.json",
+  "title": "SHI Campaign v1",
+  "type": "object",
+  "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "initialResources", "sites", "characters", "sources", "nodes"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "$ref": "#/$defs/localizedText" },
+    "subtitle": { "$ref": "#/$defs/localizedText" },
+    "startNodeId": { "type": "string" },
+    "initialResources": { "$ref": "#/$defs/resources" },
+    "sites": { "type": "array", "minItems": 1 },
+    "characters": { "type": "array", "minItems": 1 },
+    "sources": { "type": "array", "minItems": 1 },
+    "nodes": { "type": "array", "minItems": 1 }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "required": ["en", "zh-Hans"],
+      "properties": {
+        "en": { "type": "string", "minLength": 1 },
+        "zh-Hans": { "type": "string", "minLength": 1 }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "required": ["grain", "trust", "momentum", "people", "danger"],
+      "properties": {
+        "grain": { "type": "number", "minimum": 0, "maximum": 100 },
+        "trust": { "type": "number", "minimum": 0, "maximum": 100 },
+        "momentum": { "type": "number", "minimum": 0, "maximum": 100 },
+        "people": { "type": "number", "minimum": 0, "maximum": 100 },
+        "danger": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SHI seal">
+  <rect width="64" height="64" rx="5" fill="#70291f"/>
+  <rect x="5" y="5" width="54" height="54" rx="2" fill="none" stroke="#cda968" stroke-width="2"/>
+  <text x="32" y="47" fill="#eee4ce" font-size="45" font-family="serif" text-anchor="middle">勢</text>
+</svg>

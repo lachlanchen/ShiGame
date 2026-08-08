@@ -1,0 +1,14 @@
+{
+  "name": "SHI.Runtime",
+  "rootNamespace": "SHI",
+  "references": ["Unity.Newtonsoft.Json"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

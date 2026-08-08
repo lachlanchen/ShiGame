@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 27
+  productGUID: 90e2d413fb1c4f36ac4996d3dc1636b3
+  companyName: Lazying Art
+  productName: SHI - The Shape of Power
+  defaultScreenWidth: 1920
+  defaultScreenHeight: 1080
+  m_ActiveColorSpace: 1
+  usePlayerLog: 1
+  runInBackground: 1
+  displayResolutionDialog: 0
+  applicationIdentifier:
+    Standalone: art.lazying.shi
+  buildNumber:
+    Standalone: 1
+  metroPackageVersion: 0.1.0.0
+  bundleVersion: 0.1.0
+  scriptingBackend:
+    Standalone: 1
+  apiCompatibilityLevelPerPlatform:
+    Standalone: 6

@@ -1,0 +1,407 @@
+{
+  "schemaVersion": 1,
+  "id": "chapter-01-daze",
+  "title": {
+    "en": "SHI — The Shape of Power",
+    "ar": "شِي — هيئة القوّة",
+    "de": "SHI — Die Gestalt der Macht",
+    "es": "SHI — La forma del poder",
+    "fr": "SHI — La forme du pouvoir",
+    "ja": "勢 — 力のかたち",
+    "ko": "세 — 힘의 형세",
+    "ru": "ШИ — Форма власти",
+    "vi": "THẾ — Hình của quyền lực",
+    "zh-Hans": "势 — 权力之形",
+    "zh-Hant": "勢 — 權力之形"
+  },
+  "subtitle": {
+    "en": "Chapter I · Rain at Daze Village",
+    "ar": "الفصل الأول · مطر قرية دازِه",
+    "de": "Kapitel I · Regen in Daze",
+    "es": "Capítulo I · Lluvia en Daze",
+    "fr": "Chapitre I · Pluie sur Daze",
+    "ja": "第一章 · 大沢郷の雨",
+    "ko": "제1장 · 대택향의 비",
+    "ru": "Глава I · Дождь в Дацзэ",
+    "vi": "Chương I · Mưa ở Đại Trạch",
+    "zh-Hans": "第一章 · 大泽乡雨",
+    "zh-Hant": "第一章 · 大澤鄉雨"
+  },
+  "startNodeId": "rain-order",
+  "initialResources": {
+    "grain": 42,
+    "trust": 38,
+    "momentum": 22,
+    "people": 58,
+    "danger": 46
+  },
+  "sites": [
+    {
+      "id": "daze",
+      "name": { "en": "Daze Village", "zh-Hans": "大泽乡", "zh-Hant": "大澤鄉", "ja": "大沢郷" },
+      "x": 68,
+      "z": 62,
+      "status": "active"
+    },
+    {
+      "id": "chen",
+      "name": { "en": "Chen", "zh-Hans": "陈县", "zh-Hant": "陳縣", "ja": "陳県" },
+      "x": 49,
+      "z": 49,
+      "status": "known"
+    },
+    {
+      "id": "pei",
+      "name": { "en": "Pei", "zh-Hans": "沛县", "zh-Hant": "沛縣", "ja": "沛県" },
+      "x": 58,
+      "z": 36,
+      "status": "future"
+    },
+    {
+      "id": "kuaiji",
+      "name": { "en": "Kuaiji", "zh-Hans": "会稽", "zh-Hant": "會稽", "ja": "会稽" },
+      "x": 82,
+      "z": 30,
+      "status": "future"
+    },
+    {
+      "id": "xianyang",
+      "name": { "en": "Xianyang", "zh-Hans": "咸阳", "zh-Hant": "咸陽", "ja": "咸陽" },
+      "x": 18,
+      "z": 26,
+      "status": "future"
+    }
+  ],
+  "characters": [
+    {
+      "id": "keeper",
+      "name": { "en": "The Keeper", "zh-Hans": "掌简人", "zh-Hant": "掌簡人" },
+      "role": { "en": "A fictional levy-record keeper—the player", "zh-Hans": "虚构的戍卒名籍吏，也是玩家", "zh-Hant": "虛構的戍卒名籍吏，也是玩家" },
+      "historical": false
+    },
+    {
+      "id": "chen-sheng",
+      "name": { "en": "Chen Sheng", "zh-Hans": "陈胜", "zh-Hant": "陳勝", "ja": "陳勝" },
+      "role": { "en": "Leader among the conscripts", "zh-Hans": "戍卒屯长", "zh-Hant": "戍卒屯長" },
+      "historical": true
+    },
+    {
+      "id": "wu-guang",
+      "name": { "en": "Wu Guang", "zh-Hans": "吴广", "zh-Hant": "吳廣", "ja": "呉広" },
+      "role": { "en": "Trusted organizer among the conscripts", "zh-Hans": "善于聚众的戍卒屯长", "zh-Hant": "善於聚眾的戍卒屯長" },
+      "historical": true
+    },
+    {
+      "id": "yu-mu",
+      "name": { "en": "Aunt Yu", "zh-Hans": "妪母", "zh-Hant": "嫗母" },
+      "role": { "en": "A fictional village cook and head of a displaced household", "zh-Hans": "虚构的乡厨与流离家户之长", "zh-Hant": "虛構的鄉廚與流離家戶之長" },
+      "historical": false
+    },
+    {
+      "id": "qin-courier",
+      "name": { "en": "Courier Han", "zh-Hans": "韩驿使", "zh-Hant": "韓驛使" },
+      "role": { "en": "A fictional Qin relay courier", "zh-Hans": "虚构的秦亭驿使", "zh-Hant": "虛構的秦亭驛使" },
+      "historical": false
+    }
+  ],
+  "sources": [
+    {
+      "id": "shiji-48-daze",
+      "work": "史记 · 陈涉世家 / Records of the Grand Historian, Hereditary House of Chen She",
+      "section": "卷四十八：大泽乡起事叙事",
+      "author": "司马迁 / Sima Qian",
+      "date": "c. 1st century BCE",
+      "note": {
+        "en": "Core received account for the delayed conscripts, rain, mortal penalty, Chen Sheng, Wu Guang, and the uprising. The game does not present every reported speech or omen as independently verified fact.",
+        "zh-Hans": "关于戍卒遇雨失期、法皆斩、陈胜吴广起事的主要传世叙事。游戏不把其中每段言辞或祥异视为已独立证实的事实。"
+      },
+      "claimStatus": "later-compilation"
+    },
+    {
+      "id": "shiji-7-xiang",
+      "work": "史记 · 项羽本纪 / Records of the Grand Historian, Basic Annals of Xiang Yu",
+      "section": "卷七：会稽起兵及楚汉叙事",
+      "author": "司马迁 / Sima Qian",
+      "date": "c. 1st century BCE",
+      "note": {
+        "en": "Basis for the later Xiang-clan route and the political memory of Chu; not evidence that the Daze characters already knew Xiang Yu's future role.",
+        "zh-Hans": "用于后续项氏路线和楚地政治记忆；不能证明大泽乡人物已预知项羽后来的地位。"
+      },
+      "claimStatus": "later-compilation"
+    },
+    {
+      "id": "shiji-8-liu",
+      "work": "史记 · 高祖本纪 / Records of the Grand Historian, Basic Annals of Gaozu",
+      "section": "卷八：沛县起兵及入关叙事",
+      "author": "司马迁 / Sima Qian",
+      "date": "c. 1st century BCE",
+      "note": {
+        "en": "Basis for the later Pei network and Liu Bang route; used prospectively, without turning later victory into inevitable destiny.",
+        "zh-Hans": "用于后续沛县人脉与刘邦路线；游戏避免用后来的胜利倒推成必然命运。"
+      },
+      "claimStatus": "later-compilation"
+    },
+    {
+      "id": "zztj-7-qin",
+      "work": "资治通鉴 / Comprehensive Mirror in Aid of Governance",
+      "section": "秦纪二：二世元年",
+      "author": "司马光等 / Sima Guang et al.",
+      "date": "11th century CE",
+      "note": {
+        "en": "A much later synthesis used to compare chronology and political framing, never as a contemporary eyewitness record.",
+        "zh-Hans": "用于比对年代与政治叙述的后世编年综合，绝不作为当时人的目击记录。"
+      },
+      "claimStatus": "later-compilation"
+    },
+    {
+      "id": "sunzi-1-calculation",
+      "work": "孙子兵法 / The Art of War",
+      "section": "始计篇：道、天、地、将、法",
+      "date": "received text, Warring States strata debated",
+      "note": {
+        "en": "A design lens for explaining strategic alignment, season, terrain, command, and organization. It does not document this episode.",
+        "zh-Hans": "作为解释人心、天时、地利、将领与组织的设计视角；并非本事件的史料。"
+      },
+      "claimStatus": "primary-account"
+    },
+    {
+      "id": "dramatic-daze-keeper",
+      "work": "SHI narrative reconstruction",
+      "section": "The Keeper, Aunt Yu, Courier Han, council details and all player choices",
+      "date": "2026",
+      "note": {
+        "en": "Fiction constructed to let the player reason within historical constraints. It is explicitly separated from attested persons and events.",
+        "zh-Hans": "为让玩家在历史约束中推演而创作的虚构内容，与传世记载中的人物事件明确区分。"
+      },
+      "claimStatus": "dramatic-reconstruction"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "rain-order",
+      "dateLabel": { "en": "209 BCE · Seventh month", "zh-Hans": "秦二世元年 · 七月" },
+      "siteId": "daze",
+      "speakerId": "chen-sheng",
+      "title": { "en": "The road has become a river", "zh-Hans": "道路已成河" },
+      "context": {
+        "en": "Nine hundred conscripts are stalled in a storm. The northern garrison deadline is passing. The received histories say the penalty was death; how uniformly such law was applied remains debated. In this reconstruction, you hold the soaked register that makes the crowd legible to the state.",
+        "zh-Hans": "九百戍卒被暴雨阻在大泽乡，赴渔阳的期限正在逾越。传世记载称“失期，法皆斩”，其法律是否一概如此执行仍有争论。在本作的重构中，你掌握着湿透的名籍——它让众人在国家眼中可被计算。"
+      },
+      "dialogue": {
+        "en": "“If the register reaches the next post, we are nine hundred isolated offenders. If it does not, what are we?” Chen Sheng does not raise his voice. Rain answers for him on the roof tiles.",
+        "zh-Hans": "“名籍若送到下一亭，我们便是九百个各自待罪的人。名籍若送不到——我们又是什么？”陈胜没有高声。雨点替他敲着屋瓦。"
+      },
+      "sourceRefs": ["shiji-48-daze", "zztj-7-qin", "dramatic-daze-keeper"],
+      "choices": [
+        {
+          "id": "read-the-names",
+          "label": { "en": "Read every name aloud", "zh-Hans": "当众读出每一个名字" },
+          "intent": { "en": "Turn a transport list into a public covenant.", "zh-Hans": "把押运名籍变成众人共同的盟约。" },
+          "consequence": { "en": "The ranks see one another, but the officers now know where solidarity began.", "zh-Hans": "戍卒开始彼此看见，但军吏也知道团结从何处发生。" },
+          "strategy": { "en": "Broad position: invest in legitimacy before speed.", "zh-Hans": "厚势：先积合法性，再求速度。" },
+          "effects": { "trust": 16, "people": 9, "momentum": 3, "danger": 8 },
+          "flags": ["public-covenant"],
+          "nextNodeId": "open-council"
+        },
+        {
+          "id": "take-the-beacon",
+          "label": { "en": "Seize the relay beacon", "zh-Hans": "夺取亭燧" },
+          "intent": { "en": "Control the signal network before the story outruns you.", "zh-Hans": "在消息失控前先控制传信网络。" },
+          "consequence": { "en": "Weapons and urgency enter the camp together.", "zh-Hans": "兵刃与紧迫感同时进入营地。" },
+          "strategy": { "en": "Forcing move: gain initiative while accepting exposure.", "zh-Hans": "先手：以暴露风险换取主动。" },
+          "effects": { "momentum": 21, "trust": -4, "danger": 17 },
+          "flags": ["beacon-seized"],
+          "nextNodeId": "fire-council"
+        },
+        {
+          "id": "hide-the-register",
+          "label": { "en": "Hide the register; watch one night", "zh-Hans": "藏起名籍，静观一夜" },
+          "intent": { "en": "Make room for information before commitment.", "zh-Hans": "在下注前先争取情报空间。" },
+          "consequence": { "en": "You learn who moves between tents, but hesitation costs food and confidence.", "zh-Hans": "你看清了营帐间的往来，但迟疑消耗粮食与信心。" },
+          "strategy": { "en": "Probe: preserve options and conceal intent.", "zh-Hans": "试应手：保留选择，隐藏意图。" },
+          "effects": { "grain": -7, "momentum": -5, "danger": -8, "trust": 4 },
+          "flags": ["register-hidden"],
+          "nextNodeId": "shadow-council"
+        }
+      ]
+    },
+    {
+      "id": "open-council",
+      "dateLabel": { "en": "209 BCE · The same night", "zh-Hans": "秦二世元年 · 当夜" },
+      "siteId": "daze",
+      "speakerId": "yu-mu",
+      "title": { "en": "A covenant must eat", "zh-Hans": "盟约也要吃饭" },
+      "context": { "en": "Public trust has given the camp a voice. It has not given it supplies. Villagers have hidden grain from tax collectors and bandits alike.", "zh-Hans": "公开结盟让营地有了共同声音，却没有凭空生出粮食。乡民把存粮藏着，既防税吏，也防盗寇。" },
+      "dialogue": { "en": "Aunt Yu puts an empty scoop beside your register. “A just cause can still empty an unjustly full granary. Tell us the rule before hunger writes it for you.”", "zh-Hans": "妪母把一只空斗放在名籍旁：“义军也能掏空一座不义的粮仓。趁饥饿还没替你定规矩，先把规矩说清楚。”" },
+      "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "choices": [
+        {
+          "id": "issue-grain-tallies",
+          "label": { "en": "Issue redeemable grain tallies", "zh-Hans": "发放可兑粮券" },
+          "intent": { "en": "Requisition now, bind repayment to the movement's reputation.", "zh-Hans": "先行征粮，把日后偿还系于军队声誉。" },
+          "consequence": { "en": "Some stores open. Your promise becomes a debt future commanders can honor—or betray.", "zh-Hans": "一些粮窖打开了。你的承诺成为后继者可以兑现、也可以背弃的债。" },
+          "strategy": { "en": "Create an institution where force alone would be cheaper today.", "zh-Hans": "制度之势：在暴力眼下更便宜时，仍建立可延续的信用。" },
+          "effects": { "grain": 17, "trust": 8, "people": 4, "danger": 3 },
+          "flags": ["grain-tallies"],
+          "nextNodeId": "broken-crossing"
+        },
+        {
+          "id": "voluntary-pots",
+          "label": { "en": "Ask each fire for one pot", "zh-Hans": "每一处灶火自献一釜" },
+          "intent": { "en": "Distribute sacrifice visibly and cap what can be taken.", "zh-Hans": "让牺牲可见且有上限。" },
+          "consequence": { "en": "The camp moves leaner, but households join because the boundary feels real.", "zh-Hans": "队伍更加拮据，却有家户因看见界线而愿意同行。" },
+          "strategy": { "en": "Thick position: fewer supplies, stronger consent.", "zh-Hans": "厚势：少取物资，多积人心。" },
+          "effects": { "grain": 8, "trust": 15, "people": 13, "momentum": -5 },
+          "flags": ["capped-levy"],
+          "nextNodeId": "broken-crossing"
+        }
+      ]
+    },
+    {
+      "id": "fire-council",
+      "dateLabel": { "en": "209 BCE · Before dawn", "zh-Hans": "秦二世元年 · 黎明前" },
+      "siteId": "daze",
+      "speakerId": "wu-guang",
+      "title": { "en": "The beacon is now an accusation", "zh-Hans": "烽火已成檄文" },
+      "context": { "en": "The relay guards have been disarmed. Nearby posts will see the missing signal at dawn. Momentum is high; recognition is not the same as allegiance.", "zh-Hans": "亭卒已被缴械。天亮后，邻亭就会察觉烽燧断绝。声势骤起，但被人看见不等于被人拥护。" },
+      "dialogue": { "en": "Wu Guang turns the captured drum on its side. “A drum tells everyone to move. It does not tell them why they should follow us after the first mile.”", "zh-Hans": "吴广把缴来的鼓侧放在地上：“鼓能叫所有人动起来，却不能告诉他们，为何走过第一里后还要跟着我们。”" },
+      "sourceRefs": ["shiji-48-daze", "dramatic-daze-keeper", "sunzi-1-calculation"],
+      "choices": [
+        {
+          "id": "declare-great-chu",
+          "label": { "en": "Raise the memory of Great Chu", "zh-Hans": "借大楚之名聚众" },
+          "intent": { "en": "Use a shared political memory to turn shock into direction.", "zh-Hans": "以共同的政治记忆，把震动变成方向。" },
+          "consequence": { "en": "The cry travels faster than your ability to define it.", "zh-Hans": "口号传播得比你解释它的能力更快。" },
+          "strategy": { "en": "Narrative initiative: powerful, difficult to retrieve.", "zh-Hans": "叙事先手：力量巨大，也难以收回。" },
+          "effects": { "momentum": 22, "people": 9, "danger": 15, "trust": -2 },
+          "flags": ["chu-banner"],
+          "nextNodeId": "broken-crossing"
+        },
+        {
+          "id": "extinguish-and-move",
+          "label": { "en": "Extinguish the tower; move in silence", "zh-Hans": "熄燧潜行" },
+          "intent": { "en": "Trade spectacle for one more unobserved march.", "zh-Hans": "舍弃声势，换取一次不被观察的行军。" },
+          "consequence": { "en": "You regain time, but some mistake discipline for fear.", "zh-Hans": "你们赢回了时间，也有人把克制误作胆怯。" },
+          "strategy": { "en": "Tempo control: refuse the opponent's clock.", "zh-Hans": "控速：拒绝按对手的时钟行动。" },
+          "effects": { "danger": -15, "momentum": -10, "grain": -4, "trust": 5 },
+          "flags": ["dark-march"],
+          "nextNodeId": "broken-crossing"
+        }
+      ]
+    },
+    {
+      "id": "shadow-council",
+      "dateLabel": { "en": "209 BCE · Second watch", "zh-Hans": "秦二世元年 · 二更" },
+      "siteId": "daze",
+      "speakerId": "qin-courier",
+      "title": { "en": "A courier without a message", "zh-Hans": "没有公文的驿使" },
+      "context": { "en": "Your watch catches a relay courier searching for the register. He is frightened, observant, and useful. Every way of containing knowledge creates a witness.", "zh-Hans": "守夜者抓到一名寻找名籍的驿使。他害怕、敏锐，也可能有用。每一种封锁消息的方法，都会制造一个见证人。" },
+      "dialogue": { "en": "Courier Han looks at the blank space where the register was. “A missing list is already a message. Let me choose who receives it.”", "zh-Hans": "韩驿使看着名籍原先摆放的空处：“名籍失踪，本身就是一封信。让我选它送到谁手里。”" },
+      "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "choices": [
+        {
+          "id": "turn-the-courier",
+          "label": { "en": "Offer the courier a place in the new network", "zh-Hans": "让驿使加入新的传信网" },
+          "intent": { "en": "Convert an enemy channel instead of merely cutting it.", "zh-Hans": "不只截断敌方渠道，而是把它转为己用。" },
+          "consequence": { "en": "False calm moves east. Trusting him leaves a live weakness inside your plan.", "zh-Hans": "虚假的平静向东传去；信任他，也让计划内部留下活的破绽。" },
+          "strategy": { "en": "Influence: alter what the opponent believes is possible.", "zh-Hans": "影响之势：改变对手对局面的判断。" },
+          "effects": { "danger": -13, "trust": -4, "momentum": 8 },
+          "flags": ["turned-courier"],
+          "nextNodeId": "broken-crossing"
+        },
+        {
+          "id": "release-oldest",
+          "label": { "en": "Release the oldest conscripts before dawn", "zh-Hans": "黎明前遣返年长戍卒" },
+          "intent": { "en": "Shrink the exposed column and let witnesses carry restraint home.", "zh-Hans": "缩小暴露的队伍，让见证者把克制带回乡里。" },
+          "consequence": { "en": "You lose hands today and gain doors that may open later.", "zh-Hans": "今日少了人手，日后却可能多出愿意开启的家门。" },
+          "strategy": { "en": "Distributed strength: accept local weakness for a wider network.", "zh-Hans": "散势：以局部减员换取更广的关系网。" },
+          "effects": { "people": -9, "trust": 18, "danger": -8, "momentum": -4 },
+          "flags": ["released-elders"],
+          "nextNodeId": "broken-crossing"
+        }
+      ]
+    },
+    {
+      "id": "broken-crossing",
+      "dateLabel": { "en": "209 BCE · Third day", "zh-Hans": "秦二世元年 · 第三日" },
+      "siteId": "chen",
+      "speakerId": "keeper",
+      "title": { "en": "The ford remembers the flood", "zh-Hans": "渡口记得洪水" },
+      "context": { "en": "The column reaches a damaged crossing. Scouts report patrols behind and uncertain towns ahead. Families, grain carts, and armed ranks cannot all cross at once. This is a recovery turn: reduce exposure, restore supplies, or preserve cohesion before the final commitment.", "zh-Hans": "队伍来到一处被洪水毁坏的渡口。斥候报告追兵在后，前方城邑态度不明。家户、粮车与持械队伍无法同时过河。这是一轮整顿：在最终下注前，降低暴露、补充粮草，或维系队伍。" },
+      "dialogue": { "en": "You lay three tally slips on the wet rail: people, provisions, pursuit. The river will collect one kind of debt before sunset.", "zh-Hans": "你把三根筹片摆在湿漉漉的栏木上：人、粮、追兵。日落前，这条河必会来收一种债。" },
+      "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "choices": [
+        {
+          "id": "families-first",
+          "label": { "en": "Send households across first", "zh-Hans": "家户先渡" },
+          "intent": { "en": "Make protection visible, even under pursuit.", "zh-Hans": "即使追兵迫近，也让保护成为可见的承诺。" },
+          "consequence": { "en": "The rear guard absorbs the risk; the movement gains a reason to survive.", "zh-Hans": "后卫承担风险，而这支队伍获得了必须活下去的理由。" },
+          "strategy": { "en": "Moral center: cohesion can be operational power.", "zh-Hans": "人心中枢：凝聚力也可以转化为行动力量。" },
+          "effects": { "people": 14, "trust": 12, "danger": 11, "momentum": -4 },
+          "flags": ["families-first"],
+          "nextNodeId": "three-roads"
+        },
+        {
+          "id": "repair-the-ford",
+          "label": { "en": "Spend grain sacks to brace the ford", "zh-Hans": "以粮袋固渡" },
+          "intent": { "en": "Consume reserves to move everyone together.", "zh-Hans": "消耗储备，让所有人一同渡过。" },
+          "consequence": { "en": "The column crosses intact but hungry; pursuit loses time in the wreckage.", "zh-Hans": "队伍完整却饥饿地过河；追兵在残桥处失去时间。" },
+          "strategy": { "en": "Sacrifice material to preserve formation.", "zh-Hans": "弃物保形：用物资换队形与时间。" },
+          "effects": { "grain": -16, "danger": -15, "trust": 5, "momentum": 5 },
+          "requirements": { "min": { "grain": 30 } },
+          "flags": ["ford-braced"],
+          "nextNodeId": "three-roads"
+        },
+        {
+          "id": "cut-the-carts",
+          "label": { "en": "Abandon the carts and scatter the tracks", "zh-Hans": "弃车乱迹" },
+          "intent": { "en": "Recover tempo before encirclement closes.", "zh-Hans": "在包围合拢前夺回速度。" },
+          "consequence": { "en": "The pursuit guesses wrong, but hunger and resentment enter the ranks.", "zh-Hans": "追兵判断失误，饥饿与怨气却进入队伍。" },
+          "strategy": { "en": "Light shape: mobility bought with future fragility.", "zh-Hans": "轻势：以日后的脆弱换取眼下机动。" },
+          "effects": { "grain": -13, "danger": -21, "momentum": 12, "trust": -9, "people": -3 },
+          "flags": ["carts-abandoned"],
+          "nextNodeId": "three-roads"
+        }
+      ]
+    },
+    {
+      "id": "three-roads",
+      "dateLabel": { "en": "209 BCE · South of Chen", "zh-Hans": "秦二世元年 · 陈县之南" },
+      "siteId": "chen",
+      "speakerId": "chen-sheng",
+      "title": { "en": "Three roads, none yet history", "zh-Hans": "三条路，都还不是历史" },
+      "context": { "en": "Rumor multiplies: old Chu names in the southeast, an unusual circle of companions around Pei, frightened county seats nearby. The future victors are not yet inevitable. Your first campaign ends with a doctrine, not a coronation.", "zh-Hans": "流言四起：东南有楚国旧族，沛县有一群不同寻常的伙伴，近处县城则惶恐不安。未来的胜者尚非必然。第一章以一种行动原则结束，而非加冕。" },
+      "dialogue": { "en": "Chen Sheng draws no map. He places three stones in the mud. “Power is not inside a stone. It is in what the ground lets the stones do to one another. Keeper—what ground will we make?”", "zh-Hans": "陈胜没有展开地图，只在泥里放下三块石头：“势不在石中，而在地形让石头彼此如何作用。掌简人——我们要造出怎样的地？”" },
+      "sourceRefs": ["shiji-48-daze", "shiji-7-xiang", "shiji-8-liu", "dramatic-daze-keeper"],
+      "choices": [
+        {
+          "id": "root-in-villages",
+          "label": { "en": "Root the movement in village covenants", "zh-Hans": "以乡里盟约为根" },
+          "intent": { "en": "Build food, messengers, and consent before claiming a realm.", "zh-Hans": "先建粮路、传信与同意，再谈天下。" },
+          "consequence": { "en": "Your network will grow slowly, and it may outlive its first banner.", "zh-Hans": "你的网络会生长得慢，却可能比第一面旗帜活得更久。" },
+          "strategy": { "en": "Deep roots ending: durable legitimacy over immediate fame.", "zh-Hans": "深根结局：以持久的合法性胜过眼前名声。" },
+          "effects": { "trust": 18, "people": 16, "grain": 5, "momentum": -7 },
+          "flags": ["ending-deep-roots"]
+        },
+        {
+          "id": "race-for-chen",
+          "label": { "en": "Race for Chen before fear hardens", "zh-Hans": "趁恐惧未固，疾取陈县" },
+          "intent": { "en": "Turn a brief opening into a political fact.", "zh-Hans": "把短暂窗口变成既成政治事实。" },
+          "consequence": { "en": "The uprising becomes visible to the realm—and to every force capable of destroying it.", "zh-Hans": "起事为天下所见，也被一切足以摧毁它的力量看见。" },
+          "strategy": { "en": "Wildfire ending: decisive initiative with a narrow supply base.", "zh-Hans": "野火结局：以狭窄供给支撑决定性先手。" },
+          "effects": { "momentum": 28, "danger": 20, "grain": -12, "people": 4 },
+          "flags": ["ending-wildfire"]
+        },
+        {
+          "id": "send-two-envoys",
+          "label": { "en": "Send quiet envoys toward Pei and Kuaiji", "zh-Hans": "密使分赴沛县与会稽" },
+          "intent": { "en": "Learn the emerging board before joining one claimant.", "zh-Hans": "先看清新棋局，再决定与谁合流。" },
+          "consequence": { "en": "You surrender the loudest moment to gain information about two future centers of power.", "zh-Hans": "你放弃最响亮的时刻，换取两个未来权力中心的情报。" },
+          "strategy": { "en": "Watchful strategist ending: options, intelligence, and delayed commitment.", "zh-Hans": "观势结局：保留选择，以情报延迟下注。" },
+          "effects": { "danger": -7, "trust": 5, "momentum": 4, "grain": -5 },
+          "flags": ["ending-watchful", "pei-contact", "kuaiji-contact"]
+        }
+      ]
+    }
+  ]
+}

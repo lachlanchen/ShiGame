@@ -1,0 +1,50 @@
+# Private source material and local notes
+references/private/
+references/**/*.private.*
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# JavaScript / web
+node_modules/
+apps/web/dist/
+apps/web/src/generated/
+apps/web/public/*
+!apps/web/public/.gitkeep
+coverage/
+playwright-report/
+test-results/
+
+# Unity generated state and local builds
+apps/unity/[Ll]ibrary/
+apps/unity/[Tt]emp/
+apps/unity/[Oo]bj/
+apps/unity/[Ll]ogs/
+apps/unity/[Uu]ser[Ss]ettings/
+apps/unity/[Mm]emoryCaptures/
+apps/unity/[Rr]ecordings/
+apps/unity/Builds/
+apps/unity/Assets/StreamingAssets/*
+!apps/unity/Assets/StreamingAssets/.gitkeep
+apps/unity/*.csproj
+apps/unity/*.sln
+apps/unity/*.user
+
+# Ephemeral runtime and local test outputs
+.runtime/
+output/
+tmp/
+*.log
+*.blend1
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*~
+*.swp
+.idea/
+.vscode/
