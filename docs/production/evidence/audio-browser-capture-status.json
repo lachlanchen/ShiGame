@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "kind": "visible-browser-audio-capture",
+  "contractId": "chapter-01-daze-audio",
+  "contractSha256": "70827d7b11b8b58217cd38dc2c4afb9217253b6c8c342bd92a21cd018d7a1807",
+  "capturedAt": "2026-08-08T22:16:05.908Z",
+  "testedCommit": "working-tree",
+  "url": "http://127.0.0.1:4173/?seed=5EED2026",
+  "cdpPort": 9323,
+  "sink": "shi-game-audio-capture",
+  "browser": {
+    "product": "Chrome/149.0.7827.114",
+    "protocolVersion": "1.3",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+  },
+  "preConsent": {
+    "probe": {
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "pcm_s24le",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "2.017417",
+        "size": "581118"
+      }
+    },
+    "metrics": {
+      "frames": 96836,
+      "samplePeakDbfs": "-inf",
+      "rmsDbfs": "-inf",
+      "integratedLufs": -70,
+      "truePeakDbtp": "-inf",
+      "dcOffsetAbsolute": 0,
+      "stereoDifferenceRms": 0
+    },
+    "sha256": "2944559cb5c9e41bd3a8dbbdde6409b46c9d56f08dcbcc59a12236d1e4d93489",
+    "bytes": 581118,
+    "seconds": 2.017417,
+    "sampleRate": 48000,
+    "channels": 2,
+    "codec": "pcm_s24le",
+    "path": ".runtime/audio/web-pre-consent-silence.wav",
+    "committed": false
+  },
+  "active": {
+    "probe": {
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "pcm_s24le",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "16.009646",
+        "size": "4610880"
+      }
+    },
+    "metrics": {
+      "frames": 768463,
+      "samplePeakDbfs": -22.3815,
+      "rmsDbfs": -41.0128,
+      "integratedLufs": -35.7,
+      "truePeakDbtp": -22.4,
+      "dcOffsetAbsolute": 2.9e-7,
+      "stereoDifferenceRms": 0
+    },
+    "sha256": "73604c3d1de4f034cb41ead91316c0b9332db9942a3fb1aeb2b8e7957227feeb",
+    "bytes": 4610880,
+    "seconds": 16.009646,
+    "sampleRate": 48000,
+    "channels": 2,
+    "codec": "pcm_s24le",
+    "path": ".runtime/audio/web-visible-soundscape.wav",
+    "committed": false
+  },
+  "events": [
+    {
+      "event": "enable-sound-and-drawer-cue",
+      "atSeconds": 0.656
+    },
+    {
+      "event": "commit-preview-cue",
+      "atSeconds": 4.389
+    },
+    {
+      "event": "close-cue",
+      "atSeconds": 6.402
+    },
+    {
+      "event": "inspect-cue",
+      "atSeconds": 8.512
+    },
+    {
+      "event": "close-map-cue",
+      "atSeconds": 10.319
+    },
+    {
+      "event": "select-cue",
+      "atSeconds": 11.843
+    }
+  ],
+  "checks": [
+    {
+      "id": "pre-consent-digital-silence",
+      "value": "-inf",
+      "rule": "-inf",
+      "pass": true
+    },
+    {
+      "id": "active-sample-peak",
+      "value": -22.3815,
+      "rule": "<=",
+      "limit": -12,
+      "pass": true
+    },
+    {
+      "id": "active-true-peak",
+      "value": -22.4,
+      "rule": "<=",
+      "limit": -10,
+      "pass": true
+    },
+    {
+      "id": "active-loudness-min",
+      "value": -35.7,
+      "rule": ">=",
+      "limit": -45,
+      "pass": true
+    },
+    {
+      "id": "active-loudness-max",
+      "value": -35.7,
+      "rule": "<=",
+      "limit": -24,
+      "pass": true
+    },
+    {
+      "id": "active-dc-offset",
+      "value": 2.9e-7,
+      "rule": "<=",
+      "limit": 0.001,
+      "pass": true
+    },
+    {
+      "id": "dual-mono-output",
+      "value": 0,
+      "rule": "<=",
+      "limit": 0.000001,
+      "pass": true
+    },
+    {
+      "id": "browser-console",
+      "value": 0,
+      "rule": "===",
+      "limit": 0,
+      "pass": true
+    }
+  ],
+  "ok": true,
+  "consoleErrors": [],
+  "visualEvidence": [
+    "docs/production/evidence/audio-browser-capture-ui.png",
+    "docs/production/evidence/audio-browser-capture-spectrogram.png"
+  ],
+  "reviewBoundary": {
+    "engineeringBrowserCapture": "pass",
+    "humanListening": "required",
+    "physicalDevices": "required",
+    "unityNativeParity": "required"
+  }
+}

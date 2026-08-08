@@ -17,6 +17,11 @@
     },
     "fadeSeconds": 0.8
   },
+  "envelope": {
+    "attackMs": 12,
+    "releaseMs": 25,
+    "curve": "linear"
+  },
   "ambience": {
     "id": "daze-rain",
     "seed": 1397246257,
@@ -50,5 +55,36 @@
     "failure": [
       { "offsetMs": 0, "frequencyHz": 165, "endFrequencyHz": 123, "durationMs": 420, "gain": 0.075, "wave": "triangle" }
     ]
+  },
+  "quality": {
+    "reference": {
+      "sampleRate": 48000,
+      "seconds": 18,
+      "cueSchedule": [
+        { "cue": "select", "atSeconds": 1 },
+        { "cue": "inspect", "atSeconds": 3 },
+        { "cue": "drawer", "atSeconds": 5 },
+        { "cue": "close", "atSeconds": 7 },
+        { "cue": "commit", "atSeconds": 10 },
+        { "cue": "ending", "atSeconds": 13 },
+        { "cue": "failure", "atSeconds": 16 }
+      ]
+    },
+    "browserCapture": {
+      "sampleRate": 48000,
+      "preConsentSeconds": 2,
+      "activeSeconds": 16
+    },
+    "limits": {
+      "samplePeakDbfsMax": -12,
+      "truePeakDbtpMax": -10,
+      "integratedLufsMin": -45,
+      "integratedLufsMax": -24,
+      "cuePeakDbfsMin": -42,
+      "dcOffsetAbsoluteMax": 0.001,
+      "rawAmbienceDcOffsetAbsoluteMax": 0.001,
+      "loopBoundaryJumpRatioMax": 0.8,
+      "stereoDifferenceRmsMax": 0.000001
+    }
   }
 }

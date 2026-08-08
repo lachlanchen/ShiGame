@@ -18,6 +18,8 @@
     "validate:accessibility": "node scripts/validate-accessibility.mjs",
     "validate:fonts": "node scripts/validate-fonts.mjs",
     "validate:audio": "node scripts/validate-audio.mjs",
+    "render:audio-reference": "node scripts/render-audio-reference.mjs",
+    "capture:web-audio": "scripts/audio-capture-desktop.sh start && node scripts/capture-web-audio.mjs",
     "validate:web-build": "node scripts/validate-web-build.mjs",
     "sync:content": "node scripts/sync-unity-content.mjs",
     "preview": "npm --workspace @shi/web run preview -- --host 127.0.0.1"

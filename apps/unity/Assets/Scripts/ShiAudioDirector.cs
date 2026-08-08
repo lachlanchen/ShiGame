@@ -14,8 +14,18 @@ namespace SHI
         [JsonProperty("title")] public string Title = "";
         [JsonProperty("synthesis")] public string Synthesis = "";
         [JsonProperty("mix")] public ShiAudioMix Mix = new();
+        [JsonProperty("envelope")] public ShiAudioEnvelope Envelope = new();
         [JsonProperty("ambience")] public ShiAmbienceContract Ambience = new();
         [JsonProperty("cues")] public Dictionary<string, List<ShiToneContract>> Cues = new();
+        [JsonProperty("quality")] public ShiAudioQuality Quality = new();
+    }
+
+    [Serializable]
+    public sealed class ShiAudioEnvelope
+    {
+        [JsonProperty("attackMs")] public float AttackMs = 12;
+        [JsonProperty("releaseMs")] public float ReleaseMs = 25;
+        [JsonProperty("curve")] public string Curve = "linear";
     }
 
     [Serializable]
@@ -56,6 +66,51 @@ namespace SHI
         [JsonProperty("durationMs")] public int DurationMs;
         [JsonProperty("gain")] public float Gain;
         [JsonProperty("wave")] public string Wave = "sine";
+    }
+
+    [Serializable]
+    public sealed class ShiAudioQuality
+    {
+        [JsonProperty("reference")] public ShiAudioReference Reference = new();
+        [JsonProperty("browserCapture")] public ShiAudioBrowserCapture BrowserCapture = new();
+        [JsonProperty("limits")] public ShiAudioQualityLimits Limits = new();
+    }
+
+    [Serializable]
+    public sealed class ShiAudioReference
+    {
+        [JsonProperty("sampleRate")] public int SampleRate = 48000;
+        [JsonProperty("seconds")] public float Seconds = 18;
+        [JsonProperty("cueSchedule")] public List<ShiScheduledCue> CueSchedule = new();
+    }
+
+    [Serializable]
+    public sealed class ShiScheduledCue
+    {
+        [JsonProperty("cue")] public string Cue = "";
+        [JsonProperty("atSeconds")] public float AtSeconds;
+    }
+
+    [Serializable]
+    public sealed class ShiAudioBrowserCapture
+    {
+        [JsonProperty("sampleRate")] public int SampleRate = 48000;
+        [JsonProperty("preConsentSeconds")] public float PreConsentSeconds = 2;
+        [JsonProperty("activeSeconds")] public float ActiveSeconds = 16;
+    }
+
+    [Serializable]
+    public sealed class ShiAudioQualityLimits
+    {
+        [JsonProperty("samplePeakDbfsMax")] public float SamplePeakDbfsMax = -12;
+        [JsonProperty("truePeakDbtpMax")] public float TruePeakDbtpMax = -10;
+        [JsonProperty("integratedLufsMin")] public float IntegratedLufsMin = -45;
+        [JsonProperty("integratedLufsMax")] public float IntegratedLufsMax = -24;
+        [JsonProperty("cuePeakDbfsMin")] public float CuePeakDbfsMin = -42;
+        [JsonProperty("dcOffsetAbsoluteMax")] public float DcOffsetAbsoluteMax = .001f;
+        [JsonProperty("rawAmbienceDcOffsetAbsoluteMax")] public float RawAmbienceDcOffsetAbsoluteMax = .001f;
+        [JsonProperty("loopBoundaryJumpRatioMax")] public float LoopBoundaryJumpRatioMax = .8f;
+        [JsonProperty("stereoDifferenceRmsMax")] public float StereoDifferenceRmsMax = .000001f;
     }
 
     public sealed class ShiAudioDirector : MonoBehaviour
@@ -158,7 +213,7 @@ namespace SHI
             if (!Enabled || contract == null || effectsSource == null || !contract.Cues.ContainsKey(cue)) return;
             if (!cueClips.TryGetValue(cue, out var clip))
             {
-                clip = BuildCue(cue, contract.Cues[cue], contract.Ambience.SampleRate);
+                clip = BuildCue(cue, contract.Cues[cue], contract.Envelope, contract.Ambience.SampleRate);
                 cueClips.Add(cue, clip);
             }
             effectsSource.PlayOneShot(clip);
@@ -245,6 +300,7 @@ namespace SHI
             var samples = new float[sampleCount];
             var state = seed == 0 ? 1u : seed;
             var slow = 0f;
+            double sum = 0;
             unchecked
             {
                 for (var index = 0; index < samples.Length; index++)
@@ -256,20 +312,29 @@ namespace SHI
                     slow = slow * .985f + white * .015f;
                     var grain = (state & 0x7ff) < 3 ? white * .22f : 0;
                     samples[index] = Mathf.Clamp(white * .42f + slow * .82f + grain, -1, 1);
+                    sum += samples[index];
                 }
             }
-            if (samples.Length <= 1) return samples;
-            var drift = samples[^1] - samples[0];
-            for (var index = 1; index < samples.Length; index++) samples[index] = Mathf.Clamp(samples[index] - drift * index / (samples.Length - 1), -1, 1);
-            samples[^1] = samples[0];
+            var mean = (float)(sum / samples.Length);
+            for (var index = 0; index < samples.Length; index++) samples[index] = Mathf.Clamp(samples[index] - mean, -1, 1);
             return samples;
         }
 
-        private static AudioClip BuildCue(string cue, IReadOnlyList<ShiToneContract> tones, int sampleRate)
+        private static AudioClip BuildCue(string cue, IReadOnlyList<ShiToneContract> tones, ShiAudioEnvelope envelope, int sampleRate)
+        {
+            var samples = CreateCueSamples(tones, envelope, sampleRate);
+            var clip = AudioClip.Create($"SHI cue {cue}", samples.Length, 1, sampleRate, false);
+            clip.SetData(samples, 0);
+            return clip;
+        }
+
+        public static float[] CreateCueSamples(IReadOnlyList<ShiToneContract> tones, ShiAudioEnvelope envelope, int sampleRate)
         {
             var durationMs = 0;
             foreach (var tone in tones) durationMs = Mathf.Max(durationMs, tone.OffsetMs + tone.DurationMs);
-            var samples = new float[Mathf.CeilToInt((durationMs + 15) / 1000f * sampleRate)];
+            var samples = new float[Mathf.CeilToInt((durationMs + envelope.ReleaseMs) / 1000f * sampleRate)];
+            var attackSamples = Mathf.Max(1, envelope.AttackMs / 1000f * sampleRate);
+            var releaseSamples = Mathf.Max(1, envelope.ReleaseMs / 1000f * sampleRate);
             foreach (var tone in tones)
             {
                 var start = Mathf.RoundToInt(tone.OffsetMs / 1000f * sampleRate);
@@ -281,14 +346,12 @@ namespace SHI
                     var frequency = tone.FrequencyHz * Mathf.Pow(tone.EndFrequencyHz / tone.FrequencyHz, progress);
                     phase += 2 * Mathf.PI * frequency / sampleRate;
                     var wave = tone.Wave == "triangle" ? 2 / Mathf.PI * Mathf.Asin(Mathf.Sin(phase)) : Mathf.Sin(phase);
-                    var attack = Mathf.Clamp01(index / (sampleRate * .012f));
-                    var release = Mathf.Clamp01((count - index - 1) / (sampleRate * .025f));
+                    var attack = Mathf.Clamp01(index / attackSamples);
+                    var release = Mathf.Clamp01((count - index - 1) / releaseSamples);
                     samples[start + index] = Mathf.Clamp(samples[start + index] + wave * tone.Gain * Mathf.Min(attack, release), -1, 1);
                 }
             }
-            var clip = AudioClip.Create($"SHI cue {cue}", samples.Length, 1, sampleRate, false);
-            clip.SetData(samples, 0);
-            return clip;
+            return samples;
         }
 
         private void OnDestroy()

@@ -28,6 +28,7 @@ afterEach(() => {
 class FakeAudioParam {
   value = 0;
   cancelScheduledValues() { /* deterministic no-op */ }
+  cancelAndHoldAtTime() { /* deterministic no-op */ }
   setValueAtTime(value: number) { this.value = value; return this; }
   linearRampToValueAtTime(value: number) { this.value = value; return this; }
   exponentialRampToValueAtTime(value: number) { this.value = value; return this; }

@@ -12,6 +12,7 @@ interface ToneContract {
 
 interface AudioContract {
   mix: { defaults: { master: number }; fadeSeconds: number };
+  envelope: { attackMs: number; releaseMs: number; curve: "linear" };
   ambience: { seed: number; sampleRate: number; loopSeconds: number; highpassHz: number; lowpassHz: number; gain: number };
   cues: Record<AudioCue, ToneContract[]>;
 }
@@ -23,6 +24,7 @@ export function createRainSamples(length: number, seed: number): Float32Array<Ar
   const samples = new Float32Array(new ArrayBuffer(sampleCount * Float32Array.BYTES_PER_ELEMENT));
   let state = seed >>> 0 || 1;
   let slow = 0;
+  let sum = 0;
   for (let index = 0; index < samples.length; index++) {
     state ^= state << 13;
     state ^= state >>> 17;
@@ -31,19 +33,26 @@ export function createRainSamples(length: number, seed: number): Float32Array<Ar
     slow = slow * 0.985 + white * 0.015;
     const grain = (state & 0x7ff) < 3 ? white * 0.22 : 0;
     samples[index] = Math.max(-1, Math.min(1, white * 0.42 + slow * 0.82 + grain));
+    sum += samples[index]!;
   }
-  if (samples.length > 1) {
-    const drift = samples[samples.length - 1]! - samples[0]!;
-    for (let index = 1; index < samples.length; index++) {
-      samples[index] = Math.max(-1, Math.min(1, samples[index]! - drift * index / (samples.length - 1)));
-    }
-    samples[samples.length - 1] = samples[0]!;
-  }
+  const mean = sum / samples.length;
+  for (let index = 0; index < samples.length; index++) samples[index] = Math.max(-1, Math.min(1, samples[index]! - mean));
   return samples;
 }
 
 export function cueDurationSeconds(cue: AudioCue): number {
   return Math.max(...contract.cues[cue].map((tone) => tone.offsetMs + tone.durationMs)) / 1000;
+}
+
+export function scheduleGain(parameter: AudioParam, value: number, time: number, fade: number): void {
+  if (fade <= 0) {
+    parameter.cancelScheduledValues(time);
+    parameter.value = value;
+    parameter.setValueAtTime(value, time);
+    return;
+  }
+  parameter.cancelAndHoldAtTime(time);
+  parameter.linearRampToValueAtTime(value, time + fade);
 }
 
 export class ShiAudioEngine {
@@ -55,7 +64,7 @@ export class ShiAudioEngine {
   private ambienceActive = false;
 
   constructor(private readonly context: AudioContext, preferences: AudioPreferences) {
-    this.preferences = { ...preferences };
+    this.preferences = { ...preferences, enabled: false };
     this.master = context.createGain();
     this.ambienceBus = context.createGain();
     this.effectsBus = context.createGain();
@@ -63,6 +72,8 @@ export class ShiAudioEngine {
     this.effectsBus.connect(this.master);
     this.master.connect(context.destination);
     this.applyMix(true);
+    this.preferences = { ...preferences };
+    this.applyMix(false);
   }
 
   setPreferences(preferences: AudioPreferences): void {
@@ -89,9 +100,12 @@ export class ShiAudioEngine {
       oscillator.type = tone.wave;
       oscillator.frequency.setValueAtTime(tone.frequencyHz, start);
       oscillator.frequency.exponentialRampToValueAtTime(tone.endFrequencyHz, end);
-      envelope.gain.setValueAtTime(0.0001, start);
-      envelope.gain.exponentialRampToValueAtTime(tone.gain, start + Math.min(0.012, tone.durationMs / 3000));
-      envelope.gain.exponentialRampToValueAtTime(0.0001, end);
+      const attackEnd = Math.min(end, start + contract.envelope.attackMs / 1000);
+      const releaseStart = Math.max(attackEnd, end - contract.envelope.releaseMs / 1000);
+      envelope.gain.setValueAtTime(0, start);
+      envelope.gain.linearRampToValueAtTime(tone.gain, attackEnd);
+      envelope.gain.setValueAtTime(tone.gain, releaseStart);
+      envelope.gain.linearRampToValueAtTime(0, end);
       oscillator.connect(envelope);
       envelope.connect(this.effectsBus);
       oscillator.start(start);
@@ -115,9 +129,7 @@ export class ShiAudioEngine {
   }
 
   private setGain(parameter: AudioParam, value: number, time: number, fade: number): void {
-    parameter.cancelScheduledValues(time);
-    parameter.setValueAtTime(parameter.value, time);
-    parameter.linearRampToValueAtTime(value, time + fade);
+    scheduleGain(parameter, value, time, fade);
   }
 
   private startAmbience(): void {

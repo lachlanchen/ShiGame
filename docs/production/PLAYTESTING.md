@@ -25,6 +25,8 @@ The script sends actual mouse/key events and a synthetic standards-shaped `navig
 
 ## Current result
 
+2026-08-09 objective audio-engineering checkpoint: a deterministic 48 kHz/24-bit reference programme passes nine authored peak, loudness, cue, DC, loop-boundary and channel-parity checks at −36.7 LUFS/−23.0 dBTP. A separate visible Chrome session records the actual Web Audio path through an isolated PipeWire monitor. Its two-second pre-consent segment is exact digital silence; its sixteen-second live interaction programme passes eight checks at −35.7 LUFS/−22.4 dBTP with zero console errors and six ordered semantic UI events. The initial real-browser run correctly failed at −4.7 dBTP, exposing an intrinsic-full-gain fade defect; the corrected engine pins the startup mute and the regenerated spectrogram contains no startup burst. `npm run validate:audio` regenerates the deterministic programme into a temporary directory, compares it with committed evidence, and validates the visible-capture report, review boundaries and uncommitted runtime artifacts. Human listening, physical device, sensory-load and native Unity parity remain open.
+
 2026-08-09 shared soundscape checkpoint: localhost passes all 177 checks at fixed seed `5EED2026` for exact implementation `d248166068140b9ce74147e27f9b50def098cc94`. Clean-checkout validation and Pages deployment then pass at evidence boundary `e83be73fd85bdab75552b18e4be73f05ff38341d`, and the public build repeats all 177 checks. Both runs include twenty-six live semantic audits, eighteen control-target audits, eleven locale-font audits and three audio audits with zero remote HTTP(S) requests, remote resources, non-cancelled failures or console errors. The path proves first-launch silence, explicit gesture consent, lazy settings/engine loading, independent 0% ambience/100% effects extremes, versioned persistence, semantic cue state, mixer focus return and fitted 1600×1000/390×844 layouts. The cache-disabled locale stress traversals record 210 requests/146 Unicode-range font slices locally and 211/148 publicly. Axe reports no violations; layered contrast remains explicitly incomplete and is covered by the expanded 22-pair static contract plus reviewed public frames `web-28-audio-mixer.png` and `web-29-mobile-audio-mixer.png`. A transient fixed-delay close assertion was rejected; the gate now waits for the complete observable drawer/focus/cue transition and passed three repeatability runs plus the exact local and public boundaries. Human listening, mono, loudness, sensory-load and device parity remain open.
 
 2026-08-09 actual Chrome zoom checkpoint: localhost passes all 158 checks with fixed seed `5EED2026` and zero page console errors for exact implementation `99c7e8a23df39bc91e7d55afcbd6fa4f1dcd6e03`. Clean-checkout validation and Pages deployment then pass at evidence boundary `7e4bd05777bbc0bdbf32198add872cdc89d387b9`, and the exact public build repeats all 158 checks with zero console errors. The public report records axe-core 4.12.1, twenty-three live semantic audits, fifteen live control-target audits and eleven locale-font audits. Browser-level zoom begins at DPR 1/1600 CSS pixels, reaches DPR 4/400×228 CSS pixels after eight Chrome increments, keeps the title/gameplay/action surfaces free of horizontal overflow and returns to the DPR 1 baseline after capture. The existing 320×800 equivalent-reflow and forced-colors gates remain intact. The cache-disabled public eleven-locale traversal records 203 requests and 148 unique Unicode-range font slices; localhost recorded 203/147. Both record zero remote HTTP(S) requests, zero remote resources and zero non-cancelled failures. These cumulative traversals are coverage stress runs, not normal one-locale startup profiles. Axe reports no violations; its layered-background contrast queue remains explicitly incomplete and is covered by the conservative 16-pair static contract plus screenshot review. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact deployed commit and public URL.
@@ -53,6 +55,27 @@ Visual review after automation:
 - Small tactical copy: static floors and reviewed captures pass; secondary labels remain monitored as localization expands.
 
 Evidence must be regenerated when layout, campaign content, localization direction, Three.js, input mapping, onboarding or save behavior changes.
+
+## Dedicated browser-audio desktop
+
+The audio path uses a second isolated visible desktop so recording never changes the normal QA browser or the workstation's default output.
+
+| Service | Endpoint |
+| --- | --- |
+| X display | `:124` |
+| VNC | `127.0.0.1:5923` |
+| noVNC | `http://127.0.0.1:6123/vnc.html?host=127.0.0.1&port=6123&autoconnect=1&resize=scale` |
+| Chrome DevTools | `127.0.0.1:9323` |
+| PipeWire sink | `shi-game-audio-capture` |
+
+```bash
+npm run render:audio-reference
+npm run capture:web-audio
+scripts/audio-capture-desktop.sh status
+scripts/audio-capture-desktop.sh stop
+```
+
+The launcher refuses occupied ports, a live foreign X display or duplicate named sinks; it may remove only the exact stale `X124` socket after `xdpyinfo` proves no server owns it. The capture controller clears its isolated profile state, enters the game using visible pointer/keyboard events, verifies sound begins off, records before and after consent from `shi-game-audio-capture.monitor`, and preserves screenshot/spectrogram evidence. The full WAVs and browser profile remain ignored. This desktop is an engineering observation surface, not proof of human perception or physical-speaker behavior.
 
 ## Dedicated Unity desktop
 

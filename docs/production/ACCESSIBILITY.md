@@ -22,7 +22,7 @@ SHI targets WCAG 2.2 AA for the web client and input/feedback parity in both cli
 - The dedicated Chrome desktop must also pass browser-level `Ctrl++` zoom from a measured DPR 1 baseline to DPR 4. The 400% title/gameplay layouts must have zero horizontal overflow, preserve action reachability, pass semantic/target audits, produce visible overview/action evidence and reset to DPR 1 afterward. This agent-observed gate does not replace human zoom/magnifier review on release candidates.
 - Forced-colors mode removes non-informational art/texture, uses operating-system colors, preserves focus/selection outlines, and distinguishes danger, reported/reference/active sites and disabled actions by border shape as well as color.
 - The operating-system `prefers-reduced-motion` setting becomes the initial game preference and suppresses CSS animation, transitions and smooth controller scrolling. The player can also toggle the preference on the title screen.
-- Runtime sound is opt-in, begins only after a player gesture and never carries exclusive information. The implemented Chapter I mixer persists independent ambience/effects values; speech and music controls remain gated until those categories exist. Human listening, mono, device and sensory-load review remain open.
+- Runtime sound is opt-in, begins only after a player gesture and never carries exclusive information. The implemented Chapter I mixer persists independent ambience/effects values; speech and music controls remain gated until those categories exist. Deterministic and actual-browser engineering captures enforce pre-consent silence, conservative peak/loudness, DC, loop-boundary and channel-parity limits. Human listening, mono perception, physical-device, native Unity and sensory-load review remain open.
 - Layered gradients, texture and key art prevent axe from computing some live color-contrast results. Those results stay visible as `incomplete`; the conservative static contrast contract and full-resolution screenshot review cover this boundary. It must not be silently reported as an axe pass.
 
 ## Localization and direction
@@ -42,7 +42,7 @@ The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, R
 | visible reflow | Title and active gameplay at 200% text; 320×800 400%-equivalent title/gameplay; actual Chrome 400% title/gameplay/action frames; 390×844 gameplay/wartable/guide |
 | visible forced colors | System palette, decorative-layer removal, structured meters, danger outline, selection outline and shape-distinct wartable markers |
 | visible motion | OS reduced-motion startup and computed animation/transition suppression |
-| visible audio | First-launch off state, gesture-gated runtime, independent bus extremes, persistence, lazy chunks, semantic preview, focus return and 390×844 mixer fit |
+| visible audio | First-launch off state, gesture-gated runtime, independent bus extremes, persistence, lazy chunks, semantic preview, focus return, 390×844 mixer fit, exact pre-consent digital silence and 16-second actual-output peak/loudness/DC/channel capture |
 | input isolation | Focus wrap/return, inert modal background and duplicate-choice rejection |
 
 The browser report records the axe version, every audited state, incomplete rules, target counts, exact commit/URL and console errors in `docs/production/evidence/web-playtest-status.json`. The implementation uses the official [axe-core release](https://github.com/dequelabs/axe-core/releases/tag/v4.12.1), locked as a development dependency.
@@ -53,7 +53,7 @@ The browser report records the axe version, every audited state, incomplete rule
 - Human-observed 400% browser zoom, magnifier, Windows high-contrast/forced-colors and keyboard-only completion on release candidates; the agent-observed Chrome zoom, 320 CSS pixel and emulated forced-colors contracts do not replace these sessions.
 - Physical Xbox-layout, PlayStation-layout and representative adaptive/switch input, including reconnect and focus loss.
 - Photosensitivity review of lightning/rain/transition content and auditory sensory-load review of the procedural rain bed.
-- Human listening, mono compatibility, loudness and device-matrix review for the implemented ambience/effects system.
+- Human listening, mono perception, loudness appropriateness, sensory load and physical-device-matrix review for the objectively measured ambience/effects system.
 - Caption, subtitle, dialogue-history and independent speech/music volume once voiced or music content exists.
 - Licensed Unity import and runtime inspection, including semantic/accessibility plugin selection; offline C# compilation is not native accessibility evidence.
 - Observed players from the target audience. Chapter II remains gated until first-minute comprehension and decision readability have player evidence.

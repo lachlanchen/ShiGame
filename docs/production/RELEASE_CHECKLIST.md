@@ -28,9 +28,10 @@ The web pre-alpha automated subset currently passes semantic axe scans, conserva
 - [ ] Every asset has provenance, rights, intended use and review state.
 - [ ] Historical objects pass review; AI artifacts/anachronisms removed.
 - [ ] 3D assets pass scale, normals, LOD, collision, UV and memory checks.
-- [ ] Music/SFX licenses and loudness/loop checks pass.
+- [x] Procedural Chapter I audio passes rights, peak, EBU R128 loudness, DC, loop-boundary, cue audibility, pre-consent silence and channel-parity engineering gates.
+- [ ] Human listening, sensory-load, mono perception, physical-device and native Unity audio review pass.
 
-Chapter I now has a shared opt-in procedural rain/effects contract, independent ambience/effects controls, deterministic source synthesis and project-original provenance. No third-party or AI-generated audio media is packaged. This is an engineering vertical slice only: human listening, loop, mono, loudness, sensory-load and Web/Unity device review remain open in [`AUDIO_DIRECTION.md`](../art/AUDIO_DIRECTION.md).
+Chapter I now has a shared opt-in procedural rain/effects contract, independent ambience/effects controls, deterministic source synthesis and project-original provenance. No third-party or AI-generated audio media is packaged. The deterministic reference passes at −36.7 LUFS/−23.0 dBTP; the actual visible Chrome path proves digital silence before consent and passes at −35.7 LUFS/−22.4 dBTP. These measurements close the objective engineering subset only; the human and native-client box remains open in [`AUDIO_DIRECTION.md`](../art/AUDIO_DIRECTION.md).
 
 ## Engineering
 

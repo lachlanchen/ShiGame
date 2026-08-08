@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -180,7 +181,9 @@ namespace SHI.Tests
             Assert.That(audio, Is.Not.Null);
             Assert.That(audio!.Synthesis, Is.EqualTo("project-original-procedural"));
             Assert.That(audio.Mix.Defaults.Enabled, Is.False);
+            Assert.That(audio.Envelope.Curve, Is.EqualTo("linear"));
             Assert.That(audio.Cues.Keys, Is.EquivalentTo(new[] { "select", "inspect", "drawer", "close", "commit", "ending", "failure" }));
+            Assert.That(audio.Quality.Reference.CueSchedule.Select(item => item.Cue), Is.EquivalentTo(audio.Cues.Keys));
             Assert.That(global::SHI.Editor.ShiBuild.Validate(audio), Is.Empty);
 
             var first = ShiAudioDirector.CreateRainSamples(24000, audio.Ambience.Seed);
@@ -189,7 +192,19 @@ namespace SHI.Tests
             Assert.That(first, Is.EqualTo(repeated));
             Assert.That(first, Is.Not.EqualTo(other));
             Assert.That(first.All(sample => !float.IsNaN(sample) && sample >= -1 && sample <= 1), Is.True);
-            Assert.That(first[^1], Is.EqualTo(first[0]).Within(.000001f));
+            Assert.That(Math.Abs(first.Average(sample => (double)sample)), Is.LessThanOrEqualTo(audio.Quality.Limits.RawAmbienceDcOffsetAbsoluteMax));
+            var jumps = Enumerable.Range(1, first.Length - 1).Select(index => Math.Abs(first[index] - first[index - 1])).OrderBy(value => value).ToArray();
+            var boundary = Math.Abs(first[^1] - first[0]);
+            var jumpRatio = boundary / jumps[(int)Math.Floor(jumps.Length * .99)];
+            Assert.That(jumpRatio, Is.LessThanOrEqualTo(audio.Quality.Limits.LoopBoundaryJumpRatioMax));
+
+            var effectsGain = audio.Mix.Defaults.Master * audio.Mix.Defaults.Effects;
+            foreach (var cue in audio.Cues)
+            {
+                var samples = ShiAudioDirector.CreateCueSamples(cue.Value, audio.Envelope, audio.Quality.Reference.SampleRate);
+                var peak = samples.Max(sample => Math.Abs(sample)) * effectsGain;
+                Assert.That(20 * Math.Log10(peak), Is.GreaterThanOrEqualTo(audio.Quality.Limits.CuePeakDbfsMin), cue.Key);
+            }
         }
 
         [Test]

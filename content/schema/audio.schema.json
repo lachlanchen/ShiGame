@@ -3,7 +3,7 @@
   "$id": "https://shi.game/schema/audio-v1.json",
   "title": "SHI procedural audio contract v1",
   "type": "object",
-  "required": ["schemaVersion", "id", "title", "synthesis", "mix", "ambience", "cues"],
+  "required": ["schemaVersion", "id", "title", "synthesis", "mix", "envelope", "ambience", "cues", "quality"],
   "properties": {
     "schemaVersion": { "const": 1 },
     "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
@@ -16,6 +16,16 @@
         "defaults": { "$ref": "#/$defs/mixValues" },
         "caps": { "$ref": "#/$defs/mixValues" },
         "fadeSeconds": { "type": "number", "minimum": 0.05, "maximum": 3 }
+      },
+      "additionalProperties": false
+    },
+    "envelope": {
+      "type": "object",
+      "required": ["attackMs", "releaseMs", "curve"],
+      "properties": {
+        "attackMs": { "type": "number", "minimum": 1, "maximum": 50 },
+        "releaseMs": { "type": "number", "minimum": 1, "maximum": 100 },
+        "curve": { "const": "linear" }
       },
       "additionalProperties": false
     },
@@ -44,6 +54,62 @@
         "commit": { "$ref": "#/$defs/cue" },
         "ending": { "$ref": "#/$defs/cue" },
         "failure": { "$ref": "#/$defs/cue" }
+      },
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "required": ["reference", "browserCapture", "limits"],
+      "properties": {
+        "reference": {
+          "type": "object",
+          "required": ["sampleRate", "seconds", "cueSchedule"],
+          "properties": {
+            "sampleRate": { "type": "integer", "minimum": 44100, "maximum": 96000 },
+            "seconds": { "type": "number", "minimum": 10, "maximum": 60 },
+            "cueSchedule": {
+              "type": "array",
+              "minItems": 7,
+              "maxItems": 7,
+              "items": {
+                "type": "object",
+                "required": ["cue", "atSeconds"],
+                "properties": {
+                  "cue": { "enum": ["select", "inspect", "drawer", "close", "commit", "ending", "failure"] },
+                  "atSeconds": { "type": "number", "minimum": 0, "maximum": 60 }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "browserCapture": {
+          "type": "object",
+          "required": ["sampleRate", "preConsentSeconds", "activeSeconds"],
+          "properties": {
+            "sampleRate": { "type": "integer", "minimum": 44100, "maximum": 96000 },
+            "preConsentSeconds": { "type": "number", "minimum": 1, "maximum": 10 },
+            "activeSeconds": { "type": "number", "minimum": 14, "maximum": 60 }
+          },
+          "additionalProperties": false
+        },
+        "limits": {
+          "type": "object",
+          "required": ["samplePeakDbfsMax", "truePeakDbtpMax", "integratedLufsMin", "integratedLufsMax", "cuePeakDbfsMin", "dcOffsetAbsoluteMax", "rawAmbienceDcOffsetAbsoluteMax", "loopBoundaryJumpRatioMax", "stereoDifferenceRmsMax"],
+          "properties": {
+            "samplePeakDbfsMax": { "type": "number", "minimum": -30, "maximum": -1 },
+            "truePeakDbtpMax": { "type": "number", "minimum": -30, "maximum": -1 },
+            "integratedLufsMin": { "type": "number", "minimum": -60, "maximum": -10 },
+            "integratedLufsMax": { "type": "number", "minimum": -60, "maximum": -10 },
+            "cuePeakDbfsMin": { "type": "number", "minimum": -60, "maximum": -10 },
+            "dcOffsetAbsoluteMax": { "type": "number", "minimum": 0, "maximum": 0.01 },
+            "rawAmbienceDcOffsetAbsoluteMax": { "type": "number", "minimum": 0, "maximum": 0.01 },
+            "loopBoundaryJumpRatioMax": { "type": "number", "minimum": 0, "maximum": 2 },
+            "stereoDifferenceRmsMax": { "type": "number", "minimum": 0, "maximum": 0.01 }
+          },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     }

@@ -3,7 +3,7 @@
   "file": "../../content/audio/chapter-01-audio.json",
   "createdAt": "2026-08-09",
   "creator": "SHI project",
-  "generator": "Deterministic Web Audio and Unity AudioClip source synthesis",
+  "generator": "Deterministic Web Audio and Unity AudioClip source synthesis with FFmpeg EBU R128 reference measurement and isolated visible-Chrome/PipeWire output capture",
   "rightsStatus": "project-original",
   "sourceMedia": [],
   "intendedUse": ["web-runtime", "unity-runtime", "chapter-01-pre-alpha"],
@@ -13,9 +13,12 @@
     "determinism": "pass",
     "remoteDependencies": "none",
     "historicalClaim": "none",
+    "preConsentSilence": "actual visible-browser output pass",
+    "browserOutputCapture": "engineering pass; human perception not inferred",
     "humanListening": "required",
-    "monoAndDeviceMatrix": "required",
-    "loudnessMeasurement": "required"
+    "monoAndDeviceMatrix": "deterministic dual-mono reference pass; physical device review required",
+    "loudnessMeasurement": "engineering reference pass; human and native-platform review required",
+    "loopMeasurement": "zero-mean source and boundary-transient ratio pass"
   },
   "constraints": [
     "Sound is opt-in and cannot carry exclusive gameplay information",

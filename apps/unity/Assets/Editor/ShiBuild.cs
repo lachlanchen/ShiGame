@@ -254,6 +254,7 @@ namespace SHI.Editor
                 if (bus.Item2 < 0 || bus.Item2 > bus.Item3 || bus.Item3 > 1) errors.Add($"Audio {bus.Item1} default/cap is unsafe.");
             }
             if (audio.Mix.FadeSeconds < .05f || audio.Mix.FadeSeconds > 3) errors.Add("Audio fade is outside 0.05–3 seconds.");
+            if (audio.Envelope.AttackMs < 1 || audio.Envelope.AttackMs > 50 || audio.Envelope.ReleaseMs < 1 || audio.Envelope.ReleaseMs > 100 || audio.Envelope.Curve != "linear") errors.Add("Audio envelope must use the bounded linear contract.");
             if (audio.Ambience.Seed == 0) errors.Add("Audio ambience seed must be nonzero.");
             if (audio.Ambience.SampleRate < 16000 || audio.Ambience.SampleRate > 48000) errors.Add("Audio sample rate is outside 16000–48000.");
             if (audio.Ambience.LoopSeconds < 2 || audio.Ambience.LoopSeconds > 30) errors.Add("Audio loop is outside 2–30 seconds.");
@@ -271,6 +272,24 @@ namespace SHI.Editor
                     if (tone.Wave != "sine" && tone.Wave != "triangle") errors.Add($"Audio cue '{cue.Key}' waveform is unsupported.");
                 }
             }
+            if (audio.Quality.Reference.SampleRate < 44100 || audio.Quality.Reference.SampleRate > 96000 || audio.Quality.Reference.Seconds < 10 || audio.Quality.Reference.Seconds > 60) errors.Add("Audio reference programme dimensions are unsafe.");
+            if (!audio.Quality.Reference.CueSchedule.Select(item => item.Cue).OrderBy(value => value).SequenceEqual(cues.OrderBy(value => value))) errors.Add("Audio reference schedule must contain every cue exactly once.");
+            foreach (var item in audio.Quality.Reference.CueSchedule)
+            {
+                if (item.AtSeconds < 0 || item.AtSeconds > audio.Quality.Reference.Seconds) errors.Add($"Audio reference cue '{item.Cue}' is outside the programme.");
+            }
+            var browserCapture = audio.Quality.BrowserCapture;
+            if (browserCapture.SampleRate < 44100 || browserCapture.SampleRate > 96000 || browserCapture.PreConsentSeconds < 1 || browserCapture.PreConsentSeconds > 10 || browserCapture.ActiveSeconds < 14 || browserCapture.ActiveSeconds > 60) errors.Add("Audio visible-browser capture dimensions are unsafe.");
+            var limits = audio.Quality.Limits;
+            if (limits.SamplePeakDbfsMax < -30 || limits.SamplePeakDbfsMax > -1 || limits.TruePeakDbtpMax < -30 || limits.TruePeakDbtpMax > -1) errors.Add("Audio peak limits are unsafe.");
+            if (limits.IntegratedLufsMin < -60 || limits.IntegratedLufsMax > -10 || limits.IntegratedLufsMin >= limits.IntegratedLufsMax) errors.Add("Audio loudness window is invalid.");
+            if (limits.CuePeakDbfsMin < -60 || limits.CuePeakDbfsMin > -10 || limits.DcOffsetAbsoluteMax < 0 || limits.DcOffsetAbsoluteMax > .01f || limits.RawAmbienceDcOffsetAbsoluteMax < 0 || limits.RawAmbienceDcOffsetAbsoluteMax > .01f || limits.LoopBoundaryJumpRatioMax < 0 || limits.LoopBoundaryJumpRatioMax > 2 || limits.StereoDifferenceRmsMax < 0 || limits.StereoDifferenceRmsMax > .01f) errors.Add("Audio engineering limits are invalid.");
+            var rain = ShiAudioDirector.CreateRainSamples(audio.Ambience.SampleRate * audio.Ambience.LoopSeconds, audio.Ambience.Seed);
+            var dcOffset = Math.Abs(rain.Average(sample => (double)sample));
+            var jumps = Enumerable.Range(1, rain.Length - 1).Select(index => Math.Abs(rain[index] - rain[index - 1])).OrderBy(value => value).ToArray();
+            var boundaryJumpRatio = Math.Abs(rain[^1] - rain[0]) / jumps[(int)Math.Floor(jumps.Length * .99)];
+            if (dcOffset > limits.RawAmbienceDcOffsetAbsoluteMax) errors.Add($"Audio raw ambience DC offset {dcOffset:F8} exceeds its limit.");
+            if (boundaryJumpRatio > limits.LoopBoundaryJumpRatioMax) errors.Add($"Audio loop boundary ratio {boundaryJumpRatio:F4} exceeds normal rain transients.");
             return errors;
         }
 

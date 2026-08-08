@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Objective audio-engineering checkpoint
+
+- Replaced the former endpoint-matching rain workaround after reference rendering showed it introduced a −0.232 raw DC bias. Both engines and the deterministic renderer now subtract the seeded signal mean and judge the loop boundary against the ordinary 99th-percentile rain transient; the resulting DC is zero and boundary ratio 0.6029 against a 0.8 ceiling.
+- Promoted cue attack/release and objective quality bounds into the shared Web/Unity contract. Web Audio and Unity now implement the same bounded linear envelope; Unity preflight and EditMode source tests enforce quality dimensions, reconstructed rain behavior and cue audibility.
+- Added a reproducible 18-second, 48 kHz/24-bit reference renderer with FFmpeg EBU R128, sample/DC/channel/cue analysis and spectrogram evidence. All nine gates pass at −36.7 LUFS, −23.0 dBTP and −22.96 dBFS; every cue is above −42 dBFS and no generated WAV is committed.
+- Added a second localhost-only visible Chrome/noVNC desktop and a named PipeWire capture sink. The controller proves two seconds of exact pre-consent digital silence and records sixteen seconds of the actual Web Audio path while visible pointer/keyboard actions trigger six ordered semantic cues.
+- Rejected the first actual-browser recording at −4.7 dBTP. It exposed a real startup defect: a fade read the `GainNode` intrinsic full-scale value before the initial mute. The engine now pins immediate gain values, holds the current automation value before ramping and includes a focused regression test.
+- The corrected visible recording passes all eight browser checks at −35.7 LUFS, −22.4 dBTP and −22.38 dBFS with negligible DC, exact channel parity and zero console errors. Screenshot and spectrogram inspection confirm that the startup broadband burst is gone.
+- Expanded `npm run validate:audio` to fresh-render and compare deterministic evidence, validate the visible capture format/sequence/limits, require traceable review boundaries and keep all full WAVs/browser state reproducible but ignored.
+
+Next gate: pin exact-commit local/public captures and complete the full clean build/visible-browser deployment replay. Human listening, sensory-load, physical-device and native Unity audio review remain open after objective engineering measurement.
+
 ## 2026-08-09 · Shared procedural soundscape checkpoint
 
 - Added one versioned Web/Unity audio contract with opt-in defaults, conservative master/bus caps, deterministic eight-second rain, seven semantic interaction cues and project-original provenance. No recording, sample pack, generated song or historical-authenticity claim enters the build.
