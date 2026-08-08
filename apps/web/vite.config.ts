@@ -6,7 +6,7 @@ export default defineConfig({
   base: process.env.SHI_BASE_PATH ?? "/",
   build: {
     target: "es2022",
-    sourcemap: true,
+    sourcemap: process.env.SHI_SOURCEMAP === "1" ? "hidden" : false,
     chunkSizeWarningLimit: 800,
   },
 });

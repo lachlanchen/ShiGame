@@ -8,9 +8,11 @@ const testUrl = new URL(gameUrl);
 testUrl.searchParams.set("seed", process.env.SHI_PLAYTEST_SEED ?? "5EED2026");
 const testedCommit = process.env.SHI_TESTED_COMMIT ?? "working-tree";
 const outputDir = resolve(import.meta.dirname, "../docs/production/evidence");
+const localeEvidenceDir = resolve(outputDir, "locales");
 const require = createRequire(import.meta.url);
 const axeSource = await readFile(require.resolve("axe-core/axe.min.js"), "utf8");
 await mkdir(outputDir, { recursive: true });
+await mkdir(localeEvidenceDir, { recursive: true });
 
 const targets = await fetch(`http://127.0.0.1:${cdpPort}/json`).then((response) => response.json());
 const target = targets.find((candidate) => candidate.type === "page" && /^https?:/.test(candidate.url));
@@ -25,6 +27,8 @@ await new Promise((resolveOpen, reject) => {
 let nextId = 0;
 const pending = new Map();
 const consoleErrors = [];
+const networkRequests = [];
+const networkFailures = [];
 socket.addEventListener("message", (event) => {
   const message = JSON.parse(event.data);
   if (message.id && pending.has(message.id)) {
@@ -34,6 +38,8 @@ socket.addEventListener("message", (event) => {
   }
   if (message.method === "Runtime.exceptionThrown") consoleErrors.push(message.params.exceptionDetails.text);
   if (message.method === "Log.entryAdded" && message.params.entry.level === "error") consoleErrors.push(message.params.entry.text);
+  if (message.method === "Network.requestWillBeSent") networkRequests.push({ url: message.params.request.url, type: message.params.type, method: message.params.request.method });
+  if (message.method === "Network.loadingFailed") networkFailures.push({ blockedReason: message.params.blockedReason ?? null, error: message.params.errorText, canceled: Boolean(message.params.canceled), type: message.params.type });
 });
 
 const send = (method, params = {}) => new Promise((resolveCall, reject) => {
@@ -109,6 +115,16 @@ const waitForSelector = async (selector, timeout = 5000) => {
   }
   throw new Error(`Timed out waiting for ${selector}`);
 };
+const waitForFontReady = async (timeout = 15000) => {
+  const started = Date.now();
+  while (Date.now() - started < timeout) {
+    const status = await evaluate(`document.querySelector('[data-testid="shi-app"]')?.getAttribute('data-font-status')`);
+    if (status === "ready") return;
+    if (status === "error") throw new Error("The app reported a locale font loading error.");
+    await wait(100);
+  }
+  throw new Error("Timed out waiting for locale fonts.");
+};
 const reloadPage = async (timeout = 15000) => {
   const marker = `shi-reload-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   await evaluate(`document.documentElement.dataset.shiReloadMarker = ${JSON.stringify(marker)}; location.reload(); true`);
@@ -163,6 +179,8 @@ const waitForTitleAssets = async () => {
 await send("Page.enable");
 await send("Runtime.enable");
 await send("Log.enable");
+await send("Network.enable");
+await send("Network.setCacheDisabled", { cacheDisabled: true });
 await send("Page.addScriptToEvaluateOnNewDocument", { source: axeSource });
 await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
   const buttons = Array.from({ length: 16 }, () => ({ pressed: false, touched: false, value: 0 }));
@@ -180,17 +198,22 @@ await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
 await send("Emulation.clearDeviceMetricsOverride");
 await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
 await navigatePage(testUrl.href);
+consoleErrors.length = 0;
+networkRequests.length = 0;
+networkFailures.length = 0;
 await waitForSelector(".primary-button", 10000);
 await evaluate("localStorage.clear(); true");
 await reloadPage();
 await waitForSelector(".primary-button");
 await waitForTitleAssets();
+await waitForFontReady();
 await wait(250);
 
 const report = {
   checks: [],
   accessibilityAudits: [],
   targetAudits: [],
+  fontAudits: [],
   accessibilityEngine: { name: "axe-core", version: await evaluate("axe.version") },
   consoleErrors
 };
@@ -225,6 +248,54 @@ const auditTargets = async (label) => {
   })()`);
   report.targetAudits.push(result);
   check(result.failures.length === 0, `${label} visible controls meet the 24 CSS pixel target floor`);
+};
+const localeFontMatrix = [
+  { locale: "en", family: "Inter Variable", sample: "Power, position, and trust", direction: "ltr" },
+  { locale: "ar", family: "Noto Sans Arabic Variable", sample: "القوة والأرض والثقة", direction: "rtl" },
+  { locale: "de", family: "Inter Variable", sample: "Macht, Gelände und Vertrauen", direction: "ltr" },
+  { locale: "es", family: "Inter Variable", sample: "Poder, terreno y confianza", direction: "ltr" },
+  { locale: "fr", family: "Inter Variable", sample: "Pouvoir, terrain et confiance", direction: "ltr" },
+  { locale: "ja", family: "Noto Sans JP Variable", sample: "力・地勢・信頼", direction: "ltr" },
+  { locale: "ko", family: "Noto Sans KR Variable", sample: "힘·지세·신뢰", direction: "ltr" },
+  { locale: "ru", family: "Inter Variable", sample: "Власть, местность и доверие", direction: "ltr" },
+  { locale: "vi", family: "Inter Variable", sample: "Quyền lực, địa thế và niềm tin", direction: "ltr" },
+  { locale: "zh-Hans", family: "Noto Sans SC Variable", sample: "权力、地势与信任", direction: "ltr" },
+  { locale: "zh-Hant", family: "Noto Sans TC Variable", sample: "權力、地勢與信任", direction: "ltr" },
+];
+const auditLocaleFont = async (contract) => {
+  await selectValue(".header-select", contract.locale);
+  await waitForFontReady();
+  await wait(200);
+  await evaluate("scrollTo(0, 0); true");
+  await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+  await wait(200);
+  const result = await evaluate(`(() => {
+    const header = document.querySelector('.game-header')?.getBoundingClientRect();
+    const brand = document.querySelector('.brand-button')?.getBoundingClientRect();
+    const actions = document.querySelector('.header-actions')?.getBoundingClientRect();
+    const headerContent = [...document.querySelectorAll('.brand-button > span, .brand-button strong, .brand-button small, .header-actions > *')].map((element) => element.getBoundingClientRect());
+    return {
+      locale: document.documentElement.lang,
+      direction: document.documentElement.dir,
+      status: document.querySelector('[data-testid="shi-app"]')?.getAttribute('data-font-status'),
+      bodyFamily: getComputedStyle(document.documentElement).fontFamily,
+      fontAvailable: document.fonts.check(${JSON.stringify(`400 1em "${contract.family}"`)}, ${JSON.stringify(contract.sample)}),
+      guideLabel: document.querySelector('[data-testid="guide-toggle"]')?.getAttribute('aria-label'),
+      sourceLabel: document.querySelector('[data-testid="sources-toggle"]')?.getAttribute('aria-label'),
+      headerContained: Boolean(header && brand && actions && brand.left >= header.left && brand.right <= header.right && actions.left >= header.left && actions.right <= header.right),
+      headerSeparated: Boolean(brand && actions && (document.documentElement.dir === 'rtl' ? actions.right <= brand.left : brand.right <= actions.left)),
+      headerInViewport: Boolean(header && brand && actions && scrollY === 0 && header.top >= 0 && brand.top >= 0 && actions.top >= 0 && header.bottom <= innerHeight && brand.bottom <= innerHeight && actions.bottom <= innerHeight),
+      headerContentInViewport: headerContent.length >= 6 && headerContent.every((box) => box.top >= 0 && box.left >= 0 && box.bottom <= innerHeight && box.right <= innerWidth),
+      scrollY,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  })()`);
+  report.fontAudits.push({ ...contract, ...result });
+  check(result.locale === contract.locale && result.direction === contract.direction, `${contract.locale} applies its language and direction contract`);
+  check(result.status === "ready" && result.fontAvailable && result.bodyFamily.includes(contract.family), `${contract.locale} loads its self-hosted ${contract.family} face`);
+  check(Boolean(result.guideLabel) && Boolean(result.sourceLabel) && result.headerContained && result.headerSeparated && result.headerInViewport && result.headerContentInViewport && result.overflow <= 1, `${contract.locale} keeps localized header controls present, separated and within the viewport`);
+  await screenshot(`locales/web-locale-${contract.locale.toLowerCase()}.png`);
+  if (contract.locale !== "en") await auditAccessibility(`gameplay-locale-${contract.locale}`);
 };
 
 await screenshot("web-01-title-en.png");
@@ -399,7 +470,14 @@ await wait(250);
 snapshot = await evaluate(`Boolean(document.querySelector('.drawer'))`);
 check(snapshot === false, "B/Circle closes the source ledger");
 
+await send("Emulation.setDeviceMetricsOverride", { width: 800, height: 650, deviceScaleFactor: 1, mobile: false, screenWidth: 800, screenHeight: 650 });
+for (const contract of localeFontMatrix) await auditLocaleFont(contract);
+await send("Emulation.clearDeviceMetricsOverride");
+await selectValue(".header-select", "en");
+await waitForFontReady();
+
 await selectValue(".header-select", "ar");
+await waitForFontReady();
 await wait(350);
 await screenshot("web-04-gameplay-ar-rtl.png");
 snapshot = await evaluate(`({ locale: document.documentElement.lang, direction: document.documentElement.dir, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth })`);
@@ -420,6 +498,7 @@ await auditAccessibility("field-guide-ar");
 await gamepadButton(1);
 
 await selectValue(".header-select", "en");
+await waitForFontReady();
 await wait(250);
 await click(".story-panel");
 await shiftDigit("1");
@@ -456,6 +535,7 @@ await auditTargets("resolution-en");
 
 await reloadPage();
 await waitForSelector(".primary-button");
+await waitForFontReady();
 snapshot = await evaluate(`({ primary: document.querySelector('.primary-button')?.textContent?.trim() })`);
 check(snapshot.primary.includes("Continue"), "reload offers save continuation");
 await click(".primary-button");
@@ -543,6 +623,7 @@ await evaluate("document.documentElement.style.fontSize = ''; true");
 await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
 await reloadPage();
 await waitForSelector(".primary-button");
+await waitForFontReady();
 snapshot = await evaluate(`document.querySelector('[data-testid=shi-app]')?.getAttribute('data-motion')`);
 check(snapshot === "reduced", "operating-system reduced-motion preference is honored on startup");
 await click(".primary-button");
@@ -562,12 +643,29 @@ if (accessibilityViolations.length > 0) {
   await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
   throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
 }
-check(report.accessibilityAudits.length === 8, "WCAG 2.2 AA automation passes across eight visible interface states");
+check(report.accessibilityAudits.length === 18, "WCAG 2.2 AA automation passes across eighteen visible interface states");
 const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
 check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
 check(report.targetAudits.length === 10, "24 CSS pixel target checks pass across ten interaction states");
+check(report.fontAudits.length === 11, "all eleven interface locales pass their self-hosted font, direction and fit contracts");
+const remoteRequests = networkRequests.filter((request) => {
+  try { const url = new URL(request.url); return ["http:", "https:"].includes(url.protocol) && url.origin !== testUrl.origin; } catch { return false; }
+});
+const fontRequests = [...new Set(networkRequests.filter((request) => request.url.endsWith(".woff2")).map((request) => request.url))];
+const failedRequests = networkFailures.filter((failure) => !failure.canceled);
+const securitySnapshot = await evaluate(`({
+  csp: document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.getAttribute('content'),
+  remoteResources: performance.getEntriesByType('resource').map((entry) => entry.name).filter((value) => { try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol) && url.origin !== location.origin; } catch { return false; } })
+})`);
+report.networkAudit = { totalRequests: networkRequests.length, fontRequests, remoteRequests, failedRequests, csp: securitySnapshot.csp, remoteResources: securitySnapshot.remoteResources };
+check(fontRequests.length >= 8, "visible locale traversal loads the baseline, seal, Arabic and four CJK font layers");
+check(remoteRequests.length === 0 && securitySnapshot.remoteResources.length === 0, "the complete playtest makes no cross-origin runtime request");
+check(Boolean(securitySnapshot.csp?.includes("font-src 'self'")) && Boolean(securitySnapshot.csp?.includes("object-src 'none'")), "the production document enforces its self-hosted font and object restrictions");
+if (failedRequests.length > 0) console.error("Non-canceled network failures:", JSON.stringify(failedRequests, null, 2));
+check(failedRequests.length === 0, "browser network remained free of non-canceled failures");
 if (consoleErrors.length > 0) console.error("Browser console errors:", JSON.stringify(consoleErrors, null, 2));
 check(consoleErrors.length === 0, "browser console remained free of errors");
+await send("Network.setCacheDisabled", { cacheDisabled: false });
 await writeFile(resolve(outputDir, "web-playtest-status.json"), `${JSON.stringify({ ok: true, ...report, target: testUrl.href, testedCommit, cdpPort }, null, 2)}\n`);
 socket.close();
 console.log(`Visible playtest passed: ${report.checks.length} checks, ${consoleErrors.length} console errors.`);

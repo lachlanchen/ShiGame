@@ -97,6 +97,7 @@ export function App() {
   const [sourceSiteId, setSourceSiteId] = useState<string | null>(null);
   const [resolution, setResolution] = useState<ChoiceResolution | null>(null);
   const [reducedMotion, setReducedMotion] = useState(() => localStorage.getItem(MOTION_KEY) === "true" || window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const [fontStatus, setFontStatus] = useState<"loading" | "ready" | "error">("loading");
   const [hasSave, setHasSave] = useState(restoredState !== null);
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState(0);
   const storyRef = useRef<HTMLElement>(null);
@@ -115,6 +116,16 @@ export function App() {
     document.documentElement.lang = locale;
     document.documentElement.dir = isRtl(locale) ? "rtl" : "ltr";
     localStorage.setItem(LOCALE_KEY, locale);
+    let current = true;
+    setFontStatus("loading");
+    import("./fontLoader").then(({ ensureLocaleFont }) => ensureLocaleFont(locale)).then(
+      () => { if (current) setFontStatus("ready"); },
+      (error: unknown) => {
+        console.error(error);
+        if (current) setFontStatus("error");
+      },
+    );
+    return () => { current = false; };
   }, [locale]);
 
   useEffect(() => {
@@ -377,7 +388,7 @@ export function App() {
 
   if (screen === "title") {
     return (
-      <main className="title-screen" data-testid="shi-app" data-screen="title" data-motion={reducedMotion ? "reduced" : "full"} data-controller={controllerConnected ? "connected" : "none"}>
+      <main className="title-screen" data-testid="shi-app" data-screen="title" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-controller={controllerConnected ? "connected" : "none"}>
         <ThreeBackdrop reducedMotion={reducedMotion} />
         <div className="title-image" />
         <div className="title-vignette" />
@@ -403,7 +414,7 @@ export function App() {
   }
 
   return (
-    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-controller={controllerConnected ? "connected" : "none"}>
+    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-controller={controllerConnected ? "connected" : "none"}>
       <ThreeBackdrop reducedMotion={reducedMotion} />
       <div className="game-stage" data-testid="game-stage" inert={Boolean(drawer)}>
       <header className="game-header">
