@@ -8,8 +8,9 @@
 - Carried equivalent choice selection, commit/close, guide, source and decision-record controls into Unity with a committed input-axis map. Runtime/editor source assemblies pass the offline Unity reference compile; official import and execution remain license-gated.
 - Expanded web coverage to 12 tests and visible noVNC QA to 43 checks with zero console errors. The first 90 ms synthetic-button cadence was rejected after visible evidence showed a missed release edge; a final busy-frame rerun also rejected 250 ms and added an explicit close assertion. The synthetic harness now holds and releases each edge for 500 ms.
 - Preserved the distinction between synthetic Gamepad API validation and physical hardware certification. Xbox/PlayStation-layout reconnect and focus-loss sessions remain open alongside external player observation.
+- Published implementation commit `8f31ee8`; both GitHub validation and Pages deployment passed, then the dedicated visible browser repeated all 43 checks on the public build with zero console errors.
 
-Next gate: publish and repeat the 43-check suite on GitHub Pages, then conduct physical-controller and first-time-player sessions while progressing the reviewed seeded-uncertainty contract and Unity license activation.
+Next gate: conduct physical-controller and first-time-player sessions while progressing the reviewed seeded-uncertainty contract and Unity license activation.
 
 ## 2026-08-09 · Systems proof checkpoint
 

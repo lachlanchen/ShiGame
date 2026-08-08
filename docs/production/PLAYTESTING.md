@@ -25,7 +25,7 @@ The script sends actual mouse/key events and a synthetic standards-shaped `navig
 
 ## Current result
 
-2026-08-09 local input checkpoint: 43 checks pass with zero page console errors. The most recent public deployment remains the earlier 31-check systems proof until this input checkpoint is committed and deployed. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit/worktree boundary.
+2026-08-09 input checkpoint: localhost and the public Pages deployment both pass all 43 checks with zero page console errors. Public gameplay implementation commit: `8f31ee8c1c93bab9243f381e1a0fa4e7e88bfb92`. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
 
 Visual review after automation:
 
