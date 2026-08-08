@@ -3,9 +3,9 @@
   "kind": "visible-browser-audio-capture",
   "contractId": "chapter-01-daze-audio",
   "contractSha256": "70827d7b11b8b58217cd38dc2c4afb9217253b6c8c342bd92a21cd018d7a1807",
-  "capturedAt": "2026-08-08T22:29:59.048Z",
-  "testedCommit": "4dd6a520fe7194c2d57124e8eebf1b68583395b6",
-  "url": "http://127.0.0.1:4173/?seed=5EED2026",
+  "capturedAt": "2026-08-08T22:38:10.327Z",
+  "testedCommit": "55dab445f200f958cbbbe39d0cb58053f924326c",
+  "url": "https://lachlanchen.github.io/ShiGame/?seed=5EED2026",
   "cdpPort": 9323,
   "sink": "shi-game-audio-capture",
   "browser": {
@@ -24,12 +24,12 @@
         }
       ],
       "format": {
-        "duration": "2.017021",
-        "size": "581004"
+        "duration": "2.017604",
+        "size": "581172"
       }
     },
     "metrics": {
-      "frames": 96817,
+      "frames": 96845,
       "samplePeakDbfs": "-inf",
       "rmsDbfs": "-inf",
       "integratedLufs": -70,
@@ -37,9 +37,9 @@
       "dcOffsetAbsolute": 0,
       "stereoDifferenceRms": 0
     },
-    "sha256": "83448c3f020271fe12d1cc6938e8a03e365cb0d885a69fcd2009f7edac58f829",
-    "bytes": 581004,
-    "seconds": 2.017021,
+    "sha256": "e5397e765402b38e702670ae450fc98d371c616970d1c46f85fbc7f7d8208dbe",
+    "bytes": 581172,
+    "seconds": 2.017604,
     "sampleRate": 48000,
     "channels": 2,
     "codec": "pcm_s24le",
@@ -57,22 +57,22 @@
         }
       ],
       "format": {
-        "duration": "16.009833",
-        "size": "4610934"
+        "duration": "16.009354",
+        "size": "4610796"
       }
     },
     "metrics": {
-      "frames": 768472,
-      "samplePeakDbfs": -22.6939,
-      "rmsDbfs": -41.0071,
+      "frames": 768449,
+      "samplePeakDbfs": -22.4938,
+      "rmsDbfs": -41.0172,
       "integratedLufs": -35.7,
-      "truePeakDbtp": -22.7,
-      "dcOffsetAbsolute": 6e-8,
+      "truePeakDbtp": -22.4,
+      "dcOffsetAbsolute": 2.1e-7,
       "stereoDifferenceRms": 0
     },
-    "sha256": "41d7588a28377ef50bc9ed1e27a2c514d0cea9f547ffc8ba4bdbe713d5cdbc23",
-    "bytes": 4610934,
-    "seconds": 16.009833,
+    "sha256": "cafb8bc4d266d7e1fe46fcabc371a57c13d1a8077732098aeb14b955bcd95812",
+    "bytes": 4610796,
+    "seconds": 16.009354,
     "sampleRate": 48000,
     "channels": 2,
     "codec": "pcm_s24le",
@@ -82,27 +82,27 @@
   "events": [
     {
       "event": "enable-sound-and-drawer-cue",
-      "atSeconds": 0.667
+      "atSeconds": 0.662
     },
     {
       "event": "commit-preview-cue",
-      "atSeconds": 4.542
+      "atSeconds": 4.388
     },
     {
       "event": "close-cue",
-      "atSeconds": 6.555
+      "atSeconds": 6.412
     },
     {
       "event": "inspect-cue",
-      "atSeconds": 8.677
+      "atSeconds": 8.531
     },
     {
       "event": "close-map-cue",
-      "atSeconds": 10.487
+      "atSeconds": 10.339
     },
     {
       "event": "select-cue",
-      "atSeconds": 11.991
+      "atSeconds": 11.843
     }
   ],
   "checks": [
@@ -114,14 +114,14 @@
     },
     {
       "id": "active-sample-peak",
-      "value": -22.6939,
+      "value": -22.4938,
       "rule": "<=",
       "limit": -12,
       "pass": true
     },
     {
       "id": "active-true-peak",
-      "value": -22.7,
+      "value": -22.4,
       "rule": "<=",
       "limit": -10,
       "pass": true
@@ -142,7 +142,7 @@
     },
     {
       "id": "active-dc-offset",
-      "value": 6e-8,
+      "value": 2.1e-7,
       "rule": "<=",
       "limit": 0.001,
       "pass": true
