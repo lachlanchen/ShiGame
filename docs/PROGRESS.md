@@ -10,6 +10,7 @@
 - The corrected exact-implementation recording passes all eight browser checks at −35.7 LUFS, −21.7 dBTP and −21.76 dBFS with negligible DC, exact channel parity and zero console errors. Screenshot and spectrogram inspection confirm that the startup broadband burst is gone.
 - Expanded `npm run validate:audio` to fresh-render and compare deterministic evidence, validate the visible capture format/sequence/limits, require traceable review boundaries and keep all full WAVs/browser state reproducible but ignored.
 - Exact implementation `b61592397668f108910af1b1b8a1ef6539a57036` passes the complete 177-check visible-browser suite and the independent actual-output capture on localhost with zero console errors.
+- A detached clean-install rehearsal exposed a Node 22.21/npm workspace-hoisting defect: Vitest resolved from the root while its optional latest `jsdom` peer was engine-incompatible and the compatible workspace copy was nested. Root-pinning `jsdom` 26.1.0 makes `npm ci` deterministic across the supported Node 22 range; the audited dependency tree reports zero vulnerabilities.
 
 Next gate: pin exact-commit local/public captures and complete the full clean build/visible-browser deployment replay. Human listening, sensory-load, physical-device and native Unity audio review remain open after objective engineering measurement.
 
