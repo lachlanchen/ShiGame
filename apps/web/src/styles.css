@@ -351,6 +351,59 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
   .guide-steps li { padding: 13px 12px; }
 }
 
+@media (max-width: 360px) {
+  .game-header { gap: 8px; padding-inline: 12px; }
+  .brand-button { gap: 8px; }
+  .brand-button > span { width: 2rem; height: 2rem; font-size: 1.35rem; }
+  .brand-button strong { font-size: 1rem; letter-spacing: .14em; }
+  .header-actions { gap: 5px; }
+  .header-button { width: 24px; padding-inline: 4px; }
+  .header-select { width: 76px; min-width: 76px; padding-right: 21px; padding-left: 7px; }
+  .site-marker { min-width: 0; gap: 5px; padding: 5px 6px; font-size: .6rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+
+@media (forced-colors: active) {
+  .three-backdrop, .title-image, .title-vignette, .game-shell::before, .map-card::before, .map-sweep { display: none !important; }
+  .title-screen, .game-shell, .game-header, .resource-rail, .map-column, .story-panel, .choices-panel,
+  .choice-card, .field-signal, .dialogue, .map-intel, .drawer, .resolution-banner, .ending-panel {
+    color: CanvasText;
+    background: Canvas;
+    background-image: none;
+  }
+  .title-screen *, .game-shell * { color: CanvasText !important; }
+  .game-header, .resource-rail, .game-grid, .map-column, .story-panel, .choices-panel, .choice-card,
+  .field-signal, .dialogue, .map-intel, .drawer, .resolution-banner, .ending-panel, .guide-steps li {
+    border-color: CanvasText;
+  }
+  .game-header, .drawer, .drawer-scrim { backdrop-filter: none; }
+  .meter { height: 4px; border: 1px solid CanvasText; background: Canvas; }
+  .meter span { background: Highlight; box-shadow: none; forced-color-adjust: none; }
+  .resource.danger { outline: 2px dashed CanvasText; outline-offset: -5px; }
+  .resource.danger .meter span { background: CanvasText; }
+  .river, .road { stroke: CanvasText; }
+  .river { stroke-width: 3.5; }
+  .site-marker i { background: CanvasText; border: 1px solid CanvasText; box-shadow: none; forced-color-adjust: none; }
+  .site-marker.site-reported i { background: Canvas; border: 2px dashed CanvasText; }
+  .site-marker.site-reference i { background: Canvas; border: 2px solid CanvasText; border-radius: 0; }
+  .site-marker.active i { background: Highlight; border: 2px double HighlightText; }
+  button:focus-visible, select:focus-visible, .site-marker:focus-visible, .story-panel:focus {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+  .choice-card.is-gamepad-selected:not(:disabled), .site-marker.inspected {
+    border-color: Highlight;
+    outline: 3px solid Highlight;
+    outline-offset: -4px;
+  }
+  .choice-card:disabled, .choice-card:disabled * { color: GrayText !important; border-style: dashed; opacity: 1; }
+  .effects span, .delta-list span, .source-status, .claim-meta span, .dialogue footer em {
+    color: CanvasText;
+    border-color: CanvasText;
+    background: Canvas;
+  }
+  .map-intel-uncertainty, .pressure-warning, .pressure-reveal, .field-reveal { border-style: dashed; }
 }

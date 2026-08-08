@@ -77,4 +77,19 @@ for (const [selector, property] of targetSelectors) {
   if (!match || Number(match[1]) < 24) throw new Error(`${selector} uses ${property}: ${size}; targets must be at least 24 CSS px.`);
 }
 
-console.log(`Accessibility contract valid: ${contrastPairs.length} contrast pairs, ${microtypeSelectors.length} microtype floors, ${targetSelectors.length} target dimensions.`);
+const forcedColorStart = css.indexOf("@media (forced-colors: active)");
+if (forcedColorStart < 0) throw new Error("The forced-colors accessibility contract is missing.");
+const forcedColors = css.slice(forcedColorStart);
+const forcedColorSelectors = [
+  ".three-backdrop", ".title-image", ".map-sweep", ".meter", ".resource.danger",
+  ".site-marker.site-reported i", ".site-marker.site-reference i", ".site-marker.active i",
+  ".choice-card.is-gamepad-selected:not(:disabled)", ".choice-card:disabled", ".effects span", ".map-intel-uncertainty",
+];
+for (const selector of forcedColorSelectors) {
+  if (!forcedColors.includes(selector)) throw new Error(`Forced-colors contract selector is missing: ${selector}`);
+}
+for (const systemColor of ["Canvas", "CanvasText", "Highlight", "HighlightText", "GrayText"]) {
+  if (!forcedColors.includes(systemColor)) throw new Error(`Forced-colors contract must use the ${systemColor} system color.`);
+}
+
+console.log(`Accessibility contract valid: ${contrastPairs.length} contrast pairs, ${microtypeSelectors.length} microtype floors, ${targetSelectors.length} target dimensions, ${forcedColorSelectors.length} forced-colors selectors.`);

@@ -195,7 +195,7 @@ await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
     }
   }});
 })()` });
-await send("Emulation.clearDeviceMetricsOverride");
+await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
 await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
 await navigatePage(testUrl.href);
 consoleErrors.length = 0;
@@ -214,6 +214,8 @@ const report = {
   accessibilityAudits: [],
   targetAudits: [],
   fontAudits: [],
+  reflowAudits: [],
+  forcedColorsAudit: null,
   accessibilityEngine: { name: "axe-core", version: await evaluate("axe.version") },
   consoleErrors
 };
@@ -472,7 +474,7 @@ check(snapshot === false, "B/Circle closes the source ledger");
 
 await send("Emulation.setDeviceMetricsOverride", { width: 800, height: 650, deviceScaleFactor: 1, mobile: false, screenWidth: 800, screenHeight: 650 });
 for (const contract of localeFontMatrix) await auditLocaleFont(contract);
-await send("Emulation.clearDeviceMetricsOverride");
+await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
 await selectValue(".header-select", "en");
 await waitForFontReady();
 
@@ -598,7 +600,7 @@ check(snapshot.steps === 3 && snapshot.left >= 0 && snapshot.right <= snapshot.w
 check(snapshot.overflow <= 1, "mobile field guide has no horizontal overflow");
 await auditTargets("field-guide-mobile");
 await gamepadButton(1);
-await send("Emulation.clearDeviceMetricsOverride");
+await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
 await evaluate("document.documentElement.style.fontSize = '200%'; scrollTo(0, 0); true");
 await wait(450);
 await screenshot("web-17-text-resize-200.png");
@@ -636,18 +638,124 @@ snapshot = await evaluate(`(() => {
   return { mode: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-motion'), animationDuration: parseFloat(sweep.animationDuration), transitionDuration: parseFloat(choice.transitionDuration) };
 })()`);
 check(snapshot.mode === "reduced" && snapshot.animationDuration <= 0.001 && snapshot.transitionDuration <= 0.001, "reduced-motion mode suppresses decorative animation and transitions");
-await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
+await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }, { name: "forced-colors", value: "none" }] });
+
+await send("Emulation.setDeviceMetricsOverride", { width: 320, height: 800, deviceScaleFactor: 1, mobile: false, screenWidth: 320, screenHeight: 800 });
+await evaluate("scrollTo(0, 0); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-20-reflow-400-equivalent.png");
+snapshot = await evaluate(`(() => {
+  const header = document.querySelector('.game-header')?.getBoundingClientRect();
+  const map = document.querySelector('.map-column')?.getBoundingClientRect();
+  const story = document.querySelector('.story-panel')?.getBoundingClientRect();
+  const cards = [...document.querySelectorAll('.choice-card')].map((element) => element.getBoundingClientRect());
+  const controls = [...document.querySelectorAll('button, select, a[href]')].filter((element) => {
+    const style = getComputedStyle(element);
+    const box = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' && box.width > 0 && box.height > 0;
+  }).map((element) => element.getBoundingClientRect());
+  return {
+    width: innerWidth,
+    overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+    scrollHeight: document.documentElement.scrollHeight,
+    headerFit: Boolean(header && header.left >= 0 && header.right <= innerWidth),
+    mapFit: Boolean(map && map.left >= 0 && map.right <= innerWidth),
+    storyFit: Boolean(story && story.left >= 0 && story.right <= innerWidth),
+    cardFit: cards.length > 0 && cards.every((box) => box.left >= 0 && box.right <= innerWidth),
+    controlFit: controls.length > 0 && controls.every((box) => box.left >= 0 && box.right <= innerWidth)
+  };
+})()`);
+report.reflowAudits.push({ state: "gameplay", ...snapshot });
+check(snapshot.width === 320 && snapshot.overflow <= 1, "320 CSS pixel gameplay provides the 400% equivalent reflow width without horizontal scrolling");
+check(snapshot.headerFit && snapshot.mapFit && snapshot.storyFit, "400% equivalent gameplay keeps header, wartable and narrative within the reflow viewport");
+check(snapshot.cardFit && snapshot.controlFit && snapshot.scrollHeight > 800, "400% equivalent gameplay keeps every decision and control fitted and vertically reachable");
+await auditAccessibility("gameplay-reflow-400-equivalent");
+await auditTargets("gameplay-reflow-400-equivalent");
+
+await click(".brand-button");
+await waitForSelector(".primary-button");
+await waitForFontReady();
+await evaluate("scrollTo(0, 0); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-21-title-reflow-400-equivalent.png");
+snapshot = await evaluate(`(() => {
+  const copy = document.querySelector('.title-copy')?.getBoundingClientRect();
+  const action = document.querySelector('.primary-button')?.getBoundingClientRect();
+  const footer = document.querySelector('.title-footer')?.getBoundingClientRect();
+  return {
+    width: innerWidth,
+    overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+    scrollHeight: document.documentElement.scrollHeight,
+    copyFit: Boolean(copy && copy.left >= 0 && copy.right <= innerWidth && copy.bottom <= document.documentElement.scrollHeight),
+    actionFit: Boolean(action && action.left >= 0 && action.right <= innerWidth && action.bottom <= document.documentElement.scrollHeight),
+    footerFit: Boolean(footer && footer.left >= 0 && footer.right <= innerWidth && footer.bottom <= document.documentElement.scrollHeight)
+  };
+})()`);
+report.reflowAudits.push({ state: "title", ...snapshot });
+check(snapshot.width === 320 && snapshot.overflow <= 1, "320 CSS pixel title provides the 400% equivalent reflow width without horizontal scrolling");
+check(snapshot.copyFit && snapshot.actionFit && snapshot.footerFit, "400% equivalent title keeps its promise, primary action and footer fitted and vertically reachable");
+await auditAccessibility("title-reflow-400-equivalent");
+await auditTargets("title-reflow-400-equivalent");
+
+await click(".primary-button");
+await waitForSelector(".choice-card");
+await send("Emulation.setDeviceMetricsOverride", { width: 800, height: 650, deviceScaleFactor: 1, mobile: false, screenWidth: 800, screenHeight: 650 });
+await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }, { name: "forced-colors", value: "active" }] });
+await evaluate("scrollTo(0, 0); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-22-forced-colors-overview.png");
+snapshot = await evaluate(`(() => {
+  const style = (selector, pseudo) => getComputedStyle(document.querySelector(selector), pseudo);
+  const selected = style('.choice-card.is-gamepad-selected');
+  const meter = style('.meter');
+  const danger = style('.resource.danger');
+  const reported = style('.site-marker.site-reported i');
+  const reference = style('.site-marker.site-reference i');
+  const active = style('.site-marker.active i');
+  return {
+    active: matchMedia('(forced-colors: active)').matches,
+    decorativeLayersHidden: ['.three-backdrop', '.map-sweep'].every((selector) => style(selector).display === 'none'),
+    meterHeight: parseFloat(meter.height),
+    meterBorder: meter.borderTopStyle,
+    dangerOutline: danger.outlineStyle,
+    selectedOutline: selected.outlineStyle,
+    selectedOutlineWidth: parseFloat(selected.outlineWidth),
+    reportedBorder: reported.borderTopStyle,
+    reportedBorderWidth: parseFloat(reported.borderTopWidth),
+    referenceRadius: parseFloat(reference.borderTopLeftRadius),
+    activeBorder: active.borderTopStyle
+  };
+})()`);
+report.forcedColorsAudit = snapshot;
+check(snapshot.active && snapshot.decorativeLayersHidden, "forced-colors mode is active and removes non-informational visual layers");
+check(snapshot.meterHeight >= 4 && snapshot.meterBorder === "solid" && snapshot.dangerOutline === "dashed", "forced-colors resources retain meter structure and a non-color danger marker");
+check(snapshot.selectedOutline === "solid" && snapshot.selectedOutlineWidth >= 3, "forced-colors controller selection retains a system-highlight outline");
+check(snapshot.reportedBorder === "dashed" && snapshot.reportedBorderWidth >= 2 && snapshot.referenceRadius === 0 && snapshot.activeBorder === "double", "forced-colors wartable intelligence retains distinct reported, reference and active marker shapes");
+await auditAccessibility("gameplay-forced-colors");
+await auditTargets("gameplay-forced-colors");
+await evaluate("document.querySelector('.choice-card.is-gamepad-selected')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-23-forced-colors-decisions.png");
+snapshot = await evaluate(`(() => {
+  const box = document.querySelector('.choice-card.is-gamepad-selected')?.getBoundingClientRect();
+  return { visible: Boolean(box && box.top >= 0 && box.bottom <= innerHeight), overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth) };
+})()`);
+check(snapshot.visible && snapshot.overflow <= 1, "forced-colors selected decision is visibly framed without horizontal scrolling");
+await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }, { name: "forced-colors", value: "none" }] });
+await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
 
 const accessibilityViolations = report.accessibilityAudits.flatMap((audit) => audit.violations.map((violation) => ({ state: audit.label, ...violation })));
 if (accessibilityViolations.length > 0) {
   await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
   throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
 }
-check(report.accessibilityAudits.length === 18, "WCAG 2.2 AA automation passes across eighteen visible interface states");
+check(report.accessibilityAudits.length === 21, "WCAG 2.2 AA automation passes across twenty-one visible interface states");
 const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
 check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
-check(report.targetAudits.length === 10, "24 CSS pixel target checks pass across ten interaction states");
+check(report.targetAudits.length === 13, "24 CSS pixel target checks pass across thirteen interaction states");
 check(report.fontAudits.length === 11, "all eleven interface locales pass their self-hosted font, direction and fit contracts");
+check(report.reflowAudits.length === 2 && report.reflowAudits.every((audit) => audit.width === 320 && audit.overflow <= 1), "title and gameplay pass the 320 CSS pixel 400% equivalent reflow gate");
+check(Boolean(report.forcedColorsAudit?.active), "forced-colors visual contract is recorded in the machine-readable report");
 const remoteRequests = networkRequests.filter((request) => {
   try { const url = new URL(request.url); return ["http:", "https:"].includes(url.protocol) && url.origin !== testUrl.origin; } catch { return false; }
 });
