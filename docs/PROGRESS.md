@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Accessibility and presentation-resilience checkpoint
+
+- Made modal behavior an enforced game-state boundary: drawers now make the game stage inert, trap forward/reverse focus, restore a connected invoker and fall back from controller/body activation to the current narrative.
+- Made the three-stage consequence a real input lock. The choice region is inert and the shared action guard rejects pointer, keyboard or controller re-entry until the consequence closes.
+- Added axe-core 4.12.1 as a development-only dependency, representative jsdom semantic scans and eight visible-Chrome WCAG 2.0/2.1/2.2 A/AA audits. No automatic violations remain; layered contrast is explicitly retained as a manual/static-review boundary.
+- Added a reproducible static accessibility contract covering 16 conservative contrast pairs, 24 microtype floors and 11 authored dimensions, integrated into `npm run validate` and CI.
+- Raised low-contrast tactical copy, removed opacity-based status contrast loss, increased small control targets and corrected title/game seal frames so 200% text scales without overlap. The default art direction and information hierarchy were preserved.
+- Expanded visible noVNC QA to 94 checks with zero console errors: ten live target audits, title and active gameplay at 200% text, 390×844 mobile/guide/wartable, Arabic RTL, OS reduced motion, focus wrapping/restoration and duplicate-choice rejection. Exact local evidence is pinned to implementation `303f6d4687b5d08147d0ced7218635dc1928f854`.
+- Kept the player bundle inside the 100 KiB initial budget at 99.74 KiB gzip; axe remains outside production output. Added the comprehensive automated/manual boundary in `docs/production/ACCESSIBILITY.md`.
+
+Next gate: publish and replay the exact public evidence boundary, then continue the licensed Unity, human screen-reader, physical-controller, forced-colors/400% and observed first-time-player gates. Chapter II remains gated.
+
 ## 2026-08-09 · Wartable intelligence interaction checkpoint
 
 - Replaced the decorative site layer with an authored intelligence model shared by web and Unity: `known`, `reported` and `reference` sites now carry bounded summaries, explicit uncertainty, schematic coordinates, source records and claim records.

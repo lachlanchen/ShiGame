@@ -6,10 +6,18 @@
     "Three.js atmosphere rendered to a canvas",
     "standard Gamepad API device is detected on the title",
     "desktop title has no horizontal overflow",
+    "title-en visible controls meet the 24 CSS pixel target floor",
+    "200% title text remains present and scroll-reachable",
+    "200% title text has no horizontal overflow",
+    "title-text-resize-200 visible controls meet the 24 CSS pixel target floor",
     "first-run field guide teaches three position-reading steps",
     "field guide reports the connected controller textually",
     "field guide changes no campaign state before dismissal",
+    "modal makes the game stage inert and receives focus",
     "field guide has no desktop horizontal overflow",
+    "field-guide-en visible controls meet the 24 CSS pixel target floor",
+    "Shift+Tab wraps focus to the last guide control",
+    "Tab wraps focus back to the first guide control",
     "opening story node rendered from shared content",
     "opening offers three strategic choices",
     "all five strategic resources are visible",
@@ -20,15 +28,19 @@
     "shareable hexadecimal chronicle seed is visible",
     "dismissed onboarding preference is stored outside campaign state",
     "web client advertises save contract version 3",
+    "closing first-run guidance restores focus to the narrative",
     "desktop gameplay has no horizontal overflow",
+    "gameplay-en visible controls meet the 24 CSS pixel target floor",
     "Y/Triangle opens intelligence on the active known site",
     "wartable differentiates known, reported and reference-only sites",
     "inspected marker exposes its selected state accessibly",
     "opening the intelligence map does not mutate campaign history",
+    "wartable-en visible controls meet the 24 CSS pixel target floor",
     "D-pad cycles intelligence sites without moving the campaign",
     "reported intelligence discloses its hindsight boundary",
     "site evidence drawer retains the inspected place as context",
     "site evidence is filtered to the place's five records and three claims",
+    "site-evidence-en visible controls meet the 24 CSS pixel target floor",
     "closing site evidence returns to the inspected wartable position",
     "Y/Triangle closes wartable inspection cleanly",
     "D-pad moves the highlighted enabled decision",
@@ -53,6 +65,9 @@
     "choice is persisted locally",
     "save records the matching seed and condition identity",
     "persisted save uses replayable format 3",
+    "decision controls become inert while the three-stage consequence is open",
+    "pointer input cannot commit another decision through an open consequence",
+    "resolution-en visible controls meet the 24 CSS pixel target floor",
     "reload offers save continuation",
     "save resumes at the exact branch node",
     "reload preserves the seed and derives the next field condition",
@@ -63,15 +78,172 @@
     "mobile gameplay has no horizontal overflow",
     "mobile wartable expands to keep the intelligence panel fully visible",
     "mobile wartable inspection has no horizontal overflow",
+    "wartable-mobile visible controls meet the 24 CSS pixel target floor",
     "mobile scroll reaches a complete decision card",
     "mobile decision card keeps its pressure warning readable",
     "scrolled mobile decisions retain horizontal fit",
     "Start reopens a fitted mobile field guide",
     "mobile field guide has no horizontal overflow",
+    "field-guide-mobile visible controls meet the 24 CSS pixel target floor",
+    "200% text resize preserves the active story and its decisions",
+    "200% text resize keeps the narrative visible and decisions scroll-reachable",
+    "200% text resize has no horizontal overflow",
+    "text-resize-200 visible controls meet the 24 CSS pixel target floor",
+    "operating-system reduced-motion preference is honored on startup",
+    "reduced-motion mode suppresses decorative animation and transitions",
+    "WCAG 2.2 AA automation passes across eight visible interface states",
+    "axe manual-review queue is limited to layered color contrast covered by the static contrast contract",
+    "24 CSS pixel target checks pass across ten interaction states",
     "browser console remained free of errors"
   ],
+  "accessibilityAudits": [
+    {
+      "label": "title-en",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 14
+        }
+      ]
+    },
+    {
+      "label": "field-guide-en",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 17
+        }
+      ]
+    },
+    {
+      "label": "gameplay-en",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 78
+        }
+      ]
+    },
+    {
+      "label": "wartable-en",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 86
+        }
+      ]
+    },
+    {
+      "label": "site-evidence-en",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 21
+        }
+      ]
+    },
+    {
+      "label": "field-guide-ar",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 9
+        }
+      ]
+    },
+    {
+      "label": "resolution-en",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 60
+        }
+      ]
+    },
+    {
+      "label": "wartable-mobile",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 72
+        }
+      ]
+    }
+  ],
+  "targetAudits": [
+    {
+      "label": "title-en",
+      "tested": 3,
+      "failures": []
+    },
+    {
+      "label": "title-text-resize-200",
+      "tested": 3,
+      "failures": []
+    },
+    {
+      "label": "field-guide-en",
+      "tested": 18,
+      "failures": []
+    },
+    {
+      "label": "gameplay-en",
+      "tested": 15,
+      "failures": []
+    },
+    {
+      "label": "wartable-en",
+      "tested": 17,
+      "failures": []
+    },
+    {
+      "label": "site-evidence-en",
+      "tested": 23,
+      "failures": []
+    },
+    {
+      "label": "resolution-en",
+      "tested": 15,
+      "failures": []
+    },
+    {
+      "label": "wartable-mobile",
+      "tested": 16,
+      "failures": []
+    },
+    {
+      "label": "field-guide-mobile",
+      "tested": 17,
+      "failures": []
+    },
+    {
+      "label": "text-resize-200",
+      "tested": 14,
+      "failures": []
+    }
+  ],
+  "accessibilityEngine": {
+    "name": "axe-core",
+    "version": "4.12.1"
+  },
   "consoleErrors": [],
-  "target": "https://lachlanchen.github.io/ShiGame/?seed=5EED2026",
-  "testedCommit": "48e2df993e47fb5f2aac7c37d7f90199cb3d883c",
+  "target": "http://127.0.0.1:4173/?seed=5EED2026",
+  "testedCommit": "303f6d4687b5d08147d0ced7218635dc1928f854",
   "cdpPort": 9321
 }

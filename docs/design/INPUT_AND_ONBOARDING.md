@@ -39,12 +39,13 @@ Wartable inspection is a separate read mode. Directional input cycles sites rath
 - Controller connection is indicated textually and never by color alone.
 - The selected decision has the normal focus outline plus a restrained bronze inset marker.
 - Focus follows controller selection and the selected card scrolls into view on small screens.
-- Drawer close buttons receive initial focus; closing returns focus to the story position.
+- Drawer close buttons receive initial focus; tab movement is contained inside the modal and the underlying game stage is inert. Closing returns focus to the connected invoker, or to the story when controller activation began from the document body.
+- A visible consequence makes the decision region inert, and the shared commit guard rejects a second pointer, keyboard or controller choice until it closes.
 - Reduced-motion preference also disables smooth controller scrolling.
 - Input hints name functions, not a platform-specific controller brand.
 
 ## Verification boundary
 
-Unit tests cover edge-triggered buttons, axis dead zones, priority and disconnect/reconnect. Browser integration uses a synthetic standards-shaped `navigator.getGamepads()` device and drives the app only through that public input surface. Visible noVNC evidence must show the connected hint, selection movement, committed decision, guide, drawer controls and mobile fit.
+Unit tests cover edge-triggered buttons, axis dead zones, priority, disconnect/reconnect, modal focus containment/return and decision isolation. Browser integration uses a synthetic standards-shaped `navigator.getGamepads()` device and drives the app only through that public input surface. Visible noVNC evidence must show the connected hint, selection movement, committed decision, guide, drawer controls, focus restoration, mobile fit, 200% text and reduced motion. The complete automated/manual boundary is in [`../production/ACCESSIBILITY.md`](../production/ACCESSIBILITY.md).
 
 Synthetic Gamepad API coverage is not physical hardware certification. Month 2 remains open until at least an Xbox-layout and a PlayStation-layout controller are exercised in observed sessions, including reconnect and focus-loss cases.

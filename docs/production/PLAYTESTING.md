@@ -21,11 +21,11 @@ npm run build
 SHI_CDP_PORT=9321 node scripts/playtest-web.mjs
 ```
 
-The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, controller detection/D-pad/face/shoulder/Start/Y commands, opening content, five resources, choices, pressure warnings, keyboard decisions, known/reported/reference wartable states, selected-marker semantics, hindsight boundaries, no-state-mutation, site-filtered evidence and return behavior, source classifications, exact locators, public-edition links, claim counts, unresolved specialist states, authored-reconstruction boundaries, save format 3, disclosed field signal/classification/effects, fixed-seed selection, three-stage response deltas, seed persistence, Arabic RTL, resume, desktop/mobile layout and map containment, scrolled mobile cards, and console errors.
+The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, modal focus wrap/return, controller detection/D-pad/face/shoulder/Start/Y commands, opening content, five resources, choices, consequence-time decision isolation, pressure warnings, keyboard decisions, known/reported/reference wartable states, selected-marker semantics, hindsight boundaries, no-state-mutation, site-filtered evidence and return behavior, source classifications, exact locators, public-edition links, claim counts, unresolved specialist states, authored-reconstruction boundaries, save format 3, disclosed field signal/classification/effects, fixed-seed selection, three-stage response deltas, seed persistence, Arabic RTL, resume, desktop/mobile layout and map containment, scrolled mobile cards, axe WCAG 2.2 AA scans, 24 CSS pixel control geometry, title/gameplay text at 200%, operating-system reduced motion, and console errors.
 
 ## Current result
 
-2026-08-09 wartable-intelligence checkpoint: localhost passes all 68 checks with fixed seed `5EED2026` and zero page console errors against implementation `f99143d719182e2edf121311eb02b18c0a01e8a1`. Clean-checkout validation and Pages deployment passed for evidence boundary `48e2df993e47fb5f2aac7c37d7f90199cb3d883c`; the public Pages build then passed the same 68 checks with zero console errors. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact public URL and deployment boundary.
+2026-08-09 accessibility-resilience checkpoint: localhost passes all 94 checks with fixed seed `5EED2026` and zero page console errors against implementation `303f6d4687b5d08147d0ced7218635dc1928f854`. The report records axe-core 4.12.1, eight live semantic audits and ten live control-target audits. Axe reports no violations; its layered-background contrast queue remains explicitly incomplete and is covered by the conservative 16-pair static contract plus screenshot review. Clean-checkout, Pages and public replay results are appended only after the evidence boundary deploys. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested commit and URL.
 
 Visual review after automation:
 
@@ -36,12 +36,14 @@ Visual review after automation:
 - Arabic shell: pass after isolating untranslated English narrative as LTR.
 - Keyboard contract: pass after replacing browser-reserved `Alt+1–3` with `Shift+1–3`.
 - First-run guide: pass on desktop/mobile; copy hierarchy is readable, dismissal changes no campaign state, and the guide remains available from the header/Start button.
+- Modal/decision isolation: pass for inert game background, forward/reverse focus wrapping, keyboard-invoker return, controller-to-story fallback and rejection of pointer re-entry while a consequence is open.
 - Synthetic standard gamepad: pass for title confirm, D-pad selection, face-button close/commit, shoulders and Start. This is API-path evidence, not physical-controller certification.
 - Fixed-seed contract: pass for pre-choice condition/effects, post-choice field delta, save-v3 seed persistence, and decision-record condition retention.
 - Wartable intelligence: pass for two known, two reported and one reference-only site; D-pad cycling; textual/shape status; no campaign mutation; Pei hindsight boundary; five-source/three-claim filtered evidence; and return to the same inspected place.
 - Mobile structure: pass after correcting the two-card selector; page scroll is intentional, full-width cards are readable, horizontal overflow is zero.
 - Mobile wartable: pass at 390×844; the map expands to contain the full inspector and retains zero horizontal overflow.
-- Small tactical copy: monitored; secondary labels remain readable in the reviewed captures.
+- Accessibility automation: pass for axe semantic checks in eight live states, ten target-geometry states, 200% title/gameplay text and reduced-motion suppression. Human screen-reader, forced-colors, 400% and physical-device gates remain open.
+- Small tactical copy: static floors and reviewed captures pass; secondary labels remain monitored as localization expands.
 
 Evidence must be regenerated when layout, campaign content, localization direction, Three.js, input mapping, onboarding or save behavior changes.
 

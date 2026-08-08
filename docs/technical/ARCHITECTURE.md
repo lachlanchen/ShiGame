@@ -36,6 +36,8 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 - All eleven UI locales are compile-time/test validated. Narrative falls back to English or Simplified Chinese and preserves LTR direction inside Arabic layouts.
 - A pure standard-gamepad adapter edge-detects buttons/axes; the polling hook resets on disconnect. Commands call the same React actions as pointer/keyboard input. Onboarding preference is namespaced separately from campaign state.
 - The strategic map and detail inspector are lazy chunks. Pointer, keyboard and standard-gamepad selection open status/uncertainty and site-filtered evidence without changing deterministic game state.
+- Modal drawers use native dialog semantics plus an inert game-stage boundary, explicit focus containment and invoker/story focus restoration. Consequence presentation independently makes the choice region inert and the shared action guard rejects re-entry.
+- Accessibility is a build input: a static validator enforces curated contrast/microtype/target contracts, jsdom runs axe against representative components, and the visible Chrome gate repeats axe plus real focus, target geometry, 200% text and reduced-motion checks. Human assistive-technology certification remains a release gate.
 
 ## Unity client
 
@@ -74,4 +76,4 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 | Input-to-feedback | < 100 ms | < 100 ms |
 | Save operation | < 50 ms | < 50 ms |
 
-The current web build is 99.38 KiB gzip initial JavaScript, 2.36 KiB gzip lazy strategic map, 0.59 KiB gzip lazy map inspector, 7.44 KiB gzip lazy evidence/claim UI, 0.62 KiB gzip lazy field guide, and 184.72 KiB gzip lazy Three.js.
+The current web build is 99.74 KiB gzip initial JavaScript, 2.36 KiB gzip lazy strategic map, 0.59 KiB gzip lazy map inspector, 7.44 KiB gzip lazy evidence/claim UI, 0.62 KiB gzip lazy field guide, and 184.72 KiB gzip lazy Three.js. Axe-core is development-only and does not enter the player bundle.

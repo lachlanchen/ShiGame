@@ -21,6 +21,8 @@
 - [ ] Keyboard, touch, gamepad and screen reader paths pass.
 - [ ] Reduced motion, contrast, scaling and color-independent feedback pass.
 
+The web pre-alpha automated subset currently passes semantic axe scans, conservative contrast/microtype contracts, 24 CSS pixel target geometry, modal and consequence isolation, 200% text, Arabic RTL, reduced motion and desktop/mobile reflow. These boxes remain open until every locale, human screen-reader/keyboard path, physical input path, 400%/forced-colors review and the licensed Unity runtime pass the observed gates in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
+
 ## Art/audio
 
 - [ ] Every asset has provenance, rights, intended use and review state.

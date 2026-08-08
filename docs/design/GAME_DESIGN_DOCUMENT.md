@@ -121,4 +121,4 @@ This arc is a research and prototyping map, not permission to write unreviewed c
 
 ## Quality bar
 
-A chapter is shippable only when it has a playable tension curve, meaningful counterplay, an auditable source matrix, reviewed localization layout, approved asset provenance, passing deterministic tests, keyboard/touch coverage, performance evidence, and at least two observed playtest reports. “More generated content” is never a substitute for these gates.
+A chapter is shippable only when it has a playable tension curve, meaningful counterplay, an auditable source matrix, reviewed localization layout, approved asset provenance, passing deterministic tests, keyboard/touch/gamepad parity, the applicable screen-reader/reflow/motion/contrast evidence, performance evidence, and at least two observed playtest reports. “More generated content” is never a substitute for these gates.
