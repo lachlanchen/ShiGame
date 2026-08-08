@@ -25,7 +25,7 @@ The script sends actual mouse/key events and a synthetic standards-shaped `navig
 
 ## Current result
 
-2026-08-09 wartable-intelligence checkpoint: localhost passes all 68 checks with fixed seed `5EED2026` and zero page console errors. The exact implementation and deployment/evidence hashes are recorded after push and public Pages replay. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
+2026-08-09 wartable-intelligence checkpoint: localhost passes all 68 checks with fixed seed `5EED2026` and zero page console errors against implementation `f99143d719182e2edf121311eb02b18c0a01e8a1`. Public Pages replay is pending the evidence push. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
 
 Visual review after automation:
 
