@@ -23,6 +23,42 @@ namespace SHI.Tests
         }
 
         [Test]
+        public void ResolveAppliesPressureAfterThePlayerAction()
+        {
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":1,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
+            var state = ShiState.Create(campaign);
+
+            var result = state.Resolve(campaign.Node("start"), campaign.Node("start").Choices[0]);
+
+            Assert.That(state.History[0].AfterChoice["grain"], Is.EqualTo(100));
+            Assert.That(state.Resources["grain"], Is.EqualTo(90));
+            Assert.That(state.Resources["danger"], Is.EqualTo(25));
+            Assert.That(result.PressureDeltas["danger"], Is.EqualTo(25));
+        }
+
+        [Test]
+        public void ReplayMigratesLegacyHistoryAndRejectsImpossibleRoutes()
+        {
+            var campaign = LoadProductionCampaign();
+            var legacy = new ShiState
+            {
+                CampaignId = campaign.Id,
+                CurrentNodeId = "tampered",
+                Resources = new Dictionary<string, int> { ["grain"] = 0, ["trust"] = 0, ["momentum"] = 0, ["people"] = 0, ["danger"] = 100 },
+                History = new List<ShiChoiceRecord> { new() { NodeId = "rain-order", ChoiceId = "read-the-names" } },
+            };
+
+            var replayed = ShiState.Replay(campaign, legacy);
+
+            Assert.That(replayed, Is.Not.Null);
+            Assert.That(replayed!.SaveVersion, Is.EqualTo(2));
+            Assert.That(replayed.CurrentNodeId, Is.EqualTo("open-council"));
+            Assert.That(replayed.Resources["danger"], Is.EqualTo(59));
+            legacy.History[0].NodeId = "impossible";
+            Assert.That(ShiState.Replay(campaign, legacy), Is.Null);
+        }
+
+        [Test]
         public void TextFallsBackToEnglish()
         {
             var campaign = ShiCampaign.Parse("{\"schemaVersion\":1,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
@@ -79,6 +115,7 @@ namespace SHI.Tests
                 "begin", "continue", "language", "sources", "restart",
                 "grain", "trust", "momentum", "people", "danger",
                 "endingWildfire", "endingRoots", "endingWatchful", "opening",
+                "consequence", "pressureForecast", "pressureResponse", "failed", "captured", "scattered",
             };
 
             foreach (var locale in locales)
@@ -133,6 +170,8 @@ namespace SHI.Tests
             Flags = new List<string>(state.Flags),
             History = new List<ShiChoiceRecord>(state.History),
             Completed = state.Completed,
+            SaveVersion = state.SaveVersion,
+            FailureReason = state.FailureReason,
         };
     }
 }

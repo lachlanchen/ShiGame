@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -20,7 +21,8 @@ namespace SHI
 
     public sealed class ShiGameController : MonoBehaviour
     {
-        private const string SaveKey = "shi.chapter-01.state.v1";
+        private const string SaveKey = "shi.chapter-01.state.v2";
+        private const string LegacySaveKey = "shi.chapter-01.state.v1";
         private readonly string[] locales = { "en", "zh-Hans", "zh-Hant", "ja", "ko", "vi", "ar", "fr", "es", "ru", "de" };
         private readonly string[] resources = { "grain", "trust", "momentum", "people", "danger" };
         private ShiCampaign? campaign;
@@ -31,6 +33,7 @@ namespace SHI
         private bool title = true;
         private bool sourcesOpen;
         private string error = "";
+        private ShiResolution? resolution;
         private GUIStyle? titleStyle;
         private GUIStyle? bodyStyle;
         private GUIStyle? smallStyle;
@@ -72,13 +75,21 @@ namespace SHI
 
         private ShiState? LoadState()
         {
-            if (!PlayerPrefs.HasKey(SaveKey)) return null;
-            try
+            foreach (var key in new[] { SaveKey, LegacySaveKey })
             {
-                var loaded = JsonConvert.DeserializeObject<ShiState>(PlayerPrefs.GetString(SaveKey));
-                return loaded?.CampaignId == campaign?.Id ? loaded : null;
+                if (!PlayerPrefs.HasKey(key)) continue;
+                try
+                {
+                    var loaded = JsonConvert.DeserializeObject<ShiState>(PlayerPrefs.GetString(key));
+                    var replayed = campaign == null ? null : ShiState.Replay(campaign, loaded);
+                    if (replayed == null || replayed.History.Count == 0) continue;
+                    PlayerPrefs.SetString(SaveKey, JsonConvert.SerializeObject(replayed));
+                    PlayerPrefs.DeleteKey(LegacySaveKey);
+                    return replayed;
+                }
+                catch { /* Try the next known save version. */ }
             }
-            catch { return null; }
+            return null;
         }
 
         private void Save()
@@ -97,7 +108,7 @@ namespace SHI
             bodyStyle.normal.textColor = new Color(0.77f, 0.75f, 0.69f);
             smallStyle = new GUIStyle(bodyStyle) { fontSize = 13 };
             smallStyle.normal.textColor = new Color(0.64f, 0.62f, 0.56f);
-            buttonStyle = new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft, fontSize = 17, wordWrap = true, padding = new RectOffset(18, 18, 12, 12) };
+            buttonStyle = new GUIStyle(GUI.skin.button) { alignment = TextAnchor.MiddleLeft, fontSize = 17, wordWrap = true, richText = true, padding = new RectOffset(18, 18, 12, 12) };
             buttonStyle.normal.textColor = new Color(0.9f, 0.86f, 0.78f);
             buttonStyle.normal.background = Solid(new Color(0.12f, 0.12f, 0.1f, 0.94f));
             buttonStyle.hover.background = Solid(new Color(0.22f, 0.19f, 0.13f, 0.97f));
@@ -169,16 +180,18 @@ namespace SHI
 
             if (!state.Completed)
             {
-                var choiceY = Screen.height - 190;
+                var choiceY = Screen.height - 230;
                 var choiceWidth = (Screen.width - 64f - 14f * (node.Choices.Count - 1)) / node.Choices.Count;
                 for (var index = 0; index < node.Choices.Count; index++)
                 {
                     var choice = node.Choices[index];
                     GUI.enabled = state.CanChoose(choice);
                     var text = $"{(char)('A' + index)}   {campaign.Text(choice.Label, locale)}\n<size=13>{campaign.Text(choice.Intent, locale)}</size>";
-                    if (GUI.Button(new Rect(32 + index * (choiceWidth + 14), choiceY, choiceWidth, 135), text, buttonStyle))
+                    if (choice.Pressure != null)
+                        text += $"\n<size=12><color=#B88976>{T("pressureForecast")}: {campaign.Text(choice.Pressure.Warning, locale)}</color></size>";
+                    if (GUI.Button(new Rect(32 + index * (choiceWidth + 14), choiceY, choiceWidth, 175), text, buttonStyle))
                     {
-                        state.Resolve(node, choice);
+                        resolution = state.Resolve(node, choice);
                         Save();
                         if (!state.Completed) world?.SetActiveSite(campaign.Node(state.CurrentNodeId).SiteId);
                     }
@@ -188,12 +201,31 @@ namespace SHI
             else
             {
                 GUI.Box(new Rect(storyX, Screen.height - 190, storyWidth, 135), "");
-                var ending = state.Flags.Contains("ending-wildfire") ? T("endingWildfire") : state.Flags.Contains("ending-deep-roots") ? T("endingRoots") : T("endingWatchful");
+                var ending = state.FailureReason != null ? T("failed") : state.Flags.Contains("ending-wildfire") ? T("endingWildfire") : state.Flags.Contains("ending-deep-roots") ? T("endingRoots") : T("endingWatchful");
                 GUI.Label(new Rect(storyX + 20, Screen.height - 175, storyWidth - 200, 60), ending, titleStyle);
+                if (state.FailureReason != null)
+                    GUI.Label(new Rect(storyX + 20, Screen.height - 115, storyWidth - 220, 48), T(state.FailureReason!), smallStyle);
                 if (GUI.Button(new Rect(storyX + storyWidth - 180, Screen.height - 150, 150, 50), T("restart") + "  ↺")) Restart();
             }
 
+            if (resolution != null) DrawResolution();
             if (sourcesOpen) DrawSources(node);
+        }
+
+        private void DrawResolution()
+        {
+            if (campaign == null || resolution == null) return;
+            var width = Mathf.Min(940, Screen.width - 80);
+            var rect = new Rect((Screen.width - width) / 2, 125, width, resolution.Choice.Pressure == null ? 105 : 145);
+            GUI.Box(rect, "");
+            GUI.Label(new Rect(rect.x + 18, rect.y + 12, width - 80, 22), T("consequence"), smallStyle);
+            GUI.Label(new Rect(rect.x + 18, rect.y + 35, width - 50, 42), campaign.Text(resolution.Choice.Consequence, locale), bodyStyle);
+            if (resolution.Choice.Pressure != null)
+            {
+                GUI.Label(new Rect(rect.x + 18, rect.y + 80, width - 80, 20), T("pressureResponse"), smallStyle);
+                GUI.Label(new Rect(rect.x + 18, rect.y + 101, width - 50, 38), campaign.Text(resolution.Choice.Pressure.Reveal, locale), smallStyle);
+            }
+            if (GUI.Button(new Rect(rect.x + width - 38, rect.y + 8, 28, 28), "×")) resolution = null;
         }
 
         private void DrawSources(ShiNode node)
@@ -217,7 +249,10 @@ namespace SHI
         {
             if (campaign == null) return;
             PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKey);
+            PlayerPrefs.Save();
             state = ShiState.Create(campaign);
+            resolution = null;
             sourcesOpen = false;
             world?.SetActiveSite(campaign.Node(campaign.StartNodeId).SiteId);
         }

@@ -1,5 +1,19 @@
 # SHI progress log
 
+## 2026-08-09 · Systems proof checkpoint
+
+- Added a shared deterministic pressure-response contract: every nonterminal choice exposes a qualitative warning, then applies and records an authored state, terrain, supply or network countermove after the player's immediate effects.
+- Authored and reviewed twelve English/Simplified-Chinese responses as dramatic reconstruction; no new historical claims were introduced.
+- Upgraded saves to format 2. Both TypeScript and Unity rebuild state from authoritative decision history, migrate version-1 histories, and reject impossible sequences instead of trusting stored resource totals.
+- Expanded content validation to cover pressure kinds/text/effects, exact resource keys and bounds, global choice IDs, requirements, deadlocks, every playable route, all three endings, and real failure reachability. Current balance: 51 successful routes and 1 capture route.
+- Added full keyboard operation (`Shift+1–3`, `Alt+S`, `Alt+R`, `Escape`), accessible modal semantics, focus movement, stable test selectors, and five web-shell integration tests across keyboard, drawers, pressure reveal and save migration.
+- Carried pressure resolution, failure state, save replay, validation, tests and twenty native UI strings across all eleven locales into the Unity project. Runtime and editor source assemblies pass an offline Roslyn type compile against the installed Unity assemblies; project import, official Editor compilation, EditMode execution and player builds remain account-license gated.
+- Standardized pressure-caused failure on the decision scene in both engines, preventing a captured/scattered run from revealing its unearned next scene.
+- Reworked response/ledger visuals and reviewed desktop English, Arabic RTL, and 390×844 mobile captures. The first `Alt+1` design was rejected after Chrome consumed it; the first mobile two-card layout was rejected after screenshot review.
+- Visible localhost noVNC QA now passes 31 checks with zero console errors, including pressure warnings/reveal/deltas, save-v2 persistence, keyboard paths, record retention, and scrolled mobile-card readability.
+
+Next gate: publish and repeat the 31-check suite against GitHub Pages, then activate Unity licensing and pass native import, official C# compilation, EditMode tests, Linux/Web builds and observed player sessions before Chapter II expansion.
+
 ## 2026-08-08 · Foundation checkpoint
 
 - Preserved the complete private memo and mixed archives under ignored `references/private/`.

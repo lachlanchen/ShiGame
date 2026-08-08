@@ -1,6 +1,6 @@
 # SHI game design document
 
-Status: living baseline · 2026-08-08 · owner: game director
+Status: living baseline · updated 2026-08-09 · owner: game director
 
 ## Product promise
 
@@ -32,7 +32,8 @@ Read the position
   → inspect people, supplies, momentum, trust, exposure and sources
   → choose a doctrine and accept its opportunity cost
   → see immediate movement on the shared state
-  → face a countermove or recovery problem created by that doctrine
+  → reveal the authored state, terrain, supply or network response
+  → face the countermove or recovery problem created by that doctrine
   → preserve, transform or abandon the network
   → record the decision and carry flags into the next chapter
 ```
@@ -59,7 +60,7 @@ The vertical slice has three acts:
 2. **The cost of organization:** each opening creates a different council about food, signals, or information.
 3. **The broken crossing:** every doctrine encounters logistics and pursuit before choosing deep roots, wildfire, or watchful connection to emerging forces around Pei and Kuaiji.
 
-The current slice contains six scenes, fifteen choices, three conclusions, save/resume, explicit source records, and deterministic effects. It is a pre-alpha chapter, not the complete campaign.
+The current slice contains six scenes, fifteen choices, twelve two-stage pressure responses, three conclusions, replayable save migration, explicit source records, and deterministic effects. Exhaustive validation currently finds 51 successful routes and one capture route. It is a pre-alpha chapter, not the complete campaign.
 
 ## Conflict model
 
@@ -86,9 +87,10 @@ Later tactical encounters will use spatial command and indirect control, but mus
 
 - The title communicates the thesis in one sentence.
 - Five resources appear before the first choice.
-- Every choice shows intent, strategic reading, and first-order deltas.
-- The consequence persists after transition so players can connect action to state change.
-- Source and decision ledgers are available without leaving play.
+- Every choice shows intent, strategic reading, first-order deltas, and a qualitative warning about the weakness it exposes.
+- The consequence and authored pressure response persist after transition with their deltas visually separated, so players can connect action, countermove and state change.
+- Source and decision ledgers are available without leaving play; the decision record preserves revealed pressure responses.
+- Modified keyboard shortcuts operate decisions and ledgers without conflicting with browser-reserved tab controls.
 - Keyboard, touch, reduced-motion, text scaling, color-independent meters, RTL, and screen-reader labels are release gates.
 
 ## Narrative standards

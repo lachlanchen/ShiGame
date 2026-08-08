@@ -200,6 +200,12 @@
           "consequence": { "en": "The ranks see one another, but the officers now know where solidarity began.", "zh-Hans": "戍卒开始彼此看见，但军吏也知道团结从何处发生。" },
           "strategy": { "en": "Broad position: invest in legitimacy before speed.", "zh-Hans": "厚势：先积合法性，再求速度。" },
           "effects": { "trust": 16, "people": 9, "momentum": 3, "danger": 8 },
+          "pressure": {
+            "kind": "network",
+            "warning": { "en": "A public covenant also gives officials names and witnesses.", "zh-Hans": "公开盟约也会给军吏留下名字和证人。" },
+            "reveal": { "en": "Before dawn, a relay clerk copies the names of three speakers. Solidarity has acquired a trace.", "zh-Hans": "黎明前，一名亭吏抄走了三位发言者的名字。团结从此也留下了踪迹。" },
+            "effects": { "danger": 5, "grain": -1 }
+          },
           "flags": ["public-covenant"],
           "nextNodeId": "open-council"
         },
@@ -210,6 +216,12 @@
           "consequence": { "en": "Weapons and urgency enter the camp together.", "zh-Hans": "兵刃与紧迫感同时进入营地。" },
           "strategy": { "en": "Forcing move: gain initiative while accepting exposure.", "zh-Hans": "先手：以暴露风险换取主动。" },
           "effects": { "momentum": 21, "trust": -4, "danger": 17 },
+          "pressure": {
+            "kind": "state",
+            "warning": { "en": "A broken beacon forces neighboring posts to redirect patrols.", "zh-Hans": "烽燧断绝会迫使邻亭改派巡卒。" },
+            "reveal": { "en": "Two neighboring posts miss the signal and send mounted scouts toward the road. The seizure buys initiative, not invisibility.", "zh-Hans": "两处邻亭等不到信号，遂遣骑卒沿路搜寻。夺燧换来了先手，却没有换来隐身。" },
+            "effects": { "danger": 7, "trust": -2 }
+          },
           "flags": ["beacon-seized"],
           "nextNodeId": "fire-council"
         },
@@ -220,6 +232,12 @@
           "consequence": { "en": "You learn who moves between tents, but hesitation costs food and confidence.", "zh-Hans": "你看清了营帐间的往来，但迟疑消耗粮食与信心。" },
           "strategy": { "en": "Probe: preserve options and conceal intent.", "zh-Hans": "试应手：保留选择，隐藏意图。" },
           "effects": { "grain": -7, "momentum": -5, "danger": -8, "trust": 4 },
+          "pressure": {
+            "kind": "supply",
+            "warning": { "en": "Delay consumes provisions while the missing list becomes suspicious.", "zh-Hans": "拖延会消耗口粮，而名籍失踪本身也会引起怀疑。" },
+            "reveal": { "en": "A second meal passes in the rain. No order arrives, but uncertainty begins to command the camp in its place.", "zh-Hans": "雨中又吃掉一顿口粮。命令没有到来，不确定却开始替命令支配营地。" },
+            "effects": { "grain": -3, "momentum": -2 }
+          },
           "flags": ["register-hidden"],
           "nextNodeId": "shadow-council"
         }
@@ -242,6 +260,12 @@
           "consequence": { "en": "Some stores open. Your promise becomes a debt future commanders can honor—or betray.", "zh-Hans": "一些粮窖打开了。你的承诺成为后继者可以兑现、也可以背弃的债。" },
           "strategy": { "en": "Create an institution where force alone would be cheaper today.", "zh-Hans": "制度之势：在暴力眼下更便宜时，仍建立可延续的信用。" },
           "effects": { "grain": 17, "trust": 8, "people": 4, "danger": 3 },
+          "pressure": {
+            "kind": "network",
+            "warning": { "en": "A promise must be witnessed; verification slows departure.", "zh-Hans": "承诺必须有人见证，而核验会拖慢出发。" },
+            "reveal": { "en": "Two granaries open only after village elders mark each tally. The promise gains weight while the road gains distance.", "zh-Hans": "两处粮窖直到乡老逐券作记才肯开启。承诺有了分量，道路也因此拉长。" },
+            "effects": { "grain": -3, "momentum": -2 }
+          },
           "flags": ["grain-tallies"],
           "nextNodeId": "broken-crossing"
         },
@@ -252,6 +276,12 @@
           "consequence": { "en": "The camp moves leaner, but households join because the boundary feels real.", "zh-Hans": "队伍更加拮据，却有家户因看见界线而愿意同行。" },
           "strategy": { "en": "Thick position: fewer supplies, stronger consent.", "zh-Hans": "厚势：少取物资，多积人心。" },
           "effects": { "grain": 8, "trust": 15, "people": 13, "momentum": -5 },
+          "pressure": {
+            "kind": "supply",
+            "warning": { "en": "A capped levy protects consent but leaves almost no reserve.", "zh-Hans": "定额征粮守住了同意，却几乎留不下余粮。" },
+            "reveal": { "en": "Every fire gives what was promised and no more. The boundary is credible; so is the column's hunger.", "zh-Hans": "每处灶火都只献出约定的一釜，绝不多给。界线因此可信，队伍的饥饿也同样真实。" },
+            "effects": { "grain": -2, "momentum": -3 }
+          },
           "flags": ["capped-levy"],
           "nextNodeId": "broken-crossing"
         }
@@ -274,6 +304,12 @@
           "consequence": { "en": "The cry travels faster than your ability to define it.", "zh-Hans": "口号传播得比你解释它的能力更快。" },
           "strategy": { "en": "Narrative initiative: powerful, difficult to retrieve.", "zh-Hans": "叙事先手：力量巨大，也难以收回。" },
           "effects": { "momentum": 22, "people": 9, "danger": 15, "trust": -2 },
+          "pressure": {
+            "kind": "network",
+            "warning": { "en": "The banner will be repeated by mouths you cannot command.", "zh-Hans": "旗号会被你无法号令的人反复传说。" },
+            "reveal": { "en": "By sunrise, three incompatible versions of “Great Chu” are moving along the road. The cry recruits and exposes at once.", "zh-Hans": "日出时，道路上已流传着三种彼此冲突的“大楚”。呼声一面聚众，一面暴露。" },
+            "effects": { "danger": 6, "trust": -3 }
+          },
           "flags": ["chu-banner"],
           "nextNodeId": "broken-crossing"
         },
@@ -284,6 +320,12 @@
           "consequence": { "en": "You regain time, but some mistake discipline for fear.", "zh-Hans": "你们赢回了时间，也有人把克制误作胆怯。" },
           "strategy": { "en": "Tempo control: refuse the opponent's clock.", "zh-Hans": "控速：拒绝按对手的时钟行动。" },
           "effects": { "danger": -15, "momentum": -10, "grain": -4, "trust": 5 },
+          "pressure": {
+            "kind": "terrain",
+            "warning": { "en": "Silence protects the route but turns mud and hunger into command problems.", "zh-Hans": "沉默能遮蔽路线，却会让泥泞与饥饿变成号令难题。" },
+            "reveal": { "en": "Without drums or lamps, the rear loses the path twice. The march stays hidden by spending food and human strength.", "zh-Hans": "没有鼓声与灯火，后队两次走失。行军靠消耗粮食与人力才保持隐蔽。" },
+            "effects": { "grain": -3, "people": -2 }
+          },
           "flags": ["dark-march"],
           "nextNodeId": "broken-crossing"
         }
@@ -306,6 +348,12 @@
           "consequence": { "en": "False calm moves east. Trusting him leaves a live weakness inside your plan.", "zh-Hans": "虚假的平静向东传去；信任他，也让计划内部留下活的破绽。" },
           "strategy": { "en": "Influence: alter what the opponent believes is possible.", "zh-Hans": "影响之势：改变对手对局面的判断。" },
           "effects": { "danger": -13, "trust": -4, "momentum": 8 },
+          "pressure": {
+            "kind": "state",
+            "warning": { "en": "A converted channel remains a channel the state can audit.", "zh-Hans": "被策反的渠道，仍是国家能够核查的渠道。" },
+            "reveal": { "en": "The false message passes, but the next post records the courier's missing seal. Deception creates time and a future question.", "zh-Hans": "假消息顺利通过，下一亭却记下驿使缺少印验。欺骗争得了时间，也留下日后必问的问题。" },
+            "effects": { "danger": 4, "trust": -2 }
+          },
           "flags": ["turned-courier"],
           "nextNodeId": "broken-crossing"
         },
@@ -316,6 +364,12 @@
           "consequence": { "en": "You lose hands today and gain doors that may open later.", "zh-Hans": "今日少了人手，日后却可能多出愿意开启的家门。" },
           "strategy": { "en": "Distributed strength: accept local weakness for a wider network.", "zh-Hans": "散势：以局部减员换取更广的关系网。" },
           "effects": { "people": -9, "trust": 18, "danger": -8, "momentum": -4 },
+          "pressure": {
+            "kind": "network",
+            "warning": { "en": "Released witnesses carry restraint—and the direction of travel.", "zh-Hans": "被放归的见证者既会传播克制，也会带走行军方向。" },
+            "reveal": { "en": "Families hear that the column kept its limit. A local clerk hears which road the released men took home.", "zh-Hans": "乡里听说队伍守住了界线；一名乡吏也听说了放归者沿哪条路回家。" },
+            "effects": { "danger": 3, "momentum": -2 }
+          },
           "flags": ["released-elders"],
           "nextNodeId": "broken-crossing"
         }
@@ -338,6 +392,12 @@
           "consequence": { "en": "The rear guard absorbs the risk; the movement gains a reason to survive.", "zh-Hans": "后卫承担风险，而这支队伍获得了必须活下去的理由。" },
           "strategy": { "en": "Moral center: cohesion can be operational power.", "zh-Hans": "人心中枢：凝聚力也可以转化为行动力量。" },
           "effects": { "people": 14, "trust": 12, "danger": 11, "momentum": -4 },
+          "pressure": {
+            "kind": "state",
+            "warning": { "en": "Protecting households fixes the column's pace under pursuit.", "zh-Hans": "追兵在后，保护家户也会锁定整支队伍的速度。" },
+            "reveal": { "en": "The rear guard holds formation long enough for the last household to cross. Patrol whistles are closer when it follows.", "zh-Hans": "后卫维持队形，直到最后一户过河；等他们跟上时，巡卒的哨声已经更近。" },
+            "effects": { "danger": 6, "grain": -2 }
+          },
           "flags": ["families-first"],
           "nextNodeId": "three-roads"
         },
@@ -348,6 +408,12 @@
           "consequence": { "en": "The column crosses intact but hungry; pursuit loses time in the wreckage.", "zh-Hans": "队伍完整却饥饿地过河；追兵在残桥处失去时间。" },
           "strategy": { "en": "Sacrifice material to preserve formation.", "zh-Hans": "弃物保形：用物资换队形与时间。" },
           "effects": { "grain": -16, "danger": -15, "trust": 5, "momentum": 5 },
+          "pressure": {
+            "kind": "terrain",
+            "warning": { "en": "Visible labor and a repaired crossing leave evidence behind.", "zh-Hans": "公开劳作与修复后的渡口都会留下证据。" },
+            "reveal": { "en": "The braces hold, but wet grain and cut timbers mark exactly how the column crossed. Pursuit learns from the repair.", "zh-Hans": "支架撑住了，湿粮与新砍的木料却清楚标出队伍如何过河。追兵从修复痕迹中读懂了路线。" },
+            "effects": { "grain": -4, "momentum": -2 }
+          },
           "requirements": { "min": { "grain": 30 } },
           "flags": ["ford-braced"],
           "nextNodeId": "three-roads"
@@ -359,6 +425,12 @@
           "consequence": { "en": "The pursuit guesses wrong, but hunger and resentment enter the ranks.", "zh-Hans": "追兵判断失误，饥饿与怨气却进入队伍。" },
           "strategy": { "en": "Light shape: mobility bought with future fragility.", "zh-Hans": "轻势：以日后的脆弱换取眼下机动。" },
           "effects": { "grain": -13, "danger": -21, "momentum": 12, "trust": -9, "people": -3 },
+          "pressure": {
+            "kind": "network",
+            "warning": { "en": "Tracks can be scattered; abandonment cannot be hidden from those who owned the loads.", "zh-Hans": "车辙可以扰乱，弃下物资却瞒不过原先承担它的人。" },
+            "reveal": { "en": "The patrol follows the wrong bank. Three households turn back for what the carts carried, and resentment travels with them.", "zh-Hans": "巡卒追向了错误的河岸；三户人家却为车上之物折返，怨气也随他们一同离去。" },
+            "effects": { "trust": -5, "people": -3 }
+          },
           "flags": ["carts-abandoned"],
           "nextNodeId": "three-roads"
         }

@@ -19,6 +19,7 @@ namespace SHI.Editor
         private static readonly string[] BaselineLocales = { "en", "zh-Hans" };
         private static readonly string[] ResourceKeys = { "grain", "trust", "momentum", "people", "danger" };
         private static readonly string[] ClaimStatuses = { "primary-account", "later-compilation", "dramatic-reconstruction" };
+        private static readonly string[] PressureKinds = { "state", "terrain", "supply", "network" };
 
         [MenuItem("SHI/Validate Production Content")]
         public static void Preflight()
@@ -100,9 +101,19 @@ namespace SHI.Editor
                     if (!choiceIds.Add(choice.Id)) errors.Add($"Duplicate choice id '{choice.Id}'.");
                     if (!string.IsNullOrEmpty(choice.NextNodeId) && !nodeIds.Contains(choice.NextNodeId))
                         errors.Add($"Choice '{choice.Id}' references unknown next node '{choice.NextNodeId}'.");
-                    foreach (var key in choice.Effects.Keys)
+                    ValidateEffects(choice.Effects, $"Choice '{choice.Id}'", errors);
+                    if (!string.IsNullOrEmpty(choice.NextNodeId) && choice.Pressure == null)
+                        errors.Add($"Nonterminal choice '{choice.Id}' requires a pressure response.");
+                    if (string.IsNullOrEmpty(choice.NextNodeId) && choice.Pressure != null)
+                        errors.Add($"Terminal choice '{choice.Id}' must not add unresolved pressure.");
+                    if (choice.Pressure != null)
                     {
-                        if (!ResourceKeys.Contains(key)) errors.Add($"Choice '{choice.Id}' changes unknown resource '{key}'.");
+                        if (!PressureKinds.Contains(choice.Pressure.Kind))
+                            errors.Add($"Choice '{choice.Id}' has invalid pressure kind '{choice.Pressure.Kind}'.");
+                        RequireText(choice.Pressure.Warning, $"choice '{choice.Id}' pressure warning", errors);
+                        RequireText(choice.Pressure.Reveal, $"choice '{choice.Id}' pressure reveal", errors);
+                        if (choice.Pressure.Effects.Count == 0) errors.Add($"Choice '{choice.Id}' pressure has no effects.");
+                        ValidateEffects(choice.Pressure.Effects, $"Choice '{choice.Id}' pressure", errors);
                     }
                     ValidateRequirements(choice, errors);
                     RequireText(choice.Label, $"choice '{choice.Id}' label", errors);
@@ -199,6 +210,15 @@ namespace SHI.Editor
             {
                 if (!ResourceKeys.Contains(requirement.Key)) errors.Add($"Choice '{choice.Id}' requires unknown resource '{requirement.Key}'.");
                 if (requirement.Value < 0 || requirement.Value > 100) errors.Add($"Choice '{choice.Id}' requirement '{requirement.Key}' is outside 0–100.");
+            }
+        }
+
+        private static void ValidateEffects(IReadOnlyDictionary<string, int> effects, string label, ICollection<string> errors)
+        {
+            foreach (var effect in effects)
+            {
+                if (!ResourceKeys.Contains(effect.Key)) errors.Add($"{label} changes unknown resource '{effect.Key}'.");
+                if (effect.Value < -100 || effect.Value > 100) errors.Add($"{label} effect '{effect.Key}' is outside -100–100.");
             }
         }
 

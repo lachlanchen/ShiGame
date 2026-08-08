@@ -19,7 +19,7 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 ## Why SHI is different
 
 - Power is positional: grain, trust, momentum, people, and exposure create opportunities and obligations rather than a single “strength” score.
-- Choices create counterplay and recovery problems. Speed can produce hunger; legitimacy can produce debt; secrecy can preserve options while weakening confidence.
+- Choices create counterplay and recovery problems. Every nonterminal decision warns about one exposed weakness, then reveals and records an authored state, terrain, supply, or network response.
 - Historical accounts, later compilations, strategic texts, and dramatic reconstructions are visibly separated.
 - One versioned campaign payload drives both the polished web client and a real pinned Unity 6 project.
 - English, Arabic, German, Spanish, French, Japanese, Korean, Russian, Vietnamese, Simplified Chinese, and Traditional Chinese UI foundations are present, including Arabic RTL.
@@ -29,10 +29,10 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 
 | Path | What is real now |
 | --- | --- |
-| [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere, save/resume, source and decision ledgers, responsive and RTL layouts |
+| [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere, replayable save-v2 migration, pressure-response and decision ledgers, keyboard shortcuts, responsive and RTL layouts |
 | [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign, code-built 3D wartable, localized game UI, native preflight/build automation and EditMode tests; license/import gate is documented |
-| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 5 resources, a recovery turn, 3 conclusions, and 6 classified source records |
-| [`packages/game-core`](packages/game-core/) | Deterministic choice rules, requirements, failure thresholds, localization fallback, and tests |
+| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 5 resources, a recovery turn, 3 conclusions, and 6 classified source records |
+| [`packages/game-core`](packages/game-core/) | Deterministic two-phase resolution, authoritative save replay/migration, requirements, failure thresholds, exhaustive route validation, localization fallback, and tests |
 | [`assets`](assets/) | Reviewed Daze key art and AgenticApp/Blender wartable source, preview, `.blend`, GLB, FBX, and provenance |
 | [`docs`](docs/) | Game design, history policy, architecture, localization, art direction, engine status, release gates, QA evidence, and one-year roadmap |
 
@@ -70,7 +70,7 @@ Private books, OCR collections, chat extracts, downloads, and the complete worki
 
 ## Build and validation
 
-`npm run validate` checks the campaign graph, identifiers, cross-references, localization keys, deterministic rules, types, and tests. The visible noVNC/Chrome gate adds 21 checks across gameplay, source classifications, choice feedback, persistence, Arabic RTL, mobile overflow, WebGL, and console errors. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
+`npm run validate` checks the campaign graph, identifiers, cross-references, localization keys, deterministic rules, save migration, all playable routes, types, and tests. The visible noVNC/Chrome gate adds 31 checks across gameplay, pressure counterplay, source classifications, keyboard input, persistence, Arabic RTL, mobile layout, WebGL, and console errors. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
 
 ## Citation
 
@@ -87,6 +87,6 @@ If you use SHI in research or teaching, cite the repository. GitHub reads [CITAT
 
 ## Status and scope
 
-Pre-alpha foundation, 2026-08-08. The web chapter is built and visibly playtested. A real Unity editor with Linux and Web support is installed and visible in Hub; the exact Unity 6 artifact is still unavailable through the workstation's regional CDN, and editor import is stopped before compilation by Unity account licensing. Those gates remain red rather than hidden. SHI is planned as a one-year quality-driven production, and this repository will not label the goal complete until both clients, research, localization, assets, playtests, and release checks pass.
+Pre-alpha systems checkpoint, 2026-08-09. The web chapter now has deterministic authored pressure responses, replayable save migration, keyboard operation, exhaustive route checks, and refreshed visible desktop/RTL/mobile evidence. A real Unity editor with Linux and Web support is installed and visible in Hub, and the Unity runtime/editor source passes an offline reference-assembly type compile. The exact Unity 6 artifact is still unavailable through the workstation's regional CDN, while official project import, EditMode tests and player builds are stopped by Unity account licensing. Those gates remain red rather than hidden. SHI is planned as a one-year quality-driven production, and this repository will not label the goal complete until both clients, research, localization, assets, observed player sessions, and release checks pass.
 
 Copyright © 2026 Lachlan Chen. Public visibility does not grant a reuse license; see [LICENSE.md](LICENSE.md).

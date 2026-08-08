@@ -44,6 +44,15 @@ export interface Character {
   historical: boolean;
 }
 
+export type PressureKind = "state" | "terrain" | "supply" | "network";
+
+export interface PressureResponse {
+  kind: PressureKind;
+  warning: LocalizedText;
+  reveal: LocalizedText;
+  effects: Partial<Resources>;
+}
+
 export interface Choice {
   id: string;
   label: LocalizedText;
@@ -55,6 +64,7 @@ export interface Choice {
     min?: Partial<Resources>;
     max?: Partial<Resources>;
   };
+  pressure?: PressureResponse;
   flags?: string[];
   nextNodeId?: string;
 }
@@ -88,10 +98,13 @@ export interface ChoiceRecord {
   nodeId: string;
   choiceId: string;
   before: Resources;
+  afterChoice: Resources;
+  pressureEffects: Partial<Resources>;
   after: Resources;
 }
 
 export interface GameState {
+  saveVersion: 2;
   campaignId: string;
   currentNodeId: string;
   resources: Resources;
@@ -105,5 +118,7 @@ export interface ChoiceResolution {
   state: GameState;
   node: CampaignNode;
   choice: Choice;
+  playerDeltas: Partial<Resources>;
+  pressureDeltas: Partial<Resources>;
   deltas: Partial<Resources>;
 }

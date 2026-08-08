@@ -1,7 +1,19 @@
 import type { Campaign, CampaignNode, Choice, ChoiceResolution, GameState, Locale, LocalizedText, Resources } from "./types";
 import { resourceKeys } from "./types";
 
+export const currentSaveVersion = 2 as const;
 const clamp = (value: number): number => Math.max(0, Math.min(100, Math.round(value)));
+
+const applyEffects = (resources: Resources, effects: Partial<Resources>): Resources => resourceKeys.reduce<Resources>((result, key) => {
+  result[key] = clamp(resources[key] + (effects[key] ?? 0));
+  return result;
+}, { ...resources });
+
+const resourceDeltas = (before: Resources, after: Resources): Partial<Resources> => resourceKeys.reduce<Partial<Resources>>((result, key) => {
+  const delta = after[key] - before[key];
+  if (delta !== 0) result[key] = delta;
+  return result;
+}, {});
 
 export function localize(text: LocalizedText, locale: Locale): string {
   return text[locale] ?? text.en ?? text["zh-Hans"];
@@ -9,6 +21,7 @@ export function localize(text: LocalizedText, locale: Locale): string {
 
 export function createInitialState(campaign: Campaign): GameState {
   return {
+    saveVersion: currentSaveVersion,
     campaignId: campaign.id,
     currentNodeId: campaign.startNodeId,
     resources: { ...campaign.initialResources },
@@ -43,23 +56,59 @@ export function resolveChoice(campaign: Campaign, state: GameState, choiceId: st
   if (!canChoose(choice, state.resources)) throw new Error(`Choice ${choiceId} is not currently available.`);
 
   const before = { ...state.resources };
-  const after = resourceKeys.reduce<Resources>((result, key) => {
-    result[key] = clamp(before[key] + (choice.effects[key] ?? 0));
-    return result;
-  }, { ...before });
+  const afterChoice = applyEffects(before, choice.effects);
+  const after = applyEffects(afterChoice, choice.pressure?.effects ?? {});
   const failureReason = after.danger >= 100 ? "captured" : after.people <= 0 ? "scattered" : undefined;
   const completed = !choice.nextNodeId || failureReason !== undefined;
   const nextState: GameState = {
     ...state,
-    currentNodeId: choice.nextNodeId ?? state.currentNodeId,
+    currentNodeId: failureReason ? state.currentNodeId : choice.nextNodeId ?? state.currentNodeId,
     resources: after,
     flags: [...new Set([...state.flags, ...(choice.flags ?? [])])],
-    history: [...state.history, { nodeId: node.id, choiceId, before, after }],
+    history: [...state.history, {
+      nodeId: node.id,
+      choiceId,
+      before,
+      afterChoice,
+      pressureEffects: resourceDeltas(afterChoice, after),
+      after,
+    }],
     completed,
     failureReason,
   };
 
-  return { state: nextState, node, choice, deltas: { ...choice.effects } };
+  return {
+    state: nextState,
+    node,
+    choice,
+    playerDeltas: resourceDeltas(before, afterChoice),
+    pressureDeltas: resourceDeltas(afterChoice, after),
+    deltas: resourceDeltas(before, after),
+  };
+}
+
+/**
+ * Rebuild a save from its decision history. Stored resource totals are never
+ * trusted, which makes old saves deterministic under the current campaign and
+ * rejects impossible or tampered routes.
+ */
+export function migrateGameState(campaign: Campaign, input: unknown): GameState | null {
+  if (!input || typeof input !== "object") return null;
+  const saved = input as { campaignId?: unknown; history?: unknown };
+  if (saved.campaignId !== campaign.id || !Array.isArray(saved.history)) return null;
+
+  let state = createInitialState(campaign);
+  try {
+    for (const value of saved.history) {
+      if (!value || typeof value !== "object" || state.completed) return null;
+      const record = value as { nodeId?: unknown; choiceId?: unknown };
+      if (record.nodeId !== state.currentNodeId || typeof record.choiceId !== "string") return null;
+      state = resolveChoice(campaign, state, record.choiceId).state;
+    }
+  } catch {
+    return null;
+  }
+  return state;
 }
 
 export function deriveEnding(state: GameState): "wildfire" | "deep-roots" | "watchful-strategist" {
@@ -73,7 +122,8 @@ export function deriveEnding(state: GameState): "wildfire" | "deep-roots" | "wat
 }
 
 export function scoreChoice(choice: Choice): number {
-  return Object.entries(choice.effects).reduce((score, [key, value]) => {
+  const combined = [...Object.entries(choice.effects), ...Object.entries(choice.pressure?.effects ?? {})];
+  return combined.reduce((score, [key, value]) => {
     const direction = key === "danger" ? -1 : 1;
     return score + direction * (value ?? 0);
   }, 0);

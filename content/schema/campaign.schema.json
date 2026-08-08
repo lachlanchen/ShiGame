@@ -11,19 +11,30 @@
     "subtitle": { "$ref": "#/$defs/localizedText" },
     "startNodeId": { "type": "string" },
     "initialResources": { "$ref": "#/$defs/resources" },
-    "sites": { "type": "array", "minItems": 1 },
-    "characters": { "type": "array", "minItems": 1 },
-    "sources": { "type": "array", "minItems": 1 },
-    "nodes": { "type": "array", "minItems": 1 }
+    "sites": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/site" } },
+    "characters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/character" } },
+    "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
+    "nodes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/node" } }
   },
+  "additionalProperties": false,
   "$defs": {
     "localizedText": {
       "type": "object",
       "required": ["en", "zh-Hans"],
       "properties": {
         "en": { "type": "string", "minLength": 1 },
-        "zh-Hans": { "type": "string", "minLength": 1 }
-      }
+        "ar": { "type": "string", "minLength": 1 },
+        "de": { "type": "string", "minLength": 1 },
+        "es": { "type": "string", "minLength": 1 },
+        "fr": { "type": "string", "minLength": 1 },
+        "ja": { "type": "string", "minLength": 1 },
+        "ko": { "type": "string", "minLength": 1 },
+        "ru": { "type": "string", "minLength": 1 },
+        "vi": { "type": "string", "minLength": 1 },
+        "zh-Hans": { "type": "string", "minLength": 1 },
+        "zh-Hant": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
     },
     "resources": {
       "type": "object",
@@ -34,6 +45,118 @@
         "momentum": { "type": "number", "minimum": 0, "maximum": 100 },
         "people": { "type": "number", "minimum": 0, "maximum": 100 },
         "danger": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "resourceEffects": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "grain": { "type": "number", "minimum": -100, "maximum": 100 },
+        "trust": { "type": "number", "minimum": -100, "maximum": 100 },
+        "momentum": { "type": "number", "minimum": -100, "maximum": 100 },
+        "people": { "type": "number", "minimum": -100, "maximum": 100 },
+        "danger": { "type": "number", "minimum": -100, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "resourceRequirements": {
+      "type": "object",
+      "properties": {
+        "grain": { "type": "number", "minimum": 0, "maximum": 100 },
+        "trust": { "type": "number", "minimum": 0, "maximum": 100 },
+        "momentum": { "type": "number", "minimum": 0, "maximum": 100 },
+        "people": { "type": "number", "minimum": 0, "maximum": 100 },
+        "danger": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "site": {
+      "type": "object",
+      "required": ["id", "name", "x", "z", "status"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "$ref": "#/$defs/localizedText" },
+        "x": { "type": "number" },
+        "z": { "type": "number" },
+        "status": { "enum": ["active", "known", "future"] }
+      },
+      "additionalProperties": false
+    },
+    "character": {
+      "type": "object",
+      "required": ["id", "name", "role", "historical"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "$ref": "#/$defs/localizedText" },
+        "role": { "$ref": "#/$defs/localizedText" },
+        "historical": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": ["id", "work", "section", "note", "claimStatus"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "work": { "type": "string", "minLength": 1 },
+        "section": { "type": "string", "minLength": 1 },
+        "author": { "type": "string" },
+        "date": { "type": "string" },
+        "note": { "$ref": "#/$defs/localizedText" },
+        "claimStatus": { "enum": ["primary-account", "later-compilation", "dramatic-reconstruction"] }
+      },
+      "additionalProperties": false
+    },
+    "pressure": {
+      "type": "object",
+      "required": ["kind", "warning", "reveal", "effects"],
+      "properties": {
+        "kind": { "enum": ["state", "terrain", "supply", "network"] },
+        "warning": { "$ref": "#/$defs/localizedText" },
+        "reveal": { "$ref": "#/$defs/localizedText" },
+        "effects": { "$ref": "#/$defs/resourceEffects" }
+      },
+      "additionalProperties": false
+    },
+    "requirements": {
+      "type": "object",
+      "properties": {
+        "min": { "$ref": "#/$defs/resourceRequirements" },
+        "max": { "$ref": "#/$defs/resourceRequirements" }
+      },
+      "additionalProperties": false
+    },
+    "choice": {
+      "type": "object",
+      "required": ["id", "label", "intent", "consequence", "strategy", "effects"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "$ref": "#/$defs/localizedText" },
+        "intent": { "$ref": "#/$defs/localizedText" },
+        "consequence": { "$ref": "#/$defs/localizedText" },
+        "strategy": { "$ref": "#/$defs/localizedText" },
+        "effects": { "$ref": "#/$defs/resourceEffects" },
+        "requirements": { "$ref": "#/$defs/requirements" },
+        "pressure": { "$ref": "#/$defs/pressure" },
+        "flags": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "nextNodeId": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "node": {
+      "type": "object",
+      "required": ["id", "dateLabel", "siteId", "speakerId", "title", "context", "dialogue", "sourceRefs", "choices"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "dateLabel": { "$ref": "#/$defs/localizedText" },
+        "siteId": { "type": "string", "minLength": 1 },
+        "speakerId": { "type": "string", "minLength": 1 },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "context": { "$ref": "#/$defs/localizedText" },
+        "dialogue": { "$ref": "#/$defs/localizedText" },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "choices": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/choice" } }
       },
       "additionalProperties": false
     }

@@ -9,7 +9,7 @@ SHI browser QA uses a dedicated localhost-only Xvfb/noVNC/Chrome profile so test
 | Web preview | `127.0.0.1:4173` |
 | X display | `:121` |
 | VNC | `127.0.0.1:5921` |
-| noVNC | `http://127.0.0.1:6121/vnc.html?host=127.0.0.1&port=6121` |
+| noVNC | `http://127.0.0.1:6121/vnc.html?host=127.0.0.1&port=6121&autoconnect=1&resize=scale` |
 | Chrome DevTools | `127.0.0.1:9321` |
 
 All bind to loopback. The reusable Chrome profile lives under ignored `.runtime/novnc/profile`.
@@ -21,20 +21,21 @@ npm run build
 SHI_CDP_PORT=9321 node scripts/playtest-web.mjs
 ```
 
-The script sends actual mouse and key events through the visible Chrome target, captures screenshots, and checks title metadata, WebGL canvas, opening content, five resources, three choices, source classifications, Arabic RTL, overflow, branch consequence, local persistence, resume, mobile layout, and console errors.
+The script sends actual mouse and key events through the visible Chrome target, captures screenshots, and checks title metadata, WebGL canvas, opening content, five resources, three choices, pressure warnings, `Shift+1–3` decisions, source/record shortcuts, source classifications, save format 2, response reveal and separated deltas, Arabic RTL, resume, desktop/mobile layout, scrolled mobile cards, and console errors.
 
 ## Current result
 
-2026-08-08: 21 checks passed; zero page console errors on both localhost and the deployed GitHub Pages build. Chrome used ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklisted native WebGL. Evidence is in `docs/production/evidence/`; its final status names the public URL.
+2026-08-09 local systems checkpoint: 31 checks passed with zero page console errors. Chrome used ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklisted native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL. The deployed URL must repeat the same suite after publication before this checkpoint is called public-verified.
 
 Visual review after automation:
 
 - Title composition: pass.
 - Desktop map/story hierarchy: pass.
-- Choice feedback and source drawer: pass.
+- Pressure warnings, two-stage choice feedback, source drawer and persistent decision record: pass.
 - Arabic shell: pass after isolating untranslated English narrative as LTR.
-- Mobile structure: pass; page scroll is intentional, horizontal overflow is zero.
-- Small tactical copy: raised after screenshot review.
+- Keyboard contract: pass after replacing browser-reserved `Alt+1–3` with `Shift+1–3`.
+- Mobile structure: pass after correcting the two-card selector; page scroll is intentional, full-width cards are readable, horizontal overflow is zero.
+- Small tactical copy: monitored; secondary labels remain readable in the reviewed captures.
 
 Evidence must be regenerated when layout, campaign content, localization direction, Three.js, or save behavior changes.
 

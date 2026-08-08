@@ -56,6 +56,18 @@ const key = async (keyName, code = keyName) => {
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: keyName, code });
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: keyName, code });
 };
+const altShortcut = async (keyName, code) => {
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Alt", code: "AltLeft", modifiers: 1 });
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: keyName, code, modifiers: 1 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: keyName, code, modifiers: 1 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Alt", code: "AltLeft" });
+};
+const shiftDigit = async (digit) => {
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Shift", code: "ShiftLeft", modifiers: 8 });
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: digit === "1" ? "!" : digit, code: `Digit${digit}`, modifiers: 8 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: digit === "1" ? "!" : digit, code: `Digit${digit}`, modifiers: 8 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Shift", code: "ShiftLeft" });
+};
 const screenshot = async (name) => {
   const result = await send("Page.captureScreenshot", { format: "png", fromSurface: true, captureBeyondViewport: false });
   await writeFile(resolve(outputDir, name), Buffer.from(result.data, "base64"));
@@ -123,21 +135,25 @@ snapshot = await evaluate(`({
   choices: document.querySelectorAll('.choice-card').length,
   meters: document.querySelectorAll('[role=meter]').length,
   sourceButton: document.querySelector('.source-link')?.textContent?.trim(),
+  pressureWarnings: document.querySelectorAll('.pressure-warning').length,
+  saveVersion: document.querySelector('[data-save-version]')?.getAttribute('data-save-version'),
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
 check(snapshot.heading === "The road has become a river", "opening story node rendered from shared content");
 check(snapshot.choices === 3, "opening offers three strategic choices");
 check(snapshot.meters === 5, "all five strategic resources are visible");
 check(snapshot.sourceButton.includes("3"), "node source count is visible");
+check(snapshot.pressureWarnings === 3, "every opening choice exposes a qualitative pressure warning");
+check(snapshot.saveVersion === "2", "web client advertises save contract version 2");
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 
-await click(".source-link");
+await altShortcut("s", "KeyS");
 await wait(350);
 await screenshot("web-03-source-ledger.png");
 snapshot = await evaluate(`({ sources: document.querySelectorAll('.source').length, reconstructions: document.querySelectorAll('.source-dramatic-reconstruction').length })`);
 check(snapshot.sources === 3, "source ledger opens with the node's three records");
 check(snapshot.reconstructions === 1, "dramatic reconstruction is visually distinguished");
-await click(".drawer .icon-button");
+await key("Escape");
 await wait(250);
 
 await click(".header-select");
@@ -154,17 +170,24 @@ await click(".header-select");
 await key("Home");
 await key("Enter");
 await wait(250);
-await click(".choice-card", 0);
+await click(".story-panel");
+await shiftDigit("1");
 await wait(650);
 await screenshot("web-05-choice-resolution.png");
 snapshot = await evaluate(`({
   heading: document.querySelector('.story-panel h1')?.textContent?.trim(),
   resolution: document.querySelector('.resolution-banner')?.textContent?.trim(),
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v1') || '{}').history?.length
+  pressure: document.querySelector('.pressure-reveal')?.textContent?.trim(),
+  pressureDeltas: document.querySelectorAll('.pressure-deltas span').length,
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v2') || '{}').history?.length,
+  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v2') || '{}').saveVersion
 })`);
 check(snapshot.heading === "A covenant must eat", "choice advances to the authored branch");
 check(snapshot.resolution.includes("The ranks see one another"), "choice consequence remains visible after transition");
+check(snapshot.pressure.includes("relay clerk"), "authored pressure response is revealed after commitment");
+check(snapshot.pressureDeltas === 2, "pressure resource deltas remain visually separate");
 check(snapshot.history === 1, "choice is persisted locally");
+check(snapshot.saveVersion === 2, "persisted save uses replayable format 2");
 
 await send("Page.reload", { ignoreCache: true });
 await waitForSelector(".primary-button");
@@ -175,12 +198,31 @@ await wait(400);
 snapshot = await evaluate(`document.querySelector('.story-panel h1')?.textContent?.trim()`);
 check(snapshot === "A covenant must eat", "save resumes at the exact branch node");
 
+await altShortcut("r", "KeyR");
+await wait(300);
+await screenshot("web-07-pressure-record.png");
+snapshot = await evaluate(`({ records: document.querySelectorAll('.record-list li').length, pressure: document.querySelector('.record-pressure')?.textContent?.trim() })`);
+check(snapshot.records === 1, "decision record contains the migrated turn");
+check(snapshot.pressure.includes("relay clerk"), "decision record preserves the revealed pressure response");
+await key("Escape");
+
 await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
 await wait(450);
 await screenshot("web-06-mobile-gameplay.png");
 snapshot = await evaluate(`({ choices: document.querySelectorAll('.choice-card').length, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, width: innerWidth })`);
 check(snapshot.width === 390 && snapshot.choices === 2, "mobile viewport retains the active branch choices");
 check(snapshot.overflow <= 1, "mobile gameplay has no horizontal overflow");
+await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: 360, y: 760, deltaX: 0, deltaY: 650 });
+await wait(450);
+await screenshot("web-08-mobile-choices.png");
+snapshot = await evaluate(`(() => {
+  const cards = [...document.querySelectorAll('.choice-card')];
+  const visible = cards.filter((card) => { const box = card.getBoundingClientRect(); return box.bottom > 0 && box.top < innerHeight; });
+  return { visible: visible.length, warnings: visible.reduce((count, card) => count + card.querySelectorAll('.pressure-warning').length, 0), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+})()`);
+check(snapshot.visible >= 1, "mobile scroll reaches a complete decision card");
+check(snapshot.warnings >= 1, "mobile decision card keeps its pressure warning readable");
+check(snapshot.overflow <= 1, "scrolled mobile decisions retain horizontal fit");
 await send("Emulation.clearDeviceMetricsOverride");
 
 if (consoleErrors.length > 0) console.error("Browser console errors:", JSON.stringify(consoleErrors, null, 2));

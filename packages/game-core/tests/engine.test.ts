@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canChoose, createInitialState, deriveEnding, localize, resolveChoice } from "../src";
+import { canChoose, createInitialState, deriveEnding, localize, migrateGameState, resolveChoice } from "../src";
 import type { Campaign } from "../src";
 
 const campaign: Campaign = {
@@ -38,7 +38,73 @@ describe("campaign engine", () => {
     expect(result.state.resources.grain).toBe(100);
     expect(result.state.resources.danger).toBe(0);
     expect(result.state.history).toHaveLength(1);
+    expect(result.state.history.at(0)!.afterChoice.grain).toBe(100);
+    expect(result.state.saveVersion).toBe(2);
     expect(result.state.completed).toBe(true);
+  });
+
+  it("applies a visible pressure response after the player action", () => {
+    const pressured = structuredClone(campaign);
+    pressured.nodes.at(0)!.choices.at(0)!.pressure = {
+      kind: "state",
+      warning: { en: "The post will answer.", "zh-Hans": "驿站会回应。" },
+      reveal: { en: "A patrol closes the road.", "zh-Hans": "巡卒封住道路。" },
+      effects: { danger: 25, grain: -10 },
+    };
+
+    const result = resolveChoice(pressured, createInitialState(pressured), "choose");
+
+    expect(result.state.history.at(0)!.afterChoice).toEqual({ grain: 100, trust: 50, momentum: 50, people: 50, danger: 0 });
+    expect(result.state.resources).toEqual({ grain: 90, trust: 50, momentum: 50, people: 50, danger: 25 });
+    expect(result.playerDeltas).toEqual({ grain: 50, danger: -50 });
+    expect(result.pressureDeltas).toEqual({ grain: -10, danger: 25 });
+  });
+
+  it("does not reveal the next scene when pressure ends the run", () => {
+    const pressured = structuredClone(campaign);
+    pressured.nodes.at(0)!.choices.at(0)!.nextNodeId = "unearned";
+    pressured.nodes.at(0)!.choices.at(0)!.pressure = {
+      kind: "state",
+      warning: { en: "The cordon is closing.", "zh-Hans": "合围将至。" },
+      reveal: { en: "The cordon closes.", "zh-Hans": "追捕合围。" },
+      effects: { danger: 100 },
+    };
+    pressured.nodes.push({
+      ...structuredClone(pressured.nodes.at(0)!),
+      id: "unearned",
+      choices: [],
+    });
+
+    const result = resolveChoice(pressured, createInitialState(pressured), "choose");
+
+    expect(result.state.completed).toBe(true);
+    expect(result.state.failureReason).toBe("captured");
+    expect(result.state.currentNodeId).toBe("start");
+  });
+
+  it("migrates version-one saves by replaying authoritative choice history", () => {
+    const legacy = {
+      campaignId: "test",
+      currentNodeId: "tampered",
+      resources: { grain: 0, trust: 0, momentum: 0, people: 0, danger: 100 },
+      flags: ["invented"],
+      history: [{ nodeId: "start", choiceId: "choose", before: {}, after: {} }],
+      completed: false,
+    };
+
+    const migrated = migrateGameState(campaign, legacy);
+
+    expect(migrated?.saveVersion).toBe(2);
+    expect(migrated?.resources.grain).toBe(100);
+    expect(migrated?.flags).toEqual([]);
+    expect(migrated?.completed).toBe(true);
+  });
+
+  it("rejects impossible save histories", () => {
+    expect(migrateGameState(campaign, {
+      campaignId: "test",
+      history: [{ nodeId: "wrong-node", choiceId: "choose" }],
+    })).toBeNull();
   });
 
   it("falls back to English for an untranslated locale", () => {
