@@ -7,8 +7,9 @@
 - Added actual-zoom geometry, axe and target checks for the gameplay header/wartable/story/decisions and title promise/action/footer. Four reviewed full-resolution frames cover gameplay overview, selected decision, title overview and the primary title action.
 - Exact implementation `99c7e8a23df39bc91e7d55afcbd6fa4f1dcd6e03` passes 158 checks, twenty-three axe states, fifteen target states and eleven locale-font states with zero horizontal overflow, console errors, remote requests/resources or non-cancelled failures.
 - The 320 CSS pixel equivalent-reflow and forced-colors contracts remain intact. This closes an agent-observed actual-Chrome engineering gate, not the human zoom/magnifier, Windows High Contrast or disabled-player review gates.
+- Passed clean-checkout GitHub validation and Pages deployment at evidence boundary `7e4bd05777bbc0bdbf32198add872cdc89d387b9`, then repeated all 158 checks on the public build with twenty-three axe, eleven locale-font and fifteen target audits, zero console errors, zero remote HTTP(S) requests/resources and zero non-cancelled network failures.
 
-Next gate: publish and replay this exact checkpoint on Pages, then continue human screen-reader/zoom/high-contrast, physical-controller, Unity-license and observed first-time-player sessions. Chapter II remains gated.
+Next gate: continue human screen-reader/zoom/high-contrast, physical-controller, Unity-license and observed first-time-player sessions. Chapter II remains gated.
 
 ## 2026-08-09 · 400%-equivalent reflow and forced-colors checkpoint
 
