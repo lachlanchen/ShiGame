@@ -20,6 +20,7 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 
 - Power is positional: grain, trust, momentum, people, and exposure create opportunities and obligations rather than a single “strength” score.
 - Choices create counterplay and recovery problems. Every nonterminal decision warns about one exposed weakness, then reveals and records an authored state, terrain, supply, or network response.
+- Every new chronicle receives a shareable seed that selects a small authored field condition. The exact signal and effects are disclosed before commitment, recorded afterward, and explicitly labeled dramatic reconstruction.
 - Historical accounts, later compilations, strategic texts, and dramatic reconstructions are visibly separated.
 - One versioned campaign payload drives both the polished web client and a real pinned Unity 6 project.
 - English, Arabic, German, Spanish, French, Japanese, Korean, Russian, Vietnamese, Simplified Chinese, and Traditional Chinese UI foundations are present, including Arabic RTL.
@@ -29,10 +30,10 @@ SHI is a production game project—not a disposable demo. Its first playable cha
 
 | Path | What is real now |
 | --- | --- |
-| [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere, replayable save-v2 migration, first-run field guide, pressure-response/decision ledgers, keyboard/gamepad/touch input, responsive and RTL layouts |
+| [`apps/web`](apps/web/) | Playable React/Vite client, lazy Three.js atmosphere, replayable save-v3 migration, seeded field signals, first-run guide, three-stage decision records, keyboard/gamepad/touch input, responsive and RTL layouts |
 | [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign, code-built 3D wartable, localized guide/record/gamepad UI, native preflight/build automation and EditMode tests; license/import gate is documented |
-| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 5 resources, a recovery turn, 3 conclusions, and 6 classified source records |
-| [`packages/game-core`](packages/game-core/) | Deterministic two-phase resolution, authoritative save replay/migration, requirements, failure thresholds, exhaustive route validation, localization fallback, and tests |
+| [`content`](content/) | Chapter I with 6 scenes, 15 choices, 12 pressure responses, 12 classified field conditions, 5 resources, a recovery turn, 3 conclusions, and 6 classified source records |
+| [`packages/game-core`](packages/game-core/) | Seed-reproducible three-stage resolution, authoritative save replay/migration, requirements, failure thresholds, exhaustive condition-route validation, localization fallback, and tests |
 | [`assets`](assets/) | Reviewed Daze key art and AgenticApp/Blender wartable source, preview, `.blend`, GLB, FBX, and provenance |
 | [`docs`](docs/) | Game design, history policy, architecture, localization, art direction, engine status, release gates, QA evidence, and one-year roadmap |
 
@@ -61,16 +62,16 @@ historical claim records + authored reconstruction
                     ↓
       versioned campaign JSON + SHA-256
           ↙                         ↘
-TypeScript deterministic core      Unity 6 runtime
+TypeScript seed-reproducible core  Unity 6 runtime
           ↓                         ↓
  React/Vite/Three.js web        3D wartable client
 ```
 
-Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [source policy](docs/history/SOURCE_POLICY.md), and [one-year roadmap](docs/production/ROADMAP.md).
+Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [seeded uncertainty contract](docs/design/SEEDED_UNCERTAINTY.md), [source policy](docs/history/SOURCE_POLICY.md), and [one-year roadmap](docs/production/ROADMAP.md).
 
 ## Build and validation
 
-`npm run validate` checks the campaign graph, identifiers, cross-references, localization keys, deterministic rules, save migration, all playable routes, types, and tests. The visible noVNC/Chrome gate adds 43 checks across gameplay, onboarding, synthetic standard-gamepad input, pressure counterplay, source classifications, keyboard input, persistence, Arabic RTL, mobile layout, WebGL, and console errors. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
+`npm run validate` checks the campaign graph, identifiers, cross-references, localization keys, seeded rules, save migration, every field-condition branch, types, and tests. The visible noVNC/Chrome gate adds 50 checks across gameplay, onboarding, synthetic standard-gamepad input, pressure/field counterplay, seeded persistence, source classifications, keyboard input, Arabic RTL, mobile layout, WebGL, and console errors. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
 
 ## Citation
 
@@ -87,6 +88,6 @@ If you use SHI in research or teaching, cite the repository. GitHub reads [CITAT
 
 ## Status and scope
 
-Pre-alpha input checkpoint, 2026-08-09. The web chapter now has deterministic authored pressure responses, replayable save migration, a localized first-run field guide, keyboard/standard-gamepad/touch operation, exhaustive route checks, and refreshed visible desktop/RTL/mobile evidence. Localhost and the public Pages build both pass the 43-check gate with zero console errors against implementation commit `8f31ee8`. A real Unity editor with Linux and Web support is installed and visible in Hub, and the expanded Unity runtime/editor source passes an offline reference-assembly type compile. Official project import, EditMode tests, physical-controller sessions and player builds remain stopped by Unity account licensing or require observed hardware. Those gates remain red rather than hidden. SHI is planned as a one-year quality-driven production, and this repository will not label the goal complete until both clients, research, localization, assets, observed player sessions, and release checks pass.
+Pre-alpha seeded-uncertainty checkpoint, 2026-08-09. The web chapter now has authored pressure responses, disclosed seed-selected field conditions, replayable save-v3 migration, a localized field guide, keyboard/standard-gamepad/touch operation, and exhaustive condition-route checks. Localhost passes the expanded 50-check visible gate with zero console errors; the previous public input checkpoint remains verified at 43 checks against `8f31ee8` while this checkpoint awaits deployment. A real Unity editor with Linux and Web support is installed and visible in Hub, and the expanded Unity runtime, editor and EditMode-test sources pass an offline reference-assembly type compile. Official project import, EditMode execution, physical-controller sessions and player builds remain stopped by Unity account licensing or require observed hardware. Those gates remain red rather than hidden. SHI is planned as a one-year quality-driven production, and this repository will not label the goal complete until both clients, research, localization, assets, observed player sessions, and release checks pass.
 
 Copyright © 2026 Lachlan Chen. Public visibility does not grant a reuse license; see [LICENSE.md](LICENSE.md).

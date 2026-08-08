@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "chapter-01-daze",
   "title": {
     "en": "SHI — The Shape of Power",
@@ -192,6 +192,24 @@
         "zh-Hans": "“名籍若送到下一亭，我们便是九百个各自待罪的人。名籍若送不到——我们又是什么？”陈胜没有高声。雨点替他敲着屋瓦。"
       },
       "sourceRefs": ["shiji-48-daze", "zztj-7-qin", "dramatic-daze-keeper"],
+      "conditions": [
+        {
+          "id": "water-over-axle",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "Water over the axle", "zh-Hans": "积水没过车轴" },
+          "signal": { "en": "The drainage ditch has joined the road. Whichever order is given, the column will spend food and reveal fresh tracks getting into motion.", "zh-Hans": "排水沟已经漫成道路。无论下达哪道命令，队伍起行都要耗粮，也会留下更清楚的新辙。" },
+          "weight": 1,
+          "effects": { "grain": -3, "danger": 2 }
+        },
+        {
+          "id": "rain-breaks-east",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "The rain breaks to the east", "zh-Hans": "东方雨势稍歇" },
+          "signal": { "en": "Voices and footfalls carry again. Any order can move faster, while the fading rain gives patrols less cover.", "zh-Hans": "人声与脚步重新传得开。任何命令都能更快落实，渐歇的雨也让巡卒少了遮蔽。" },
+          "weight": 1,
+          "effects": { "momentum": 3, "danger": -1 }
+        }
+      ],
       "choices": [
         {
           "id": "read-the-names",
@@ -252,6 +270,24 @@
       "context": { "en": "Public trust has given the camp a voice. It has not given it supplies. Villagers have hidden grain from tax collectors and bandits alike.", "zh-Hans": "公开结盟让营地有了共同声音，却没有凭空生出粮食。乡民把存粮藏着，既防税吏，也防盗寇。" },
       "dialogue": { "en": "Aunt Yu puts an empty scoop beside your register. “A just cause can still empty an unjustly full granary. Tell us the rule before hunger writes it for you.”", "zh-Hans": "妪母把一只空斗放在名籍旁：“义军也能掏空一座不义的粮仓。趁饥饿还没替你定规矩，先把规矩说清楚。”" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "conditions": [
+        {
+          "id": "barred-granaries",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "Granary doors barred", "zh-Hans": "粮仓闭门" },
+          "signal": { "en": "Households have moved their stores behind timber. Every plan consumes extra grain while the camp proves what kind of guest it will be.", "zh-Hans": "各户已把存粮移到木门之后。营地尚未证明自己是哪一种来客，任何方案都会多耗粮食。" },
+          "weight": 1,
+          "effects": { "grain": -3, "trust": -1 }
+        },
+        {
+          "id": "pots-at-the-door",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "Cooking pots at the door", "zh-Hans": "炊釜摆到门前" },
+          "signal": { "en": "Several households wait where the council can see them. Any order will gain witnesses and helping hands, but feeding the gathering still costs grain.", "zh-Hans": "几户人家站在议事处看得见的地方等候。任何命令都会多出见证者和帮手，聚众吃饭仍要耗粮。" },
+          "weight": 1,
+          "effects": { "grain": -1, "trust": 3, "people": 2 }
+        }
+      ],
       "choices": [
         {
           "id": "issue-grain-tallies",
@@ -296,6 +332,24 @@
       "context": { "en": "The relay guards have been disarmed. Nearby posts will see the missing signal at dawn. Momentum is high; recognition is not the same as allegiance.", "zh-Hans": "亭卒已被缴械。天亮后，邻亭就会察觉烽燧断绝。声势骤起，但被人看见不等于被人拥护。" },
       "dialogue": { "en": "Wu Guang turns the captured drum on its side. “A drum tells everyone to move. It does not tell them why they should follow us after the first mile.”", "zh-Hans": "吴广把缴来的鼓侧放在地上：“鼓能叫所有人动起来，却不能告诉他们，为何走过第一里后还要跟着我们。”" },
       "sourceRefs": ["shiji-48-daze", "dramatic-daze-keeper", "sunzi-1-calculation"],
+      "conditions": [
+        {
+          "id": "smoke-under-cloud",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "Smoke trapped under cloud", "zh-Hans": "烟压在云下" },
+          "signal": { "en": "The dead beacon's smoke lies along the road instead of rising. Whatever follows will be easier for nearby posts to trace and harder for strangers to trust.", "zh-Hans": "熄灭烽燧的烟没有升起，反而贴着道路铺开。接下来的行动更容易被邻亭追出，也更难让陌生人信服。" },
+          "weight": 1,
+          "effects": { "trust": -1, "danger": 3 }
+        },
+        {
+          "id": "thunder-over-road",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "Thunder over the relay road", "zh-Hans": "驿道上雷声滚动" },
+          "signal": { "en": "Thunder masks the first movement from neighboring posts. Any order gains tempo before the road can answer.", "zh-Hans": "雷声遮住了最初的动静。无论下达哪道命令，都能在驿道作出反应前抢到一点时间。" },
+          "weight": 1,
+          "effects": { "momentum": 3, "danger": -2 }
+        }
+      ],
       "choices": [
         {
           "id": "declare-great-chu",
@@ -340,6 +394,24 @@
       "context": { "en": "Your watch catches a relay courier searching for the register. He is frightened, observant, and useful. Every way of containing knowledge creates a witness.", "zh-Hans": "守夜者抓到一名寻找名籍的驿使。他害怕、敏锐，也可能有用。每一种封锁消息的方法，都会制造一个见证人。" },
       "dialogue": { "en": "Courier Han looks at the blank space where the register was. “A missing list is already a message. Let me choose who receives it.”", "zh-Hans": "韩驿使看着名籍原先摆放的空处：“名籍失踪，本身就是一封信。让我选它送到谁手里。”" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "conditions": [
+        {
+          "id": "fresh-hoofprints",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "Fresh hoofprints at the post", "zh-Hans": "亭旁有新蹄印" },
+          "signal": { "en": "Another relay horse passed recently. Any decision now enters a network already moving faster than the camp.", "zh-Hans": "不久前还有另一匹驿马经过。此刻的任何决定，都会进入一个已经比营地更快运转的传信网。" },
+          "weight": 1,
+          "effects": { "danger": 4 }
+        },
+        {
+          "id": "tired-relay-horses",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "The relay horses are spent", "zh-Hans": "驿马已经力竭" },
+          "signal": { "en": "The nearest remounts cannot carry warning far tonight. The camp gains concealment, but the extra waiting consumes food.", "zh-Hans": "最近的换马今晚已无法把警讯送远。营地多了一层遮蔽，额外等待却要耗粮。" },
+          "weight": 1,
+          "effects": { "grain": -2, "danger": -3 }
+        }
+      ],
       "choices": [
         {
           "id": "turn-the-courier",
@@ -384,6 +456,24 @@
       "context": { "en": "The column reaches a damaged crossing. Scouts report patrols behind and uncertain towns ahead. Families, grain carts, and armed ranks cannot all cross at once. This is a recovery turn: reduce exposure, restore supplies, or preserve cohesion before the final commitment.", "zh-Hans": "队伍来到一处被洪水毁坏的渡口。斥候报告追兵在后，前方城邑态度不明。家户、粮车与持械队伍无法同时过河。这是一轮整顿：在最终下注前，降低暴露、补充粮草，或维系队伍。" },
       "dialogue": { "en": "You lay three tally slips on the wet rail: people, provisions, pursuit. The river will collect one kind of debt before sunset.", "zh-Hans": "你把三根筹片摆在湿漉漉的栏木上：人、粮、追兵。日落前，这条河必会来收一种债。" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
+      "conditions": [
+        {
+          "id": "ford-rises",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "The ford rises another hand", "zh-Hans": "渡口又涨一掌" },
+          "signal": { "en": "The current is climbing against the stakes. Every crossing plan will lose provisions and leave the rear more exposed.", "zh-Hans": "水流正沿木桩上涨。无论采用哪种渡河方案，都会损失物资，也会让后队更加暴露。" },
+          "weight": 1,
+          "effects": { "grain": -4, "danger": 3 }
+        },
+        {
+          "id": "rope-ferry-returns",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "A rope ferry returns upstream", "zh-Hans": "上游缆渡归来" },
+          "signal": { "en": "A small ferry brings hands and a little grain. It helps any plan—and adds witnesses who can describe the column.", "zh-Hans": "一只小缆渡带来人手和少量粮食。它能帮助任何方案，也多出一批能描述队伍的见证者。" },
+          "weight": 1,
+          "effects": { "grain": 2, "people": 3, "danger": 1 }
+        }
+      ],
       "choices": [
         {
           "id": "families-first",
@@ -445,6 +535,24 @@
       "context": { "en": "Rumor multiplies: old Chu names in the southeast, an unusual circle of companions around Pei, frightened county seats nearby. The future victors are not yet inevitable. Your first campaign ends with a doctrine, not a coronation.", "zh-Hans": "流言四起：东南有楚国旧族，沛县有一群不同寻常的伙伴，近处县城则惶恐不安。未来的胜者尚非必然。第一章以一种行动原则结束，而非加冕。" },
       "dialogue": { "en": "Chen Sheng draws no map. He places three stones in the mud. “Power is not inside a stone. It is in what the ground lets the stones do to one another. Keeper—what ground will we make?”", "zh-Hans": "陈胜没有展开地图，只在泥里放下三块石头：“势不在石中，而在地形让石头彼此如何作用。掌简人——我们要造出怎样的地？”" },
       "sourceRefs": ["shiji-48-daze", "shiji-7-xiang", "shiji-8-liu", "dramatic-daze-keeper"],
+      "conditions": [
+        {
+          "id": "county-gates-barred",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "County gates close before dusk", "zh-Hans": "县门未暮先闭" },
+          "signal": { "en": "The nearest walls answer rumor with timber and crossbars. Any final doctrine loses tempo and becomes easier for officials to name as a threat.", "zh-Hans": "最近的城墙用木门与横闩回应流言。任何最终方略都会失去一些速度，也更容易被官吏称作威胁。" },
+          "weight": 1,
+          "effects": { "momentum": -3, "danger": 3 }
+        },
+        {
+          "id": "market-rumors-converge",
+          "claimStatus": "dramatic-reconstruction",
+          "title": { "en": "Market rumors converge", "zh-Hans": "市井传言汇流" },
+          "signal": { "en": "Different travelers repeat the same account of restraint and defiance. Any doctrine gains belief and speed, while attention gathers with it.", "zh-Hans": "不同旅人都在复述同一段克制与反抗的故事。任何方略都会获得更多信任与速度，注意也会一同聚来。" },
+          "weight": 1,
+          "effects": { "trust": 2, "momentum": 3, "danger": 2 }
+        }
+      ],
       "choices": [
         {
           "id": "root-in-villages",

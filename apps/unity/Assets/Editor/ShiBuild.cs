@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace SHI.Editor
 
             Debug.Log($"SHI preflight passed: {campaign.Nodes.Count} nodes, " +
                       $"{campaign.Nodes.Sum(node => node.Choices.Count)} choices, " +
+                      $"{campaign.Nodes.Sum(node => node.Conditions.Count)} field conditions, " +
                       $"{campaign.Sources.Count} sources.");
         }
 
@@ -55,10 +57,13 @@ namespace SHI.Editor
             var sourceIds = campaign.Sources.Select(source => source.Id).ToHashSet();
             var choiceIds = new HashSet<string>();
 
+            if (!Regex.IsMatch(campaign.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add("Campaign id must use ASCII kebab-case.");
+
             RequireUnique(campaign.Nodes.Select(node => node.Id), "node", errors);
             RequireUnique(campaign.Sites.Select(site => site.Id), "site", errors);
             RequireUnique(campaign.Characters.Select(character => character.Id), "character", errors);
             RequireUnique(campaign.Sources.Select(source => source.Id), "source", errors);
+            RequireUnique(campaign.Nodes.SelectMany(node => node.Conditions).Select(condition => condition.Id), "field condition", errors);
 
             if (!nodeIds.Contains(campaign.StartNodeId)) errors.Add($"Start node '{campaign.StartNodeId}' does not exist.");
             foreach (var key in ResourceKeys)
@@ -83,9 +88,11 @@ namespace SHI.Editor
 
             foreach (var node in campaign.Nodes)
             {
+                if (!Regex.IsMatch(node.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Node '{node.Id}' must use an ASCII kebab-case id.");
                 if (!siteIds.Contains(node.SiteId)) errors.Add($"Node '{node.Id}' references unknown site '{node.SiteId}'.");
                 if (!characterIds.Contains(node.SpeakerId)) errors.Add($"Node '{node.Id}' references unknown speaker '{node.SpeakerId}'.");
                 if (node.Choices.Count < 2) errors.Add($"Node '{node.Id}' must offer at least two decisions.");
+                if (node.Conditions.Count < 2) errors.Add($"Node '{node.Id}' must define at least two field conditions.");
                 RequireText(node.DateLabel, $"node '{node.Id}' date", errors);
                 RequireText(node.Title, $"node '{node.Id}' title", errors);
                 RequireText(node.Context, $"node '{node.Id}' context", errors);
@@ -94,6 +101,19 @@ namespace SHI.Editor
                 foreach (var sourceRef in node.SourceRefs)
                 {
                     if (!sourceIds.Contains(sourceRef)) errors.Add($"Node '{node.Id}' references unknown source '{sourceRef}'.");
+                }
+
+                foreach (var condition in node.Conditions)
+                {
+                    if (!Regex.IsMatch(condition.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Field condition '{condition.Id}' must use an ASCII kebab-case id.");
+                    if (condition.ClaimStatus != "dramatic-reconstruction") errors.Add($"Field condition '{condition.Id}' must be classified as dramatic-reconstruction.");
+                    RequireText(condition.Title, $"field condition '{condition.Id}' title", errors);
+                    RequireText(condition.Signal, $"field condition '{condition.Id}' signal", errors);
+                    if (condition.Weight < 1 || condition.Weight > 100) errors.Add($"Field condition '{condition.Id}' weight is outside 1–100.");
+                    if (condition.Effects.Count == 0 || condition.Effects.Values.All(value => value == 0)) errors.Add($"Field condition '{condition.Id}' must change the position.");
+                    ValidateEffects(condition.Effects, $"Field condition '{condition.Id}'", errors);
+                    foreach (var effect in condition.Effects.Where(effect => effect.Value < -6 || effect.Value > 6))
+                        errors.Add($"Field condition '{condition.Id}' effect '{effect.Key}' is outside the Chapter I cap of -6–6.");
                 }
 
                 foreach (var choice in node.Choices)

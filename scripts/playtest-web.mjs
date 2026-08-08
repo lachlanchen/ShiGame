@@ -3,6 +3,8 @@ import { resolve } from "node:path";
 
 const cdpPort = Number(process.env.SHI_CDP_PORT ?? 9321);
 const gameUrl = process.env.SHI_PLAYTEST_URL ?? "http://127.0.0.1:4173/";
+const testUrl = new URL(gameUrl);
+testUrl.searchParams.set("seed", process.env.SHI_PLAYTEST_SEED ?? "5EED2026");
 const testedCommit = process.env.SHI_TESTED_COMMIT ?? "working-tree";
 const outputDir = resolve(import.meta.dirname, "../docs/production/evidence");
 await mkdir(outputDir, { recursive: true });
@@ -53,6 +55,14 @@ const click = async (selector, index = 0) => {
   await send("Input.dispatchMouseEvent", { type: "mousePressed", x: box.x, y: box.y, button: "left", clickCount: 1 });
   await send("Input.dispatchMouseEvent", { type: "mouseReleased", x: box.x, y: box.y, button: "left", clickCount: 1 });
 };
+const selectValue = async (selector, value) => evaluate(`(() => {
+  const select = document.querySelector(${JSON.stringify(selector)});
+  if (!(select instanceof HTMLSelectElement)) throw new Error("Missing select: ${selector}");
+  select.focus();
+  select.value = ${JSON.stringify(value)};
+  select.dispatchEvent(new Event('change', { bubbles: true }));
+  return select.value;
+})()`);
 const key = async (keyName, code = keyName) => {
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: keyName, code });
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: keyName, code });
@@ -122,7 +132,7 @@ await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
     }
   }});
 })()` });
-await send("Page.navigate", { url: gameUrl });
+await send("Page.navigate", { url: testUrl.href });
 await waitForSelector(".primary-button", 10000);
 await evaluate("localStorage.clear(); location.reload(); true");
 await waitForSelector(".primary-button");
@@ -156,7 +166,7 @@ snapshot = await evaluate(`({
   modal: document.querySelector('[data-testid=guide-drawer]')?.getAttribute('aria-modal'),
   steps: document.querySelectorAll('.guide-steps li').length,
   controller: document.querySelector('.controller-callout')?.textContent?.trim(),
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v2') || '{}').history?.length ?? 0,
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length ?? 0,
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
@@ -173,6 +183,9 @@ snapshot = await evaluate(`({
   meters: document.querySelectorAll('[role=meter]').length,
   sourceButton: document.querySelector('.source-link')?.textContent?.trim(),
   pressureWarnings: document.querySelectorAll('.pressure-warning').length,
+  fieldTitle: document.querySelector('.field-signal h2')?.textContent?.trim(),
+  fieldEffects: document.querySelector('.field-effects')?.textContent?.trim(),
+  seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'),
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   saveVersion: document.querySelector('[data-save-version]')?.getAttribute('data-save-version'),
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
@@ -182,8 +195,11 @@ check(snapshot.choices === 3, "opening offers three strategic choices");
 check(snapshot.meters === 5, "all five strategic resources are visible");
 check(snapshot.sourceButton.includes("3"), "node source count is visible");
 check(snapshot.pressureWarnings === 3, "every opening choice exposes a qualitative pressure warning");
+check(snapshot.fieldTitle === "Water over the axle", "seeded field signal is disclosed before commitment");
+check(snapshot.fieldEffects.includes("-3 Grain") && snapshot.fieldEffects.includes("+2 Exposure"), "field signal exposes its exact resource effects");
+check(snapshot.seed === "5EED2026", "shareable hexadecimal chronicle seed is visible");
 check(snapshot.onboarding === "complete", "dismissed onboarding preference is stored outside campaign state");
-check(snapshot.saveVersion === "2", "web client advertises save contract version 2");
+check(snapshot.saveVersion === "3", "web client advertises save contract version 3");
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 
 await gamepadButton(15);
@@ -201,10 +217,7 @@ await wait(250);
 snapshot = await evaluate(`Boolean(document.querySelector('.drawer'))`);
 check(snapshot === false, "B/Circle closes the source ledger");
 
-await click(".header-select");
-await key("Home");
-await key("ArrowDown");
-await key("Enter");
+await selectValue(".header-select", "ar");
 await wait(350);
 await screenshot("web-04-gameplay-ar-rtl.png");
 snapshot = await evaluate(`({ locale: document.documentElement.lang, direction: document.documentElement.dir, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth })`);
@@ -223,9 +236,7 @@ check(snapshot.direction === "rtl" && snapshot.steps === 3 && snapshot.left >= 0
 check(snapshot.overflow <= 1, "Arabic field guide has no horizontal overflow");
 await gamepadButton(1);
 
-await click(".header-select");
-await key("Home");
-await key("Enter");
+await selectValue(".header-select", "en");
 await wait(250);
 await click(".story-panel");
 await shiftDigit("1");
@@ -235,16 +246,22 @@ snapshot = await evaluate(`({
   heading: document.querySelector('.story-panel h1')?.textContent?.trim(),
   resolution: document.querySelector('.resolution-banner')?.textContent?.trim(),
   pressure: document.querySelector('.pressure-reveal')?.textContent?.trim(),
+  field: document.querySelector('.field-reveal')?.textContent?.trim(),
   pressureDeltas: document.querySelectorAll('.pressure-deltas span').length,
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v2') || '{}').history?.length,
-  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v2') || '{}').saveVersion
+  fieldDeltas: document.querySelectorAll('.field-deltas span').length,
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.length,
+  conditionId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').history?.[0]?.conditionId,
+  seed: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').seed,
+  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v3') || '{}').saveVersion
 })`);
 check(snapshot.heading === "A covenant must eat", "choice advances to the authored branch");
 check(snapshot.resolution.includes("The ranks see one another"), "choice consequence remains visible after transition");
 check(snapshot.pressure.includes("relay clerk"), "authored pressure response is revealed after commitment");
 check(snapshot.pressureDeltas === 2, "pressure resource deltas remain visually separate");
+check(snapshot.field.includes("Water over the axle") && snapshot.fieldDeltas === 2, "disclosed field condition resolves as a separate third stage");
 check(snapshot.history === 1, "choice is persisted locally");
-check(snapshot.saveVersion === 2, "persisted save uses replayable format 2");
+check(snapshot.conditionId === "water-over-axle" && snapshot.seed === 0x5eed2026, "save records the matching seed and condition identity");
+check(snapshot.saveVersion === 3, "persisted save uses replayable format 3");
 
 await send("Page.reload", { ignoreCache: true });
 await waitForSelector(".primary-button");
@@ -252,15 +269,17 @@ snapshot = await evaluate(`({ primary: document.querySelector('.primary-button')
 check(snapshot.primary.includes("Continue"), "reload offers save continuation");
 await click(".primary-button");
 await wait(400);
-snapshot = await evaluate(`document.querySelector('.story-panel h1')?.textContent?.trim()`);
-check(snapshot === "A covenant must eat", "save resumes at the exact branch node");
+snapshot = await evaluate(`({ heading: document.querySelector('.story-panel h1')?.textContent?.trim(), seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'), condition: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-condition-id') })`);
+check(snapshot.heading === "A covenant must eat", "save resumes at the exact branch node");
+check(snapshot.seed === "5EED2026" && Boolean(snapshot.condition), "reload preserves the seed and derives the next field condition");
 
 await gamepadButton(4);
 await wait(300);
 await screenshot("web-07-pressure-record.png");
-snapshot = await evaluate(`({ records: document.querySelectorAll('.record-list li').length, pressure: document.querySelector('.record-pressure')?.textContent?.trim() })`);
+snapshot = await evaluate(`({ records: document.querySelectorAll('.record-list li').length, pressure: document.querySelector('.record-pressure')?.textContent?.trim(), field: document.querySelector('.record-field')?.textContent?.trim() })`);
 check(snapshot.records === 1, "decision record contains the migrated turn");
 check(snapshot.pressure.includes("relay clerk"), "decision record preserves the revealed pressure response");
+check(snapshot.field.includes("Water over the axle"), "decision record preserves the applied field condition");
 await gamepadButton(1);
 
 await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
@@ -296,6 +315,6 @@ await send("Emulation.clearDeviceMetricsOverride");
 
 if (consoleErrors.length > 0) console.error("Browser console errors:", JSON.stringify(consoleErrors, null, 2));
 check(consoleErrors.length === 0, "browser console remained free of errors");
-await writeFile(resolve(outputDir, "web-playtest-status.json"), `${JSON.stringify({ ok: true, ...report, target: gameUrl, testedCommit, cdpPort }, null, 2)}\n`);
+await writeFile(resolve(outputDir, "web-playtest-status.json"), `${JSON.stringify({ ok: true, ...report, target: testUrl.href, testedCommit, cdpPort }, null, 2)}\n`);
 socket.close();
 console.log(`Visible playtest passed: ${report.checks.length} checks, ${consoleErrors.length} console errors.`);

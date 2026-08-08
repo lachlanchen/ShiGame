@@ -60,7 +60,7 @@ The vertical slice has three acts:
 2. **The cost of organization:** each opening creates a different council about food, signals, or information.
 3. **The broken crossing:** every doctrine encounters logistics and pursuit before choosing deep roots, wildfire, or watchful connection to emerging forces around Pei and Kuaiji.
 
-The current slice contains six scenes, fifteen choices, twelve two-stage pressure responses, three conclusions, replayable save migration, explicit source records, and deterministic effects. Exhaustive validation currently finds 51 successful routes and one capture route. It is a pre-alpha chapter, not the complete campaign.
+The current slice contains six scenes, fifteen choices, twelve pressure responses, twelve seed-selected field conditions, three conclusions, replayable save-v3 migration, and explicit source records. Exhaustive condition branching currently finds 722 successful routes and 54 capture/scattering routes. It is a pre-alpha chapter, not the complete campaign.
 
 ## Conflict model
 
@@ -81,15 +81,16 @@ Later tactical encounters will use spatial command and indirect control, but mus
 - Terminal scattering occurs at zero people.
 - Before those boundaries, authored recovery turns offer asymmetric repair: reduce exposure by consuming grain, preserve people by surrendering tempo, or regain supplies by creating debt.
 - Restarts are immediate, but the decision ledger shows the player why the position collapsed.
-- A future “chronicle memory” mode may reveal counterfactual insights after completion; it must never secretly change the deterministic result.
+- A future “chronicle memory” mode may reveal counterfactual insights after completion; it must never secretly change the recorded seed or reconstructed result.
 
 ## Onboarding and feedback
 
 - The title communicates the thesis in one sentence.
 - Five resources appear before the first choice.
 - Every choice shows intent, strategic reading, first-order deltas, and a qualitative warning about the weakness it exposes.
-- The consequence and authored pressure response persist after transition with their deltas visually separated, so players can connect action, countermove and state change.
-- Source and decision ledgers are available without leaving play; the decision record preserves revealed pressure responses.
+- A seed-selected field signal and its exact effects appear before every decision and remain explicitly labeled dramatic reconstruction.
+- Consequence, authored pressure response and disclosed field condition persist after transition with their deltas visually separated, so players can connect action, countermove, circumstance and state change.
+- Source and decision ledgers are available without leaving play; the decision record preserves pressure and field responses.
 - Modified keyboard shortcuts operate decisions and ledgers without conflicting with browser-reserved tab controls.
 - A one-time, replayable field guide teaches field → move → answer over the live opening state without changing campaign progress.
 - Standard gamepad selection, commit, close and ledger commands route through the same deterministic actions as keyboard/pointer input; connected state and selection are visible without relying on color.

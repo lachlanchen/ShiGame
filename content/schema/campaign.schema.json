@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shi.game/schema/campaign-v1.json",
-  "title": "SHI Campaign v1",
+  "$id": "https://shi.game/schema/campaign-v2.json",
+  "title": "SHI Campaign v2",
   "type": "object",
   "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "initialResources", "sites", "characters", "sources", "nodes"],
   "properties": {
-    "schemaVersion": { "const": 1 },
-    "id": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": 2 },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
     "title": { "$ref": "#/$defs/localizedText" },
     "subtitle": { "$ref": "#/$defs/localizedText" },
     "startNodeId": { "type": "string" },
@@ -119,6 +119,19 @@
       },
       "additionalProperties": false
     },
+    "fieldCondition": {
+      "type": "object",
+      "required": ["id", "claimStatus", "title", "signal", "weight", "effects"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "claimStatus": { "const": "dramatic-reconstruction" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "signal": { "$ref": "#/$defs/localizedText" },
+        "weight": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "effects": { "$ref": "#/$defs/resourceEffects" }
+      },
+      "additionalProperties": false
+    },
     "requirements": {
       "type": "object",
       "properties": {
@@ -131,7 +144,7 @@
       "type": "object",
       "required": ["id", "label", "intent", "consequence", "strategy", "effects"],
       "properties": {
-        "id": { "type": "string", "minLength": 1 },
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
         "label": { "$ref": "#/$defs/localizedText" },
         "intent": { "$ref": "#/$defs/localizedText" },
         "consequence": { "$ref": "#/$defs/localizedText" },
@@ -146,9 +159,9 @@
     },
     "node": {
       "type": "object",
-      "required": ["id", "dateLabel", "siteId", "speakerId", "title", "context", "dialogue", "sourceRefs", "choices"],
+      "required": ["id", "dateLabel", "siteId", "speakerId", "title", "context", "dialogue", "sourceRefs", "conditions", "choices"],
       "properties": {
-        "id": { "type": "string", "minLength": 1 },
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
         "dateLabel": { "$ref": "#/$defs/localizedText" },
         "siteId": { "type": "string", "minLength": 1 },
         "speakerId": { "type": "string", "minLength": 1 },
@@ -156,6 +169,7 @@
         "context": { "$ref": "#/$defs/localizedText" },
         "dialogue": { "$ref": "#/$defs/localizedText" },
         "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "conditions": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/fieldCondition" } },
         "choices": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/choice" } }
       },
       "additionalProperties": false

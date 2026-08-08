@@ -41,7 +41,8 @@ const canChoose = (choice, resources) => resourceKeys.every((key) => {
 });
 const applyEffects = (resources, effects = {}) => Object.fromEntries(resourceKeys.map((key) => [key, Math.max(0, Math.min(100, Math.round(resources[key] + (effects[key] ?? 0))))]));
 
-assert(campaign.schemaVersion === 1, "campaign schemaVersion must be 1");
+assert(campaign.schemaVersion === 2, "campaign schemaVersion must be 2");
+assert(typeof campaign.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(campaign.id), "campaign.id must use ASCII kebab-case");
 hasRequiredText(campaign.title, "campaign.title");
 hasRequiredText(campaign.subtitle, "campaign.subtitle");
 for (const locale of ["en", "ar", "de", "es", "fr", "ja", "ko", "ru", "vi", "zh-Hans", "zh-Hant"]) {
@@ -63,7 +64,9 @@ for (const source of campaign.sources ?? []) {
   assert(["primary-account", "later-compilation", "dramatic-reconstruction"].includes(source.claimStatus), `source ${source.id} has an invalid claimStatus`);
 }
 const allChoiceIds = new Set();
+const allConditionIds = new Set();
 for (const node of campaign.nodes ?? []) {
+  assert(typeof node.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(node.id), `node ${node.id} must use an ASCII kebab-case id`);
   hasRequiredText(node.dateLabel, `node ${node.id}.dateLabel`);
   hasRequiredText(node.title, `node ${node.id}.title`);
   hasRequiredText(node.context, `node ${node.id}.context`);
@@ -71,7 +74,20 @@ for (const node of campaign.nodes ?? []) {
   assert(siteIds.has(node.siteId), `node ${node.id} references unknown site ${node.siteId}`);
   assert(characterIds.has(node.speakerId), `node ${node.id} references unknown character ${node.speakerId}`);
   assert(Array.isArray(node.choices) && node.choices.length >= 2, `node ${node.id} must offer at least two choices`);
+  assert(Array.isArray(node.conditions) && node.conditions.length >= 2, `node ${node.id} must define at least two field conditions`);
   for (const sourceRef of node.sourceRefs ?? []) assert(sourceIds.has(sourceRef), `node ${node.id} references unknown source ${sourceRef}`);
+  for (const condition of node.conditions ?? []) {
+    assert(typeof condition.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(condition.id), `node ${node.id} has invalid field condition id ${condition.id}`);
+    assert(!allConditionIds.has(condition.id), `campaign contains duplicate field condition ${condition.id}`);
+    allConditionIds.add(condition.id);
+    assert(condition.claimStatus === "dramatic-reconstruction", `condition ${condition.id} must be classified as dramatic-reconstruction`);
+    hasRequiredText(condition.title, `condition ${condition.id}.title`);
+    hasRequiredText(condition.signal, `condition ${condition.id}.signal`);
+    assert(Number.isInteger(condition.weight) && condition.weight >= 1 && condition.weight <= 100, `condition ${condition.id}.weight must be an integer from 1 to 100`);
+    validateResourceMap(condition.effects, `condition ${condition.id}.effects`, -6, 6);
+    assert(Object.keys(condition.effects ?? {}).length > 0, `condition ${condition.id}.effects cannot be empty`);
+    assert(Object.values(condition.effects ?? {}).some((amount) => amount !== 0), `condition ${condition.id}.effects must change the position`);
+  }
   const choiceIds = new Set();
   for (const choice of node.choices ?? []) {
     assert(!choiceIds.has(choice.id), `node ${node.id} contains duplicate choice ${choice.id}`);
@@ -124,18 +140,21 @@ const walkRoutes = (nodeId, resources, flags, path = []) => {
     return;
   }
 
-  for (const choice of available) {
-    const afterChoice = applyEffects(resources, choice.effects);
-    const after = applyEffects(afterChoice, choice.pressure?.effects);
-    const nextFlags = new Set([...flags, ...(choice.flags ?? [])]);
-    const nextPath = [...path, choice.id];
-    if (after.danger >= 100 || after.people <= 0) {
-      routeStats.failed++;
-    } else if (!choice.nextNodeId) {
-      routeStats.successful++;
-      for (const flag of nextFlags) if (flag.startsWith("ending-")) routeStats.endings.add(flag);
-    } else {
-      walkRoutes(choice.nextNodeId, after, nextFlags, nextPath);
+  for (const condition of node.conditions ?? []) {
+    for (const choice of available) {
+      const afterChoice = applyEffects(resources, choice.effects);
+      const afterPressure = applyEffects(afterChoice, choice.pressure?.effects);
+      const after = applyEffects(afterPressure, condition.effects);
+      const nextFlags = new Set([...flags, ...(choice.flags ?? [])]);
+      const nextPath = [...path, `${condition.id}:${choice.id}`];
+      if (after.danger >= 100 || after.people <= 0) {
+        routeStats.failed++;
+      } else if (!choice.nextNodeId) {
+        routeStats.successful++;
+        for (const flag of nextFlags) if (flag.startsWith("ending-")) routeStats.endings.add(flag);
+      } else {
+        walkRoutes(choice.nextNodeId, after, nextFlags, nextPath);
+      }
     }
   }
 };
@@ -152,4 +171,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${campaign.sources.length} source records, ${finaleCount} conclusions, ${routeStats.successful} successful routes, ${routeStats.failed} failure routes.`);
+console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${allConditionIds.size} field conditions, ${campaign.sources.length} source records, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);

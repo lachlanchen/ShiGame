@@ -11,7 +11,7 @@ namespace SHI.Tests
         [Test]
         public void ResolveClampsResourcesAndRecordsHistory()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":1,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":2,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
             var state = ShiState.Create(campaign);
             var node = campaign.Node("start");
 
@@ -25,7 +25,7 @@ namespace SHI.Tests
         [Test]
         public void ResolveAppliesPressureAfterThePlayerAction()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":1,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":2,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
             var state = ShiState.Create(campaign);
 
             var result = state.Resolve(campaign.Node("start"), campaign.Node("start").Choices[0]);
@@ -51,9 +51,14 @@ namespace SHI.Tests
             var replayed = ShiState.Replay(campaign, legacy);
 
             Assert.That(replayed, Is.Not.Null);
-            Assert.That(replayed!.SaveVersion, Is.EqualTo(2));
+            Assert.That(replayed!.SaveVersion, Is.EqualTo(3));
+            Assert.That(replayed.Seed, Is.Zero);
             Assert.That(replayed.CurrentNodeId, Is.EqualTo("open-council"));
-            Assert.That(replayed.Resources["danger"], Is.EqualTo(59));
+            Assert.That(replayed.Resources["danger"], Is.EqualTo(61));
+            Assert.That(replayed.History[0].ConditionId, Is.EqualTo("water-over-axle"));
+            legacy.SaveVersion = 99;
+            Assert.That(ShiState.Replay(campaign, legacy), Is.Null);
+            legacy.SaveVersion = 0;
             legacy.History[0].NodeId = "impossible";
             Assert.That(ShiState.Replay(campaign, legacy), Is.Null);
         }
@@ -61,8 +66,17 @@ namespace SHI.Tests
         [Test]
         public void TextFallsBackToEnglish()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":1,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":2,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"sites\":[],\"characters\":[],\"sources\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
             Assert.That(campaign.Text(campaign.Title, "fr"), Is.EqualTo("Test"));
+        }
+
+        [Test]
+        public void SeedHashMatchesTheSharedTypeScriptVector()
+        {
+            Assert.That(ShiState.HashSeedKey("chapter|0|node|0"), Is.EqualTo(918888254u));
+            Assert.That(ShiState.FormatSeed(0x001a2b3c), Is.EqualTo("001A2B3C"));
+            var campaign = LoadProductionCampaign();
+            Assert.That(ShiState.Create(campaign).ActiveCondition(campaign.Node("rain-order")).Id, Is.EqualTo("water-over-axle"));
         }
 
         [Test]
@@ -85,6 +99,7 @@ namespace SHI.Tests
                 Assert.That(sites, Does.Contain(node.SiteId), $"Unknown site on {node.Id}");
                 Assert.That(speakers, Does.Contain(node.SpeakerId), $"Unknown speaker on {node.Id}");
                 Assert.That(node.SourceRefs.All(sources.Contains), Is.True, $"Unknown source on {node.Id}");
+                Assert.That(node.Conditions, Has.Count.GreaterThanOrEqualTo(2), $"Missing field conditions on {node.Id}");
                 foreach (var next in node.Choices.Select(choice => choice.NextNodeId).Where(next => !string.IsNullOrEmpty(next)))
                 {
                     Assert.That(nodes, Does.Contain(next));
@@ -118,6 +133,7 @@ namespace SHI.Tests
                 "consequence", "pressureForecast", "pressureResponse", "failed", "captured", "scattered",
                 "guide", "guideTitle", "guideIntro", "guideFieldTitle", "guideFieldText", "guideMoveTitle", "guideMoveText",
                 "guideReplyTitle", "guideReplyText", "controllerReady", "controllerOptional", "controllerHint", "guideContinue", "recordEmpty",
+                "newGame", "fieldSignal", "chronicleSeed", "fieldApplied",
             };
 
             foreach (var locale in locales)
@@ -167,6 +183,7 @@ namespace SHI.Tests
         private static ShiState Clone(ShiState state) => new()
         {
             CampaignId = state.CampaignId,
+            Seed = state.Seed,
             CurrentNodeId = state.CurrentNodeId,
             Resources = new Dictionary<string, int>(state.Resources),
             Flags = new List<string>(state.Flags),

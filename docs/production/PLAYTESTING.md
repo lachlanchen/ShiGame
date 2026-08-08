@@ -21,21 +21,22 @@ npm run build
 SHI_CDP_PORT=9321 node scripts/playtest-web.mjs
 ```
 
-The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, controller detection/D-pad/face/shoulder/Start commands, opening content, five resources, choices, pressure warnings, keyboard decisions, source classifications, save format 2, response reveal and separated deltas, Arabic RTL, resume, desktop/mobile layout, scrolled mobile cards, and console errors.
+The script sends actual mouse/key events and a synthetic standards-shaped `navigator.getGamepads()` device through the visible Chrome target. It captures screenshots and checks title metadata, WebGL canvas, first-run guide isolation/persistence/reopen, controller detection/D-pad/face/shoulder/Start commands, opening content, five resources, choices, pressure warnings, keyboard decisions, source classifications, save format 3, disclosed field signal/classification/effects, fixed-seed selection, three-stage response deltas, seed persistence, Arabic RTL, resume, desktop/mobile layout, scrolled mobile cards, and console errors.
 
 ## Current result
 
-2026-08-09 input checkpoint: localhost and the public Pages deployment both pass all 43 checks with zero page console errors. Public gameplay implementation commit: `8f31ee8c1c93bab9243f381e1a0fa4e7e88bfb92`. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
+2026-08-09 seeded-uncertainty checkpoint: localhost passes all 50 checks at `http://127.0.0.1:4173/?seed=5EED2026` with zero page console errors. Public deployment verification is pending the checkpoint commit; the preceding input checkpoint remains publicly verified at 43 checks against `8f31ee8c1c93bab9243f381e1a0fa4e7e88bfb92`. Chrome uses ANGLE/SwiftShader because the workstation NVIDIA driver mismatch blocklists native WebGL. Evidence is in `docs/production/evidence/`; the machine-readable status names the exact tested URL and commit boundary.
 
 Visual review after automation:
 
 - Title composition: pass.
 - Desktop map/story hierarchy: pass.
-- Pressure warnings, two-stage choice feedback, source drawer and persistent decision record: pass.
+- Pressure warnings, disclosed reconstruction-classified field signal, three-stage choice feedback, source drawer and persistent decision record: pass.
 - Arabic shell: pass after isolating untranslated English narrative as LTR.
 - Keyboard contract: pass after replacing browser-reserved `Alt+1–3` with `Shift+1–3`.
 - First-run guide: pass on desktop/mobile; copy hierarchy is readable, dismissal changes no campaign state, and the guide remains available from the header/Start button.
 - Synthetic standard gamepad: pass for title confirm, D-pad selection, face-button close/commit, shoulders and Start. This is API-path evidence, not physical-controller certification.
+- Fixed-seed contract: pass for pre-choice condition/effects, post-choice field delta, save-v3 seed persistence, and decision-record condition retention.
 - Mobile structure: pass after correcting the two-card selector; page scroll is intentional, full-width cards are readable, horizontal overflow is zero.
 - Small tactical copy: monitored; secondary labels remain readable in the reviewed captures.
 

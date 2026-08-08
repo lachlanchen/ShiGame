@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { canChoose, createInitialState, deriveEnding, localize, migrateGameState, resolveChoice } from "../src";
+import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, migrateGameState, resolveChoice, selectFieldCondition } from "../src";
 import type { Campaign } from "../src";
 
 const campaign: Campaign = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   id: "test",
   title: { en: "Test", "zh-Hans": "测试" },
   subtitle: { en: "Test", "zh-Hans": "测试" },
@@ -21,6 +21,10 @@ const campaign: Campaign = {
     context: { en: "Context", "zh-Hans": "背景" },
     dialogue: { en: "Words", "zh-Hans": "话" },
     sourceRefs: [],
+    conditions: [
+      { id: "still", claimStatus: "dramatic-reconstruction", title: { en: "Still", "zh-Hans": "静" }, signal: { en: "Still.", "zh-Hans": "静。" }, weight: 1, effects: { momentum: 0 } },
+      { id: "wind", claimStatus: "dramatic-reconstruction", title: { en: "Wind", "zh-Hans": "风" }, signal: { en: "Wind.", "zh-Hans": "风。" }, weight: 1, effects: { momentum: 0 } },
+    ],
     choices: [{
       id: "choose",
       label: { en: "Choose", "zh-Hans": "选择" },
@@ -39,7 +43,7 @@ describe("campaign engine", () => {
     expect(result.state.resources.danger).toBe(0);
     expect(result.state.history).toHaveLength(1);
     expect(result.state.history.at(0)!.afterChoice.grain).toBe(100);
-    expect(result.state.saveVersion).toBe(2);
+    expect(result.state.saveVersion).toBe(3);
     expect(result.state.completed).toBe(true);
   });
 
@@ -94,7 +98,8 @@ describe("campaign engine", () => {
 
     const migrated = migrateGameState(campaign, legacy);
 
-    expect(migrated?.saveVersion).toBe(2);
+    expect(migrated?.saveVersion).toBe(3);
+    expect(migrated?.seed).toBe(0);
     expect(migrated?.resources.grain).toBe(100);
     expect(migrated?.flags).toEqual([]);
     expect(migrated?.completed).toBe(true);
@@ -105,6 +110,51 @@ describe("campaign engine", () => {
       campaignId: "test",
       history: [{ nodeId: "wrong-node", choiceId: "choose" }],
     })).toBeNull();
+    expect(migrateGameState(campaign, {
+      saveVersion: 99,
+      campaignId: "test",
+      history: [],
+    })).toBeNull();
+  });
+
+  it("selects authored conditions from stable unsigned seed vectors", () => {
+    const node = campaign.nodes[0]!;
+    expect(hashSeedKey("chapter|0|node|0")).toBe(918888254);
+    expect(formatSeed(0x1a2b3c)).toBe("001A2B3C");
+    expect(selectFieldCondition(campaign, node, 0, 0).id).toBe("wind");
+    expect(selectFieldCondition(campaign, node, 7, 0).id).toBe("still");
+  });
+
+  it("applies the disclosed field condition after the pressure stage", () => {
+    const variable = structuredClone(campaign);
+    variable.nodes[0]!.conditions = [{
+      id: "mud",
+      claimStatus: "dramatic-reconstruction",
+      title: { en: "Mud", "zh-Hans": "泥" },
+      signal: { en: "The road sinks.", "zh-Hans": "道路下沉。" },
+      weight: 1,
+      effects: { grain: -4, danger: 3 },
+    }];
+    variable.nodes[0]!.choices[0]!.pressure = {
+      kind: "terrain",
+      warning: { en: "Pressure", "zh-Hans": "压力" },
+      reveal: { en: "Answer", "zh-Hans": "应手" },
+      effects: { grain: -10, danger: 25 },
+    };
+
+    const result = resolveChoice(variable, createInitialState(variable, 9), "choose");
+
+    expect(result.state.history[0]!.afterPressure).toEqual({ grain: 90, trust: 50, momentum: 50, people: 50, danger: 25 });
+    expect(result.state.resources).toEqual({ grain: 86, trust: 50, momentum: 50, people: 50, danger: 28 });
+    expect(result.fieldDeltas).toEqual({ grain: -4, danger: 3 });
+    expect(result.state.history[0]!.conditionId).toBe("mud");
+  });
+
+  it("rejects a format-three history whose condition does not match its seed", () => {
+    const result = resolveChoice(campaign, createInitialState(campaign, 7), "choose");
+    const tampered = structuredClone(result.state);
+    tampered.history[0]!.conditionId = "wind";
+    expect(migrateGameState(campaign, tampered)).toBeNull();
   });
 
   it("falls back to English for an untranslated locale", () => {

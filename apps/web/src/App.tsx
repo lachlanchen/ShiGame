@@ -4,10 +4,12 @@ import {
   createInitialState,
   currentSaveVersion,
   deriveEnding,
+  formatSeed,
   getNode,
   localize,
   migrateGameState,
   resolveChoice,
+  selectFieldCondition,
   supportedLocales,
   type Campaign,
   type Choice,
@@ -28,8 +30,9 @@ import { useGamepad } from "./useGamepad";
 import type { GamepadCommand } from "./gamepad";
 
 const campaign = campaignJson as unknown as Campaign;
-const SAVE_KEY = "shi.chapter-01.save.v2";
-const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v1"];
+const SAVE_KEY = "shi.chapter-01.save.v3";
+const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
+const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
 const LOCALE_KEY = "shi.locale";
 const MOTION_KEY = "shi.reduced-motion";
 const ONBOARDING_KEY = "shi.onboarding.field-guide.v1";
@@ -40,6 +43,7 @@ function readSavedState(): GameState | null {
       const migrated = migrateGameState(campaign, JSON.parse(localStorage.getItem(key) ?? "null"));
       if (!migrated || migrated.history.length === 0) continue;
       localStorage.setItem(SAVE_KEY, JSON.stringify(migrated));
+      localStorage.setItem(DRAFT_SEED_KEY, String(migrated.seed));
       for (const legacy of LEGACY_SAVE_KEYS) localStorage.removeItem(legacy);
       return migrated;
     } catch {
@@ -47,6 +51,26 @@ function readSavedState(): GameState | null {
     }
   }
   return null;
+}
+
+function seedFromUrl(): number | null {
+  const value = new URLSearchParams(window.location.search).get("seed")?.trim();
+  const match = value?.match(/^(?:0x)?([0-9a-f]{1,8})$/i);
+  return match?.[1] ? Number.parseInt(match[1], 16) >>> 0 : null;
+}
+
+function randomSeed(): number {
+  const values = new Uint32Array(1);
+  crypto.getRandomValues(values);
+  return values[0] ?? 0;
+}
+
+function initialSeed(): number {
+  const requested = seedFromUrl();
+  const stored = Number.parseInt(localStorage.getItem(DRAFT_SEED_KEY) ?? "", 10);
+  const seed = requested ?? (Number.isInteger(stored) && stored >= 0 && stored <= 0xffffffff ? stored : randomSeed());
+  localStorage.setItem(DRAFT_SEED_KEY, String(seed));
+  return seed;
 }
 
 function initialLocale(): Locale {
@@ -65,7 +89,7 @@ const contentDirection = (text: LocalizedText, locale: Locale): "ltr" | undefine
 export function App() {
   const [restoredState] = useState<GameState | null>(readSavedState);
   const [locale, setLocale] = useState<Locale>(initialLocale);
-  const [state, setState] = useState<GameState>(() => restoredState ?? createInitialState(campaign));
+  const [state, setState] = useState<GameState>(() => restoredState ?? createInitialState(campaign, initialSeed()));
   const [screen, setScreen] = useState<"title" | "play">("title");
   const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | null>(null);
   const [resolution, setResolution] = useState<ChoiceResolution | null>(null);
@@ -77,6 +101,7 @@ export function App() {
   const endingRestartRef = useRef<HTMLButtonElement>(null);
   const choiceRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const node = getNode(campaign, state.currentNodeId);
+  const activeCondition = selectFieldCondition(campaign, node, state.seed, state.history.length);
   const speaker = campaign.characters.find((character) => character.id === node.speakerId)!;
   const ending = state.completed ? deriveEnding(state) : null;
   const nodeNumber = campaign.nodes.findIndex((candidate) => candidate.id === node.id) + 1;
@@ -88,6 +113,7 @@ export function App() {
   }, [locale]);
 
   useEffect(() => {
+    localStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
     if (state.history.length > 0) {
       localStorage.setItem(SAVE_KEY, JSON.stringify(state));
       for (const legacy of LEGACY_SAVE_KEYS) localStorage.removeItem(legacy);
@@ -211,10 +237,26 @@ export function App() {
     return () => window.removeEventListener("keydown", handleShortcut);
   }, [drawer, node, resolution, screen, state]);
 
-  const restart = () => {
+  const clearSaves = () => {
     localStorage.removeItem(SAVE_KEY);
     for (const legacy of LEGACY_SAVE_KEYS) localStorage.removeItem(legacy);
-    setState(createInitialState(campaign));
+  };
+
+  const restart = () => {
+    clearSaves();
+    setState(createInitialState(campaign, state.seed));
+    localStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
+    setResolution(null);
+    setDrawer(null);
+    setScreen("play");
+    setHasSave(false);
+  };
+
+  const newChronicle = () => {
+    clearSaves();
+    const seed = randomSeed();
+    localStorage.setItem(DRAFT_SEED_KEY, String(seed));
+    setState(createInitialState(campaign, seed));
     setResolution(null);
     setDrawer(null);
     setScreen("play");
@@ -247,7 +289,7 @@ export function App() {
           <p className="title-note">{translate(locale, "openingNote")}</p>
           <div className="title-actions">
             <button className="primary-button" data-testid="begin-game" ref={beginButtonRef} onClick={enterPlay}>{hasSave ? translate(locale, "continue") : translate(locale, "begin")} <span>→</span></button>
-            {hasSave && <button className="text-button" onClick={restart}>{translate(locale, "newGame")}</button>}
+            {hasSave && <button className="text-button" onClick={newChronicle}>{translate(locale, "newGame")}</button>}
           </div>
         </section>
         <footer className="title-footer"><span>209 BCE</span><span>DAZE VILLAGE · 大澤鄉</span>{controllerConnected && <span className="controller-status">● {translate(locale, "controllerReady")}</span>}<button className={reducedMotion ? "active" : ""} onClick={toggleMotion}>{translate(locale, "reducedMotion")}</button></footer>
@@ -256,7 +298,7 @@ export function App() {
   }
 
   return (
-    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-node-id={node.id} data-save-version={currentSaveVersion} data-controller={controllerConnected ? "connected" : "none"}>
+    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-controller={controllerConnected ? "connected" : "none"}>
       <ThreeBackdrop reducedMotion={reducedMotion} />
       <header className="game-header">
         <button className="brand-button" onClick={() => setScreen("title")} aria-label="SHI title screen"><span>勢</span><div><strong>SHI</strong><small>{localize(campaign.subtitle, locale)}</small></div></button>
@@ -282,6 +324,12 @@ export function App() {
           <p className="date-line" dir={contentDirection(node.dateLabel, locale)}>{localize(node.dateLabel, locale)}</p>
           <h1 id="story-title" dir={contentDirection(node.title, locale)}>{localize(node.title, locale)}</h1>
           <p className="context" dir={contentDirection(node.context, locale)}>{localize(node.context, locale)}</p>
+          <section className="field-signal" data-testid="field-signal" aria-label={translate(locale, "fieldSignal")}>
+            <div className="field-signal-head"><span>{translate(locale, "fieldSignal")} · {translate(locale, "reconstruction")}</span><code>{translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</code></div>
+            <h2 dir={contentDirection(activeCondition.title, locale)}>{localize(activeCondition.title, locale)}</h2>
+            <p dir={contentDirection(activeCondition.signal, locale)}>{localize(activeCondition.signal, locale)}</p>
+            <div className="field-effects">{Object.entries(activeCondition.effects).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
+          </section>
           <blockquote className="dialogue">
             <p dir={contentDirection(node.dialogue, locale)}>{localize(node.dialogue, locale)}</p>
             <footer><strong dir={contentDirection(speaker.name, locale)}>{localize(speaker.name, locale)}</strong><span dir={contentDirection(speaker.role, locale)}>{localize(speaker.role, locale)}</span>{!speaker.historical && <em>{translate(locale, "reconstruction")}</em>}</footer>
@@ -295,10 +343,12 @@ export function App() {
           <div className="resolution-copy">
             <div><span>{translate(locale, "consequence")}</span><p>{localize(resolution.choice.consequence, locale)}</p></div>
             {resolution.choice.pressure && <div className="pressure-reveal"><span>{translate(locale, "pressureResponse")}</span><p dir={contentDirection(resolution.choice.pressure.reveal, locale)}>{localize(resolution.choice.pressure.reveal, locale)}</p></div>}
+            <div className="field-reveal"><span>{translate(locale, "fieldApplied")}</span><p dir={contentDirection(resolution.condition.title, locale)}>{localize(resolution.condition.title, locale)}</p></div>
           </div>
           <div className="resolution-deltas">
             <div className="delta-list action-deltas">{Object.entries(resolution.playerDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
             {Object.keys(resolution.pressureDeltas).length > 0 && <div className="delta-list pressure-deltas">{Object.entries(resolution.pressureDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
+            {Object.keys(resolution.fieldDeltas).length > 0 && <div className="delta-list field-deltas">{Object.entries(resolution.fieldDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
           </div>
           <button onClick={() => setResolution(null)} aria-label={translate(locale, "close")}>×</button>
         </div>
@@ -306,7 +356,7 @@ export function App() {
 
       {!state.completed ? (
         <section className="choices-panel">
-          <div className="choices-heading"><span>{translate(locale, "choice")}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1} · {controllerConnected ? `${translate(locale, "controllerReady")} · ${translate(locale, "controllerHint")}` : translate(locale, "keyboardHint")}</small></div>
+          <div className="choices-heading"><span>{translate(locale, "choice")} · {translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1} · {controllerConnected ? `${translate(locale, "controllerReady")} · ${translate(locale, "controllerHint")}` : translate(locale, "keyboardHint")}</small></div>
           <div className="choices-grid">
             {node.choices.map((choice, index) => {
               const enabled = canChoose(choice, state.resources);
@@ -343,7 +393,8 @@ export function App() {
             <ol className="record-list">{state.history.map((record, index) => {
               const pastNode = getNode(campaign, record.nodeId);
               const pastChoice = pastNode.choices.find((choice) => choice.id === record.choiceId)!;
-              return <li key={`${record.nodeId}-${record.choiceId}`}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{localize(pastNode.title, locale)}</small><strong>{localize(pastChoice.label, locale)}</strong><p>{localize(pastChoice.consequence, locale)}</p>{pastChoice.pressure && <p className="record-pressure"><b>{translate(locale, "pressureResponse")}</b>{localize(pastChoice.pressure.reveal, locale)}</p>}</div></li>;
+              const pastCondition = pastNode.conditions.find((condition) => condition.id === record.conditionId)!;
+              return <li key={`${record.nodeId}-${record.choiceId}`}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{localize(pastNode.title, locale)}</small><strong>{localize(pastChoice.label, locale)}</strong><p>{localize(pastChoice.consequence, locale)}</p>{pastChoice.pressure && <p className="record-pressure"><b>{translate(locale, "pressureResponse")}</b>{localize(pastChoice.pressure.reveal, locale)}</p>}<p className="record-field"><b>{translate(locale, "fieldApplied")}</b>{localize(pastCondition.title, locale)} · {Object.entries(record.conditionEffects).map(([key, value]) => effectLabel(key as ResourceKey, value ?? 0, locale)).join(" · ")}</p></div></li>;
             })}</ol>
           )}
           <button className="text-button restart-button" onClick={restart}>{translate(locale, "restart")}</button>

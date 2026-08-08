@@ -53,6 +53,15 @@ export interface PressureResponse {
   effects: Partial<Resources>;
 }
 
+export interface FieldCondition {
+  id: string;
+  claimStatus: "dramatic-reconstruction";
+  title: LocalizedText;
+  signal: LocalizedText;
+  weight: number;
+  effects: Partial<Resources>;
+}
+
 export interface Choice {
   id: string;
   label: LocalizedText;
@@ -78,6 +87,7 @@ export interface CampaignNode {
   context: LocalizedText;
   dialogue: LocalizedText;
   sourceRefs: string[];
+  conditions: FieldCondition[];
   choices: Choice[];
 }
 
@@ -97,15 +107,19 @@ export interface Campaign {
 export interface ChoiceRecord {
   nodeId: string;
   choiceId: string;
+  conditionId: string;
   before: Resources;
   afterChoice: Resources;
   pressureEffects: Partial<Resources>;
+  afterPressure: Resources;
+  conditionEffects: Partial<Resources>;
   after: Resources;
 }
 
 export interface GameState {
-  saveVersion: 2;
+  saveVersion: 3;
   campaignId: string;
+  seed: number;
   currentNodeId: string;
   resources: Resources;
   flags: string[];
@@ -118,7 +132,9 @@ export interface ChoiceResolution {
   state: GameState;
   node: CampaignNode;
   choice: Choice;
+  condition: FieldCondition;
   playerDeltas: Partial<Resources>;
   pressureDeltas: Partial<Resources>;
+  fieldDeltas: Partial<Resources>;
   deltas: Partial<Resources>;
 }

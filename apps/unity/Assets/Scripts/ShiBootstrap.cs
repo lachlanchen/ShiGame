@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -21,8 +22,10 @@ namespace SHI
 
     public sealed class ShiGameController : MonoBehaviour
     {
-        private const string SaveKey = "shi.chapter-01.state.v2";
-        private const string LegacySaveKey = "shi.chapter-01.state.v1";
+        private const string SaveKey = "shi.chapter-01.state.v3";
+        private const string LegacySaveKeyV2 = "shi.chapter-01.state.v2";
+        private const string LegacySaveKeyV1 = "shi.chapter-01.state.v1";
+        private const string DraftSeedKey = "shi.chapter-01.seed.v1";
         private const string GuideKey = "shi.onboarding.field-guide.v1";
         private readonly string[] locales = { "en", "zh-Hans", "zh-Hant", "ja", "ko", "vi", "ar", "fr", "es", "ru", "de" };
         private readonly string[] resources = { "grain", "trust", "momentum", "people", "danger" };
@@ -54,7 +57,7 @@ namespace SHI
             yield return LoadText("chapter-01-daze.json", text => campaign = ShiCampaign.Parse(text));
             yield return LoadTexture("daze-village-rain-v1.png", texture => keyArt = texture);
             if (campaign == null) yield break;
-            state = LoadState() ?? ShiState.Create(campaign);
+            state = LoadState() ?? ShiState.Create(campaign, LoadOrCreateSeed());
             showGuideOnEntry = state.History.Count == 0 && PlayerPrefs.GetInt(GuideKey, 0) == 0;
             world = gameObject.AddComponent<WarTableWorld>();
             world.Build(campaign);
@@ -131,7 +134,7 @@ namespace SHI
 
         private ShiState? LoadState()
         {
-            foreach (var key in new[] { SaveKey, LegacySaveKey })
+            foreach (var key in new[] { SaveKey, LegacySaveKeyV2, LegacySaveKeyV1 })
             {
                 if (!PlayerPrefs.HasKey(key)) continue;
                 try
@@ -140,7 +143,9 @@ namespace SHI
                     var replayed = campaign == null ? null : ShiState.Replay(campaign, loaded);
                     if (replayed == null || replayed.History.Count == 0) continue;
                     PlayerPrefs.SetString(SaveKey, JsonConvert.SerializeObject(replayed));
-                    PlayerPrefs.DeleteKey(LegacySaveKey);
+                    PlayerPrefs.SetString(DraftSeedKey, replayed.Seed.ToString());
+                    PlayerPrefs.DeleteKey(LegacySaveKeyV2);
+                    PlayerPrefs.DeleteKey(LegacySaveKeyV1);
                     return replayed;
                 }
                 catch { /* Try the next known save version. */ }
@@ -148,10 +153,28 @@ namespace SHI
             return null;
         }
 
+        private static uint NewSeed()
+        {
+            var bytes = new byte[4];
+            using var generator = RandomNumberGenerator.Create();
+            generator.GetBytes(bytes);
+            return System.BitConverter.ToUInt32(bytes, 0);
+        }
+
+        private static uint LoadOrCreateSeed()
+        {
+            if (PlayerPrefs.HasKey(DraftSeedKey) && uint.TryParse(PlayerPrefs.GetString(DraftSeedKey), out var stored)) return stored;
+            var seed = NewSeed();
+            PlayerPrefs.SetString(DraftSeedKey, seed.ToString());
+            PlayerPrefs.Save();
+            return seed;
+        }
+
         private void Save()
         {
             if (state == null) return;
             PlayerPrefs.SetString(SaveKey, JsonConvert.SerializeObject(state));
+            PlayerPrefs.SetString(DraftSeedKey, state.Seed.ToString());
             PlayerPrefs.Save();
         }
 
@@ -201,8 +224,9 @@ namespace SHI
             GUI.Label(new Rect(panel.x, panel.y + 75, panel.width, 45), campaign!.Text(campaign.Subtitle, locale), bodyStyle);
             GUI.Label(new Rect(panel.x, panel.y + 145, panel.width, 110), T("opening"), bodyStyle);
             if (GUI.Button(new Rect(panel.x, panel.y + 280, 250, 58), (state!.History.Count > 0 ? T("continue") : T("begin")) + "  →", buttonStyle)) EnterPlay();
+            if (state.History.Count > 0 && GUI.Button(new Rect(panel.x + 270, panel.y + 280, 220, 58), T("newGame"), buttonStyle)) NewChronicle();
             DrawLocale(new Rect(panel.x, panel.y + 360, 310, 32));
-            GUI.Label(new Rect(panel.x, panel.y + 410, panel.width, 44), (ControllerConnected ? T("controllerReady") : T("controllerOptional")) + " · A / Cross", smallStyle);
+            GUI.Label(new Rect(panel.x, panel.y + 410, panel.width, 44), (ControllerConnected ? T("controllerReady") : T("controllerOptional")) + " · A / Cross · " + T("chronicleSeed") + " " + ShiState.FormatSeed(state.Seed), smallStyle);
         }
 
         private void DrawLocale(Rect rect)
@@ -218,8 +242,9 @@ namespace SHI
         private void DrawGame()
         {
             var node = campaign!.Node(state!.CurrentNodeId);
+            var condition = state.ActiveCondition(node);
             GUI.Box(new Rect(0, 0, Screen.width, 74), "");
-            GUI.Label(new Rect(32, 15, 220, 48), "勢  SHI", titleStyle);
+            if (GUI.Button(new Rect(32, 16, 205, 40), "勢  SHI", GUI.skin.button)) title = true;
             if (GUI.Button(new Rect(260, 20, 105, 30), T("guide"))) ToggleGuide();
             if (GUI.Button(new Rect(375, 20, 105, 30), T("record") + $"  {state.History.Count}")) ToggleRecord();
             if (GUI.Button(new Rect(490, 20, 105, 30), T("sources") + $"  {node.SourceRefs.Count}")) ToggleSources();
@@ -234,6 +259,11 @@ namespace SHI
             }
             var storyX = Screen.width * 0.43f;
             var storyWidth = Screen.width - storyX - 45;
+            GUI.Box(new Rect(32, 145, storyX - 64, 132), "");
+            GUI.Label(new Rect(48, 157, storyX - 96, 20), T("fieldSignal") + " · " + T("reconstruction") + " · " + T("chronicleSeed") + " " + ShiState.FormatSeed(state.Seed), smallStyle);
+            GUI.Label(new Rect(48, 181, storyX - 96, 28), campaign.Text(condition.Title, locale), bodyStyle);
+            GUI.Label(new Rect(48, 211, storyX - 96, 42), campaign.Text(condition.Signal, locale), smallStyle);
+            GUI.Label(new Rect(48, 251, storyX - 96, 20), EffectsText(condition.Effects), smallStyle);
             GUI.Label(new Rect(storyX, 145, storyWidth, 28), campaign.Text(node.DateLabel, locale).ToUpperInvariant(), smallStyle);
             GUI.Label(new Rect(storyX, 177, storyWidth, 75), campaign.Text(node.Title, locale), titleStyle);
             GUI.Label(new Rect(storyX, 258, storyWidth, 110), campaign.Text(node.Context, locale), bodyStyle);
@@ -281,7 +311,8 @@ namespace SHI
         {
             if (campaign == null || resolution == null) return;
             var width = Mathf.Min(940, Screen.width - 80);
-            var rect = new Rect((Screen.width - width) / 2, 125, width, resolution.Choice.Pressure == null ? 105 : 145);
+            var fieldY = resolution.Choice.Pressure == null ? 80 : 142;
+            var rect = new Rect((Screen.width - width) / 2, 125, width, fieldY + 52);
             GUI.Box(rect, "");
             GUI.Label(new Rect(rect.x + 18, rect.y + 12, width - 80, 22), T("consequence"), smallStyle);
             GUI.Label(new Rect(rect.x + 18, rect.y + 35, width - 50, 42), campaign.Text(resolution.Choice.Consequence, locale), bodyStyle);
@@ -290,6 +321,8 @@ namespace SHI
                 GUI.Label(new Rect(rect.x + 18, rect.y + 80, width - 80, 20), T("pressureResponse"), smallStyle);
                 GUI.Label(new Rect(rect.x + 18, rect.y + 101, width - 50, 38), campaign.Text(resolution.Choice.Pressure.Reveal, locale), smallStyle);
             }
+            GUI.Label(new Rect(rect.x + 18, rect.y + fieldY, width - 80, 20), T("fieldApplied"), smallStyle);
+            GUI.Label(new Rect(rect.x + 18, rect.y + fieldY + 21, width - 50, 26), campaign.Text(resolution.Condition.Title, locale) + " · " + EffectsText(resolution.FieldDeltas), smallStyle);
             if (GUI.Button(new Rect(rect.x + width - 38, rect.y + 8, 28, 28), "×")) resolution = null;
         }
 
@@ -328,13 +361,16 @@ namespace SHI
                 var entry = state.History[index];
                 var pastNode = campaign.Node(entry.NodeId);
                 var choice = pastNode.Choices.Find(candidate => candidate.Id == entry.ChoiceId);
-                if (choice == null) continue;
+                var condition = pastNode.Conditions.Find(candidate => candidate.Id == entry.ConditionId);
+                if (choice == null || condition == null) continue;
                 GUI.Label(new Rect(Screen.width - width + 25, y, 32, 24), (index + 1).ToString("00"), smallStyle);
                 GUI.Label(new Rect(Screen.width - width + 62, y, width - 87, 28), campaign.Text(choice.Label, locale), bodyStyle);
                 GUI.Label(new Rect(Screen.width - width + 62, y + 30, width - 87, 42), campaign.Text(choice.Consequence, locale), smallStyle);
                 if (choice.Pressure != null)
                     GUI.Label(new Rect(Screen.width - width + 62, y + 72, width - 87, 45), T("pressureResponse") + ": " + campaign.Text(choice.Pressure.Reveal, locale), smallStyle);
-                y += choice.Pressure == null ? 88 : 126;
+                var fieldY = choice.Pressure == null ? y + 72 : y + 116;
+                GUI.Label(new Rect(Screen.width - width + 62, fieldY, width - 87, 42), T("fieldApplied") + ": " + campaign.Text(condition.Title, locale) + " · " + EffectsText(entry.ConditionEffects), smallStyle);
+                y += choice.Pressure == null ? 124 : 168;
             }
         }
 
@@ -466,17 +502,45 @@ namespace SHI
 
         private void Restart()
         {
-            if (campaign == null) return;
+            if (campaign == null || state == null) return;
             PlayerPrefs.DeleteKey(SaveKey);
-            PlayerPrefs.DeleteKey(LegacySaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV2);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV1);
+            PlayerPrefs.SetString(DraftSeedKey, state.Seed.ToString());
             PlayerPrefs.Save();
-            state = ShiState.Create(campaign);
+            state = ShiState.Create(campaign, state.Seed);
             resolution = null;
             sourcesOpen = false;
             recordOpen = false;
             guideOpen = false;
             selectedChoiceIndex = 0;
             world?.SetActiveSite(campaign.Node(campaign.StartNodeId).SiteId);
+        }
+
+        private void NewChronicle()
+        {
+            if (campaign == null) return;
+            PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV2);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV1);
+            var seed = NewSeed();
+            PlayerPrefs.SetString(DraftSeedKey, seed.ToString());
+            PlayerPrefs.Save();
+            state = ShiState.Create(campaign, seed);
+            title = false;
+            resolution = null;
+            sourcesOpen = false;
+            recordOpen = false;
+            guideOpen = false;
+            selectedChoiceIndex = 0;
+            world?.SetActiveSite(campaign.Node(campaign.StartNodeId).SiteId);
+        }
+
+        private string EffectsText(IReadOnlyDictionary<string, int> effects)
+        {
+            var parts = new List<string>();
+            foreach (var pair in effects) parts.Add((pair.Value > 0 ? "+" : "") + pair.Value + " " + T(pair.Key));
+            return string.Join(" · ", parts);
         }
 
         private string T(string key) => ShiUiText.Get(locale, key);

@@ -10,6 +10,7 @@ vi.mock("./components/ThreeBackdrop", () => ({
 
 beforeEach(() => {
   localStorage.clear();
+  localStorage.setItem("shi.chapter-01.seed.v1", "0");
   localStorage.setItem("shi.onboarding.field-guide.v1", "complete");
   Object.defineProperty(window, "matchMedia", {
     configurable: true,
@@ -29,7 +30,7 @@ describe("playable web shell", () => {
     const view = render(<App />);
 
     fireEvent.click(view.getByTestId("begin-game"));
-    expect(view.getByTestId("guide-drawer").textContent).toContain("Every order changes the position twice");
+    expect(view.getByTestId("guide-drawer").textContent).toContain("Every order resolves in three strokes");
     fireEvent.click(view.getByTestId("guide-continue"));
 
     expect(view.queryByTestId("guide-drawer")).toBeNull();
@@ -67,12 +68,16 @@ describe("playable web shell", () => {
     fireEvent.click(view.getByTestId("begin-game"));
 
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("rain-order");
+    expect(view.getByTestId("shi-app").getAttribute("data-seed")).toBe("00000000");
+    expect(view.getByTestId("field-signal").textContent).toContain("Water over the axle");
+    expect(view.getByTestId("field-signal").textContent).toContain("-3 Grain");
     fireEvent.keyDown(window, { key: "!", code: "Digit1", shiftKey: true });
 
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council"));
     expect(view.getByTestId("resolution").textContent).toContain("The position answers");
     expect(view.getByTestId("resolution").textContent).toContain("relay clerk");
-    await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v2") ?? "null")?.saveVersion).toBe(2));
+    expect(view.getByTestId("resolution").textContent).toContain("Field condition resolves");
+    await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "null")?.saveVersion).toBe(3));
   });
 
   it("opens accessible drawers with shortcuts and closes them with Escape", () => {
@@ -104,6 +109,11 @@ describe("playable web shell", () => {
 
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council");
     expect(localStorage.getItem("shi.chapter-01.save.v1")).toBeNull();
-    await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v2") ?? "null")?.resources.danger).toBe(59));
+    await waitFor(() => {
+      const migrated = JSON.parse(localStorage.getItem("shi.chapter-01.save.v3") ?? "null");
+      expect(migrated?.resources.danger).toBe(61);
+      expect(migrated?.seed).toBe(0);
+      expect(migrated?.history[0]?.conditionId).toBe("water-over-axle");
+    });
   });
 });

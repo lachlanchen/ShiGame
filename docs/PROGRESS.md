@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Seeded uncertainty checkpoint
+
+- Added the reviewed authored-field contract: a recorded uint32 chronicle seed selects one weighted condition using identical FNV-1a logic in TypeScript and C#, while the complete signal and exact effects are disclosed before commitment.
+- Classified every field condition as dramatic reconstruction in the payload, schema, validator, both clients and native preflight. Conditions cannot change routes, flags or requirements and Chapter I effects are capped at ±6.
+- Authored twelve English/Simplified-Chinese rain, road, supply, rumor and observation conditions across all six scenes. Resolution and the decision ledger now preserve player move → pressure response → field condition as three distinct stages.
+- Upgraded browser and Unity persistence to save format 3. New chronicle, same-seed restart, hexadecimal URL sharing, v1/v2 replay under legacy seed zero, v3 seed/condition tamper rejection, and unknown-version rejection are implemented in both engines. Runtime, editor and EditMode-test sources pass offline type compilation; official test execution remains license-gated.
+- Expanded shared core coverage to 11 tests while retaining 12 web integration tests. Content validation explores every condition at every reachable decision: 722 successful routes and 54 capture/scattering routes, with no deadlock and all three conclusions retained.
+- Expanded dedicated visible-browser QA from 43 to 50 checks. Localhost passes at `?seed=5EED2026` with zero console errors; desktop, Arabic RTL, 390×844 mobile, response and record captures were visually reviewed. Public verification is pending the checkpoint deployment.
+
+Next gate: publish and visibly re-run the 50-check fixed-seed suite on GitHub Pages, then conduct physical-controller and first-time-player sessions while resolving the Unity account license gate.
+
 ## 2026-08-09 · Input and first-minute checkpoint
 
 - Added a one-time but permanently replayable field guide that teaches field → move → answer over the live opening position without changing resources, decision history or save format.
@@ -10,7 +21,7 @@
 - Preserved the distinction between synthetic Gamepad API validation and physical hardware certification. Xbox/PlayStation-layout reconnect and focus-loss sessions remain open alongside external player observation.
 - Published implementation commit `8f31ee8`; both GitHub validation and Pages deployment passed, then the dedicated visible browser repeated all 43 checks on the public build with zero console errors.
 
-Next gate: conduct physical-controller and first-time-player sessions while progressing the reviewed seeded-uncertainty contract and Unity license activation.
+Next gate at that checkpoint: conduct physical-controller and first-time-player sessions while progressing the reviewed seeded-uncertainty contract and Unity license activation.
 
 ## 2026-08-09 · Systems proof checkpoint
 
@@ -24,7 +35,7 @@ Next gate: conduct physical-controller and first-time-player sessions while prog
 - Reworked response/ledger visuals and reviewed desktop English, Arabic RTL, and 390×844 mobile captures. The first `Alt+1` design was rejected after Chrome consumed it; the first mobile two-card layout was rejected after screenshot review.
 - Visible localhost and public GitHub Pages noVNC QA pass 31 checks with zero console errors, including pressure warnings/reveal/deltas, save-v2 persistence, keyboard paths, record retention, and scrolled mobile-card readability. Public gameplay commit: `ecdc9fe`.
 
-Next gate: activate Unity licensing and pass native import, official C# compilation, EditMode tests, Linux/Web builds and observed player sessions; in parallel, start the reviewed seeded-uncertainty and gamepad-accessibility design gates before Chapter II expansion.
+Next gate at that checkpoint: activate Unity licensing and pass native import, official C# compilation, EditMode tests, Linux/Web builds and observed player sessions; in parallel, start the reviewed seeded-uncertainty and gamepad-accessibility design gates before Chapter II expansion.
 
 ## 2026-08-08 · Foundation checkpoint
 
