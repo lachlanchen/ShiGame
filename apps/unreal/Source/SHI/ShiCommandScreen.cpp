@@ -2,6 +2,7 @@
 
 #include "HAL/PlatformProcess.h"
 #include "ShiGameMode.h"
+#include "Styling/CoreStyle.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
@@ -310,7 +311,8 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
 
     return SNew(SHorizontalBox)
         + SHorizontalBox::Slot().FillWidth(0.48f)[
-            SNew(SBorder).Padding(4).BorderBackgroundColor(FLinearColor(0.025f, 0.03f, 0.025f, 0.91f))[
+            SNew(SBorder).Padding(4).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+            .BorderBackgroundColor(FLinearColor(0.025f, 0.03f, 0.025f, 0.94f))[
                 SNew(SScrollBox) + SScrollBox::Slot()[Root]
             ]
         ]
@@ -418,7 +420,8 @@ TSharedRef<SWidget> SShiCommandScreen::BuildEvidenceLayout(AShiGameMode& Mode, c
 
     return SNew(SHorizontalBox)
         + SHorizontalBox::Slot().FillWidth(0.64f)[
-            SNew(SBorder).Padding(4).BorderBackgroundColor(FLinearColor(0.025f, 0.03f, 0.025f, 0.95f))[
+            SNew(SBorder).Padding(4).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+            .BorderBackgroundColor(FLinearColor(0.025f, 0.03f, 0.025f, 0.97f))[
                 SAssignNew(EvidenceScroll, SScrollBox) + SScrollBox::Slot()[Root]
             ]
         ]
