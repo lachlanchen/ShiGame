@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal fail-closed order-transaction checkpoint
+
+- Closed a critical split-state risk in the native path. Previously, `IssueSelectedOrder` mutated the active campaign and attempted autosave before refreshed 3D signals and the consequence plan were proven representable; a later world/camera rejection could leave the chronicle ahead of presentation.
+- Added `FShiOrderTransactionModel`. It resolves exactly one order on a copied session, chooses the next legal briefing, builds and spatially validates all nine live signals, builds the complete consequence sentence, then independently recomputes and exactly compares the serialized session, full resolution record, selection, every signal field and every cinematic field. Output assignment is atomic.
+- GameMode now checks the command camera, all nine signal actors and every cinematic focus actor before commit. With healthy persistence it writes the prepared candidate through temporary-file replacement first, then swaps the already-validated session/world/selection and starts the already-validated cinema. Rule, world, actor, cinema or write failure displays **Order held** and preserves the current chronicle.
+- Applied the same durable-first discipline to two-step restart: the fresh session/world must build, bind to live actors and save before active memory is replaced. The existing incompatible-save unsaved preview remains explicit and never overwrites the rejected file.
+- Added `SHI.Campaign.OrderTransactionV1` attacks for resolution, world, cinematic, selection and hidden-extra-decision drift; illegal builds cannot replace an accepted transaction, and the active save export remains byte-identical through every attack. `SHI.Campaign.CrossEngineReplayV1` now preflights, independently revalidates and commits this full transaction for every turn of all 46 golden routes while asserting source history/position immutability.
+- Exact implementation `f866d32f45d14afb7241de7e70c781f93b79a09f` passes `npm ci` with zero vulnerabilities and the complete build from a detached clean worktree: 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 golden routes, canonical content/audio/history/conformance, Unreal transaction preflight, accessibility/font/privacy/type gates and unchanged Web budgets.
+- This is source-level clean-build evidence, not native Unreal proof. The C++ transaction suite has not compiled or executed, and real file-write/actor-removal injection, success/restart/resume observation, PIE progression and packaged crash/relaunch remain red until the official editor is available.
+
+Next gate: after Epic sign-in and official engine installation, compile and execute `SHI.Campaign.OrderTransactionV1` first, inject missing-actor and unwritable-save failures in PIE, verify no state or save drift, then complete the restrained/cuts-only cinematic route and packaged restart/resume checks.
+
 ## 2026-08-09 · Unreal bounded-motion and semantic-lens checkpoint
 
 - Replaced uniform short camera sweeps with deterministic shot authorship. The first consequence view always cuts from the player's unconstrained prior inspection; later views ease only when their exact camera targets are within 100 Unreal units and 6°, otherwise they cut while retaining the same reading time.

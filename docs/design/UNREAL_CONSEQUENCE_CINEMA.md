@@ -1,10 +1,10 @@
 # Unreal consequence-cinema contract
 
-Status: source-authored at implementation `0459db937e5117af388608f9d81d47e4b2e7afab`; native compilation, automation execution, PIE motion/input review and packaged-build review remain open.
+Status: bounded motion/lens grammar source-authored at `0459db937e5117af388608f9d81d47e4b2e7afab` and integrated into the fail-closed order transaction at `f866d32f45d14afb7241de7e70c781f93b79a09f`; native compilation, automation execution, PIE motion/input/failure review and packaged-build review remain open.
 
 ## Purpose
 
-An issued order should feel consequential without turning the deterministic campaign into an unskippable cutscene or hiding the result behind spectacle. Unreal therefore presents each completed resolution as a short, data-bound camera sentence over the command space. Gameplay, history and saving are outside this presentation layer: the campaign session resolves first, the live world snapshot rebuilds from that result, and only then may the camera sequence begin.
+An issued order should feel consequential without turning the deterministic campaign into an unskippable cutscene or hiding the result behind spectacle. Unreal therefore prepares each resolution as a short, data-bound camera sentence over the command space. Gameplay remains owned by the campaign session, but commit is transactional: a copied session resolves, the live-world snapshot and camera sentence build and independently revalidate, runtime actor closure and the candidate save pass, and only then does the active chronicle advance and presentation begin.
 
 ## Stable beat grammar
 
@@ -27,7 +27,7 @@ The sequence is 3.52 seconds without an oath beat and 4.08 seconds with one. The
 - The final five resources must agree simultaneously across session state, `Resolution.Record.After` and the live resource signals before a plan is accepted.
 - The final beat always focuses the current campaign site. Only the supported terminal states `captured` and `scattered` may use a lost-position label, and only after completion.
 - Field, pursuit, method-read and oath remain project-authored dramatic reconstruction/game-system state. The sequence creates no historical claim and packages no private source or quotation.
-- Planning is atomic. A rejected candidate cannot replace a previously accepted plan, and runtime startup additionally requires a live actor for every planned focus.
+- Planning is part of the [fail-closed order transaction](UNREAL_ORDER_TRANSACTION.md). A rejected rule/world/cinema candidate cannot replace a previously accepted transaction; runtime preflight additionally requires the camera, all nine command actors and every planned focus actor before the candidate save or active state can advance.
 
 ## Control and presentation
 
@@ -35,10 +35,10 @@ During a consequence sequence, exactly one site or signal carries selected scale
 
 The command surface exposes **Camera motion · restrained** / **Reduced motion · cuts only** through its button, `V`, or the standard-gamepad Menu button. The preference is stored separately in Unreal's user settings. Cuts-only applies to site inspection, signal inspection and every consequence shot; it preserves each consequence beat's reading time and semantic lens rather than shortening or deleting information. Enabling it during an ordinary eased inspection completes that move immediately. The control is isolated during evidence and consequence modes and does not wake an armed audio preference.
 
-All other pointer, keyboard, controller, evidence, order, restart and mixer commands are blocked at both the visible-control and GameMode command boundaries until the sequence completes or is skipped. Audio may have already emitted the semantic outcome cue, but cinema neither assumes nor claims that a local autosave succeeded; save status remains separately visible.
+All other pointer, keyboard, controller, evidence, order, restart and mixer commands are blocked at both the visible-control and GameMode command boundaries until the sequence completes or is skipped. The semantic outcome cue and camera start occur only after a healthy-persistence candidate has been durably written and committed; explicitly labeled unsaved-preview play remains the sole persistence exception.
 
 ## Acceptance
 
-`SHI.Cinematic.ResolutionGrammarV1` authors native tests for canonical order, oath establishment, neutral method read, exact final position, the five-second ceiling, non-mutation, focus closure, first-shot cut, bounded near-target ease, fixed semantic lenses, hostile motion/lens drift, timing/order/layer attacks, terminal capture, resource drift and atomic failure. `SHI.Campaign.CrossEngineReplayV1` also builds a post-order world snapshot and consequence plan after every turn of all 46 fixed-seed golden routes, including six terminal failure routes.
+`SHI.Cinematic.ResolutionGrammarV1` authors native tests for canonical order, oath establishment, neutral method read, exact final position, the five-second ceiling, non-mutation, focus closure, first-shot cut, bounded near-target ease, fixed semantic lenses, hostile motion/lens drift, timing/order/layer attacks, terminal capture, resource drift and atomic failure. `SHI.Campaign.OrderTransactionV1` attacks cinematic drift inside the complete rule/world/save boundary. `SHI.Campaign.CrossEngineReplayV1` prepares, independently revalidates and commits the complete transaction after every turn of all 46 fixed-seed golden routes, including six terminal failure routes.
 
 The repository preflight and the exact detached clean build pass at the implementation above. This is source evidence, not native proof. Acceptance still requires the official Unreal 5.8 compiler, both native suites executing, visible PIE mouse/keyboard/gamepad traversal, natural completion and mid-beat skip capture, camera/Slate legibility and motion review, complete-route observation, performance capture and a clean packaged Linux launch.
