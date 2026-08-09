@@ -20,6 +20,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
+#include "ShiSoundscapeComponent.h"
 
 AShiGameMode::AShiGameMode()
 {
@@ -59,6 +60,7 @@ void AShiGameMode::BeginPlay()
             }
         }
         SelectFirstAvailableChoice();
+        CreateSoundscape();
         CreateCommandSpace();
     }
 
@@ -71,6 +73,7 @@ void AShiGameMode::BeginPlay()
 
 void AShiGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+    if (AudioDirector) AudioDirector->Stop();
     if (CommandScreen.IsValid() && GEngine && GEngine->GameViewport)
         GEngine->GameViewport->RemoveViewportWidgetContent(CommandScreen.ToSharedRef());
     CommandScreen.Reset();
@@ -85,6 +88,8 @@ void AShiGameMode::SelectChoice(int32 Index)
     if (bRestartArmed) SaveStatus = TEXT("RESTART CANCELLED · CURRENT CHRONICLE PRESERVED");
     bRestartArmed = false;
     LastConsequence.Empty();
+    ResumeSoundFromGesture();
+    if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("select")));
     RefreshScreen();
 }
 
@@ -106,6 +111,7 @@ void AShiGameMode::IssueSelectedOrder()
     const double Now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0;
     if (Now - LastOrderIssueTime < 0.15) return;
     LastOrderIssueTime = Now;
+    ResumeSoundFromGesture();
 
     FShiResolutionResult Resolution;
     FString ResolutionError;
@@ -142,6 +148,12 @@ void AShiGameMode::IssueSelectedOrder()
             ? FString::Printf(TEXT("AUTOSAVED · %d DECISIONS"), Session.GetHistory().Num())
             : FString::Printf(TEXT("AUTOSAVE FAILED · %s"), *PersistenceError);
     }
+    if (AudioDirector)
+    {
+        const FName Cue = !Session.GetFailureReason().IsEmpty() ? FName(TEXT("failure"))
+            : Session.IsCompleted() ? FName(TEXT("ending")) : FName(TEXT("commit"));
+        AudioDirector->PlayCue(Cue);
+    }
     BeginCameraBeat();
     RefreshScreen();
 }
@@ -157,6 +169,7 @@ void AShiGameMode::Tick(float DeltaSeconds)
         if (Controller->WasInputKeyJustPressed(EKeys::Left) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Left)) CycleChoice(-1);
         if (Controller->WasInputKeyJustPressed(EKeys::Right) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Right)) CycleChoice(1);
         if (Controller->WasInputKeyJustPressed(EKeys::Enter) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Bottom)) IssueSelectedOrder();
+        if (Controller->WasInputKeyJustPressed(EKeys::M) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Top)) ToggleSound();
         if (CameraBeatDuration > 0.f && Controller->WasInputKeyJustPressed(EKeys::SpaceBar)) CameraBeatElapsed = CameraBeatDuration;
     }
     if (CameraBeatDuration <= 0.f || !CommandCamera.IsValid()) return;
@@ -253,12 +266,81 @@ void AShiGameMode::RequestNewChronicle()
     SaveStatus = SaveChronicle(PersistenceError)
         ? TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY")
         : FString::Printf(TEXT("NEW CHRONICLE · AUTOSAVE FAILED · %s"), *PersistenceError);
+    if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("close")));
+    RefreshScreen();
+}
+
+bool AShiGameMode::IsAudioReady() const { return AudioDirector && AudioDirector->IsContractReady(); }
+bool AShiGameMode::IsSoundEnabled() const { return AudioDirector && AudioDirector->IsSoundEnabled(); }
+bool AShiGameMode::IsSoundPreferred() const { return AudioDirector && AudioDirector->IsSoundPreferred(); }
+float AShiGameMode::GetAmbienceLevel() const { return AudioDirector ? AudioDirector->GetAmbienceLevel() : 0.f; }
+float AShiGameMode::GetEffectsLevel() const { return AudioDirector ? AudioDirector->GetEffectsLevel() : 0.f; }
+
+void AShiGameMode::ToggleSound()
+{
+    if (!IsAudioReady()) return;
+    if (AudioDirector->IsSoundEnabled())
+    {
+        AudioDirector->PlayCue(FName(TEXT("close")));
+        AudioDirector->SetSoundEnabled(false);
+        AudioStatus = TEXT("SOUND OFF · TEXT AND GEOMETRY RETAIN ALL GAMEPLAY INFORMATION");
+    }
+    else
+    {
+        AudioDirector->SetSoundEnabled(true);
+        AudioDirector->PlayCue(FName(TEXT("drawer")));
+        AudioStatus = TEXT("SOUND ON · ENGINEERING PREVIEW · HUMAN LISTENING REVIEW OPEN");
+    }
+    RefreshScreen();
+}
+
+void AShiGameMode::AdjustAmbience(int32 Direction)
+{
+    if (!IsAudioReady() || Direction == 0) return;
+    if (!AudioDirector->IsSoundEnabled()) AudioDirector->SetSoundEnabled(true);
+    AudioDirector->SetAmbienceLevel(AudioDirector->GetAmbienceLevel() + Direction * .05f);
+    AudioDirector->PlayCue(FName(TEXT("inspect")));
+    AudioStatus = FString::Printf(TEXT("RAIN %d%% · PERSISTED LOCALLY"), FMath::RoundToInt(AudioDirector->GetAmbienceLevel() * 100.f));
+    RefreshScreen();
+}
+
+void AShiGameMode::AdjustEffects(int32 Direction)
+{
+    if (!IsAudioReady() || Direction == 0) return;
+    if (!AudioDirector->IsSoundEnabled()) AudioDirector->SetSoundEnabled(true);
+    AudioDirector->SetEffectsLevel(AudioDirector->GetEffectsLevel() + Direction * .05f);
+    AudioDirector->PlayCue(FName(TEXT("select")));
+    AudioStatus = FString::Printf(TEXT("CUES %d%% · PERSISTED LOCALLY"), FMath::RoundToInt(AudioDirector->GetEffectsLevel() * 100.f));
     RefreshScreen();
 }
 
 void AShiGameMode::RefreshScreen()
 {
     if (CommandScreen.IsValid()) CommandScreen->Refresh();
+}
+
+void AShiGameMode::ResumeSoundFromGesture()
+{
+    if (AudioDirector && AudioDirector->ResumePreferredFromGesture())
+        AudioStatus = TEXT("SOUND ON · ENGINEERING PREVIEW · HUMAN LISTENING REVIEW OPEN");
+}
+
+void AShiGameMode::CreateSoundscape()
+{
+    AudioDirector = NewObject<UShiSoundscapeComponent>(this, TEXT("ShiSoundscape"));
+    FString Error;
+    if (!AudioDirector || !AudioDirector->LoadCanonical(Error))
+    {
+        AudioStatus = FString::Printf(TEXT("SOUND UNAVAILABLE · %s"), *Error);
+        AudioDirector = nullptr;
+        return;
+    }
+    AudioDirector->RegisterComponentWithWorld(GetWorld());
+    AudioDirector->Initialize(AudioDirector->GetContractSampleRate());
+    AudioDirector->SetAmbienceActive(true);
+    AudioStatus = AudioDirector->IsSoundPreferred()
+        ? TEXT("SOUND ARMED · RESUMES AFTER YOUR NEXT COMMAND · NO AUTOPLAY")
+        : TEXT("SOUND OFF · OPT IN WITH M, GAMEPAD Y, OR THE SOUND CONTROL");
 }
 
 void AShiGameMode::CreateCommandSpace()

@@ -7,7 +7,7 @@ public class SHI : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
         PublicDependencyModuleNames.AddRange(new[]
         {
-            "Core", "CoreUObject", "Engine", "InputCore", "Json", "JsonUtilities",
+            "Core", "CoreUObject", "Engine", "InputCore", "Json", "JsonUtilities", "AudioMixer",
             "Slate", "SlateCore"
         });
     }

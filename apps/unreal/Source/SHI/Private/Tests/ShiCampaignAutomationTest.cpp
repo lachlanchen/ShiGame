@@ -6,6 +6,7 @@
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "ShiAudioModel.h"
 #include "ShiCampaignModel.h"
 #include "ShiCampaignSession.h"
 
@@ -123,6 +124,43 @@ bool FShiCampaignSchemaTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("pursuit stages"), Campaign.OppositionStages.Num(), 3);
     TestTrue(TEXT("act/time transitions validate"), Campaign.ValidateHorizon(Error));
     if (!Error.IsEmpty()) AddError(Error);
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiAudioContractTest, "SHI.Audio.ProceduralContractV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiAudioContractTest::RunTest(const FString& Parameters)
+{
+    FShiAudioModel Audio;
+    FString Error;
+    TestTrue(TEXT("canonical audio loads"), Audio.LoadCanonical(Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestEqual(TEXT("audio schema"), Audio.SchemaVersion, 1);
+    TestEqual(TEXT("seven semantic cues"), Audio.Cues.Num(), 7);
+    TestFalse(TEXT("sound defaults off"), Audio.Mix.bDefaultEnabled);
+    TestTrue(TEXT("master cap is conservative"), Audio.Mix.MasterCap <= .8f);
+    TestEqual(TEXT("rain synthesis rate"), Audio.Ambience.SampleRate, 24000);
+
+    const TArray<float> FirstRain = FShiAudioModel::CreateRainSamples(24000, Audio.Ambience.Seed);
+    const TArray<float> RepeatedRain = FShiAudioModel::CreateRainSamples(24000, Audio.Ambience.Seed);
+    const TArray<float> OtherRain = FShiAudioModel::CreateRainSamples(24000, Audio.Ambience.Seed + 1u);
+    TestTrue(TEXT("rain is deterministic"), FirstRain == RepeatedRain);
+    TestFalse(TEXT("rain seed changes output"), FirstRain == OtherRain);
+    double RainSum = 0.0;
+    float RainPeak = 0.f;
+    for (const float Sample : FirstRain) { RainSum += Sample; RainPeak = FMath::Max(RainPeak, FMath::Abs(Sample)); }
+    TestTrue(TEXT("raw rain is zero mean"), FMath::Abs(RainSum / FirstRain.Num()) <= 0.000001);
+    TestTrue(TEXT("raw rain stays normalized"), RainPeak <= 1.f);
+
+    const float CueAudibilityFloor = FMath::Pow(10.f, -42.f / 20.f);
+    for (const TPair<FName, TArray<FShiToneData>>& Cue : Audio.Cues)
+    {
+        const TArray<float> Samples = FShiAudioModel::CreateCueSamples(Cue.Value, Audio.Envelope, Audio.Ambience.SampleRate);
+        float Peak = 0.f;
+        for (const float Sample : Samples) Peak = FMath::Max(Peak, FMath::Abs(Sample));
+        TestTrue(*FString::Printf(TEXT("cue %s clears audibility floor"), *Cue.Key.ToString()), Peak >= CueAudibilityFloor);
+        TestTrue(*FString::Printf(TEXT("cue %s remains brief"), *Cue.Key.ToString()), Samples.Num() <= FMath::CeilToInt(.5f * Audio.Ambience.SampleRate));
+    }
     return !HasAnyErrors();
 }
 

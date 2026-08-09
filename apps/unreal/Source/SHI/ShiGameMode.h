@@ -8,6 +8,7 @@
 
 class SShiCommandScreen;
 class ACameraActor;
+class UShiSoundscapeComponent;
 
 UCLASS()
 class SHI_API AShiGameMode : public AGameModeBase
@@ -30,9 +31,15 @@ public:
     const FString& GetLoadError() const { return LoadError; }
     const FString& GetSaveStatus() const { return SaveStatus; }
     const FString& GetFailureReason() const { return Session.GetFailureReason(); }
+    const FString& GetAudioStatus() const { return AudioStatus; }
     int32 GetDecisionCount() const { return Session.GetHistory().Num(); }
     bool IsCompleted() const { return Session.IsCompleted(); }
     bool IsRestartArmed() const { return bRestartArmed; }
+    bool IsAudioReady() const;
+    bool IsSoundEnabled() const;
+    bool IsSoundPreferred() const;
+    float GetAmbienceLevel() const;
+    float GetEffectsLevel() const;
     bool CanChoose(const FShiChoiceData& Choice) const { return Session.CanChoose(Choice); }
     const FShiFieldConditionData* GetCurrentFieldCondition() const { return Session.GetCurrentFieldCondition(); }
     const FShiOppositionStageData* GetCurrentOppositionStage() const { return Session.GetCurrentOppositionStage(); }
@@ -43,6 +50,9 @@ public:
     void CycleChoice(int32 Direction);
     void IssueSelectedOrder();
     void RequestNewChronicle();
+    void ToggleSound();
+    void AdjustAmbience(int32 Direction);
+    void AdjustEffects(int32 Direction);
 
 private:
     FShiCampaignModel Campaign;
@@ -51,12 +61,15 @@ private:
     FString LastConsequence;
     FString LoadError;
     FString SaveStatus;
+    FString AudioStatus;
     int32 SelectedChoiceIndex = 0;
     static constexpr uint32 CampaignSeed = 0x5EED2026u;
     bool bPersistenceEnabled = true;
     bool bRestartArmed = false;
     double LastOrderIssueTime = -1000.0;
     TSharedPtr<SShiCommandScreen> CommandScreen;
+    UPROPERTY(Transient)
+    TObjectPtr<UShiSoundscapeComponent> AudioDirector;
     TWeakObjectPtr<ACameraActor> CommandCamera;
     FVector CameraRestLocation;
     FRotator CameraRestRotation;
@@ -64,9 +77,11 @@ private:
     float CameraBeatDuration = 0.f;
 
     void CreateCommandSpace();
+    void CreateSoundscape();
     void RefreshScreen();
     void BeginCameraBeat();
     void SelectFirstAvailableChoice();
+    void ResumeSoundFromGesture();
     FString GetSavePath() const;
     bool RestoreChronicle(FString& OutError);
     bool SaveChronicle(FString& OutError) const;

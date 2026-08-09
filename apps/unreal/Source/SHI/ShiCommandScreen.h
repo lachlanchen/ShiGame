@@ -21,4 +21,7 @@ private:
     FReply Select(int32 Index);
     FReply Issue();
     FReply NewChronicle();
+    FReply ToggleSound();
+    FReply AdjustAmbience(int32 Direction);
+    FReply AdjustEffects(int32 Direction);
 };

@@ -56,6 +56,27 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
         SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("TURN %d · %s"), Mode->GetDecisionCount() + 1, *Mode->GetSaveStatus())))
     ];
+    Root->AddSlot().AutoHeight().Padding(28, 2, 28, 4)[
+        SNew(SHorizontalBox)
+        + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 10, 0)[
+            SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::ToggleSound).ContentPadding(8)[
+                SNew(STextBlock).Text(FText::FromString(Mode->IsSoundEnabled() ? TEXT("SOUND ON")
+                    : Mode->IsSoundPreferred() ? TEXT("SOUND ARMED") : TEXT("SOUND OFF")))
+            ]
+        ]
+        + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Mode->GetAudioStatus()))
+        ]
+    ];
+    Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
+        SNew(SHorizontalBox)
+        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::AdjustAmbience, -1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("RAIN −")))]]
+        + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0)[SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("%d%%"), FMath::RoundToInt(Mode->GetAmbienceLevel() * 100.f))))]
+        + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 18, 0)[SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::AdjustAmbience, 1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("RAIN +")))]]
+        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::AdjustEffects, -1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("CUES −")))]]
+        + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0)[SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("%d%%"), FMath::RoundToInt(Mode->GetEffectsLevel() * 100.f))))]
+        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::AdjustEffects, 1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("CUES +")))]]
+    ];
     Root->AddSlot().AutoHeight().Padding(28, 14, 28, 4)[SNew(STextBlock).Text(FText::FromString(Node->Title.Resolve(Locale)))];
     Root->AddSlot().AutoHeight().Padding(28, 4)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Node->Context.Resolve(Locale)))];
     Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(SBorder).Padding(16)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Node->Dialogue.Resolve(Locale)))]];
@@ -117,7 +138,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("1–3 SELECT · ←/→ CYCLE · ENTER / GAMEPAD A ISSUE · SPACE SKIPS CAMERA BEAT")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("1–3 SELECT · ←/→ CYCLE · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND · SPACE SKIPS CAMERA BEAT")))
         ]
     ];
 
@@ -145,5 +166,23 @@ FReply SShiCommandScreen::Issue()
 FReply SShiCommandScreen::NewChronicle()
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->RequestNewChronicle();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::ToggleSound()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->ToggleSound();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::AdjustAmbience(int32 Direction)
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->AdjustAmbience(Direction);
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::AdjustEffects(int32 Direction)
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->AdjustEffects(Direction);
     return FReply::Handled();
 }
