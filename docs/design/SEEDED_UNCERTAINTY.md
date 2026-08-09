@@ -12,8 +12,8 @@ The system models incomplete control, not historical counterfactual truth. Every
 
 1. A field signal is visible above the decision cards before any order.
 2. Its exact resource effects are visible; no percentage or “lucky” language is used.
-3. The player's effects resolve first, the authored choice response resolves second, the already-disclosed pursuit posture resolves third, the disclosed method read resolves fourth, and the known field condition resolves fifth.
-4. The result and decision record keep those five layers separate.
+3. The player's effects resolve first; any disclosed answer to a carried commitment resolves second; the authored choice response, pursuit posture and method read follow; and the known field condition resolves sixth.
+4. The result and decision record keep all applicable layers separate.
 5. Reloading cannot reroll. Restarting the same chronicle retains its seed; starting a new chronicle creates a new seed.
 6. A hexadecimal seed can be shared in the URL for reproduction and playtest comparison.
 
@@ -30,14 +30,14 @@ Every campaign node owns at least two conditions. A condition contains:
 
 Selection uses unsigned 32-bit FNV-1a over `campaignId|seed|nodeId|turn`, followed by a weighted modulo. IDs are constrained to ASCII so TypeScript and C# hash the same bytes. `turn` is the authoritative history length; this keeps the contract valid if a later campaign permits revisiting a node.
 
-Save format 5 stores the unsigned seed and, for every current-rules decision, the selected condition, pursuit, strategic-method and method-read identities, their deltas, intermediate resources and final resources. Migration never trusts stored totals: versions 1 and 2 replay under documented legacy seed `00000000`; version 3 verifies its condition under the original action/pressure/field rules; version 4 preserves pursuit without retroactively applying method reads; only new v5 decisions use all five layers. Unknown future versions are rejected rather than guessed.
+Save format 6 stores the unsigned seed and, for every current-rules decision, the selected condition, commitment outcome when applicable, pursuit, strategic-method and method-read identities, their deltas, intermediate resources and final resources. Migration never trusts stored totals: versions 1 and 2 replay under documented legacy seed `00000000`; version 3 verifies its condition under the original action/pressure/field rules; version 4 preserves pursuit without retroactively applying method reads; version 5 preserves all five previous layers without retroactively establishing commitments; only new v6 decisions use the complete contract. Unknown future versions are rejected rather than guessed.
 
 ## Balance and validation
 
 - Field effects are deliberately small beside authored decisions; Chapter I uses an absolute per-resource cap of 6.
 - Conditions cannot alter flags, routes, requirements directly or conceal text.
 - Content validation branches over every condition at every reachable node, not merely a handful of seeds. Every resulting playable path must avoid deadlock, retain all three conclusions and retain at least one genuine failure route.
-- Tests pin cross-engine hash vectors, weighted selection, five-layer deltas, seed migration and tamper rejection.
+- Tests pin cross-engine hash vectors, weighted selection, six-layer deltas, seed migration and tamper rejection.
 - Visible QA must prove the signal is present before commitment, its effects are applied and recorded separately, the seed survives reload, and a seeded public URL reproduces the same condition.
 
 ## Stop rules

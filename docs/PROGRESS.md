@@ -1,5 +1,20 @@
 # SHI progress log
 
+## 2026-08-09 · Player commitment memory checkpoint
+
+- Added one player-facing memory dimension that answers the game's promise that trust has operational consequences. Each opening choice now establishes a named commitment to Aunt Yu, Wu Guang or Courier Han; it remains visible through the council and resolves at the broken ford.
+- Authored a closed outcome matrix rather than an inferred morality score. Every ford choice discloses **kept**, **strained** or **broken**, the stakeholder and exact resource effects before commitment. All three statuses exist for each promise, but which action produces which answer depends on what was promised.
+- Upgraded the canonical campaign and save schema to v6. Resolution is action → commitment answer when present → authored pressure → disclosed pursuit → disclosed method read → disclosed field condition. `preCommitmentDecisionCount` prevents v1–v5 histories from receiving retroactive promises, and current replay rejects mismatched commitment, outcome and effect identities.
+- Expanded validation to prove establishing-choice closure, unique stakeholders/outcomes, bounded effects, exactly one answer per active promise, no terminal unresolved promises, and reachability of all nine authored outcomes. Exhaustive traversal remains 689 successful and 87 capture/scattering condition-routes.
+- Added a lazy, localized Web commitment layer and matching Unity presentation in all eleven UI locales. The opening forecast, carried promise, ford answer forecast, resolved layer, decision record and ending summary all use explicit dramatic-reconstruction wording and non-color status geometry.
+- Added focused engine, Web and Unity coverage for preview/selection, carried state, ordering, exact effects, v5 migration and tamper rejection. A detached fresh-clone install/build passes 45 tests plus schema, rights, audio, typography, accessibility, type and build-budget gates. Static accessibility now enforces 51 contrast pairs, 63 microtype floors, 14 target dimensions and 26 forced-colors selectors.
+- Kept the production caps intact: 99.16 KiB initial JavaScript, 11.14 KiB CSS, 5.82 KiB lazy commitment presentation, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete fonts and 26.82 MiB deployable output.
+- Visible noVNC review caught that six resolution columns made the new layer too cramped. The corrected result presents a deliberate three-by-two hierarchy with larger copy. The complete exact-commit rerun passes 217 checks, thirty-one axe states, twenty-three target states, eleven locale/font states and three audio-UI states with zero console errors, cross-origin requests/resources or failed loads.
+- The browser proves all three opening promise forecasts, one carried promise, all kept/strained/broken answers and exact effects, save-v6 reload, six-layer coexistence, record retention, ending summary, mobile fit and complete card reachability under actual Chrome 400% zoom. Reviewed frames are `web-33-commitment-carried.png` through `web-36-commitment-ending.png`.
+- Pinned implementation `2caa67c3bb4aaf285f496a824b3f0053c1a58332` passes the fresh-clone build and exact visible localhost run. Unity runtime, editor-validation and EditMode-test sources compile as separate warning-clean assemblies against installed Unity 2022.3/Newtonsoft/NUnit references; licensed native import and execution remain open.
+
+Next gate: obtain licensed Unity import/build evidence and begin human assistive-technology, listening, physical-controller, specialist and observed-player sessions. Chapter II remains gated.
+
 ## 2026-08-09 · Readable Qin method-read checkpoint
 
 - Added a second persistent-opposition dimension that notices repeated strategic method rather than merely scaling with Exposure. All fifteen choices declare `witnessed-compact`, `forced-tempo` or `distributed-cover`; after two observations, only a unique leader prepares its authored countermeasure, while minimum-count and tied histories remain `unresolved-pattern`.

@@ -9,13 +9,13 @@ SHI targets WCAG 2.2 AA for the web client and input/feedback parity in both cli
 - Pointer, touch, keyboard and standard-gamepad commands reach the same authored actions. No alternate input path may bypass requirements, resolution ordering or save history.
 - Drawers use named modal-dialog semantics, receive initial focus, trap forward/reverse tab movement and make the underlying game stage inert.
 - Closing a drawer returns focus to its connected invoker. Controller activation from the document body falls back to the current story position.
-- While the five-layer consequence is visible, the decision region is inert and `choose` rejects pointer, keyboard and controller re-entry.
+- While the six-layer consequence is visible, the decision region is inert and `choose` rejects pointer, keyboard and controller re-entry.
 - Status, selection, danger, intelligence state and reconstruction class always have text or shape in addition to color.
 - The production floor for a visible control is 24×24 CSS pixels. Large primary actions and decision cards intentionally exceed that minimum.
 
 ## Visual and motion contract
 
-- Curated text/surface pairs must reach a 4.5:1 contrast ratio on the darkest conservative surface used by that component. `scripts/validate-accessibility.mjs` rejects regressions in the current 38-pair contract, including the method/read memory, forecasts, hit states and ledger.
+- Curated text/surface pairs must reach a 4.5:1 contrast ratio on the darkest conservative surface used by that component. `scripts/validate-accessibility.mjs` rejects regressions in the current 51-pair contract, including carried commitments, all three answer states, method/read memory, forecasts, hit states and ledger.
 - Microcopy audited by the same script cannot fall below `0.6rem`; critical body and decision copy is larger.
 - Browser text resized to 200% must retain every action, narrative block and scroll path without horizontal overflow. Frames around the title/game seals scale with their text instead of clipping it.
 - A 320 CSS pixel layout viewport provides the automated WCAG reflow equivalent of a 1280 CSS pixel viewport at 400% zoom. Title, header, wartable, narrative, decisions and controls must fit horizontally and remain vertically reachable.
@@ -33,10 +33,10 @@ The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, R
 
 | Gate | Current pre-alpha scope |
 | --- | --- |
-| `npm run validate:accessibility` | 38 contrast pairs, 46 microtype floors, 14 authored target dimensions, 21 forced-colors selectors and required system colors |
+| `npm run validate:accessibility` | 51 contrast pairs, 63 microtype floors, 14 authored target dimensions, 26 forced-colors selectors and required system colors |
 | jsdom + axe-core 4.12.1 | Title, field-guide modal, gameplay and wartable semantic scans |
-| visible Chrome + axe-core | Twenty-eight interaction/locale/audio/pursuit/method-read/desktop/mobile/reflow/zoom/forced-colors states, WCAG 2.0/2.1/2.2 A/AA tags |
-| visible target geometry | Twenty interaction, audio, pursuit, method-read, resize, reflow, browser-zoom and forced-colors states at the 24 CSS pixel floor |
+| visible Chrome + axe-core | Thirty-one interaction/locale/audio/commitment/pursuit/method-read/desktop/mobile/reflow/zoom/forced-colors states, WCAG 2.0/2.1/2.2 A/AA tags |
+| visible target geometry | Twenty-three interaction, audio, commitment, pursuit, method-read, resize, reflow, browser-zoom and forced-colors states at the 24 CSS pixel floor |
 | visible locale typography | Eleven real script samples, same-origin face availability, direction, header-child fit and zero overflow |
 | visible privacy/network | Eleven-locale traversal, zero remote HTTP(S) requests/resources, zero non-cancelled failures and enforced CSP |
 | visible reflow | Title and active gameplay at 200% text; 320×800 400%-equivalent title/gameplay; actual Chrome 400% title/gameplay/action frames; 390×844 gameplay/wartable/guide |

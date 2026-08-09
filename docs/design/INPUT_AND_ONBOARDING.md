@@ -12,7 +12,10 @@ The first new chronicle opens a compact, dismissible field guide over the live o
 
 1. **Read the field.** Grain, trust, momentum, people and exposure describe different forms of power; no one meter is victory.
 2. **Make your move.** A decision card shows the player's immediate, exact effects and its strategic intent.
-3. **Expect an answer.** A pressure forecast names the weakness exposed before commitment; the authored response and the already disclosed field condition resolve as separate second and third stages.
+3. **Carry commitments.** An opening move may establish a named promise to a stakeholder. It stays visible until a later choice explicitly keeps, strains or breaks it.
+4. **Expect an answer.** A pressure forecast names the weakness exposed before commitment; the authored response remains distinct from the pursuing administration's disclosed posture.
+5. **Read the opponent.** Repeated strategic methods can prepare a disclosed Qin counter; the pending card says whether that read will hit or miss.
+6. **Read circumstance.** The chronicle seed selects one disclosed field condition, whose exact effects resolve as the final layer.
 
 Closing the guide records a local onboarding preference, not campaign progress. It never alters resources, history, routing or the save contract. Returning saves do not open it automatically. A permanent header control reopens it, and all eleven UI locales carry the complete guide.
 

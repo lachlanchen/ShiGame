@@ -24,6 +24,7 @@ The bands cover every playable Exposure value exactly once. They do not overlap,
 position before commitment
   → select and disclose posture from current Exposure
   → apply player action
+  → apply the disclosed answer to a carried commitment, when present
   → apply the choice's authored pressure response
   → apply the disclosed pursuit posture
   → apply the separately disclosed strategic-method read when it matches
@@ -31,7 +32,7 @@ position before commitment
   → check capture/scattering and otherwise advance
 ```
 
-Each layer is clamped to `0–100` before the next layer. The consequence banner and decision record keep action, pressure, pursuit, method-read and field effects distinct. This is the same contract in TypeScript and C#; the method-selection contract is specified in [Opposition method read](OPPOSITION_METHOD_READ.md).
+Each layer is clamped to `0–100` before the next layer. The consequence banner and decision record keep action, commitment answer, pressure, pursuit, method-read and field effects distinct. This is the same contract in TypeScript and C#; commitment selection is specified in [Player commitment memory](PLAYER_COMMITMENT_MEMORY.md), and method selection in [Opposition method read](OPPOSITION_METHOD_READ.md).
 
 ## Fairness and historical boundaries
 
@@ -44,9 +45,9 @@ Each layer is clamped to `0–100` before the next layer. The consequence banner
 
 ## Save and replay
 
-Save format `5` continues to record the selected posture ID, its effects, and the resources after pursuit. Loading treats decision history as authority and replays every recorded decision. Version-4 and v5 history is rejected if its recorded posture no longer matches the pre-commit position.
+Save format `6` continues to record the selected posture ID, its effects, and the resources after pursuit. Loading treats decision history as authority and replays every recorded decision. Version-4 through v6 history is rejected if its recorded posture no longer matches the pre-commit position.
 
-Versions 1–3 remain playable through `legacyDecisionCount`: decisions already present in an older save replay under their original action → pressure → field rules, so an update cannot silently rewrite a player's resources or ending. Version-4 decisions keep their pursuit layer through `preMethodReadDecisionCount`; only later decisions receive the method-read layer and are stored as version 5. Unknown future versions fail closed.
+Versions 1–3 remain playable through `legacyDecisionCount`: decisions already present in an older save replay under their original action → pressure → field rules, so an update cannot silently rewrite a player's resources or ending. Version-4 decisions keep their pursuit layer through `preMethodReadDecisionCount`; version-5 decisions keep their method-read layer through `preCommitmentDecisionCount`; only later decisions receive commitment establishment or answers. Unknown future versions fail closed.
 
 ## Validation and release evidence
 

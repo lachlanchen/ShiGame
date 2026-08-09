@@ -60,6 +60,7 @@ position before commitment
   → select and disclose pursuit posture from current Exposure
   → select and disclose method read from prior decisions
   → apply player action
+  → apply the disclosed answer to a carried commitment, when present
   → apply authored choice pressure
   → apply pursuit posture
   → apply method-read effects only when the chosen method matches its target
@@ -67,13 +68,13 @@ position before commitment
   → check capture/scattering and otherwise advance
 ```
 
-Each layer clamps before the next one. Action, authored pressure, pursuit, method read and field condition remain separate in the consequence and record. Web and Unity must use this exact ordering.
+Each layer clamps before the next one. Action, commitment answer, authored pressure, pursuit, method read and field condition remain separate in the consequence and record. Web and Unity must use this exact ordering.
 
 ## Save and replay
 
-Save format 5 records the choice method, prepared read ID, whether it matched, actual method-read deltas and resources after the layer. Loading rebuilds state from the decision history and rejects a current-format record whose method, read or match identity disagrees with deterministic replay.
+Save format 6 records the choice method, prepared read ID, whether it matched, actual method-read deltas and resources after the layer. Loading rebuilds state from the decision history and rejects a current-format record whose method, read or match identity disagrees with deterministic replay.
 
-Versions 1–3 retain their original action → pressure → field outcomes. Version 4 retains action → pressure → pursuit → field. `legacyDecisionCount` preserves the pre-pursuit boundary and `preMethodReadDecisionCount` preserves the pre-method-read boundary. Only new decisions receive the v5 layer; prior choices may inform the next visible read without rewriting their stored outcomes. Unknown future formats fail closed.
+Versions 1–3 retain their original action → pressure → field outcomes. Version 4 retains action → pressure → pursuit → field. `legacyDecisionCount` preserves the pre-pursuit boundary and `preMethodReadDecisionCount` preserves the pre-method-read boundary. Version 5 retains method reads through `preCommitmentDecisionCount`; only new decisions receive commitment answers. Prior choices may still inform the next visible read without rewriting their stored outcomes. Unknown future formats fail closed.
 
 ## Fairness and historical boundaries
 
@@ -88,7 +89,7 @@ Versions 1–3 retain their original action → pressure → field outcomes. Ver
 ## Release evidence
 
 - Schema/content validation: known method IDs, unique counter IDs, bounded adverse effects, target closure, authored text and reachability/hit coverage.
-- Engine tests: unique leader, minimum observation count, tie behavior, match/miss application, five-layer ordering and v1–v5 replay/tamper rejection.
-- Web tests: method/count disclosure, per-choice hit/miss forecast, resolution and decision-record persistence, keyboard/modal isolation and save-v5 reload.
+- Engine tests: unique leader, minimum observation count, tie behavior, match/miss application, six-layer ordering and v1–v6 replay/tamper rejection.
+- Web tests: method/count disclosure, per-choice hit/miss forecast, resolution and decision-record persistence, keyboard/modal isolation and save-v6 reload.
 - Unity: matching selection/application, preflight closure, immediate-mode presentation and EditMode source tests.
 - Visible QA: a route that creates `witness-chain`, one matching choice with +3 Exposure, one changed-method miss, mobile fit, RTL direction, 320-pixel reflow, actual 400% browser zoom and zero console/network errors.
