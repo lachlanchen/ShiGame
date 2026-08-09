@@ -122,9 +122,9 @@ describe("playable web shell", () => {
     await press(0);
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-screen")).toBe("play"));
     await press(3);
-    expect(view.getByTestId("map-intel").textContent).toContain("Daze Village");
+    expect((await view.findByTestId("map-intel")).textContent).toContain("Daze Village");
     await press(15);
-    expect(view.getByTestId("map-intel").textContent).toContain("Chen");
+    await waitFor(() => expect(view.getByTestId("map-intel").textContent).toContain("Chen"));
     await press(0);
     await view.findByTestId("sources-drawer");
     await press(1);
@@ -161,13 +161,16 @@ describe("playable web shell", () => {
     fireEvent.click(view.getByTestId("commit-selected"));
 
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council"));
-    expect(view.getByTestId("resolution").textContent).toContain("The position answers");
-    expect(view.getByTestId("resolution").textContent).toContain("relay clerk");
-    expect(view.getByTestId("resolution").textContent).toContain("Pursuit acts");
-    expect(view.getByTestId("resolution").textContent).toContain("Scattered watch");
-    expect(view.getByTestId("resolution").textContent).toContain("Read misses");
-    expect(view.getByTestId("resolution").textContent).toContain("Unresolved pattern");
-    expect(view.getByTestId("resolution").textContent).toContain("Field condition resolves");
+    await waitFor(() => {
+      const resolution = view.getByTestId("resolution").textContent;
+      expect(resolution).toContain("The position answers");
+      expect(resolution).toContain("relay clerk");
+      expect(resolution).toContain("Pursuit acts");
+      expect(resolution).toContain("Scattered watch");
+      expect(resolution).toContain("Read misses");
+      expect(resolution).toContain("Unresolved pattern");
+      expect(resolution).toContain("Field condition resolves");
+    });
     expect((await view.findByTestId("commitment-panel")).textContent).toContain("Names under protection");
     expect(view.getByTestId("commitment-panel").textContent).toContain("Aunt Yu");
     expect(document.querySelector(".choices-panel")?.hasAttribute("inert")).toBe(true);
