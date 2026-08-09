@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "kind": "official-unreal-linux-development-package",
+  "checkedAt": "2026-08-09T22:01:16+08:00",
+  "testedSourceCommit": "521e3bce35a8f5a5572d2ff12fee238949aad3b8",
+  "engine": {
+    "version": "5.8.1",
+    "changelist": 56057345,
+    "compiler": "Clang 20.1.8",
+    "configuration": "Development",
+    "platform": "Linux"
+  },
+  "buildCookRun": {
+    "exitCode": 0,
+    "result": "success",
+    "seconds": 102.32,
+    "packagesCooked": 496,
+    "packagesSkippedByPlatform": 7,
+    "archiveBytes": 1099965122,
+    "outsideGit": true
+  },
+  "artifacts": [
+    {
+      "role": "linux-executable",
+      "bytes": 298459312,
+      "sha256": "c1e131857d4529ad713d94a715860ba09d3b3b07134d7a3d2a9732e3f551cb9f"
+    },
+    {
+      "role": "game-pak",
+      "bytes": 10422249,
+      "sha256": "f1a8384227d91d4b71fe6f24254d24d5db315954d515cac8ce5f14c4833a7afa"
+    },
+    {
+      "role": "game-ucas",
+      "bytes": 164538720,
+      "sha256": "06a428da6bf6f5e89fcebcd32c9f5befd28d62334b376fc90bc6b37da856f852"
+    },
+    {
+      "role": "game-utoc",
+      "bytes": 144705,
+      "sha256": "f329f254430a7800d595562a43fc56afe5a80b5265ff3d27b85c6703814cb915"
+    },
+    {
+      "role": "global-ucas",
+      "bytes": 3195840,
+      "sha256": "dc185cf92819015efda242e395b2196b69dd70da0fb1efe51198f74a240fd329"
+    },
+    {
+      "role": "global-utoc",
+      "bytes": 782,
+      "sha256": "b8159c6afd7fb41a1d25f0dbd888023ed01f59825385dd3b35307374f972c546"
+    }
+  ],
+  "canonicalContent": {
+    "campaignSha256": "a82ab2f28809b46fb780074cce8acb96a7eb0b7cd608868f03b1888b64acf1f0",
+    "campaignCanonicalStagedAndPackagedByteIdentical": true,
+    "engagementSha256": "e5e7d40076e456c4044ab92f04209095af13fa5ff9599a66601f030b15133b8c",
+    "engagementCanonicalStagedAndPackagedByteIdentical": true
+  },
+  "visiblePackagedRoute": {
+    "display": ":121",
+    "window": "1400x900 fixed window",
+    "normalRenderThreads": true,
+    "campaignDecisionsBeforeEngagement": 2,
+    "engagementPulsesIssued": 3,
+    "outcome": "costly-success",
+    "outcomeTitle": "Crossing under pressure",
+    "returnedToCanonicalCouncil": true,
+    "campaignSaveSha256Before": "e9cbb4c857005fc04ac3dfe63b735296566655e0675e12c8045e8ccede2f42e8",
+    "campaignSaveSha256AtOutcome": "e9cbb4c857005fc04ac3dfe63b735296566655e0675e12c8045e8ccede2f42e8",
+    "campaignSaveSha256AfterClose": "e9cbb4c857005fc04ac3dfe63b735296566655e0675e12c8045e8ccede2f42e8",
+    "startupOutdatedSwapchainNotificationRecovered": true,
+    "fatalOrCrashDuringAcceptedRoute": false
+  },
+  "performance": {
+    "tool": "Unreal StartFPSChart/StopFPSChart",
+    "samePackagedExecutableAndSettings": true,
+    "realDisplayControl": {
+      "displayRefreshHz": 60,
+      "resolution": "1400x900",
+      "seconds": 21.42,
+      "frames": 4180,
+      "averageFps": 195.18,
+      "averageGpuMs": 2.73,
+      "averageRenderThreadMs": 4.11,
+      "averageGameThreadMs": 1.62,
+      "hitches": 0,
+      "missed30FpsSyncPercent": 0,
+      "missed60FpsSyncPercent": 0,
+      "missed120FpsSyncPercent": 0
+    },
+    "xvfbNoVncDiagnostic": {
+      "averageFpsWithCapture": 24.57,
+      "averageFpsCapturePaused": 30.43,
+      "classification": "virtual-display presentation limit; not product performance acceptance"
+    }
+  },
+  "remainingRedGates": [
+    "editor PIE Vulkan swapchain stability",
+    "injected actor and persistence failures",
+    "physical controller review",
+    "restrained and cuts-only comfort review",
+    "native audio capture and human listening",
+    "final terrain, formation and character art",
+    "observed external playability and enjoyment"
+  ],
+  "containsCredentialsOrPrivatePaths": false
+}

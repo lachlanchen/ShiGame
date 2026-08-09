@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Official Unreal packaged-player and performance checkpoint
+
+- Produced the first clean Unreal Linux development player with Epic's official UE `5.8.1` BuildCookRun path. Compilation, cook, IoStore/Pak staging and outside-Git archive all completed with exit code 0 in 102.32 seconds; 496 packages were cooked and the archived directory is 1,099,965,122 bytes. The executable and every primary container have recorded SHA-256 receipts in `docs/production/evidence/unreal-linux-package-status.json`.
+- Proved that packaging did not fork content. The canonical, Unreal-staged and packaged StreamingAssets copies of the schema-v7 campaign are byte-identical at SHA-256 `a82ab2f28809b46fb780074cce8acb96a7eb0b7cd608868f03b1888b64acf1f0`; all three Broken Crossing copies are byte-identical at `e5e7d40076e456c4044ab92f04209095af13fa5ff9599a66601f030b15133b8c`.
+- Played the archived executable, not the editor or an uncooked target, through opening → two durable campaign decisions → Broken Crossing → three tactical pulses → **Costly success · Crossing under pressure** → canonical council return. The packaged campaign save SHA-256 remained exactly `e9cbb4c857005fc04ac3dfe63b735296566655e0675e12c8045e8ccede2f42e8` before the exercise, at the outcome and after close.
+- Repeated the packaged engagement with Unreal's normal render and RHI threads enabled. The fixed-window Vulkan player recovered from one startup outdated-swapchain notification, stayed alive through the complete route and preserved the same save hash. The earlier editor PIE crash remains a separate red gate; packaged-player stability is not presented as stable PIE.
+- Used Unreal's built-in FPS chart to separate product performance from the remote desktop. The Xvfb/noVNC path averaged 24.57 FPS and rose to 30.43 FPS with VNC capture paused, while game/GPU work stayed near 2 ms; this is a virtual-display presentation ceiling. The same package and settings on the workstation's real 60 Hz display collected 4,180 frames over 21.42 seconds at 195.18 FPS average, 2.73 ms GPU, 4.11 ms render thread and 1.62 ms game thread, with zero hitches and zero missed 30/60/120-FPS targets.
+- Removed the Android File Server editor block and generated security token that Unreal appended to tracked configuration during packaging. The project neither needs nor retains that runtime service, and the worktree returned to its pre-package configuration boundary.
+
+Next gate: inject missing signal/focus/council actors plus unwritable-save and restart failures into the visible packaged path, then complete physical-controller, restrained/cuts-only motion, native audio listening and reviewed terrain/formation/character replacement without weakening the accepted replay, source or save contracts.
+
 ## 2026-08-09 · Native Broken Crossing command-space checkpoint
 
 - Implemented the shared Broken Crossing engagement as presentation-independent Unreal C++. The strict loader closes to the exact campaign node, plans, field conditions, source/claim boundary, three pulses, nine commands, six local metrics and four ordered outcomes; the session applies the player effect before the authored response and rebuilds saves from plan/condition/command identifiers rather than trusting stored totals.
