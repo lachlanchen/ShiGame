@@ -41,14 +41,14 @@ Obtain Unreal only through Epic’s official Linux installed-build ZIP or linked
 ./scripts/install-official-unreal-linux.sh install /path/to/Linux_Unreal_Engine_5.8.x.zip /outside/git/UE_5.8.x
 ```
 
-Then point `SHI_UNREAL_ROOT` at the installed root:
+Then point `SHI_UNREAL_ROOT` at the installed root. `SHI_UNREAL_DERIVED_DATA` is optional but, when set, must be an absolute outside-Git cache directory. Linux packaging also requires an explicit outside-Git `SHI_UNREAL_PACKAGE_ROOT`:
 
 ```bash
 SHI_UNREAL_ROOT=/path/to/UnrealEngine ./scripts/unreal-pipeline.sh projectfiles
-SHI_UNREAL_ROOT=/path/to/UnrealEngine ./scripts/unreal-pipeline.sh build
-SHI_UNREAL_ROOT=/path/to/UnrealEngine ./scripts/unreal-pipeline.sh test
-SHI_UNREAL_ROOT=/path/to/UnrealEngine ./scripts/unreal-pipeline.sh editor
-SHI_UNREAL_ROOT=/path/to/UnrealEngine ./scripts/unreal-pipeline.sh linux
+SHI_UNREAL_ROOT=/path/to/UnrealEngine SHI_UNREAL_DERIVED_DATA=/outside/git/SHI-DDC ./scripts/unreal-pipeline.sh build
+SHI_UNREAL_ROOT=/path/to/UnrealEngine SHI_UNREAL_DERIVED_DATA=/outside/git/SHI-DDC ./scripts/unreal-pipeline.sh test
+SHI_UNREAL_ROOT=/path/to/UnrealEngine SHI_UNREAL_DERIVED_DATA=/outside/git/SHI-DDC ./scripts/unreal-pipeline.sh editor
+SHI_UNREAL_ROOT=/path/to/UnrealEngine SHI_UNREAL_DERIVED_DATA=/outside/git/SHI-DDC SHI_UNREAL_PACKAGE_ROOT=/outside/git/SHI-Builds ./scripts/unreal-pipeline.sh linux
 ```
 
 Engine binaries, generated maps, derived data, intermediates and packaged builds remain outside Git.
