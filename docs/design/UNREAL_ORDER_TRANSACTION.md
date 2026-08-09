@@ -1,6 +1,6 @@
 # Unreal fail-closed order transaction
 
-Status: source-authored at implementation `f866d32f45d14afb7241de7e70c781f93b79a09f`; native compilation, automation execution and deliberate failure injection in PIE remain open.
+Status: source-authored pre-alpha contract; native compilation, automation execution and deliberate failure injection in PIE remain open.
 
 ## Player guarantee
 
@@ -14,14 +14,15 @@ Pressing **Issue order** must never leave the chronicle, 3D command state, conse
 2. require exactly one appended history record and a representable post-order site;
 3. choose the first legal post-order briefing without mutating the active selection;
 4. build and spatially validate all five resource and four tactical world signals;
-5. build and validate the complete six-or-seven-beat consequence plan;
-6. independently recompute the candidate and compare its serialized authoritative session, full resolution record, selected briefing, every signal field and every cinematic field.
+5. build the next node's canonical speaker/Keeper council stage and disclosure;
+6. build and validate the complete six-or-seven-beat consequence plan;
+7. independently recompute the candidate and compare its serialized authoritative session, full resolution record, selected briefing, every signal field, every council-staging field and every cinematic field.
 
-Only then does the runtime check that the camera, all nine command-signal actors and every consequence focus actor are live. The output object is assigned only after the whole pure build succeeds, so an error cannot replace an earlier accepted transaction.
+Only then does the runtime check that the camera, all nine command-signal actors, every consequence focus actor and both initialized council figure slots are live. The output object is assigned only after the whole pure build succeeds, so an error cannot replace an earlier accepted transaction.
 
 ## Durable-first runtime commit
 
-When local persistence is healthy, GameMode writes the prepared candidate through the existing temporary-file replacement before swapping active memory. If the write fails, it displays **Order not issued / Order held** and preserves resources, history, position, live world, selection and the previous save. After the durable write succeeds, the runtime moves the already-validated session/signals/selection into the active state and starts the already-validated cinematic; no fallible rule or presentation planning remains after that point.
+When local persistence is healthy, GameMode writes the prepared candidate through the existing temporary-file replacement before swapping active memory. If the write fails, it displays **Order not issued / Order held** and preserves resources, history, position, live world, selection, council cast and the previous save. After the durable write succeeds, the runtime moves the already-validated session/signals/selection/council stage into the active state and starts the already-validated cinematic; no fallible rule or presentation planning remains after that point.
 
 A process failure between the durable write and the in-memory swap resumes the verified new turn on the next launch. This is intentional durable-first crash behavior, not a split state.
 
@@ -36,6 +37,7 @@ The two-step **New chronicle** path uses the same turn-snapshot and live-actor p
 - altered resolution intermediates;
 - altered live-world values;
 - altered cinematic authorship;
+- altered speaker identity, dialogue disclosure, blocking or council lens;
 - invalid post-order selection;
 - a hidden extra resolved decision.
 

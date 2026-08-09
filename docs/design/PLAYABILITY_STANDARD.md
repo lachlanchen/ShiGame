@@ -26,8 +26,8 @@ A feature is not accepted as playable until automated rules, a complete visible 
 Unreal is the feature-first cinematic client after the schema-v7 horizon checkpoint. Its first risky slice is intentionally end-to-end:
 
 ```text
-inspect the rain field → select an order → review the council consequence
-→ issue it → watch people/terrain/opponent answer → advance act/site/time
+meet the named council speaker → inspect the rain field → select and review an order
+→ issue it → watch people/terrain/opponent answer → meet the next speaker at the advanced act/site/time
 ```
 
 The camera, lighting, blocking, performance, sound and environment must clarify this loop. A noninteractive Sequencer film does not close the gate. The Web client remains the fastest playable reference; Unity remains a maintained shared-schema baseline while Unreal reaches and then exceeds its interaction parity. No client may invent a different campaign truth.

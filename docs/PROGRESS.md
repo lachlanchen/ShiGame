@@ -1,5 +1,18 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal canonical council-staging checkpoint
+
+- Closed the gap between authored dialogue and the 3D command space. Unreal now loads the shared five-character register plus every node's `speakerId`, rejects unknown/duplicate cast, a missing Keeper, Keeper-as-speaker and empty dialogue, and preserves each character's canonical historical classification.
+- Added `FShiCouncilStagingModel`. Every scene deterministically derives exactly one named speaker and the Keeper viewpoint, localized dialogue/name/role, an explicit historical-dramatization or fictional-reconstruction disclosure, separated wartable blocking, non-exclusive color/stencil identity and a 44° camera aimed at the speaker.
+- Added two persistent, explicitly movable `AShiCouncilFigure` actors with separate body/head/mantle geometry and visibility collision. They are clickable performance/eyeline/final-asset swap proxies—not final character art. Figure click, `D`, Gamepad R3 and Slate return to the council without issuing an order; `Home` still returns to current ground.
+- Consequence completion or whole-sequence skip now hands control to the exact next speaker rather than an anonymous site marker. The existing reduced-motion preference converts the handoff to a cut while keeping dialogue and provenance visible.
+- Made the next council stage part of the fail-closed order and restart transaction. Independent replay exactly compares cast, dialogue, disclosure, transforms, styles, stencil, lens and camera; GameMode requires both live figure slots before the candidate save, session or world can advance. All 46 golden-route turns require the prepared council node to equal the authoritative post-order position.
+- Added `SHI.Cinematic.CouncilStagingV1` automation source for Chen Sheng's historical/non-transcript boundary, Aunt Yu's fictional classification, exact speaker/Keeper occupancy, eyeline/lens, cast/dialogue/camera attacks and atomic failure. Order-transaction automation now attacks council drift in addition to rule/world/selection/cinema drift.
+- Exact source implementation `5764a2dc7071ea2355214ae1aec6f9922e1a2a65` passes the complete local build: 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 fixed-seed cross-engine routes, synchronized content/audio/history, Unreal project/council preflight, accessibility/font/privacy/type gates and unchanged Web budgets.
+- This is source evidence, not native Unreal or film-quality proof. Unreal headers have not compiled, the native council/transaction suites have not executed, and PIE figure render/collision/stencil, click/R3 focus, every-route speaker handoff, reduced-motion comfort, final character import, frame timing, Linux packaging and human review remain red until the official engine is available.
+
+Next gate: obtain the official Unreal 5.8 installed build after Epic sign-in, compile and execute `SHI.Cinematic.CouncilStagingV1` plus the complete transaction/replay suites, then visibly prove opening figure focus → inspection → durable order → exact next-speaker handoff under restrained and cuts-only modes, including missing-figure and unwritable-save failure injection.
+
 ## 2026-08-09 · Unreal fail-closed order-transaction checkpoint
 
 - Closed a critical split-state risk in the native path. Previously, `IssueSelectedOrder` mutated the active campaign and attempted autosave before refreshed 3D signals and the consequence plan were proven representable; a later world/camera rejection could leave the chronicle ahead of presentation.
