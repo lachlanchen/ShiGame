@@ -4,6 +4,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "ShiCampaignModel.h"
 #include "ShiCampaignSession.h"
+#include "ShiCommandSignalModel.h"
 #include "ShiGameMode.generated.h"
 
 class SShiCommandScreen;
@@ -49,11 +50,13 @@ public:
     const FShiMethodReadData* GetCurrentMethodRead() const { return Session.GetCurrentMethodRead(); }
     const FShiCommitmentData* GetActiveCommitment() const { return Session.GetActiveCommitment(); }
     const FShiSiteData* GetInspectedSite() const;
+    const FShiCommandSignalData* GetInspectedCommandSignal() const;
     bool IsInspectingRemoteSite() const;
 
     void SelectChoice(int32 Index);
     void CycleChoice(int32 Direction);
     void CycleInspectedSite(int32 Direction);
+    void CycleInspectedCommandSignal(int32 Direction);
     void ResetInspectedSite();
     void IssueSelectedOrder();
     void RequestNewChronicle();
@@ -76,12 +79,15 @@ private:
     bool bRestartArmed = false;
     bool bEvidenceOpen = false;
     FString InspectedSiteId;
+    FString InspectedCommandSignalId;
+    TArray<FShiCommandSignalData> CommandSignals;
     double LastOrderIssueTime = -1000.0;
     TSharedPtr<SShiCommandScreen> CommandScreen;
     UPROPERTY(Transient)
     TObjectPtr<UShiSoundscapeComponent> AudioDirector;
     TWeakObjectPtr<ACameraActor> CommandCamera;
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> SiteMarkers;
+    TMap<FString, TWeakObjectPtr<AStaticMeshActor>> CommandSignalMarkers;
     FVector CameraBaseLocation;
     FRotator CameraBaseRotation;
     FVector CameraTransitionStartLocation;
@@ -100,8 +106,11 @@ private:
     void BeginCameraTransition(const FTransform& Target, float Duration);
     void TickCamera(float DeltaSeconds);
     void InspectSite(const FString& SiteId, bool bImmediate = false, bool bPlayCue = true);
-    bool InspectSiteUnderCursor(APlayerController& Controller);
+    void InspectCommandSignal(const FString& SignalId, bool bPlayCue = true);
+    bool InspectWorldUnderCursor(APlayerController& Controller);
     void UpdateWartableSelection();
+    bool RebuildCommandSignals(FString& OutError);
+    void UpdateCommandSignalSelection();
     void SelectFirstAvailableChoice();
     void ResumeSoundFromGesture();
     FString GetSavePath() const;

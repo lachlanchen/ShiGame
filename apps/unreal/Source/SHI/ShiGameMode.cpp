@@ -91,6 +91,13 @@ void AShiGameMode::SelectChoice(int32 Index)
     if (bRestartArmed) SaveStatus = TEXT("RESTART CANCELLED · CURRENT CHRONICLE PRESERVED");
     bRestartArmed = false;
     LastConsequence.Empty();
+    FString SignalError;
+    if (!RebuildCommandSignals(SignalError))
+    {
+        LoadError = FString::Printf(TEXT("Command signals rejected: %s"), *SignalError);
+        RefreshScreen();
+        return;
+    }
     ResumeSoundFromGesture();
     if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("select")));
     RefreshScreen();
@@ -114,6 +121,11 @@ const FShiSiteData* AShiGameMode::GetInspectedSite() const
     return Node ? Campaign.FindSite(Node->SiteId) : nullptr;
 }
 
+const FShiCommandSignalData* AShiGameMode::GetInspectedCommandSignal() const
+{
+    return FShiCommandSignalModel::Find(CommandSignals, InspectedCommandSignalId);
+}
+
 bool AShiGameMode::IsInspectingRemoteSite() const
 {
     const FShiNodeData* Node = GetCurrentNode();
@@ -125,6 +137,13 @@ void AShiGameMode::CycleInspectedSite(int32 Direction)
 {
     if (bEvidenceOpen || Direction == 0) return;
     InspectSite(FShiWartableModel::CycleSite(Campaign.Sites, GetInspectedSite() ? GetInspectedSite()->Id : FString(), Direction));
+}
+
+void AShiGameMode::CycleInspectedCommandSignal(int32 Direction)
+{
+    if (bEvidenceOpen || Direction == 0) return;
+    InspectCommandSignal(FShiCommandSignalModel::CycleSignal(CommandSignals,
+        GetInspectedCommandSignal() ? GetInspectedCommandSignal()->Id : FString(), Direction));
 }
 
 void AShiGameMode::ResetInspectedSite()
@@ -142,6 +161,7 @@ void AShiGameMode::IssueSelectedOrder()
     LastOrderIssueTime = Now;
     ResumeSoundFromGesture();
 
+    const bool bWasInspectingCommandSignal = GetInspectedCommandSignal() != nullptr;
     FShiResolutionResult Resolution;
     FString ResolutionError;
     if (!Session.ResolveChoice(Node->Choices[SelectedChoiceIndex].Id, Resolution, ResolutionError))
@@ -170,6 +190,13 @@ void AShiGameMode::IssueSelectedOrder()
     bRestartArmed = false;
     SelectedChoiceIndex = 0;
     SelectFirstAvailableChoice();
+    FString SignalError;
+    if (!RebuildCommandSignals(SignalError))
+    {
+        LoadError = FString::Printf(TEXT("Command signals rejected after order: %s"), *SignalError);
+        RefreshScreen();
+        return;
+    }
     if (bPersistenceEnabled)
     {
         FString PersistenceError;
@@ -185,7 +212,7 @@ void AShiGameMode::IssueSelectedOrder()
     }
     if (const FShiNodeData* NextNode = GetCurrentNode())
     {
-        if (InspectedSiteId != NextNode->SiteId) InspectSite(NextNode->SiteId, false, false);
+        if (bWasInspectingCommandSignal || InspectedSiteId != NextNode->SiteId) InspectSite(NextNode->SiteId, false, false);
         else BeginCameraBeat();
     }
     RefreshScreen();
@@ -215,7 +242,7 @@ void AShiGameMode::Tick(float DeltaSeconds)
             ToggleEvidence();
             return;
         }
-        if (Controller->WasInputKeyJustPressed(EKeys::LeftMouseButton) && InspectSiteUnderCursor(*Controller)) return;
+        if (Controller->WasInputKeyJustPressed(EKeys::LeftMouseButton) && InspectWorldUnderCursor(*Controller)) return;
         if (Controller->WasInputKeyJustPressed(EKeys::Tab) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_RightShoulder))
         {
             const bool bReverse = Controller->IsInputKeyDown(EKeys::LeftShift) || Controller->IsInputKeyDown(EKeys::RightShift);
@@ -227,6 +254,12 @@ void AShiGameMode::Tick(float DeltaSeconds)
             ResetInspectedSite();
             return;
         }
+        if (Controller->WasInputKeyJustPressed(EKeys::C) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_LeftThumbstick))
+        {
+            const bool bReverse = Controller->IsInputKeyDown(EKeys::LeftShift) || Controller->IsInputKeyDown(EKeys::RightShift);
+            CycleInspectedCommandSignal(bReverse ? -1 : 1);
+            return;
+        }
         if (Controller->WasInputKeyJustPressed(EKeys::One) || Controller->WasInputKeyJustPressed(EKeys::NumPadOne)) SelectChoice(0);
         if (Controller->WasInputKeyJustPressed(EKeys::Two) || Controller->WasInputKeyJustPressed(EKeys::NumPadTwo)) SelectChoice(1);
         if (Controller->WasInputKeyJustPressed(EKeys::Three) || Controller->WasInputKeyJustPressed(EKeys::NumPadThree)) SelectChoice(2);
@@ -234,7 +267,11 @@ void AShiGameMode::Tick(float DeltaSeconds)
         if (Controller->WasInputKeyJustPressed(EKeys::Right) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Right)) CycleChoice(1);
         if (Controller->WasInputKeyJustPressed(EKeys::Enter) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Bottom)) IssueSelectedOrder();
         if (Controller->WasInputKeyJustPressed(EKeys::M) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Top)) ToggleSound();
-        if (CameraBeatDuration > 0.f && Controller->WasInputKeyJustPressed(EKeys::SpaceBar)) CameraBeatElapsed = CameraBeatDuration;
+        if (Controller->WasInputKeyJustPressed(EKeys::SpaceBar))
+        {
+            if (CameraTransitionDuration > 0.f) CameraTransitionElapsed = CameraTransitionDuration;
+            if (CameraBeatDuration > 0.f) CameraBeatElapsed = CameraBeatDuration;
+        }
     }
     TickCamera(DeltaSeconds);
 }
@@ -298,8 +335,11 @@ void AShiGameMode::InspectSite(const FString& SiteId, bool bImmediate, bool bPla
     const FShiSiteData* Site = Campaign.FindSite(SiteId);
     if (!Site) return;
     const bool bChanged = InspectedSiteId != SiteId;
+    const bool bReturningFromCommandSignal = !InspectedCommandSignalId.IsEmpty();
     InspectedSiteId = SiteId;
+    InspectedCommandSignalId.Empty();
     UpdateWartableSelection();
+    UpdateCommandSignalSelection();
     const FTransform Target = FShiWartableModel::CameraTransform(*Site);
     if (bImmediate && CommandCamera.IsValid())
     {
@@ -310,7 +350,7 @@ void AShiGameMode::InspectSite(const FString& SiteId, bool bImmediate, bool bPla
         CommandCamera->SetActorLocation(CameraBaseLocation);
         CommandCamera->SetActorRotation(CameraBaseRotation);
     }
-    else if (bChanged || CameraTransitionDuration <= 0.f)
+    else if (bChanged || bReturningFromCommandSignal || CameraTransitionDuration <= 0.f)
     {
         BeginCameraTransition(Target, .72f);
     }
@@ -322,7 +362,24 @@ void AShiGameMode::InspectSite(const FString& SiteId, bool bImmediate, bool bPla
     RefreshScreen();
 }
 
-bool AShiGameMode::InspectSiteUnderCursor(APlayerController& Controller)
+void AShiGameMode::InspectCommandSignal(const FString& SignalId, bool bPlayCue)
+{
+    const FShiCommandSignalData* Signal = FShiCommandSignalModel::Find(CommandSignals, SignalId);
+    if (!Signal) return;
+    if (const FShiNodeData* Node = GetCurrentNode()) InspectedSiteId = Node->SiteId;
+    InspectedCommandSignalId = SignalId;
+    UpdateWartableSelection();
+    UpdateCommandSignalSelection();
+    BeginCameraTransition(FShiCommandSignalModel::CameraTransform(*Signal), .64f);
+    if (bPlayCue)
+    {
+        ResumeSoundFromGesture();
+        if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("inspect")));
+    }
+    RefreshScreen();
+}
+
+bool AShiGameMode::InspectWorldUnderCursor(APlayerController& Controller)
 {
     float MouseX = 0.f;
     float MouseY = 0.f;
@@ -330,6 +387,14 @@ bool AShiGameMode::InspectSiteUnderCursor(APlayerController& Controller)
     FHitResult Hit;
     if (!Controller.GetHitResultAtScreenPosition(FVector2D(MouseX, MouseY), ECC_Visibility, false, Hit)) return false;
     AActor* HitActor = Hit.GetActor();
+    for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : CommandSignalMarkers)
+    {
+        if (Pair.Value.Get() == HitActor)
+        {
+            InspectCommandSignal(Pair.Key);
+            return true;
+        }
+    }
     for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : SiteMarkers)
     {
         if (Pair.Value.Get() == HitActor)
@@ -348,8 +413,43 @@ void AShiGameMode::UpdateWartableSelection()
         AStaticMeshActor* Marker = Pair.Value.Get();
         const FShiSiteData* Site = Campaign.FindSite(Pair.Key);
         if (!Marker || !Site) continue;
-        const bool bSelected = Pair.Key == InspectedSiteId;
+        const bool bSelected = InspectedCommandSignalId.IsEmpty() && Pair.Key == InspectedSiteId;
         const FShiWartableMarkerStyle Style = FShiWartableModel::MarkerStyle(Site->Status, bSelected);
+        Marker->SetActorScale3D(Style.Scale);
+        UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
+        Component->SetRenderCustomDepth(bSelected);
+        Component->SetCustomDepthStencilValue(Style.StencilValue);
+        if (UMaterialInstanceDynamic* Material = Cast<UMaterialInstanceDynamic>(Component->GetMaterial(0)))
+            Material->SetVectorParameterValue(FName(TEXT("Color")), Style.Color);
+    }
+}
+
+bool AShiGameMode::RebuildCommandSignals(FString& OutError)
+{
+    const FShiNodeData* Node = GetCurrentNode();
+    const FShiChoiceData* SelectedChoice = Node && Node->Choices.IsValidIndex(SelectedChoiceIndex)
+        ? &Node->Choices[SelectedChoiceIndex] : nullptr;
+    TArray<FShiCommandSignalData> Candidate;
+    if (!FShiCommandSignalModel::Build(Session.GetResources(), Session.GetCurrentFieldCondition(), Session.GetCurrentOppositionStage(),
+        Session.GetCurrentMethodRead(), Session.GetActiveCommitment(), SelectedChoice, Locale, Candidate, OutError)) return false;
+    if (!FShiCommandSignalModel::ValidateAgainstSites(Candidate, Campaign.Sites, OutError)) return false;
+    CommandSignals = MoveTemp(Candidate);
+    if (!InspectedCommandSignalId.IsEmpty() && !FShiCommandSignalModel::Find(CommandSignals, InspectedCommandSignalId))
+        InspectedCommandSignalId.Empty();
+    UpdateCommandSignalSelection();
+    return true;
+}
+
+void AShiGameMode::UpdateCommandSignalSelection()
+{
+    for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : CommandSignalMarkers)
+    {
+        AStaticMeshActor* Marker = Pair.Value.Get();
+        const FShiCommandSignalData* Signal = FShiCommandSignalModel::Find(CommandSignals, Pair.Key);
+        if (!Marker || !Signal) continue;
+        const bool bSelected = Pair.Key == InspectedCommandSignalId;
+        const FShiCommandSignalData Style = FShiCommandSignalModel::SelectedStyle(*Signal, bSelected);
+        Marker->SetActorLocationAndRotation(Style.Location, Style.Rotation);
         Marker->SetActorScale3D(Style.Scale);
         UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
         Component->SetRenderCustomDepth(bSelected);
@@ -423,6 +523,13 @@ void AShiGameMode::RequestNewChronicle()
     LastConsequence.Empty();
     SelectedChoiceIndex = 0;
     SelectFirstAvailableChoice();
+    FString SignalError;
+    if (!RebuildCommandSignals(SignalError))
+    {
+        LoadError = FString::Printf(TEXT("Command signals rejected during restart: %s"), *SignalError);
+        RefreshScreen();
+        return;
+    }
     bPersistenceEnabled = true;
     bRestartArmed = false;
     FString PersistenceError;
@@ -526,6 +633,12 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Wartable layout rejected: %s"), *WartableError);
         return;
     }
+    FString CommandSignalError;
+    if (!RebuildCommandSignals(CommandSignalError))
+    {
+        LoadError = FString::Printf(TEXT("Command signals rejected: %s"), *CommandSignalError);
+        return;
+    }
     ACameraActor* Camera = World->SpawnActor<ACameraActor>(FVector(720, -760, 520), FRotator(-24, 133, 0));
     if (!Camera)
     {
@@ -612,6 +725,38 @@ void AShiGameMode::CreateCommandSpace()
         Marker->Tags.Add(FName(*FString::Printf(TEXT("ShiSite:%s"), *Site.Id)));
         Marker->SetActorScale3D(Style.Scale);
         SiteMarkers.Add(Site.Id, Marker);
+    }
+    CommandSignalMarkers.Empty();
+    for (const FShiCommandSignalData& Signal : CommandSignals)
+    {
+        UStaticMesh* SignalMesh = LoadObject<UStaticMesh>(nullptr, *Signal.MeshPath);
+        if (!SignalMesh)
+        {
+            LoadError = FString::Printf(TEXT("Command signal mesh missing for %s."), *Signal.Id);
+            return;
+        }
+        AStaticMeshActor* Marker = World->SpawnActor<AStaticMeshActor>(Signal.Location, Signal.Rotation);
+        if (!Marker)
+        {
+            LoadError = FString::Printf(TEXT("Command signal could not spawn for %s."), *Signal.Id);
+            return;
+        }
+        UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
+        Component->SetMobility(EComponentMobility::Movable);
+        Component->SetStaticMesh(SignalMesh);
+        Component->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+        Component->SetCollisionResponseToAllChannels(ECR_Ignore);
+        Component->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+        UMaterialInstanceDynamic* Material = Component->CreateDynamicMaterialInstance(0, BasicMaterial, NAME_None);
+        if (!Material)
+        {
+            LoadError = FString::Printf(TEXT("Command signal material could not initialize for %s."), *Signal.Id);
+            return;
+        }
+        Material->SetVectorParameterValue(FName(TEXT("Color")), Signal.Color);
+        Marker->Tags.Add(FName(*FString::Printf(TEXT("ShiSignal:%s"), *Signal.Id)));
+        Marker->SetActorScale3D(Signal.Scale);
+        CommandSignalMarkers.Add(Signal.Id, Marker);
     }
     if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId, false, false);
 }

@@ -9,6 +9,7 @@
 #include "ShiAudioModel.h"
 #include "ShiCampaignModel.h"
 #include "ShiCampaignSession.h"
+#include "ShiCommandSignalModel.h"
 #include "ShiWartableModel.h"
 
 namespace
@@ -223,6 +224,110 @@ bool FShiWartableSpatialIntelligenceTest::RunTest(const FString& Parameters)
     TArray<FShiSiteData> UnknownStatus = Campaign.Sites;
     UnknownStatus[0].Status = TEXT("prophecy");
     TestFalse(TEXT("unsupported hindsight marker status is rejected"), FShiWartableModel::Validate(UnknownStatus, Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCommandSpaceLiveSignalsTest, "SHI.CommandSpace.LiveSignalsV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCommandSpaceLiveSignalsTest::RunTest(const FString& Parameters)
+{
+    FShiCampaignModel Campaign;
+    FString Error;
+    if (!Campaign.LoadCanonical(Error)) { AddError(Error); return false; }
+    FShiCampaignSession Session;
+    Session.Initialize(Campaign, 0x5EED2026u);
+    const FShiNodeData* Node = Session.GetCurrentNode();
+    TestNotNull(TEXT("signal scene exists"), Node);
+    if (!Node || Node->Choices.IsEmpty()) return false;
+
+    TArray<FShiCommandSignalData> Signals;
+    TestTrue(TEXT("initial live command signals build"), FShiCommandSignalModel::Build(Session.GetResources(),
+        Session.GetCurrentFieldCondition(), Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(),
+        Session.GetActiveCommitment(), &Node->Choices[0], TEXT("en"), Signals, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestEqual(TEXT("five resources and four tactical layers are visible"), Signals.Num(), 9);
+    TestTrue(TEXT("live command signals pass bounded spatial validation"), FShiCommandSignalModel::Validate(Signals, Error));
+    TestTrue(TEXT("site and command pointer targets remain jointly separated"), FShiCommandSignalModel::ValidateAgainstSites(Signals, Campaign.Sites, Error));
+
+    const FShiCommandSignalData* Grain = FShiCommandSignalModel::Find(Signals, TEXT("resource-grain"));
+    const FShiCommandSignalData* Danger = FShiCommandSignalModel::Find(Signals, TEXT("resource-danger"));
+    const FShiCommandSignalData* Pursuit = FShiCommandSignalModel::Find(Signals, TEXT("layer-pursuit"));
+    const FShiCommandSignalData* Method = FShiCommandSignalModel::Find(Signals, TEXT("layer-method-read"));
+    const FShiCommandSignalData* Oath = FShiCommandSignalModel::Find(Signals, TEXT("layer-commitment"));
+    TestNotNull(TEXT("grain tally exists"), Grain);
+    TestNotNull(TEXT("danger tally exists"), Danger);
+    TestNotNull(TEXT("pursuit signal exists"), Pursuit);
+    TestNotNull(TEXT("method-read signal exists"), Method);
+    TestNotNull(TEXT("oath signal exists even before an oath is active"), Oath);
+    if (Grain)
+    {
+        TestEqual(TEXT("grain tally carries the exact initial value"), Grain->NumericValue, 42);
+        TestTrue(TEXT("resource height remains anchored to the table"), FMath::IsNearlyEqual(Grain->Location.Z - Grain->Scale.Z * 50.f, 14.f, .001f));
+        const FShiCommandSignalData Selected = FShiCommandSignalModel::SelectedStyle(*Grain, true);
+        TestTrue(TEXT("selected tally grows visibly"), Selected.Scale.GetMin() > Grain->Scale.GetMin());
+        TestTrue(TEXT("selected tally remains anchored"), FMath::IsNearlyEqual(Selected.Location.Z - Selected.Scale.Z * 50.f, 14.f, .001f));
+        const FTransform Camera = FShiCommandSignalModel::CameraTransform(*Grain);
+        const FVector TargetDirection = (Grain->Location + FVector(0.f, 0.f, 10.f) - Camera.GetLocation()).GetSafeNormal();
+        TestTrue(TEXT("signal camera looks at the inspected tally"), FVector::DotProduct(Camera.GetRotation().GetForwardVector(), TargetDirection) > .9999f);
+    }
+    if (Danger) TestEqual(TEXT("danger tally carries exact Exposure"), Danger->NumericValue, Session.GetResources().FindRef(TEXT("danger")));
+    if (Pursuit) TestTrue(TEXT("pursuit signal names the active stage"), Pursuit->State.Contains(TEXT("Scattered watch")));
+    if (Method) TestTrue(TEXT("opening method signal discloses a neutral read"), Method->State.Contains(TEXT("NEUTRAL")));
+    if (Oath) TestFalse(TEXT("opening oath piece is visibly inactive"), Oath->bActive);
+
+    TMap<FString, int32> CapturedResources = Session.GetResources();
+    CapturedResources.FindOrAdd(TEXT("danger")) = 100;
+    TArray<FShiCommandSignalData> CapturedSignals;
+    TestTrue(TEXT("captured terminal state has an exact pursuit-closed signal"), FShiCommandSignalModel::Build(CapturedResources,
+        Session.GetCurrentFieldCondition(), nullptr, Session.GetCurrentMethodRead(), Session.GetActiveCommitment(),
+        &Node->Choices[0], TEXT("en"), CapturedSignals, Error));
+    const FShiCommandSignalData* CapturedPursuit = FShiCommandSignalModel::Find(CapturedSignals, TEXT("layer-pursuit"));
+    TestTrue(TEXT("captured signal discloses the terminal Exposure value"), CapturedPursuit
+        && CapturedPursuit->State.Contains(TEXT("CAPTURED")) && CapturedPursuit->Detail.Contains(TEXT("100 / 100")));
+
+    FString Cursor = Signals[0].Id;
+    for (int32 Index = 0; Index < Signals.Num(); ++Index) Cursor = FShiCommandSignalModel::CycleSignal(Signals, Cursor, 1);
+    TestEqual(TEXT("command signal cycling wraps exactly"), Cursor, Signals[0].Id);
+    TestEqual(TEXT("reverse signal cycling wraps to the final layer"),
+        FShiCommandSignalModel::CycleSignal(Signals, Signals[0].Id, -1), Signals.Last().Id);
+
+    FShiResolutionResult Resolution;
+    TestTrue(TEXT("opening order resolves before live-signal refresh"), Session.ResolveChoice(TEXT("read-the-names"), Resolution, Error));
+    const FShiNodeData* NextNode = Session.GetCurrentNode();
+    TestNotNull(TEXT("next signal scene exists"), NextNode);
+    if (NextNode && !NextNode->Choices.IsEmpty())
+    {
+        TestTrue(TEXT("post-order signals rebuild from authoritative state"), FShiCommandSignalModel::Build(Session.GetResources(),
+            Session.GetCurrentFieldCondition(), Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(),
+            Session.GetActiveCommitment(), &NextNode->Choices[0], TEXT("en"), Signals, Error));
+        Oath = FShiCommandSignalModel::Find(Signals, TEXT("layer-commitment"));
+        TestTrue(TEXT("the carried oath becomes a live world signal"), Oath && Oath->bActive && Oath->State.Contains(TEXT("Names under protection")));
+        Grain = FShiCommandSignalModel::Find(Signals, TEXT("resource-grain"));
+        TestTrue(TEXT("resource tallies refresh from authoritative post-order values"), Grain && Grain->NumericValue == Session.GetResources().FindRef(TEXT("grain")));
+    }
+
+    TArray<FShiCommandSignalData> Overlap = Signals;
+    Overlap[1].Location = Overlap[0].Location;
+    TestFalse(TEXT("overlapping live command signals are rejected"), FShiCommandSignalModel::Validate(Overlap, Error));
+    TArray<FShiCommandSignalData> Floating = Signals;
+    Floating[0].Location.Z += 4.f;
+    TestFalse(TEXT("floating resource tallies are rejected"), FShiCommandSignalModel::Validate(Floating, Error));
+    TArray<FShiSiteData> SiteCollision = Campaign.Sites;
+    SiteCollision[0].X = (Signals[0].Location.X / 4.6f) + 50.f;
+    SiteCollision[0].Z = (Signals[0].Location.Y / 2.8f) + 50.f;
+    TestFalse(TEXT("cross-family pointer overlap is rejected"), FShiCommandSignalModel::ValidateAgainstSites(Signals, SiteCollision, Error));
+    TMap<FString, int32> MissingResource = Session.GetResources();
+    MissingResource.Remove(TEXT("grain"));
+    const int32 StableSignalCount = Signals.Num();
+    const FString StableFirstSignalId = Signals[0].Id;
+    TestFalse(TEXT("missing authoritative resources reject the signal snapshot"), FShiCommandSignalModel::Build(MissingResource,
+        Session.GetCurrentFieldCondition(), Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(),
+        Session.GetActiveCommitment(), NextNode && !NextNode->Choices.IsEmpty() ? &NextNode->Choices[0] : nullptr,
+        TEXT("en"), Signals, Error));
+    TestTrue(TEXT("failed signal rebuild is atomic"), Signals.Num() == StableSignalCount && Signals[0].Id == StableFirstSignalId);
+    TestFalse(TEXT("nonterminal state cannot omit its pursuit band"), FShiCommandSignalModel::Build(Session.GetResources(),
+        Session.GetCurrentFieldCondition(), nullptr, Session.GetCurrentMethodRead(), Session.GetActiveCommitment(),
+        NextNode && !NextNode->Choices.IsEmpty() ? &NextNode->Choices[0] : nullptr, TEXT("en"), Signals, Error));
     return !HasAnyErrors();
 }
 

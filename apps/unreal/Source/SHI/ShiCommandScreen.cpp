@@ -64,6 +64,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     const FShiActData* Act = Mode->GetCampaign().FindAct(Node->ActId);
     const FShiSiteData* Site = Mode->GetCampaign().FindSite(Node->SiteId);
     const FShiSiteData* InspectedSite = Mode->GetInspectedSite();
+    const FShiCommandSignalData* InspectedSignal = Mode->GetInspectedCommandSignal();
     TArray<FString> ActiveSourceRefs = Mode->IsInspectingRemoteSite() ? TArray<FString>() : Node->SourceRefs;
     TArray<FString> ActiveClaimRefs = Mode->IsInspectingRemoteSite() ? TArray<FString>() : Node->ClaimRefs;
     if (InspectedSite)
@@ -98,7 +99,39 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
                 InspectedSite ? *InspectedSite->Name.Resolve(Locale) : TEXT("?"), ActiveSourceRefs.Num(), ActiveClaimRefs.Num())))
         ]
     ];
-    if (InspectedSite)
+    if (InspectedSignal)
+    {
+        TSharedRef<SVerticalBox> SignalCard = SNew(SVerticalBox);
+        SignalCard->AddSlot().AutoHeight()[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("COMMAND SIGNAL · %s · %s"),
+                *InspectedSignal->Category.ToUpper(), *InspectedSignal->Label)))
+        ];
+        SignalCard->AddSlot().AutoHeight().Padding(0, 6, 0, 2)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(InspectedSignal->State))
+        ];
+        SignalCard->AddSlot().AutoHeight().Padding(0, 2, 0, 4)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(InspectedSignal->Detail))
+        ];
+        SignalCard->AddSlot().AutoHeight().Padding(0, 2, 0, 7)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("READ-ONLY 3D TALLY · INSPECTION NEVER ISSUES AN ORDER OR CHANGES THE CHRONICLE")))
+        ];
+        SignalCard->AddSlot().AutoHeight()[
+            SNew(SHorizontalBox)
+            + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 7, 0)[
+                SNew(SButton).OnClicked(this, &SShiCommandScreen::CycleCommandSignal, -1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("← PREVIOUS SIGNAL")))]
+            ]
+            + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 7, 0)[
+                SNew(SButton).OnClicked(this, &SShiCommandScreen::CycleCommandSignal, 1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("NEXT SIGNAL →")))]
+            ]
+            + SHorizontalBox::Slot().AutoWidth()[
+                SNew(SButton).OnClicked(this, &SShiCommandScreen::ResetSiteFocus).ContentPadding(7)[
+                    SNew(STextBlock).Text(FText::FromString(TEXT("CURRENT GROUND")))
+                ]
+            ]
+        ];
+        Root->AddSlot().AutoHeight().Padding(28, 2, 28, 9)[SNew(SBorder).Padding(12)[SignalCard]];
+    }
+    else if (InspectedSite)
     {
         TSharedRef<SVerticalBox> IntelCard = SNew(SVerticalBox);
         IntelCard->AddSlot().AutoHeight()[
@@ -210,7 +243,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK MARKER OR TAB / GAMEPAD RB CYCLES WARTABLE · SHIFT+TAB PREVIOUS · HOME CURRENT · E / LB EVIDENCE · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT · SPACE SKIPS CAMERA · E / LB EVIDENCE · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
         ]
     ];
 
@@ -358,6 +391,12 @@ FReply SShiCommandScreen::ToggleEvidence()
 FReply SShiCommandScreen::CycleSite(int32 Direction)
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->CycleInspectedSite(Direction);
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::CycleCommandSignal(int32 Direction)
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->CycleInspectedCommandSignal(Direction);
     return FReply::Handled();
 }
 
