@@ -8,8 +8,9 @@
 - Bounded the candidate to three existing encounter questions—supply loads, reserve readiness and signal integrity—without granting a combat bonus or changing the authored Broken Crossing route. The validator rejects an unexpected audited section, noncanonical origin/anchor, malformed revision metadata, changed line range/hash, broadened metric list or missing human-review hold.
 - Canonicalizing the playable source URL changed the campaign SHA-256 to `3cd32c23c29c68d0ae402701260423059db00becc366d1b5f313072ef32370e0`; all 46 cross-engine fixtures and Web/Unreal/Unity staged payloads were regenerated from source. Exact implementation `dfa578fcdcf1374af62f1c76ed13d78aeed32f47` passes the complete production build, 57 TypeScript/UI tests, 76 engagement routes, 689 successful and 87 failure campaign routes, every static Unreal/history/audio/accessibility/font/privacy gate and all Web budgets.
 - The SHA-pinned localhost noVNC route repeats all 264 checks across the complete campaign and command exercise with thirty-five axe states, twenty-seven target states, eleven locale/font states, three audio-UI states and zero console errors, remote requests/resources or failed requests. Its cache-disabled traversal records 242 same-origin requests and 151 self-hosted font slices.
+- Hosted validation `31311057944` and Pages deployment `31311057890` pass at evidence boundary `68b78fe0392ed37747ef8065a9a664bd26eae2c7`. The HTTP-200 public game then repeats all 264 checks with 259 same-origin requests, 170 self-hosted font slices and zero console errors, remote requests/resources or failed requests; committed machine evidence names that exact SHA and public target.
 
-Next gate: preserve this exact research/content boundary through hosted validation and public replay, then complete official Unreal installation and prove the regenerated campaign hash in native automation before adding native engagement rules.
+Next gate: complete official Unreal installation and prove the regenerated campaign hash in native automation before adding native engagement rules.
 
 ## 2026-08-09 · Web broken-crossing command-board checkpoint
 
