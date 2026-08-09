@@ -1,0 +1,74 @@
+.engagement-drawer { width: min(780px, 97vw); padding: 28px 30px 48px; }
+.engagement-head h2 { margin-top: 4px; font-family: var(--cjk); font-size: 1.7rem; }
+.engagement-status { display: flex; gap: 7px; align-items: center; margin: 7px 0 0; color: #c9ab78; font-size: .68rem; letter-spacing: .05em; }
+.engagement-status i { width: 8px; height: 8px; border: 1px solid currentColor; transform: rotate(45deg); }
+.engagement-boundary { margin: 17px 0; padding: 11px 13px; color: #c4b99f; border: 1px solid rgba(203,170,111,.28); border-inline-start: 3px double #c79c5b; background: rgba(111,81,38,.14); font-size: .74rem; line-height: 1.55; }
+.engagement-briefing { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid rgba(204,180,137,.18); background: rgba(7,8,7,.22); }
+.engagement-briefing > div { min-width: 0; padding: 13px 15px; border-inline-end: 1px solid rgba(204,180,137,.14); }
+.engagement-briefing > div:nth-child(2) { border-inline-end: 0; }
+.engagement-briefing > .engagement-objective { grid-column: 1 / -1; border-top: 1px solid rgba(204,180,137,.14); border-inline-end: 0; }
+.engagement-briefing span, .engagement-answer > span, .engagement-outcome > span, .engagement-pulse-head span { display: block; margin-bottom: 5px; color: #b58c55; font-size: .62rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+.engagement-briefing strong { color: #e0d6c2; font-family: var(--cjk); font-size: .78rem; }
+.engagement-briefing p { margin: 5px 0 0; color: #9e9a90; font-family: var(--cjk); font-size: .72rem; line-height: 1.5; }
+.engagement-metrics { margin: 18px 0 0; }
+.engagement-metrics h3, .engagement-history > h3 { margin: 0 0 8px; color: #bca57c; font-size: .61rem; letter-spacing: .1em; text-transform: uppercase; }
+.engagement-metrics > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.engagement-metric { display: grid; grid-template-columns: 1fr auto; gap: 5px 8px; min-width: 0; padding: 8px 10px; border: 1px solid rgba(204,180,137,.14); background: rgba(30,31,27,.65); }
+.engagement-metric > span { overflow: hidden; color: #aaa69c; font-size: .64rem; text-overflow: ellipsis; white-space: nowrap; }
+.engagement-metric > strong { color: #d8c9ac; font-family: var(--mono); font-size: .72rem; font-weight: 600; }
+.engagement-metric > i { grid-column: 1 / -1; height: 3px; overflow: hidden; background: #393a34; }
+.engagement-metric > i > b { display: block; height: 100%; background: #789481; }
+.engagement-metric.is-risk > i > b { background: repeating-linear-gradient(90deg, #a85f4c 0 5px, #754334 5px 8px); }
+.engagement-answer { margin-top: 13px; padding: 13px 15px; border: 1px solid rgba(172,115,75,.34); background: linear-gradient(100deg, rgba(80,47,31,.26), rgba(27,25,21,.45)); }
+.engagement-answer h3 { margin: 0; color: #d3c8b4; font-family: var(--cjk); font-size: .72rem; font-weight: 400; line-height: 1.55; }
+.engagement-pulse { margin-top: 19px; }
+.engagement-pulse-head { display: grid; grid-template-columns: minmax(180px, .65fr) 1fr; gap: 20px; align-items: end; padding-bottom: 11px; border-bottom: 1px solid rgba(204,180,137,.2); }
+.engagement-pulse-head h3 { margin: 0; color: #e2d8c4; font-family: var(--cjk); font-size: 1.05rem; font-weight: 500; }
+.engagement-pulse-head p { margin: 0; color: #a4a096; font-family: var(--cjk); font-size: .72rem; line-height: 1.55; }
+.engagement-command-prompt { margin: 12px 0 8px; color: #bcaa88; font-size: .68rem; letter-spacing: .05em; }
+.engagement-command-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.engagement-command-grid > button { position: relative; display: flex; min-height: 185px; flex-direction: column; align-items: stretch; padding: 13px 13px 37px; color: inherit; border: 1px solid rgba(207,177,126,.25); background: linear-gradient(145deg, rgba(47,47,40,.84), rgba(27,28,24,.9)); cursor: pointer; text-align: start; }
+.engagement-command-grid > button:hover, .engagement-command-grid > button:focus-visible { border-color: #c8a46c; background: linear-gradient(145deg, rgba(66,60,47,.9), rgba(30,31,26,.95)); transform: translateY(-1px); }
+.engagement-command-grid > button > span { align-self: flex-start; padding: 3px 6px; color: #c5aa7e; border: 1px solid rgba(201,163,102,.36); font-size: .6rem; letter-spacing: .09em; text-transform: uppercase; }
+.engagement-command-grid > button > strong { margin-top: 9px; color: #dfd4bf; font-family: var(--cjk); font-size: .88rem; font-weight: 500; }
+.engagement-command-grid > button > p { margin: 6px 0 10px; color: #a9a59c; font-family: var(--cjk); font-size: .7rem; line-height: 1.45; }
+.engagement-command-grid > button > em { position: absolute; inset-inline: 13px; bottom: 11px; color: #c5a470; font-size: .62rem; font-style: normal; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.engagement-effect-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.engagement-effect-row > span { padding: 3px 5px; color: #aebbac; border: 1px solid rgba(130,161,136,.22); background: rgba(68,91,72,.14); font-size: .6rem; }
+.engagement-effect-row > span.negative { color: #cfaa8d; border-color: rgba(185,112,79,.24); background: rgba(108,56,38,.13); }
+.engagement-effect-row > span.risk.positive { color: #d3a180; border-style: dashed; }
+.engagement-outcome { margin-top: 19px; padding: 20px; border: 3px double rgba(196,158,94,.48); background: radial-gradient(circle at 15% 10%, rgba(126,100,55,.18), transparent 45%), rgba(22,24,20,.74); }
+.engagement-outcome > h3 { margin: 3px 0 7px; color: #e5d7bc; font-family: var(--cjk); font-size: 1.25rem; font-weight: 500; }
+.engagement-outcome > p { margin: 0 0 15px; color: #bbb5a8; font-family: var(--cjk); font-size: .78rem; line-height: 1.65; }
+.engagement-outcome > div > strong { display: block; margin-bottom: 7px; color: #bda77d; font-size: .61rem; letter-spacing: .08em; text-transform: uppercase; }
+.engagement-return { width: 100%; margin-top: 18px; }
+.engagement-return i { margin-inline-start: 8px; font-style: normal; }
+.engagement-history { margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(204,180,137,.17); }
+.engagement-history ol { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.engagement-history li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
+.engagement-history li > span { padding-top: 2px; color: #98764d; font: .61rem var(--mono); }
+.engagement-history strong { color: #d0c5b2; font-family: var(--cjk); font-size: .72rem; }
+.engagement-history p { margin: 3px 0 0; color: #8f8d86; font-family: var(--cjk); font-size: .66rem; line-height: 1.45; }
+
+@media (max-width: 680px) {
+  .engagement-drawer { padding: 22px 18px 36px; }
+  .engagement-briefing { grid-template-columns: 1fr; }
+  .engagement-briefing > div, .engagement-briefing > div:nth-child(2) { border-inline-end: 0; border-bottom: 1px solid rgba(204,180,137,.14); }
+  .engagement-briefing > .engagement-objective { grid-column: auto; border-top: 0; border-bottom: 0; }
+  .engagement-metrics > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .engagement-pulse-head { grid-template-columns: 1fr; gap: 7px; }
+  .engagement-command-grid { grid-template-columns: 1fr; }
+  .engagement-command-grid > button { min-height: 150px; }
+}
+
+@media (forced-colors: active) {
+  .engagement-boundary, .engagement-briefing, .engagement-metric, .engagement-answer, .engagement-command-grid > button, .engagement-outcome { color: CanvasText; border-color: CanvasText; background: Canvas; }
+  .engagement-command-grid > button:focus-visible { color: HighlightText; border-color: Highlight; background: Highlight; }
+  .engagement-metric > i { border: 1px solid CanvasText; background: Canvas; }
+  .engagement-metric > i > b { background: CanvasText; }
+  .engagement-metric.is-risk > i > b { background: repeating-linear-gradient(90deg, CanvasText 0 3px, Canvas 3px 5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .engagement-command-grid > button { transition: none; }
+}

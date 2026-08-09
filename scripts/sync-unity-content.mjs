@@ -7,6 +7,7 @@ const source = resolve(root, "content/campaigns/chapter-01-daze.json");
 const audioSource = resolve(root, "content/audio/chapter-01-audio.json");
 const conformanceSource = resolve(root, "content/conformance/chapter-01-replays.v1.json");
 const editionSource = resolve(root, "content/research/editions.json");
+const engagementSource = resolve(root, "content/engagements/chapter-01-broken-crossing.v1.json");
 const outputs = [
   resolve(root, "apps/web/src/generated/chapter-01-daze.json"),
   resolve(root, "apps/unity/Assets/StreamingAssets/chapter-01-daze.json"),
@@ -27,6 +28,14 @@ for (const output of [
 ]) {
   await mkdir(dirname(output), { recursive: true });
   await copyFile(audioSource, output);
+}
+for (const output of [
+  resolve(root, "apps/web/src/generated/chapter-01-broken-crossing.v1.json"),
+  resolve(root, "apps/unity/Assets/StreamingAssets/chapter-01-broken-crossing.v1.json"),
+  resolve(root, "apps/unreal/Content/StreamingAssets/chapter-01-broken-crossing.v1.json"),
+]) {
+  await mkdir(dirname(output), { recursive: true });
+  await copyFile(engagementSource, output);
 }
 for (const output of [
   resolve(root, "apps/unreal/Content/StreamingAssets/chapter-01-replays.v1.json"),
@@ -83,4 +92,4 @@ await copyFile(
   resolve(root, "assets/3d/export/shi-daze-wartable-v1.fbx"),
   resolve(root, "apps/unity/Assets/StreamingAssets/shi-daze-wartable-v1.fbx"),
 );
-console.log(`Synced campaign ${sha256.slice(0, 12)}, edition registry, procedural audio and replay conformance contracts to Unreal, Unity and web transport slices.`);
+console.log(`Synced campaign ${sha256.slice(0, 12)}, edition registry, procedural audio, engagement candidate and replay conformance contracts to Unreal, Unity and web transport slices.`);

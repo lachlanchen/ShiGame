@@ -54,6 +54,7 @@ const CommitmentRecord = lazy(() => import("./components/CommitmentLayer").then(
 const CommitmentEndingSummary = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentEndingSummary })));
 const DecisionInspector = lazy(() => import("./components/DecisionInspector").then((module) => ({ default: module.DecisionInspector })));
 const CampaignHorizon = lazy(() => import("./components/CampaignHorizon").then((module) => ({ default: module.CampaignHorizon })));
+const EngagementBoard = lazy(() => import("./components/EngagementBoard").then((module) => ({ default: module.EngagementBoard })));
 const SAVE_KEY = "shi.chapter-01.save.v6";
 const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v5", "shi.chapter-01.save.v4", "shi.chapter-01.save.v3", "shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
@@ -115,7 +116,7 @@ export function App() {
   const [locale, setLocale] = useState<Locale>(initialLocale);
   const [state, setState] = useState<GameState>(() => restoredState ?? createInitialState(campaign, initialSeed()));
   const [screen, setScreen] = useState<"title" | "play">("title");
-  const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | "audio" | null>(null);
+  const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | "audio" | "engagement" | null>(null);
   const [mapSiteId, setMapSiteId] = useState<string | null>(null);
   const [sourceSiteId, setSourceSiteId] = useState<string | null>(null);
   const [resolution, setResolution] = useState<ChoiceResolution | null>(null);
@@ -266,7 +267,7 @@ export function App() {
     playAudioCue(result.state.completed ? (result.state.failureReason ? "failure" : "ending") : "commit");
   };
 
-  const openDrawer = (next: "sources" | "record" | "guide" | "audio") => {
+  const openDrawer = (next: "sources" | "record" | "guide" | "audio" | "engagement") => {
     if (!drawer) {
       const active = document.activeElement;
       returnFocusRef.current = active instanceof HTMLElement && active !== document.body && active !== document.documentElement ? active : null;
@@ -339,6 +340,23 @@ export function App() {
       return;
     }
     if (drawer) {
+      if (drawer === "engagement") {
+        if (command === "back" || command === "engagement") { closeTransient(); return; }
+        if (command === "previous" || command === "next") {
+          const controls = [...document.querySelectorAll<HTMLButtonElement>("[data-engagement-command]")];
+          if (controls.length === 0) return;
+          const current = controls.indexOf(document.activeElement as HTMLButtonElement);
+          const step = command === "previous" ? -1 : 1;
+          controls[(current + step + controls.length) % controls.length]?.focus();
+          return;
+        }
+        if (command === "confirm") {
+          const active = document.activeElement;
+          if (active instanceof HTMLButtonElement && active.matches("[data-engagement-command], [data-engagement-close], [data-testid='engagement-return']")) active.click();
+          else document.querySelector<HTMLButtonElement>("[data-engagement-command], [data-testid='engagement-return']")?.click();
+        }
+        return;
+      }
       if (command === "back" || (command === "confirm" && drawer === "guide")) closeTransient();
       else if (command === "guide") {
         if (drawer === "guide") closeTransient(); else openDrawer("guide");
@@ -371,6 +389,11 @@ export function App() {
     if (command === "record") { openDrawer("record"); return; }
     if (command === "sources") { openNodeSources(); return; }
     if (command === "map") { setMapSiteId(node.siteId); return; }
+    if (command === "engagement") {
+      const choice = node.choices[selectedChoiceIndex];
+      if (node.id === "broken-crossing" && choice && canChoose(choice, state.resources)) openDrawer("engagement");
+      return;
+    }
     if (state.completed) {
       if (command === "confirm") endingRestartRef.current?.click();
       return;
@@ -612,7 +635,7 @@ export function App() {
 
       {!state.completed ? (
         <section className="choices-panel" inert={Boolean(resolution)}>
-          <div className="choices-heading"><span>{translate(locale, "choice")} · {translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1}{controllerConnected && <> · {translate(locale, "controllerReady")}</>}<span className="choices-input-detail"> · {controllerConnected ? `${translate(locale, "controllerHint")} · Y/△ · M` : translate(locale, "keyboardHint")}</span></small></div>
+          <div className="choices-heading"><span>{translate(locale, "choice")} · {translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1}{controllerConnected && <> · {translate(locale, "controllerReady")}</>}<span className="choices-input-detail"> · {controllerConnected ? `${translate(locale, "controllerHint")} · Y/△ · M${node.id === "broken-crossing" ? " · X/□ ◎" : ""}` : translate(locale, "keyboardHint")}</span></small></div>
           <div className="choices-grid">
             {node.choices.map((choice, index) => {
               const enabled = canChoose(choice, state.resources);
@@ -634,7 +657,7 @@ export function App() {
             const commitmentOutcome = selectCommitmentOutcome(campaign, state, choice);
             const establishedCommitment = selectEstablishedCommitment(campaign, choice);
             const establishingStakeholder = establishedCommitment ? campaign.characters.find((character) => character.id === establishedCommitment.stakeholderId) : null;
-            return <Suspense fallback={<div className="decision-inspector decision-inspector-loading" aria-busy="true" />}><DecisionInspector choice={choice} choiceIndex={node.choices.indexOf(choice)} locale={locale} readId={methodRead.read.id} establishedCommitmentId={establishedCommitment?.id} establishingStakeholder={establishingStakeholder?.name} activeCommitmentId={commitmentOutcome?.commitment.id} commitmentOutcomeId={commitmentOutcome?.outcome.id} enabled={canChoose(choice, state.resources)} onCommit={() => choose(choice)} /></Suspense>;
+            return <Suspense fallback={<div className="decision-inspector decision-inspector-loading" aria-busy="true" />}><DecisionInspector choice={choice} choiceIndex={node.choices.indexOf(choice)} locale={locale} readId={methodRead.read.id} establishedCommitmentId={establishedCommitment?.id} establishingStakeholder={establishingStakeholder?.name} activeCommitmentId={commitmentOutcome?.commitment.id} commitmentOutcomeId={commitmentOutcome?.outcome.id} enabled={canChoose(choice, state.resources)} onOpenCommandBoard={node.id === "broken-crossing" && canChoose(choice, state.resources) ? () => openDrawer("engagement") : undefined} onCommit={() => choose(choice)} /></Suspense>;
           })()}
         </section>
       ) : (
@@ -654,6 +677,7 @@ export function App() {
       {drawer === "guide" && <Suspense fallback={null}><FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} /></Suspense>}
       {drawer === "sources" && <Suspense fallback={null}><SourceLedger campaign={campaign} locale={locale} activeIds={sourceSite?.sourceRefs ?? node.sourceRefs} activeClaimIds={sourceSite?.claimRefs ?? node.claimRefs} contextTitle={sourceSite ? localize(sourceSite.name, locale) : undefined} onClose={closeTransient} /></Suspense>}
       {drawer === "audio" && <Suspense fallback={null}><AudioSettings locale={locale} preferences={audioPreferences} status={audioStatus} onEnabledChange={setAudioEnabled} onLevelChange={setAudioLevel} onPreview={() => playAudioCue("commit")} onClose={closeTransient} /></Suspense>}
+      {drawer === "engagement" && <Suspense fallback={null}><EngagementBoard key={`${node.id}-${node.choices[selectedChoiceIndex]?.id}-${activeCondition.id}`} planId={node.choices[selectedChoiceIndex]!.id} conditionId={activeCondition.id} locale={locale} onCue={playAudioCue} onClose={closeTransient} /></Suspense>}
       {drawer === "record" && (
         <aside className="drawer record-drawer" data-testid="record-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "record")}>
           <div className="drawer-head"><div><span className="eyebrow">SHI</span><h2>{translate(locale, "record")}</h2></div><button className="icon-button" autoFocus onClick={closeTransient} aria-label={translate(locale, "close")}>×</button></div>

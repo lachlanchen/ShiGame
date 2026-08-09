@@ -1,0 +1,8 @@
+.open-command-board { min-height: 52px; padding: 9px 14px; color: #d5c4a5; border: 1px solid rgba(197,158,95,.48); background: rgba(48,46,38,.88); cursor: pointer; font-family: var(--cjk); font-size: .66rem; }
+.open-command-board:hover, .open-command-board:focus-visible { color: #f0dfbf; border-color: #d2aa68; }
+.open-command-board i { margin-inline-start: 7px; color: #c6a065; font-style: normal; }
+
+@media (forced-colors: active) {
+  .open-command-board { color: CanvasText; border-color: CanvasText; background: Canvas; }
+  .open-command-board:focus-visible { color: HighlightText; border-color: Highlight; background: Highlight; }
+}

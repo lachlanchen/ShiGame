@@ -1,4 +1,4 @@
-export type GamepadCommand = "previous" | "next" | "confirm" | "back" | "record" | "sources" | "guide" | "map";
+export type GamepadCommand = "previous" | "next" | "confirm" | "back" | "record" | "sources" | "guide" | "map" | "engagement";
 
 export interface GamepadSnapshot {
   axes: readonly number[];
@@ -25,6 +25,7 @@ const buttonEdge = (current: GamepadSnapshot, previous: GamepadSnapshot | null, 
 export function readGamepadCommand(current: GamepadSnapshot, previous: GamepadSnapshot | null): GamepadCommand | null {
   if (buttonEdge(current, previous, 1)) return "back";
   if (buttonEdge(current, previous, 9)) return "guide";
+  if (buttonEdge(current, previous, 2)) return "engagement";
   if (buttonEdge(current, previous, 3)) return "map";
   if (buttonEdge(current, previous, 4)) return "record";
   if (buttonEdge(current, previous, 5)) return "sources";

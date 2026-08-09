@@ -307,4 +307,39 @@ describe("playable web shell", () => {
     await waitFor(() => expect(view.getByTestId("record-drawer").textContent).toContain("Witness chain"));
     expect(view.getByTestId("record-drawer").textContent).toContain("Read hits");
   });
+
+  it("plays the broken-crossing command reference without mutating campaign authority", async () => {
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+
+    fireEvent.click(document.querySelector("[data-choice-id='read-the-names']")!);
+    fireEvent.click(await view.findByTestId("commit-selected"));
+    fireEvent.click(view.getByTestId("resolution").querySelector("button")!);
+    fireEvent.click(document.querySelector("[data-choice-id='issue-grain-tallies']")!);
+    fireEvent.click(view.getByTestId("commit-selected"));
+    fireEvent.click(view.getByTestId("resolution").querySelector("button")!);
+
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("broken-crossing"));
+    fireEvent.click(document.querySelector("[data-choice-id='cut-the-carts']")!);
+    const open = await view.findByTestId("open-command-board");
+    open.focus();
+    fireEvent.click(open);
+    const board = await view.findByTestId("engagement-board");
+    expect(view.getByTestId("game-stage").hasAttribute("inert")).toBe(true);
+    expect(board.getAttribute("data-plan-id")).toBe("cut-the-carts");
+    const campaignBefore = localStorage.getItem("shi.chapter-01.save.v6");
+
+    fireEvent.click(board.querySelector("[data-engagement-command='open-three-files']")!);
+    fireEvent.click(board.querySelector("[data-engagement-command='abandon-the-loads']")!);
+    fireEvent.click(board.querySelector("[data-engagement-command='release-the-reserve']")!);
+
+    expect(board.getAttribute("data-outcome-id")).toBe("orderly-crossing");
+    expect(view.getByTestId("engagement-outcome").textContent).toContain("Orderly crossing");
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(campaignBefore);
+    expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("broken-crossing");
+    fireEvent.click(view.getByTestId("engagement-return"));
+    await waitFor(() => expect(view.queryByTestId("engagement-board")).toBeNull());
+    await waitFor(() => expect(document.activeElement).toBe(open));
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v6") ?? "null")?.history).toHaveLength(2);
+  });
 });

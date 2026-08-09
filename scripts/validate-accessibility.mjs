@@ -5,6 +5,8 @@ const root = resolve(import.meta.dirname, "..");
 const css = [
   await readFile(resolve(root, "apps/web/src/styles.css"), "utf8"),
   await readFile(resolve(root, "apps/web/src/components/CampaignHorizon.css"), "utf8"),
+  await readFile(resolve(root, "apps/web/src/components/DecisionInspector.css"), "utf8"),
+  await readFile(resolve(root, "apps/web/src/components/EngagementBoard.css"), "utf8"),
 ].join("\n");
 
 const escapePattern = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -95,6 +97,12 @@ const contrastPairs = [
   ["audio channel output", ".audio-channel output", "color", "#171713"],
   ["audio preview", ".audio-preview", "color", "#171713"],
   ["audio review gate", ".audio-review", "color", "#171713"],
+  ["command-board entry", ".open-command-board", "color", "#302e26"],
+  ["engagement status", ".engagement-status", "color", "#11120f"],
+  ["engagement boundary", ".engagement-boundary", "color", "#1b1812"],
+  ["engagement briefing", ".engagement-briefing p", "color", "#11120f"],
+  ["engagement command", ".engagement-command-grid > button > p", "color", "#1b1c18"],
+  ["engagement outcome", ".engagement-outcome > p", "color", "#161814"],
 ];
 
 for (const [label, selector, property, background] of contrastPairs) {
@@ -123,6 +131,12 @@ const microtypeSelectors = [
   ".record-list small", ".record-pressure b", ".record-opposition b", ".record-field b",
   ".audio-intro", ".audio-enable strong, .audio-channel strong", ".audio-enable small",
   ".audio-channel output", ".audio-preview", ".audio-review",
+  ".open-command-board", ".engagement-status", ".engagement-boundary",
+  ".engagement-briefing span, .engagement-answer > span, .engagement-outcome > span, .engagement-pulse-head span",
+  ".engagement-briefing p", ".engagement-metric > span", ".engagement-metric > strong",
+  ".engagement-pulse-head p", ".engagement-command-prompt", ".engagement-command-grid > button > span",
+  ".engagement-command-grid > button > strong", ".engagement-command-grid > button > p", ".engagement-command-grid > button > em",
+  ".engagement-effect-row > span", ".engagement-outcome > p", ".engagement-history strong", ".engagement-history p",
 ];
 for (const selector of microtypeSelectors) {
   const size = declaration(selector, "font-size");
@@ -137,6 +151,7 @@ const targetSelectors = [
   [".icon-button", "height"], [".source-external", "min-height"],
   [".audio-enable input", "width"], [".audio-channel input[type=\"range\"]", "height"], [".audio-preview", "min-height"],
   [".issue-order-button", "min-height"],
+  [".open-command-board", "min-height"], [".engagement-command-grid > button", "min-height"],
 ];
 for (const [selector, property] of targetSelectors) {
   const size = declaration(selector, property);
@@ -156,6 +171,7 @@ const forcedColorSelectors = [
   ".commitment-panel", ".commitment-establish", ".commitment-forecast", ".commitment-forecast-effects span", ".commitment-reveal",
   ".campaign-horizon,.campaign-act-rail li", ".campaign-act-rail li.is-current", ".campaign-act-rail li.is-passed",
   ".audio-enable input, .audio-channel input", ".audio-preview",
+  ".open-command-board", ".engagement-command-grid > button", ".engagement-metric.is-risk > i > b", ".engagement-outcome",
 ];
 for (const selector of forcedColorSelectors) {
   if (!forcedColors.includes(selector)) throw new Error(`Forced-colors contract selector is missing: ${selector}`);

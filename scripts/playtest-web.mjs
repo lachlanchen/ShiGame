@@ -19,7 +19,10 @@ await mkdir(outputDir, { recursive: true });
 await mkdir(localeEvidenceDir, { recursive: true });
 
 const targets = await fetch(`http://127.0.0.1:${cdpPort}/json`).then((response) => response.json());
-const target = targets.find((candidate) => candidate.type === "page" && /^https?:/.test(candidate.url));
+const target = targets.find((candidate) => {
+  if (candidate.type !== "page") return false;
+  try { return new URL(candidate.url).origin === testUrl.origin; } catch { return false; }
+}) ?? targets.find((candidate) => candidate.type === "page" && /^https?:/.test(candidate.url));
 if (!target) throw new Error("SHI page target was not found on the dedicated CDP port.");
 
 const socket = new WebSocket(target.webSocketDebuggerUrl);
@@ -230,12 +233,14 @@ await send("Page.addScriptToEvaluateOnNewDocument", { source: `(() => {
 await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
 await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
 await navigatePage(testUrl.href);
+await send("Page.bringToFront");
 consoleErrors.length = 0;
 networkRequests.length = 0;
 networkFailures.length = 0;
 await waitForSelector(".primary-button", 10000);
 await evaluate("localStorage.clear(); true");
 await reloadPage();
+await send("Page.bringToFront");
 await waitForSelector(".primary-button");
 await waitForTitleAssets();
 await waitForFontReady();
@@ -1190,6 +1195,101 @@ check(snapshot.overflow <= 1, "carried commitment and its three answers have no 
 await auditAccessibility("commitment-answers");
 await auditTargets("commitment-answers");
 
+await evaluate("document.querySelector('[data-choice-id=cut-the-carts]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await click("[data-choice-id=cut-the-carts]");
+await waitForSelector("[data-testid=open-command-board]");
+await evaluate("document.querySelector('[data-testid=open-command-board]')?.focus(); document.querySelector('[data-testid=open-command-board]')?.scrollIntoView({ block: 'center' }); true");
+const campaignBeforeCommandExercise = await evaluate("localStorage.getItem('shi.chapter-01.save.v6')");
+await gamepadButton(2);
+await waitForSelector("[data-testid=engagement-board]");
+await evaluate("document.querySelector('[data-engagement-command=open-three-files]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-42-command-board.png");
+snapshot = await evaluate(`(() => {
+  const board = document.querySelector('[data-testid=engagement-board]');
+  const box = board?.getBoundingClientRect();
+  return {
+    plan: board?.getAttribute('data-plan-id'),
+    condition: board?.getAttribute('data-condition-id'),
+    pulse: board?.getAttribute('data-pulse-index'),
+    commands: [...(board?.querySelectorAll('[data-engagement-command]') || [])].map((item) => item.getAttribute('data-engagement-command')),
+    boundary: board?.textContent?.includes('does not change the campaign'),
+    stageInert: document.querySelector('[data-testid=game-stage]')?.inert,
+    fit: Boolean(box && box.left >= 0 && box.right <= innerWidth && box.top <= 0 && box.bottom >= innerHeight),
+    overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+    history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length
+  };
+})()`);
+check(snapshot.plan === "cut-the-carts" && ["ford-rises", "rope-ferry-returns"].includes(snapshot.condition) && snapshot.pulse === "0", "the command board binds the selected campaign plan and disclosed field condition without inventing a new seed");
+check(snapshot.commands?.join(",") === "screen-through-reeds,open-three-files" && snapshot.boundary && snapshot.stageInert === true, "the first pulse exposes only its two legal Cut the carts commands and states the non-authority boundary");
+check(snapshot.fit && snapshot.overflow <= 1 && snapshot.history === 2, "the desktop command board fits its dedicated visible surface without mutating the campaign chronicle");
+await auditAccessibility("engagement-command-board");
+await auditTargets("engagement-command-board");
+
+await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
+await evaluate("document.querySelector('[data-testid=engagement-board]')?.scrollTo(0, 0); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-43-mobile-command-board.png");
+await evaluate("document.querySelector('[data-engagement-command=open-three-files]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-44-mobile-command-orders.png");
+snapshot = await evaluate(`(() => {
+  const board = document.querySelector('[data-testid=engagement-board]');
+  const box = board?.getBoundingClientRect();
+  const commands = [...(board?.querySelectorAll('[data-engagement-command]') || [])].map((item) => item.getBoundingClientRect());
+  return {
+    fit: Boolean(box && box.left >= 0 && box.right <= innerWidth),
+    oneColumn: commands.length === 2 && Math.abs(commands[0].left - commands[1].left) <= 1 && commands.every((item) => item.left >= 0 && item.right <= innerWidth),
+    overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth)
+  };
+})()`);
+check(snapshot.fit && snapshot.oneColumn && snapshot.overflow <= 1, "the 390-pixel command board preserves one-column legal orders without horizontal clipping");
+await auditAccessibility("engagement-command-board-mobile");
+await auditTargets("engagement-command-board-mobile");
+await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
+
+await gamepadButton(15);
+await gamepadButton(15);
+check(await evaluate("document.activeElement?.getAttribute('data-engagement-command') === 'open-three-files'"), "standard gamepad movement reaches the second legal opening command");
+await gamepadButton(0);
+check(await waitForCondition(`document.querySelector('[data-testid=engagement-board]')?.getAttribute('data-pulse-index') === '1' && document.activeElement?.getAttribute('data-engagement-command') === 'reinforce-the-rear'`, 3000), "gamepad confirmation issues the first command and focus advances to the next pulse");
+await gamepadButton(15);
+check(await evaluate("document.activeElement?.getAttribute('data-engagement-command') === 'abandon-the-loads'"), "standard gamepad movement reaches the second disruption answer");
+await gamepadButton(0);
+check(await waitForCondition(`document.querySelector('[data-testid=engagement-board]')?.getAttribute('data-pulse-index') === '2' && document.activeElement?.getAttribute('data-engagement-command') === 'staggered-withdrawal'`, 3000), "gamepad confirmation issues the disruption answer and advances focus to break contact");
+await gamepadButton(15);
+check(await evaluate("document.activeElement?.getAttribute('data-engagement-command') === 'release-the-reserve'"), "standard gamepad movement reaches the reserve release");
+await gamepadButton(0);
+await waitForSelector("[data-testid=engagement-outcome]");
+await evaluate("document.querySelector('[data-testid=engagement-outcome]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-45-command-outcome.png");
+snapshot = await evaluate(`(() => {
+  const board = document.querySelector('[data-testid=engagement-board]');
+  return {
+    outcome: board?.getAttribute('data-outcome-id'),
+    pulse: board?.getAttribute('data-pulse-index'),
+    completed: board?.getAttribute('data-completed'),
+    recordCount: board?.querySelectorAll('.engagement-history li').length,
+    preview: document.querySelector('[data-testid=engagement-outcome]')?.textContent?.trim(),
+    node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'),
+    saved: localStorage.getItem('shi.chapter-01.save.v6'),
+    overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth)
+  };
+})()`);
+check(snapshot.outcome === "orderly-crossing" && snapshot.completed === "true" && snapshot.pulse === "3" && snapshot.recordCount === 3, "three visible command pulses resolve into the authored orderly-crossing record");
+check(snapshot.preview.includes("Campaign effect preview") && snapshot.node === "broken-crossing" && snapshot.saved === campaignBeforeCommandExercise, "the outcome previews exact campaign effects while leaving the authoritative node and save byte-identical");
+check(snapshot.overflow <= 1, "the completed command record and outcome have no desktop horizontal overflow");
+await auditAccessibility("engagement-command-outcome");
+await auditTargets("engagement-command-outcome");
+await click("[data-testid=engagement-return]");
+const commandBoardClosed = await waitForCondition(`!document.querySelector('[data-testid=engagement-board]') && document.activeElement?.getAttribute('data-testid') === 'open-command-board'`, 3000);
+check(commandBoardClosed && await evaluate("JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length === 2"), "returning from the reference board restores focus and preserves the two-decision campaign history");
+await evaluate("document.querySelector('[data-choice-id=families-first]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await click("[data-choice-id=families-first]");
+
 let commitmentZoomBaseline;
 try {
   await resetBrowserZoom();
@@ -1312,11 +1412,11 @@ if (accessibilityViolations.length > 0) {
   await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
   throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
 }
-check(report.accessibilityAudits.length === 32, "WCAG 2.2 AA automation passes across thirty-two visible interface states");
+check(report.accessibilityAudits.length === 35, "WCAG 2.2 AA automation passes across thirty-five visible interface states");
 const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
 if (unexpectedIncomplete.length > 0) console.error("Unexpected axe incomplete results:", JSON.stringify(unexpectedIncomplete, null, 2));
 check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
-check(report.targetAudits.length === 24, "24 CSS pixel target checks pass across twenty-four interaction states");
+check(report.targetAudits.length === 27, "27 CSS pixel target checks pass across twenty-seven interaction states");
 check(report.audioAudits.length === 3, "audio consent, independent mixing and responsive layout have three visible audit records");
 check(report.fontAudits.length === 11, "all eleven interface locales pass their self-hosted font, direction and fit contracts");
 check(report.reflowAudits.length === 2 && report.reflowAudits.every((audit) => audit.width === 320 && audit.overflow <= 1), "title and gameplay pass the 320 CSS pixel 400% equivalent reflow gate");

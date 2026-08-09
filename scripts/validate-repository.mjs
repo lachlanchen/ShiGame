@@ -72,6 +72,15 @@ for (const relative of [
   const generated = await readFile(resolve(root, relative));
   if (!sourceConformance.equals(generated)) errors.push(`generated replay conformance contract is stale: ${relative}`);
 }
+const sourceEngagement = await readFile(resolve(root, "content/engagements/chapter-01-broken-crossing.v1.json"));
+for (const relative of [
+  "apps/web/src/generated/chapter-01-broken-crossing.v1.json",
+  "apps/unity/Assets/StreamingAssets/chapter-01-broken-crossing.v1.json",
+  "apps/unreal/Content/StreamingAssets/chapter-01-broken-crossing.v1.json",
+]) {
+  const generated = await readFile(resolve(root, relative));
+  if (!sourceEngagement.equals(generated)) errors.push(`generated engagement candidate is stale: ${relative}`);
+}
 
 for (const relative of [
   "assets/art/keyart/daze-village-rain-v1.png",
@@ -91,4 +100,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Repository valid: ${expectedReadmes.length + 1} README languages, ${publicFiles.filter((path) => extname(path) === ".md").length} Markdown files, shared campaign/audio payloads synchronized.`);
+console.log(`Repository valid: ${expectedReadmes.length + 1} README languages, ${publicFiles.filter((path) => extname(path) === ".md").length} Markdown files, shared campaign/audio/engagement payloads synchronized.`);

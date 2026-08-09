@@ -19,6 +19,10 @@ describe("standard gamepad command adapter", () => {
     expect(readGamepadCommand(sample([3]), sample())).toBe("map");
   });
 
+  it("maps X/Square to the martial command board", () => {
+    expect(readGamepadCommand(sample([2]), sample())).toBe("engagement");
+  });
+
   it("does not repeat a held button", () => {
     expect(readGamepadCommand(sample([0]), sample([0]))).toBeNull();
   });
