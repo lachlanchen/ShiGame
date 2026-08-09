@@ -21,6 +21,8 @@ The fixture includes the canonical campaign SHA-256. `npm run validate:conforman
 
 The Unreal automation suite is authored to run every golden route and compare every intermediate snapshot and delta. A separate save test exports version 6, rebuilds the position only from authoritative decisions, verifies terminal state, rejects an altered condition identity and proves failed replay cannot mutate the live session. Runtime saves use the same replay path, write through a temporary file, and preserve a rejected local save until the player explicitly confirms a new chronicle.
 
+The separate Broken Crossing contract remains non-authoritative but now has exact native parity. Unreal initializes from plan/condition identifiers, traverses the same 76 legal and 47 viable routes as TypeScript, reaches all nine commands and four outcomes, rebuilds every save from identifiers and rejects invented field responses or stored-state drift. Its six-piece spatial model is rebuilt at every native position. The visible runtime additionally snapshots the authoritative campaign save and refuses any pulse or close after byte drift.
+
 ## Evidence status
 
 | Boundary | Status |
@@ -28,8 +30,10 @@ The Unreal automation suite is authored to run every golden route and compare ev
 | Fixture generation and byte/hash validation | Green |
 | Unreal fixture staging and static contract | Green |
 | Unreal C++ automation source for all 46 routes | Green |
-| Unreal native compilation and exact `SHI.` automation execution | Green on official UE 5.8.1; all ten suites pass |
-| Unreal PIE save/resume/controller observation | Red; headless native proof is not visible play proof |
+| Unreal native compilation and exact `SHI.` automation execution | Green on official UE 5.8.1; all eleven suites pass |
+| Unreal Broken Crossing TypeScript/native route parity | Green; exact 76/47 matrix, replay/tamper and six-piece spatial states pass |
+| Unreal visible engagement/save observation | Green in fixed-window standalone; three pulses/outcome/return and unchanged disk-save hash observed |
+| Unreal editor PIE and packaged/controller observation | Red; PIE hit an NVIDIA Vulkan swapchain crash and packaging/physical-controller gates remain open |
 | Unity consumption of the fixture | Staged; native parity test remains open |
 
-Static validation never substitutes for native compiler and runtime evidence. The official native run now proves the C++ campaign client replays the golden corpus, but it does not prove the separate Broken Crossing engagement candidate, visible interaction or player experience.
+Static validation never substitutes for native compiler and runtime evidence. The official native run now proves both the C++ campaign corpus and the non-authoritative Broken Crossing parity boundary; the conservative visible route proves interaction and save isolation on this host. It still does not prove normal-thread performance, stable editor PIE, a packaged player, physical-controller feel or human enjoyment.
