@@ -13,7 +13,7 @@ namespace SHI.Tests
         [Test]
         public void ResolveClampsResourcesAndRecordsHistory()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":6,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"opposition\":{\"id\":\"watch\",\"methods\":[{\"id\":\"witnessed\"}],\"methodRead\":{\"minimumObservations\":2,\"neutral\":{\"id\":\"unresolved\"},\"countermeasures\":[]},\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"methodId\":\"witnessed\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":7,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"opposition\":{\"id\":\"watch\",\"methods\":[{\"id\":\"witnessed\"}],\"methodRead\":{\"minimumObservations\":2,\"neutral\":{\"id\":\"unresolved\"},\"countermeasures\":[]},\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"methodId\":\"witnessed\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
             var state = ShiState.Create(campaign);
             var node = campaign.Node("start");
 
@@ -29,7 +29,7 @@ namespace SHI.Tests
         [Test]
         public void ResolveAppliesPressureAfterThePlayerAction()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":6,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"opposition\":{\"id\":\"watch\",\"methods\":[{\"id\":\"witnessed\"}],\"methodRead\":{\"minimumObservations\":2,\"neutral\":{\"id\":\"unresolved\"},\"countermeasures\":[]},\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"methodId\":\"witnessed\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":7,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"opposition\":{\"id\":\"watch\",\"methods\":[{\"id\":\"witnessed\"}],\"methodRead\":{\"minimumObservations\":2,\"neutral\":{\"id\":\"unresolved\"},\"countermeasures\":[]},\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"methodId\":\"witnessed\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
             var state = ShiState.Create(campaign);
 
             var result = state.Resolve(campaign, campaign.Node("start"), campaign.Node("start").Choices[0]);
@@ -80,7 +80,7 @@ namespace SHI.Tests
         [Test]
         public void TextFallsBackToEnglish()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":6,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"opposition\":{\"id\":\"watch\",\"stages\":[]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":7,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"opposition\":{\"id\":\"watch\",\"stages\":[]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
             Assert.That(campaign.Text(campaign.Title, "fr"), Is.EqualTo("Test"));
         }
 
@@ -102,6 +102,7 @@ namespace SHI.Tests
             var sources = campaign.Sources.Select(source => source.Id).ToHashSet();
             var claims = campaign.Claims.Select(claim => claim.Id).ToHashSet();
             var nodes = campaign.Nodes.Select(node => node.Id).ToHashSet();
+            var acts = campaign.Acts.Select(act => act.Id).ToHashSet();
             var reachable = new HashSet<string>();
             var pending = new Queue<string>();
             pending.Enqueue(campaign.StartNodeId);
@@ -120,6 +121,8 @@ namespace SHI.Tests
                 var id = pending.Dequeue();
                 if (!reachable.Add(id)) continue;
                 var node = campaign.Node(id);
+                Assert.That(acts, Does.Contain(node.ActId), $"Unknown act on {node.Id}");
+                Assert.That(node.TimeIndex, Is.GreaterThanOrEqualTo(0), $"Negative authored time on {node.Id}");
                 Assert.That(sites, Does.Contain(node.SiteId), $"Unknown site on {node.Id}");
                 Assert.That(speakers, Does.Contain(node.SpeakerId), $"Unknown speaker on {node.Id}");
                 Assert.That(node.SourceRefs.All(sources.Contains), Is.True, $"Unknown source on {node.Id}");
@@ -130,11 +133,16 @@ namespace SHI.Tests
                 foreach (var next in node.Choices.Select(choice => choice.NextNodeId).Where(next => !string.IsNullOrEmpty(next)))
                 {
                     Assert.That(nodes, Does.Contain(next));
+                    var target = campaign.Node(next!);
+                    Assert.That(target.TimeIndex, Is.GreaterThan(node.TimeIndex), $"Authored time does not advance from {node.Id} to {target.Id}");
+                    Assert.That(campaign.Acts.FindIndex(act => act.Id == target.ActId), Is.GreaterThanOrEqualTo(campaign.Acts.FindIndex(act => act.Id == node.ActId)), $"Act order moves backward from {node.Id} to {target.Id}");
                     pending.Enqueue(next!);
                 }
             }
 
             Assert.That(reachable, Is.EquivalentTo(nodes));
+            Assert.That(campaign.Acts, Has.Count.EqualTo(3));
+            Assert.That(campaign.Nodes.Where(node => reachable.Contains(node.Id)).Select(node => node.ActId), Does.Contain(campaign.Acts[^1].Id));
         }
 
         [Test]
@@ -146,7 +154,8 @@ namespace SHI.Tests
             Assert.That(campaign.Sources, Has.Count.EqualTo(7));
             Assert.That(campaign.Claims, Has.Count.EqualTo(13));
             Assert.That(campaign.Claims.Count(claim => claim.ReviewStatus == "specialist-review-required"), Is.EqualTo(2));
-            Assert.That(campaign.SchemaVersion, Is.EqualTo(6));
+            Assert.That(campaign.SchemaVersion, Is.EqualTo(7));
+            Assert.That(campaign.Acts.Select(act => act.Id), Is.EqualTo(new[] { "register", "organization", "crossing" }));
             Assert.That(campaign.Opposition.ClaimStatus, Is.EqualTo("dramatic-reconstruction"));
             Assert.That(campaign.Opposition.Stages.Select(stage => stage.Id), Is.EquivalentTo(new[] { "scattered-watch", "road-search", "closing-cordon" }));
             Assert.That(campaign.Opposition.Methods.Select(method => method.Id), Is.EquivalentTo(new[] { "witnessed-compact", "forced-tempo", "distributed-cover" }));
@@ -310,7 +319,7 @@ namespace SHI.Tests
                 "mapIntel", "inspectMap", "knownGround", "reportedGround", "referenceOnly", "uncertainty",
                 "opponentPosture", "opponentResponse", "counterplay", "noAddedPressure", "methodRead", "method", "observedMethods", "readHits", "readMisses",
                 "commitmentEstablishes", "commitmentCarried", "commitmentAnswer", "commitmentKept", "commitmentStrained", "commitmentBroken", "chapterCommitment",
-                "selectedOrder", "issueOrder", "reviewOrder", "strategicReading",
+                "selectedOrder", "issueOrder", "reviewOrder", "strategicReading", "campaignHorizon", "act", "scene",
             };
 
             foreach (var locale in locales)

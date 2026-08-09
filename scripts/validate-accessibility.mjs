@@ -2,7 +2,10 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const css = await readFile(resolve(root, "apps/web/src/styles.css"), "utf8");
+const css = [
+  await readFile(resolve(root, "apps/web/src/styles.css"), "utf8"),
+  await readFile(resolve(root, "apps/web/src/components/CampaignHorizon.css"), "utf8"),
+].join("\n");
 
 const escapePattern = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const declaration = (selector, property) => {
@@ -72,6 +75,14 @@ const contrastPairs = [
   ["order review reminder", ".decision-confirmation small", "color", "#151712"],
   ["issue order action", ".issue-order-button", "color", "#c09a60"],
   ["issue order label", ".issue-order-button span", "color", "#c09a60"],
+  ["campaign horizon label", ".campaign-horizon-head > div > span", "color", "#11120f"],
+  ["campaign current act", ".campaign-horizon-head > div > strong", "color", "#11120f"],
+  ["campaign position metadata", ".campaign-horizon-head > p", "color", "#11120f"],
+  ["campaign act marker", ".campaign-act-rail li i", "color", "#11120f"],
+  ["campaign act number", ".campaign-act-rail li > span", "color", "#11120f"],
+  ["campaign act title", ".campaign-act-rail li strong", "color", "#11120f"],
+  ["campaign act state", ".campaign-act-rail li small", "color", "#11120f"],
+  ["campaign act objective", ".campaign-act-objective", "color", "#11120f"],
   ["source section", ".source-section", "color", "#171713"],
   ["claim confidence", ".claim-meta code", "color", "#171713"],
   ["record number", ".record-list li > span", "color", "#171713"],
@@ -105,6 +116,8 @@ const microtypeSelectors = [
   ".choice-reading span", ".pressure-warning > span", ".effects span, .delta-list span", ".locked",
   ".decision-inspector-head p", ".decision-inspector-head div > span", ".decision-principle > span", ".decision-principle p",
   ".decision-confirmation small", ".issue-order-button span", ".issue-order-button strong",
+  ".campaign-horizon-head > div > span", ".campaign-horizon-head > div > strong", ".campaign-horizon-head > p", ".campaign-horizon-head > p b",
+  ".campaign-act-rail li i", ".campaign-act-rail li > span", ".campaign-act-rail li strong", ".campaign-act-rail li small", ".campaign-act-objective",
   ".resolution-copy span", ".controller-callout span", ".controller-callout p", ".source-status",
   ".source-section", ".source-external", ".claim-meta span", ".claim-meta code", ".claim p",
   ".record-list small", ".record-pressure b", ".record-opposition b", ".record-field b",
@@ -141,6 +154,7 @@ const forcedColorSelectors = [
   ".opposition-panel", ".opposition-effects span",
   ".method-read-panel", ".method-read-effects span", ".method-read-counts span", ".method-choice", ".method-read-reveal",
   ".commitment-panel", ".commitment-establish", ".commitment-forecast", ".commitment-forecast-effects span", ".commitment-reveal",
+  ".campaign-horizon,.campaign-act-rail li", ".campaign-act-rail li.is-current", ".campaign-act-rail li.is-passed",
   ".audio-enable input, .audio-channel input", ".audio-preview",
 ];
 for (const selector of forcedColorSelectors) {

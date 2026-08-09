@@ -3,11 +3,12 @@ import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, l
 import type { Campaign } from "../src";
 
 const campaign: Campaign = {
-  schemaVersion: 6,
+  schemaVersion: 7,
   id: "test",
   title: { en: "Test", "zh-Hans": "测试" },
   subtitle: { en: "Test", "zh-Hans": "测试" },
   startNodeId: "start",
+  acts: [{ id: "test-act", title: { en: "Act", "zh-Hans": "幕" }, objective: { en: "Advance.", "zh-Hans": "推进。" } }],
   initialResources: { grain: 50, trust: 50, momentum: 50, people: 50, danger: 50 },
   commitments: [],
   opposition: {
@@ -55,6 +56,8 @@ const campaign: Campaign = {
   claims: [],
   nodes: [{
     id: "start",
+    actId: "test-act",
+    timeIndex: 0,
     dateLabel: { en: "Now", "zh-Hans": "现在" },
     siteId: "site",
     speakerId: "speaker",
@@ -86,11 +89,13 @@ const buildCommitmentCampaign = (includeCommitment = true): Campaign => {
   result.nodes[0]!.choices[0]!.nextNodeId = "carry";
   const carry = structuredClone(result.nodes[0]!);
   carry.id = "carry";
+  carry.timeIndex = 1;
   carry.choices[0]!.id = "carry-choice";
   carry.choices[0]!.effects = {};
   carry.choices[0]!.nextNodeId = "answer";
   const answer = structuredClone(result.nodes[0]!);
   answer.id = "answer";
+  answer.timeIndex = 2;
   answer.choices[0]!.id = "answer-choice";
   answer.choices[0]!.effects = { trust: 1 };
   answer.choices[0]!.pressure = {
@@ -102,6 +107,7 @@ const buildCommitmentCampaign = (includeCommitment = true): Campaign => {
   answer.choices[0]!.nextNodeId = "finish";
   const finish = structuredClone(result.nodes[0]!);
   finish.id = "finish";
+  finish.timeIndex = 3;
   finish.choices[0]!.id = "finish-choice";
   delete finish.choices[0]!.nextNodeId;
   result.nodes = [result.nodes[0]!, carry, answer, finish];

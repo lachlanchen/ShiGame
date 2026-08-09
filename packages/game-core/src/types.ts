@@ -66,6 +66,12 @@ export interface Character {
   historical: boolean;
 }
 
+export interface CampaignAct {
+  id: string;
+  title: LocalizedText;
+  objective: LocalizedText;
+}
+
 export type CommitmentStatus = "kept" | "strained" | "broken";
 
 export interface CommitmentOutcome {
@@ -189,6 +195,8 @@ export interface Choice {
 
 export interface CampaignNode {
   id: string;
+  actId: string;
+  timeIndex: number;
   dateLabel: LocalizedText;
   siteId: string;
   speakerId: string;
@@ -207,6 +215,7 @@ export interface Campaign {
   title: LocalizedText;
   subtitle: LocalizedText;
   startNodeId: string;
+  acts: CampaignAct[];
   initialResources: Resources;
   commitments: PlayerCommitment[];
   opposition: OppositionModel;

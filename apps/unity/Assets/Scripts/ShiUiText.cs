@@ -135,21 +135,21 @@ namespace SHI
             ["zh-Hant"] = new[] { "立下承諾", "隨行承諾", "應諾", "兌現", "承壓", "背棄", "本章承諾" },
         };
 
-        private static readonly string[] DecisionKeys = { "selectedOrder", "issueOrder", "reviewOrder", "strategicReading" };
+        private static readonly string[] DecisionKeys = { "selectedOrder", "issueOrder", "reviewOrder", "strategicReading", "campaignHorizon", "act", "scene" };
 
         private static readonly Dictionary<string, string[]> DecisionValues = new()
         {
-            ["en"] = new[] { "Selected order", "Issue order", "Review every disclosed effect before commitment.", "Strategic reading" },
-            ["ar"] = new[] { "الأمر المختار", "أصدر الأمر", "راجع كل أثر معلن قبل الالتزام.", "القراءة الاستراتيجية" },
-            ["de"] = new[] { "Gewählter Befehl", "Befehl erteilen", "Prüfe vor der Festlegung jede offengelegte Folge.", "Strategische Lesart" },
-            ["es"] = new[] { "Orden seleccionada", "Dar la orden", "Revisa cada efecto revelado antes de comprometerte.", "Lectura estratégica" },
-            ["fr"] = new[] { "Ordre sélectionné", "Donner l’ordre", "Examinez chaque effet annoncé avant de vous engager.", "Lecture stratégique" },
-            ["ja"] = new[] { "選択中の命令", "命令を下す", "決定前に、開示されたすべての効果を確認する。", "戦略的解釈" },
-            ["ko"] = new[] { "선택한 명령", "명령 내리기", "결정하기 전에 공개된 모든 효과를 검토하십시오.", "전략 해설" },
-            ["ru"] = new[] { "Выбранный приказ", "Отдать приказ", "Перед решением проверьте все раскрытые последствия.", "Стратегическая оценка" },
-            ["vi"] = new[] { "Mệnh lệnh đã chọn", "Ban lệnh", "Xem lại mọi hệ quả đã công bố trước khi cam kết.", "Luận thế chiến lược" },
-            ["zh-Hans"] = new[] { "已选命令", "下达命令", "落子前，复核所有已经明示的影响。", "战略解读" },
-            ["zh-Hant"] = new[] { "已選命令", "下達命令", "落子前，複核所有已經明示的影響。", "戰略解讀" },
+            ["en"] = new[] { "Selected order", "Issue order", "Review every disclosed effect before commitment.", "Strategic reading", "Campaign horizon", "Act", "Scene" },
+            ["ar"] = new[] { "الأمر المختار", "أصدر الأمر", "راجع كل أثر معلن قبل الالتزام.", "القراءة الاستراتيجية", "أفق الحملة", "الفصل", "المشهد" },
+            ["de"] = new[] { "Gewählter Befehl", "Befehl erteilen", "Prüfe vor der Festlegung jede offengelegte Folge.", "Strategische Lesart", "Kampagnenhorizont", "Akt", "Szene" },
+            ["es"] = new[] { "Orden seleccionada", "Dar la orden", "Revisa cada efecto revelado antes de comprometerte.", "Lectura estratégica", "Horizonte de campaña", "Acto", "Escena" },
+            ["fr"] = new[] { "Ordre sélectionné", "Donner l’ordre", "Examinez chaque effet annoncé avant de vous engager.", "Lecture stratégique", "Horizon de campagne", "Acte", "Scène" },
+            ["ja"] = new[] { "選択中の命令", "命令を下す", "決定前に、開示されたすべての効果を確認する。", "戦略的解釈", "戦役の見通し", "幕", "場面" },
+            ["ko"] = new[] { "선택한 명령", "명령 내리기", "결정하기 전에 공개된 모든 효과를 검토하십시오.", "전략 해설", "전역의 지평", "막", "장면" },
+            ["ru"] = new[] { "Выбранный приказ", "Отдать приказ", "Перед решением проверьте все раскрытые последствия.", "Стратегическая оценка", "Горизонт кампании", "Акт", "Сцена" },
+            ["vi"] = new[] { "Mệnh lệnh đã chọn", "Ban lệnh", "Xem lại mọi hệ quả đã công bố trước khi cam kết.", "Luận thế chiến lược", "Chân trời chiến dịch", "Hồi", "Cảnh" },
+            ["zh-Hans"] = new[] { "已选命令", "下达命令", "落子前，复核所有已经明示的影响。", "战略解读", "战役进程", "幕", "场景" },
+            ["zh-Hant"] = new[] { "已選命令", "下達命令", "落子前，複核所有已經明示的影響。", "戰略解讀", "戰役進程", "幕", "場景" },
         };
 
         private static readonly Dictionary<string, string[]> MapValues = new()

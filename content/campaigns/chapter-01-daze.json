@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 6,
+  "schemaVersion": 7,
   "id": "chapter-01-daze",
   "title": {
     "en": "SHI — The Shape of Power",
@@ -28,6 +28,95 @@
     "zh-Hant": "第一章 · 大澤鄉雨"
   },
   "startNodeId": "rain-order",
+  "acts": [
+    {
+      "id": "register",
+      "title": {
+        "en": "The register",
+        "ar": "السجل",
+        "de": "Das Register",
+        "es": "El registro",
+        "fr": "Le registre",
+        "ja": "名簿",
+        "ko": "명부",
+        "ru": "Реестр",
+        "vi": "Sổ danh",
+        "zh-Hans": "名籍",
+        "zh-Hant": "名籍"
+      },
+      "objective": {
+        "en": "Turn nine hundred isolated names into one political body without hiding the obligation created.",
+        "ar": "حوّل تسعمئة اسم منفصل إلى جسد سياسي واحد من دون إخفاء الالتزام الناشئ.",
+        "de": "Forme aus neunhundert vereinzelten Namen einen politischen Körper, ohne die entstehende Verpflichtung zu verschweigen.",
+        "es": "Convierte novecientos nombres aislados en un cuerpo político sin ocultar la obligación que nace.",
+        "fr": "Faire de neuf cents noms isolés un corps politique sans cacher l’obligation ainsi créée.",
+        "ja": "九百の孤立した名を、生まれる責務を隠さず一つの政治的共同体へ変える。",
+        "ko": "고립된 구백 개의 이름을, 생겨난 의무를 감추지 않고 하나의 정치 공동체로 바꾼다.",
+        "ru": "Превратить девятьсот разрозненных имён в единое политическое целое, не скрывая возникшего обязательства.",
+        "vi": "Biến chín trăm cái tên rời rạc thành một cộng đồng chính trị mà không che giấu nghĩa vụ vừa hình thành.",
+        "zh-Hans": "让九百个孤立的名字成为一个政治共同体，同时不掩盖由此产生的义务。",
+        "zh-Hant": "讓九百個孤立的名字成為一個政治共同體，同時不掩蓋由此產生的義務。"
+      }
+    },
+    {
+      "id": "organization",
+      "title": {
+        "en": "The cost of organization",
+        "ar": "كلفة التنظيم",
+        "de": "Der Preis der Organisation",
+        "es": "El coste de organizarse",
+        "fr": "Le coût de l’organisation",
+        "ja": "組織の代価",
+        "ko": "조직의 대가",
+        "ru": "Цена организации",
+        "vi": "Cái giá của tổ chức",
+        "zh-Hans": "组织的代价",
+        "zh-Hant": "組織的代價"
+      },
+      "objective": {
+        "en": "Turn declared purpose into rules for grain, signals, and accountable witnesses.",
+        "ar": "حوّل الغاية المعلنة إلى قواعد للمؤن والإشارات والشهود المسؤولين.",
+        "de": "Übersetze den erklärten Zweck in Regeln für Getreide, Signale und verantwortliche Zeugen.",
+        "es": "Convierte el propósito declarado en reglas para el grano, las señales y los testigos responsables.",
+        "fr": "Transformer le but déclaré en règles pour le grain, les signaux et les témoins responsables.",
+        "ja": "掲げた目的を、糧食・合図・責任ある証人の規則へ変える。",
+        "ko": "선언한 목적을 식량, 신호, 책임지는 증인의 규칙으로 바꾼다.",
+        "ru": "Превратить провозглашённую цель в правила для зерна, сигналов и ответственных свидетелей.",
+        "vi": "Biến mục đích đã tuyên bố thành quy tắc cho lương thực, tín hiệu và những người làm chứng có trách nhiệm.",
+        "zh-Hans": "把公开宣示的目的变成粮食、信号与责任见证的规则。",
+        "zh-Hant": "把公開宣示的目的變成糧食、信號與責任見證的規則。"
+      }
+    },
+    {
+      "id": "crossing",
+      "title": {
+        "en": "The crossing",
+        "ar": "المعبر",
+        "de": "Der Übergang",
+        "es": "El cruce",
+        "fr": "La traversée",
+        "ja": "渡河",
+        "ko": "도하",
+        "ru": "Переправа",
+        "vi": "Cuộc vượt sông",
+        "zh-Hans": "渡口",
+        "zh-Hant": "渡口"
+      },
+      "objective": {
+        "en": "Pay the promise’s cost, survive pursuit, and choose the network’s next shape.",
+        "ar": "ادفع كلفة الوعد، وانجُ من المطاردة، واختر الهيئة التالية للشبكة.",
+        "de": "Trage die Kosten des Versprechens, überstehe die Verfolgung und wähle die nächste Gestalt des Netzwerks.",
+        "es": "Paga el coste de la promesa, sobrevive a la persecución y elige la próxima forma de la red.",
+        "fr": "Payer le prix de la promesse, survivre à la poursuite et choisir la prochaine forme du réseau.",
+        "ja": "約束の代価を払い、追跡を生き延び、次のネットワークの形を選ぶ。",
+        "ko": "약속의 대가를 치르고 추격에서 살아남아 네트워크의 다음 형태를 선택한다.",
+        "ru": "Заплатить цену обещания, пережить преследование и выбрать следующую форму сети.",
+        "vi": "Trả giá cho lời hứa, sống sót qua cuộc truy đuổi và chọn hình thế tiếp theo của mạng lưới.",
+        "zh-Hans": "支付承诺的代价，在追击中存续，并选择网络的下一种形态。",
+        "zh-Hant": "支付承諾的代價，在追擊中存續，並選擇網絡的下一種形態。"
+      }
+    }
+  ],
   "initialResources": {
     "grain": 42,
     "trust": 38,
@@ -891,6 +980,8 @@
   "nodes": [
     {
       "id": "rain-order",
+      "actId": "register",
+      "timeIndex": 0,
       "dateLabel": { "en": "209 BCE · Seventh month", "zh-Hans": "秦二世元年 · 七月" },
       "siteId": "daze",
       "speakerId": "chen-sheng",
@@ -979,6 +1070,8 @@
     },
     {
       "id": "open-council",
+      "actId": "organization",
+      "timeIndex": 1,
       "dateLabel": { "en": "209 BCE · The same night", "zh-Hans": "秦二世元年 · 当夜" },
       "siteId": "daze",
       "speakerId": "yu-mu",
@@ -1044,6 +1137,8 @@
     },
     {
       "id": "fire-council",
+      "actId": "organization",
+      "timeIndex": 1,
       "dateLabel": { "en": "209 BCE · Before dawn", "zh-Hans": "秦二世元年 · 黎明前" },
       "siteId": "daze",
       "speakerId": "wu-guang",
@@ -1109,6 +1204,8 @@
     },
     {
       "id": "shadow-council",
+      "actId": "organization",
+      "timeIndex": 1,
       "dateLabel": { "en": "209 BCE · Second watch", "zh-Hans": "秦二世元年 · 二更" },
       "siteId": "daze",
       "speakerId": "qin-courier",
@@ -1174,6 +1271,8 @@
     },
     {
       "id": "broken-crossing",
+      "actId": "crossing",
+      "timeIndex": 2,
       "dateLabel": { "en": "209 BCE · Third day", "zh-Hans": "秦二世元年 · 第三日" },
       "siteId": "chen",
       "speakerId": "keeper",
@@ -1257,6 +1356,8 @@
     },
     {
       "id": "three-roads",
+      "actId": "crossing",
+      "timeIndex": 3,
       "dateLabel": { "en": "209 BCE · South of Chen", "zh-Hans": "秦二世元年 · 陈县之南" },
       "siteId": "chen",
       "speakerId": "chen-sheng",

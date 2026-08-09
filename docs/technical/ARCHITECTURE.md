@@ -2,31 +2,40 @@
 
 ## Decision
 
-SHI uses one authored campaign payload with two clients:
+SHI uses one authored campaign payload with three clients. Unreal is feature-first for cinematic 3D; Web is the fastest playable reference; Unity remains a maintained compatibility baseline:
 
 ```text
 content/research/editions.json + content/campaigns/*.json + content/audio/*.json
         │ rights/claim/audio validation + SHA-256
         ├── packages/game-core (deterministic TypeScript rules)
         ├── apps/web (React + Vite + lazy Three.js atmosphere)
-        └── apps/unity (Unity 6 + Newtonsoft JSON + 3D wartable)
+        ├── apps/unreal (Unreal 5.8 + C++ + Slate cinematic command space)
+        └── apps/unity (Unity 6 + Newtonsoft JSON + maintained 3D baseline)
 ```
 
-The web client is the fastest playable delivery path. Unity 6 LTS is the selected 3D engine because the workstation runs Ubuntu 24.04, which Unity 6 documents as supported, while the current Unreal Linux guidance targets Ubuntu 22.04. This is a platform decision for the first year, not a judgment that Unreal is unsuitable in general.
+The user has explicitly prioritized Unreal 5.8 for the difficult cinematic 3D work now. The workstation exceeds Epic's hardware recommendation but runs Ubuntu 24.04 rather than the recommended Ubuntu 22.04/Rocky Linux 8 baseline; native evidence is therefore mandatory and compatibility is never assumed. Unity is preserved without accepting a divergent gameplay fork.
 
 ## Shared-content contract
 
 - `content/campaigns/chapter-01-daze.json` is narrative truth; `content/research/editions.json` is the edition/rights metadata authority.
 - `content/audio/chapter-01-audio.json` is the Web/Unity sound truth. It fixes opt-in defaults, mix caps, deterministic rain synthesis and the seven semantic cue envelopes; its provenance record contains no source media and keeps human listening review open.
-- Schema v6 binds each playable node and wartable site to source records and inspectable historical/reconstruction claims, adds three opening-established player commitments with closed choice-specific outcomes, defines complete non-overlapping Exposure bands, assigns every choice one strategic method, and defines deterministic neutral/prepared method reads. Sites add a `known`/`reported`/`reference` intelligence state, bounded summary, uncertainty and schematic coordinates; claims retain locators, review state, confidence and game use without embedding source books.
+- Schema v7 adds exactly three authored acts plus monotonic `timeIndex` progression to the schema-v6 evidence, commitment, opposition and uncertainty contract. Every playable transition moves forward in time, stays within its act or advances one act, and closes on a registered site.
 - `scripts/validate-content.mjs` checks edition/right pairings, HTTPS public links, identifiers, claim/source/node/site closure, site coordinate/status bounds, reconstruction boundaries, translations, action/commitment/pressure/pursuit/method-read/field effects, commitment resolution and outcome reachability, opponent-band coverage, method/read closure and hit reachability, requirements, cycles, deadlocks, every field-condition branch, real failure reachability, and all three conclusions.
-- `scripts/sync-unity-content.mjs` copies the canonical campaign and audio bytes to Unity and browser mirrors, writes the campaign SHA-256 record, and emits lossless gameplay/claim/commitment/opposition browser slices. Claims, full commitment and opponent prose, and detailed audio settings are lazy boundaries so the release stays inside its initial-JavaScript budget; repository validation reassembles and compares the exact campaign.
+- `scripts/sync-unity-content.mjs` copies canonical campaign/audio bytes to Unreal, Unity and browser mirrors, writes the campaign SHA-256 record, and emits lossless gameplay/horizon/claim/commitment/opposition browser slices. Repository validation reassembles and compares the exact campaign.
 - Client-specific code may format or animate content; it may not silently change narrative outcomes.
-- Schema changes require a migration, updated validator, both clients, and tests.
+- Schema changes require a migration, updated validator, all three clients, and tests.
 
 ## Seed-reproducible resolution
 
-Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nodeId|turn` selects one weighted authored field condition; the signal and exact effects are visible before commitment. Opening history independently selects one active player promise, and the authored ford outcome determines whether the pending choice keeps, strains or breaks it. Current Exposure selects a disclosed Qin-pursuit posture. Prior choices select a method read: fewer than two observations or a leading-count tie is neutral, while a unique leader prepares one counter that applies only if the pending choice uses its target method. The engine applies player effects, commitment answer, authored pressure, pursuit, method read and field condition in that order, recording all applicable layers separately before checking capture/scattering. Identical campaign data, seed and decision history therefore reconstruct the identical result in TypeScript and C#. Commitment, pursuit, method-read and field content is classified as dramatic reconstruction and cannot alter routes, requirements, flags or prose at runtime.
+Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nodeId|turn` selects one weighted authored field condition; the signal and exact effects are visible before commitment. Opening history independently selects one active player promise, and the authored ford outcome determines whether the pending choice keeps, strains or breaks it. Current Exposure selects a disclosed Qin-pursuit posture. Prior choices select a method read: fewer than two observations or a leading-count tie is neutral, while a unique leader prepares one counter that applies only if the pending choice uses its target method. The engine applies player effects, commitment answer, authored pressure, pursuit, method read and field condition in that order, recording all applicable layers separately before checking capture/scattering. Identical campaign data, seed and decision history must reconstruct the identical result in TypeScript, Unreal C++ and Unity C#. Commitment, pursuit, method-read and field content is classified as dramatic reconstruction and cannot alter routes, requirements, flags or prose at runtime.
+
+## Unreal cinematic client
+
+- Pin: Unreal Engine 5.8; engine binaries and generated state stay outside Git.
+- C++ parses the canonical schema-v7 payload, validates act/time/site transitions and resolves order → oath → pressure → pursuit → prepared method read → deterministic field condition.
+- A programmatic Slate command surface keeps selection reversible, discloses field/pursuit/method/oath/pressure before commitment and exposes one explicit issue-order boundary.
+- The runtime builds a Daze command space with directional moonlight, motivated fire light, fog, ground, wartable and field markers. A short skippable camera move follows an issued order while the consequence remains interactive.
+- Static repository validation is green. Native target compilation, automation execution, PIE play, asset import, Linux packaging and human cinematic/playability review remain red until an official Epic installed build is available.
 
 ## Web client
 

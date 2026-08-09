@@ -1,15 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shi.game/schema/campaign-v6.json",
-  "title": "SHI Campaign v6",
+  "$id": "https://shi.game/schema/campaign-v7.json",
+  "title": "SHI Campaign v7",
   "type": "object",
-  "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "initialResources", "commitments", "opposition", "sites", "characters", "sources", "claims", "nodes"],
+  "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "acts", "initialResources", "commitments", "opposition", "sites", "characters", "sources", "claims", "nodes"],
   "properties": {
-    "schemaVersion": { "const": 6 },
+    "schemaVersion": { "const": 7 },
     "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
     "title": { "$ref": "#/$defs/localizedText" },
     "subtitle": { "$ref": "#/$defs/localizedText" },
     "startNodeId": { "type": "string" },
+    "acts": { "type": "array", "minItems": 3, "items": { "$ref": "#/$defs/campaignAct" } },
     "initialResources": { "$ref": "#/$defs/resources" },
     "commitments": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/commitment" } },
     "opposition": { "$ref": "#/$defs/opposition" },
@@ -21,6 +22,16 @@
   },
   "additionalProperties": false,
   "$defs": {
+    "campaignAct": {
+      "type": "object",
+      "required": ["id", "title", "objective"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "objective": { "$ref": "#/$defs/localizedText" }
+      },
+      "additionalProperties": false
+    },
     "localizedText": {
       "type": "object",
       "required": ["en", "zh-Hans"],
@@ -304,9 +315,11 @@
     },
     "node": {
       "type": "object",
-      "required": ["id", "dateLabel", "siteId", "speakerId", "title", "context", "dialogue", "sourceRefs", "claimRefs", "conditions", "choices"],
+      "required": ["id", "actId", "timeIndex", "dateLabel", "siteId", "speakerId", "title", "context", "dialogue", "sourceRefs", "claimRefs", "conditions", "choices"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "actId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "timeIndex": { "type": "integer", "minimum": 0 },
         "dateLabel": { "$ref": "#/$defs/localizedText" },
         "siteId": { "type": "string", "minLength": 1 },
         "speakerId": { "type": "string", "minLength": 1 },

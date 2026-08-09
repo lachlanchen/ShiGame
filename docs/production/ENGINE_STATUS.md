@@ -2,9 +2,9 @@
 
 Last checked: 2026-08-09, Asia/Hong_Kong.
 
-## Selected engine
+## Selected engines
 
-Unity 6 LTS is selected for the first production year. Project pin: `6000.0.80f1` (`2dfd32957da2`). The web client remains a first-class shipping client.
+Unreal Engine 5.8 is now the priority cinematic/3D client by explicit product decision. The Web client remains the playable reference and first-class shipping client. Unity 6 LTS (`6000.0.80f1`, `2dfd32957da2`) remains a maintained shared-schema baseline; it is not the feature-first 3D track.
 
 ## Installed and verified
 
@@ -20,6 +20,22 @@ Unity 6 LTS is selected for the first production year. Project pin: `6000.0.80f1
 - Verified compatibility editor archive: 4,153,503,732 bytes; XZ integrity passed; SHA-256 `ee060f7d5f4753db2154eccb549ef283a08bfa36069178274165074d333f47c1`.
 
 ## Open blockers
+
+### Unreal Editor acquisition and native proof
+
+The committed Unreal project now includes a runtime module, canonical schema-v7 loader, act/time/site validation, full six-layer decision resolution, reversible Slate order UI, requirements, all-six-scene progression, a runtime Daze command space, motivated skippable camera beat, automation-test source and official build/test/package wrapper. `npm run unreal:preflight` proves project closure and byte-identical canonical staging; it does not compile Unreal headers or execute the engine.
+
+No official Unreal installed build is present. Epic's Linux route requires an Epic-account sign-in for the precompiled installed-build ZIP, or an Epic-linked GitHub account for the private source repository. The active GitHub account cannot currently read `EpicGames/UnrealEngine`, so the source route is unavailable. Do not substitute an unofficial engine archive.
+
+Host audit: Ubuntu 24.04, 125 GiB RAM, 28 logical CPUs, two 24 GiB RTX 4090 D GPUs, NVIDIA 595.84 userspace and sufficient free home storage. Epic's current Unreal 5.8 Linux requirements recommend Ubuntu 22.04 or Rocky Linux 8, 32 GiB RAM, 8 GiB VRAM, NVIDIA 570+ and the versioned clang toolchain. Hardware exceeds the baseline; the distribution mismatch and NVIDIA kernel/userspace state keep native import, PIE, Vulkan performance and packaging red until measured.
+
+Resolution path:
+
+1. In the dedicated localhost-only noVNC desktop, sign in at Epic's official Linux download page and download the Unreal 5.8 installed build outside Git.
+2. Set `SHI_UNREAL_ROOT`, then run `./scripts/unreal-pipeline.sh projectfiles`, `build`, and `test`.
+3. Open the project through `./scripts/unreal-pipeline.sh editor`; fix API/import issues under native compiler evidence.
+4. Run the complete visible inspect → select → issue → consequence → act/time progression route and review camera/lighting/UI together.
+5. Package Linux, launch from clean output, record receipts, hashes, frame timing and screenshots.
 
 ### Unity Editor import/build
 
@@ -51,4 +67,4 @@ Do not reboot or reload production GPU modules without an explicit maintenance w
 
 ## Unreal and Unity coexistence
 
-No Unreal project is created at this checkpoint. Current Unreal Linux documentation recommends Ubuntu 22.04 while this host is Ubuntu 24.04, and installing both full editors before the Unity vertical slice passes would add many gigabytes and split validation. Re-evaluate Unreal for a cinematic/tooling spike at month 6; do not maintain two divergent gameplay clients.
+Both project boundaries consume one canonical payload. New cinematic/3D feature work goes to Unreal; Unity remains buildable reference code while its account license gate is unresolved. The Web TypeScript engine remains the behavioral oracle until cross-engine replay fixtures prove Unreal and Unity parity. Story, effects, chronology and historical classification may never fork between clients.

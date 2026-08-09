@@ -9,6 +9,7 @@ const editionRegister = JSON.parse(await readFile(editionRegisterPath, "utf8"));
 const errors = [];
 const resourceKeys = ["grain", "trust", "momentum", "people", "danger"];
 const pressureKinds = ["state", "terrain", "supply", "network"];
+const uiLocales = ["en", "ar", "de", "es", "fr", "ja", "ko", "ru", "vi", "zh-Hans", "zh-Hant"];
 
 const assert = (condition, message) => {
   if (!condition) errors.push(message);
@@ -54,12 +55,12 @@ const methodReadFor = (methodHistory) => {
     : campaign.opposition.methodRead.neutral;
 };
 
-assert(campaign.schemaVersion === 6, "campaign schemaVersion must be 6");
+assert(campaign.schemaVersion === 7, "campaign schemaVersion must be 7");
 assert(editionRegister.schemaVersion === 1, "edition register schemaVersion must be 1");
 assert(typeof campaign.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(campaign.id), "campaign.id must use ASCII kebab-case");
 hasRequiredText(campaign.title, "campaign.title");
 hasRequiredText(campaign.subtitle, "campaign.subtitle");
-for (const locale of ["en", "ar", "de", "es", "fr", "ja", "ko", "ru", "vi", "zh-Hans", "zh-Hant"]) {
+for (const locale of uiLocales) {
   assert(typeof campaign.title?.[locale] === "string", `campaign.title is missing ${locale}`);
   assert(typeof campaign.subtitle?.[locale] === "string", `campaign.subtitle is missing ${locale}`);
 }
@@ -70,7 +71,19 @@ const editionIds = unique(editionRegister.editions ?? [], "editions");
 const sourceIds = unique(campaign.sources ?? [], "sources");
 const claimIds = unique(campaign.claims ?? [], "claims");
 const nodeIds = unique(campaign.nodes ?? [], "nodes");
+const actIds = unique(campaign.acts ?? [], "campaign acts");
+assert(actIds.size === 3, "Chapter I requires exactly three authored acts");
+for (const act of campaign.acts ?? []) {
+  hasRequiredText(act.title, `act ${act.id}.title`);
+  hasRequiredText(act.objective, `act ${act.id}.objective`);
+  for (const locale of uiLocales) {
+    assert(typeof act.title?.[locale] === "string" && act.title[locale].trim(), `act ${act.id}.title is missing ${locale}`);
+    assert(typeof act.objective?.[locale] === "string" && act.objective[locale].trim(), `act ${act.id}.objective is missing ${locale}`);
+  }
+}
 assert(nodeIds.has(campaign.startNodeId), `start node does not exist: ${campaign.startNodeId}`);
+const startNode = campaign.nodes.find((node) => node.id === campaign.startNodeId);
+assert(startNode?.actId === campaign.acts?.[0]?.id, "campaign start node must belong to the first authored act");
 
 validateResourceMap(campaign.initialResources, "initialResources", 0, 100, true);
 assert(typeof campaign.opposition?.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(campaign.opposition.id), "campaign.opposition.id must use ASCII kebab-case");
@@ -205,6 +218,8 @@ const allConditionIds = new Set();
 const referencedClaimIds = new Set();
 for (const node of campaign.nodes ?? []) {
   assert(typeof node.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(node.id), `node ${node.id} must use an ASCII kebab-case id`);
+  assert(actIds.has(node.actId), `node ${node.id} references unknown act ${node.actId}`);
+  assert(Number.isInteger(node.timeIndex) && node.timeIndex >= 0, `node ${node.id}.timeIndex must be a non-negative integer`);
   hasRequiredText(node.dateLabel, `node ${node.id}.dateLabel`);
   hasRequiredText(node.title, `node ${node.id}.title`);
   hasRequiredText(node.context, `node ${node.id}.context`);
@@ -247,7 +262,15 @@ for (const node of campaign.nodes ?? []) {
     hasRequiredText(choice.intent, `choice ${choice.id}.intent`);
     hasRequiredText(choice.consequence, `choice ${choice.id}.consequence`);
     hasRequiredText(choice.strategy, `choice ${choice.id}.strategy`);
-    if (choice.nextNodeId) assert(nodeIds.has(choice.nextNodeId), `choice ${choice.id} points to missing node ${choice.nextNodeId}`);
+    if (choice.nextNodeId) {
+      assert(nodeIds.has(choice.nextNodeId), `choice ${choice.id} points to missing node ${choice.nextNodeId}`);
+      const target = campaign.nodes.find((candidate) => candidate.id === choice.nextNodeId);
+      const sourceActIndex = campaign.acts.findIndex((act) => act.id === node.actId);
+      const targetActIndex = campaign.acts.findIndex((act) => act.id === target?.actId);
+      assert((target?.timeIndex ?? -1) > node.timeIndex, `choice ${choice.id} must advance authored time beyond node ${node.id}`);
+      assert(targetActIndex >= sourceActIndex, `choice ${choice.id} moves backward from act ${node.actId} to ${target?.actId}`);
+      assert(targetActIndex <= sourceActIndex + 1, `choice ${choice.id} skips an authored act between ${node.actId} and ${target?.actId}`);
+    }
     validateResourceMap(choice.effects, `choice ${choice.id}.effects`, -100, 100);
     validateResourceMap(choice.requirements?.min, `choice ${choice.id}.requirements.min`, 0, 100);
     validateResourceMap(choice.requirements?.max, `choice ${choice.id}.requirements.max`, 0, 100);
@@ -310,6 +333,9 @@ const visit = (nodeId, stack = []) => {
 };
 visit(campaign.startNodeId);
 for (const id of nodeIds) assert(reachable.has(id), `node is unreachable: ${id}`);
+const reachableActIds = new Set(campaign.nodes.filter((node) => reachable.has(node.id)).map((node) => node.actId));
+for (const id of actIds) assert(reachableActIds.has(id), `authored act is unused by reachable play: ${id}`);
+assert(reachableActIds.has(campaign.acts.at(-1)?.id), "campaign must reach its final authored act");
 const finaleCount = campaign.nodes.flatMap((node) => node.choices).filter((choice) => !choice.nextNodeId).length;
 assert(finaleCount >= 3, "campaign requires at least three authored conclusions");
 
@@ -392,4 +418,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${commitmentIds.size} commitments with ${commitmentOutcomeIds.size} outcomes, ${allConditionIds.size} field conditions, ${oppositionStageIds.size} opponent postures, ${campaign.sources.length} source records, ${campaign.claims.length} claim records, ${editionRegister.editions.length} registered editions, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);
+console.log(`Content valid: ${campaign.acts.length} authored acts, ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${commitmentIds.size} commitments with ${commitmentOutcomeIds.size} outcomes, ${allConditionIds.size} field conditions, ${oppositionStageIds.size} opponent postures, ${campaign.sources.length} source records, ${campaign.claims.length} claim records, ${editionRegister.editions.length} registered editions, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);

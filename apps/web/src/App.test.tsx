@@ -142,6 +142,11 @@ describe("playable web shell", () => {
     fireEvent.click(view.getByTestId("begin-game"));
 
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("rain-order");
+    const openingHorizon = await view.findByTestId("campaign-horizon");
+    expect(openingHorizon.getAttribute("data-act-id")).toBe("register");
+    expect(openingHorizon.getAttribute("data-time-index")).toBe("0");
+    expect(openingHorizon.textContent).toContain("Act I · The register");
+    expect(openingHorizon.querySelector("[aria-current='step']")?.textContent).toContain("Current");
     expect(view.getByTestId("shi-app").getAttribute("data-seed")).toBe("00000000");
     expect(view.getByTestId("shi-app").getAttribute("data-opposition-stage")).toBe("scattered-watch");
     expect(view.getByTestId("shi-app").getAttribute("data-method-read-id")).toBe("unresolved-pattern");
@@ -161,6 +166,10 @@ describe("playable web shell", () => {
     fireEvent.click(view.getByTestId("commit-selected"));
 
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council"));
+    await waitFor(() => expect(view.getByTestId("campaign-horizon").getAttribute("data-act-id")).toBe("organization"));
+    expect(view.getByTestId("campaign-horizon").getAttribute("data-time-index")).toBe("1");
+    expect(view.getByTestId("campaign-horizon").textContent).toContain("Act II · The cost of organization");
+    expect(view.getByTestId("campaign-horizon").textContent).toContain("209 BCE · The same night");
     await waitFor(() => {
       const resolution = view.getByTestId("resolution").textContent;
       expect(resolution).toContain("The position answers");

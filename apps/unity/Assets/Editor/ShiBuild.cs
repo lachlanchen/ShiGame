@@ -20,6 +20,7 @@ namespace SHI.Editor
         private const string AudioFile = "chapter-01-audio.json";
         private const string BootScene = "Assets/Scenes/Boot.unity";
         private static readonly string[] BaselineLocales = { "en", "zh-Hans" };
+        private static readonly string[] UiLocales = { "en", "ar", "de", "es", "fr", "ja", "ko", "ru", "vi", "zh-Hans", "zh-Hant" };
         private static readonly string[] ResourceKeys = { "grain", "trust", "momentum", "people", "danger" };
         private static readonly string[] ClaimStatuses = { "received-account", "later-compilation", "strategic-text", "dramatic-reconstruction" };
         private static readonly string[] ClaimKinds = { "chronology", "event", "institution", "person", "geography", "strategic-lens", "reconstruction" };
@@ -40,7 +41,7 @@ namespace SHI.Editor
             if (errors.Count > 0)
                 throw new InvalidOperationException("SHI preflight failed:\n- " + string.Join("\n- ", errors));
 
-            Debug.Log($"SHI preflight passed: {campaign.Nodes.Count} nodes, " +
+            Debug.Log($"SHI preflight passed: {campaign.Acts.Count} authored acts, {campaign.Nodes.Count} nodes, " +
                       $"{campaign.Nodes.Sum(node => node.Choices.Count)} choices, " +
                       $"{campaign.Commitments.Count} commitments with {campaign.Commitments.Sum(commitment => commitment.Outcomes.Count)} outcomes, " +
                       $"{campaign.Nodes.Sum(node => node.Conditions.Count)} field conditions, " +
@@ -66,6 +67,7 @@ namespace SHI.Editor
         {
             var errors = new List<string>();
             var nodeIds = campaign.Nodes.Select(node => node.Id).ToHashSet();
+            var actIds = campaign.Acts.Select(act => act.Id).ToHashSet();
             var siteIds = campaign.Sites.Select(site => site.Id).ToHashSet();
             var characterIds = campaign.Characters.Select(character => character.Id).ToHashSet();
             var sourceIds = campaign.Sources.Select(source => source.Id).ToHashSet();
@@ -74,17 +76,33 @@ namespace SHI.Editor
             var choiceIds = new HashSet<string>();
             var referencedClaimIds = new HashSet<string>();
 
-            if (campaign.SchemaVersion != 6) errors.Add($"Campaign schema must be 6; found {campaign.SchemaVersion}.");
+            if (campaign.SchemaVersion != 7) errors.Add($"Campaign schema must be 7; found {campaign.SchemaVersion}.");
             if (!Regex.IsMatch(campaign.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add("Campaign id must use ASCII kebab-case.");
 
             RequireUnique(campaign.Nodes.Select(node => node.Id), "node", errors);
+            RequireUnique(campaign.Acts.Select(act => act.Id), "campaign act", errors);
             RequireUnique(campaign.Sites.Select(site => site.Id), "site", errors);
             RequireUnique(campaign.Characters.Select(character => character.Id), "character", errors);
             RequireUnique(campaign.Sources.Select(source => source.Id), "source", errors);
             RequireUnique(campaign.Claims.Select(claim => claim.Id), "claim", errors);
             RequireUnique(campaign.Nodes.SelectMany(node => node.Conditions).Select(condition => condition.Id), "field condition", errors);
 
+            if (campaign.Acts.Count != 3) errors.Add($"Chapter I requires exactly three authored acts; found {campaign.Acts.Count}.");
+            foreach (var act in campaign.Acts)
+            {
+                if (!Regex.IsMatch(act.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Campaign act '{act.Id}' must use an ASCII kebab-case id.");
+                RequireText(act.Title, $"campaign act '{act.Id}' title", errors);
+                RequireText(act.Objective, $"campaign act '{act.Id}' objective", errors);
+                foreach (var locale in UiLocales)
+                {
+                    if (string.IsNullOrWhiteSpace(act.Title.Value<string>(locale))) errors.Add($"Campaign act '{act.Id}' title is missing locale '{locale}'.");
+                    if (string.IsNullOrWhiteSpace(act.Objective.Value<string>(locale))) errors.Add($"Campaign act '{act.Id}' objective is missing locale '{locale}'.");
+                }
+            }
+
             if (!nodeIds.Contains(campaign.StartNodeId)) errors.Add($"Start node '{campaign.StartNodeId}' does not exist.");
+            var startNode = campaign.Nodes.FirstOrDefault(node => node.Id == campaign.StartNodeId);
+            if (startNode != null && campaign.Acts.Count > 0 && startNode.ActId != campaign.Acts[0].Id) errors.Add("Campaign start node must belong to the first authored act.");
             foreach (var key in ResourceKeys)
             {
                 if (!campaign.InitialResources.ContainsKey(key)) errors.Add($"Initial resource '{key}' is missing.");
@@ -229,6 +247,8 @@ namespace SHI.Editor
             foreach (var node in campaign.Nodes)
             {
                 if (!Regex.IsMatch(node.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Node '{node.Id}' must use an ASCII kebab-case id.");
+                if (!actIds.Contains(node.ActId)) errors.Add($"Node '{node.Id}' references unknown act '{node.ActId}'.");
+                if (node.TimeIndex < 0) errors.Add($"Node '{node.Id}' has negative authored time {node.TimeIndex}.");
                 if (!siteIds.Contains(node.SiteId)) errors.Add($"Node '{node.Id}' references unknown site '{node.SiteId}'.");
                 if (!characterIds.Contains(node.SpeakerId)) errors.Add($"Node '{node.Id}' references unknown speaker '{node.SpeakerId}'.");
                 if (node.Choices.Count < 2) errors.Add($"Node '{node.Id}' must offer at least two decisions.");
@@ -274,8 +294,19 @@ namespace SHI.Editor
                 {
                     if (!choiceIds.Add(choice.Id)) errors.Add($"Duplicate choice id '{choice.Id}'.");
                     if (!methodIds.Contains(choice.MethodId)) errors.Add($"Choice '{choice.Id}' references unknown strategic method '{choice.MethodId}'.");
-                    if (!string.IsNullOrEmpty(choice.NextNodeId) && !nodeIds.Contains(choice.NextNodeId!))
-                        errors.Add($"Choice '{choice.Id}' references unknown next node '{choice.NextNodeId}'.");
+                    if (!string.IsNullOrEmpty(choice.NextNodeId))
+                    {
+                        if (!nodeIds.Contains(choice.NextNodeId!)) errors.Add($"Choice '{choice.Id}' references unknown next node '{choice.NextNodeId}'.");
+                        else
+                        {
+                            var target = campaign.Nodes.First(candidate => candidate.Id == choice.NextNodeId);
+                            var sourceActIndex = campaign.Acts.FindIndex(act => act.Id == node.ActId);
+                            var targetActIndex = campaign.Acts.FindIndex(act => act.Id == target.ActId);
+                            if (target.TimeIndex <= node.TimeIndex) errors.Add($"Choice '{choice.Id}' does not advance authored time beyond node '{node.Id}'.");
+                            if (targetActIndex < sourceActIndex) errors.Add($"Choice '{choice.Id}' moves backward from act '{node.ActId}' to '{target.ActId}'.");
+                            if (targetActIndex > sourceActIndex + 1) errors.Add($"Choice '{choice.Id}' skips an authored act between '{node.ActId}' and '{target.ActId}'.");
+                        }
+                    }
                     ValidateEffects(choice.Effects, $"Choice '{choice.Id}'", errors);
                     if (!string.IsNullOrEmpty(choice.NextNodeId) && choice.Pressure == null)
                         errors.Add($"Nonterminal choice '{choice.Id}' requires a pressure response.");
@@ -333,6 +364,9 @@ namespace SHI.Editor
 
             var reachable = ReachableNodes(campaign);
             foreach (var unreachable in nodeIds.Except(reachable)) errors.Add($"Node '{unreachable}' is unreachable.");
+            var reachableActIds = campaign.Nodes.Where(node => reachable.Contains(node.Id)).Select(node => node.ActId).ToHashSet();
+            foreach (var unusedAct in actIds.Except(reachableActIds)) errors.Add($"Campaign act '{unusedAct}' is unused by reachable play.");
+            if (campaign.Acts.Count > 0 && !reachableActIds.Contains(campaign.Acts[^1].Id)) errors.Add("Campaign does not reach its final authored act.");
             var endingCount = campaign.Nodes.SelectMany(node => node.Choices).Count(choice => string.IsNullOrEmpty(choice.NextNodeId));
             if (endingCount < 3) errors.Add($"Campaign needs at least three endings; found {endingCount}.");
             if (HasCycle(campaign, campaign.StartNodeId, new HashSet<string>(), new HashSet<string>()))

@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Campaign horizon and Unreal-priority foundation
+
+- Promoted the campaign payload to schema v7. Three localized authored acts now bind every scene to an `actId` and monotonic `timeIndex`; schema, TypeScript, Unity and repository gates reject backward time, skipped acts, unknown sites and invalid route closure.
+- Added a lazy, localized campaign-horizon rail to Web and a matching Unity baseline. The focused rail distinguishes passed/current/ahead acts and shows current scene, site, date and objective without exposing later victory as player foreknowledge.
+- Expanded the dedicated noVNC route to 248 checks. It visibly traverses the complete three-act Chapter I path, mobile horizon, forced colors and prior six-layer/accessibility/localization/input/network gates with zero console errors. Reviewed frames are `web-40-campaign-horizon.png` and `web-41-mobile-campaign-horizon.png`.
+- Reprioritized Unreal 5.8 as the feature-first cinematic/3D client. Added a real `.uproject`, targets/module/config, canonical loader, chronology validation, six-layer C++ resolver, reversible Slate order surface, requirements, all-scene progression, runtime Daze lighting/fog/wartable composition, motivated skippable camera beat, automation source and official Linux pipeline wrapper.
+- `npm run sync:content` now stages byte-identical campaign/audio truth to Web, Unreal and Unity. The repository build includes a static Unreal project contract and rejects missing loader, resolver, UI or staged payload boundaries.
+- Audited the local historical corpus without copying private books. The inventory records available Shiji, Zizhi Tongjian, Sunzi, Sun Bin, Sima Fa, Wei Liaozi, Wuzi and Guiguzi chunks/editions, chronology policy and a quote-admission gate. The complete private memo remains in the game repository's ignored private reference area.
+- Official Unreal acquisition remains account-gated: the precompiled Linux build requires Epic sign-in and the active GitHub account cannot read Epic's private engine source. Static source validity is green; native compile, automation, PIE play, cinematic review and package evidence remain red and are not claimed.
+
+Next gate: publish and replay the exact schema-v7 Web evidence boundary, acquire the official Unreal 5.8 installed build through Epic sign-in, then compile and visibly play the first native Daze route before expanding content.
+
 ## 2026-08-09 · Deliberate order checkpoint
 
 - Reworked the decision surface around a player-comprehension problem: fifteen mechanically rich choices had become dense enough to read like reports, while one click both inspected and irreversibly committed. Compact cards now select only; one focused reading presents the selected order's complete strategic intent, method hit/miss, commitment answer, pressure warning and exact effects; a separate order-named **Issue order** action is the only pointer/keyboard commitment.

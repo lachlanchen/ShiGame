@@ -14,6 +14,7 @@ namespace SHI
         public JObject Title = new();
         public JObject Subtitle = new();
         public string StartNodeId = "";
+        public List<ShiAct> Acts = new();
         public Dictionary<string, int> InitialResources = new();
         public List<ShiCommitment> Commitments = new();
         public ShiOpposition Opposition = new();
@@ -26,12 +27,13 @@ namespace SHI
         public static ShiCampaign Parse(string json)
         {
             var result = JsonConvert.DeserializeObject<ShiCampaign>(json) ?? throw new InvalidOperationException("Campaign JSON was empty.");
-            if (result.SchemaVersion != 6) throw new InvalidOperationException($"Unsupported SHI campaign schema {result.SchemaVersion}.");
+            if (result.SchemaVersion != 7) throw new InvalidOperationException($"Unsupported SHI campaign schema {result.SchemaVersion}.");
             if (result.Nodes.All(node => node.Id != result.StartNodeId)) throw new InvalidOperationException("Campaign start node is missing.");
             return result;
         }
 
         public ShiNode Node(string id) => Nodes.FirstOrDefault(node => node.Id == id) ?? throw new InvalidOperationException($"Unknown node {id}.");
+        public ShiAct Act(string id) => Acts.FirstOrDefault(act => act.Id == id) ?? throw new InvalidOperationException($"Unknown act {id}.");
         public ShiCharacter Character(string id) => Characters.FirstOrDefault(character => character.Id == id) ?? throw new InvalidOperationException($"Unknown character {id}.");
         public ShiStrategicMethod Method(string id) => Opposition.Methods.FirstOrDefault(method => method.Id == id) ?? throw new InvalidOperationException($"Unknown strategic method {id}.");
         public ShiCommitment? EstablishedCommitment(ShiChoice choice)
@@ -43,6 +45,7 @@ namespace SHI
         public string Text(JObject value, string locale) => value.Value<string>(locale) ?? value.Value<string>("en") ?? value.Value<string>("zh-Hans") ?? "";
     }
 
+    public sealed class ShiAct { public string Id = ""; public JObject Title = new(); public JObject Objective = new(); }
     public sealed class ShiSite { public string Id = ""; public JObject Name = new(); public float X; public float Z; public string Status = ""; public JObject Summary = new(); public JObject Uncertainty = new(); public List<string> SourceRefs = new(); public List<string> ClaimRefs = new(); }
     public sealed class ShiCharacter { public string Id = ""; public JObject Name = new(); public JObject Role = new(); public bool Historical; }
     public sealed class ShiCommitment { public string Id = ""; public string ClaimStatus = ""; public string EstablishedByChoiceId = ""; public string StakeholderId = ""; public JObject Title = new(); public JObject Promise = new(); public List<ShiCommitmentOutcome> Outcomes = new(); }
@@ -57,7 +60,7 @@ namespace SHI
     public sealed class ShiMethodReadSelection { public string Id = ""; public Dictionary<string, int> Counts = new(); public ShiMethodReadNeutral? Neutral; public ShiMethodCountermeasure? Countermeasure; public string? TargetMethodId => Countermeasure?.TargetMethodId; public Dictionary<string, int> Effects => Countermeasure?.Effects ?? new Dictionary<string, int>(); }
     public sealed class ShiSource { public string Id = ""; public string EditionId = ""; public string Work = ""; public string Section = ""; public string Locator = ""; public string Url = ""; public string Author = ""; public string Date = ""; public JObject Note = new(); public string ClaimStatus = ""; public string RightsStatus = ""; }
     public sealed class ShiClaim { public string Id = ""; public string Kind = ""; public JObject Statement = new(); public List<string> SourceRefs = new(); public string ReviewStatus = ""; public string Confidence = ""; public JObject Uncertainty = new(); public JObject GameUse = new(); public string Reviewer = ""; }
-    public sealed class ShiNode { public string Id = ""; public JObject DateLabel = new(); public string SiteId = ""; public string SpeakerId = ""; public JObject Title = new(); public JObject Context = new(); public JObject Dialogue = new(); public List<string> SourceRefs = new(); public List<string> ClaimRefs = new(); public List<ShiFieldCondition> Conditions = new(); public List<ShiChoice> Choices = new(); }
+    public sealed class ShiNode { public string Id = ""; public string ActId = ""; public int TimeIndex; public JObject DateLabel = new(); public string SiteId = ""; public string SpeakerId = ""; public JObject Title = new(); public JObject Context = new(); public JObject Dialogue = new(); public List<string> SourceRefs = new(); public List<string> ClaimRefs = new(); public List<ShiFieldCondition> Conditions = new(); public List<ShiChoice> Choices = new(); }
     public sealed class ShiFieldCondition { public string Id = ""; public string ClaimStatus = ""; public JObject Title = new(); public JObject Signal = new(); public int Weight; public Dictionary<string, int> Effects = new(); }
     public sealed class ShiChoice { public string Id = ""; public string MethodId = ""; public JObject Label = new(); public JObject Intent = new(); public JObject Consequence = new(); public JObject Strategy = new(); public Dictionary<string, int> Effects = new(); public ShiRequirements? Requirements; public ShiPressure? Pressure; public List<string> Flags = new(); public string? NextNodeId; }
     public sealed class ShiRequirements { public Dictionary<string, int> Min = new(); public Dictionary<string, int> Max = new(); }

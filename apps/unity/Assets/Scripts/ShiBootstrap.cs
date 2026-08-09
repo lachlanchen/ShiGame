@@ -295,6 +295,10 @@ namespace SHI
             var oppositionStage = state.ActiveOppositionStage(campaign);
             var methodRead = state.ActiveMethodRead(campaign);
             var activeCommitment = state.ActiveCommitment(campaign);
+            var actIndex = campaign.Acts.FindIndex(candidate => candidate.Id == node.ActId);
+            var act = campaign.Act(node.ActId);
+            var site = campaign.Sites.Find(candidate => candidate.Id == node.SiteId)!;
+            var sceneIndex = campaign.Nodes.FindIndex(candidate => candidate.Id == node.Id) + 1;
             GUI.Box(new Rect(0, 0, Screen.width, 74), "");
             if (GUI.Button(new Rect(32, 16, 205, 40), "勢  SHI", GUI.skin.button)) { title = true; audioDirector?.SetAmbienceActive(false); }
             if (GUI.Button(new Rect(260, 20, 105, 30), T("guide"))) ToggleGuide();
@@ -335,7 +339,8 @@ namespace SHI
             GUI.Label(new Rect(48, 531, storyX - 96, 34), campaign.Text(methodReadForecast, locale), smallStyle);
             GUI.Label(new Rect(48, 566, storyX - 96, 17), methodRead.Effects.Count == 0 ? T("noAddedPressure") : EffectsText(methodRead.Effects), smallStyle);
             GUI.Label(new Rect(48, 584, storyX - 96, 17), T("counterplay") + ": " + campaign.Text(methodReadCounterplay, locale), smallStyle);
-            GUI.Label(new Rect(storyX, 145, storyWidth, 28), campaign.Text(node.DateLabel, locale).ToUpperInvariant(), smallStyle);
+            var horizon = $"{T("campaignHorizon")} · {T("act")} {actIndex + 1}/{campaign.Acts.Count} · {campaign.Text(act.Title, locale)} · {T("scene")} {sceneIndex}/{campaign.Nodes.Count} · {campaign.Text(site.Name, locale)} · {campaign.Text(node.DateLabel, locale)}";
+            GUI.Label(new Rect(storyX, 145, storyWidth, 28), horizon.ToUpperInvariant(), smallStyle);
             GUI.Label(new Rect(storyX, 177, storyWidth, 75), campaign.Text(node.Title, locale), titleStyle);
             GUI.Label(new Rect(storyX, 258, storyWidth, 110), campaign.Text(node.Context, locale), bodyStyle);
             GUI.Box(new Rect(storyX, 380, storyWidth, 105), "");

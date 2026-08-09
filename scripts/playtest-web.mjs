@@ -310,6 +310,7 @@ const auditLocaleFont = async (contract) => {
     const header = document.querySelector('.game-header')?.getBoundingClientRect();
     const brand = document.querySelector('.brand-button')?.getBoundingClientRect();
     const actions = document.querySelector('.header-actions')?.getBoundingClientRect();
+    const horizon = document.querySelector('[data-testid=campaign-horizon]')?.getBoundingClientRect();
     const headerContent = [...document.querySelectorAll('.brand-button > span, .brand-button strong, .brand-button small, .header-actions > *')].map((element) => element.getBoundingClientRect());
     return {
       locale: document.documentElement.lang,
@@ -320,6 +321,9 @@ const auditLocaleFont = async (contract) => {
       audioLabel: document.querySelector('[data-testid="audio-toggle"]')?.getAttribute('aria-label'),
       guideLabel: document.querySelector('[data-testid="guide-toggle"]')?.getAttribute('aria-label'),
       sourceLabel: document.querySelector('[data-testid="sources-toggle"]')?.getAttribute('aria-label'),
+      horizonActs: document.querySelectorAll('.campaign-act-rail li').length,
+      horizonCurrent: document.querySelector('.campaign-act-rail [aria-current=step]')?.textContent?.trim(),
+      horizonContained: Boolean(horizon && horizon.left >= 0 && horizon.right <= innerWidth),
       headerContained: Boolean(header && brand && actions && brand.left >= header.left && brand.right <= header.right && actions.left >= header.left && actions.right <= header.right),
       headerSeparated: Boolean(brand && actions && (document.documentElement.dir === 'rtl' ? actions.right <= brand.left : brand.right <= actions.left)),
       headerInViewport: Boolean(header && brand && actions && scrollY === 0 && header.top >= 0 && brand.top >= 0 && actions.top >= 0 && header.bottom <= innerHeight && brand.bottom <= innerHeight && actions.bottom <= innerHeight),
@@ -332,6 +336,7 @@ const auditLocaleFont = async (contract) => {
   check(result.locale === contract.locale && result.direction === contract.direction, `${contract.locale} applies its language and direction contract`);
   check(result.status === "ready" && result.fontAvailable && result.bodyFamily.includes(contract.family), `${contract.locale} loads its self-hosted ${contract.family} face`);
   check(Boolean(result.audioLabel) && Boolean(result.guideLabel) && Boolean(result.sourceLabel) && result.headerContained && result.headerSeparated && result.headerInViewport && result.headerContentInViewport && result.overflow <= 1, `${contract.locale} keeps localized header controls present, separated and within the viewport`);
+  check(result.horizonActs === 3 && Boolean(result.horizonCurrent) && result.horizonContained, `${contract.locale} keeps the three-act campaign horizon localized and horizontally contained`);
   await screenshot(`locales/web-locale-${contract.locale.toLowerCase()}.png`);
   if (contract.locale !== "en") await auditAccessibility(`gameplay-locale-${contract.locale}`);
 };
@@ -419,6 +424,10 @@ snapshot = await evaluate(`({
   seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'),
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   saveVersion: document.querySelector('[data-save-version]')?.getAttribute('data-save-version'),
+  horizonAct: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-act-id'),
+  horizonTime: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-time-index'),
+  horizonStates: [...document.querySelectorAll('.campaign-act-rail li')].map((item) => item.getAttribute('data-act-state')),
+  horizonText: document.querySelector('[data-testid=campaign-horizon]')?.textContent?.trim(),
   active: document.activeElement?.className,
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
@@ -438,10 +447,14 @@ check(snapshot.selectedChoice === "read-the-names" && snapshot.selectedPressed =
 check(snapshot.seed === "5EED2026", "shareable hexadecimal chronicle seed is visible");
 check(snapshot.onboarding === "complete", "dismissed onboarding preference is stored outside campaign state");
 check(snapshot.saveVersion === "6", "web client advertises save contract version 6");
+check(snapshot.horizonAct === "register" && snapshot.horizonTime === "0" && snapshot.horizonStates?.join(',') === "current,ahead,ahead" && snapshot.horizonText.includes("Scene 1 of 6") && snapshot.horizonText.includes("Daze Village"), "the opening horizon orients the player in Act I, scene, site and date with non-color progress states");
 check(String(snapshot.active).includes("story-panel"), "closing first-run guidance restores focus to the narrative");
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 await auditAccessibility("gameplay-en");
 await auditTargets("gameplay-en");
+await evaluate("document.querySelector('[data-testid=campaign-horizon]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-40-campaign-horizon.png");
 
 await evaluate("document.querySelector('[data-choice-id=take-the-beacon]')?.scrollIntoView({ block: 'center' }); true");
 await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
@@ -744,10 +757,11 @@ snapshot = await evaluate(`({ primary: document.querySelector('.primary-button')
 check(snapshot.primary.includes("Continue"), "reload offers save continuation");
 await click(".primary-button");
 await wait(400);
-snapshot = await evaluate(`({ heading: document.querySelector('.story-panel h1')?.textContent?.trim(), seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'), condition: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-condition-id'), commitment: document.querySelector('[data-testid=commitment-panel]')?.textContent?.trim() })`);
+snapshot = await evaluate(`({ heading: document.querySelector('.story-panel h1')?.textContent?.trim(), seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'), condition: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-condition-id'), commitment: document.querySelector('[data-testid=commitment-panel]')?.textContent?.trim(), horizonAct: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-act-id'), horizonTime: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-time-index') })`);
 check(snapshot.heading === "A covenant must eat", "save resumes at the exact branch node");
 check(snapshot.seed === "5EED2026" && Boolean(snapshot.condition), "reload preserves the seed and derives the next field condition");
 check(snapshot.commitment.includes("Names under protection") && snapshot.commitment.includes("Aunt Yu"), "save-v6 reload restores the unresolved commitment without relying on stored resource totals");
+check(snapshot.horizonAct === "organization" && snapshot.horizonTime === "1", "save reload restores the exact Act II and authored time position");
 
 await gamepadButton(4);
 await wait(300);
@@ -763,9 +777,13 @@ await gamepadButton(1);
 await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
 await wait(450);
 await screenshot("web-06-mobile-gameplay.png");
-snapshot = await evaluate(`({ choices: document.querySelectorAll('.choice-card').length, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, width: innerWidth })`);
+snapshot = await evaluate(`(() => { const horizon = document.querySelector('[data-testid=campaign-horizon]')?.getBoundingClientRect(); return { choices: document.querySelectorAll('.choice-card').length, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, width: innerWidth, horizonFit: Boolean(horizon && horizon.left >= 0 && horizon.right <= innerWidth), horizonActs: document.querySelectorAll('.campaign-act-rail li').length }; })()`);
 check(snapshot.width === 390 && snapshot.choices === 2, "mobile viewport retains the active branch choices");
 check(snapshot.overflow <= 1, "mobile gameplay has no horizontal overflow");
+check(snapshot.horizonFit && snapshot.horizonActs === 3, "mobile keeps the complete campaign horizon in its reading flow without horizontal clipping");
+await evaluate("document.querySelector('[data-testid=campaign-horizon]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-41-mobile-campaign-horizon.png");
 await evaluate("scrollTo(0, 0); true");
 await gamepadButton(3);
 await waitForSelector("[data-testid=map-intel]");
@@ -781,7 +799,7 @@ check(snapshot.overflow <= 1, "mobile wartable inspection has no horizontal over
 await auditAccessibility("wartable-mobile");
 await auditTargets("wartable-mobile");
 await gamepadButton(3);
-await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: 360, y: 760, deltaX: 0, deltaY: 650 });
+await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: 360, y: 760, deltaX: 0, deltaY: 900 });
 await wait(450);
 await screenshot("web-08-mobile-choices.png");
 snapshot = await evaluate(`(() => {
@@ -969,6 +987,8 @@ snapshot = await evaluate(`(() => {
   const reported = style('.site-marker.site-reported i');
   const reference = style('.site-marker.site-reference i');
   const active = style('.site-marker.active i');
+  const horizonCurrent = style('.campaign-act-rail .is-current');
+  const horizonAhead = style('.campaign-act-rail .is-ahead');
   return {
     active: matchMedia('(forced-colors: active)').matches,
     decorativeLayersHidden: ['.three-backdrop', '.map-sweep'].every((selector) => style(selector).display === 'none'),
@@ -980,7 +1000,9 @@ snapshot = await evaluate(`(() => {
     reportedBorder: reported.borderTopStyle,
     reportedBorderWidth: parseFloat(reported.borderTopWidth),
     referenceRadius: parseFloat(reference.borderTopLeftRadius),
-    activeBorder: active.borderTopStyle
+    activeBorder: active.borderTopStyle,
+    horizonCurrentBorder: horizonCurrent.borderTopStyle,
+    horizonAheadBorder: horizonAhead.borderTopStyle
   };
 })()`);
 report.forcedColorsAudit = snapshot;
@@ -988,6 +1010,7 @@ check(snapshot.active && snapshot.decorativeLayersHidden, "forced-colors mode is
 check(snapshot.meterHeight >= 4 && snapshot.meterBorder === "solid" && snapshot.dangerOutline === "dashed", "forced-colors resources retain meter structure and a non-color danger marker");
 check(snapshot.selectedOutline === "solid" && snapshot.selectedOutlineWidth >= 3, "forced-colors order selection retains a system-highlight outline");
 check(snapshot.reportedBorder === "dashed" && snapshot.reportedBorderWidth >= 2 && snapshot.referenceRadius === 0 && snapshot.activeBorder === "double", "forced-colors wartable intelligence retains distinct reported, reference and active marker shapes");
+check(snapshot.horizonCurrentBorder === "double" && snapshot.horizonAheadBorder === "solid", "forced-colors campaign progress retains distinct current and future act geometry");
 await auditAccessibility("gameplay-forced-colors");
 await auditTargets("gameplay-forced-colors");
 await evaluate("document.querySelector('.choice-card.is-selected')?.scrollIntoView({ block: 'center' }); true");
@@ -1109,12 +1132,16 @@ await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => reques
 await screenshot("web-30-opposition-road-search.png");
 snapshot = await evaluate(`({
   node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'),
+  horizonAct: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-act-id'),
+  horizonTime: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-time-index'),
+  horizonStates: [...document.querySelectorAll('.campaign-act-rail li')].map((item) => item.getAttribute('data-act-state')),
   response: document.querySelector('.opposition-reveal')?.textContent?.trim(),
   deltas: [...document.querySelectorAll('.opposition-deltas span')].map((item) => item.textContent?.trim()),
   history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history,
   choicesInert: document.querySelector('.choices-panel')?.inert
 })`);
 check(snapshot.node === "broken-crossing" && snapshot.response.includes("Road search") && snapshot.response.includes("Cross-checked reports"), "road-search pursuit answers the committed order as disclosed");
+check(snapshot.horizonAct === "crossing" && snapshot.horizonTime === "2" && snapshot.horizonStates?.join(',') === "passed,passed,current", "the committed council order advances visibly into Act III at the authored crossing time");
 check(snapshot.deltas.includes("+2 Exposure") && snapshot.history?.[1]?.oppositionStageId === "road-search" && snapshot.history?.[1]?.oppositionEffects?.danger === 2, "road-search applies and records its exact Exposure modifier as a separate layer");
 check(snapshot.choicesInert === true && snapshot.history?.length === 2, "the escalated pursuit result preserves decision isolation and one-record-per-commit semantics");
 await auditAccessibility("resolution-road-search");
@@ -1267,12 +1294,15 @@ await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => reques
 await screenshot("web-36-commitment-ending.png");
 snapshot = await evaluate(`({
   completed: document.querySelector('[data-testid=shi-app]')?.classList.contains('is-complete'),
+  horizonAct: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-act-id'),
+  horizonTime: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-time-index'),
   status: document.querySelector('[data-testid=commitment-ending]')?.getAttribute('data-commitment-status'),
   summary: document.querySelector('[data-testid=commitment-ending]')?.textContent?.trim(),
   activeCommitment: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-commitment-id'),
   saved: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}')
 })`);
 check(snapshot.completed && snapshot.status === "kept" && snapshot.summary.includes("Chapter commitment") && snapshot.summary.includes("Names under protection"), "the authored ending preserves the chapter's answered commitment without creating a global morality score");
+check(snapshot.horizonAct === "crossing" && snapshot.horizonTime === "3", "the completed route retains the final authored act and time position");
 check(snapshot.activeCommitment === "none" && snapshot.saved?.history?.length === 4 && snapshot.saved?.saveVersion === 6, "the completed save contains one resolved commitment and no unresolved promise");
 await auditAccessibility("ending-with-commitment");
 await auditTargets("ending-with-commitment");

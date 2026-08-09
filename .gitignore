@@ -34,6 +34,20 @@ apps/unity/*.csproj
 apps/unity/*.sln
 apps/unity/*.user
 
+# Unreal generated state, synchronized payloads and builds
+apps/unreal/.vs/
+apps/unreal/Binaries/
+apps/unreal/Build/
+apps/unreal/DerivedDataCache/
+apps/unreal/Intermediate/
+apps/unreal/Saved/
+apps/unreal/Content/StreamingAssets/*
+!apps/unreal/Content/StreamingAssets/.gitkeep
+apps/unreal/Content/Maps/*.umap
+apps/unreal/Content/Maps/*.uexp
+apps/unreal/Content/Maps/*.ubulk
+apps/unreal/Builds/
+
 # Ephemeral runtime and local test outputs
 .runtime/
 output/

@@ -42,21 +42,24 @@ const sourceCampaign = await readFile(resolve(root, "content/campaigns/chapter-0
 for (const relative of [
   "apps/web/src/generated/chapter-01-daze.json",
   "apps/unity/Assets/StreamingAssets/chapter-01-daze.json",
+  "apps/unreal/Content/StreamingAssets/chapter-01-daze.json",
 ]) {
   const generated = await readFile(resolve(root, relative));
   if (!sourceCampaign.equals(generated)) errors.push(`generated campaign is stale: ${relative}`);
 }
 const parsedCampaign = JSON.parse(sourceCampaign.toString("utf8"));
 const webGameplay = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-gameplay.json"), "utf8"));
+const webHorizon = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-horizon.json"), "utf8"));
 const webClaims = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-claims.json"), "utf8"));
 const webOpposition = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-opposition.json"), "utf8"));
 const webCommitments = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-commitments.json"), "utf8"));
-if (JSON.stringify({ ...webGameplay, claims: webClaims, commitments: webCommitments, opposition: webOpposition }) !== JSON.stringify(parsedCampaign))
-  errors.push("generated web gameplay/claim/commitment/opposition slices do not reconstruct the canonical campaign");
+if (JSON.stringify({ ...webGameplay, acts: webHorizon, claims: webClaims, commitments: webCommitments, opposition: webOpposition }) !== JSON.stringify(parsedCampaign))
+  errors.push("generated web gameplay/horizon/claim/commitment/opposition slices do not reconstruct the canonical campaign");
 const sourceAudio = await readFile(resolve(root, "content/audio/chapter-01-audio.json"));
 for (const relative of [
   "apps/web/src/generated/chapter-01-audio.json",
   "apps/unity/Assets/StreamingAssets/chapter-01-audio.json",
+  "apps/unreal/Content/StreamingAssets/chapter-01-audio.json",
 ]) {
   const generated = await readFile(resolve(root, relative));
   if (!sourceAudio.equals(generated)) errors.push(`generated audio contract is stale: ${relative}`);

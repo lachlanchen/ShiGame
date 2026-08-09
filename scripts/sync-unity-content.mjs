@@ -8,6 +8,7 @@ const audioSource = resolve(root, "content/audio/chapter-01-audio.json");
 const outputs = [
   resolve(root, "apps/web/src/generated/chapter-01-daze.json"),
   resolve(root, "apps/unity/Assets/StreamingAssets/chapter-01-daze.json"),
+  resolve(root, "apps/unreal/Content/StreamingAssets/chapter-01-daze.json"),
 ];
 const contents = await readFile(source);
 const campaign = JSON.parse(contents.toString("utf8"));
@@ -20,12 +21,14 @@ for (const output of outputs) {
 for (const output of [
   resolve(root, "apps/web/src/generated/chapter-01-audio.json"),
   resolve(root, "apps/unity/Assets/StreamingAssets/chapter-01-audio.json"),
+  resolve(root, "apps/unreal/Content/StreamingAssets/chapter-01-audio.json"),
 ]) {
   await mkdir(dirname(output), { recursive: true });
   await copyFile(audioSource, output);
 }
 const webGameplay = {
   ...campaign,
+  acts: campaign.acts.map(({ id }) => ({ id })),
   claims: [],
   commitments: campaign.commitments.map(({ id, claimStatus, establishedByChoiceId, stakeholderId, outcomes }) => ({
     id,
@@ -47,6 +50,7 @@ const webGameplay = {
   },
 };
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-gameplay.json"), `${JSON.stringify(webGameplay)}\n`);
+await writeFile(resolve(root, "apps/web/src/generated/chapter-01-horizon.json"), `${JSON.stringify(campaign.acts)}\n`);
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-claims.json"), `${JSON.stringify(campaign.claims)}\n`);
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-opposition.json"), `${JSON.stringify(campaign.opposition)}\n`);
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-commitments.json"), `${JSON.stringify(campaign.commitments)}\n`);
@@ -63,4 +67,4 @@ await copyFile(
   resolve(root, "assets/3d/export/shi-daze-wartable-v1.fbx"),
   resolve(root, "apps/unity/Assets/StreamingAssets/shi-daze-wartable-v1.fbx"),
 );
-console.log(`Synced campaign ${sha256.slice(0, 12)} and procedural audio contract to Unity and web transport slices.`);
+console.log(`Synced campaign ${sha256.slice(0, 12)} and procedural audio contract to Unreal, Unity and web transport slices.`);

@@ -5,7 +5,7 @@ This roadmap is a sequence of quality gates, not permission for uncontrolled con
 ## Year-one outcomes
 
 - A complete, replayable late-Qin-to-Chu–Han campaign slice with a coherent authored ending.
-- Shippable web release and stable Unity desktop/mobile vertical slice.
+- Shippable web release and stable Unreal cinematic desktop vertical slice; Unity remains a maintained shared-schema baseline.
 - Source, localization, asset, audio, build, accessibility, performance and playtest pipelines capable of supporting a full game.
 - A small reviewed corpus and character/system bible that makes adding content safer rather than faster at any cost.
 
@@ -13,12 +13,12 @@ This roadmap is a sequence of quality gates, not permission for uncontrolled con
 
 | Time | Milestone | Exit gate |
 | --- | --- | --- |
-| Month 1 | Foundation and Daze vertical slice | Public repo; playable web chapter; shared schema; source ledger; Unity project imports; visible QA |
-| Month 2 | Systems proof | Countermoves, seeded uncertainty prototype, save migrations, keyboard/gamepad/touch, first observed playtests |
+| Month 1 | Foundation and Daze vertical slice | Public repo; playable web chapter; schema-v7 act horizon; source ledger; real Unreal C++ project; visible Web QA |
+| Month 2 | Unreal interaction proof | Official editor compile; six-layer Daze route in PIE; inspect/select/issue/progress; keyboard/mouse/controller; first observed playtests |
 | Month 3 | Historical production cell | Qin law/geography/material P0 review; claim database; approved termbase; source edition register |
-| Month 4 | 3D interaction slice | Unity UI Toolkit, wartable interaction, camera/audio language, Linux/WebGL builds, performance capture |
+| Month 4 | Cinematic 3D interaction slice | Unreal environment, wartable interaction, camera/audio language, Linux build and performance capture; Unity baseline revalidated |
 | Month 5 | Chapter II: Chen | County politics, recruitment, restitution, opponent model; complete research/localization pass |
-| Month 6 | Pei/Kuaiji dual view | Liu Bang/Xiang clan networks introduced without hindsight; Unreal cinematic/tool spike decision |
+| Month 6 | Pei/Kuaiji dual view | Liu Bang/Xiang clan networks introduced without hindsight; Unreal cinematic language applied without predetermining either path |
 | Month 7 | Tactical command prototype | Spatial indirect-control encounter connected to campaign resources; reject if it becomes detached combat |
 | Month 8 | Art/audio production | Final environment kit, reviewed character approach, adaptive music/ambience pipeline, LOD and memory budgets |
 | Month 9 | Campaign integration | Multi-chapter state, relationship memory, accessibility audit, narrative continuity review |
@@ -31,6 +31,8 @@ Month 2 status on 2026-08-09: authored countermoves, three opening-established p
 Month 3 status on 2026-08-09: schema v6, a five-edition rights-aware register, seven source records, thirteen scene-linked claim records, exact public locators, player-facing uncertainty, explicit reconstruction classification for player-commitment/pursuit/method-read/field layers, web/Unity claim ledgers and automated claim/source closure are implemented. The Qin-law and historical-GIS P0 specialist gates remain open, so this milestone is in progress rather than complete.
 
 Month 4 status on 2026-08-09: the first bounded interaction slice is implemented in both clients. The web wartable and Unity 3D markers share known/reported/reference intelligence, uncertainty, filtered site evidence, pointer/keyboard/controller navigation and automated closure checks. Both clients consume one opt-in procedural-audio contract with deterministic zero-mean rain, seven semantic cues, shared envelopes, independent ambience/effects mixing, all-eleven-locale mixer UI and matching native preflight limits. A reproducible reference renderer and a separate visible-browser/PipeWire recorder now enforce peak, EBU R128 loudness, DC, loop-boundary, cue-audibility, pre-consent-silence and channel-parity gates; the real-browser path caught and drove correction of a startup gain burst. Web desktop/mobile operation and the automated accessibility-resilience subset—including mixer consent/persistence/layout, 400%-equivalent reflow and forced-colors map/state distinctions—pass. The web release path has pinned/licensed self-hosted typography, CSP/network privacy enforcement, eleven-locale visible font/fit evidence and hard initial/lazy/font/deployment budgets. Unity source assemblies pass offline type compilation. UI Toolkit replacement, authored camera language, human audio listening/sensory/device approval, licensed Unity import/execution/accessibility and native-audio inspection, Linux/WebGL players and performance capture remain open, so Month 4 is not complete.
+
+Unreal reprioritization status on 2026-08-09: a real Unreal 5.8 C++ project now stages the byte-identical schema-v7 campaign/audio payload, validates its three-act horizon, resolves the six gameplay layers, advances all six authored scenes, renders a side-by-side 3D command/UI composition and defines a skippable consequence camera beat. Static gates pass. Official editor acquisition, native compile/automation, visible PIE interaction, reviewed art/audio, Linux packaging and observed player evidence remain open; none is represented as complete.
 
 ## Weekly operating cadence
 

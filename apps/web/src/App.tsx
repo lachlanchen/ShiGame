@@ -53,6 +53,7 @@ const CommitmentResolutionDeltas = lazy(() => import("./components/CommitmentLay
 const CommitmentRecord = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentRecord })));
 const CommitmentEndingSummary = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentEndingSummary })));
 const DecisionInspector = lazy(() => import("./components/DecisionInspector").then((module) => ({ default: module.DecisionInspector })));
+const CampaignHorizon = lazy(() => import("./components/CampaignHorizon").then((module) => ({ default: module.CampaignHorizon })));
 const SAVE_KEY = "shi.chapter-01.save.v6";
 const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v5", "shi.chapter-01.save.v4", "shi.chapter-01.save.v3", "shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
@@ -557,6 +558,8 @@ export function App() {
       </header>
 
       <ResourceRail resources={state.resources} locale={locale} />
+
+      <Suspense fallback={<section className="campaign-horizon-placeholder" aria-busy="true" />}><CampaignHorizon campaign={campaign} node={node} locale={locale} /></Suspense>
 
       <Suspense fallback={<section className="opposition-panel opposition-loading" aria-busy="true" />}><OppositionPanel stageId={oppositionStage.id} readId={methodRead.read.id} methodCounts={methodRead.counts} locale={locale} /></Suspense>
       {activeCommitment && commitmentStakeholder && <Suspense fallback={<section className="commitment-panel commitment-loading" aria-busy="true" />}><CommitmentPanel commitmentId={activeCommitment.id} stakeholder={commitmentStakeholder.name} locale={locale} /></Suspense>}
