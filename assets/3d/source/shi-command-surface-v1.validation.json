@@ -1,0 +1,644 @@
+{
+  "assetId": "shi-command-surface-v1",
+  "validator": "clean Blender import plus bmesh topology/material/UV/bounds inspection",
+  "blender": "4.0.2",
+  "exports": [
+    {
+      "path": "export/shi-command-surface-v1-lod0.glb",
+      "format": "glb",
+      "objects": [
+        {
+          "name": "SM_SHI_CommandSurface_LOD0_PackedEarth",
+          "vertices": 384,
+          "weldedVertices": 96,
+          "normalSplitVertices": 288,
+          "triangles": 188,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WetPackedEarth"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 2.5713655927365244,
+          "location": [
+            0.0,
+            0.0,
+            0.07999999821186066
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandSurface_LOD0_WoodEast",
+          "vertices": 216,
+          "weldedVertices": 56,
+          "normalSplitVertices": 160,
+          "triangles": 108,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.02946535525332602,
+          "location": [
+            2.874000072479248,
+            0.0,
+            0.05700000002980232
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandSurface_LOD0_WoodNorth",
+          "vertices": 216,
+          "weldedVertices": 56,
+          "normalSplitVertices": 160,
+          "triangles": 108,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04250165507783536,
+          "location": [
+            0.0,
+            1.8250000476837158,
+            0.054999999701976776
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandSurface_LOD0_WoodSouth",
+          "vertices": 216,
+          "weldedVertices": 56,
+          "normalSplitVertices": 160,
+          "triangles": 108,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.043071567114678175,
+          "location": [
+            0.0,
+            -1.8250000476837158,
+            0.0560000017285347
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandSurface_LOD0_WoodWest",
+          "vertices": 216,
+          "weldedVertices": 56,
+          "normalSplitVertices": 160,
+          "triangles": 108,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.027541439309352832,
+          "location": [
+            -2.875999927520752,
+            -0.0,
+            0.057999998331069946
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -2.9000000953674316,
+          -1.850000023841858,
+          -0.020000003278255463
+        ],
+        "maximum": [
+          2.9000000953674316,
+          1.850000023841858,
+          0.14000000059604645
+        ],
+        "dimensions": [
+          5.800000190734863,
+          3.700000047683716,
+          0.1600000038743019
+        ]
+      },
+      "totalTriangles": 620,
+      "importedMaterials": {
+        "M_SHI_DarkWorkedWood": {
+          "baseColor": [
+            0.02500000037252903,
+            0.013000000268220901,
+            0.006000000052154064,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8799999952316284
+        },
+        "M_SHI_WetPackedEarth": {
+          "baseColor": [
+            0.009999999776482582,
+            0.003000000026077032,
+            0.0007999999797903001,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8399999737739563
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "darkExplicitFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "closedMeshes": true,
+        "consistentWinding": true,
+        "positiveVolume": true,
+        "exactMeterBounds": true,
+        "exactContactPlane": true,
+        "appliedScaleAndRotation": true,
+        "boundedTriangleCount": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-command-surface-v1-lod1.glb",
+      "format": "glb",
+      "objects": [
+        {
+          "name": "SM_SHI_CommandSurface_LOD1_PackedEarth",
+          "vertices": 24,
+          "weldedVertices": 8,
+          "normalSplitVertices": 16,
+          "triangles": 12,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WetPackedEarth"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 2.575200060313939,
+          "location": [
+            0.0,
+            0.0,
+            0.07999999821186066
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandSurface_LOD1_WoodEast",
+          "vertices": 24,
+          "weldedVertices": 8,
+          "normalSplitVertices": 16,
+          "triangles": 12,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.029629600832629197,
+          "location": [
+            2.874000072479248,
+            0.0,
+            0.05700000002980232
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandSurface_LOD1_WoodNorth",
+          "vertices": 24,
+          "weldedVertices": 8,
+          "normalSplitVertices": 16,
+          "triangles": 12,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04275000090524549,
+          "location": [
+            0.0,
+            1.8250000476837158,
+            0.054999999701976776
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandSurface_LOD1_WoodSouth",
+          "vertices": 24,
+          "weldedVertices": 8,
+          "normalSplitVertices": 16,
+          "triangles": 12,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0433199978029728,
+          "location": [
+            0.0,
+            -1.8250000476837158,
+            0.0560000017285347
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandSurface_LOD1_WoodWest",
+          "vertices": 24,
+          "weldedVertices": 8,
+          "normalSplitVertices": 16,
+          "triangles": 12,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.027705601169514663,
+          "location": [
+            -2.875999927520752,
+            -0.0,
+            0.057999998331069946
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -2.9000000953674316,
+          -1.850000023841858,
+          -0.020000003278255463
+        ],
+        "maximum": [
+          2.9000000953674316,
+          1.850000023841858,
+          0.14000000059604645
+        ],
+        "dimensions": [
+          5.800000190734863,
+          3.700000047683716,
+          0.1600000038743019
+        ]
+      },
+      "totalTriangles": 60,
+      "importedMaterials": {
+        "M_SHI_DarkWorkedWood": {
+          "baseColor": [
+            0.02500000037252903,
+            0.013000000268220901,
+            0.006000000052154064,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8799999952316284
+        },
+        "M_SHI_WetPackedEarth": {
+          "baseColor": [
+            0.009999999776482582,
+            0.003000000026077032,
+            0.0007999999797903001,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8399999737739563
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "darkExplicitFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "closedMeshes": true,
+        "consistentWinding": true,
+        "positiveVolume": true,
+        "exactMeterBounds": true,
+        "exactContactPlane": true,
+        "appliedScaleAndRotation": true,
+        "boundedTriangleCount": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-command-surface-v1.fbx",
+      "format": "fbx",
+      "objects": [
+        {
+          "name": "SM_SHI_CommandSurface_01",
+          "vertices": 320,
+          "weldedVertices": 320,
+          "normalSplitVertices": 0,
+          "triangles": 620,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WetPackedEarth",
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 2.7139454290446334,
+          "location": [
+            0.0,
+            0.0,
+            0.07999999821186066
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "UCX_SM_SHI_CommandSurface_01_01",
+          "vertices": 8,
+          "weldedVertices": 8,
+          "normalSplitVertices": 0,
+          "triangles": 12,
+          "uvLayers": 1,
+          "materials": [
+            "M_SHI_CommandSurface_Collision"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 3.4336000804185844,
+          "location": [
+            0.0,
+            0.0,
+            0.05999999865889549
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -2.9000000953674316,
+          -1.850000023841858,
+          -0.02000008337199688
+        ],
+        "maximum": [
+          2.9000000953674316,
+          1.850000023841858,
+          0.14000007510185242
+        ],
+        "dimensions": [
+          5.800000190734863,
+          3.700000047683716,
+          0.1600001584738493
+        ]
+      },
+      "totalTriangles": 632,
+      "importedMaterials": {
+        "M_SHI_DarkWorkedWood": {
+          "baseColor": [
+            0.02500000037252903,
+            0.013000000268220901,
+            0.006000000052154064,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8799999952316284
+        },
+        "M_SHI_WetPackedEarth": {
+          "baseColor": [
+            0.009999999776482582,
+            0.003000000026077032,
+            0.0007999999797903001,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8399999737739563
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "darkExplicitFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "closedMeshes": true,
+        "consistentWinding": true,
+        "positiveVolume": true,
+        "exactMeterBounds": true,
+        "exactContactPlane": true,
+        "appliedScaleAndRotation": true,
+        "boundedTriangleCount": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-command-surface-v1-lod1.fbx",
+      "format": "fbx",
+      "objects": [
+        {
+          "name": "SM_SHI_CommandSurface_01",
+          "vertices": 40,
+          "weldedVertices": 40,
+          "normalSplitVertices": 0,
+          "triangles": 60,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WetPackedEarth",
+            "M_SHI_DarkWorkedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 2.7186051207052806,
+          "location": [
+            0.0,
+            0.0,
+            0.07999999821186066
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -2.9000000953674316,
+          -1.850000023841858,
+          -0.02000008337199688
+        ],
+        "maximum": [
+          2.9000000953674316,
+          1.850000023841858,
+          0.14000007510185242
+        ],
+        "dimensions": [
+          5.800000190734863,
+          3.700000047683716,
+          0.1600001584738493
+        ]
+      },
+      "totalTriangles": 60,
+      "importedMaterials": {
+        "M_SHI_DarkWorkedWood": {
+          "baseColor": [
+            0.02500000037252903,
+            0.013000000268220901,
+            0.006000000052154064,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8799999952316284
+        },
+        "M_SHI_WetPackedEarth": {
+          "baseColor": [
+            0.009999999776482582,
+            0.003000000026077032,
+            0.0007999999797903001,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8399999737739563
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "darkExplicitFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "closedMeshes": true,
+        "consistentWinding": true,
+        "positiveVolume": true,
+        "exactMeterBounds": true,
+        "exactContactPlane": true,
+        "appliedScaleAndRotation": true,
+        "boundedTriangleCount": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    }
+  ],
+  "lodReduction": true,
+  "passed": true
+}

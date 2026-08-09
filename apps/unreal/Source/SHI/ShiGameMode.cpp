@@ -27,6 +27,7 @@
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
+#include "ShiCommandSurfacePresentationModel.h"
 #include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilFigure.h"
 #include "ShiCouncilStagingModel.h"
@@ -52,6 +53,7 @@ void AShiGameMode::BeginPlay()
     bCommandWeightReviewBack = FParse::Param(FCommandLine::Get(), TEXT("ShiCommandWeightReviewBack"));
     bCommandWeightReview = bCommandWeightReviewBack
         || FParse::Param(FCommandLine::Get(), TEXT("ShiCommandWeightReviewFront"));
+    bCommandSurfaceReview = FParse::Param(FCommandLine::Get(), TEXT("ShiCommandSurfaceReview"));
 #endif
     LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
@@ -93,7 +95,7 @@ void AShiGameMode::BeginPlay()
         CreateCommandSpace();
     }
 
-    if (!bCommandWeightReview && GEngine && GEngine->GameViewport)
+    if (!bCommandWeightReview && !bCommandSurfaceReview && GEngine && GEngine->GameViewport)
     {
         SAssignNew(CommandScreen, SShiCommandScreen).GameMode(this);
         GEngine->GameViewport->AddViewportWidgetContent(CommandScreen.ToSharedRef(), 100);
@@ -1255,14 +1257,53 @@ void AShiGameMode::CreateCommandSpace()
         Ground->GetStaticMeshComponent()->SetStaticMesh(Plane);
         Ground->SetActorScale3D(FVector(24.f, 24.f, 1.f));
     }
-    if (Cube)
+    const FShiCommandSurfacePresentationData CommandSurfacePresentation = FShiCommandSurfacePresentationModel::Build();
+    FString CommandSurfaceError;
+    if (!FShiCommandSurfacePresentationModel::Validate(CommandSurfacePresentation, Campaign.Sites,
+        CommandSignals, CommandSurfaceError))
     {
-        AStaticMeshActor* Table = World->SpawnActor<AStaticMeshActor>(FVector(0, 0, 6), FRotator::ZeroRotator);
-        if (!Table) { LoadError = TEXT("Wartable surface could not spawn."); return; }
-        Table->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
-        Table->GetStaticMeshComponent()->SetStaticMesh(Cube);
-        Table->SetActorScale3D(FVector(5.8f, 3.7f, 0.16f));
+        LoadError = FString::Printf(TEXT("Command-surface presentation rejected: %s"), *CommandSurfaceError);
+        return;
     }
+    UStaticMesh* CommandSurfaceMesh = LoadObject<UStaticMesh>(nullptr, *CommandSurfacePresentation.MeshPath);
+    if (!CommandSurfaceMesh)
+    {
+        LoadError = TEXT("Reviewed command-surface mesh is unavailable.");
+        return;
+    }
+    const FBox CommandSurfaceBounds = CommandSurfaceMesh->GetBoundingBox();
+    TSet<FName> CommandSurfaceMaterialSlots;
+    for (const FStaticMaterial& Material : CommandSurfaceMesh->GetStaticMaterials())
+    {
+        CommandSurfaceMaterialSlots.Add(Material.MaterialSlotName);
+    }
+    if (!CommandSurfaceBounds.Min.Equals(CommandSurfacePresentation.BoundsMinimum, .06f)
+        || !CommandSurfaceBounds.Max.Equals(CommandSurfacePresentation.BoundsMaximum, .06f)
+        || CommandSurfaceMaterialSlots.Num() != 2
+        || !CommandSurfaceMaterialSlots.Contains(FName(TEXT("M_SHI_WetPackedEarth")))
+        || !CommandSurfaceMaterialSlots.Contains(FName(TEXT("M_SHI_DarkWorkedWood"))))
+    {
+        LoadError = TEXT("Reviewed command-surface runtime bounds or material slots drifted from the admitted asset.");
+        return;
+    }
+    AStaticMeshActor* CommandSurface = World->SpawnActor<AStaticMeshActor>(
+        CommandSurfacePresentation.Transform.GetLocation(), CommandSurfacePresentation.Transform.Rotator());
+    if (!CommandSurface)
+    {
+        LoadError = TEXT("Reviewed command-surface presentation could not spawn.");
+        return;
+    }
+    UStaticMeshComponent* CommandSurfaceComponent = CommandSurface->GetStaticMeshComponent();
+    CommandSurfaceComponent->SetMobility(EComponentMobility::Movable);
+    CommandSurfaceComponent->SetStaticMesh(CommandSurfaceMesh);
+    CommandSurfaceComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    CommandSurfaceComponent->SetGenerateOverlapEvents(false);
+    CommandSurfaceComponent->SetCanEverAffectNavigation(false);
+    CommandSurface->SetActorScale3D(CommandSurfacePresentation.Transform.GetScale3D());
+    CommandSurface->SetActorEnableCollision(false);
+    CommandSurface->Tags.Add(FName(TEXT("ShiEnvironment:CommandSurface")));
+    CommandSurface->Tags.Add(FName(TEXT("ShiPresentation:FictionalInterfaceStage")));
+    CommandSurfaceProp = CommandSurface;
     UMaterialInterface* BasicMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
     if (!BasicMaterial)
     {
@@ -1434,7 +1475,12 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Live council staging rejected: %s"), *CouncilError);
         return;
     }
-    if (bCommandWeightReview)
+    if (bCommandSurfaceReview)
+    {
+        SetCameraImmediate(FShiCommandSurfacePresentationModel::ReviewCameraTransform(),
+            FShiCommandSurfacePresentationModel::ReviewFieldOfViewDegrees());
+    }
+    else if (bCommandWeightReview)
     {
         SetCameraImmediate(FShiCommandWeightPresentationModel::ReviewCameraTransform(
             CommandWeightPresentation, bCommandWeightReviewBack),

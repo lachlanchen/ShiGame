@@ -1,0 +1,101 @@
+{
+  "assetId": "shi-command-surface-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Isolated Unreal 5.8.1 static-mesh admission, authored-material inspection, full cook/package and packaged launch smoke. This accepts a runtime production blockout, not a historical reconstruction, final environment or marketing asset.",
+  "engine": {
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "assetPath": "/Game/SHI/Art/Environment/CommandSurface/SM_SHI_CommandSurface_01.SM_SHI_CommandSurface_01"
+  },
+  "import": {
+    "passed": true,
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "trackedUassetHashesUnchanged": true
+    },
+    "boundsCentimeters": {
+      "minimum": [-290.0, -185.0, -2.0000081062316895],
+      "maximum": [290.0, 185.0, 14.000007629394531],
+      "dimensions": [580.0, 370.0, 16.00001573562622]
+    },
+    "lodTriangles": [620, 60],
+    "lodVertices": [1248, 120],
+    "lodUvChannels": [2, 2],
+    "lodScreenSizes": [1.0, 0.11999999731779099],
+    "materialSlots": ["M_SHI_WetPackedEarth", "M_SHI_DarkWorkedWood"],
+    "simpleCollisionCount": 0,
+    "convexCollisionCount": 1,
+    "lightMapResolution": 128,
+    "lightMapCoordinateIndex": 1,
+    "naniteEnabled": false,
+    "naniteDecision": "Deliberately off for a 620-triangle static blockout; the 60-triangle LOD1 is explicit and sufficient."
+  },
+  "trackedUnrealAssets": [
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/CommandSurface/M_SHI_DarkWorkedWood.uasset",
+      "bytes": 11706,
+      "sha256": "389fdda62e74f42d6a6078ba448f38ff77504a5dac2c9e03ac8c9300a5df220a"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/CommandSurface/M_SHI_WetPackedEarth.uasset",
+      "bytes": 11690,
+      "sha256": "245a1dab804f7ed24f86fa4e2466658648d4042ad724ff677de1809fc7128519"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/CommandSurface/SM_SHI_CommandSurface_01.uasset",
+      "bytes": 147120,
+      "sha256": "1dbc987ace079175f524e468e2c751d237b16864c534a3f7b62e1a9b138729c3"
+    }
+  ],
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-CommandSurface-Review-v1/Linux",
+    "packageCount": 502,
+    "priorAcceptedPackageCount": 499,
+    "addedPackageCount": 3,
+    "alwaysCookPath": "/Game/SHI/Art/Environment/CommandSurface",
+    "artifacts": [
+      {
+        "role": "Linux development executable",
+        "bytes": 298487984,
+        "sha256": "62256321fe500e2fbbb896a4c70af61e97a15ffc38e3248104301a28bdb824a7"
+      },
+      {
+        "role": "Pak metadata and non-IoStore payload",
+        "bytes": 10423673,
+        "sha256": "ffd9c6784df93d13757ee35090a7dada838898ab348e428a775407c5c3594718"
+      },
+      {
+        "role": "IoStore data container",
+        "bytes": 164866608,
+        "sha256": "b756ca6e1c0eaf24546f45bf9351e356ac8ae272aae9bc6198acaf005304fd99"
+      },
+      {
+        "role": "IoStore table of contents",
+        "bytes": 146022,
+        "sha256": "3205cb8d8fa0316d6018b1bc33db42d34042731632e569e0f4626cc00cc61800"
+      }
+    ]
+  },
+  "smokeTest": {
+    "command": "./SHI.sh -nullrhi -unattended -nosound -ExecCmds=quit",
+    "exitCode": 0,
+    "gameMode": "ShiGameMode",
+    "map": "/Engine/Maps/Entry",
+    "cleanRequestedExit": true,
+    "observed": [
+      "IoStore container mounted",
+      "premade AssetRegistry loaded",
+      "entry map loaded for play",
+      "clean command-requested shutdown"
+    ]
+  },
+  "decision": "approved-engine-command-surface-production-blockout-packaged-not-final-environment",
+  "remainingGates": [
+    "replace engine-native white ground and primitive council figures with a coherent historically reviewed environment and character pass",
+    "author deformation-tested interaction hands and final formation/terrain language",
+    "repeat physical-display performance, camera and controller evidence after final scene assembly",
+    "complete historical-material, accessibility, human cinematic and final art-direction review before shipping or marketing use"
+  ]
+}

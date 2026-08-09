@@ -114,6 +114,7 @@ private:
     bool bEngagementOpen = false;
     bool bCommandWeightReview = false;
     bool bCommandWeightReviewBack = false;
+    bool bCommandSurfaceReview = false;
     int32 SelectedEngagementCommandIndex = 0;
     FString EngagementCampaignSnapshot;
     TArray<FShiEngagementSignalData> EngagementSignals;
@@ -130,6 +131,7 @@ private:
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> EngagementMetricMarkers;
     TMap<FString, TWeakObjectPtr<AShiCouncilFigure>> CouncilFigures;
     TWeakObjectPtr<AStaticMeshActor> CommandWeightProp;
+    TWeakObjectPtr<AStaticMeshActor> CommandSurfaceProp;
     FShiCouncilStageData CouncilStage;
     TArray<FShiCinematicBeatData> CinematicBeats;
     int32 CinematicBeatIndex = INDEX_NONE;

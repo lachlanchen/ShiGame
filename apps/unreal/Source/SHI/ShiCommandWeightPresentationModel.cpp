@@ -1,14 +1,11 @@
 #include "ShiCommandWeightPresentationModel.h"
 
+#include "ShiCommandSurfacePresentationModel.h"
 #include "ShiWartableModel.h"
 
 namespace
 {
     const TCHAR* CommandWeightMeshPath = TEXT("/Game/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.SM_SHI_CommandWeight_01");
-    constexpr float TableSurfaceZ = 14.f;
-    constexpr float TableHalfWidth = 290.f;
-    constexpr float TableHalfDepth = 185.f;
-    constexpr float TableEdgeClearance = 5.f;
     constexpr float MinimumMarkerClearance = 62.f;
     constexpr float CouncilAspectRatio = 16.f / 9.f;
 
@@ -28,8 +25,10 @@ namespace
                     YIndex == 0 ? Presentation.BoundsMinimum.Y : Presentation.BoundsMaximum.Y,
                     Presentation.BoundsMinimum.Z);
                 const FVector WorldCorner = Presentation.Transform.TransformPosition(Corner);
-                if (FMath::Abs(WorldCorner.X) > TableHalfWidth - TableEdgeClearance
-                    || FMath::Abs(WorldCorner.Y) > TableHalfDepth - TableEdgeClearance)
+                if (FMath::Abs(WorldCorner.X) > FShiCommandSurfacePresentationModel::HalfWidth()
+                        - FShiCommandSurfacePresentationModel::EdgeClearance()
+                    || FMath::Abs(WorldCorner.Y) > FShiCommandSurfacePresentationModel::HalfDepth()
+                        - FShiCommandSurfacePresentationModel::EdgeClearance())
                 {
                     return false;
                 }
@@ -46,7 +45,7 @@ FShiCommandWeightPresentationData FShiCommandWeightPresentationModel::Build()
     Presentation.BoundsMinimum = FVector(-3.637946f, -2.861216f, .114589f);
     Presentation.BoundsMaximum = FVector(4.84f, 2.690566f, 3.54f);
     Presentation.Transform = FTransform(FRotator(0.f, 20.f, 0.f),
-        FVector(90.f, 172.f, TableSurfaceZ - Presentation.BoundsMinimum.Z));
+        FVector(90.f, 172.f, FShiCommandSurfacePresentationModel::SurfaceTopZ() - Presentation.BoundsMinimum.Z));
     Presentation.bInteractive = false;
     Presentation.bVisibleDuringEngagement = false;
     return Presentation;
@@ -97,7 +96,8 @@ bool FShiCommandWeightPresentationModel::Validate(const FShiCommandWeightPresent
     }
     const FVector ContactPoint = Presentation.Transform.TransformPosition(
         FVector(0.f, 0.f, Presentation.BoundsMinimum.Z));
-    if (!FMath::IsNearlyEqual(ContactPoint.Z, TableSurfaceZ, .01f) || !FitsCommandSurface(Presentation))
+    if (!FMath::IsNearlyEqual(ContactPoint.Z, FShiCommandSurfacePresentationModel::SurfaceTopZ(), .01f)
+        || !FitsCommandSurface(Presentation))
     {
         OutError = TEXT("The command weight must make contact with the bounded command surface and retain an edge margin.");
         return false;

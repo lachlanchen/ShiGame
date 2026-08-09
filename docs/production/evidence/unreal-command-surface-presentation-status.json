@@ -1,0 +1,128 @@
+{
+  "assetId": "shi-command-surface-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Packaged Unreal 5.8.1 command-ground presentation, normal story progression and Broken Crossing pulse/return review through an isolated localhost noVNC desktop. This accepts the surface as a production blockout only.",
+  "decision": "approved-runtime-command-surface-production-blockout-council-engagement-story-reviewed-not-final-environment",
+  "historicalBoundary": "Project-authored fictional interface-stage architecture. The platform, dimensions, joins and signal arrangement are not claimed as attested late-Qin command practice or material reconstruction.",
+  "presentation": {
+    "transform": "identity at world origin",
+    "boundsCentimeters": {
+      "minimum": [-290.0, -185.0, -2.0],
+      "maximum": [290.0, 185.0, 14.0]
+    },
+    "surfaceTopZCentimeters": 14.0,
+    "minimumEdgeClearanceCentimeters": 5.0,
+    "interactive": false,
+    "runtimeCollision": false,
+    "navigationInfluence": false,
+    "visibleDuringNonAuthoritativeEngagement": true,
+    "actorTags": ["ShiEnvironment:CommandSurface", "ShiPresentation:FictionalInterfaceStage"],
+    "developmentReview": {
+      "flag": "-ShiCommandSurfaceReview",
+      "fieldOfViewDegrees": 48.0,
+      "excludedFromShipping": true
+    }
+  },
+  "materials": {
+    "authoringTool": "scripts/author-command-surface-materials-unreal.py",
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "passed": true,
+      "trackedUassetHashesUnchanged": true,
+      "compileErrors": 0
+    },
+    "wetPackedEarth": {
+      "nodeCount": 10,
+      "roughnessRange": [0.68, 0.90],
+      "metallic": 0.0,
+      "specular": 0.20,
+      "ambientOcclusion": 0.92,
+      "noise": "one bounded two-octave Fast Gradient 3D node",
+      "normalInput": false,
+      "textures": 0
+    },
+    "darkWorkedWood": {
+      "nodeCount": 10,
+      "roughnessRange": [0.76, 0.91],
+      "metallic": 0.0,
+      "specular": 0.22,
+      "ambientOcclusion": 0.90,
+      "noise": "one bounded two-octave Fast Gradient 3D node",
+      "normalInput": false,
+      "textures": 0
+    }
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 13,
+    "passed": 13,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.CommandSurfacePresentationV1",
+    "negativeCases": [
+      "unreviewed world scale",
+      "runtime collision enabled",
+      "surface hidden during engagement",
+      "live command signal outside the safe field"
+    ]
+  },
+  "visiblePlaytest": {
+    "desktop": "isolated Xvfb :124, localhost-only x11vnc 5935 and noVNC 6135; older accepted desktops left untouched",
+    "inputs": [
+      "Return issued the selected campaign order",
+      "Space skipped the bounded consequence camera",
+      "X opened Broken Crossing",
+      "Return issued one pulse order",
+      "Escape returned to the campaign"
+    ],
+    "campaignStart": "Act I, Scene 1, turn 1",
+    "campaignObserved": "Act III, Scene 5, turn 3, two decisions, transaction verified",
+    "engagementObserved": "Broken Crossing pulse 1 to pulse 2; all six metrics updated after deterministic player and field responses",
+    "campaignReturn": "same Act III scene, resources, turn and decision count after leaving the byte-guarded non-authoritative exercise",
+    "storyAdvanced": true,
+    "engagementAdvanced": true,
+    "campaignUnchangedByEngagement": true
+  },
+  "screenshots": [
+    {
+      "file": "docs/production/evidence/unreal-command-surface-review-v1.png",
+      "role": "development-only full-surface geometry, contact, earth and wood material review",
+      "dimensions": [1600, 1000],
+      "bytes": 1734601,
+      "sha256": "071795ff15b3b7dbf84e53924912666858ebf0f65537980616557b0e4a167886"
+    },
+    {
+      "file": "docs/production/evidence/unreal-command-surface-story-v1.png",
+      "role": "normal packaged Act-II story progression and verified campaign transaction",
+      "dimensions": [1600, 1000],
+      "bytes": 879393,
+      "sha256": "f1ad86d62fe92aca11b2c88eecf4a497f63f3da436ba3f195e3f7dc454a45bf0"
+    },
+    {
+      "file": "docs/production/evidence/unreal-command-surface-engagement-v1.png",
+      "role": "packaged Broken Crossing pulse-two state with six live signals on the persistent surface",
+      "dimensions": [1600, 1000],
+      "bytes": 968912,
+      "sha256": "46506b5cd044e5fbd1323041232392a162043e8fcada32c5ba375f22848bb8f7"
+    }
+  ],
+  "review": {
+    "rejectedFirstPass": [
+      "the initial bright earth values read as pale pink plaster under the studio lights",
+      "a direct UV-to-3D-noise material link was rejected by UE 5.8 and saved nothing"
+    ],
+    "accepted": [
+      "dark firelit packed earth replaces the default white cube without becoming a map or toy board",
+      "the narrow dark-wood perimeter reads as containment/support and does not occlude signals",
+      "all normal campaign markers and the command weight preserve exact contact with the Z=14 cm plane",
+      "the same surface remains visible beneath six state-changing Broken Crossing signals",
+      "normal packaged input advances the story atomically and the engagement returns without campaign mutation"
+    ],
+    "remainingRedGates": [
+      "the surrounding engine-native white ground is still visually dominant and must become reviewed wet terrain",
+      "primitive proxy figures, floating light proxy and BasicShape signals are not final characters, props or formation language",
+      "interaction hands, deformation, final weather, VFX, audio mix and cinematic lighting remain open",
+      "physical-display performance/accessibility and human historical/cinematic/art review must be repeated on the final scene"
+    ]
+  }
+}

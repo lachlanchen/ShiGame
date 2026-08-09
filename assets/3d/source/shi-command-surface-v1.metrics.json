@@ -1,0 +1,44 @@
+{
+  "assetId": "shi-command-surface-v1",
+  "generator": "deterministic Blender source script",
+  "blender": "4.0.2",
+  "historicalStatus": "original fictional command-ground platform; not historical reconstruction",
+  "boundsMetersTarget": {
+    "minimum": [
+      -2.9,
+      -1.85,
+      -0.02
+    ],
+    "maximum": [
+      2.9,
+      1.85,
+      0.14
+    ]
+  },
+  "lod0Triangles": 620,
+  "lod1Triangles": 60,
+  "collisionTriangles": 12,
+  "materials": [
+    "M_SHI_WetPackedEarth",
+    "M_SHI_DarkWorkedWood"
+  ],
+  "components": [
+    "SM_SHI_CommandSurface_LOD0_PackedEarth",
+    "SM_SHI_CommandSurface_LOD0_WoodWest",
+    "SM_SHI_CommandSurface_LOD0_WoodEast",
+    "SM_SHI_CommandSurface_LOD0_WoodSouth",
+    "SM_SHI_CommandSurface_LOD0_WoodNorth"
+  ],
+  "collision": "UCX_SM_SHI_CommandSurface_01_01",
+  "rootIntent": "identity at command-space origin; exact top contact plane local Z=0.14m",
+  "exports": {
+    "blend": "../rendered/shi-command-surface-v1.blend",
+    "render": "../rendered/shi-command-surface-v1.png",
+    "profileRender": "../rendered/shi-command-surface-v1-profile.png",
+    "cleanImportRender": "../rendered/shi-command-surface-v1-glb-import.png",
+    "lod0Glb": "../export/shi-command-surface-v1-lod0.glb",
+    "lod1Glb": "../export/shi-command-surface-v1-lod1.glb",
+    "fbx": "../export/shi-command-surface-v1.fbx",
+    "lod1Fbx": "../export/shi-command-surface-v1-lod1.fbx"
+  }
+}

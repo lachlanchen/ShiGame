@@ -11,6 +11,7 @@
 #include "ShiCampaignSession.h"
 #include "ShiCinematicBeatModel.h"
 #include "ShiCommandSignalModel.h"
+#include "ShiCommandSurfacePresentationModel.h"
 #include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
@@ -196,6 +197,68 @@ bool FShiCouncilStagingTest::RunTest(const FString& Parameters)
     TestFalse(TEXT("missing canonical speaker cannot replace an accepted stage"),
         FShiCouncilStagingModel::Build(Campaign, MissingSpeaker, TEXT("en"), Stage, Error));
     TestEqual(TEXT("failed council rebuild is atomic"), Stage.NodeId, StableStageNode);
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCommandSurfacePresentationTest, "SHI.Cinematic.CommandSurfacePresentationV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCommandSurfacePresentationTest::RunTest(const FString& Parameters)
+{
+    FShiCampaignModel Campaign;
+    FString Error;
+    if (!Campaign.LoadCanonical(Error)) { AddError(Error); return false; }
+    FShiCampaignSession Session;
+    Session.Initialize(Campaign, 0x5EED2026u);
+    const FShiNodeData* Node = Session.GetCurrentNode();
+    if (!Node || Node->Choices.IsEmpty())
+    {
+        AddError(TEXT("Opening command-surface composition has no node or order."));
+        return false;
+    }
+    TArray<FShiCommandSignalData> Signals;
+    TestTrue(TEXT("opening signals build for command-ground admission"),
+        FShiCommandSignalModel::Build(Session.GetResources(), Session.GetCurrentFieldCondition(),
+            Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(), Session.GetActiveCommitment(),
+            &Node->Choices[0], TEXT("en"), Signals, Error));
+
+    const FShiCommandSurfacePresentationData Presentation = FShiCommandSurfacePresentationModel::Build();
+    TestTrue(TEXT("reviewed command ground contains every site and live signal"),
+        FShiCommandSurfacePresentationModel::Validate(Presentation, Campaign.Sites, Signals, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestTrue(TEXT("command ground has identity world placement and exact top plane"),
+        Presentation.Transform.Equals(FTransform::Identity, .0001f)
+        && FMath::IsNearlyEqual(Presentation.BoundsMaximum.Z,
+            FShiCommandSurfacePresentationModel::SurfaceTopZ(), .001f));
+    TestFalse(TEXT("command ground is not an interaction target"), Presentation.bInteractive);
+    TestFalse(TEXT("command ground has no runtime collision"), Presentation.bCollisionEnabled);
+    TestTrue(TEXT("command ground remains beneath the non-authoritative engagement exercise"),
+        Presentation.bVisibleDuringEngagement);
+
+    const FTransform ReviewCamera = FShiCommandSurfacePresentationModel::ReviewCameraTransform();
+    const FVector ReviewTarget(0.f, 0.f, 18.f);
+    TestTrue(TEXT("surface review camera sees the whole authored command field"),
+        FVector::DotProduct(ReviewCamera.GetRotation().GetForwardVector(),
+            (ReviewTarget - ReviewCamera.GetLocation()).GetSafeNormal()) > .9999f
+        && FVector::Dist(ReviewCamera.GetLocation(), ReviewTarget) > 900.f
+        && FMath::IsNearlyEqual(FShiCommandSurfacePresentationModel::ReviewFieldOfViewDegrees(), 48.f));
+
+    FShiCommandSurfacePresentationData Scaled = Presentation;
+    Scaled.Transform.SetScale3D(FVector(1.01f));
+    TestFalse(TEXT("unreviewed surface scaling is rejected"),
+        FShiCommandSurfacePresentationModel::Validate(Scaled, Campaign.Sites, Signals, Error));
+    FShiCommandSurfacePresentationData Colliding = Presentation;
+    Colliding.bCollisionEnabled = true;
+    TestFalse(TEXT("runtime surface collision is rejected"),
+        FShiCommandSurfacePresentationModel::Validate(Colliding, Campaign.Sites, Signals, Error));
+    FShiCommandSurfacePresentationData HiddenExercise = Presentation;
+    HiddenExercise.bVisibleDuringEngagement = false;
+    TestFalse(TEXT("a disappearing engagement ground is rejected"),
+        FShiCommandSurfacePresentationModel::Validate(HiddenExercise, Campaign.Sites, Signals, Error));
+    TArray<FShiCommandSignalData> EscapedSignals = Signals;
+    EscapedSignals[0].Location.X = FShiCommandSurfacePresentationModel::HalfWidth() + 1.f;
+    TestFalse(TEXT("a signal outside the safe command field is rejected"),
+        FShiCommandSurfacePresentationModel::Validate(Presentation, Campaign.Sites, EscapedSignals, Error));
     return !HasAnyErrors();
 }
 

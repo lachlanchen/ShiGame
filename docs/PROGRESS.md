@@ -1,5 +1,18 @@
 # SHI progress log
 
+## 2026-08-10 · Runtime command-ground and engagement continuity checkpoint
+
+- Replaced the `580 × 370 × 16 cm` default-white engine cube with an explicitly fictional low command-ground platform: a continuous packed-earth field and narrow dark worked-wood perimeter at the exact existing `Z = 14 cm` contact plane. It is interface-stage architecture, not an attested Qin object, sand table, map or historical reconstruction.
+- Authored the geometry deterministically in the pinned AgenticApp Blender 4.0.2 toolchain. Clean GLB and FBX imports pass exact bounds, five closed outward-wound components, two UV channels, two exact material slots, one named convex receipt and `620 → 60` triangle LOD reduction. The top remains flat and every authored marker/contact coordinate stays unchanged.
+- Rejected the first material render because warm/cool studio light turned the earth into pale pink plaster. The accepted engine pass uses compile-clean ten-node packed-earth and worked-wood PBR graphs with broad bounded variation, explicit base color/roughness/metallic/specular/AO, no textures and no fabricated normal detail. A failed direct UV-to-3D-noise API connection saved nothing and was replaced with the simpler inspected world-space graph.
+- Added a pure `FShiCommandSurfacePresentationModel` and fail-closed runtime admission. Exact asset identity, identity transform, bounds, top plane, site/signal containment, edge clearance, no interaction/collision/navigation and engagement visibility are checked before spawn. The command-weight contract now consumes the same surface constants instead of duplicating them.
+- The official UE 5.8.1 target compiles, `SHI.Cinematic.CommandSurfacePresentationV1` attacks scale, collision, engagement visibility and escaped-signal drift, and all **13 / 13** native SHI suites pass. Read-only mesh/material inspections exit 0 with all three tracked Unreal hashes unchanged.
+- A clean outside-Git BuildCookRun succeeds with 502 packages. The separate archived-player smoke mounts IoStore, loads `ShiGameMode`/Entry and exits cleanly; executable, Pak, IoStore and all source/Unreal/evidence assets have SHA-256 receipts.
+- Visible packaged review on isolated localhost noVNC accepted the full surface/contact pass, advanced the campaign from Act I through two verified transactions to Act III, opened Broken Crossing, advanced pulse 1 → 2 with all six live state pieces changing, and returned to the exact same campaign turn/resources/decision count. The new surface remains visible beneath both council and engagement grammars.
+- This is a **runtime-presented production blockout, not final environment art**. The surrounding white engine ground and primitive figures, floating proxy, signals, hands, terrain, formations, weather/VFX, final lighting, physical-display performance and human historical/cinematic/accessibility/art approval remain red.
+
+Next gate: replace the surrounding white ground with a bounded wet-road/field-shelter terrain kit, then replace the five council proxies with reviewed late-Qin character blockouts and deformation-tested hands while preserving every accepted gameplay, source, save, surface and camera contract.
+
 ## 2026-08-10 · Reviewed lookdev, toolchain and runtime-presented prop checkpoint
 
 - Accepted the revised Broken Crossing command-space lookdev only after replacing a modern-canister read with a low fired-clay weight. The image is a table → damaged crossing → pursuit design reference, not historical evidence or final marketing art; its source brief, full-resolution hash and constraints are recorded in `assets/provenance/`.
@@ -17,7 +30,7 @@
 - Captured remote performance without overstating it: the steady Xvfb/noVNC frame is presentation-limited at `48.03 ms` frame / `47.48 ms` draw, while the same frame reports `2.10 ms` game and `4.17 ms` GPU, 59 draws and 19.0K primitives. This does not replace the accepted physical-display baseline; it proves that the review desktop, not game/GPU work, dominates this capture.
 - Exact runtime-presentation implementation `be8553c59cbd3e9b7a8fd4a0cd2c89d259d40207` is pushed to `main`. Hosted validation `31331499584` and Pages deployment `31331499545` both pass at that SHA; the remote branch matches and the deployed game returns HTTP 200.
 
-Next gate: replace the noisy white BasicShape command surface first, then the council figures/interaction hands and terrain/formation/lighting proxies, with historically and materially reviewed production assets. Repeat physical-display frame pacing, memory, camera and controller evidence in that final scene. Human art, cinematic, accessibility and historical-material approval remain required before shipping or marketing use.
+Next gate completed by the following command-ground checkpoint; its remaining surrounding terrain, figures/hands and formation/lighting work stays open.
 
 ## 2026-08-09 · Packaged failure, reduced-motion and native-audio checkpoint
 

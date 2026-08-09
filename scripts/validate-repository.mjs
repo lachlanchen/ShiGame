@@ -100,13 +100,21 @@ for (const relative of [
   "assets/provenance/shi-command-weight-v1-input.json",
   "assets/provenance/shi-command-weight-v1-triposr-trial.json",
   "assets/provenance/shi-command-weight-v1.json",
+  "assets/provenance/shi-command-surface-v1.json",
   "docs/art/BROKEN_CROSSING_ENVIRONMENT_BRIEF.md",
   "docs/art/COMMAND_WEIGHT_PROP_BRIEF.md",
+  "docs/art/COMMAND_SURFACE_BRIEF.md",
   "docs/art/COUNCIL_FIGURINE_DIRECTION.md",
   "docs/technical/AI_ASSET_TOOLCHAIN.md",
   "scripts/build-command-weight.py",
   "scripts/validate-command-weight.py",
   "scripts/import-command-weight-unreal.py",
+  "scripts/build-command-surface.py",
+  "scripts/validate-command-surface.py",
+  "scripts/import-command-surface-unreal.py",
+  "scripts/author-command-surface-materials-unreal.py",
+  "docs/production/evidence/unreal-command-surface-import-status.json",
+  "docs/production/evidence/unreal-command-surface-presentation-status.json",
 ]) if (!await exists(resolve(root, relative))) errors.push(`asset pipeline output missing: ${relative}`);
 
 async function verifyHash(file, expected, label) {

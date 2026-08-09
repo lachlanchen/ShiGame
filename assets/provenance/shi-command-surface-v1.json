@@ -1,0 +1,76 @@
+{
+  "assetId": "shi-command-surface-v1",
+  "createdAt": "2026-08-10",
+  "status": "approved-runtime-command-surface-production-blockout-council-engagement-story-reviewed-not-final-environment",
+  "rightsStatus": "original SHI project-authored geometry, materials, renders, source scripts and runtime presentation",
+  "historicalStatus": "original fictional command-ground interface stage; not an attested late-Qin artifact or reconstruction",
+  "designSource": "../../docs/art/COMMAND_SURFACE_BRIEF.md",
+  "engineImportEvidence": "../../docs/production/evidence/unreal-command-surface-import-status.json",
+  "engineEvidence": "../../docs/production/evidence/unreal-command-surface-presentation-status.json",
+  "toolchain": {
+    "authoring": "AgenticApp portable Blender 4.0.2 and official Unreal Engine 5.8.1",
+    "generation": "deterministic Blender Python plus bounded engine-authored material graphs; no neural mesh, generated texture or private source material",
+    "generator": {
+      "file": "../../scripts/build-command-surface.py",
+      "sha256": "397887cd16473b6f23cf3c6cf289ed75e0e29f4687384d587dc34dbc484f5f88"
+    },
+    "validator": {
+      "file": "../../scripts/validate-command-surface.py",
+      "sha256": "0e6cac67e04d5f3ffd112e107798984fac8238262f6c41c6d67ee35043b0ceeb",
+      "method": "clean GLB/FBX import, sub-ten-micrometre interchange weld, manifold/winding/volume, UV, material, bounds, contact-plane, LOD and collision inspection plus clean-import render"
+    },
+    "unrealImporter": {
+      "file": "../../scripts/import-command-surface-unreal.py",
+      "sha256": "2968980bc126f15db457880b3e04078cd4b6ee9fdf236ecd6118788d8ad49a86",
+      "method": "isolated FBX LOD0/LOD1 import or read-only inspection with exact UE 5.8 bounds, LOD, UV, slot, collision, lightmap, Nanite and screen-size assertions"
+    },
+    "unrealMaterialAuthor": {
+      "file": "../../scripts/author-command-surface-materials-unreal.py",
+      "sha256": "d0690e4753bd2c102e1274aaaa19ef5cd73a40eeb2512ccdaa87646383cdab6e",
+      "method": "read-only by default; exact two-material authoring or reviewed-parameter retune behind SHI_COMMAND_SURFACE_AUTHOR_MATERIALS=1, followed by graph, output, noise, texture, normal and compile inspection"
+    }
+  },
+  "outputs": [
+    {"file": "../3d/rendered/shi-command-surface-v1.blend", "role": "editable source and authored-material lookdev", "bytes": 667288, "sha256": "019af21459a1319b562e8144fc3d8fdbd0827fefca51691802955bf8ec491591"},
+    {"file": "../3d/export/shi-command-surface-v1-lod0.glb", "role": "LOD0 editable-component interchange", "bytes": 57916, "sha256": "aa7d904d693426e01bdcb2486839d68fbf25043f5aca08c4a2446f6ddc75cec1"},
+    {"file": "../3d/export/shi-command-surface-v1-lod1.glb", "role": "LOD1 editable-component interchange", "bytes": 10116, "sha256": "a759af179505e27940b1d646242ed23b4370c03ba78278b236b346d18e603679"},
+    {"file": "../3d/export/shi-command-surface-v1.fbx", "role": "Unreal LOD0 import with exact named convex collision", "bytes": 79052, "sha256": "221bc0bb2d512927e6cdfe7b5f113fef302c96efc894c2511dad0071b7ee5168"},
+    {"file": "../3d/export/shi-command-surface-v1-lod1.fbx", "role": "Unreal LOD1 static-mesh import", "bytes": 21852, "sha256": "5618ace28e516481ee964806e2ff597413b66e4d1e5875d7afb02624b3031992"},
+    {"file": "../3d/rendered/shi-command-surface-v1.png", "role": "oblique authored-material source inspection", "bytes": 1481555, "sha256": "228b5753f2d4fe531382cd09930b1f951239d7aa706fd20ae6d299f355cf9b67"},
+    {"file": "../3d/rendered/shi-command-surface-v1-profile.png", "role": "profile thickness and support inspection", "bytes": 1462265, "sha256": "a0b5e6fee91b2067fc67ee9cb1dfe0ba200fafb0566a7067912d554eee362a0f"},
+    {"file": "../3d/rendered/shi-command-surface-v1-glb-import.png", "role": "clean LOD0 GLB interchange inspection", "bytes": 1495171, "sha256": "5c873cb99672a94c5b1d570601ac70ec88faf715d4b5b68b05607776324da382"},
+    {"file": "../3d/source/shi-command-surface-v1.metrics.json", "role": "deterministic generation metrics", "bytes": 1413, "sha256": "ed4332450eb2514138826bd99ad6558058ae95e4bc2cbbb805319f2161d8c68f"},
+    {"file": "../3d/source/shi-command-surface-v1.validation.json", "role": "clean interchange machine validation", "bytes": 16338, "sha256": "f6b0dffad5ac9e84a0d36064fe78f646cb6076f1dda42db3311b1604691db5c4"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/CommandSurface/M_SHI_WetPackedEarth.uasset", "role": "Unreal authored packed-earth production-blockout PBR graph", "bytes": 11690, "sha256": "245a1dab804f7ed24f86fa4e2466658648d4042ad724ff677de1809fc7128519"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/CommandSurface/M_SHI_DarkWorkedWood.uasset", "role": "Unreal authored worked-wood production-blockout PBR graph", "bytes": 11706, "sha256": "389fdda62e74f42d6a6078ba448f38ff77504a5dac2c9e03ac8c9300a5df220a"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/CommandSurface/SM_SHI_CommandSurface_01.uasset", "role": "Unreal static mesh with LOD0, LOD1, lightmap UV and convex collision receipt", "bytes": 147120, "sha256": "1dbc987ace079175f524e468e2c751d237b16864c534a3f7b62e1a9b138729c3"},
+    {"file": "../../docs/production/evidence/unreal-command-surface-review-v1.png", "role": "packaged full-surface development review", "bytes": 1734601, "sha256": "071795ff15b3b7dbf84e53924912666858ebf0f65537980616557b0e4a167886"},
+    {"file": "../../docs/production/evidence/unreal-command-surface-story-v1.png", "role": "normal packaged story-progression review", "bytes": 879393, "sha256": "f1ad86d62fe92aca11b2c88eecf4a497f63f3da436ba3f195e3f7dc454a45bf0"},
+    {"file": "../../docs/production/evidence/unreal-command-surface-engagement-v1.png", "role": "packaged state-changing Broken Crossing surface review", "bytes": 968912, "sha256": "46506b5cd044e5fbd1323041232392a162043e8fcada32c5ba375f22848bb8f7"}
+  ],
+  "technicalReview": {
+    "dimensionsMeters": [5.8, 3.7, 0.16],
+    "boundsMeters": {"minimum": [-2.9, -1.85, -0.02], "maximum": [2.9, 1.85, 0.14]},
+    "lod0Triangles": 620,
+    "lod1Triangles": 60,
+    "collisionTriangles": 12,
+    "renderComponents": 5,
+    "materialSlots": ["M_SHI_WetPackedEarth", "M_SHI_DarkWorkedWood"],
+    "uvChannelsPerLod": [2, 2],
+    "cleanGlbImport": "pass",
+    "cleanFbxImport": "pass",
+    "unrealImport": "pass",
+    "unrealMaterials": "pass: two compile-clean ten-node PBR graphs, five outputs, no textures and no normal pretence",
+    "unrealNativeAutomation": "13 of 13 SHI suites pass, including CommandSurfacePresentationV1 hostile scale, collision, visibility and bounds cases",
+    "unrealVisibleCampaign": "pass: Act I to Act III with two verified transactions",
+    "unrealVisibleEngagement": "pass: Broken Crossing advances one pulse, all six signals update and campaign returns unchanged",
+    "lodReduction": "90.3 percent fewer triangles from LOD0 to LOD1"
+  },
+  "constraints": [
+    "Do not describe this fictional platform as historically attested or reconstructed",
+    "Keep exact world identity, Z=14 cm contact plane and five-centimeter edge clearance",
+    "Keep the surface noninteractive, collision-free and visible in the non-authoritative engagement",
+    "Do not promote this production blockout to final environment, shipping art or marketing status",
+    "Replace the surrounding white engine ground and proxy figures/signals before final scene review"
+  ]
+}
