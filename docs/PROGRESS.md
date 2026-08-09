@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Shared broken-crossing command-contract checkpoint
+
+- Authored the first strict, versioned martial-command payload for Chapter I's existing `broken-crossing` position. Three campaign plans and both seeded field conditions now open three command pulses with nine distinct orders, separate disclosed field answers, six encounter-local metrics and four best-to-fallback outcomes.
+- Added a pure deterministic resolver that applies plan and condition state, filters commands by plan/pulse/requirements, records player effects before the authored response, derives campaign deltas only on completion and never mutates source state. Save replay rebuilds from plan, condition and command identifiers, compares canonical key-order-independent records and rejects altered metrics, response identities, outcomes or totals.
+- Added strict source/claim/node closure and shape validation plus exhaustive traversal. All 76 legal routes terminate without deadlock; 47 reach success or costly success; every plan remains viable under both conditions; at least two plans remain viable per condition; and every command and all four outcomes are reachable.
+- Kept the historical boundary explicit. The encounter remains dramatic reconstruction, closes only to already registered campaign sources/claims and does not promote any candidate martial text into runtime authority. The payload is marked `validated-shared-contract-not-campaign-authority`, so the existing one-click campaign choice remains authoritative until Web and native Unreal replay the same result.
+- Exact source implementation `c4c7c1150ec287ba4f3335de2c8e7d966ba79bf6` passes the complete validation and production build: 53 TypeScript/UI tests, 76 engagement routes, 689 successful and 87 failure campaign condition routes, 46 cross-engine replays, static Unreal/installer/history/audio/accessibility/font/privacy gates and unchanged Web budgets of 99.47 KiB initial JavaScript, 11.94 KiB initial CSS and 26.84 MiB deployed output.
+- The official Unreal 5.8.1 precompiled archive is being acquired under an outside-Git private supervisor, which will validate and atomically install it, generate project files, compile the C++ target and run native automation. Active download is not represented as an installed or playable native build.
+
+Next gate: complete the official Unreal install and native baseline compile/automation first; then implement the same broken-crossing command record in the Web board and Unreal command space, prove cross-client replay equality and only then migrate campaign authority.
+
 ## 2026-08-09 · Unreal canonical council-staging checkpoint
 
 - Closed the gap between authored dialogue and the 3D command space. Unreal now loads the shared five-character register plus every node's `speakerId`, rejects unknown/duplicate cast, a missing Keeper, Keeper-as-speaker and empty dialogue, and preserves each character's canonical historical classification.
