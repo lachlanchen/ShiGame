@@ -9,6 +9,7 @@
 #include "ShiAudioModel.h"
 #include "ShiCampaignModel.h"
 #include "ShiCampaignSession.h"
+#include "ShiWartableModel.h"
 
 namespace
 {
@@ -177,6 +178,51 @@ bool FShiHistoricalEvidenceTest::RunTest(const FString& Parameters)
     FShiCampaignModel OriginDrift = Campaign;
     OriginDrift.Sources[0].Url = TEXT("https://example.com/not-the-registered-edition");
     TestFalse(TEXT("public links must remain on the registered edition origin"), OriginDrift.ValidateEvidence(Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiWartableSpatialIntelligenceTest, "SHI.Wartable.SpatialIntelligenceV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiWartableSpatialIntelligenceTest::RunTest(const FString& Parameters)
+{
+    FShiCampaignModel Campaign;
+    FString Error;
+    if (!Campaign.LoadCanonical(Error)) { AddError(Error); return false; }
+    TestEqual(TEXT("five inspectable intelligence sites"), Campaign.Sites.Num(), 5);
+    TestTrue(TEXT("canonical sites fit the bounded wartable"), FShiWartableModel::Validate(Campaign.Sites, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+
+    const FShiSiteData* Daze = Campaign.FindSite(TEXT("daze"));
+    TestNotNull(TEXT("Daze marker exists"), Daze);
+    if (Daze)
+    {
+        TestTrue(TEXT("Daze projection is deterministic"), FShiWartableModel::ProjectSite(*Daze).Equals(FVector(82.8f, 33.6f, 28.f), .001f));
+        const FTransform Camera = FShiWartableModel::CameraTransform(*Daze);
+        const FVector TargetDirection = (FShiWartableModel::ProjectSite(*Daze) + FVector(0.f, 0.f, 12.f) - Camera.GetLocation()).GetSafeNormal();
+        TestTrue(TEXT("site camera looks at its intelligence marker"), FVector::DotProduct(Camera.GetRotation().GetForwardVector(), TargetDirection) > .9999f);
+    }
+
+    const FShiWartableMarkerStyle Known = FShiWartableModel::MarkerStyle(TEXT("known"), false);
+    const FShiWartableMarkerStyle Reported = FShiWartableModel::MarkerStyle(TEXT("reported"), false);
+    const FShiWartableMarkerStyle Reference = FShiWartableModel::MarkerStyle(TEXT("reference"), false);
+    const FShiWartableMarkerStyle Selected = FShiWartableModel::MarkerStyle(TEXT("known"), true);
+    TestTrue(TEXT("known/reported/reference use non-color-distinct geometry"), Known.MeshPath != Reported.MeshPath && Known.MeshPath != Reference.MeshPath && Reported.MeshPath != Reference.MeshPath);
+    TestTrue(TEXT("selected geometry enlarges visibly"), Selected.Scale.GetMin() > Known.Scale.GetMin());
+    TestTrue(TEXT("statuses have distinct stencil identities"), Known.StencilValue != Reported.StencilValue && Known.StencilValue != Reference.StencilValue && Reported.StencilValue != Reference.StencilValue);
+
+    FString Cursor = Campaign.Sites[0].Id;
+    for (int32 Index = 0; Index < Campaign.Sites.Num(); ++Index) Cursor = FShiWartableModel::CycleSite(Campaign.Sites, Cursor, 1);
+    TestEqual(TEXT("forward site inspection wraps exactly"), Cursor, Campaign.Sites[0].Id);
+    TestEqual(TEXT("reverse site inspection wraps to the final site"), FShiWartableModel::CycleSite(Campaign.Sites, Campaign.Sites[0].Id, -1), Campaign.Sites.Last().Id);
+    TestEqual(TEXT("unknown forward focus starts at the first site"), FShiWartableModel::CycleSite(Campaign.Sites, TEXT("unknown"), 1), Campaign.Sites[0].Id);
+
+    TArray<FShiSiteData> Overlap = Campaign.Sites;
+    Overlap[1].X = Overlap[0].X;
+    Overlap[1].Z = Overlap[0].Z;
+    TestFalse(TEXT("overlapping pointer targets are rejected"), FShiWartableModel::Validate(Overlap, Error));
+    TArray<FShiSiteData> UnknownStatus = Campaign.Sites;
+    UnknownStatus[0].Status = TEXT("prophecy");
+    TestFalse(TEXT("unsupported hindsight marker status is rejected"), FShiWartableModel::Validate(UnknownStatus, Error));
     return !HasAnyErrors();
 }
 

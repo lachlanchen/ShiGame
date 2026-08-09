@@ -8,6 +8,8 @@
 
 class SShiCommandScreen;
 class ACameraActor;
+class APlayerController;
+class AStaticMeshActor;
 class UShiSoundscapeComponent;
 
 UCLASS()
@@ -46,9 +48,13 @@ public:
     const FShiOppositionStageData* GetCurrentOppositionStage() const { return Session.GetCurrentOppositionStage(); }
     const FShiMethodReadData* GetCurrentMethodRead() const { return Session.GetCurrentMethodRead(); }
     const FShiCommitmentData* GetActiveCommitment() const { return Session.GetActiveCommitment(); }
+    const FShiSiteData* GetInspectedSite() const;
+    bool IsInspectingRemoteSite() const;
 
     void SelectChoice(int32 Index);
     void CycleChoice(int32 Direction);
+    void CycleInspectedSite(int32 Direction);
+    void ResetInspectedSite();
     void IssueSelectedOrder();
     void RequestNewChronicle();
     void ToggleEvidence();
@@ -69,13 +75,21 @@ private:
     bool bPersistenceEnabled = true;
     bool bRestartArmed = false;
     bool bEvidenceOpen = false;
+    FString InspectedSiteId;
     double LastOrderIssueTime = -1000.0;
     TSharedPtr<SShiCommandScreen> CommandScreen;
     UPROPERTY(Transient)
     TObjectPtr<UShiSoundscapeComponent> AudioDirector;
     TWeakObjectPtr<ACameraActor> CommandCamera;
-    FVector CameraRestLocation;
-    FRotator CameraRestRotation;
+    TMap<FString, TWeakObjectPtr<AStaticMeshActor>> SiteMarkers;
+    FVector CameraBaseLocation;
+    FRotator CameraBaseRotation;
+    FVector CameraTransitionStartLocation;
+    FRotator CameraTransitionStartRotation;
+    FVector CameraTransitionTargetLocation;
+    FRotator CameraTransitionTargetRotation;
+    float CameraTransitionElapsed = 0.f;
+    float CameraTransitionDuration = 0.f;
     float CameraBeatElapsed = 0.f;
     float CameraBeatDuration = 0.f;
 
@@ -83,6 +97,11 @@ private:
     void CreateSoundscape();
     void RefreshScreen();
     void BeginCameraBeat();
+    void BeginCameraTransition(const FTransform& Target, float Duration);
+    void TickCamera(float DeltaSeconds);
+    void InspectSite(const FString& SiteId, bool bImmediate = false, bool bPlayCue = true);
+    bool InspectSiteUnderCursor(APlayerController& Controller);
+    void UpdateWartableSelection();
     void SelectFirstAvailableChoice();
     void ResumeSoundFromGesture();
     FString GetSavePath() const;

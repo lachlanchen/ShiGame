@@ -63,12 +63,13 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     EvidenceScroll.Reset();
     const FShiActData* Act = Mode->GetCampaign().FindAct(Node->ActId);
     const FShiSiteData* Site = Mode->GetCampaign().FindSite(Node->SiteId);
-    TArray<FString> ActiveSourceRefs = Node->SourceRefs;
-    TArray<FString> ActiveClaimRefs = Node->ClaimRefs;
-    if (Site)
+    const FShiSiteData* InspectedSite = Mode->GetInspectedSite();
+    TArray<FString> ActiveSourceRefs = Mode->IsInspectingRemoteSite() ? TArray<FString>() : Node->SourceRefs;
+    TArray<FString> ActiveClaimRefs = Mode->IsInspectingRemoteSite() ? TArray<FString>() : Node->ClaimRefs;
+    if (InspectedSite)
     {
-        for (const FString& SourceRef : Site->SourceRefs) ActiveSourceRefs.AddUnique(SourceRef);
-        for (const FString& ClaimRef : Site->ClaimRefs) ActiveClaimRefs.AddUnique(ClaimRef);
+        for (const FString& SourceRef : InspectedSite->SourceRefs) ActiveSourceRefs.AddUnique(SourceRef);
+        for (const FString& ClaimRef : InspectedSite->ClaimRefs) ActiveClaimRefs.AddUnique(ClaimRef);
     }
     const int32 ActIndex = Mode->GetCampaign().Acts.IndexOfByPredicate([&](const FShiActData& Item) { return Act && Item.Id == Act->Id; });
     const int32 SceneIndex = Mode->GetCampaign().Nodes.IndexOfByPredicate([&](const FShiNodeData& Item) { return Item.Id == Node->Id; });
@@ -93,9 +94,40 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     ];
     Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
         SNew(SButton).OnClicked(this, &SShiCommandScreen::ToggleEvidence).ContentPadding(10)[
-            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("HISTORICAL BASIS · %d SOURCES · %d CLAIMS"), ActiveSourceRefs.Num(), ActiveClaimRefs.Num())))
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("HISTORICAL BASIS · %s · %d SOURCES · %d CLAIMS"),
+                InspectedSite ? *InspectedSite->Name.Resolve(Locale) : TEXT("?"), ActiveSourceRefs.Num(), ActiveClaimRefs.Num())))
         ]
     ];
+    if (InspectedSite)
+    {
+        TSharedRef<SVerticalBox> IntelCard = SNew(SVerticalBox);
+        IntelCard->AddSlot().AutoHeight()[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("WARTABLE FOCUS · %s · %s"), *InspectedSite->Status.ToUpper(), *InspectedSite->Name.Resolve(Locale))))
+        ];
+        IntelCard->AddSlot().AutoHeight().Padding(0, 6, 0, 2)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(InspectedSite->Summary.Resolve(Locale)))
+        ];
+        IntelCard->AddSlot().AutoHeight().Padding(0, 2, 0, 7)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("%s · %s"),
+                Mode->IsInspectingRemoteSite() ? TEXT("INTELLIGENCE ONLY · NOT A DESTINATION") : TEXT("CURRENT PLAYABLE GROUND"),
+                *InspectedSite->Uncertainty.Resolve(Locale))))
+        ];
+        IntelCard->AddSlot().AutoHeight()[
+            SNew(SHorizontalBox)
+            + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 7, 0)[
+                SNew(SButton).OnClicked(this, &SShiCommandScreen::CycleSite, -1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("← PREVIOUS SITE")))]
+            ]
+            + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 7, 0)[
+                SNew(SButton).OnClicked(this, &SShiCommandScreen::CycleSite, 1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("NEXT SITE →")))]
+            ]
+            + SHorizontalBox::Slot().AutoWidth()[
+                SNew(SButton).IsEnabled(Mode->IsInspectingRemoteSite()).OnClicked(this, &SShiCommandScreen::ResetSiteFocus).ContentPadding(7)[
+                    SNew(STextBlock).Text(FText::FromString(TEXT("CURRENT GROUND")))
+                ]
+            ]
+        ];
+        Root->AddSlot().AutoHeight().Padding(28, 2, 28, 9)[SNew(SBorder).Padding(12)[IntelCard]];
+    }
     Root->AddSlot().AutoHeight().Padding(28, 2, 28, 4)[
         SNew(SHorizontalBox)
         + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 10, 0)[
@@ -178,7 +210,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("1–3 SELECT · ←/→ CYCLE · ENTER / GAMEPAD A ISSUE · E / LB EVIDENCE · M / GAMEPAD Y SOUND · SPACE SKIPS CAMERA BEAT")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK MARKER OR TAB / GAMEPAD RB CYCLES WARTABLE · SHIFT+TAB PREVIOUS · HOME CURRENT · E / LB EVIDENCE · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
         ]
     ];
 
@@ -195,9 +227,10 @@ TSharedRef<SWidget> SShiCommandScreen::BuildEvidenceLayout(AShiGameMode& Mode, c
 {
     const FShiCampaignModel& Campaign = Mode.GetCampaign();
     const FString Locale = Mode.GetLocale();
-    const FShiSiteData* Site = Campaign.FindSite(Node.SiteId);
-    TArray<FString> ActiveSourceRefs = Node.SourceRefs;
-    TArray<FString> ActiveClaimRefs = Node.ClaimRefs;
+    const bool bRemoteSite = Mode.IsInspectingRemoteSite();
+    const FShiSiteData* Site = Mode.GetInspectedSite();
+    TArray<FString> ActiveSourceRefs = bRemoteSite ? TArray<FString>() : Node.SourceRefs;
+    TArray<FString> ActiveClaimRefs = bRemoteSite ? TArray<FString>() : Node.ClaimRefs;
     if (Site)
     {
         for (const FString& SourceRef : Site->SourceRefs) ActiveSourceRefs.AddUnique(SourceRef);
@@ -208,7 +241,8 @@ TSharedRef<SWidget> SShiCommandScreen::BuildEvidenceLayout(AShiGameMode& Mode, c
     Root->AddSlot().AutoHeight().Padding(28, 20, 28, 8)[
         SNew(SHorizontalBox)
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("HISTORICAL BASIS · %s"), *Node.Title.Resolve(Locale))))
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("HISTORICAL BASIS · %s"),
+                bRemoteSite && Site ? *Site->Name.Resolve(Locale) : *Node.Title.Resolve(Locale))))
         ]
         + SHorizontalBox::Slot().AutoWidth()[
             SNew(SButton).OnClicked(this, &SShiCommandScreen::ToggleEvidence).ContentPadding(10)[
@@ -218,8 +252,9 @@ TSharedRef<SWidget> SShiCommandScreen::BuildEvidenceLayout(AShiGameMode& Mode, c
     ];
     Root->AddSlot().AutoHeight().Padding(28, 4, 28, 10)[
         SNew(SBorder).Padding(14)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT(
-                "PUBLIC EDITION METADATA + PROJECT-AUTHORED NOTES ONLY · NO PRIVATE BOOK FILES OR INVENTED QUOTATIONS ARE PACKAGED · LOCATORS IDENTIFY THE REVIEWABLE PASSAGE")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(bRemoteSite
+                ? TEXT("SITE INTELLIGENCE ONLY · THIS IS NOT A DESTINATION OR FUTURE-VICTORY PROMISE · PUBLIC EDITION METADATA + PROJECT-AUTHORED NOTES ONLY · NO PRIVATE BOOK FILES OR INVENTED QUOTATIONS ARE PACKAGED")
+                : TEXT("CURRENT SCENE + SITE BOUNDARY · PUBLIC EDITION METADATA + PROJECT-AUTHORED NOTES ONLY · NO PRIVATE BOOK FILES OR INVENTED QUOTATIONS ARE PACKAGED · LOCATORS IDENTIFY THE REVIEWABLE PASSAGE")))
         ]
     ];
 
@@ -317,6 +352,18 @@ FReply SShiCommandScreen::NewChronicle()
 FReply SShiCommandScreen::ToggleEvidence()
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->ToggleEvidence();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::CycleSite(int32 Direction)
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->CycleInspectedSite(Direction);
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::ResetSiteFocus()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->ResetInspectedSite();
     return FReply::Handled();
 }
 

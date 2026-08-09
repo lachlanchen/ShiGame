@@ -27,6 +27,8 @@ private:
     FReply Issue();
     FReply NewChronicle();
     FReply ToggleEvidence();
+    FReply CycleSite(int32 Direction);
+    FReply ResetSiteFocus();
     FReply OpenPublicEdition(FString Url);
     FReply ToggleSound();
     FReply AdjustAmbience(int32 Direction);

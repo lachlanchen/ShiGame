@@ -5,6 +5,7 @@
 #include "Engine/Engine.h"
 #include "Engine/ExponentialHeightFog.h"
 #include "Engine/GameViewportClient.h"
+#include "Engine/HitResult.h"
 #include "Engine/PointLight.h"
 #include "Engine/StaticMeshActor.h"
 #include "Engine/StaticMesh.h"
@@ -16,11 +17,13 @@
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
 #include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
 #include "ShiSoundscapeComponent.h"
+#include "ShiWartableModel.h"
 
 AShiGameMode::AShiGameMode()
 {
@@ -104,6 +107,32 @@ void AShiGameMode::CycleChoice(int32 Direction)
     }
 }
 
+const FShiSiteData* AShiGameMode::GetInspectedSite() const
+{
+    if (const FShiSiteData* Inspected = Campaign.FindSite(InspectedSiteId)) return Inspected;
+    const FShiNodeData* Node = GetCurrentNode();
+    return Node ? Campaign.FindSite(Node->SiteId) : nullptr;
+}
+
+bool AShiGameMode::IsInspectingRemoteSite() const
+{
+    const FShiNodeData* Node = GetCurrentNode();
+    const FShiSiteData* Site = GetInspectedSite();
+    return Node && Site && Node->SiteId != Site->Id;
+}
+
+void AShiGameMode::CycleInspectedSite(int32 Direction)
+{
+    if (bEvidenceOpen || Direction == 0) return;
+    InspectSite(FShiWartableModel::CycleSite(Campaign.Sites, GetInspectedSite() ? GetInspectedSite()->Id : FString(), Direction));
+}
+
+void AShiGameMode::ResetInspectedSite()
+{
+    if (bEvidenceOpen) return;
+    if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId);
+}
+
 void AShiGameMode::IssueSelectedOrder()
 {
     const FShiNodeData* Node = GetCurrentNode();
@@ -154,7 +183,11 @@ void AShiGameMode::IssueSelectedOrder()
             : Session.IsCompleted() ? FName(TEXT("ending")) : FName(TEXT("commit"));
         AudioDirector->PlayCue(Cue);
     }
-    BeginCameraBeat();
+    if (const FShiNodeData* NextNode = GetCurrentNode())
+    {
+        if (InspectedSiteId != NextNode->SiteId) InspectSite(NextNode->SiteId, false, false);
+        else BeginCameraBeat();
+    }
     RefreshScreen();
 }
 
@@ -182,6 +215,18 @@ void AShiGameMode::Tick(float DeltaSeconds)
             ToggleEvidence();
             return;
         }
+        if (Controller->WasInputKeyJustPressed(EKeys::LeftMouseButton) && InspectSiteUnderCursor(*Controller)) return;
+        if (Controller->WasInputKeyJustPressed(EKeys::Tab) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_RightShoulder))
+        {
+            const bool bReverse = Controller->IsInputKeyDown(EKeys::LeftShift) || Controller->IsInputKeyDown(EKeys::RightShift);
+            CycleInspectedSite(bReverse ? -1 : 1);
+            return;
+        }
+        if (Controller->WasInputKeyJustPressed(EKeys::Home))
+        {
+            ResetInspectedSite();
+            return;
+        }
         if (Controller->WasInputKeyJustPressed(EKeys::One) || Controller->WasInputKeyJustPressed(EKeys::NumPadOne)) SelectChoice(0);
         if (Controller->WasInputKeyJustPressed(EKeys::Two) || Controller->WasInputKeyJustPressed(EKeys::NumPadTwo)) SelectChoice(1);
         if (Controller->WasInputKeyJustPressed(EKeys::Three) || Controller->WasInputKeyJustPressed(EKeys::NumPadThree)) SelectChoice(2);
@@ -191,28 +236,127 @@ void AShiGameMode::Tick(float DeltaSeconds)
         if (Controller->WasInputKeyJustPressed(EKeys::M) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Top)) ToggleSound();
         if (CameraBeatDuration > 0.f && Controller->WasInputKeyJustPressed(EKeys::SpaceBar)) CameraBeatElapsed = CameraBeatDuration;
     }
-    if (CameraBeatDuration <= 0.f || !CommandCamera.IsValid()) return;
-    CameraBeatElapsed += DeltaSeconds;
-    const float Alpha = FMath::Clamp(CameraBeatElapsed / CameraBeatDuration, 0.f, 1.f);
-    const float Ease = FMath::InterpEaseInOut(0.f, 1.f, Alpha, 2.f);
-    const float Arc = FMath::Sin(Alpha * PI);
-    CommandCamera->SetActorLocation(CameraRestLocation + FVector(-95.f * Ease, 70.f * Arc, 24.f * Arc));
-    CommandCamera->SetActorRotation(CameraRestRotation + FRotator(-2.5f * Arc, 4.f * Arc, 0.f));
-    if (Alpha >= 1.f)
-    {
-        CameraRestLocation = CommandCamera->GetActorLocation();
-        CameraRestRotation = CommandCamera->GetActorRotation();
-        CameraBeatDuration = 0.f;
-    }
+    TickCamera(DeltaSeconds);
 }
 
 void AShiGameMode::BeginCameraBeat()
 {
     if (!CommandCamera.IsValid()) return;
-    CameraRestLocation = CommandCamera->GetActorLocation();
-    CameraRestRotation = CommandCamera->GetActorRotation();
+    CameraTransitionDuration = 0.f;
+    CameraBaseLocation = CommandCamera->GetActorLocation();
+    CameraBaseRotation = CommandCamera->GetActorRotation();
     CameraBeatElapsed = 0.f;
     CameraBeatDuration = 1.4f;
+}
+
+void AShiGameMode::BeginCameraTransition(const FTransform& Target, float Duration)
+{
+    if (!CommandCamera.IsValid()) return;
+    CameraBeatDuration = 0.f;
+    CameraTransitionStartLocation = CommandCamera->GetActorLocation();
+    CameraTransitionStartRotation = CommandCamera->GetActorRotation();
+    CameraTransitionTargetLocation = Target.GetLocation();
+    CameraTransitionTargetRotation = Target.GetRotation().Rotator();
+    CameraTransitionElapsed = 0.f;
+    CameraTransitionDuration = FMath::Max(Duration, .01f);
+}
+
+void AShiGameMode::TickCamera(float DeltaSeconds)
+{
+    if (!CommandCamera.IsValid()) return;
+    if (CameraTransitionDuration > 0.f)
+    {
+        CameraTransitionElapsed += DeltaSeconds;
+        const float Alpha = FMath::Clamp(CameraTransitionElapsed / CameraTransitionDuration, 0.f, 1.f);
+        const float Ease = FMath::InterpEaseInOut(0.f, 1.f, Alpha, 2.f);
+        CommandCamera->SetActorLocation(FMath::Lerp(CameraTransitionStartLocation, CameraTransitionTargetLocation, Ease));
+        CommandCamera->SetActorRotation(FQuat::Slerp(CameraTransitionStartRotation.Quaternion(), CameraTransitionTargetRotation.Quaternion(), Ease));
+        if (Alpha >= 1.f)
+        {
+            CameraBaseLocation = CameraTransitionTargetLocation;
+            CameraBaseRotation = CameraTransitionTargetRotation;
+            CameraTransitionDuration = 0.f;
+        }
+        return;
+    }
+    if (CameraBeatDuration <= 0.f) return;
+    CameraBeatElapsed += DeltaSeconds;
+    const float Alpha = FMath::Clamp(CameraBeatElapsed / CameraBeatDuration, 0.f, 1.f);
+    const float Arc = FMath::Sin(Alpha * PI);
+    CommandCamera->SetActorLocation(CameraBaseLocation + FVector(-38.f * Arc, 34.f * Arc, 16.f * Arc));
+    CommandCamera->SetActorRotation(CameraBaseRotation + FRotator(-1.8f * Arc, 2.8f * Arc, 0.f));
+    if (Alpha >= 1.f)
+    {
+        CommandCamera->SetActorLocation(CameraBaseLocation);
+        CommandCamera->SetActorRotation(CameraBaseRotation);
+        CameraBeatDuration = 0.f;
+    }
+}
+
+void AShiGameMode::InspectSite(const FString& SiteId, bool bImmediate, bool bPlayCue)
+{
+    const FShiSiteData* Site = Campaign.FindSite(SiteId);
+    if (!Site) return;
+    const bool bChanged = InspectedSiteId != SiteId;
+    InspectedSiteId = SiteId;
+    UpdateWartableSelection();
+    const FTransform Target = FShiWartableModel::CameraTransform(*Site);
+    if (bImmediate && CommandCamera.IsValid())
+    {
+        CameraTransitionDuration = 0.f;
+        CameraBeatDuration = 0.f;
+        CameraBaseLocation = Target.GetLocation();
+        CameraBaseRotation = Target.GetRotation().Rotator();
+        CommandCamera->SetActorLocation(CameraBaseLocation);
+        CommandCamera->SetActorRotation(CameraBaseRotation);
+    }
+    else if (bChanged || CameraTransitionDuration <= 0.f)
+    {
+        BeginCameraTransition(Target, .72f);
+    }
+    if (bPlayCue)
+    {
+        ResumeSoundFromGesture();
+        if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("inspect")));
+    }
+    RefreshScreen();
+}
+
+bool AShiGameMode::InspectSiteUnderCursor(APlayerController& Controller)
+{
+    float MouseX = 0.f;
+    float MouseY = 0.f;
+    if (!Controller.GetMousePosition(MouseX, MouseY)) return false;
+    FHitResult Hit;
+    if (!Controller.GetHitResultAtScreenPosition(FVector2D(MouseX, MouseY), ECC_Visibility, false, Hit)) return false;
+    AActor* HitActor = Hit.GetActor();
+    for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : SiteMarkers)
+    {
+        if (Pair.Value.Get() == HitActor)
+        {
+            InspectSite(Pair.Key);
+            return true;
+        }
+    }
+    return false;
+}
+
+void AShiGameMode::UpdateWartableSelection()
+{
+    for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : SiteMarkers)
+    {
+        AStaticMeshActor* Marker = Pair.Value.Get();
+        const FShiSiteData* Site = Campaign.FindSite(Pair.Key);
+        if (!Marker || !Site) continue;
+        const bool bSelected = Pair.Key == InspectedSiteId;
+        const FShiWartableMarkerStyle Style = FShiWartableModel::MarkerStyle(Site->Status, bSelected);
+        Marker->SetActorScale3D(Style.Scale);
+        UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
+        Component->SetRenderCustomDepth(bSelected);
+        Component->SetCustomDepthStencilValue(Style.StencilValue);
+        if (UMaterialInstanceDynamic* Material = Cast<UMaterialInstanceDynamic>(Component->GetMaterial(0)))
+            Material->SetVectorParameterValue(FName(TEXT("Color")), Style.Color);
+    }
 }
 
 void AShiGameMode::SelectFirstAvailableChoice()
@@ -286,6 +430,7 @@ void AShiGameMode::RequestNewChronicle()
         ? TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY")
         : FString::Printf(TEXT("NEW CHRONICLE · AUTOSAVE FAILED · %s"), *PersistenceError);
     if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("close")));
+    if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId, false, false);
     RefreshScreen();
 }
 
@@ -375,16 +520,28 @@ void AShiGameMode::CreateCommandSpace()
 {
     UWorld* World = GetWorld();
     if (!World) return;
+    FString WartableError;
+    if (!FShiWartableModel::Validate(Campaign.Sites, WartableError))
+    {
+        LoadError = FString::Printf(TEXT("Wartable layout rejected: %s"), *WartableError);
+        return;
+    }
     ACameraActor* Camera = World->SpawnActor<ACameraActor>(FVector(720, -760, 520), FRotator(-24, 133, 0));
+    if (!Camera)
+    {
+        LoadError = TEXT("Cinematic command camera could not spawn.");
+        return;
+    }
     CommandCamera = Camera;
-    CameraRestLocation = Camera->GetActorLocation();
-    CameraRestRotation = Camera->GetActorRotation();
+    CameraBaseLocation = Camera->GetActorLocation();
+    CameraBaseRotation = Camera->GetActorRotation();
     if (APlayerController* Controller = UGameplayStatics::GetPlayerController(World, 0))
     {
         Controller->SetViewTarget(Camera);
         Controller->SetShowMouseCursor(true);
         FInputModeGameAndUI InputMode;
         InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+        InputMode.SetHideCursorDuringCapture(false);
         Controller->SetInputMode(InputMode);
     }
     ADirectionalLight* Moon = World->SpawnActor<ADirectionalLight>(FVector::ZeroVector, FRotator(-42, 28, 0));
@@ -396,22 +553,65 @@ void AShiGameMode::CreateCommandSpace()
 
     UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
     UStaticMesh* Plane = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+    if (!Cube || !Plane)
+    {
+        LoadError = TEXT("Required engine-native command-space meshes are unavailable.");
+        return;
+    }
     if (Plane)
     {
         AStaticMeshActor* Ground = World->SpawnActor<AStaticMeshActor>(FVector(0, 0, -12), FRotator::ZeroRotator);
+        if (!Ground) { LoadError = TEXT("Command-space ground could not spawn."); return; }
+        Ground->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
         Ground->GetStaticMeshComponent()->SetStaticMesh(Plane);
         Ground->SetActorScale3D(FVector(24.f, 24.f, 1.f));
     }
     if (Cube)
     {
         AStaticMeshActor* Table = World->SpawnActor<AStaticMeshActor>(FVector(0, 0, 6), FRotator::ZeroRotator);
+        if (!Table) { LoadError = TEXT("Wartable surface could not spawn."); return; }
+        Table->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
         Table->GetStaticMeshComponent()->SetStaticMesh(Cube);
         Table->SetActorScale3D(FVector(5.8f, 3.7f, 0.16f));
     }
-    for (int32 Index = 0; Cube && Index < 7; ++Index)
+    UMaterialInterface* BasicMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+    if (!BasicMaterial)
     {
-        AStaticMeshActor* Marker = World->SpawnActor<AStaticMeshActor>(FVector(Index * 130.f - 390.f, 0, Index == 3 ? 55.f : 20.f), FRotator::ZeroRotator);
-        Marker->GetStaticMeshComponent()->SetStaticMesh(Cube);
-        Marker->SetActorScale3D(FVector(0.45f, 0.45f, Index == 3 ? 1.1f : 0.4f));
+        LoadError = TEXT("Required engine-native wartable material is unavailable.");
+        return;
     }
+    SiteMarkers.Empty();
+    for (const FShiSiteData& Site : Campaign.Sites)
+    {
+        const FShiWartableMarkerStyle Style = FShiWartableModel::MarkerStyle(Site.Status, false);
+        UStaticMesh* MarkerMesh = LoadObject<UStaticMesh>(nullptr, *Style.MeshPath);
+        if (!MarkerMesh)
+        {
+            LoadError = FString::Printf(TEXT("Wartable marker mesh missing for %s."), *Site.Id);
+            return;
+        }
+        AStaticMeshActor* Marker = World->SpawnActor<AStaticMeshActor>(FShiWartableModel::ProjectSite(Site), FRotator::ZeroRotator);
+        if (!Marker)
+        {
+            LoadError = FString::Printf(TEXT("Wartable marker could not spawn for %s."), *Site.Id);
+            return;
+        }
+        UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
+        Component->SetMobility(EComponentMobility::Movable);
+        Component->SetStaticMesh(MarkerMesh);
+        Component->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+        Component->SetCollisionResponseToAllChannels(ECR_Ignore);
+        Component->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+        UMaterialInstanceDynamic* Material = Component->CreateDynamicMaterialInstance(0, BasicMaterial, NAME_None);
+        if (!Material)
+        {
+            LoadError = FString::Printf(TEXT("Wartable marker material could not initialize for %s."), *Site.Id);
+            return;
+        }
+        Material->SetVectorParameterValue(FName(TEXT("Color")), Style.Color);
+        Marker->Tags.Add(FName(*FString::Printf(TEXT("ShiSite:%s"), *Site.Id)));
+        Marker->SetActorScale3D(Style.Scale);
+        SiteMarkers.Add(Site.Id, Marker);
+    }
+    if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId, false, false);
 }
