@@ -7,9 +7,10 @@
 - Added fail-closed atomic validation for stable identity/order, exact 0–100 resource state, table anchoring, finite bounds, unique stencils, signal spacing and joint site/signal pointer spacing. Exposure 100 has an explicit captured terminal signal instead of pretending a normal pursuit posture still exists.
 - Added `SHI.CommandSpace.LiveSignalsV1` automation source for initial/post-order state, oath activation, method/pursuit reads, selection anchoring, camera aim, wrap behavior, terminal capture and hostile malformed snapshots. Static preflight requires the model, renderer, controls, Slate boundary and automation contract.
 - Exact implementation `ed4dcc6d3e4955f0115f6d98b7ccb83d4fe977c3` passes `npm ci` and the complete build from a detached clean checkout: 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 golden cross-engine routes, canonical history/audio/content/conformance, accessibility/font/privacy/type gates, Unreal command-space preflight and Web budgets.
+- Hosted validation `31297150897` and Pages deployment `31297150875` pass at documented checkpoint `9cfbd83946cb8c04872a71b4356e1e69fa0f0c9b`; local `HEAD`, `origin/main` and the remote ref matched, and the deployed Web reference returned HTTP 200 before this evidence-note commit.
 - This is source-level and clean-build evidence, not native Unreal proof. Official Unreal 5.8 acquisition still waits at Epic sign-in, so C++ compilation, automation execution, PIE site/signal interaction, visual/camera review, audio capture/listening and Linux packaging remain red.
 
-Next gate: publish this checkpoint, then after Epic sign-in install the official build, compile and execute all suites, and visibly traverse every site/signal plus one complete order and state refresh in PIE before accepting presentation work.
+Next gate: after Epic sign-in, install the official build, compile and execute all suites, and visibly traverse every site/signal plus one complete order and state refresh in PIE before accepting presentation work.
 
 ## 2026-08-09 · Unreal spatial-wartable checkpoint
 
