@@ -1,0 +1,576 @@
+{
+  "assetId": "shi-command-weight-v1",
+  "validator": "clean Blender import plus bmesh topology inspection",
+  "blender": "4.0.2",
+  "exports": [
+    {
+      "path": "export/shi-command-weight-v1-lod0.glb",
+      "format": "glb",
+      "objects": [
+        {
+          "name": "SM_SHI_CommandWeight_LOD0_BronzeBand",
+          "vertices": 496,
+          "weldedVertices": 332,
+          "normalSplitVertices": 164,
+          "triangles": 660,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WorkedBronze"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 9.423817407686935e-07,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandWeight_LOD0_BronzeEye",
+          "vertices": 420,
+          "weldedVertices": 256,
+          "normalSplitVertices": 164,
+          "triangles": 512,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WorkedBronze"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 3.775891988277798e-07,
+          "location": [
+            0.03999999910593033,
+            0.0,
+            0.027000000700354576
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandWeight_LOD0_BronzeNeck",
+          "vertices": 136,
+          "weldedVertices": 84,
+          "normalSplitVertices": 52,
+          "triangles": 164,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WorkedBronze"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 8.584319817532622e-08,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandWeight_LOD0_Stone",
+          "vertices": 1148,
+          "weldedVertices": 962,
+          "normalSplitVertices": 186,
+          "triangles": 1920,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_RiverStone"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 6.90402986755563e-05,
+          "location": [
+            0.0,
+            0.0,
+            0.017999999225139618
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -0.036379460245370865,
+          -0.026905659586191177,
+          0.001145893707871437
+        ],
+        "maximum": [
+          0.04839999973773956,
+          0.028612157329916954,
+          0.03540000319480896
+        ],
+        "dimensions": [
+          0.08477945998311043,
+          0.05551781691610813,
+          0.03425410948693752
+        ]
+      },
+      "totalTriangles": 3256,
+      "importedMaterials": {
+        "M_SHI_RiverStone": {
+          "baseColor": [
+            0.02800000086426735,
+            0.02199999988079071,
+            0.017999999225139618,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8399999737739563
+        },
+        "M_SHI_WorkedBronze": {
+          "baseColor": [
+            0.09000000357627869,
+            0.054999999701976776,
+            0.02199999988079071,
+            1.0
+          ],
+          "metallic": 0.8199999928474426,
+          "roughness": 0.47999998927116394
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "interchangeBaseColors": true,
+        "uv0AndLightmapUv": true,
+        "closedMeshes": true,
+        "consistentWinding": true,
+        "positiveVolume": true,
+        "meterScaleDimensions": true,
+        "bottomCentered": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-command-weight-v1-lod1.glb",
+      "format": "glb",
+      "objects": [
+        {
+          "name": "SM_SHI_CommandWeight_LOD1_BronzeBand",
+          "vertices": 336,
+          "weldedVertices": 183,
+          "normalSplitVertices": 153,
+          "triangles": 362,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WorkedBronze"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 9.016236810416142e-07,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandWeight_LOD1_BronzeEye",
+          "vertices": 245,
+          "weldedVertices": 140,
+          "normalSplitVertices": 105,
+          "triangles": 280,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WorkedBronze"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 3.7674050091966246e-07,
+          "location": [
+            0.03999999910593033,
+            0.0,
+            0.027000000700354576
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandWeight_LOD1_BronzeNeck",
+          "vertices": 83,
+          "weldedVertices": 47,
+          "normalSplitVertices": 36,
+          "triangles": 90,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_WorkedBronze"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 8.263395469562666e-08,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_CommandWeight_LOD1_Stone",
+          "vertices": 443,
+          "weldedVertices": 328,
+          "normalSplitVertices": 115,
+          "triangles": 652,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_RiverStone"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 6.886702628989564e-05,
+          "location": [
+            0.0,
+            0.0,
+            0.017999999225139618
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -0.036384180188179016,
+          -0.026847166940569878,
+          0.0010790340602397919
+        ],
+        "maximum": [
+          0.04838297888636589,
+          0.028612157329916954,
+          0.03538298234343529
+        ],
+        "dimensions": [
+          0.0847671590745449,
+          0.05545932427048683,
+          0.034303948283195496
+        ]
+      },
+      "totalTriangles": 1384,
+      "importedMaterials": {
+        "M_SHI_RiverStone": {
+          "baseColor": [
+            0.02800000086426735,
+            0.02199999988079071,
+            0.017999999225139618,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8399999737739563
+        },
+        "M_SHI_WorkedBronze": {
+          "baseColor": [
+            0.09000000357627869,
+            0.054999999701976776,
+            0.02199999988079071,
+            1.0
+          ],
+          "metallic": 0.8199999928474426,
+          "roughness": 0.47999998927116394
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "interchangeBaseColors": true,
+        "uv0AndLightmapUv": true,
+        "closedMeshes": true,
+        "consistentWinding": true,
+        "positiveVolume": true,
+        "meterScaleDimensions": true,
+        "bottomCentered": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-command-weight-v1.fbx",
+      "format": "fbx",
+      "objects": [
+        {
+          "name": "SM_SHI_CommandWeight_01",
+          "vertices": 1634,
+          "weldedVertices": 1634,
+          "normalSplitVertices": 0,
+          "triangles": 3256,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_RiverStone",
+            "M_SHI_WorkedBronze"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 7.041466518638478e-05,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "UCX_SM_SHI_CommandWeight_01_01",
+          "vertices": 42,
+          "weldedVertices": 42,
+          "normalSplitVertices": 0,
+          "triangles": 80,
+          "uvLayers": 1,
+          "materials": [],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 9.59314253722841e-05,
+          "location": [
+            0.004999999888241291,
+            0.0,
+            0.017999999225139618
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -0.036379460245370865,
+          -0.026905659586191177,
+          0.001145892427302897
+        ],
+        "maximum": [
+          0.04839999973773956,
+          0.028612159192562103,
+          0.03539999946951866
+        ],
+        "dimensions": [
+          0.08477945998311043,
+          0.05551781877875328,
+          0.034254107042215765
+        ]
+      },
+      "totalTriangles": 3336,
+      "importedMaterials": {
+        "M_SHI_RiverStone": {
+          "baseColor": [
+            0.02800000086426735,
+            0.02199999988079071,
+            0.017999999225139618,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8399999737739563
+        },
+        "M_SHI_WorkedBronze": {
+          "baseColor": [
+            0.09000000357627869,
+            0.054999999701976776,
+            0.02199999988079071,
+            1.0
+          ],
+          "metallic": 0.8199999928474426,
+          "roughness": 0.47999998927116394
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "interchangeBaseColors": true,
+        "uv0AndLightmapUv": true,
+        "closedMeshes": true,
+        "consistentWinding": true,
+        "positiveVolume": true,
+        "meterScaleDimensions": true,
+        "bottomCentered": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-command-weight-v1-lod1.fbx",
+      "format": "fbx",
+      "objects": [
+        {
+          "name": "SM_SHI_CommandWeight_01",
+          "vertices": 698,
+          "weldedVertices": 698,
+          "normalSplitVertices": 0,
+          "triangles": 1384,
+          "uvLayers": 2,
+          "materials": [
+            "M_SHI_RiverStone",
+            "M_SHI_WorkedBronze"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 7.022802467408778e-05,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -0.036384180188179016,
+          -0.026847166940569878,
+          0.0010790327796712518
+        ],
+        "maximum": [
+          0.04838297888636589,
+          0.028612159192562103,
+          0.03538298234343529
+        ],
+        "dimensions": [
+          0.0847671590745449,
+          0.05545932613313198,
+          0.034303949563764036
+        ]
+      },
+      "totalTriangles": 1384,
+      "importedMaterials": {
+        "M_SHI_RiverStone": {
+          "baseColor": [
+            0.02800000086426735,
+            0.02199999988079071,
+            0.017999999225139618,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8399999737739563
+        },
+        "M_SHI_WorkedBronze": {
+          "baseColor": [
+            0.09000000357627869,
+            0.054999999701976776,
+            0.02199999988079071,
+            1.0
+          ],
+          "metallic": 0.8199999928474426,
+          "roughness": 0.47999998927116394
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "interchangeBaseColors": true,
+        "uv0AndLightmapUv": true,
+        "closedMeshes": true,
+        "consistentWinding": true,
+        "positiveVolume": true,
+        "meterScaleDimensions": true,
+        "bottomCentered": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    }
+  ],
+  "lodReduction": true,
+  "passed": true
+}

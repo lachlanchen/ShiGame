@@ -57,6 +57,8 @@ output/
 tmp/
 *.log
 *.blend1
+__pycache__/
+*.py[cod]
 
 # OS and editor noise
 .DS_Store

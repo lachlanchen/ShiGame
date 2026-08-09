@@ -1,0 +1,152 @@
+{
+  "assetId": "shi-command-weight-v1",
+  "createdAt": "2026-08-10",
+  "status": "approved-engine-production-blockout-packaged-not-final-art",
+  "rightsStatus": "original SHI project-authored geometry, materials, renders and source scripts",
+  "historicalStatus": "original fictional command signal; not a claimed late-Qin artifact or reconstruction",
+  "designSource": "../../docs/art/COMMAND_WEIGHT_PROP_BRIEF.md",
+  "engineEvidence": "../../docs/production/evidence/unreal-command-weight-import-status.json",
+  "toolchain": {
+    "authoring": "AgenticApp portable Blender 4.0.2",
+    "generation": "deterministic Blender Python; no neural mesh or private source material",
+    "generator": {
+      "file": "../../scripts/build-command-weight.py",
+      "sha256": "bee695452e5a0a50a7547c3cf04893e8978bba8e86b010ec5fdd7475dbad5dd4"
+    },
+    "validator": {
+      "file": "../../scripts/validate-command-weight.py",
+      "sha256": "9c31bd4252811753de6d04b74efbe433aa63f90721a6f66747ad88e9720231b2",
+      "method": "clean GLB/FBX import, normal-split weld, bmesh manifold/winding/volume inspection, UV, naming, material, scale and collision checks plus clean-import render"
+    },
+    "unrealImporter": {
+      "file": "../../scripts/import-command-weight-unreal.py",
+      "sha256": "f4171e30076eaf2a62f64e80bdfa8e6ad86d47b9cbd7396874b11ef491b0977d",
+      "method": "isolated FBX LOD0/LOD1 import or non-mutating inspection with exact UE 5.8 static-mesh assertions"
+    },
+    "rejectedNeuralPredecessor": "shi-command-weight-v1-triposr-trial"
+  },
+  "outputs": [
+    {
+      "file": "../3d/rendered/shi-command-weight-v1.blend",
+      "role": "editable source and authored material lookdev",
+      "bytes": 1300700,
+      "sha256": "60c28777ce809a5d39164f7368d2caaba56394cde6c3633ff77c41bd892935db"
+    },
+    {
+      "file": "../3d/export/shi-command-weight-v1-lod0.glb",
+      "role": "LOD0 editable-component interchange",
+      "bytes": 112388,
+      "sha256": "896142269e8663f86fd47e1d3ca7df6707a8273eae88cfa0b160c4101d1b8a0c"
+    },
+    {
+      "file": "../3d/export/shi-command-weight-v1-lod1.glb",
+      "role": "LOD1 editable-component interchange",
+      "bytes": 57432,
+      "sha256": "5d69183a443e82a608323d81ea4805f7b523a3491cbbe9f3b23fe4f63c8f306c"
+    },
+    {
+      "file": "../3d/export/shi-command-weight-v1.fbx",
+      "role": "Unreal LOD0 static-mesh import with exact named convex collision",
+      "bytes": 308524,
+      "sha256": "b3c7316430b0990a5975c8d2c7a3f7dbe7d1e65640e30f97fe99f2351b9e69cf"
+    },
+    {
+      "file": "../3d/export/shi-command-weight-v1-lod1.fbx",
+      "role": "Unreal LOD1 static-mesh import",
+      "bytes": 179804,
+      "sha256": "91cb6be614d99b5a78704a6d1751ee7978f469d3df8870d7762760e43fd81410"
+    },
+    {
+      "file": "../3d/rendered/shi-command-weight-v1.png",
+      "role": "front three-quarter authored-material inspection",
+      "bytes": 2016632,
+      "sha256": "de1dbd87f864ebdc06db147024f300f2210ffa56b265d91a16351990c3aa30c4"
+    },
+    {
+      "file": "../3d/rendered/shi-command-weight-v1-back.png",
+      "role": "back and band-contact inspection",
+      "bytes": 1950102,
+      "sha256": "2e762f33c2b5b2d7eba1cfca49a6586da1f89ea046ec644bbfc34ed2a48d6ada"
+    },
+    {
+      "file": "../3d/rendered/shi-command-weight-v1-glb-import.png",
+      "role": "clean LOD0 GLB interchange inspection",
+      "bytes": 1196132,
+      "sha256": "a31939b7be895a1d2e37e370f9f41f8d53f205a1feed837b27735dade8c0f7d3"
+    },
+    {
+      "file": "../3d/source/shi-command-weight-v1.metrics.json",
+      "role": "deterministic generation metrics",
+      "bytes": 1204,
+      "sha256": "f994322e0238e84a2137c361134a1319a0dd5ef64025de08e9b63153908b8a0b"
+    },
+    {
+      "file": "../3d/source/shi-command-weight-v1.validation.json",
+      "role": "clean interchange machine validation",
+      "bytes": 14475,
+      "sha256": "9c0749b2f201ffd99b0efed9cff23e95289e0318bb043693b22f407ed932a02e"
+    },
+    {
+      "file": "../../apps/unreal/Content/SHI/Art/Props/CommandWeight/M_SHI_RiverStone.uasset",
+      "role": "Unreal production-blockout stone material",
+      "bytes": 5019,
+      "sha256": "f7d3a79474edf0e785be7908610e00f3b74d7c8b9afc3b74d29ce5c4d458e3cc"
+    },
+    {
+      "file": "../../apps/unreal/Content/SHI/Art/Props/CommandWeight/M_SHI_WorkedBronze.uasset",
+      "role": "Unreal production-blockout bronze material",
+      "bytes": 5031,
+      "sha256": "85dbdedb13bd828b7f7c785c7efe24c8b147e3596d2e620d0fbcd0a4238db36d"
+    },
+    {
+      "file": "../../apps/unreal/Content/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.uasset",
+      "role": "Unreal static mesh with LOD0, LOD1, lightmap UV and convex collision",
+      "bytes": 426809,
+      "sha256": "0e2881d5a2de5f1e9063ca67528dd4f4e795e85b3659a9a815f28b3c41f19ecb"
+    }
+  ],
+  "technicalReview": {
+    "dimensionsMeters": [0.08477945998311043, 0.05551781691610813, 0.03425410948693752],
+    "lod0Triangles": 3256,
+    "lod1Triangles": 1384,
+    "collisionTriangles": 80,
+    "renderComponents": 4,
+    "unrealRenderNode": "SM_SHI_CommandWeight_01",
+    "materialSlots": ["M_SHI_RiverStone", "M_SHI_WorkedBronze"],
+    "collision": "UCX_SM_SHI_CommandWeight_01_01",
+    "uvChannelsPerLod": [2, 2],
+    "cleanGlbImport": "pass",
+    "cleanFbxImport": "pass",
+    "unrealImport": "pass",
+    "unrealPackage": "pass",
+    "unrealHeadlessLaunch": "pass",
+    "allComponentsClosed": true,
+    "allComponentsConsistentlyOutwardWound": true,
+    "interchangeFallbackColors": "pass after a white-export failure was found and corrected",
+    "lodReduction": "57.5 percent fewer triangles from LOD0 to LOD1"
+  },
+  "visualReview": {
+    "decision": "accept as packaged engine production blockout only",
+    "passes": [
+      "squat river-stone silhouette rather than pouch, seal, weapon or jewelry",
+      "forged bronze ribbon wraps beneath the stone without the earlier floating arc",
+      "small readable cord eye and restrained asymmetry",
+      "front, back and clean-import views expose the attachment and geometry",
+      "Unreal preserves scale, LODs, two UV channels, two material slots and convex collision",
+      "isolated Linux package cooks the mesh, bulk geometry and both materials and launches cleanly"
+    ],
+    "remaining": [
+      "authored final Unreal PBR stone and worked-bronze materials",
+      "visible packaged-runtime council-lens/contact/material review",
+      "scene-level draw-call, memory and performance measurement after placement",
+      "human cinematic and final art-direction sign-off"
+    ]
+  },
+  "constraints": [
+    "Do not describe the object as historically attested",
+    "Do not use the rejected TripoSR raw mesh as source geometry",
+    "Do not describe packaging admission as runtime scene placement or final-art approval",
+    "Do not promote this blockout to shipping or marketing status before final-material, visible-lens and human review",
+    "Keep authored procedural materials in the blend and explicit dark fallback materials in interchange files"
+  ]
+}

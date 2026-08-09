@@ -1,0 +1,52 @@
+{
+  "assetId": "broken-crossing-command-space-v1",
+  "file": "../art/lookdev/broken-crossing-command-space-v1.png",
+  "createdAt": "2026-08-09",
+  "generator": "Codex built-in image generation",
+  "generationMode": "new historical-scene candidate followed by one precise-object edit",
+  "rightsStatus": "project-generated look-development candidate",
+  "promptSource": "../../docs/art/BROKEN_CROSSING_ENVIRONMENT_BRIEF.md",
+  "inputs": [
+    {
+      "file": "../art/keyart/daze-village-rain-v1.png",
+      "role": "mood-palette-weather-reference-only",
+      "sha256": "8db3281c0f410163c2906d08543755f64f2d825c8ab0e31c2305b7b6ca8522c0"
+    },
+    {
+      "file": "../3d/rendered/shi-daze-wartable-v1.png",
+      "role": "topology-and-information-object-reference-only",
+      "sha256": "b22f45f1965c4a3da86ccba82a1a5e0d51956fd462aa9b16783ccdfdeeb114c8"
+    }
+  ],
+  "output": {
+    "width": 1672,
+    "height": 941,
+    "colorMode": "8-bit sRGB RGB",
+    "bytes": 2150739,
+    "sha256": "0f5d0d148f2d11f3926cdfbfeca83e3f8aaa04bda0bacee662efc6814cb6066b"
+  },
+  "intendedUse": [
+    "unreal-environment-look-development",
+    "modular-set-and-material-planning",
+    "internal-loading-screen-candidate"
+  ],
+  "reviewStatus": "approved-lookdev-reference-historical-specialist-required",
+  "review": {
+    "fileIntegrityAndFullResolution": "pass",
+    "visualSentenceTableCrossingPursuit": "pass",
+    "physicalCommandSilhouettes": "pass as look-development language; not a canonical one-to-one gameplay mapping",
+    "paletteMaterialsAndLighting": "pass",
+    "textLogosWatermark": "none visible",
+    "historicalRejectionList": "internal visual pass; named historical specialist review still required",
+    "firstGeneration": "rejected because a tall red cylinder could read as a modern canister or thermos",
+    "revision": "changed only that cylinder to a low irregular fired-clay disk weight; preserved scene, camera, lighting and other props"
+  },
+  "historicalStatus": "Generated environment design, not archaeological or textual reconstruction evidence",
+  "constraints": [
+    "Do not use as evidence for a late-Qin object, crossing or command practice",
+    "Do not promote to final marketing art before item-level historical and artifact review",
+    "Do not directly trace generated prop geometry into production without independent design and technical review",
+    "Retain the accepted gameplay, camera, accessibility, performance and reduced-motion contracts during 3D translation",
+    "No paid generation or private source material was used"
+  ]
+}

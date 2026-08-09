@@ -1,0 +1,40 @@
+{
+  "assetId": "shi-command-weight-v1-input",
+  "files": {
+    "chromaSource": "../art/generation-inputs/shi-command-weight-v1-chroma.png",
+    "alphaInput": "../art/generation-inputs/shi-command-weight-v1.png"
+  },
+  "createdAt": "2026-08-09",
+  "generator": "Codex built-in image generation",
+  "rightsStatus": "project-generated technical trial input",
+  "intendedUse": [
+    "pinned-triposr-image-to-3d-trial",
+    "offline-prop-pipeline-evaluation"
+  ],
+  "reviewStatus": "approved-ai-to-3d-trial-input-only",
+  "historicalStatus": "Original abstract game signal; not a claimed late-Qin artifact",
+  "prompt": "One abstract palm-sized SHI command weight: a naturally irregular dark river-stone core held by one simple hand-hammered oxidized-bronze staple band with a small integrated cord eye; squat, stable, asymmetric, solid and hand-made; isolated in three-quarter view on a perfectly flat #00ff00 chroma background; no floor, shadow, writing, ornament, magic, machinery, weapon or extra object.",
+  "chromaRemoval": {
+    "tool": "Codex imagegen remove_chroma_key.py",
+    "mode": "auto-key border, soft matte, threshold 12/220, despill",
+    "sampledKey": "#03f905",
+    "transparentPixels": 977196,
+    "partiallyTransparentPixels": 4200,
+    "totalPixels": 1572786,
+    "visualAlphaInspection": "pass"
+  },
+  "outputs": {
+    "chromaSourceSha256": "2a6cd8fcaad7f1d96a79622f9c3f6fb6be85437c35ca2902cf0a2d6af0a2d683",
+    "alphaInputSha256": "87b9a10a49c472f1ca496d11e4b6903e1cf1ee0f380c27ef78ed57c2f07a65f7",
+    "width": 1334,
+    "height": 1179,
+    "colorMode": "8-bit sRGB RGBA"
+  },
+  "constraints": [
+    "Input is accepted only for the isolated 3D-generator evaluation",
+    "Generated mesh must be independently inspected, retopologized, UV and authored-material response checked, scaled, collision-authored and packaged before any game use",
+    "Do not describe the design or any generated geometry as historical evidence",
+    "Do not commit third-party model weights, caches or raw high-density outputs",
+    "No paid generation, copyrighted reference image or private source material was used"
+  ]
+}

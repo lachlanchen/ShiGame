@@ -1,0 +1,108 @@
+{
+  "assetId": "shi-command-weight-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Isolated Unreal 5.8.1 import, cook, package-content verification and headless launch smoke. This does not approve final materials, historical authenticity, runtime scene placement or cinematic composition.",
+  "engine": {
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "assetPath": "/Game/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.SM_SHI_CommandWeight_01"
+  },
+  "import": {
+    "passed": true,
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "trackedUassetHashesUnchanged": true
+    },
+    "boundsCentimeters": {
+      "minimum": [-3.637946128845215, -2.861215829849243, 0.1145893782377243],
+      "maximum": [4.840000152587891, 2.690565824508667, 3.5399999618530273],
+      "dimensions": [8.477946281433105, 5.55178165435791, 3.425410583615303]
+    },
+    "lodTriangles": [3256, 1384],
+    "lodVertices": [2200, 1109],
+    "lodUvChannels": [2, 2],
+    "lodScreenSizes": [1.0, 0.15000000596046448],
+    "materialSlots": ["M_SHI_RiverStone", "M_SHI_WorkedBronze"],
+    "convexCollisionCount": 1,
+    "lightMapResolution": 64,
+    "lightMapCoordinateIndex": 1,
+    "naniteEnabled": false,
+    "naniteDecision": "Intentionally disabled for a 3,256-triangle palm-sized prop; measured need is required before changing this boundary."
+  },
+  "trackedUnrealAssets": [
+    {
+      "file": "apps/unreal/Content/SHI/Art/Props/CommandWeight/M_SHI_RiverStone.uasset",
+      "bytes": 5019,
+      "sha256": "f7d3a79474edf0e785be7908610e00f3b74d7c8b9afc3b74d29ce5c4d458e3cc"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Props/CommandWeight/M_SHI_WorkedBronze.uasset",
+      "bytes": 5031,
+      "sha256": "85dbdedb13bd828b7f7c785c7efe24c8b147e3596d2e620d0fbcd0a4238db36d"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.uasset",
+      "bytes": 426809,
+      "sha256": "0e2881d5a2de5f1e9063ca67528dd4f4e795e85b3659a9a815f28b3c41f19ecb"
+    }
+  ],
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/Linux",
+    "packageCount": 499,
+    "priorAcceptedPackageCount": 496,
+    "addedPackageCount": 3,
+    "alwaysCookPath": "/Game/SHI/Art/Props/CommandWeight",
+    "cookedEntries": [
+      "SHI/Content/SHI/Art/Props/CommandWeight/M_SHI_RiverStone.uasset",
+      "SHI/Content/SHI/Art/Props/CommandWeight/M_SHI_WorkedBronze.uasset",
+      "SHI/Content/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.uasset",
+      "SHI/Content/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.ubulk"
+    ],
+    "artifacts": [
+      {
+        "role": "Linux development executable",
+        "bytes": 298459312,
+        "sha256": "c1e131857d4529ad713d94a715860ba09d3b3b07134d7a3d2a9732e3f551cb9f"
+      },
+      {
+        "role": "Pak metadata and non-IoStore payload",
+        "bytes": 10424315,
+        "sha256": "be375b653a0bbf3368bbf4139c6996a28eea80124adadc0836d4696d1402d327"
+      },
+      {
+        "role": "IoStore data container",
+        "bytes": 164735440,
+        "sha256": "3c06cd58d7e7006e8b618b9f3c9325241e40664361873870e6664cca6f3a1f17"
+      },
+      {
+        "role": "IoStore table of contents",
+        "bytes": 145268,
+        "sha256": "1fd55eeb43eba36097a48e494d296da2f00f719c3a7113b1e24ba1ec6de8deb1"
+      }
+    ]
+  },
+  "smokeTest": {
+    "command": "./SHI.sh -nullrhi -unattended -nosound -ExecCmds=quit",
+    "exitCode": 0,
+    "mountedIoStorePackages": 499,
+    "gameMode": "ShiGameMode",
+    "map": "/Engine/Maps/Entry",
+    "observed": [
+      "IoStore container mounted",
+      "premade AssetRegistry loaded",
+      "game engine initialized",
+      "entry map loaded for play",
+      "clean command-requested shutdown"
+    ]
+  },
+  "decision": "approved-engine-production-blockout-packaged-not-final-art",
+  "remainingGates": [
+    "author and review final Unreal PBR stone and worked-bronze materials",
+    "place through the canonical 44-degree council lens without occluding dialogue or command signals",
+    "capture visible packaged-runtime front/back/contact/material inspection",
+    "measure scene-level draw calls, memory and frame timing after actual placement",
+    "complete art-direction and human cinematic review before shipping or marketing use"
+  ]
+}

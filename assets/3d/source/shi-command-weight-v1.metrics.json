@@ -1,0 +1,36 @@
+{
+  "assetId": "shi-command-weight-v1",
+  "generator": "deterministic Blender source script",
+  "blender": "4.0.2",
+  "historicalStatus": "original fictional game signal; not historical reconstruction",
+  "dimensionsMetersTarget": [
+    0.084,
+    0.06,
+    0.045
+  ],
+  "lod0Triangles": 3256,
+  "lod1Triangles": 1384,
+  "collisionTriangles": 80,
+  "materials": [
+    "M_SHI_RiverStone",
+    "M_SHI_WorkedBronze"
+  ],
+  "components": [
+    "SM_SHI_CommandWeight_LOD0_Stone",
+    "SM_SHI_CommandWeight_LOD0_BronzeBand",
+    "SM_SHI_CommandWeight_LOD0_BronzeNeck",
+    "SM_SHI_CommandWeight_LOD0_BronzeEye"
+  ],
+  "collision": "UCX_SM_SHI_CommandWeight_01_01",
+  "rootIntent": "bottom-center at local Z=0",
+  "exports": {
+    "blend": "../rendered/shi-command-weight-v1.blend",
+    "render": "../rendered/shi-command-weight-v1.png",
+    "backRender": "../rendered/shi-command-weight-v1-back.png",
+    "cleanImportRender": "../rendered/shi-command-weight-v1-glb-import.png",
+    "lod0Glb": "../export/shi-command-weight-v1-lod0.glb",
+    "lod1Glb": "../export/shi-command-weight-v1-lod1.glb",
+    "fbx": "../export/shi-command-weight-v1.fbx",
+    "lod1Fbx": "../export/shi-command-weight-v1-lod1.fbx"
+  }
+}

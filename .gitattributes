@@ -6,6 +6,7 @@
 *.blend binary
 *.glb binary
 *.fbx binary
+*.uasset binary
 *.wav binary
 *.ogg binary
 *.mp4 binary

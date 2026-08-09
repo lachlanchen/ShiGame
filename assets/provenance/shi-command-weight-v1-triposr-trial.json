@@ -1,0 +1,76 @@
+{
+  "assetId": "shi-command-weight-v1-triposr-trial",
+  "createdAt": "2026-08-10",
+  "status": "rejected-before-cleanup-or-unreal-import",
+  "input": {
+    "assetId": "shi-command-weight-v1-input",
+    "sha256": "87b9a10a49c472f1ca496d11e4b6903e1cf1ee0f380c27ef78ed57c2f07a65f7",
+    "preparedInputSha256": "d81f5a3356e27ad0c4d3b0c0e0248ee08945e6b17e3833315f2e3f4667d48b91"
+  },
+  "toolchain": {
+    "code": {
+      "name": "VAST AI Research TripoSR",
+      "revision": "107cefdc244c39106fa830359024f6a2f1c78871",
+      "license": "MIT"
+    },
+    "model": {
+      "name": "stabilityai/TripoSR",
+      "revision": "5b521936b01fbe1890f6f9baed0254ab6351c04a",
+      "sha256": "429e2c6b22a0923967459de24d67f05962b235f79cde6b032aa7ed2ffcd970ee",
+      "bytes": 1677246742,
+      "license": "MIT"
+    },
+    "imageEncoderBoundary": {
+      "name": "facebook/dino-vitb16",
+      "revision": "f205d5d8e640a89a2b8ef0369670dfc37cc07fc2",
+      "license": "Apache-2.0",
+      "execution": "Only the pinned local config was resolved; encoder tensors were loaded from the hashed TripoSR checkpoint"
+    },
+    "environment": {
+      "torch": "2.6.0+cu124",
+      "cudaRuntime": "12.4",
+      "gpu": "NVIDIA GeForce RTX 4090 D",
+      "trimesh": "4.0.5",
+      "torchmcubes": "0.1.0 from revision 3381600ddc3d2e4d74222f8495866be5fafbace4",
+      "blenderInspection": "AgenticApp portable Blender 4.0.2"
+    }
+  },
+  "settings": {
+    "networkDuringInference": false,
+    "backgroundRemovalModel": false,
+    "physicalGpu": 0,
+    "foregroundRatio": 0.85,
+    "backgroundRgb": [128, 128, 128],
+    "chunkSize": 8192,
+    "marchingCubesResolution": 256,
+    "samplingSeed": null
+  },
+  "rawOutput": {
+    "glbSha256": "557aa17eaa5b970512b2d6c1fdf8b725c0eede1cccc8045778e748960e8923b1",
+    "vertices": 66041,
+    "faces": 131858,
+    "components": 7,
+    "watertight": false,
+    "windingConsistent": true,
+    "eulerNumber": -112,
+    "timingsSeconds": {
+      "modelLoad": 8.367,
+      "reconstruction": 0.714,
+      "turntableRender": 15.516,
+      "meshExtraction": 1.271
+    },
+    "retention": "Raw output and inspection renders retained outside Git; no generated mesh is packaged"
+  },
+  "review": {
+    "decision": "reject",
+    "reasons": [
+      "Unseen side invented a quilted pouch-like form and changed the object's identity",
+      "Stone and bronze separation collapsed into rubbery relief and seam noise",
+      "Raw topology exceeds the 20k-face gate, has seven components, and is not watertight",
+      "Vertex-color material representation did not survive clean Blender glTF inspection",
+      "Required repair would be a redesign rather than bounded cleanup"
+    ],
+    "nextAction": "Create a deterministic authored Blender blockout with separate stone and bronze materials, exact scale, clean components, LOD and collision intent before Unreal import"
+  },
+  "historicalStatus": "Original abstract game signal; not a claimed late-Qin artifact"
+}

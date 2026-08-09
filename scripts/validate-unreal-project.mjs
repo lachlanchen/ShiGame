@@ -23,6 +23,9 @@ const required = [
   "Source/SHI/ShiCommandScreen.h", "Source/SHI/ShiCommandScreen.cpp",
   "Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp", "Source/SHI/Private/Tests/ShiEngagementAutomationTest.cpp",
   "Config/DefaultEngine.ini", "Config/DefaultGame.ini",
+  "Content/SHI/Art/Props/CommandWeight/M_SHI_RiverStone.uasset",
+  "Content/SHI/Art/Props/CommandWeight/M_SHI_WorkedBronze.uasset",
+  "Content/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.uasset",
   "Content/StreamingAssets/chapter-01-daze.json", "Content/StreamingAssets/chapter-01-audio.json",
   "Content/StreamingAssets/chapter-01-broken-crossing.v1.json",
   "Content/StreamingAssets/chapter-01-replays.v1.json", "Content/StreamingAssets/editions.json",
@@ -31,6 +34,55 @@ const required = [
 for (const relative of required) {
   try { await access(resolve(unreal, relative), constants.R_OK); } catch { errors.push(`missing Unreal project file: ${relative}`); }
 }
+
+const commandWeightProvenancePath = resolve(root, "assets/provenance/shi-command-weight-v1.json");
+const commandWeightEvidencePath = resolve(root, "docs/production/evidence/unreal-command-weight-import-status.json");
+const commandWeightProvenance = JSON.parse(await readFile(commandWeightProvenancePath, "utf8"));
+const commandWeightEvidence = JSON.parse(await readFile(commandWeightEvidencePath, "utf8"));
+if (commandWeightProvenance.assetId !== "shi-command-weight-v1" || commandWeightProvenance.status !== "approved-engine-production-blockout-packaged-not-final-art")
+  errors.push("Unreal command-weight provenance does not preserve its bounded packaged-blockout decision");
+if (commandWeightEvidence.assetId !== "shi-command-weight-v1" || commandWeightEvidence.decision !== "approved-engine-production-blockout-packaged-not-final-art")
+  errors.push("Unreal command-weight admission evidence is missing or overstates its decision");
+for (const output of commandWeightProvenance.outputs ?? []) {
+  const file = resolve(root, "assets/provenance", output.file);
+  try {
+    const bytes = await readFile(file);
+    const sha256 = createHash("sha256").update(bytes).digest("hex");
+    if (bytes.byteLength !== output.bytes) errors.push(`command-weight provenance byte count drifted: ${output.file}`);
+    if (sha256 !== output.sha256) errors.push(`command-weight provenance hash drifted: ${output.file}`);
+  } catch {
+    errors.push(`command-weight provenance output is missing: ${output.file}`);
+  }
+}
+for (const tool of [commandWeightProvenance.toolchain?.generator, commandWeightProvenance.toolchain?.validator, commandWeightProvenance.toolchain?.unrealImporter]) {
+  if (!tool?.file || !tool?.sha256) {
+    errors.push("command-weight provenance omits a generator, validator or Unreal importer receipt");
+    continue;
+  }
+  try {
+    const bytes = await readFile(resolve(root, "assets/provenance", tool.file));
+    if (createHash("sha256").update(bytes).digest("hex") !== tool.sha256) errors.push(`command-weight tool hash drifted: ${tool.file}`);
+  } catch {
+    errors.push(`command-weight provenance tool is missing: ${tool.file}`);
+  }
+}
+for (const asset of commandWeightEvidence.trackedUnrealAssets ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, asset.file));
+    const sha256 = createHash("sha256").update(bytes).digest("hex");
+    if (bytes.byteLength !== asset.bytes || sha256 !== asset.sha256) errors.push(`tracked Unreal command-weight receipt drifted: ${asset.file}`);
+  } catch {
+    errors.push(`tracked Unreal command-weight asset is missing: ${asset.file}`);
+  }
+}
+if (!commandWeightEvidence.import?.passed || commandWeightEvidence.import?.lodTriangles?.join(",") !== "3256,1384" || commandWeightEvidence.import?.lodUvChannels?.join(",") !== "2,2" || commandWeightEvidence.import?.convexCollisionCount !== 1)
+  errors.push("Unreal command-weight import evidence omits the accepted LOD, UV or collision boundary");
+if (commandWeightEvidence.import?.readOnlyInspection?.mode !== "inspect-only" || commandWeightEvidence.import?.readOnlyInspection?.exitCode !== 0 || !commandWeightEvidence.import?.readOnlyInspection?.trackedUassetHashesUnchanged)
+  errors.push("Unreal command-weight inspection is not proven read-only");
+if (commandWeightEvidence.package?.packageCount !== 499 || commandWeightEvidence.package?.addedPackageCount !== 3 || commandWeightEvidence.package?.cookedEntries?.length !== 4)
+  errors.push("Unreal command-weight package evidence does not preserve the 499-package three-asset admission");
+if (commandWeightEvidence.smokeTest?.exitCode !== 0 || commandWeightEvidence.smokeTest?.gameMode !== "ShiGameMode" || commandWeightEvidence.smokeTest?.mountedIoStorePackages !== 499)
+  errors.push("Unreal command-weight package smoke evidence is incomplete");
 
 const project = JSON.parse(await readFile(resolve(unreal, "SHI.uproject"), "utf8"));
 if (project.EngineAssociation !== "5.8") errors.push("Unreal engine association must be 5.8");
@@ -90,6 +142,7 @@ for (const token of ["ApplyMetricEffects", "AvailableCommands", "MeetsRequiremen
 for (const token of ["TableSurfaceZ", "MinimumPointerSpacing", "HeightScale", "FShiEngagementModel::MetricKeys", "CROSSING", "PURSUIT", "exactly six live metric signals", "overlaps another pointer target", "OutSignals = MoveTemp(Candidate)", "CameraTransform"]) if (!engagementSignals.includes(token)) errors.push(`Unreal engagement signal model omits bounded 3D metric token: ${token}`);
 if (!buildRules.includes('"AudioMixer"')) errors.push("Unreal runtime module does not depend on AudioMixer");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Engine/BasicShapes")')) errors.push("Unreal packaging does not cook the engine-native wartable assets loaded by path");
+if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Props/CommandWeight")')) errors.push("Unreal packaging does not force-cook the admitted command-weight assets");
 if (!engineConfig.includes("r.CustomDepth=3")) errors.push("Unreal renderer does not preserve the selected wartable marker stencil");
 for (const token of ["prepare_external_directory", "SHI_UNREAL_DERIVED_DATA", "UE-LocalDataCachePath", "SHI_UNREAL_PACKAGE_ROOT", "must be a dedicated directory outside the Git repository", "-archivedirectory=\"$SHI_PACKAGE_ROOT\""]) if (!pipeline.includes(token)) errors.push(`Unreal pipeline omits outside-Git build/cache token: ${token}`);
 if (pipeline.includes('archivedirectory="$SHI_REPO_ROOT/apps/unreal')) errors.push("Unreal Linux packaging still writes archives inside the Git worktree");
@@ -110,4 +163,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, command surface and automation boundary.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, command surface, and a hash-bound packaged command-weight production-blockout boundary.`);

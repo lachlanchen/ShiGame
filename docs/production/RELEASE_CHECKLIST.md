@@ -2,16 +2,16 @@
 
 ## Product
 
-- [ ] Chapter has an authored tension/recovery arc and at least three meaningful strategies.
+- [x] Chapter has an authored tension/recovery arc and at least three meaningful strategies.
 - [ ] New player can finish without external explanation.
-- [ ] Failure explains state and supports immediate recovery/restart.
-- [ ] Save migrations tested from every published version.
+- [x] Failure explains state and supports immediate recovery/restart.
+- [x] Save migrations tested from every published version.
 
 ## History and narrative
 
 - [ ] P0 claims have edition, locator, classification, uncertainty and reviewer.
-- [ ] Fictional dialogue/characters are marked.
-- [ ] No copyrighted source text or private notes are packaged.
+- [x] Fictional dialogue/characters are marked.
+- [x] No copyrighted source text or private notes are packaged.
 - [ ] Names, titles, dates and geography pass consistency review.
 
 ## Localization/accessibility
@@ -25,19 +25,21 @@ The web pre-alpha automated subset currently passes semantic axe scans, conserva
 
 ## Art/audio
 
-- [ ] Every asset has provenance, rights, intended use and review state.
+- [x] Every currently packaged asset has provenance, rights, intended use and review state.
 - [ ] Historical objects pass review; AI artifacts/anachronisms removed.
 - [ ] 3D assets pass scale, normals, LOD, collision, UV and memory checks.
 - [x] Procedural Chapter I audio passes rights, peak, EBU R128 loudness, DC, loop-boundary, cue audibility, pre-consent silence and channel-parity engineering gates.
 - [ ] Human listening, sensory-load, mono perception, physical-device and native Unity audio review pass.
 
-Chapter I now has a shared opt-in procedural rain/effects contract, independent ambience/effects controls, deterministic source synthesis and project-original provenance. No third-party or AI-generated audio media is packaged. The deterministic reference passes at −36.7 LUFS/−23.0 dBTP; the deployed visible Chrome path proves digital silence before consent and passes at −35.7 LUFS/−22.4 dBTP. These measurements close the objective engineering subset only; the human and native-client box remains open in [`AUDIO_DIRECTION.md`](../art/AUDIO_DIRECTION.md).
+The first authored Unreal prop closes a narrower asset-admission subset. `shi-command-weight-v1` passes deterministic source/interchange validation, closed outward topology, LOD0/LOD1 reduction, UV0/lightmap UV1, exact material slots, centimeter scale, named convex collision, UE 5.8.1 import, forced cook, exact IoStore content inspection and a clean archived-player launch. The project-wide 3D box stays open because this blockout is not runtime-placed or final-shaded and terrain, formations, characters, memory/performance, visible cinematic frames and human art review remain incomplete. See [`unreal-command-weight-import-status.json`](evidence/unreal-command-weight-import-status.json).
+
+Chapter I now has a shared opt-in procedural rain/effects contract, independent ambience/effects controls, deterministic source synthesis and project-original provenance. No third-party or AI-generated audio media is packaged. The deterministic reference passes at −36.7 LUFS/−23.0 dBTP; the deployed visible Chrome path proves digital silence before consent and passes at −35.7 LUFS/−22.4 dBTP. Direct packaged-Unreal SDL/PipeWire capture independently proves 4.01 seconds of pre-consent and 3.97 seconds of post-disable digital silence, plus a 16.13-second opted-in programme at −39.7 LUFS and −27.7 dBFS peak. These measurements close the Web and priority-native objective engineering subset only; human perception, physical devices and the maintained Unity runtime remain open in [`AUDIO_DIRECTION.md`](../art/AUDIO_DIRECTION.md).
 
 ## Engineering
 
-- [ ] Clean checkout installs, validates and builds.
-- [ ] Content hash matches both clients.
-- [ ] Web console/network tests pass; performance budgets pass.
+- [x] Clean checkout installs, validates and builds.
+- [x] Content hash matches Web, Unreal and Unity staging; packaged Unreal bytes match canonical content.
+- [x] Web console/network tests pass; performance budgets pass.
 - [ ] Unity import, EditMode/PlayMode tests and target builds pass.
 - [ ] Security, dependency, privacy and secret scans pass.
 - [ ] Signed artifact hashes and rollback instructions recorded.

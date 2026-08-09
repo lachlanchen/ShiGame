@@ -1,6 +1,6 @@
 # Unreal canonical council staging
 
-Status: source-authored pre-alpha contract. Native compile, PIE behavior, final character art, performance capture, voice and human cinematic review remain open.
+Status: official UE 5.8.1 automation and the packaged native runtime are accepted. Stable editor PIE, final character art, physical-controller review, voice and human cinematic review remain open.
 
 ## Purpose
 

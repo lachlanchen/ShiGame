@@ -1,6 +1,7 @@
 import { access, readdir, readFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { dirname, extname, resolve } from "node:path";
+import { createHash } from "node:crypto";
 
 const root = resolve(import.meta.dirname, "..");
 const excluded = new Set([".git", ".runtime", "node_modules", "references", "dist", "Library", "Temp", "Logs"]);
@@ -92,7 +93,58 @@ for (const relative of [
   "assets/3d/export/shi-daze-wartable-v1.fbx",
   "assets/provenance/shi-daze-wartable-v1.json",
   "assets/provenance/chapter-01-audio.json",
+  "assets/art/lookdev/broken-crossing-command-space-v1.png",
+  "assets/provenance/broken-crossing-command-space-v1.json",
+  "assets/art/generation-inputs/shi-command-weight-v1-chroma.png",
+  "assets/art/generation-inputs/shi-command-weight-v1.png",
+  "assets/provenance/shi-command-weight-v1-input.json",
+  "assets/provenance/shi-command-weight-v1-triposr-trial.json",
+  "assets/provenance/shi-command-weight-v1.json",
+  "docs/art/BROKEN_CROSSING_ENVIRONMENT_BRIEF.md",
+  "docs/art/COMMAND_WEIGHT_PROP_BRIEF.md",
+  "docs/art/COUNCIL_FIGURINE_DIRECTION.md",
+  "docs/technical/AI_ASSET_TOOLCHAIN.md",
+  "scripts/build-command-weight.py",
+  "scripts/validate-command-weight.py",
+  "scripts/import-command-weight-unreal.py",
 ]) if (!await exists(resolve(root, relative))) errors.push(`asset pipeline output missing: ${relative}`);
+
+async function verifyHash(file, expected, label) {
+  try {
+    const bytes = await readFile(file);
+    const actual = createHash("sha256").update(bytes).digest("hex");
+    if (actual !== expected) errors.push(`${label} SHA-256 drifted`);
+    return bytes;
+  } catch {
+    errors.push(`${label} is missing`);
+    return null;
+  }
+}
+
+const brokenCrossingProvenancePath = resolve(root, "assets/provenance/broken-crossing-command-space-v1.json");
+const brokenCrossingProvenance = JSON.parse(await readFile(brokenCrossingProvenancePath, "utf8"));
+const brokenCrossingBytes = await verifyHash(
+  resolve(dirname(brokenCrossingProvenancePath), brokenCrossingProvenance.file),
+  brokenCrossingProvenance.output?.sha256,
+  "Broken Crossing lookdev",
+);
+if (brokenCrossingBytes && brokenCrossingBytes.byteLength !== brokenCrossingProvenance.output?.bytes) errors.push("Broken Crossing lookdev byte count drifted");
+if (brokenCrossingProvenance.reviewStatus !== "approved-lookdev-reference-historical-specialist-required" || brokenCrossingProvenance.historicalStatus !== "Generated environment design, not archaeological or textual reconstruction evidence")
+  errors.push("Broken Crossing provenance weakened its lookdev or historical-review boundary");
+for (const input of brokenCrossingProvenance.inputs ?? []) {
+  await verifyHash(resolve(dirname(brokenCrossingProvenancePath), input.file), input.sha256, `Broken Crossing input ${input.file}`);
+}
+
+const commandWeightInputPath = resolve(root, "assets/provenance/shi-command-weight-v1-input.json");
+const commandWeightInput = JSON.parse(await readFile(commandWeightInputPath, "utf8"));
+await verifyHash(resolve(dirname(commandWeightInputPath), commandWeightInput.files?.chromaSource), commandWeightInput.outputs?.chromaSourceSha256, "command-weight chroma input");
+await verifyHash(resolve(dirname(commandWeightInputPath), commandWeightInput.files?.alphaInput), commandWeightInput.outputs?.alphaInputSha256, "command-weight alpha input");
+if (commandWeightInput.reviewStatus !== "approved-ai-to-3d-trial-input-only" || !/not a claimed late-Qin artifact/.test(commandWeightInput.historicalStatus ?? ""))
+  errors.push("command-weight input provenance weakened its technical-trial or historical boundary");
+
+const rejectedTrial = JSON.parse(await readFile(resolve(root, "assets/provenance/shi-command-weight-v1-triposr-trial.json"), "utf8"));
+if (rejectedTrial.status !== "rejected-before-cleanup-or-unreal-import" || rejectedTrial.review?.decision !== "reject" || rejectedTrial.rawOutput?.retention !== "Raw output and inspection renders retained outside Git; no generated mesh is packaged")
+  errors.push("rejected TripoSR trial no longer preserves its rejection and outside-Git boundary");
 
 if (errors.length) {
   console.error(`Repository validation failed with ${errors.length} error(s):`);
