@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, migrateGameState, resolveChoice, selectFieldCondition, selectOppositionStage } from "../src";
+import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, methodReadMatches, migrateGameState, resolveChoice, selectFieldCondition, selectMethodRead, selectOppositionStage } from "../src";
 import type { Campaign } from "../src";
 
 const campaign: Campaign = {
-  schemaVersion: 4,
+  schemaVersion: 5,
   id: "test",
   title: { en: "Test", "zh-Hans": "测试" },
   subtitle: { en: "Test", "zh-Hans": "测试" },
@@ -14,6 +14,29 @@ const campaign: Campaign = {
     claimStatus: "dramatic-reconstruction",
     title: { en: "Pursuit", "zh-Hans": "追捕" },
     description: { en: "Test opposition.", "zh-Hans": "测试追捕。" },
+    methods: [
+      { id: "witnessed", title: { en: "Witnessed", "zh-Hans": "见证" }, reading: { en: "Witnessed method.", "zh-Hans": "见证手法。" } },
+      { id: "forced", title: { en: "Forced", "zh-Hans": "先手" }, reading: { en: "Forced method.", "zh-Hans": "先手手法。" } },
+      { id: "distributed", title: { en: "Distributed", "zh-Hans": "分散" }, reading: { en: "Distributed method.", "zh-Hans": "分散手法。" } },
+    ],
+    methodRead: {
+      claimStatus: "dramatic-reconstruction",
+      minimumObservations: 2,
+      title: { en: "Method read", "zh-Hans": "识势" },
+      description: { en: "Test method read.", "zh-Hans": "测试识势。" },
+      neutral: {
+        id: "unresolved",
+        title: { en: "Unresolved", "zh-Hans": "未定" },
+        forecast: { en: "No read.", "zh-Hans": "尚无判断。" },
+        response: { en: "No response.", "zh-Hans": "没有应手。" },
+        counterplay: { en: "Keep a tie.", "zh-Hans": "维持持平。" },
+      },
+      countermeasures: [
+        { id: "witness-read", targetMethodId: "witnessed", title: { en: "Witness read", "zh-Hans": "见证判断" }, forecast: { en: "Witness forecast.", "zh-Hans": "见证预判。" }, hitResponse: { en: "Witness hit.", "zh-Hans": "见证命中。" }, missResponse: { en: "Witness miss.", "zh-Hans": "见证落空。" }, counterplay: { en: "Change method.", "zh-Hans": "改变手法。" }, effects: { danger: 3 } },
+        { id: "forced-read", targetMethodId: "forced", title: { en: "Forced read", "zh-Hans": "先手判断" }, forecast: { en: "Forced forecast.", "zh-Hans": "先手预判。" }, hitResponse: { en: "Forced hit.", "zh-Hans": "先手命中。" }, missResponse: { en: "Forced miss.", "zh-Hans": "先手落空。" }, counterplay: { en: "Change method.", "zh-Hans": "改变手法。" }, effects: { momentum: -3 } },
+        { id: "distributed-read", targetMethodId: "distributed", title: { en: "Distributed read", "zh-Hans": "分散判断" }, forecast: { en: "Distributed forecast.", "zh-Hans": "分散预判。" }, hitResponse: { en: "Distributed hit.", "zh-Hans": "分散命中。" }, missResponse: { en: "Distributed miss.", "zh-Hans": "分散落空。" }, counterplay: { en: "Change method.", "zh-Hans": "改变手法。" }, effects: { grain: -2 } },
+      ],
+    },
     stages: [{
       id: "watch",
       minDanger: 0,
@@ -45,6 +68,7 @@ const campaign: Campaign = {
     ],
     choices: [{
       id: "choose",
+      methodId: "witnessed",
       label: { en: "Choose", "zh-Hans": "选择" },
       intent: { en: "Intent", "zh-Hans": "意图" },
       consequence: { en: "Consequence", "zh-Hans": "结果" },
@@ -61,8 +85,9 @@ describe("campaign engine", () => {
     expect(result.state.resources.danger).toBe(0);
     expect(result.state.history).toHaveLength(1);
     expect(result.state.history.at(0)!.afterChoice.grain).toBe(100);
-    expect(result.state.saveVersion).toBe(4);
+    expect(result.state.saveVersion).toBe(5);
     expect(result.state.legacyDecisionCount).toBe(0);
+    expect(result.state.preMethodReadDecisionCount).toBe(0);
     expect(result.state.completed).toBe(true);
   });
 
@@ -138,8 +163,9 @@ describe("campaign engine", () => {
 
     const migrated = migrateGameState(campaign, legacy);
 
-    expect(migrated?.saveVersion).toBe(4);
+    expect(migrated?.saveVersion).toBe(5);
     expect(migrated?.legacyDecisionCount).toBe(1);
+    expect(migrated?.preMethodReadDecisionCount).toBe(1);
     expect(migrated?.seed).toBe(0);
     expect(migrated?.resources.grain).toBe(100);
     expect(migrated?.flags).toEqual([]);
@@ -188,6 +214,107 @@ describe("campaign engine", () => {
       campaignId: "test",
       history: [],
     })).toBeNull();
+  });
+
+  it("prepares only a unique repeated method and leaves ties unresolved", () => {
+    const adaptive = structuredClone(campaign);
+    adaptive.nodes[0]!.choices[0]!.nextNodeId = "second";
+    adaptive.nodes.push({ ...structuredClone(adaptive.nodes[0]!), id: "second", choices: [structuredClone(adaptive.nodes[0]!.choices[0]!)] });
+    adaptive.nodes[1]!.choices[0]!.id = "second-witness";
+    adaptive.nodes[1]!.choices[0]!.nextNodeId = "third";
+    adaptive.nodes.push({ ...structuredClone(adaptive.nodes[0]!), id: "third", choices: [structuredClone(adaptive.nodes[0]!.choices[0]!)] });
+    adaptive.nodes[2]!.choices[0]!.id = "finish";
+    delete adaptive.nodes[2]!.choices[0]!.nextNodeId;
+
+    const initial = createInitialState(adaptive);
+    expect(selectMethodRead(adaptive, initial).read.id).toBe("unresolved");
+    const afterOne = resolveChoice(adaptive, initial, "choose").state;
+    expect(selectMethodRead(adaptive, afterOne).read.id).toBe("unresolved");
+    const afterTwo = resolveChoice(adaptive, afterOne, "second-witness").state;
+    const repeated = selectMethodRead(adaptive, afterTwo);
+    expect(repeated.read.id).toBe("witness-read");
+    expect(repeated.counts).toEqual({ witnessed: 2, forced: 0, distributed: 0 });
+    expect(methodReadMatches(repeated, adaptive.nodes[2]!.choices[0]!)).toBe(true);
+
+    const tied = structuredClone(afterTwo);
+    tied.history[1]!.choiceId = "second-forced";
+    adaptive.nodes[1]!.choices.push({ ...structuredClone(adaptive.nodes[1]!.choices[0]!), id: "second-forced", methodId: "forced" });
+    expect(selectMethodRead(adaptive, tied).read.id).toBe("unresolved");
+  });
+
+  it("applies a matching method read after pursuit and records a changed-method miss", () => {
+    const adaptive = structuredClone(campaign);
+    adaptive.opposition.stages[0]!.effects = { grain: -1 };
+    adaptive.nodes[0]!.choices[0]!.effects = { grain: 5 };
+    adaptive.nodes[0]!.choices[0]!.nextNodeId = "second";
+    adaptive.nodes.push({ ...structuredClone(adaptive.nodes[0]!), id: "second", choices: [structuredClone(adaptive.nodes[0]!.choices[0]!)] });
+    adaptive.nodes[1]!.choices[0]!.id = "second-witness";
+    adaptive.nodes[1]!.choices[0]!.nextNodeId = "third";
+    adaptive.nodes.push({ ...structuredClone(adaptive.nodes[0]!), id: "third", choices: [structuredClone(adaptive.nodes[0]!.choices[0]!), structuredClone(adaptive.nodes[0]!.choices[0]!)] });
+    adaptive.nodes[2]!.choices[0]!.id = "repeat";
+    delete adaptive.nodes[2]!.choices[0]!.nextNodeId;
+    adaptive.nodes[2]!.choices[1]!.id = "switch";
+    adaptive.nodes[2]!.choices[1]!.methodId = "forced";
+    delete adaptive.nodes[2]!.choices[1]!.nextNodeId;
+
+    const afterOne = resolveChoice(adaptive, createInitialState(adaptive), "choose").state;
+    const afterTwo = resolveChoice(adaptive, afterOne, "second-witness").state;
+    const hit = resolveChoice(adaptive, afterTwo, "repeat");
+    expect(hit.methodRead?.read.id).toBe("witness-read");
+    expect(hit.methodReadMatched).toBe(true);
+    expect(hit.methodReadDeltas).toEqual({ danger: 3 });
+    expect(hit.state.history[2]!.afterOpposition.grain).toBe(62);
+    expect(hit.state.history[2]!.afterMethodRead.danger).toBe(53);
+    expect(hit.state.history[2]!.methodId).toBe("witnessed");
+    expect(hit.state.history[2]!.methodReadId).toBe("witness-read");
+    expect(hit.state.history[2]!.methodReadMatched).toBe(true);
+
+    const miss = resolveChoice(adaptive, afterTwo, "switch");
+    expect(miss.methodRead?.read.id).toBe("witness-read");
+    expect(miss.methodReadMatched).toBe(false);
+    expect(miss.methodReadDeltas).toEqual({});
+    expect(miss.state.history[2]!.methodReadMatched).toBe(false);
+    expect(miss.state.history[2]!.afterMethodRead).toEqual(miss.state.history[2]!.afterOpposition);
+  });
+
+  it("preserves version-four pursuit outcomes and activates the visible method read only afterward", () => {
+    const adaptive = structuredClone(campaign);
+    adaptive.opposition.stages[0]!.effects = { danger: 2 };
+    adaptive.nodes[0]!.choices[0]!.effects = { danger: 1 };
+    adaptive.nodes[0]!.choices[0]!.nextNodeId = "second";
+    adaptive.nodes.push({ ...structuredClone(adaptive.nodes[0]!), id: "second", choices: [structuredClone(adaptive.nodes[0]!.choices[0]!)] });
+    adaptive.nodes[1]!.choices[0]!.id = "second-witness";
+    adaptive.nodes[1]!.choices[0]!.nextNodeId = "third";
+    adaptive.nodes.push({ ...structuredClone(adaptive.nodes[0]!), id: "third", choices: [structuredClone(adaptive.nodes[0]!.choices[0]!)] });
+    adaptive.nodes[2]!.choices[0]!.id = "finish";
+    delete adaptive.nodes[2]!.choices[0]!.nextNodeId;
+    const legacy = {
+      saveVersion: 4,
+      legacyDecisionCount: 0,
+      campaignId: adaptive.id,
+      seed: 0,
+      history: [
+        { nodeId: "start", choiceId: "choose", conditionId: selectFieldCondition(adaptive, adaptive.nodes[0]!, 0, 0).id, oppositionStageId: "watch" },
+        { nodeId: "second", choiceId: "second-witness", conditionId: selectFieldCondition(adaptive, adaptive.nodes[1]!, 0, 1).id, oppositionStageId: "watch" },
+      ],
+    };
+
+    const migrated = migrateGameState(adaptive, legacy);
+    expect(migrated?.saveVersion).toBe(5);
+    expect(migrated?.legacyDecisionCount).toBe(0);
+    expect(migrated?.preMethodReadDecisionCount).toBe(2);
+    expect(migrated?.history[0]!.methodReadId).toBeUndefined();
+    expect(migrated?.history[1]!.methodReadId).toBeUndefined();
+    const next = resolveChoice(adaptive, migrated!, "finish");
+    expect(next.methodRead?.read.id).toBe("witness-read");
+    expect(next.methodReadDeltas).toEqual({ danger: 3 });
+  });
+
+  it("rejects current histories with tampered method-read identity", () => {
+    const resolved = resolveChoice(campaign, createInitialState(campaign), "choose");
+    const tampered = structuredClone(resolved.state);
+    tampered.history[0]!.methodReadId = "forced-read";
+    expect(migrateGameState(campaign, tampered)).toBeNull();
   });
 
   it("selects authored conditions from stable unsigned seed vectors", () => {
@@ -243,6 +370,7 @@ describe("campaign engine", () => {
   it("enforces resource requirements", () => {
     expect(canChoose({
       id: "costly",
+      methodId: "witnessed",
       label: { en: "Costly", "zh-Hans": "昂贵" },
       intent: { en: "Intent", "zh-Hans": "意图" },
       consequence: { en: "Consequence", "zh-Hans": "结果" },

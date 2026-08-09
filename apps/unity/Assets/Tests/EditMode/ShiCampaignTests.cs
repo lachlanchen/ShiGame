@@ -13,7 +13,7 @@ namespace SHI.Tests
         [Test]
         public void ResolveClampsResourcesAndRecordsHistory()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":4,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"opposition\":{\"id\":\"watch\",\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":5,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":95},\"opposition\":{\"id\":\"watch\",\"methods\":[{\"id\":\"witnessed\"}],\"methodRead\":{\"minimumObservations\":2,\"neutral\":{\"id\":\"unresolved\"},\"countermeasures\":[]},\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"methodId\":\"witnessed\",\"effects\":{\"grain\":20},\"flags\":[\"done\"]}]}]}");
             var state = ShiState.Create(campaign);
             var node = campaign.Node("start");
 
@@ -22,12 +22,14 @@ namespace SHI.Tests
             Assert.That(state.Resources["grain"], Is.EqualTo(100));
             Assert.That(state.History, Has.Count.EqualTo(1));
             Assert.That(state.Completed, Is.True);
+            Assert.That(state.SaveVersion, Is.EqualTo(5));
+            Assert.That(state.History[0].MethodReadId, Is.EqualTo("unresolved"));
         }
 
         [Test]
         public void ResolveAppliesPressureAfterThePlayerAction()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":4,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"opposition\":{\"id\":\"watch\",\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":5,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{\"grain\":50,\"trust\":50,\"momentum\":50,\"people\":50,\"danger\":50},\"opposition\":{\"id\":\"watch\",\"methods\":[{\"id\":\"witnessed\"}],\"methodRead\":{\"minimumObservations\":2,\"neutral\":{\"id\":\"unresolved\"},\"countermeasures\":[]},\"stages\":[{\"id\":\"watch\",\"minDanger\":0,\"maxDanger\":99,\"effects\":{}}]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"conditions\":[{\"id\":\"clear\",\"weight\":1,\"effects\":{\"grain\":0}}],\"choices\":[{\"id\":\"go\",\"methodId\":\"witnessed\",\"effects\":{\"grain\":80,\"danger\":-80},\"pressure\":{\"kind\":\"state\",\"warning\":{\"en\":\"Warning\",\"zh-Hans\":\"预兆\"},\"reveal\":{\"en\":\"Reply\",\"zh-Hans\":\"回应\"},\"effects\":{\"grain\":-10,\"danger\":25}}}]}]}" );
             var state = ShiState.Create(campaign);
 
             var result = state.Resolve(campaign, campaign.Node("start"), campaign.Node("start").Choices[0]);
@@ -53,8 +55,9 @@ namespace SHI.Tests
             var replayed = ShiState.Replay(campaign, legacy);
 
             Assert.That(replayed, Is.Not.Null);
-            Assert.That(replayed!.SaveVersion, Is.EqualTo(4));
+            Assert.That(replayed!.SaveVersion, Is.EqualTo(5));
             Assert.That(replayed.LegacyDecisionCount, Is.EqualTo(1));
+            Assert.That(replayed.PreMethodReadDecisionCount, Is.EqualTo(1));
             Assert.That(replayed.Seed, Is.Zero);
             Assert.That(replayed.CurrentNodeId, Is.EqualTo("open-council"));
             Assert.That(replayed.Resources["danger"], Is.EqualTo(61));
@@ -76,7 +79,7 @@ namespace SHI.Tests
         [Test]
         public void TextFallsBackToEnglish()
         {
-            var campaign = ShiCampaign.Parse("{\"schemaVersion\":4,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"opposition\":{\"id\":\"watch\",\"stages\":[]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
+            var campaign = ShiCampaign.Parse("{\"schemaVersion\":5,\"id\":\"test\",\"title\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"subtitle\":{\"en\":\"Test\",\"zh-Hans\":\"测试\"},\"startNodeId\":\"start\",\"initialResources\":{},\"opposition\":{\"id\":\"watch\",\"stages\":[]},\"sites\":[],\"characters\":[],\"sources\":[],\"claims\":[],\"nodes\":[{\"id\":\"start\",\"choices\":[]}]}");
             Assert.That(campaign.Text(campaign.Title, "fr"), Is.EqualTo("Test"));
         }
 
@@ -142,9 +145,12 @@ namespace SHI.Tests
             Assert.That(campaign.Sources, Has.Count.EqualTo(7));
             Assert.That(campaign.Claims, Has.Count.EqualTo(13));
             Assert.That(campaign.Claims.Count(claim => claim.ReviewStatus == "specialist-review-required"), Is.EqualTo(2));
-            Assert.That(campaign.SchemaVersion, Is.EqualTo(4));
+            Assert.That(campaign.SchemaVersion, Is.EqualTo(5));
             Assert.That(campaign.Opposition.ClaimStatus, Is.EqualTo("dramatic-reconstruction"));
             Assert.That(campaign.Opposition.Stages.Select(stage => stage.Id), Is.EquivalentTo(new[] { "scattered-watch", "road-search", "closing-cordon" }));
+            Assert.That(campaign.Opposition.Methods.Select(method => method.Id), Is.EquivalentTo(new[] { "witnessed-compact", "forced-tempo", "distributed-cover" }));
+            Assert.That(campaign.Opposition.MethodRead.Countermeasures.Select(read => read.Id), Is.EquivalentTo(new[] { "witness-chain", "relay-block", "channel-squeeze" }));
+            Assert.That(campaign.Nodes.SelectMany(node => node.Choices).All(choice => campaign.Opposition.Methods.Any(method => method.Id == choice.MethodId)), Is.True);
             Assert.That(campaign.Nodes.SelectMany(node => node.Choices).Count(choice => string.IsNullOrEmpty(choice.NextNodeId)), Is.GreaterThanOrEqualTo(3));
             Assert.That(global::SHI.Editor.ShiBuild.Validate(campaign), Is.Empty);
         }
@@ -170,6 +176,69 @@ namespace SHI.Tests
         }
 
         [Test]
+        public void ProductionMethodReadSelectsUniquePatternsAppliesHitsAndAcknowledgesMisses()
+        {
+            var campaign = LoadProductionCampaign();
+            var state = ShiState.Create(campaign);
+            Assert.That(state.ActiveMethodRead(campaign).Id, Is.EqualTo("unresolved-pattern"));
+            state.History.Add(new ShiChoiceRecord { NodeId = "rain-order", ChoiceId = "read-the-names" });
+            state.History.Add(new ShiChoiceRecord { NodeId = "open-council", ChoiceId = "issue-grain-tallies" });
+            var read = state.ActiveMethodRead(campaign);
+            Assert.That(read.Id, Is.EqualTo("witness-chain"));
+            Assert.That(read.Counts["witnessed-compact"], Is.EqualTo(2));
+
+            state.CurrentNodeId = "broken-crossing";
+            var hitState = Clone(state);
+            var hitChoice = campaign.Node("broken-crossing").Choices.First(choice => choice.Id == "families-first");
+            var hit = hitState.Resolve(campaign, campaign.Node("broken-crossing"), hitChoice);
+            Assert.That(hit.MethodRead!.Id, Is.EqualTo("witness-chain"));
+            Assert.That(hit.MethodReadMatched, Is.True);
+            Assert.That(hit.MethodReadDeltas["danger"], Is.EqualTo(3));
+            Assert.That(hitState.History[^1].MethodReadId, Is.EqualTo("witness-chain"));
+            Assert.That(hitState.History[^1].MethodReadMatched, Is.True);
+
+            var missState = Clone(state);
+            var missChoice = campaign.Node("broken-crossing").Choices.First(choice => choice.Id == "cut-the-carts");
+            var miss = missState.Resolve(campaign, campaign.Node("broken-crossing"), missChoice);
+            Assert.That(miss.MethodRead!.Id, Is.EqualTo("witness-chain"));
+            Assert.That(miss.MethodReadMatched, Is.False);
+            Assert.That(miss.MethodReadDeltas, Is.Empty);
+
+            var tied = ShiState.Create(campaign);
+            tied.History.Add(new ShiChoiceRecord { NodeId = "rain-order", ChoiceId = "read-the-names" });
+            tied.History.Add(new ShiChoiceRecord { NodeId = "rain-order", ChoiceId = "take-the-beacon" });
+            Assert.That(tied.ActiveMethodRead(campaign).Id, Is.EqualTo("unresolved-pattern"));
+        }
+
+        [Test]
+        public void ReplayPreservesVersionFourPursuitAndStartsMethodReadAfterItsBoundary()
+        {
+            var campaign = LoadProductionCampaign();
+            var authored = ShiState.Create(campaign, 0);
+            authored.Resolve(campaign, campaign.Node("rain-order"), campaign.Node("rain-order").Choices.First(choice => choice.Id == "read-the-names"));
+            authored.Resolve(campaign, campaign.Node("open-council"), campaign.Node("open-council").Choices.First(choice => choice.Id == "issue-grain-tallies"));
+            authored.SaveVersion = 4;
+            authored.LegacyDecisionCount = 0;
+            foreach (var record in authored.History)
+            {
+                record.MethodId = "";
+                record.MethodReadId = "";
+                record.MethodReadMatched = null;
+                record.MethodReadEffects.Clear();
+            }
+
+            var migrated = ShiState.Replay(campaign, authored);
+            Assert.That(migrated, Is.Not.Null);
+            Assert.That(migrated!.SaveVersion, Is.EqualTo(5));
+            Assert.That(migrated.LegacyDecisionCount, Is.Zero);
+            Assert.That(migrated.PreMethodReadDecisionCount, Is.EqualTo(2));
+            Assert.That(migrated.History.All(record => string.IsNullOrEmpty(record.MethodReadId)), Is.True);
+            var result = migrated.Resolve(campaign, campaign.Node("broken-crossing"), campaign.Node("broken-crossing").Choices.First(choice => choice.Id == "families-first"));
+            Assert.That(result.MethodRead!.Id, Is.EqualTo("witness-chain"));
+            Assert.That(result.MethodReadDeltas["danger"], Is.EqualTo(3));
+        }
+
+        [Test]
         public void EveryAdvertisedLocaleHasNativeInterfaceText()
         {
             var locales = new[] { "en", "zh-Hans", "zh-Hant", "ja", "ko", "vi", "ar", "fr", "es", "ru", "de" };
@@ -185,7 +254,7 @@ namespace SHI.Tests
                 "reconstruction", "later", "strategicText", "received", "claimRegister", "evidenceLocated",
                 "specialistReview", "authoredClaim", "openEdition", "publicSource",
                 "mapIntel", "inspectMap", "knownGround", "reportedGround", "referenceOnly", "uncertainty",
-                "opponentPosture", "opponentResponse", "counterplay", "noAddedPressure",
+                "opponentPosture", "opponentResponse", "counterplay", "noAddedPressure", "methodRead", "method", "observedMethods", "readHits", "readMisses",
             };
 
             foreach (var locale in locales)
@@ -289,6 +358,7 @@ namespace SHI.Tests
             Completed = state.Completed,
             SaveVersion = state.SaveVersion,
             LegacyDecisionCount = state.LegacyDecisionCount,
+            PreMethodReadDecisionCount = state.PreMethodReadDecisionCount,
             FailureReason = state.FailureReason,
         };
     }

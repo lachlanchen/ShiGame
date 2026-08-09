@@ -79,12 +79,12 @@ describe("playable web shell", () => {
     expect((view.getByTestId("audio-preview") as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it("teaches the three-stage loop once and keeps the field guide replayable", async () => {
+  it("teaches the five-layer loop once and keeps the field guide replayable", async () => {
     localStorage.removeItem("shi.onboarding.field-guide.v1");
     const view = render(<App />);
 
     fireEvent.click(view.getByTestId("begin-game"));
-    expect((await view.findByTestId("guide-drawer")).textContent).toContain("Every order resolves in three strokes");
+    expect((await view.findByTestId("guide-drawer")).textContent).toContain("Every order resolves in five visible layers");
     fireEvent.click(view.getByTestId("guide-continue"));
 
     expect(view.queryByTestId("guide-drawer")).toBeNull();
@@ -144,8 +144,11 @@ describe("playable web shell", () => {
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("rain-order");
     expect(view.getByTestId("shi-app").getAttribute("data-seed")).toBe("00000000");
     expect(view.getByTestId("shi-app").getAttribute("data-opposition-stage")).toBe("scattered-watch");
+    expect(view.getByTestId("shi-app").getAttribute("data-method-read-id")).toBe("unresolved-pattern");
     expect(view.getByTestId("opposition-posture").textContent).toContain("Scattered watch");
     expect(view.getByTestId("opposition-posture").textContent).toContain("No added pressure");
+    expect(view.getByTestId("method-read").textContent).toContain("Unresolved pattern");
+    expect(document.querySelector("[data-choice-id='read-the-names'] [data-method-id='witnessed-compact']")?.textContent).toContain("Witnessed compact");
     expect(view.getByTestId("field-signal").textContent).toContain("Water over the axle");
     expect(view.getByTestId("field-signal").textContent).toContain("-3 Grain");
     fireEvent.keyDown(window, { key: "!", code: "Digit1", shiftKey: true });
@@ -155,12 +158,14 @@ describe("playable web shell", () => {
     expect(view.getByTestId("resolution").textContent).toContain("relay clerk");
     expect(view.getByTestId("resolution").textContent).toContain("Pursuit acts");
     expect(view.getByTestId("resolution").textContent).toContain("Scattered watch");
+    expect(view.getByTestId("resolution").textContent).toContain("Read misses");
+    expect(view.getByTestId("resolution").textContent).toContain("Unresolved pattern");
     expect(view.getByTestId("resolution").textContent).toContain("Field condition resolves");
     expect(document.querySelector(".choices-panel")?.hasAttribute("inert")).toBe(true);
     fireEvent.click(document.querySelector("[data-choice-id='issue-grain-tallies']")!);
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council");
-    await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v4") ?? "null")?.saveVersion).toBe(4));
-    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v4") ?? "null")?.history).toHaveLength(1);
+    await waitFor(() => expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v5") ?? "null")?.saveVersion).toBe(5));
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v5") ?? "null")?.history).toHaveLength(1);
   });
 
   it("opens accessible drawers with shortcuts and closes them with Escape", async () => {
@@ -204,7 +209,7 @@ describe("playable web shell", () => {
     expect(view.getByTestId("map-intel")).not.toBeNull();
     fireEvent.keyDown(window, { key: "Escape" });
     expect(view.queryByTestId("map-intel")).toBeNull();
-    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v4") ?? "{}")?.history ?? []).toHaveLength(0);
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v5") ?? "{}")?.history ?? []).toHaveLength(0);
   });
 
   it("migrates a version-one save by replaying its decision history", async () => {
@@ -224,12 +229,47 @@ describe("playable web shell", () => {
     expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council");
     expect(localStorage.getItem("shi.chapter-01.save.v1")).toBeNull();
     await waitFor(() => {
-      const migrated = JSON.parse(localStorage.getItem("shi.chapter-01.save.v4") ?? "null");
+      const migrated = JSON.parse(localStorage.getItem("shi.chapter-01.save.v5") ?? "null");
       expect(migrated?.resources.danger).toBe(61);
       expect(migrated?.seed).toBe(0);
-      expect(migrated?.saveVersion).toBe(4);
+      expect(migrated?.saveVersion).toBe(5);
       expect(migrated?.legacyDecisionCount).toBe(1);
+      expect(migrated?.preMethodReadDecisionCount).toBe(1);
       expect(migrated?.history[0]?.conditionId).toBe("water-over-axle");
     });
+  });
+
+  it("discloses repeated-method memory, exact hit counterplay, and the persisted response", async () => {
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+
+    fireEvent.click(document.querySelector("[data-choice-id='read-the-names']")!);
+    fireEvent.click(view.getByTestId("resolution").querySelector("button")!);
+    fireEvent.click(document.querySelector("[data-choice-id='issue-grain-tallies']")!);
+    fireEvent.click(view.getByTestId("resolution").querySelector("button")!);
+
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-method-read-id")).toBe("witness-chain"));
+    const read = view.getByTestId("method-read");
+    expect(read.textContent).toContain("Witness chain");
+    expect(read.querySelector("[data-method-id='witnessed-compact']")?.textContent).toContain("2");
+    expect(read.querySelector("[data-method-id='witnessed-compact']")?.getAttribute("data-targeted")).toBe("true");
+    expect(document.querySelector("[data-choice-id='families-first'] [data-read-hit='true']")?.textContent).toContain("+3 Exposure");
+    expect(document.querySelector("[data-choice-id='repair-the-ford'] [data-read-hit='false']")?.textContent).toContain("No added pressure");
+
+    fireEvent.click(document.querySelector("[data-choice-id='families-first']")!);
+    expect(view.getByTestId("resolution").textContent).toContain("Read hits");
+    expect(view.getByTestId("resolution").textContent).toContain("Repeated public commitments");
+    expect(view.getByTestId("resolution").textContent).toContain("+3 Exposure");
+    await waitFor(() => {
+      const saved = JSON.parse(localStorage.getItem("shi.chapter-01.save.v5") ?? "null");
+      expect(saved?.history[2]?.methodId).toBe("witnessed-compact");
+      expect(saved?.history[2]?.methodReadId).toBe("witness-chain");
+      expect(saved?.history[2]?.methodReadMatched).toBe(true);
+      expect(saved?.history[2]?.methodReadEffects).toEqual({ danger: 3 });
+    });
+    fireEvent.click(view.getByTestId("resolution").querySelector("button")!);
+    fireEvent.click(view.getByTestId("record-toggle"));
+    await waitFor(() => expect(view.getByTestId("record-drawer").textContent).toContain("Witness chain"));
+    expect(view.getByTestId("record-drawer").textContent).toContain("Read hits");
   });
 });

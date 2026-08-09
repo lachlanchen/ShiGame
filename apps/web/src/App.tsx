@@ -10,6 +10,7 @@ import {
   migrateGameState,
   resolveChoice,
   selectFieldCondition,
+  selectMethodRead,
   selectOppositionStage,
   supportedLocales,
   type Campaign,
@@ -40,8 +41,12 @@ const OppositionPanel = lazy(() => import("./components/OppositionLayer").then((
 const OppositionResolutionCopy = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionResolutionCopy })));
 const OppositionResolutionDeltas = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionResolutionDeltas })));
 const OppositionRecord = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionRecord })));
-const SAVE_KEY = "shi.chapter-01.save.v4";
-const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v3", "shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
+const ChoiceMethodForecast = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.ChoiceMethodForecast })));
+const MethodReadResolutionCopy = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadResolutionCopy })));
+const MethodReadResolutionDeltas = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadResolutionDeltas })));
+const MethodReadRecord = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadRecord })));
+const SAVE_KEY = "shi.chapter-01.save.v5";
+const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v4", "shi.chapter-01.save.v3", "shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
 const LOCALE_KEY = "shi.locale";
 const MOTION_KEY = "shi.reduced-motion";
@@ -126,6 +131,7 @@ export function App() {
   const node = getNode(campaign, state.currentNodeId);
   const activeCondition = selectFieldCondition(campaign, node, state.seed, state.history.length);
   const oppositionStage = selectOppositionStage(campaign, state.resources);
+  const methodRead = selectMethodRead(campaign, state);
   const speaker = campaign.characters.find((character) => character.id === node.speakerId)!;
   const ending = state.completed ? deriveEnding(state) : null;
   const nodeNumber = campaign.nodes.findIndex((candidate) => candidate.id === node.id) + 1;
@@ -524,7 +530,7 @@ export function App() {
   }
 
   return (
-    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-opposition-stage={oppositionStage.id} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
+    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-opposition-stage={oppositionStage.id} data-method-read-id={methodRead.read.id} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
       <ThreeBackdrop reducedMotion={reducedMotion} />
       <div className="game-stage" data-testid="game-stage" inert={Boolean(drawer)}>
       <header className="game-header">
@@ -541,7 +547,7 @@ export function App() {
 
       <ResourceRail resources={state.resources} locale={locale} />
 
-      <Suspense fallback={<section className="opposition-panel opposition-loading" aria-busy="true" />}><OppositionPanel stageId={oppositionStage.id} locale={locale} /></Suspense>
+      <Suspense fallback={<section className="opposition-panel opposition-loading" aria-busy="true" />}><OppositionPanel stageId={oppositionStage.id} readId={methodRead.read.id} methodCounts={methodRead.counts} locale={locale} /></Suspense>
 
       <div className="game-grid">
         <div className="map-column">
@@ -574,12 +580,14 @@ export function App() {
             <div><span>{translate(locale, "consequence")}</span><p>{localize(resolution.choice.consequence, locale)}</p></div>
             {resolution.choice.pressure && <div className="pressure-reveal"><span>{translate(locale, "pressureResponse")}</span><p dir={contentDirection(resolution.choice.pressure.reveal, locale)}>{localize(resolution.choice.pressure.reveal, locale)}</p></div>}
             {resolution.oppositionStage && <Suspense fallback={null}><OppositionResolutionCopy stageId={resolution.oppositionStage.id} locale={locale} /></Suspense>}
+            {resolution.methodRead && <Suspense fallback={null}><MethodReadResolutionCopy readId={resolution.methodRead.read.id} methodId={resolution.method.id} matched={resolution.methodReadMatched} locale={locale} /></Suspense>}
             <div className="field-reveal"><span>{translate(locale, "fieldApplied")}</span><p dir={contentDirection(resolution.condition.title, locale)}>{localize(resolution.condition.title, locale)}</p></div>
           </div>
           <div className="resolution-deltas">
             <div className="delta-list action-deltas">{Object.entries(resolution.playerDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
             {Object.keys(resolution.pressureDeltas).length > 0 && <div className="delta-list pressure-deltas">{Object.entries(resolution.pressureDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
             <Suspense fallback={null}><OppositionResolutionDeltas effects={resolution.oppositionDeltas} locale={locale} /></Suspense>
+            <Suspense fallback={null}><MethodReadResolutionDeltas effects={resolution.methodReadDeltas} locale={locale} /></Suspense>
             {Object.keys(resolution.fieldDeltas).length > 0 && <div className="delta-list field-deltas">{Object.entries(resolution.fieldDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
           </div>
           <button onClick={() => setResolution(null)} aria-label={translate(locale, "close")}>×</button>
@@ -595,7 +603,7 @@ export function App() {
               return (
                 <button className={`choice-card ${controllerConnected && selectedChoiceIndex === index ? "is-gamepad-selected" : ""}`} data-choice-id={choice.id} aria-keyshortcuts={`Shift+${index + 1}`} key={choice.id} ref={(element) => { choiceRefs.current[index] = element; }} onFocus={() => setSelectedChoiceIndex(index)} onClick={() => { setSelectedChoiceIndex(index); choose(choice); }} disabled={!enabled}>
                   <span className="choice-index">{String.fromCharCode(65 + index)}</span>
-                  <div className="choice-main"><h2 dir={contentDirection(choice.label, locale)}>{localize(choice.label, locale)}</h2><p dir={contentDirection(choice.intent, locale)}>{localize(choice.intent, locale)}</p><div className="choice-reading"><span>{translate(locale, "principle")}</span><span className="choice-reading-copy" dir={contentDirection(choice.strategy, locale)}>{localize(choice.strategy, locale)}</span></div>{choice.pressure && <div className={`pressure-warning pressure-${choice.pressure.kind}`}><span>{translate(locale, "pressureForecast")}</span><p dir={contentDirection(choice.pressure.warning, locale)}>{localize(choice.pressure.warning, locale)}</p></div>}</div>
+                  <div className="choice-main"><h2 dir={contentDirection(choice.label, locale)}>{localize(choice.label, locale)}</h2><p dir={contentDirection(choice.intent, locale)}>{localize(choice.intent, locale)}</p><div className="choice-reading"><span>{translate(locale, "principle")}</span><span className="choice-reading-copy" dir={contentDirection(choice.strategy, locale)}>{localize(choice.strategy, locale)}</span></div><Suspense fallback={null}><ChoiceMethodForecast methodId={choice.methodId} readId={methodRead.read.id} locale={locale} /></Suspense>{choice.pressure && <div className={`pressure-warning pressure-${choice.pressure.kind}`}><span>{translate(locale, "pressureForecast")}</span><p dir={contentDirection(choice.pressure.warning, locale)}>{localize(choice.pressure.warning, locale)}</p></div>}</div>
                   <div className="effects">{Object.entries(choice.effects).map(([key, value]) => <span className={`${(value ?? 0) < 0 ? "negative" : "positive"} ${key === "danger" ? "risk" : ""}`} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
                   {!enabled && <span className="locked">{translate(locale, "locked")} {Object.entries(choice.requirements?.min ?? {}).map(([key, value]) => `${translate(locale, key as ResourceKey)} ${value}`).join(" · ")}</span>}
                   <span className="choice-arrow">↗</span>
@@ -628,7 +636,7 @@ export function App() {
               const pastNode = getNode(campaign, record.nodeId);
               const pastChoice = pastNode.choices.find((choice) => choice.id === record.choiceId)!;
               const pastCondition = pastNode.conditions.find((condition) => condition.id === record.conditionId)!;
-              return <li key={`${record.nodeId}-${record.choiceId}`}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{localize(pastNode.title, locale)}</small><strong>{localize(pastChoice.label, locale)}</strong><p>{localize(pastChoice.consequence, locale)}</p>{pastChoice.pressure && <p className="record-pressure"><b>{translate(locale, "pressureResponse")}</b>{localize(pastChoice.pressure.reveal, locale)}</p>}{record.oppositionStageId && <Suspense fallback={null}><OppositionRecord stageId={record.oppositionStageId} effects={record.oppositionEffects} locale={locale} /></Suspense>}<p className="record-field"><b>{translate(locale, "fieldApplied")}</b>{localize(pastCondition.title, locale)} · {Object.entries(record.conditionEffects).map(([key, value]) => effectLabel(key as ResourceKey, value ?? 0, locale)).join(" · ")}</p></div></li>;
+              return <li key={`${record.nodeId}-${record.choiceId}`}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{localize(pastNode.title, locale)}</small><strong>{localize(pastChoice.label, locale)}</strong><p>{localize(pastChoice.consequence, locale)}</p>{pastChoice.pressure && <p className="record-pressure"><b>{translate(locale, "pressureResponse")}</b>{localize(pastChoice.pressure.reveal, locale)}</p>}{record.oppositionStageId && <Suspense fallback={null}><OppositionRecord stageId={record.oppositionStageId} effects={record.oppositionEffects} locale={locale} /></Suspense>}{record.methodReadId && record.methodId && <Suspense fallback={null}><MethodReadRecord readId={record.methodReadId} methodId={record.methodId} matched={record.methodReadMatched === true} effects={record.methodReadEffects} locale={locale} /></Suspense>}<p className="record-field"><b>{translate(locale, "fieldApplied")}</b>{localize(pastCondition.title, locale)} · {Object.entries(record.conditionEffects).map(([key, value]) => effectLabel(key as ResourceKey, value ?? 0, locale)).join(" · ")}</p></div></li>;
             })}</ol>
           )}
           <button className="text-button restart-button" onClick={restart}>{translate(locale, "restart")}</button>

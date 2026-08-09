@@ -77,11 +77,52 @@ export interface OppositionStage {
   effects: Partial<Resources>;
 }
 
+export interface StrategicMethod {
+  id: string;
+  title: LocalizedText;
+  reading: LocalizedText;
+}
+
+export interface MethodReadNeutral {
+  id: string;
+  title: LocalizedText;
+  forecast: LocalizedText;
+  response: LocalizedText;
+  counterplay: LocalizedText;
+}
+
+export interface MethodCountermeasure {
+  id: string;
+  targetMethodId: string;
+  title: LocalizedText;
+  forecast: LocalizedText;
+  hitResponse: LocalizedText;
+  missResponse: LocalizedText;
+  counterplay: LocalizedText;
+  effects: Partial<Resources>;
+}
+
+export interface MethodReadModel {
+  claimStatus: "dramatic-reconstruction";
+  minimumObservations: number;
+  title: LocalizedText;
+  description: LocalizedText;
+  neutral: MethodReadNeutral;
+  countermeasures: MethodCountermeasure[];
+}
+
+export interface MethodReadSelection {
+  read: MethodReadNeutral | MethodCountermeasure;
+  counts: Record<string, number>;
+}
+
 export interface OppositionModel {
   id: string;
   claimStatus: "dramatic-reconstruction";
   title?: LocalizedText;
   description?: LocalizedText;
+  methods: StrategicMethod[];
+  methodRead: MethodReadModel;
   stages: OppositionStage[];
 }
 
@@ -105,6 +146,7 @@ export interface FieldCondition {
 
 export interface Choice {
   id: string;
+  methodId: string;
   label: LocalizedText;
   intent: LocalizedText;
   consequence: LocalizedText;
@@ -159,13 +201,19 @@ export interface ChoiceRecord {
   oppositionStageId?: string;
   oppositionEffects: Partial<Resources>;
   afterOpposition: Resources;
+  methodId?: string;
+  methodReadId?: string;
+  methodReadMatched?: boolean;
+  methodReadEffects: Partial<Resources>;
+  afterMethodRead: Resources;
   conditionEffects: Partial<Resources>;
   after: Resources;
 }
 
 export interface GameState {
-  saveVersion: 4;
+  saveVersion: 5;
   legacyDecisionCount: number;
+  preMethodReadDecisionCount: number;
   campaignId: string;
   seed: number;
   currentNodeId: string;
@@ -182,9 +230,13 @@ export interface ChoiceResolution {
   choice: Choice;
   condition: FieldCondition;
   oppositionStage?: OppositionStage;
+  method: StrategicMethod;
+  methodRead?: MethodReadSelection;
+  methodReadMatched: boolean;
   playerDeltas: Partial<Resources>;
   pressureDeltas: Partial<Resources>;
   oppositionDeltas: Partial<Resources>;
+  methodReadDeltas: Partial<Resources>;
   fieldDeltas: Partial<Resources>;
   deltas: Partial<Resources>;
 }

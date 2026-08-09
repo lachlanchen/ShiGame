@@ -43,6 +43,7 @@ namespace SHI.Editor
                       $"{campaign.Nodes.Sum(node => node.Choices.Count)} choices, " +
                       $"{campaign.Nodes.Sum(node => node.Conditions.Count)} field conditions, " +
                       $"{campaign.Opposition.Stages.Count} opponent postures, " +
+                      $"{campaign.Opposition.Methods.Count} strategic methods, " +
                       $"{campaign.Sources.Count} sources, {campaign.Claims.Count} claim records, " +
                       $"{audio.Cues.Count} procedural audio cues.");
         }
@@ -67,10 +68,11 @@ namespace SHI.Editor
             var characterIds = campaign.Characters.Select(character => character.Id).ToHashSet();
             var sourceIds = campaign.Sources.Select(source => source.Id).ToHashSet();
             var claimIds = campaign.Claims.Select(claim => claim.Id).ToHashSet();
+            var methodIds = campaign.Opposition.Methods.Select(method => method.Id).ToHashSet();
             var choiceIds = new HashSet<string>();
             var referencedClaimIds = new HashSet<string>();
 
-            if (campaign.SchemaVersion != 4) errors.Add($"Campaign schema must be 4; found {campaign.SchemaVersion}.");
+            if (campaign.SchemaVersion != 5) errors.Add($"Campaign schema must be 5; found {campaign.SchemaVersion}.");
             if (!Regex.IsMatch(campaign.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add("Campaign id must use ASCII kebab-case.");
 
             RequireUnique(campaign.Nodes.Select(node => node.Id), "node", errors);
@@ -95,6 +97,47 @@ namespace SHI.Editor
             if (campaign.Opposition.ClaimStatus != "dramatic-reconstruction") errors.Add("Opposition must be classified as dramatic-reconstruction.");
             RequireText(campaign.Opposition.Title, "opposition title", errors);
             RequireText(campaign.Opposition.Description, "opposition description", errors);
+            if (campaign.Opposition.Methods.Count != 3) errors.Add("Opposition requires exactly three strategic methods.");
+            RequireUnique(campaign.Opposition.Methods.Select(method => method.Id), "strategic method", errors);
+            foreach (var method in campaign.Opposition.Methods)
+            {
+                if (!Regex.IsMatch(method.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Strategic method '{method.Id}' must use an ASCII kebab-case id.");
+                RequireText(method.Title, $"strategic method '{method.Id}' title", errors);
+                RequireText(method.Reading, $"strategic method '{method.Id}' reading", errors);
+            }
+            var methodRead = campaign.Opposition.MethodRead;
+            if (methodRead.ClaimStatus != "dramatic-reconstruction") errors.Add("Method read must be classified as dramatic-reconstruction.");
+            if (methodRead.MinimumObservations < 2 || methodRead.MinimumObservations > 10) errors.Add("Method-read minimum observations must be within 2–10.");
+            RequireText(methodRead.Title, "method-read title", errors);
+            RequireText(methodRead.Description, "method-read description", errors);
+            if (!Regex.IsMatch(methodRead.Neutral.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add("Neutral method read must use an ASCII kebab-case id.");
+            RequireText(methodRead.Neutral.Title, "neutral method-read title", errors);
+            RequireText(methodRead.Neutral.Forecast, "neutral method-read forecast", errors);
+            RequireText(methodRead.Neutral.Response, "neutral method-read response", errors);
+            RequireText(methodRead.Neutral.Counterplay, "neutral method-read counterplay", errors);
+            RequireUnique(methodRead.Countermeasures.Select(countermeasure => countermeasure.Id), "method countermeasure", errors);
+            if (methodRead.Countermeasures.Count != methodIds.Count) errors.Add("Method read requires exactly one countermeasure per strategic method.");
+            if (methodRead.Countermeasures.Any(countermeasure => countermeasure.Id == methodRead.Neutral.Id)) errors.Add("Neutral method-read id collides with a countermeasure.");
+            var counterTargets = new HashSet<string>();
+            foreach (var countermeasure in methodRead.Countermeasures)
+            {
+                if (!Regex.IsMatch(countermeasure.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Method countermeasure '{countermeasure.Id}' must use an ASCII kebab-case id.");
+                if (!methodIds.Contains(countermeasure.TargetMethodId)) errors.Add($"Method countermeasure '{countermeasure.Id}' targets unknown method '{countermeasure.TargetMethodId}'.");
+                if (!counterTargets.Add(countermeasure.TargetMethodId)) errors.Add($"Multiple countermeasures target method '{countermeasure.TargetMethodId}'.");
+                RequireText(countermeasure.Title, $"method countermeasure '{countermeasure.Id}' title", errors);
+                RequireText(countermeasure.Forecast, $"method countermeasure '{countermeasure.Id}' forecast", errors);
+                RequireText(countermeasure.HitResponse, $"method countermeasure '{countermeasure.Id}' hit response", errors);
+                RequireText(countermeasure.MissResponse, $"method countermeasure '{countermeasure.Id}' miss response", errors);
+                RequireText(countermeasure.Counterplay, $"method countermeasure '{countermeasure.Id}' counterplay", errors);
+                ValidateEffects(countermeasure.Effects, $"Method countermeasure '{countermeasure.Id}'", errors);
+                if (countermeasure.Effects.Count == 0) errors.Add($"Method countermeasure '{countermeasure.Id}' has no effects.");
+                foreach (var effect in countermeasure.Effects)
+                {
+                    if (effect.Value < -4 || effect.Value > 4) errors.Add($"Method countermeasure '{countermeasure.Id}' effect '{effect.Key}' is outside -4–4.");
+                    if (effect.Key == "danger" ? effect.Value < 0 : effect.Value > 0) errors.Add($"Method countermeasure '{countermeasure.Id}' effect '{effect.Key}' benefits the player.");
+                }
+            }
+            foreach (var methodId in methodIds.Where(methodId => !counterTargets.Contains(methodId))) errors.Add($"Strategic method '{methodId}' has no countermeasure.");
             if (campaign.Opposition.Stages.Count < 2) errors.Add("Opposition requires at least two postures.");
             RequireUnique(campaign.Opposition.Stages.Select(stage => stage.Id), "opposition stage", errors);
             var dangerCoverage = new int[100];
@@ -228,6 +271,7 @@ namespace SHI.Editor
                 foreach (var choice in node.Choices)
                 {
                     if (!choiceIds.Add(choice.Id)) errors.Add($"Duplicate choice id '{choice.Id}'.");
+                    if (!methodIds.Contains(choice.MethodId)) errors.Add($"Choice '{choice.Id}' references unknown strategic method '{choice.MethodId}'.");
                     if (!string.IsNullOrEmpty(choice.NextNodeId) && !nodeIds.Contains(choice.NextNodeId!))
                         errors.Add($"Choice '{choice.Id}' references unknown next node '{choice.NextNodeId}'.");
                     ValidateEffects(choice.Effects, $"Choice '{choice.Id}'", errors);

@@ -20,7 +20,7 @@ Pressure has one of four origins:
 - `supply`: food, transport, time and material limits;
 - `network`: rumor, witnesses, trust and distributed coordination.
 
-The engine applies the action first and the pressure second, then applies the separately disclosed persistent opponent posture and seed-selected field condition. It clamps every stage to `0–100`, then checks capture or scattering. This ordering is part of the shared campaign contract and must match in TypeScript and Unity. See [Opposition posture](OPPOSITION_POSTURE.md) and [Seeded uncertainty](SEEDED_UNCERTAINTY.md).
+The engine applies the action first and the pressure second, then applies the separately disclosed persistent pursuit posture, strategic-method read and seed-selected field condition. It clamps every layer to `0–100`, then checks capture or scattering. This ordering is part of the shared campaign contract and must match in TypeScript and Unity. See [Opposition posture](OPPOSITION_POSTURE.md), [Opposition method read](OPPOSITION_METHOD_READ.md) and [Seeded uncertainty](SEEDED_UNCERTAINTY.md).
 
 If any resolution layer causes capture or scattering, the run ends on the decision node. The engine must not advance to or reveal the unearned next scene.
 
@@ -31,15 +31,15 @@ If any resolution layer causes capture or scattering, the run ends on the decisi
 - Immediate and pressure deltas remain visually separate so the player can learn why the position changed.
 - Pressure cannot introduce a historical claim. It describes a plausible systemic response and inherits the node's dramatic-reconstruction label.
 - A chapter cannot ship if exhaustive traversal finds an unavailable turn, an unreachable authored ending, or no recoverable route after pressure is applied.
-- Disclosed pursuit and field layers may add pressure, but they may not silently change their resource math or defeat save replay.
+- Disclosed pursuit, method-read and field layers may add pressure, but they may not silently change their resource math or defeat save replay.
 
 ## Save and replay
 
-Save format `4` treats decision history as the authority. Loading replays choice identifiers against the applicable versioned rules instead of trusting stored resource totals. Older decisions migrate without retroactively receiving pursuit effects; new decisions use the current four-layer contract. Impossible or tampered sequences are rejected. A campaign revision that removes a recorded choice must fail closed and offer a clean restart rather than inventing state.
+Save format `5` treats decision history as the authority. Loading replays choice identifiers against the applicable versioned rules instead of trusting stored resource totals. Versions 1–3 do not retroactively receive pursuit, version 4 does not retroactively receive method-read effects, and new decisions use the current five-layer contract. Impossible or tampered sequences are rejected. A campaign revision that removes a recorded choice must fail closed and offer a clean restart rather than inventing state.
 
 ## Presentation
 
 - Choice card: one concise pressure warning, labelled as a forecast rather than certainty.
-- Resolution panel: consequence plus separately identified action, pressure, pursuit and field responses/deltas.
+- Resolution panel: consequence plus separately identified action, pressure, pursuit, method-read and field responses/deltas.
 - Decision ledger: the chosen action and every revealed response remain reviewable.
 - Keyboard contract: `Shift+1`–`Shift+3` choose visible cards, `Alt+S` opens sources, `Alt+R` opens the record, and `Escape` closes transient layers. Shortcuts never fire while typing or using a select control.

@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shi.game/schema/campaign-v4.json",
-  "title": "SHI Campaign v4",
+  "$id": "https://shi.game/schema/campaign-v5.json",
+  "title": "SHI Campaign v5",
   "type": "object",
   "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "initialResources", "opposition", "sites", "characters", "sources", "claims", "nodes"],
   "properties": {
-    "schemaVersion": { "const": 4 },
+    "schemaVersion": { "const": 5 },
     "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
     "title": { "$ref": "#/$defs/localizedText" },
     "subtitle": { "$ref": "#/$defs/localizedText" },
@@ -86,13 +86,65 @@
     },
     "opposition": {
       "type": "object",
-      "required": ["id", "claimStatus", "title", "description", "stages"],
+      "required": ["id", "claimStatus", "title", "description", "methods", "methodRead", "stages"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
         "claimStatus": { "const": "dramatic-reconstruction" },
         "title": { "$ref": "#/$defs/localizedText" },
         "description": { "$ref": "#/$defs/localizedText" },
+        "methods": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/strategicMethod" } },
+        "methodRead": { "$ref": "#/$defs/methodRead" },
         "stages": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/oppositionStage" } }
+      },
+      "additionalProperties": false
+    },
+    "strategicMethod": {
+      "type": "object",
+      "required": ["id", "title", "reading"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "reading": { "$ref": "#/$defs/localizedText" }
+      },
+      "additionalProperties": false
+    },
+    "methodRead": {
+      "type": "object",
+      "required": ["claimStatus", "minimumObservations", "title", "description", "neutral", "countermeasures"],
+      "properties": {
+        "claimStatus": { "const": "dramatic-reconstruction" },
+        "minimumObservations": { "type": "integer", "minimum": 2, "maximum": 10 },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "description": { "$ref": "#/$defs/localizedText" },
+        "neutral": { "$ref": "#/$defs/methodReadNeutral" },
+        "countermeasures": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/methodCountermeasure" } }
+      },
+      "additionalProperties": false
+    },
+    "methodReadNeutral": {
+      "type": "object",
+      "required": ["id", "title", "forecast", "response", "counterplay"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "forecast": { "$ref": "#/$defs/localizedText" },
+        "response": { "$ref": "#/$defs/localizedText" },
+        "counterplay": { "$ref": "#/$defs/localizedText" }
+      },
+      "additionalProperties": false
+    },
+    "methodCountermeasure": {
+      "type": "object",
+      "required": ["id", "targetMethodId", "title", "forecast", "hitResponse", "missResponse", "counterplay", "effects"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "targetMethodId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "forecast": { "$ref": "#/$defs/localizedText" },
+        "hitResponse": { "$ref": "#/$defs/localizedText" },
+        "missResponse": { "$ref": "#/$defs/localizedText" },
+        "counterplay": { "$ref": "#/$defs/localizedText" },
+        "effects": { "$ref": "#/$defs/optionalResourceEffects" }
       },
       "additionalProperties": false
     },
@@ -206,9 +258,10 @@
     },
     "choice": {
       "type": "object",
-      "required": ["id", "label", "intent", "consequence", "strategy", "effects"],
+      "required": ["id", "methodId", "label", "intent", "consequence", "strategy", "effects"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "methodId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
         "label": { "$ref": "#/$defs/localizedText" },
         "intent": { "$ref": "#/$defs/localizedText" },
         "consequence": { "$ref": "#/$defs/localizedText" },

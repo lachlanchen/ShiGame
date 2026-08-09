@@ -22,7 +22,8 @@ namespace SHI
 
     public sealed class ShiGameController : MonoBehaviour
     {
-        private const string SaveKey = "shi.chapter-01.state.v4";
+        private const string SaveKey = "shi.chapter-01.state.v5";
+        private const string LegacySaveKeyV4 = "shi.chapter-01.state.v4";
         private const string LegacySaveKeyV3 = "shi.chapter-01.state.v3";
         private const string LegacySaveKeyV2 = "shi.chapter-01.state.v2";
         private const string LegacySaveKeyV1 = "shi.chapter-01.state.v1";
@@ -173,7 +174,7 @@ namespace SHI
 
         private ShiState? LoadState()
         {
-            foreach (var key in new[] { SaveKey, LegacySaveKeyV3, LegacySaveKeyV2, LegacySaveKeyV1 })
+            foreach (var key in new[] { SaveKey, LegacySaveKeyV4, LegacySaveKeyV3, LegacySaveKeyV2, LegacySaveKeyV1 })
             {
                 if (!PlayerPrefs.HasKey(key)) continue;
                 try
@@ -182,6 +183,7 @@ namespace SHI
                     var replayed = campaign == null ? null : ShiState.Replay(campaign, loaded);
                     if (replayed == null || replayed.History.Count == 0) continue;
                     PlayerPrefs.SetString(SaveKey, JsonConvert.SerializeObject(replayed));
+                    PlayerPrefs.DeleteKey(LegacySaveKeyV4);
                     PlayerPrefs.DeleteKey(LegacySaveKeyV3);
                     PlayerPrefs.SetString(DraftSeedKey, replayed.Seed.ToString());
                     PlayerPrefs.DeleteKey(LegacySaveKeyV2);
@@ -289,6 +291,7 @@ namespace SHI
             var node = campaign!.Node(state!.CurrentNodeId);
             var condition = state.ActiveCondition(node);
             var oppositionStage = state.ActiveOppositionStage(campaign);
+            var methodRead = state.ActiveMethodRead(campaign);
             GUI.Box(new Rect(0, 0, Screen.width, 74), "");
             if (GUI.Button(new Rect(32, 16, 205, 40), "勢  SHI", GUI.skin.button)) { title = true; audioDirector?.SetAmbienceActive(false); }
             if (GUI.Button(new Rect(260, 20, 105, 30), T("guide"))) ToggleGuide();
@@ -318,6 +321,17 @@ namespace SHI
             GUI.Label(new Rect(48, 344, storyX - 96, 36), campaign.Text(oppositionStage.Forecast, locale), smallStyle);
             GUI.Label(new Rect(48, 382, storyX - 96, 18), oppositionStage.Effects.Count == 0 ? T("noAddedPressure") : EffectsText(oppositionStage.Effects), smallStyle);
             GUI.Label(new Rect(48, 403, storyX - 96, 20), T("counterplay") + ": " + campaign.Text(oppositionStage.Counterplay, locale), smallStyle);
+            var methodReadTitle = methodRead.Countermeasure?.Title ?? methodRead.Neutral!.Title;
+            var methodReadForecast = methodRead.Countermeasure?.Forecast ?? methodRead.Neutral!.Forecast;
+            var methodReadCounterplay = methodRead.Countermeasure?.Counterplay ?? methodRead.Neutral!.Counterplay;
+            var methodCounts = string.Join(" · ", campaign.Opposition.Methods.ConvertAll(method => $"{campaign.Text(method.Title, locale)} {methodRead.Counts.GetValueOrDefault(method.Id)}"));
+            GUI.Box(new Rect(32, 438, storyX - 64, 164), "");
+            GUI.Label(new Rect(48, 448, storyX - 96, 18), T("methodRead") + " · " + T("reconstruction"), smallStyle);
+            GUI.Label(new Rect(48, 469, storyX - 96, 24), campaign.Text(campaign.Opposition.MethodRead.Title, locale) + " · " + campaign.Text(methodReadTitle, locale), bodyStyle);
+            GUI.Label(new Rect(48, 495, storyX - 96, 35), methodCounts, smallStyle);
+            GUI.Label(new Rect(48, 531, storyX - 96, 34), campaign.Text(methodReadForecast, locale), smallStyle);
+            GUI.Label(new Rect(48, 566, storyX - 96, 17), methodRead.Effects.Count == 0 ? T("noAddedPressure") : EffectsText(methodRead.Effects), smallStyle);
+            GUI.Label(new Rect(48, 584, storyX - 96, 17), T("counterplay") + ": " + campaign.Text(methodReadCounterplay, locale), smallStyle);
             GUI.Label(new Rect(storyX, 145, storyWidth, 28), campaign.Text(node.DateLabel, locale).ToUpperInvariant(), smallStyle);
             GUI.Label(new Rect(storyX, 177, storyWidth, 75), campaign.Text(node.Title, locale), titleStyle);
             GUI.Label(new Rect(storyX, 258, storyWidth, 110), campaign.Text(node.Context, locale), bodyStyle);
@@ -327,17 +341,20 @@ namespace SHI
 
             if (!state.Completed)
             {
-                var choiceY = Screen.height - 230;
+                var choiceY = Screen.height - 255;
                 var choiceWidth = (Screen.width - 64f - 14f * (node.Choices.Count - 1)) / node.Choices.Count;
                 for (var index = 0; index < node.Choices.Count; index++)
                 {
                     var choice = node.Choices[index];
+                    var method = campaign.Method(choice.MethodId);
+                    var readMatched = methodRead.TargetMethodId == method.Id;
                     GUI.enabled = state.CanChoose(choice);
                     var text = $"{(char)('A' + index)}   {campaign.Text(choice.Label, locale)}\n<size=13>{campaign.Text(choice.Intent, locale)}</size>";
+                    text += $"\n<size=12><color=#78AAA0>{T("method")}: {campaign.Text(method.Title, locale)} · {T(readMatched ? "readHits" : "readMisses")} · {(readMatched ? EffectsText(methodRead.Effects) : T("noAddedPressure"))}</color></size>";
                     if (choice.Pressure != null)
                         text += $"\n<size=12><color=#B88976>{T("pressureForecast")}: {campaign.Text(choice.Pressure.Warning, locale)}</color></size>";
                     var style = index == selectedChoiceIndex ? selectedButtonStyle : buttonStyle;
-                    if (GUI.Button(new Rect(32 + index * (choiceWidth + 14), choiceY, choiceWidth, 175), text, style))
+                    if (GUI.Button(new Rect(32 + index * (choiceWidth + 14), choiceY, choiceWidth, 200), text, style))
                     {
                         selectedChoiceIndex = index;
                         CommitChoice(node, choice);
@@ -368,7 +385,8 @@ namespace SHI
             if (campaign == null || resolution == null) return;
             var width = Mathf.Min(940, Screen.width - 80);
             var oppositionY = resolution.Choice.Pressure == null ? 80 : 142;
-            var fieldY = oppositionY + 62;
+            var methodReadY = oppositionY + 62;
+            var fieldY = methodReadY + 62;
             var rect = new Rect((Screen.width - width) / 2, 125, width, fieldY + 52);
             GUI.Box(rect, "");
             GUI.Label(new Rect(rect.x + 18, rect.y + 12, width - 80, 22), T("consequence"), smallStyle);
@@ -383,6 +401,15 @@ namespace SHI
                 GUI.Label(new Rect(rect.x + 18, rect.y + oppositionY, width - 80, 20), T("opponentResponse") + " · " + campaign.Text(resolution.OppositionStage.Title, locale), smallStyle);
                 var effects = resolution.OppositionDeltas.Count == 0 ? T("noAddedPressure") : EffectsText(resolution.OppositionDeltas);
                 GUI.Label(new Rect(rect.x + 18, rect.y + oppositionY + 21, width - 50, 38), campaign.Text(resolution.OppositionStage.Response, locale) + " · " + effects, smallStyle);
+            }
+            if (resolution.MethodRead != null)
+            {
+                var read = resolution.MethodRead;
+                var readTitle = read.Countermeasure?.Title ?? read.Neutral!.Title;
+                var response = read.Countermeasure == null ? read.Neutral!.Response : resolution.MethodReadMatched ? read.Countermeasure.HitResponse : read.Countermeasure.MissResponse;
+                var effects = resolution.MethodReadDeltas.Count == 0 ? T("noAddedPressure") : EffectsText(resolution.MethodReadDeltas);
+                GUI.Label(new Rect(rect.x + 18, rect.y + methodReadY, width - 80, 20), T(resolution.MethodReadMatched ? "readHits" : "readMisses") + " · " + campaign.Text(readTitle, locale), smallStyle);
+                GUI.Label(new Rect(rect.x + 18, rect.y + methodReadY + 21, width - 50, 38), campaign.Text(response, locale) + " · " + campaign.Text(resolution.Method.Title, locale) + " · " + effects, smallStyle);
             }
             GUI.Label(new Rect(rect.x + 18, rect.y + fieldY, width - 80, 20), T("fieldApplied"), smallStyle);
             GUI.Label(new Rect(rect.x + 18, rect.y + fieldY + 21, width - 50, 26), campaign.Text(resolution.Condition.Title, locale) + " · " + EffectsText(resolution.FieldDeltas), smallStyle);
@@ -493,7 +520,7 @@ namespace SHI
                 GUI.Label(new Rect(x + 25, 95, width - 50, 90), T("recordEmpty"), bodyStyle);
                 return;
             }
-            var contentHeight = state.History.Count * 215 + 70;
+            var contentHeight = state.History.Count * 260 + 70;
             recordScroll = GUI.BeginScrollView(new Rect(x + 18, 82, width - 30, Screen.height - 94), recordScroll, new Rect(0, 0, width - 55, contentHeight));
             var y = 8f;
             for (var index = 0; index < state.History.Count; index++)
@@ -504,6 +531,9 @@ namespace SHI
                 var condition = pastNode.Conditions.Find(candidate => candidate.Id == entry.ConditionId);
                 if (choice == null || condition == null) continue;
                 var opposition = string.IsNullOrEmpty(entry.OppositionStageId) ? null : campaign.Opposition.Stages.Find(stage => stage.Id == entry.OppositionStageId);
+                var method = string.IsNullOrEmpty(entry.MethodId) ? null : campaign.Opposition.Methods.Find(candidate => candidate.Id == entry.MethodId);
+                var methodCounter = string.IsNullOrEmpty(entry.MethodReadId) ? null : campaign.Opposition.MethodRead.Countermeasures.Find(candidate => candidate.Id == entry.MethodReadId);
+                var neutralRead = entry.MethodReadId == campaign.Opposition.MethodRead.Neutral.Id ? campaign.Opposition.MethodRead.Neutral : null;
                 GUI.Label(new Rect(7, y, 32, 24), (index + 1).ToString("00"), smallStyle);
                 GUI.Label(new Rect(44, y, width - 99, 28), campaign.Text(choice.Label, locale), bodyStyle);
                 GUI.Label(new Rect(44, y + 30, width - 99, 42), campaign.Text(choice.Consequence, locale), smallStyle);
@@ -517,6 +547,13 @@ namespace SHI
                 {
                     var effects = entry.OppositionEffects.Count == 0 ? T("noAddedPressure") : EffectsText(entry.OppositionEffects);
                     GUI.Label(new Rect(44, detailY, width - 99, 40), T("opponentResponse") + ": " + campaign.Text(opposition.Title, locale) + " · " + effects, smallStyle);
+                    detailY += 42;
+                }
+                if (method != null && (methodCounter != null || neutralRead != null))
+                {
+                    var readTitle = methodCounter?.Title ?? neutralRead!.Title;
+                    var effects = entry.MethodReadEffects.Count == 0 ? T("noAddedPressure") : EffectsText(entry.MethodReadEffects);
+                    GUI.Label(new Rect(44, detailY, width - 99, 40), T(entry.MethodReadMatched == true ? "readHits" : "readMisses") + ": " + campaign.Text(readTitle, locale) + " · " + campaign.Text(method.Title, locale) + " · " + effects, smallStyle);
                     detailY += 42;
                 }
                 GUI.Label(new Rect(44, detailY, width - 99, 40), T("fieldApplied") + ": " + campaign.Text(condition.Title, locale) + " · " + EffectsText(entry.ConditionEffects), smallStyle);
@@ -771,6 +808,7 @@ namespace SHI
         {
             if (campaign == null || state == null) return;
             PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV4);
             PlayerPrefs.DeleteKey(LegacySaveKeyV3);
             PlayerPrefs.DeleteKey(LegacySaveKeyV2);
             PlayerPrefs.DeleteKey(LegacySaveKeyV1);
@@ -791,6 +829,7 @@ namespace SHI
         {
             if (campaign == null) return;
             PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV4);
             PlayerPrefs.DeleteKey(LegacySaveKeyV3);
             PlayerPrefs.DeleteKey(LegacySaveKeyV2);
             PlayerPrefs.DeleteKey(LegacySaveKeyV1);

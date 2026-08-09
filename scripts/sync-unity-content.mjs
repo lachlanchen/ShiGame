@@ -30,6 +30,12 @@ const webGameplay = {
   opposition: {
     id: campaign.opposition.id,
     claimStatus: campaign.opposition.claimStatus,
+    methods: campaign.opposition.methods.map(({ id }) => ({ id })),
+    methodRead: {
+      minimumObservations: campaign.opposition.methodRead.minimumObservations,
+      neutral: { id: campaign.opposition.methodRead.neutral.id },
+      countermeasures: campaign.opposition.methodRead.countermeasures.map(({ id, targetMethodId, effects }) => ({ id, targetMethodId, effects })),
+    },
     stages: campaign.opposition.stages.map(({ id, minDanger, maxDanger, effects }) => ({ id, minDanger, maxDanger, effects })),
   },
 };

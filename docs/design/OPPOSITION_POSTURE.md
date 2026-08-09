@@ -26,11 +26,12 @@ position before commitment
   → apply player action
   → apply the choice's authored pressure response
   → apply the disclosed pursuit posture
+  → apply the separately disclosed strategic-method read when it matches
   → apply the disclosed seed-selected field condition
   → check capture/scattering and otherwise advance
 ```
 
-Each layer is clamped to `0–100` before the next layer. The consequence banner and decision record keep action, pressure, pursuit and field effects distinct. This is the same contract in TypeScript and C#.
+Each layer is clamped to `0–100` before the next layer. The consequence banner and decision record keep action, pressure, pursuit, method-read and field effects distinct. This is the same contract in TypeScript and C#; the method-selection contract is specified in [Opposition method read](OPPOSITION_METHOD_READ.md).
 
 ## Fairness and historical boundaries
 
@@ -43,14 +44,14 @@ Each layer is clamped to `0–100` before the next layer. The consequence banner
 
 ## Save and replay
 
-Save format `4` records the selected posture ID, its effects, and the resources after pursuit. Loading treats decision history as authority and replays every recorded decision. Version-4 history is rejected if its recorded posture no longer matches the pre-commit position.
+Save format `5` continues to record the selected posture ID, its effects, and the resources after pursuit. Loading treats decision history as authority and replays every recorded decision. Version-4 and v5 history is rejected if its recorded posture no longer matches the pre-commit position.
 
-Versions 1–3 remain playable through `legacyDecisionCount`: decisions already present in an older save replay under their original action → pressure → field rules, so an update cannot silently rewrite a player's resources or ending. Every new decision after migration uses the posture system and is stored as version 4. Unknown future versions fail closed.
+Versions 1–3 remain playable through `legacyDecisionCount`: decisions already present in an older save replay under their original action → pressure → field rules, so an update cannot silently rewrite a player's resources or ending. Version-4 decisions keep their pursuit layer through `preMethodReadDecisionCount`; only later decisions receive the method-read layer and are stored as version 5. Unknown future versions fail closed.
 
 ## Validation and release evidence
 
 - The content validator proves bounded effect direction, exact 0–99 coverage, unique IDs, required bilingual copy, dramatic-reconstruction classification and reachability of every posture.
-- Exhaustive field-condition traversal currently produces 694 successful routes and 82 capture/scattering routes, with no deadlock and all three conclusions intact.
+- Exhaustive field-condition traversal currently produces 689 successful routes and 87 capture/scattering routes, with no deadlock, all three conclusions intact and every method counter selectable and hittable.
 - Unit and integration tests cover ordering, escalation, records, localization keys, save migration and tamper rejection.
 - Visible QA must show opening disclosure, escalation into `road-search`, the exact pursuit delta, persistence after reload, decision-record disclosure, mobile/reflow behavior, non-color identification and no duplicate commitment while the result is open.
 

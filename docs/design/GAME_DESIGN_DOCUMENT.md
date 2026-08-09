@@ -34,6 +34,7 @@ Read the position
   → see immediate movement on the shared state
   → reveal the authored state, terrain, supply or network response
   → absorb the pursuing administration's disclosed posture
+  → test whether its disclosed read of your repeated method hits or misses
   → face the countermove or recovery problem created by that doctrine
   → preserve, transform or abandon the network
   → record the decision and carry flags into the next chapter
@@ -61,7 +62,7 @@ The vertical slice has three acts:
 2. **The cost of organization:** each opening creates a different council about food, signals, or information.
 3. **The broken crossing:** every doctrine encounters logistics and pursuit before choosing deep roots, wildfire, or watchful connection to emerging forces around Pei and Kuaiji.
 
-The current slice contains six scenes, fifteen choices, twelve pressure responses, three persistent Qin pursuit postures, twelve seed-selected field conditions, three conclusions, replayable save-v4 migration, an inspectable wartable, and explicit source/claim records. Exhaustive condition branching currently finds 694 successful routes and 82 capture/scattering routes. It is a pre-alpha chapter, not the complete campaign.
+The current slice contains six scenes, fifteen choices, twelve pressure responses, three persistent Qin pursuit postures, three strategic methods, three prepared method counters plus a neutral read, twelve seed-selected field conditions, three conclusions, replayable save-v5 migration, an inspectable wartable, and explicit source/claim records. Exhaustive condition branching currently finds 689 successful routes and 87 capture/scattering routes. It is a pre-alpha chapter, not the complete campaign.
 
 ## Conflict model
 
@@ -90,9 +91,10 @@ Later tactical encounters will use spatial command and indirect control, but mus
 - Five resources appear before the first choice.
 - Every choice shows intent, strategic reading, first-order deltas, and a qualitative warning about the weakness it exposes.
 - The current Qin pursuit posture shows its exact Exposure band, modifier and counterplay before commitment; it is explicitly dramatic reconstruction.
+- The Qin method read shows all observed method counts, its prepared target and exact effect. Each choice names its method and whether the current read will hit; changing method makes the read miss.
 - A seed-selected field signal and its exact effects appear before every decision and remain explicitly labeled dramatic reconstruction.
-- Consequence, authored pressure response, pursuing-administration response and disclosed field condition persist after transition with their deltas visually separated, so players can connect action, countermove, opposition, circumstance and state change.
-- Source and decision ledgers are available without leaving play; the decision record preserves pressure, opposition and field responses.
+- Consequence, authored pressure response, pursuing-administration posture, method read and disclosed field condition persist after transition with their deltas visually separated, so players can connect action, countermove, opponent learning, circumstance and state change.
+- Source and decision ledgers are available without leaving play; the decision record preserves pressure, pursuit, method/read hit or miss, and field responses.
 - The wartable distinguishes known ground, reported networks and reference-only places. Its uncertainty text blocks later-history hindsight from masquerading as opening-scene knowledge.
 - Modified keyboard shortcuts operate decisions and ledgers without conflicting with browser-reserved tab controls.
 - A one-time, replayable field guide teaches field → move → answer over the live opening state without changing campaign progress.

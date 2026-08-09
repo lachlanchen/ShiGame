@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "id": "chapter-01-daze",
   "title": {
     "en": "SHI — The Shape of Power",
@@ -47,6 +47,68 @@
       "en": "A systemic reconstruction of how relay posts, witnesses and patrols may turn exposure into coordinated pursuit. It is not a claim about one documented patrol route.",
       "zh-Hans": "对亭驿、见证人与巡卒如何把暴露转化为协同追捕的系统性重构；它不声称存在一条有史料记载的具体巡逻路线。",
       "zh-Hant": "對亭驛、見證人與巡卒如何把暴露轉化為協同追捕的系統性重構；它不聲稱存在一條有史料記載的具體巡邏路線。"
+    },
+    "methods": [
+      {
+        "id": "witnessed-compact",
+        "title": { "en": "Witnessed compact", "zh-Hans": "见证盟约", "zh-Hant": "見證盟約" },
+        "reading": { "en": "Build power through names, public restraint and witnessed obligation.", "zh-Hans": "以名字、公开克制与共同见证的义务组织力量。", "zh-Hant": "以名字、公開克制與共同見證的義務組織力量。" }
+      },
+      {
+        "id": "forced-tempo",
+        "title": { "en": "Forced tempo", "zh-Hans": "强夺先手", "zh-Hant": "強奪先手" },
+        "reading": { "en": "Create a fact through signals, direct command, speed or abandonment.", "zh-Hans": "以信号、直接号令、速度或弃物制造既成事实。", "zh-Hant": "以信號、直接號令、速度或棄物製造既成事實。" }
+      },
+      {
+        "id": "distributed-cover",
+        "title": { "en": "Distributed cover", "zh-Hans": "分散掩护", "zh-Hant": "分散掩護" },
+        "reading": { "en": "Divide information, routes, provisions or authority across smaller channels.", "zh-Hans": "把消息、路线、补给或权力分散到较小的渠道。", "zh-Hant": "把消息、路線、補給或權力分散到較小的渠道。" }
+      }
+    ],
+    "methodRead": {
+      "claimStatus": "dramatic-reconstruction",
+      "minimumObservations": 2,
+      "title": { "en": "Qin method read", "zh-Hans": "秦吏识势", "zh-Hant": "秦吏識勢" },
+      "description": { "en": "A disclosed reconstruction of how repeated methods may let posts prepare one answer. It is not an attested Qin threat assessment.", "zh-Hans": "对重复手法如何让亭驿预备一种应手的公开重构；它不是传世的秦吏威胁评估。", "zh-Hant": "對重複手法如何讓亭驛預備一種應手的公開重構；它不是傳世的秦吏威脅評估。" },
+      "neutral": {
+        "id": "unresolved-pattern",
+        "title": { "en": "Unresolved pattern", "zh-Hans": "尚未成形", "zh-Hant": "尚未成形" },
+        "forecast": { "en": "The reports do not yet support one prepared countermeasure. Every method receives no added modifier.", "zh-Hans": "现有报告尚不足以形成一种预备反制；所有手法均不追加修正。", "zh-Hant": "現有報告尚不足以形成一種預備反制；所有手法均不追加修正。" },
+        "response": { "en": "Contradictory reports fail to anticipate this method.", "zh-Hans": "彼此矛盾的报告未能预判这次手法。", "zh-Hant": "彼此矛盾的報告未能預判這次手法。" },
+        "counterplay": { "en": "Keep method counts tied, or change method before one pattern hardens.", "zh-Hans": "维持手法次数相同，或在单一模式固化前改变手法。", "zh-Hant": "維持手法次數相同，或在單一模式固化前改變手法。" }
+      },
+      "countermeasures": [
+        {
+          "id": "witness-chain",
+          "targetMethodId": "witnessed-compact",
+          "title": { "en": "Witness chain", "zh-Hans": "串联证词", "zh-Hant": "串聯證詞" },
+          "forecast": { "en": "Posts are comparing names and public obligations. Another Witnessed compact receives +3 Exposure; another method makes this read miss.", "zh-Hans": "各亭正在核对名字与公开义务。再次采用见证盟约将追加+3险；改用其他手法则使判断落空。", "zh-Hant": "各亭正在核對名字與公開義務。再次採用見證盟約將追加+3險；改用其他手法則使判斷落空。" },
+          "hitResponse": { "en": "Repeated public commitments let clerks connect names into one trace.", "zh-Hans": "重复的公开承诺让亭吏把名字串成了一条踪迹。", "zh-Hant": "重複的公開承諾讓亭吏把名字串成了一條蹤跡。" },
+          "missResponse": { "en": "The changed method leaves the prepared witness chain without a useful match.", "zh-Hans": "手法改变，预备好的证词串联没有找到可用的对应。", "zh-Hant": "手法改變，預備好的證詞串聯沒有找到可用的對應。" },
+          "counterplay": { "en": "Choose Forced tempo or Distributed cover; a tie in method counts dissolves this read.", "zh-Hans": "改用强夺先手或分散掩护；手法次数持平即可解除本次识势。", "zh-Hant": "改用強奪先手或分散掩護；手法次數持平即可解除本次識勢。" },
+          "effects": { "danger": 3 }
+        },
+        {
+          "id": "relay-block",
+          "targetMethodId": "forced-tempo",
+          "title": { "en": "Relay block", "zh-Hans": "截断先路", "zh-Hant": "截斷先路" },
+          "forecast": { "en": "Neighboring posts expect another direct signal or rush. Another Forced tempo receives +1 Exposure and −3 Momentum; another method makes this read miss.", "zh-Hans": "邻亭预期再次出现直接信号或疾进。再次强夺先手将追加+1险、−3势；改用其他手法则使判断落空。", "zh-Hant": "鄰亭預期再次出現直接信號或疾進。再次強奪先手將追加+1險、−3勢；改用其他手法則使判斷落空。" },
+          "hitResponse": { "en": "Prepared posts interrupt the expected direction before it can become a new fact.", "zh-Hans": "有所准备的亭驿截住了预期方向，使其未能立刻成为新的事实。", "zh-Hant": "有所準備的亭驛截住了預期方向，使其未能立刻成為新的事實。" },
+          "missResponse": { "en": "The changed method leaves the prepared relay block facing the wrong tempo.", "zh-Hans": "手法改变，预备好的截断面对了错误的节奏。", "zh-Hant": "手法改變，預備好的截斷面對了錯誤的節奏。" },
+          "counterplay": { "en": "Choose Witnessed compact or Distributed cover; a tie in method counts dissolves this read.", "zh-Hans": "改用见证盟约或分散掩护；手法次数持平即可解除本次识势。", "zh-Hant": "改用見證盟約或分散掩護；手法次數持平即可解除本次識勢。" },
+          "effects": { "danger": 1, "momentum": -3 }
+        },
+        {
+          "id": "channel-squeeze",
+          "targetMethodId": "distributed-cover",
+          "title": { "en": "Channel squeeze", "zh-Hans": "挤压支路", "zh-Hant": "擠壓支路" },
+          "forecast": { "en": "Patrols are pressing several small routes and stores. Another Distributed cover receives +2 Exposure and −2 Grain; another method makes this read miss.", "zh-Hans": "巡卒正在挤压多条支路与小型储备。再次分散掩护将追加+2险、−2粮；改用其他手法则使判断落空。", "zh-Hant": "巡卒正在擠壓多條支路與小型儲備。再次分散掩護將追加+2險、−2糧；改用其他手法則使判斷落空。" },
+          "hitResponse": { "en": "Pressure across several small channels forces detours and consumes reserve.", "zh-Hans": "多条小渠道同时受压，队伍被迫绕行并消耗储备。", "zh-Hant": "多條小渠道同時受壓，隊伍被迫繞行並消耗儲備。" },
+          "missResponse": { "en": "The changed method concentrates elsewhere, beyond the prepared channel squeeze.", "zh-Hans": "手法改变，力量转向预备挤压之外的方向。", "zh-Hant": "手法改變，力量轉向預備擠壓之外的方向。" },
+          "counterplay": { "en": "Choose Witnessed compact or Forced tempo; a tie in method counts dissolves this read.", "zh-Hans": "改用见证盟约或强夺先手；手法次数持平即可解除本次识势。", "zh-Hant": "改用見證盟約或強奪先手；手法次數持平即可解除本次識勢。" },
+          "effects": { "danger": 2, "grain": -2 }
+        }
+      ]
     },
     "stages": [
       {
@@ -664,6 +726,7 @@
       "choices": [
         {
           "id": "read-the-names",
+          "methodId": "witnessed-compact",
           "label": { "en": "Read every name aloud", "zh-Hans": "当众读出每一个名字" },
           "intent": { "en": "Turn a transport list into a public covenant.", "zh-Hans": "把押运名籍变成众人共同的盟约。" },
           "consequence": { "en": "The ranks see one another, but the officers now know where solidarity began.", "zh-Hans": "戍卒开始彼此看见，但军吏也知道团结从何处发生。" },
@@ -680,6 +743,7 @@
         },
         {
           "id": "take-the-beacon",
+          "methodId": "forced-tempo",
           "label": { "en": "Seize the relay beacon", "zh-Hans": "夺取亭燧" },
           "intent": { "en": "Control the signal network before the story outruns you.", "zh-Hans": "在消息失控前先控制传信网络。" },
           "consequence": { "en": "Weapons and urgency enter the camp together.", "zh-Hans": "兵刃与紧迫感同时进入营地。" },
@@ -696,6 +760,7 @@
         },
         {
           "id": "hide-the-register",
+          "methodId": "distributed-cover",
           "label": { "en": "Hide the register; watch one night", "zh-Hans": "藏起名籍，静观一夜" },
           "intent": { "en": "Make room for information before commitment.", "zh-Hans": "在下注前先争取情报空间。" },
           "consequence": { "en": "You learn who moves between tents, but hesitation costs food and confidence.", "zh-Hans": "你看清了营帐间的往来，但迟疑消耗粮食与信心。" },
@@ -743,6 +808,7 @@
       "choices": [
         {
           "id": "issue-grain-tallies",
+          "methodId": "witnessed-compact",
           "label": { "en": "Issue redeemable grain tallies", "zh-Hans": "发放可兑粮券" },
           "intent": { "en": "Requisition now, bind repayment to the movement's reputation.", "zh-Hans": "先行征粮，把日后偿还系于军队声誉。" },
           "consequence": { "en": "Some stores open. Your promise becomes a debt future commanders can honor—or betray.", "zh-Hans": "一些粮窖打开了。你的承诺成为后继者可以兑现、也可以背弃的债。" },
@@ -759,6 +825,7 @@
         },
         {
           "id": "voluntary-pots",
+          "methodId": "distributed-cover",
           "label": { "en": "Ask each fire for one pot", "zh-Hans": "每一处灶火自献一釜" },
           "intent": { "en": "Distribute sacrifice visibly and cap what can be taken.", "zh-Hans": "让牺牲可见且有上限。" },
           "consequence": { "en": "The camp moves leaner, but households join because the boundary feels real.", "zh-Hans": "队伍更加拮据，却有家户因看见界线而愿意同行。" },
@@ -806,6 +873,7 @@
       "choices": [
         {
           "id": "declare-great-chu",
+          "methodId": "witnessed-compact",
           "label": { "en": "Raise the memory of Great Chu", "zh-Hans": "借大楚之名聚众" },
           "intent": { "en": "Use a shared political memory to turn shock into direction.", "zh-Hans": "以共同的政治记忆，把震动变成方向。" },
           "consequence": { "en": "The cry travels faster than your ability to define it.", "zh-Hans": "口号传播得比你解释它的能力更快。" },
@@ -822,6 +890,7 @@
         },
         {
           "id": "extinguish-and-move",
+          "methodId": "distributed-cover",
           "label": { "en": "Extinguish the tower; move in silence", "zh-Hans": "熄燧潜行" },
           "intent": { "en": "Trade spectacle for one more unobserved march.", "zh-Hans": "舍弃声势，换取一次不被观察的行军。" },
           "consequence": { "en": "You regain time, but some mistake discipline for fear.", "zh-Hans": "你们赢回了时间，也有人把克制误作胆怯。" },
@@ -869,6 +938,7 @@
       "choices": [
         {
           "id": "turn-the-courier",
+          "methodId": "distributed-cover",
           "label": { "en": "Offer the courier a place in the new network", "zh-Hans": "让驿使加入新的传信网" },
           "intent": { "en": "Convert an enemy channel instead of merely cutting it.", "zh-Hans": "不只截断敌方渠道，而是把它转为己用。" },
           "consequence": { "en": "False calm moves east. Trusting him leaves a live weakness inside your plan.", "zh-Hans": "虚假的平静向东传去；信任他，也让计划内部留下活的破绽。" },
@@ -885,6 +955,7 @@
         },
         {
           "id": "release-oldest",
+          "methodId": "witnessed-compact",
           "label": { "en": "Release the oldest conscripts before dawn", "zh-Hans": "黎明前遣返年长戍卒" },
           "intent": { "en": "Shrink the exposed column and let witnesses carry restraint home.", "zh-Hans": "缩小暴露的队伍，让见证者把克制带回乡里。" },
           "consequence": { "en": "You lose hands today and gain doors that may open later.", "zh-Hans": "今日少了人手，日后却可能多出愿意开启的家门。" },
@@ -932,6 +1003,7 @@
       "choices": [
         {
           "id": "families-first",
+          "methodId": "witnessed-compact",
           "label": { "en": "Send households across first", "zh-Hans": "家户先渡" },
           "intent": { "en": "Make protection visible, even under pursuit.", "zh-Hans": "即使追兵迫近，也让保护成为可见的承诺。" },
           "consequence": { "en": "The rear guard absorbs the risk; the movement gains a reason to survive.", "zh-Hans": "后卫承担风险，而这支队伍获得了必须活下去的理由。" },
@@ -948,6 +1020,7 @@
         },
         {
           "id": "repair-the-ford",
+          "methodId": "distributed-cover",
           "label": { "en": "Spend grain sacks to brace the ford", "zh-Hans": "以粮袋固渡" },
           "intent": { "en": "Consume reserves to move everyone together.", "zh-Hans": "消耗储备，让所有人一同渡过。" },
           "consequence": { "en": "The column crosses intact but hungry; pursuit loses time in the wreckage.", "zh-Hans": "队伍完整却饥饿地过河；追兵在残桥处失去时间。" },
@@ -965,6 +1038,7 @@
         },
         {
           "id": "cut-the-carts",
+          "methodId": "forced-tempo",
           "label": { "en": "Abandon the carts and scatter the tracks", "zh-Hans": "弃车乱迹" },
           "intent": { "en": "Recover tempo before encirclement closes.", "zh-Hans": "在包围合拢前夺回速度。" },
           "consequence": { "en": "The pursuit guesses wrong, but hunger and resentment enter the ranks.", "zh-Hans": "追兵判断失误，饥饿与怨气却进入队伍。" },
@@ -1012,6 +1086,7 @@
       "choices": [
         {
           "id": "root-in-villages",
+          "methodId": "witnessed-compact",
           "label": { "en": "Root the movement in village covenants", "zh-Hans": "以乡里盟约为根" },
           "intent": { "en": "Build food, messengers, and consent before claiming a realm.", "zh-Hans": "先建粮路、传信与同意，再谈天下。" },
           "consequence": { "en": "Your network will grow slowly, and it may outlive its first banner.", "zh-Hans": "你的网络会生长得慢，却可能比第一面旗帜活得更久。" },
@@ -1021,6 +1096,7 @@
         },
         {
           "id": "race-for-chen",
+          "methodId": "forced-tempo",
           "label": { "en": "Race for Chen before fear hardens", "zh-Hans": "趁恐惧未固，疾取陈县" },
           "intent": { "en": "Turn a brief opening into a political fact.", "zh-Hans": "把短暂窗口变成既成政治事实。" },
           "consequence": { "en": "The uprising becomes visible to the realm—and to every force capable of destroying it.", "zh-Hans": "起事为天下所见，也被一切足以摧毁它的力量看见。" },
@@ -1030,6 +1106,7 @@
         },
         {
           "id": "send-two-envoys",
+          "methodId": "distributed-cover",
           "label": { "en": "Send quiet envoys toward Pei and Kuaiji", "zh-Hans": "密使分赴沛县与会稽" },
           "intent": { "en": "Learn the emerging board before joining one claimant.", "zh-Hans": "先看清新棋局，再决定与谁合流。" },
           "consequence": { "en": "You surrender the loudest moment to gain information about two future centers of power.", "zh-Hans": "你放弃最响亮的时刻，换取两个未来权力中心的情报。" },

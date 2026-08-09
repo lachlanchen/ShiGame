@@ -43,8 +43,18 @@ const canChoose = (choice, resources) => resourceKeys.every((key) => {
 });
 const applyEffects = (resources, effects = {}) => Object.fromEntries(resourceKeys.map((key) => [key, Math.max(0, Math.min(100, Math.round(resources[key] + (effects[key] ?? 0))))]));
 const oppositionStageFor = (resources) => campaign.opposition.stages.find((stage) => resources.danger >= stage.minDanger && resources.danger <= stage.maxDanger);
+const methodReadFor = (methodHistory) => {
+  const counts = Object.fromEntries(campaign.opposition.methods.map((method) => [method.id, 0]));
+  for (const methodId of methodHistory) counts[methodId]++;
+  if (methodHistory.length < campaign.opposition.methodRead.minimumObservations) return campaign.opposition.methodRead.neutral;
+  const highest = Math.max(...Object.values(counts));
+  const leaders = Object.entries(counts).filter(([, count]) => count === highest);
+  return leaders.length === 1
+    ? campaign.opposition.methodRead.countermeasures.find((countermeasure) => countermeasure.targetMethodId === leaders[0][0])
+    : campaign.opposition.methodRead.neutral;
+};
 
-assert(campaign.schemaVersion === 4, "campaign schemaVersion must be 4");
+assert(campaign.schemaVersion === 5, "campaign schemaVersion must be 5");
 assert(editionRegister.schemaVersion === 1, "edition register schemaVersion must be 1");
 assert(typeof campaign.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(campaign.id), "campaign.id must use ASCII kebab-case");
 hasRequiredText(campaign.title, "campaign.title");
@@ -67,6 +77,42 @@ assert(typeof campaign.opposition?.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*
 assert(campaign.opposition?.claimStatus === "dramatic-reconstruction", "campaign.opposition must be classified as dramatic-reconstruction");
 hasRequiredText(campaign.opposition?.title, "campaign.opposition.title");
 hasRequiredText(campaign.opposition?.description, "campaign.opposition.description");
+const methodIds = unique(campaign.opposition?.methods ?? [], "strategic methods");
+assert(methodIds.size === 3, "campaign.opposition requires exactly three strategic methods");
+for (const method of campaign.opposition?.methods ?? []) {
+  hasRequiredText(method.title, `strategic method ${method.id}.title`);
+  hasRequiredText(method.reading, `strategic method ${method.id}.reading`);
+}
+const methodRead = campaign.opposition?.methodRead;
+assert(methodRead?.claimStatus === "dramatic-reconstruction", "campaign.opposition.methodRead must be classified as dramatic-reconstruction");
+assert(Number.isInteger(methodRead?.minimumObservations) && methodRead.minimumObservations >= 2 && methodRead.minimumObservations <= 10, "methodRead.minimumObservations must be an integer from 2 to 10");
+hasRequiredText(methodRead?.title, "methodRead.title");
+hasRequiredText(methodRead?.description, "methodRead.description");
+assert(typeof methodRead?.neutral?.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(methodRead.neutral.id), "methodRead.neutral requires an ASCII kebab-case id");
+hasRequiredText(methodRead?.neutral?.title, "methodRead.neutral.title");
+hasRequiredText(methodRead?.neutral?.forecast, "methodRead.neutral.forecast");
+hasRequiredText(methodRead?.neutral?.response, "methodRead.neutral.response");
+hasRequiredText(methodRead?.neutral?.counterplay, "methodRead.neutral.counterplay");
+const countermeasureIds = unique(methodRead?.countermeasures ?? [], "method countermeasures");
+assert(countermeasureIds.size === methodIds.size, "methodRead requires exactly one countermeasure per strategic method");
+assert(!countermeasureIds.has(methodRead?.neutral?.id), "methodRead neutral id must not collide with a countermeasure");
+const counterTargets = new Set();
+for (const countermeasure of methodRead?.countermeasures ?? []) {
+  assert(methodIds.has(countermeasure.targetMethodId), `method countermeasure ${countermeasure.id} targets unknown method ${countermeasure.targetMethodId}`);
+  assert(!counterTargets.has(countermeasure.targetMethodId), `multiple countermeasures target strategic method ${countermeasure.targetMethodId}`);
+  counterTargets.add(countermeasure.targetMethodId);
+  hasRequiredText(countermeasure.title, `method countermeasure ${countermeasure.id}.title`);
+  hasRequiredText(countermeasure.forecast, `method countermeasure ${countermeasure.id}.forecast`);
+  hasRequiredText(countermeasure.hitResponse, `method countermeasure ${countermeasure.id}.hitResponse`);
+  hasRequiredText(countermeasure.missResponse, `method countermeasure ${countermeasure.id}.missResponse`);
+  hasRequiredText(countermeasure.counterplay, `method countermeasure ${countermeasure.id}.counterplay`);
+  validateResourceMap(countermeasure.effects, `method countermeasure ${countermeasure.id}.effects`, -4, 4);
+  assert(Object.keys(countermeasure.effects ?? {}).length > 0, `method countermeasure ${countermeasure.id}.effects cannot be empty`);
+  for (const [key, amount] of Object.entries(countermeasure.effects ?? {})) {
+    assert(key === "danger" ? amount >= 0 : amount <= 0, `method countermeasure ${countermeasure.id}.${key} must not benefit the player`);
+  }
+}
+for (const methodId of methodIds) assert(counterTargets.has(methodId), `strategic method ${methodId} has no countermeasure`);
 const oppositionStageIds = unique(campaign.opposition?.stages ?? [], "opposition stages");
 assert(oppositionStageIds.size >= 2, "campaign.opposition requires at least two stages");
 const dangerCoverage = Array.from({ length: 100 }, () => 0);
@@ -196,6 +242,7 @@ for (const node of campaign.nodes ?? []) {
     assert(!allChoiceIds.has(choice.id), `campaign contains duplicate choice ${choice.id}`);
     choiceIds.add(choice.id);
     allChoiceIds.add(choice.id);
+    assert(methodIds.has(choice.methodId), `choice ${choice.id} references unknown strategic method ${choice.methodId}`);
     hasRequiredText(choice.label, `choice ${choice.id}.label`);
     hasRequiredText(choice.intent, `choice ${choice.id}.intent`);
     hasRequiredText(choice.consequence, `choice ${choice.id}.consequence`);
@@ -233,8 +280,17 @@ for (const id of nodeIds) assert(reachable.has(id), `node is unreachable: ${id}`
 const finaleCount = campaign.nodes.flatMap((node) => node.choices).filter((choice) => !choice.nextNodeId).length;
 assert(finaleCount >= 3, "campaign requires at least three authored conclusions");
 
-const routeStats = { successful: 0, failed: 0, endings: new Set(), deadlocks: 0, oppositionVisits: Object.fromEntries([...oppositionStageIds].map((id) => [id, 0])) };
-const walkRoutes = (nodeId, resources, flags, path = []) => {
+const methodReadIds = [methodRead.neutral.id, ...methodRead.countermeasures.map((countermeasure) => countermeasure.id)];
+const routeStats = {
+  successful: 0,
+  failed: 0,
+  endings: new Set(),
+  deadlocks: 0,
+  oppositionVisits: Object.fromEntries([...oppositionStageIds].map((id) => [id, 0])),
+  methodReadVisits: Object.fromEntries(methodReadIds.map((id) => [id, 0])),
+  methodReadHits: Object.fromEntries(methodRead.countermeasures.map((countermeasure) => [countermeasure.id, 0])),
+};
+const walkRoutes = (nodeId, resources, flags, methodHistory = [], path = []) => {
   const node = campaign.nodes.find((candidate) => candidate.id === nodeId);
   const available = (node?.choices ?? []).filter((choice) => canChoose(choice, resources));
   if (available.length === 0) {
@@ -246,13 +302,19 @@ const walkRoutes = (nodeId, resources, flags, path = []) => {
   for (const condition of node.conditions ?? []) {
     for (const choice of available) {
       const oppositionStage = oppositionStageFor(resources);
+      const methodReadSelection = methodReadFor(methodHistory);
       assert(oppositionStage, `no opposition stage covers Exposure ${resources.danger}`);
-      if (!oppositionStage) continue;
+      assert(methodReadSelection, `no method read can be selected after ${methodHistory.join(" -> ")}`);
+      if (!oppositionStage || !methodReadSelection) continue;
       routeStats.oppositionVisits[oppositionStage.id]++;
+      routeStats.methodReadVisits[methodReadSelection.id]++;
       const afterChoice = applyEffects(resources, choice.effects);
       const afterPressure = applyEffects(afterChoice, choice.pressure?.effects);
       const afterOpposition = applyEffects(afterPressure, oppositionStage.effects);
-      const after = applyEffects(afterOpposition, condition.effects);
+      const methodReadMatched = methodReadSelection.targetMethodId === choice.methodId;
+      if (methodReadMatched) routeStats.methodReadHits[methodReadSelection.id]++;
+      const afterMethodRead = applyEffects(afterOpposition, methodReadMatched ? methodReadSelection.effects : {});
+      const after = applyEffects(afterMethodRead, condition.effects);
       const nextFlags = new Set([...flags, ...(choice.flags ?? [])]);
       const nextPath = [...path, `${condition.id}:${choice.id}`];
       if (after.danger >= 100 || after.people <= 0) {
@@ -261,7 +323,7 @@ const walkRoutes = (nodeId, resources, flags, path = []) => {
         routeStats.successful++;
         for (const flag of nextFlags) if (flag.startsWith("ending-")) routeStats.endings.add(flag);
       } else {
-        walkRoutes(choice.nextNodeId, after, nextFlags, nextPath);
+        walkRoutes(choice.nextNodeId, after, nextFlags, [...methodHistory, choice.methodId], nextPath);
       }
     }
   }
@@ -273,6 +335,8 @@ for (const ending of ["ending-wildfire", "ending-deep-roots", "ending-watchful"]
 assert(routeStats.successful >= 3, "campaign requires at least three successful playable routes");
 assert(routeStats.failed >= 1, "campaign pressure must expose at least one real failure route");
 for (const [stage, visits] of Object.entries(routeStats.oppositionVisits)) assert(visits > 0, `opposition stage ${stage} is never reached by exhaustive traversal`);
+for (const [read, visits] of Object.entries(routeStats.methodReadVisits)) assert(visits > 0, `method read ${read} is never selected by exhaustive traversal`);
+for (const [read, hits] of Object.entries(routeStats.methodReadHits)) assert(hits > 0, `method countermeasure ${read} never matches a legal choice`);
 
 if (errors.length) {
   console.error(`Content validation failed with ${errors.length} error(s):`);
