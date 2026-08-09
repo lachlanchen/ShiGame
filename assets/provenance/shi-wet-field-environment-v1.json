@@ -1,0 +1,80 @@
+{
+  "assetId": "shi-wet-field-environment-v1",
+  "createdAt": "2026-08-10",
+  "status": "approved-runtime-wet-field-production-blockout-council-engagement-story-reviewed-not-final-environment",
+  "rightsStatus": "original SHI project-authored geometry, vertex masks, materials, renders, source scripts and runtime presentation",
+  "historicalStatus": "original fictional Daze rain-pressure environment; not an attested, surveyed or reconstructed late-Qin landscape",
+  "designSource": "../../docs/art/FIELD_ENVIRONMENT_BRIEF.md",
+  "engineImportEvidence": "../../docs/production/evidence/unreal-wet-field-environment-import-status.json",
+  "engineEvidence": "../../docs/production/evidence/unreal-wet-field-environment-presentation-status.json",
+  "toolchain": {
+    "authoring": "AgenticApp portable Blender 4.0.2 and official Unreal Engine 5.8.1",
+    "generation": "deterministic Blender Python plus bounded engine-authored material graphs; no neural mesh, generated texture, model weights or private source material",
+    "generator": {
+      "file": "../../scripts/build-field-environment.py",
+      "sha256": "5c51ea2107e8b263da36e0ceb7820eaa9b9ae27cf1ae9370756de222c3ea23e3"
+    },
+    "validator": {
+      "file": "../../scripts/validate-field-environment.py",
+      "sha256": "86263d7896c4f73aec53d199cadfe18756a8ce85c53d76122e85d6e949a58a61",
+      "method": "clean GLB/FBX import, topology/material/UV/vertex-color/bounds/contact, LOD and collision inspection plus clean-import render"
+    },
+    "unrealImporter": {
+      "file": "../../scripts/import-field-environment-unreal.py",
+      "sha256": "f7320177f247e7ceec9f2a9d4e43d09fe3bc9586074b26048e937ac8b30515bc",
+      "method": "isolated FBX LOD0/LOD1 import or read-only inspection with exact UE 5.8 bounds, LOD, UV, slot, collision, lightmap, Nanite and screen-size assertions"
+    },
+    "unrealMaterialAuthor": {
+      "file": "../../scripts/author-field-environment-materials-unreal.py",
+      "sha256": "ea846f507039868b74262788d622c16506c093c5a2aa14b9441b7d3620a7d031",
+      "method": "read-only by default; exact two-material authoring or structurally reviewed parameter retune behind SHI_FIELD_ENVIRONMENT_AUTHOR_MATERIALS=1, followed by graph, output, noise, vertex-mask, texture, normal and compile inspection"
+    }
+  },
+  "outputs": [
+    {"file": "../3d/rendered/shi-wet-field-environment-v1.blend", "role": "editable source and authored-material lookdev", "bytes": 3091228, "sha256": "83b8941c2607aa52ed7bbec976439605391dd2b273922f801641b200fc6f96b8"},
+    {"file": "../3d/export/shi-wet-field-environment-v1-lod0.glb", "role": "LOD0 editable-component interchange", "bytes": 320684, "sha256": "5067b69225c360a376f0fca5a217a47244ae4484c593f5a3086b7c4e0992ec93"},
+    {"file": "../3d/export/shi-wet-field-environment-v1-lod1.glb", "role": "LOD1 editable-component interchange", "bytes": 99948, "sha256": "a270fa5154f8c80047b908a0996c1852f08caa51a032506d5b08949d1a6abf69"},
+    {"file": "../3d/export/shi-wet-field-environment-v1.fbx", "role": "Unreal LOD0 import with exact named convex source collision", "bytes": 760108, "sha256": "8438609fedd0e353f30c0f2afd4c579cdae937ecafbcf1f2c51fa5f3885dbf61"},
+    {"file": "../3d/export/shi-wet-field-environment-v1-lod1.fbx", "role": "Unreal LOD1 static-mesh import", "bytes": 226684, "sha256": "4a2ff1d537107ded014ad1e1a22fd492137a20c2baa63ef9437747ddd68149dd"},
+    {"file": "../3d/rendered/shi-wet-field-environment-v1.png", "role": "oblique authored-material source inspection", "bytes": 1501805, "sha256": "440271841c0449237ec30ffbf409919690cdac5ad8649d1c27e2dc886dc16bc6"},
+    {"file": "../3d/rendered/shi-wet-field-environment-v1-profile.png", "role": "profile clearance and depression inspection", "bytes": 1457520, "sha256": "c6dbf283550104d9ed75923a95ace9b2f07ea8ca8f4d1c0d5779f416355997f7"},
+    {"file": "../3d/rendered/shi-wet-field-environment-v1-glb-import.png", "role": "clean LOD0 GLB interchange inspection", "bytes": 1486922, "sha256": "786f539aa1a475bd1595b320a695706c75983beee75a95a56d7112725da97ccd"},
+    {"file": "../3d/source/shi-wet-field-environment-v1.metrics.json", "role": "deterministic generation metrics", "bytes": 1626, "sha256": "30790c03400bfb1472b3dcc366be12c9bc91dd583a432d92b9088c3131fa389d"},
+    {"file": "../3d/source/shi-wet-field-environment-v1.validation.json", "role": "clean interchange machine validation", "bytes": 19988, "sha256": "546f828c9e6e70a0bd528bb6fbed5963ded9ce94729ad4af8e009d41b98d71a9"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/WetField/M_SHI_WetFieldGround.uasset", "role": "Unreal authored wet-field production-blockout PBR graph", "bytes": 14763, "sha256": "f9d9067f2061e1db0c70a814576f9636b9f327cb782f836049c2a2efb571bd7e"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/WetField/M_SHI_ShallowRainwater.uasset", "role": "Unreal authored shallow-rainwater production-blockout PBR graph", "bytes": 8329, "sha256": "ddb5dab3ff0217a96d23ce0b1aed8b7ab6da5603ead453aa3c222e836fd65e9d"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/WetField/SM_SHI_WetFieldEnvironment_01.uasset", "role": "Unreal static mesh with LOD0, LOD1, lightmap UV and convex source-collision receipt", "bytes": 605737, "sha256": "9ffcaca23cd18b6e1cea2feea6d52d43b8e4d7c1cfd3cd953809c0340bc54432"},
+    {"file": "../../docs/production/evidence/unreal-wet-field-environment-review-v2.png", "role": "packaged full-field development review", "bytes": 726966, "sha256": "f596ed551b1b393888dd1b5076d2ab6e3019523ca0c08cf580f246c47ca37c1a"},
+    {"file": "../../docs/production/evidence/unreal-wet-field-council-opening-v2.png", "role": "packaged opening council review", "bytes": 594347, "sha256": "847df9d984aa0c63b067666553a5926dff5ae748a1c6705a52157e3cd48a32e1"},
+    {"file": "../../docs/production/evidence/unreal-wet-field-story-advanced-v2.png", "role": "packaged story-progression review", "bytes": 601915, "sha256": "bb99ca3ad0fa08d5b2601dc229bedd54e82d3fa1e999a3cb3af03850c6ede654"},
+    {"file": "../../docs/production/evidence/unreal-wet-field-engagement-opening-v2.png", "role": "packaged Broken Crossing pulse-one review", "bytes": 657175, "sha256": "2a225f383b8fe99db073ee069d6747c5ed0baa26708fb7d82981906adf144ae4"},
+    {"file": "../../docs/production/evidence/unreal-wet-field-engagement-pulse-02-v2.png", "role": "packaged Broken Crossing pulse-two review", "bytes": 647591, "sha256": "6ce27ef014764a36a5e737293d304e1d7792f381bbb8ec0ef0edfcc9ed532615"},
+    {"file": "../../docs/production/evidence/unreal-wet-field-engagement-complete-v2.png", "role": "packaged completed deterministic engagement review", "bytes": 637785, "sha256": "6d65da0e56eb772ba5c22f2d1ea3ef5662ab826f5d35ed00146eba990630a871"},
+    {"file": "../../docs/production/evidence/unreal-wet-field-engagement-return-v2.png", "role": "packaged unchanged-campaign return review", "bytes": 585585, "sha256": "12d0a680b8b2a46fa9b402f8cdc8f503866627ac25107e5536e391cf32c92bdd"}
+  ],
+  "technicalReview": {
+    "dimensionsMeters": [24.0, 24.0, 0.24400079296661377],
+    "boundsMeters": {"minimum": [-12.0, -12.0, -0.3200005340576172], "maximum": [12.0, 12.0, -0.07599975109100342]},
+    "lod0Triangles": 9120,
+    "lod1Triangles": 2492,
+    "collisionTriangles": 12,
+    "renderComponents": 6,
+    "materialSlots": ["M_SHI_WetFieldGround", "M_SHI_ShallowRainwater"],
+    "uvChannelsPerLod": [2, 2],
+    "cleanGlbImport": "pass",
+    "cleanFbxImport": "pass",
+    "unrealImport": "pass",
+    "unrealMaterials": "pass: compile-clean fifteen-node ground and five-node water PBR graphs, five outputs each, no textures and no normal pretence",
+    "unrealNativeAutomation": "14 of 14 SHI suites pass, including WetFieldEnvironmentPresentationV1 hostile scale, collision, navigation, visibility and clearance cases",
+    "unrealVisibleCampaign": "pass: Act I to Act III with two verified transactions",
+    "unrealVisibleEngagement": "pass: Broken Crossing completes three pulses and campaign returns byte-guarded and unchanged",
+    "lodReduction": "72.7 percent fewer triangles from LOD0 to LOD1"
+  },
+  "constraints": [
+    "Do not describe this fictional terrain as historically attested, surveyed or reconstructed",
+    "Keep exact identity transform, 24 by 24 metre bounds and at least four-centimetre command-surface clearance; the admitted mesh provides about 5.6 centimetres",
+    "Keep runtime terrain noninteractive, collision-free, non-navigable and visible in the non-authoritative engagement",
+    "Do not promote this production blockout to final environment, shipping art or marketing status",
+    "Complete shelter, rain, vegetation, figures, formations, sky, final lighting, performance/accessibility and human historical/cinematic/art review before final scene acceptance"
+  ]
+}

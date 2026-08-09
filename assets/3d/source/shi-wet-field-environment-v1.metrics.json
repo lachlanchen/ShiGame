@@ -1,0 +1,49 @@
+{
+  "assetId": "shi-wet-field-environment-v1",
+  "generator": "deterministic Blender source script",
+  "blender": "4.0.2",
+  "historicalStatus": "project-authored Daze rain-pressure environment; not surveyed reconstruction",
+  "boundsMeters": {
+    "minimum": [
+      -12.0,
+      -12.0,
+      -0.3199999928474426
+    ],
+    "maximum": [
+      12.0,
+      12.0,
+      -0.07599999755620956
+    ]
+  },
+  "centralHeightMeters": {
+    "minimum": -0.12439754841758822,
+    "maximum": -0.11171171807289976
+  },
+  "lod0Triangles": 9120,
+  "lod1Triangles": 2492,
+  "collisionTriangles": 12,
+  "materials": [
+    "M_SHI_WetFieldGround",
+    "M_SHI_ShallowRainwater"
+  ],
+  "components": [
+    "SM_SHI_WetField_LOD0_Terrain",
+    "SM_SHI_WetField_LOD0_Puddle01",
+    "SM_SHI_WetField_LOD0_Puddle02",
+    "SM_SHI_WetField_LOD0_Puddle03",
+    "SM_SHI_WetField_LOD0_Puddle04",
+    "SM_SHI_WetField_LOD0_Puddle05"
+  ],
+  "collision": "UCX_SM_SHI_WetFieldEnvironment_01_01",
+  "rootIntent": "identity at command-space origin; central ground remains below command-surface bottom",
+  "exports": {
+    "blend": "../rendered/shi-wet-field-environment-v1.blend",
+    "render": "../rendered/shi-wet-field-environment-v1.png",
+    "profileRender": "../rendered/shi-wet-field-environment-v1-profile.png",
+    "cleanImportRender": "../rendered/shi-wet-field-environment-v1-glb-import.png",
+    "lod0Glb": "../export/shi-wet-field-environment-v1-lod0.glb",
+    "lod1Glb": "../export/shi-wet-field-environment-v1-lod1.glb",
+    "fbx": "../export/shi-wet-field-environment-v1.fbx",
+    "lod1Fbx": "../export/shi-wet-field-environment-v1-lod1.fbx"
+  }
+}

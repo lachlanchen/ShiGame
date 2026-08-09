@@ -1,0 +1,787 @@
+{
+  "assetId": "shi-wet-field-environment-v1",
+  "validator": "clean Blender import plus bmesh topology/material/UV/color/bounds inspection",
+  "blender": "4.0.2",
+  "exports": [
+    {
+      "path": "export/shi-wet-field-environment-v1-lod0.glb",
+      "format": "glb",
+      "objects": [
+        {
+          "name": "SM_SHI_WetField_LOD0_Puddle01",
+          "vertices": 94,
+          "weldedVertices": 33,
+          "normalOrAttributeSplitVertices": 61,
+          "triangles": 32,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 32,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.12578558492036293,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD0_Puddle02",
+          "vertices": 96,
+          "weldedVertices": 33,
+          "normalOrAttributeSplitVertices": 63,
+          "triangles": 32,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 32,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.0803092682944401,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD0_Puddle03",
+          "vertices": 96,
+          "weldedVertices": 33,
+          "normalOrAttributeSplitVertices": 63,
+          "triangles": 32,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 32,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.24866001898193962,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD0_Puddle04",
+          "vertices": 96,
+          "weldedVertices": 33,
+          "normalOrAttributeSplitVertices": 63,
+          "triangles": 32,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 32,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.07966278993798652,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD0_Puddle05",
+          "vertices": 96,
+          "weldedVertices": 33,
+          "normalOrAttributeSplitVertices": 63,
+          "triangles": 32,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 32,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.009333497860480785,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD0_Terrain",
+          "vertices": 5002,
+          "weldedVertices": 4482,
+          "normalOrAttributeSplitVertices": 520,
+          "triangles": 8960,
+          "uvLayers": 2,
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeStats": [
+            {
+              "name": "Col",
+              "maximumRgb": 0.05951124057173729,
+              "minimumAlpha": 0.0,
+              "maximumAlpha": 1.0
+            }
+          ],
+          "materials": [
+            "M_SHI_WetFieldGround"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 104.37096105096862,
+          "centralMaximumZ": -0.11400915682315826,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -12.0,
+          -12.0,
+          -0.3199999928474426
+        ],
+        "maximum": [
+          12.0,
+          12.0,
+          -0.07599999755620956
+        ],
+        "dimensions": [
+          24.0,
+          24.0,
+          0.24399999529123306
+        ]
+      },
+      "renderTriangles": 9120,
+      "importedMaterials": {
+        "M_SHI_ShallowRainwater": {
+          "baseColor": [
+            0.006000000052154064,
+            0.010999999940395355,
+            0.008999999612569809,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.1599999964237213
+        },
+        "M_SHI_WetFieldGround": {
+          "baseColor": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8199999928474426
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "darkExplicitFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "routeVertexColor": true,
+        "terrainAndWaterTopology": true,
+        "consistentWinding": true,
+        "positiveTerrainVolume": true,
+        "exactMeterBounds": true,
+        "centralPlatformClearance": true,
+        "appliedScaleAndRotation": true,
+        "boundedTriangleCount": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-wet-field-environment-v1-lod1.glb",
+      "format": "glb",
+      "objects": [
+        {
+          "name": "SM_SHI_WetField_LOD1_Puddle01",
+          "vertices": 36,
+          "weldedVertices": 13,
+          "normalOrAttributeSplitVertices": 23,
+          "triangles": 12,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 12,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.12298240028161828,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD1_Puddle02",
+          "vertices": 36,
+          "weldedVertices": 13,
+          "normalOrAttributeSplitVertices": 23,
+          "triangles": 12,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 12,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.07724800256231544,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD1_Puddle03",
+          "vertices": 36,
+          "weldedVertices": 13,
+          "normalOrAttributeSplitVertices": 23,
+          "triangles": 12,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 12,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.23972406604025406,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD1_Puddle04",
+          "vertices": 36,
+          "weldedVertices": 13,
+          "normalOrAttributeSplitVertices": 23,
+          "triangles": 12,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 12,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.0772989731096318,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD1_Puddle05",
+          "vertices": 35,
+          "weldedVertices": 13,
+          "normalOrAttributeSplitVertices": 22,
+          "triangles": 12,
+          "uvLayers": 2,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 12,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": -0.00907387733733927,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_WetField_LOD1_Terrain",
+          "vertices": 1482,
+          "weldedVertices": 1218,
+          "normalOrAttributeSplitVertices": 264,
+          "triangles": 2432,
+          "uvLayers": 2,
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeStats": [
+            {
+              "name": "Col",
+              "maximumRgb": 0.05951124057173729,
+              "minimumAlpha": 0.0,
+              "maximumAlpha": 1.0
+            }
+          ],
+          "materials": [
+            "M_SHI_WetFieldGround"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 104.30144323082641,
+          "centralMaximumZ": -0.11400915682315826,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -12.0,
+          -12.0,
+          -0.3199999928474426
+        ],
+        "maximum": [
+          12.0,
+          12.0,
+          -0.07599999755620956
+        ],
+        "dimensions": [
+          24.0,
+          24.0,
+          0.24399999529123306
+        ]
+      },
+      "renderTriangles": 2492,
+      "importedMaterials": {
+        "M_SHI_ShallowRainwater": {
+          "baseColor": [
+            0.006000000052154064,
+            0.010999999940395355,
+            0.008999999612569809,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.1599999964237213
+        },
+        "M_SHI_WetFieldGround": {
+          "baseColor": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8199999928474426
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "darkExplicitFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "routeVertexColor": true,
+        "terrainAndWaterTopology": true,
+        "consistentWinding": true,
+        "positiveTerrainVolume": true,
+        "exactMeterBounds": true,
+        "centralPlatformClearance": true,
+        "appliedScaleAndRotation": true,
+        "boundedTriangleCount": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-wet-field-environment-v1.fbx",
+      "format": "fbx",
+      "objects": [
+        {
+          "name": "SM_SHI_WetFieldEnvironment_01",
+          "vertices": 4647,
+          "weldedVertices": 4647,
+          "normalOrAttributeSplitVertices": 0,
+          "triangles": 9120,
+          "uvLayers": 2,
+          "colorAttributes": [
+            "ShiRouteMask"
+          ],
+          "colorAttributeStats": [
+            {
+              "name": "ShiRouteMask",
+              "maximumRgb": 1.0,
+              "minimumAlpha": 0.0,
+              "maximumAlpha": 1.0
+            }
+          ],
+          "materials": [
+            "M_SHI_WetFieldGround",
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 160,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 103.82720989097345,
+          "centralMaximumZ": -0.11400925368070602,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "UCX_SM_SHI_WetFieldEnvironment_01_01",
+          "vertices": 8,
+          "weldedVertices": 8,
+          "normalOrAttributeSplitVertices": 0,
+          "triangles": 12,
+          "uvLayers": 1,
+          "colorAttributes": [],
+          "colorAttributeStats": [],
+          "materials": [
+            "M_SHI_WetField_Collision"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 149.75999450683594,
+          "centralMaximumZ": null,
+          "location": [
+            0.0,
+            0.0,
+            -0.1899999976158142
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -12.0,
+          -12.0,
+          -0.3200005292892456
+        ],
+        "maximum": [
+          12.0,
+          12.0,
+          -0.07599947601556778
+        ],
+        "dimensions": [
+          24.0,
+          24.0,
+          0.24400105327367783
+        ]
+      },
+      "renderTriangles": 9120,
+      "importedMaterials": {
+        "M_SHI_ShallowRainwater": {
+          "baseColor": [
+            0.006000000052154064,
+            0.010999999940395355,
+            0.008999999612569809,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.1599999964237213
+        },
+        "M_SHI_WetFieldGround": {
+          "baseColor": [
+            0.017999999225139618,
+            0.008999999612569809,
+            0.003000000026077032,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8199999928474426
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "darkExplicitFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "routeVertexColor": true,
+        "terrainAndWaterTopology": true,
+        "consistentWinding": true,
+        "positiveTerrainVolume": true,
+        "exactMeterBounds": true,
+        "centralPlatformClearance": true,
+        "appliedScaleAndRotation": true,
+        "boundedTriangleCount": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-wet-field-environment-v1-lod1.fbx",
+      "format": "fbx",
+      "objects": [
+        {
+          "name": "SM_SHI_WetFieldEnvironment_01",
+          "vertices": 1283,
+          "weldedVertices": 1283,
+          "normalOrAttributeSplitVertices": 0,
+          "triangles": 2492,
+          "uvLayers": 2,
+          "colorAttributes": [
+            "ShiRouteMask"
+          ],
+          "colorAttributeStats": [
+            {
+              "name": "ShiRouteMask",
+              "maximumRgb": 1.0,
+              "minimumAlpha": 0.0,
+              "maximumAlpha": 1.0
+            }
+          ],
+          "materials": [
+            "M_SHI_WetFieldGround",
+            "M_SHI_ShallowRainwater"
+          ],
+          "nonManifoldEdges": 60,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 103.77511591149529,
+          "centralMaximumZ": -0.11400925368070602,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -12.0,
+          -12.0,
+          -0.3200005292892456
+        ],
+        "maximum": [
+          12.0,
+          12.0,
+          -0.07599947601556778
+        ],
+        "dimensions": [
+          24.0,
+          24.0,
+          0.24400105327367783
+        ]
+      },
+      "renderTriangles": 2492,
+      "importedMaterials": {
+        "M_SHI_ShallowRainwater": {
+          "baseColor": [
+            0.006000000052154064,
+            0.010999999940395355,
+            0.008999999612569809,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.1599999964237213
+        },
+        "M_SHI_WetFieldGround": {
+          "baseColor": [
+            0.017999999225139618,
+            0.008999999612569809,
+            0.003000000026077032,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8199999928474426
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "expectedLodNames": true,
+        "expectedRenderNames": true,
+        "collisionContract": true,
+        "materialSlots": true,
+        "darkExplicitFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "routeVertexColor": true,
+        "terrainAndWaterTopology": true,
+        "consistentWinding": true,
+        "positiveTerrainVolume": true,
+        "exactMeterBounds": true,
+        "centralPlatformClearance": true,
+        "appliedScaleAndRotation": true,
+        "boundedTriangleCount": true,
+        "onlyExpectedComponents": true
+      },
+      "passed": true
+    }
+  ],
+  "lodReduction": true,
+  "passed": true
+}

@@ -14,6 +14,7 @@ const required = [
   "Source/SHI/ShiWartableModel.h", "Source/SHI/ShiWartableModel.cpp",
   "Source/SHI/ShiCommandSignalModel.h", "Source/SHI/ShiCommandSignalModel.cpp",
   "Source/SHI/ShiCommandSurfacePresentationModel.h", "Source/SHI/ShiCommandSurfacePresentationModel.cpp",
+  "Source/SHI/ShiWetFieldEnvironmentPresentationModel.h", "Source/SHI/ShiWetFieldEnvironmentPresentationModel.cpp",
   "Source/SHI/ShiCommandWeightPresentationModel.h", "Source/SHI/ShiCommandWeightPresentationModel.cpp",
   "Source/SHI/ShiCouncilStagingModel.h", "Source/SHI/ShiCouncilStagingModel.cpp",
   "Source/SHI/ShiCouncilFigure.h", "Source/SHI/ShiCouncilFigure.cpp",
@@ -31,6 +32,9 @@ const required = [
   "Content/SHI/Art/Environment/CommandSurface/M_SHI_DarkWorkedWood.uasset",
   "Content/SHI/Art/Environment/CommandSurface/M_SHI_WetPackedEarth.uasset",
   "Content/SHI/Art/Environment/CommandSurface/SM_SHI_CommandSurface_01.uasset",
+  "Content/SHI/Art/Environment/WetField/M_SHI_WetFieldGround.uasset",
+  "Content/SHI/Art/Environment/WetField/M_SHI_ShallowRainwater.uasset",
+  "Content/SHI/Art/Environment/WetField/SM_SHI_WetFieldEnvironment_01.uasset",
   "Content/StreamingAssets/chapter-01-daze.json", "Content/StreamingAssets/chapter-01-audio.json",
   "Content/StreamingAssets/chapter-01-broken-crossing.v1.json",
   "Content/StreamingAssets/chapter-01-replays.v1.json", "Content/StreamingAssets/editions.json",
@@ -211,6 +215,117 @@ if (commandSurfacePresentationEvidence.screenshots?.length !== 3
     || !commandSurfacePresentationEvidence.visiblePlaytest?.campaignUnchangedByEngagement)
   errors.push("Unreal command-surface material, runtime, automation or visible-play receipt is incomplete");
 
+const wetFieldProvenancePath = resolve(root, "assets/provenance/shi-wet-field-environment-v1.json");
+const wetFieldImportEvidencePath = resolve(root, "docs/production/evidence/unreal-wet-field-environment-import-status.json");
+const wetFieldPresentationEvidencePath = resolve(root, "docs/production/evidence/unreal-wet-field-environment-presentation-status.json");
+const wetFieldProvenance = JSON.parse(await readFile(wetFieldProvenancePath, "utf8"));
+const wetFieldImportEvidence = JSON.parse(await readFile(wetFieldImportEvidencePath, "utf8"));
+const wetFieldPresentationEvidence = JSON.parse(await readFile(wetFieldPresentationEvidencePath, "utf8"));
+const wetFieldDecision = "approved-runtime-wet-field-production-blockout-council-engagement-story-reviewed-not-final-environment";
+if (wetFieldProvenance.assetId !== "shi-wet-field-environment-v1" || wetFieldProvenance.status !== wetFieldDecision)
+  errors.push("Unreal wet-field provenance does not preserve its bounded runtime blockout decision");
+if (wetFieldImportEvidence.decision !== "approved-engine-wet-field-production-blockout-packaged-not-final-environment")
+  errors.push("Unreal wet-field import evidence is missing or overstates final-environment approval");
+if (wetFieldPresentationEvidence.decision !== wetFieldDecision)
+  errors.push("Unreal wet-field presentation evidence is missing or overstates final-environment approval");
+for (const output of wetFieldProvenance.outputs ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, "assets/provenance", output.file));
+    const hash = createHash("sha256").update(bytes).digest("hex");
+    if (bytes.byteLength !== output.bytes || hash !== output.sha256)
+      errors.push(`wet-field provenance receipt drifted: ${output.file}`);
+  } catch {
+    errors.push(`wet-field provenance output is missing: ${output.file}`);
+  }
+}
+for (const tool of [wetFieldProvenance.toolchain?.generator, wetFieldProvenance.toolchain?.validator,
+  wetFieldProvenance.toolchain?.unrealImporter, wetFieldProvenance.toolchain?.unrealMaterialAuthor]) {
+  if (!tool?.file || !tool?.sha256) {
+    errors.push("wet-field provenance omits a bounded tool receipt");
+    continue;
+  }
+  try {
+    const bytes = await readFile(resolve(root, "assets/provenance", tool.file));
+    if (createHash("sha256").update(bytes).digest("hex") !== tool.sha256)
+      errors.push(`wet-field tool hash drifted: ${tool.file}`);
+  } catch {
+    errors.push(`wet-field provenance tool is missing: ${tool.file}`);
+  }
+}
+for (const asset of wetFieldImportEvidence.trackedUnrealAssets ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, asset.file));
+    if (bytes.byteLength !== asset.bytes || createHash("sha256").update(bytes).digest("hex") !== asset.sha256)
+      errors.push(`tracked Unreal wet-field receipt drifted: ${asset.file}`);
+  } catch {
+    errors.push(`tracked Unreal wet-field asset is missing: ${asset.file}`);
+  }
+}
+if (wetFieldImportEvidence.trackedUnrealAssets?.length !== 3
+    || wetFieldImportEvidence.import?.passed !== true
+    || wetFieldImportEvidence.import?.lodTriangles?.join(",") !== "9120,2492"
+    || wetFieldImportEvidence.import?.lodVertices?.join(",") !== "5480,1662"
+    || wetFieldImportEvidence.import?.lodUvChannels?.join(",") !== "2,2"
+    || wetFieldImportEvidence.import?.lodScreenSizes?.length !== 2
+    || wetFieldImportEvidence.import?.materialSlots?.join(",") !== "M_SHI_WetFieldGround,M_SHI_ShallowRainwater"
+    || wetFieldImportEvidence.import?.simpleCollisionCount !== 0
+    || wetFieldImportEvidence.import?.convexCollisionCount !== 1
+    || wetFieldImportEvidence.import?.lightMapResolution !== 256
+    || wetFieldImportEvidence.import?.lightMapCoordinateIndex !== 1
+    || wetFieldImportEvidence.import?.naniteEnabled !== false
+    || wetFieldImportEvidence.import?.readOnlyInspection?.mode !== "inspect-only"
+    || wetFieldImportEvidence.import?.readOnlyInspection?.exitCode !== 0
+    || !wetFieldImportEvidence.import?.readOnlyInspection?.trackedUassetHashesUnchanged)
+  errors.push("Unreal wet-field mesh/import receipt is incomplete");
+const wetFieldMin = wetFieldImportEvidence.import?.boundsCentimeters?.minimum ?? [];
+const wetFieldMax = wetFieldImportEvidence.import?.boundsCentimeters?.maximum ?? [];
+if (wetFieldMin.length !== 3 || wetFieldMax.length !== 3
+    || Math.abs(wetFieldMin[0] + 1200) > 0.001 || Math.abs(wetFieldMin[1] + 1200) > 0.001
+    || Math.abs(wetFieldMin[2] + 32) > 0.001 || Math.abs(wetFieldMax[0] - 1200) > 0.001
+    || Math.abs(wetFieldMax[1] - 1200) > 0.001 || Math.abs(wetFieldMax[2] + 7.6) > 0.001)
+  errors.push("Unreal wet-field exact admitted bounds drifted");
+if (wetFieldImportEvidence.package?.packageCount !== 505
+    || wetFieldImportEvidence.package?.priorAcceptedPackageCount !== 502
+    || wetFieldImportEvidence.package?.addedPackageCount !== 3
+    || wetFieldImportEvidence.package?.result !== "BUILD SUCCESSFUL"
+    || wetFieldImportEvidence.package?.artifacts?.length !== 4
+    || wetFieldImportEvidence.smokeTest?.exitCode !== 0
+    || wetFieldImportEvidence.smokeTest?.containerPackageCount !== 505
+    || wetFieldImportEvidence.smokeTest?.gameMode !== "ShiGameMode")
+  errors.push("Unreal wet-field package or smoke receipt is incomplete");
+for (const screenshot of wetFieldPresentationEvidence.screenshots ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, screenshot.file));
+    if (bytes.byteLength !== screenshot.bytes || createHash("sha256").update(bytes).digest("hex") !== screenshot.sha256)
+      errors.push(`wet-field presentation screenshot drifted: ${screenshot.file}`);
+  } catch {
+    errors.push(`wet-field presentation screenshot is missing: ${screenshot.file}`);
+  }
+}
+if (wetFieldPresentationEvidence.screenshots?.length !== 7
+    || wetFieldPresentationEvidence.materials?.wetFieldGround?.nodeCount !== 15
+    || wetFieldPresentationEvidence.materials?.shallowRainwater?.nodeCount !== 5
+    || wetFieldPresentationEvidence.materials?.readOnlyInspection?.mode !== "inspect-only"
+    || wetFieldPresentationEvidence.materials?.readOnlyInspection?.exitCode !== 0
+    || !wetFieldPresentationEvidence.materials?.readOnlyInspection?.passed
+    || !wetFieldPresentationEvidence.materials?.readOnlyInspection?.trackedUassetHashesUnchanged
+    || wetFieldPresentationEvidence.presentation?.interactive !== false
+    || wetFieldPresentationEvidence.presentation?.runtimeCollision !== false
+    || wetFieldPresentationEvidence.presentation?.navigationInfluence !== false
+    || wetFieldPresentationEvidence.presentation?.visibleDuringNonAuthoritativeEngagement !== true
+    || wetFieldPresentationEvidence.presentation?.minimumRequiredCommandSurfaceClearanceCentimeters !== 4
+    || Math.abs((wetFieldPresentationEvidence.presentation?.observedCommandSurfaceClearanceCentimeters ?? 0) - 5.599975109100342) > 0.001
+    || wetFieldPresentationEvidence.presentation?.developmentReview?.fieldOfViewDegrees !== 52
+    || wetFieldPresentationEvidence.presentation?.developmentReview?.exposureCompensation !== -1.5
+    || wetFieldPresentationEvidence.automation?.discovered !== 14
+    || wetFieldPresentationEvidence.automation?.passed !== 14
+    || wetFieldPresentationEvidence.automation?.newSuite !== "SHI.Cinematic.WetFieldEnvironmentPresentationV1"
+    || !wetFieldPresentationEvidence.visiblePlaytest?.storyAdvanced
+    || !wetFieldPresentationEvidence.visiblePlaytest?.engagementAdvanced
+    || !wetFieldPresentationEvidence.visiblePlaytest?.engagementCompleted
+    || !wetFieldPresentationEvidence.visiblePlaytest?.campaignUnchangedByEngagement)
+  errors.push("Unreal wet-field material, runtime, automation or visible-play receipt is incomplete");
+
 const project = JSON.parse(await readFile(resolve(unreal, "SHI.uproject"), "utf8"));
 if (project.EngineAssociation !== "5.8") errors.push("Unreal engine association must be 5.8");
 if (!project.Modules?.some((module) => module.Name === "SHI" && module.Type === "Runtime")) errors.push("SHI runtime module is not registered");
@@ -240,6 +355,7 @@ const soundscape = await readFile(resolve(unreal, "Source/SHI/ShiSoundscapeCompo
 const wartable = await readFile(resolve(unreal, "Source/SHI/ShiWartableModel.cpp"), "utf8");
 const commandSignals = await readFile(resolve(unreal, "Source/SHI/ShiCommandSignalModel.cpp"), "utf8");
 const commandSurfacePresentation = await readFile(resolve(unreal, "Source/SHI/ShiCommandSurfacePresentationModel.cpp"), "utf8");
+const wetFieldPresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiWetFieldEnvironmentPresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiWetFieldEnvironmentPresentationModel.cpp"), "utf8")}`;
 const commandWeightPresentation = await readFile(resolve(unreal, "Source/SHI/ShiCommandWeightPresentationModel.cpp"), "utf8");
 const councilStaging = await readFile(resolve(unreal, "Source/SHI/ShiCouncilStagingModel.cpp"), "utf8");
 const councilFigure = await readFile(resolve(unreal, "Source/SHI/ShiCouncilFigure.cpp"), "utf8");
@@ -258,6 +374,8 @@ const engineConfig = await readFile(resolve(unreal, "Config/DefaultEngine.ini"),
 const pipeline = await readFile(resolve(root, "scripts/unreal-pipeline.sh"), "utf8");
 const commandWeightMaterialAuthor = await readFile(resolve(root, "scripts/author-command-weight-materials-unreal.py"), "utf8");
 const commandSurfaceMaterialAuthor = await readFile(resolve(root, "scripts/author-command-surface-materials-unreal.py"), "utf8");
+const wetFieldImporter = await readFile(resolve(root, "scripts/import-field-environment-unreal.py"), "utf8");
+const wetFieldMaterialAuthor = await readFile(resolve(root, "scripts/author-field-environment-materials-unreal.py"), "utf8");
 for (const token of ["schema v7", "TimeIndex <=", "NextActIndex <", "StreamingAssets/chapter-01-daze.json", "StreamingAssets/editions.json", "initialResources", "nextNodeId", "commitments", "countermeasures", "characters", "speakerId", "FindCharacter", "ValidateEvidence", "public-link-metadata-only", "specialist-review-required"]) if (!model.includes(token)) errors.push(`Unreal model omits contract token: ${token}`);
 for (const token of ["ApplyEffects(Choice->Effects)", "CommitmentOutcome->Effects", "Choice->PressureEffects", "Opposition->Effects", "MethodRead->Effects", "Condition->Effects", "SelectFieldCondition", "CanChoose", "ReplaySaveJson", "MoveTemp(Candidate)"]) if (!session.includes(token)) errors.push(`Unreal deterministic session omits contract token: ${token}`);
 for (const token of ["project-original-procedural", "RequiredCues", "CreateRainSamples", "CreateCueSamples", "bDefaultEnabled"]) if (!audioModel.includes(token)) errors.push(`Unreal audio model omits contract token: ${token}`);
@@ -265,9 +383,12 @@ for (const token of ["FShiSoundGenerator", "CreateSoundGenerator", "PendingCues"
 for (const token of ["ProjectSite", "CameraTransform", "Cylinder.Cylinder", "Sphere.Sphere", "Cone.Cone", "Dist2D", "CycleSite", "TableHalfWidth", "TableHalfDepth"]) if (!wartable.includes(token)) errors.push(`Unreal wartable model omits spatial contract token: ${token}`);
 for (const token of ["resource-grain", "layer-field", "layer-pursuit", "layer-method-read", "layer-commitment", "TableSurfaceZ", "MinimumPointerSpacing", "COUNTER WOULD HIT", "PURSUIT CLOSED · CAPTURED", "EXPOSURE 100 / 100", "SelectedStyle", "CameraTransform", "CycleSignal", "ValidateAgainstSites", "overlaps wartable site", "No carried promise currently awaits an answer."]) if (!commandSignals.includes(token)) errors.push(`Unreal command-signal model omits live-world contract token: ${token}`);
 for (const token of ["SM_SHI_CommandSurface_01.SM_SHI_CommandSurface_01", "SurfaceTopZ", "HalfWidth", "HalfDepth", "EdgeClearance", "FTransform::Identity", "bInteractive = false", "bCollisionEnabled = false", "bVisibleDuringEngagement = true", "FitsSafeField", "ValidateAgainstSites", "ReviewCameraTransform"]) if (!commandSurfacePresentation.includes(token)) errors.push(`Unreal command-surface presentation model omits bounded stage token: ${token}`);
+for (const token of ["SM_SHI_WetFieldEnvironment_01.SM_SHI_WetFieldEnvironment_01", "BoundsMinimum", "BoundsMaximum", "FTransform::Identity", "bInteractive = false", "bCollisionEnabled = false", "bAffectsNavigation = false", "bVisibleDuringEngagement = true", "MinimumCommandSurfaceClearance", "ReviewCameraTransform", "52.f", "ExposureCompensation", "-1.5f"]) if (!wetFieldPresentation.includes(token)) errors.push(`Unreal wet-field presentation model omits bounded environment token: ${token}`);
 for (const token of ["SM_SHI_CommandWeight_01.SM_SHI_CommandWeight_01", "FShiCommandSurfacePresentationModel::SurfaceTopZ", "FShiCommandSurfacePresentationModel::EdgeClearance", "MinimumMarkerClearance", "CouncilAspectRatio", "bInteractive = false", "bVisibleDuringEngagement = false", "FRotator(0.f, 20.f, 0.f)", "FitsCommandSurface", "ProjectToCouncilFrame", "ReviewCameraTransform", "44.f", "too small in the council composition"]) if (!commandWeightPresentation.includes(token)) errors.push(`Unreal command-weight presentation model omits bounded placement/lens token: ${token}`);
 for (const token of ["SHI_COMMAND_WEIGHT_AUTHOR_MATERIALS", "EXPECTED_NODE_COUNTS", "REVIEWED_PARAMETER_VALUES", "NOISEFUNCTION_GRADIENT_TEX3D", "delete_all_material_expressions", "retune_authored_material", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_METALLIC", "MP_SPECULAR", "MP_AMBIENT_OCCLUSION", "MP_NORMAL", "compileClean", "inspect-only"]) if (!commandWeightMaterialAuthor.includes(token)) errors.push(`Unreal command-weight material author omits bounded graph/inspection token: ${token}`);
 for (const token of ["SHI_COMMAND_SURFACE_AUTHOR_MATERIALS", "EXPECTED_NODE_COUNTS", "REVIEWED_PARAMETER_VALUES", "NOISEFUNCTION_GRADIENT_TEX3D", "delete_all_material_expressions", "retune_authored_material", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_METALLIC", "MP_SPECULAR", "MP_AMBIENT_OCCLUSION", "MP_NORMAL", "compileClean", "inspect-only"]) if (!commandSurfaceMaterialAuthor.includes(token)) errors.push(`Unreal command-surface material author omits bounded graph/inspection token: ${token}`);
+for (const token of ["SHI_FIELD_ENVIRONMENT_REIMPORT", "inspect-only", "SM_SHI_WetFieldEnvironment_01", "M_SHI_WetFieldGround", "M_SHI_ShallowRainwater", "lod_triangles == [9120, 2492]", "all(count >= 2 for count in lod_uv_channels)", "convex_collision_count == 1", "light_map_resolution\")) == 256", "naniteEnabled"]) if (!wetFieldImporter.includes(token)) errors.push(`Unreal wet-field importer omits bounded reimport/inspection token: ${token}`);
+for (const token of ["SHI_FIELD_ENVIRONMENT_AUTHOR_MATERIALS", "EXPECTED_NODE_COUNTS", "REVIEWED_PARAMETER_VALUES", "NOISEFUNCTION_GRADIENT_TEX3D", "VertexColor", "delete_all_material_expressions", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_METALLIC", "MP_SPECULAR", "MP_AMBIENT_OCCLUSION", "compileClean", "inspect-only"]) if (!wetFieldMaterialAuthor.includes(token)) errors.push(`Unreal wet-field material author omits bounded graph/inspection token: ${token}`);
 for (const token of ["speaker", "keeper", "HISTORICAL FIGURE · WORDS ARE AUTHORED DRAMATIZATION, NOT TRANSCRIPT", "FICTIONAL CHARACTER · PROJECT-AUTHORED DRAMATIC RECONSTRUCTION", "SpeakerCamera", "CouncilFieldOfViewDegrees", "FindParticipant", "SameParticipant", "cannot preserve canonical cast, disclosure, blocking and camera authorship", "OutStage = MoveTemp(Candidate)"]) if (!councilStaging.includes(token)) errors.push(`Unreal council staging omits cast/blocking/disclosure token: ${token}`);
 for (const token of ["FigureRoot", "Body", "Head", "Mantle", "InitializeFigure", "ShiCharacter:", "ShiCouncilSpeaker", "SetMobility", "SetRenderCustomDepth", "SetCustomDepthStencilValue", "SetActorTransform"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits live performance-proxy token: ${token}`);
 for (const token of ["resolution-order", "resolution-commitment", "resolution-pressure", "resolution-pursuit", "resolution-method-read", "resolution-field", "resolution-position", "MaximumSequenceSeconds", "MaximumEasedTranslation", "MaximumEasedRotationDegrees", "FieldOfViewForBeat", "CameraMotionBetween", "TEXT(\"cut\")", "TEXT(\"ease\")", "DominantResourceSignal", "EffectsSummary", "POSITION LOST", "OATH ESTABLISHED", "TotalDuration", "OutBeats = MoveTemp(BuiltBeats)"]) if (!cinematic.includes(token)) errors.push(`Unreal cinematic model omits resolution/motion-grammar token: ${token}`);
@@ -279,10 +400,13 @@ if (!buildRules.includes('"AudioMixer"')) errors.push("Unreal runtime module doe
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Engine/BasicShapes")')) errors.push("Unreal packaging does not cook the engine-native wartable assets loaded by path");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Props/CommandWeight")')) errors.push("Unreal packaging does not force-cook the admitted command-weight assets");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environment/CommandSurface")')) errors.push("Unreal packaging does not force-cook the admitted command-surface assets");
+if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environment/WetField")')) errors.push("Unreal packaging does not force-cook the admitted wet-field assets");
 if (!engineConfig.includes("r.CustomDepth=3")) errors.push("Unreal renderer does not preserve the selected wartable marker stencil");
 for (const token of ["prepare_external_directory", "SHI_UNREAL_DERIVED_DATA", "UE-LocalDataCachePath", "SHI_UNREAL_PACKAGE_ROOT", "must be a dedicated directory outside the Git repository", "-archivedirectory=\"$SHI_PACKAGE_ROOT\""]) if (!pipeline.includes(token)) errors.push(`Unreal pipeline omits outside-Git build/cache token: ${token}`);
 if (pipeline.includes('archivedirectory="$SHI_REPO_ROOT/apps/unreal')) errors.push("Unreal Linux packaging still writes archives inside the Git worktree");
-for (const token of ["RestoreChronicle", "SaveChronicle", "ForceUTF8WithoutBOM", "Gamepad_FaceButton_Bottom", "RequestNewChronicle", "CreateSoundscape", "ToggleSound", "Gamepad_FaceButton_Top", "ToggleEvidence", "Gamepad_LeftShoulder", "GetHitResultAtScreenPosition", "Gamepad_RightShoulder", "Gamepad_LeftThumbstick", "Gamepad_RightThumbstick", "RebuildCommandSignals", "FShiOrderTransactionModel::Build", "FShiOrderTransactionModel::BuildTurnSnapshot", "CanPresentCommandSignals", "CanPresentResolutionSequence", "CanPresentCouncilStage", "ApplyCouncilStage", "FocusCouncil", "CouncilFigures", "SaveChronicle(Transaction.Session", "Session = MoveTemp(Transaction.Session)", "SaveChronicle(CandidateSession", "Session = MoveTemp(CandidateSession)", "CURRENT CHRONICLE PRESERVED", "BeginPreparedResolutionSequence", "ORDER HELD", "StartCinematicBeat", "TickCinematicSequence", "SkipCinematicSequence", "Gamepad_FaceButton_Right", "Gamepad_Special_Right", "has no live world actor", "SetCameraImmediate", "SetFieldOfView", "CinematicHoldElapsed = -Beat->TransitionSeconds", "ToggleReducedMotion", "LoadCinematicPreferences", "SaveCinematicPreferences", "GGameUserSettingsIni", "ReducedMotion", "SetActorLocationAndRotation", "CameraTransitionElapsed = CameraTransitionDuration", "bReturningFromCommandSignal", "BeginCameraTransition", "FQuat::Slerp", "SetRenderCustomDepth", "ShiSite:", "ShiSignal:", "OpenEngagement", "IssueEngagementCommand", "CampaignMatchesEngagementSnapshot", "ApplyEngagementCommandSpace", "EngagementMetricMarkers", "ShiEngagement:", "CAMPAIGN SAVE UNCHANGED", "Session.ExportSaveJson(CampaignSnapshot", "CurrentCampaign != EngagementCampaignSnapshot", "FShiCommandSurfacePresentationModel::Build", "ShiCommandSurfaceReview", "ShiEnvironment:CommandSurface", "ShiPresentation:FictionalInterfaceStage", "FShiCommandWeightPresentationModel::Build", "ShiCommandWeightReviewFront", "ShiCommandWeightReviewBack", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "ShiProp:CommandWeight", "ShiPresentation:NonAuthoritative", "Prop->SetActorHiddenInGame(bVisible)"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits persistence/input/audio/evidence/world-signal/cinematic-motion/transaction/engagement-authority/surface/command-weight token: ${token}`);
+for (const token of ["RestoreChronicle", "SaveChronicle", "ForceUTF8WithoutBOM", "Gamepad_FaceButton_Bottom", "RequestNewChronicle", "CreateSoundscape", "ToggleSound", "Gamepad_FaceButton_Top", "ToggleEvidence", "Gamepad_LeftShoulder", "GetHitResultAtScreenPosition", "Gamepad_RightShoulder", "Gamepad_LeftThumbstick", "Gamepad_RightThumbstick", "RebuildCommandSignals", "FShiOrderTransactionModel::Build", "FShiOrderTransactionModel::BuildTurnSnapshot", "CanPresentCommandSignals", "CanPresentResolutionSequence", "CanPresentCouncilStage", "ApplyCouncilStage", "FocusCouncil", "CouncilFigures", "SaveChronicle(Transaction.Session", "Session = MoveTemp(Transaction.Session)", "SaveChronicle(CandidateSession", "Session = MoveTemp(CandidateSession)", "CURRENT CHRONICLE PRESERVED", "BeginPreparedResolutionSequence", "ORDER HELD", "StartCinematicBeat", "TickCinematicSequence", "SkipCinematicSequence", "Gamepad_FaceButton_Right", "Gamepad_Special_Right", "has no live world actor", "SetCameraImmediate", "SetFieldOfView", "CinematicHoldElapsed = -Beat->TransitionSeconds", "ToggleReducedMotion", "LoadCinematicPreferences", "SaveCinematicPreferences", "GGameUserSettingsIni", "ReducedMotion", "SetActorLocationAndRotation", "CameraTransitionElapsed = CameraTransitionDuration", "bReturningFromCommandSignal", "BeginCameraTransition", "FQuat::Slerp", "SetRenderCustomDepth", "ShiSite:", "ShiSignal:", "OpenEngagement", "IssueEngagementCommand", "CampaignMatchesEngagementSnapshot", "ApplyEngagementCommandSpace", "EngagementMetricMarkers", "ShiEngagement:", "CAMPAIGN SAVE UNCHANGED", "Session.ExportSaveJson(CampaignSnapshot", "CurrentCampaign != EngagementCampaignSnapshot", "FShiCommandSurfacePresentationModel::Build", "ShiCommandSurfaceReview", "ShiEnvironment:CommandSurface", "ShiPresentation:FictionalInterfaceStage", "FShiCommandWeightPresentationModel::Build", "ShiCommandWeightReviewFront", "ShiCommandWeightReviewBack", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "ShiProp:CommandWeight", "ShiPresentation:NonAuthoritative", "Prop->SetActorHiddenInGame(bVisible)", "FShiWetFieldEnvironmentPresentationModel::Build", "ShiWetFieldEnvironmentReview", "ShiEnvironment:WetField", "M_SHI_WetFieldGround", "M_SHI_ShallowRainwater", "SetCanEverAffectNavigation(false)"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits persistence/input/audio/evidence/world-signal/cinematic-motion/transaction/engagement-authority/surface/command-weight/wet-field token: ${token}`);
+if (gameMode.includes("/Engine/BasicShapes/Plane.Plane") || gameMode.includes("Command-space ground")) errors.push("Unreal runtime still contains the superseded white engine-plane ground");
+for (const token of ["bOverride_AutoExposureBias", "ExposureCompensation", "PostProcessBlendWeight = 1.f"]) if (!gameMode.includes(token)) errors.push(`Unreal command camera omits reviewed exposure token: ${token}`);
 if (gameMode.indexOf("SaveChronicle(Transaction.Session") > gameMode.indexOf("Session = MoveTemp(Transaction.Session)")) errors.push("Unreal order commit mutates memory before the candidate save is durable");
 if (gameMode.indexOf("SaveChronicle(CandidateSession") > gameMode.indexOf("Session = MoveTemp(CandidateSession)")) errors.push("Unreal restart mutates memory before the replacement save is durable");
 for (const token of ["SELECTED ORDER", "ISSUE ORDER", "ACT %d/%d", "SCENE %d/%d", "NEW CHRONICLE", "GAMEPAD A", "SOUND OFF", "RAIN −", "CUES −", "HISTORICAL BASIS", "EXACT LOCATOR", "SPECIALIST REVIEW REQUIRED", "OPEN PUBLIC EDITION", "WARTABLE FOCUS", "INTELLIGENCE ONLY · NOT A DESTINATION", "SHIFT REVERSES", "SPACE / B SKIPS CONSEQUENCE", "COMMAND SIGNAL", "READ-ONLY 3D TALLY", "CONSEQUENCE %d / %d", "CAMERA ONLY · THE GAMEPLAY RESULT IS ALREADY RESOLVED", "SKIP CONSEQUENCE CAMERA", "REDUCED MOTION · CUTS ONLY", "CAMERA MOTION · RESTRAINED", "V / MENU MOTION", "C / L3 SIGNALS", "RETURN TO COUNCIL", "COUNCIL SPEAKER", "D / R3", "CURRENT GROUND", "WhiteBrush", "FIELD COMMAND EXERCISE", "SIX LIVE 3D TALLIES", "PLAYER EFFECT", "FIELD ANSWER", "CAMPAIGN SAVE BYTE-GUARDED", "ISSUE PULSE ORDER", "CAMPAIGN EFFECT PREVIEW", "RETURN TO CAMPAIGN UNCHANGED"]) if (!screen.includes(token)) errors.push(`Unreal command screen omits interaction/evidence/world-signal/cinematic-motion/readability/engagement token: ${token}`);
@@ -293,6 +417,7 @@ for (const token of ["SHI.Campaign.OrderTransactionV1", "order preflight never m
 for (const token of ["SHI.Cinematic.CouncilStagingV1", "speaker and keeper occupy the scene", "historical dialogue is explicitly not a transcript", "Aunt Yu is never presented as a historical person", "cast identity drift is rejected", "dialogue drift is rejected", "unauthored dialogue camera drift is rejected", "failed council rebuild is atomic", "council staging drift rejects the entire prepared transaction", "prepared council follows position"]) if (!automation.includes(token)) errors.push(`Unreal automation omits canonical council-staging token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandWeightPresentationV1", "preserves contact, pointer clearance and the 44-degree safe frame", "not a gameplay interaction target", "lower decision-object field without covering the speaker", "development front review camera looks exactly at the admitted prop", "development back review camera looks exactly at the admitted prop", "a prop that crowds a live signal is rejected", "a floating command weight is rejected", "an unauthored council lens cannot admit the prop"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-weight presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandSurfacePresentationV1", "reviewed command ground contains every site and live signal", "command ground is not an interaction target", "command ground has no runtime collision", "command ground remains beneath the non-authoritative engagement exercise", "surface review camera sees the whole authored command field", "unreviewed surface scaling is rejected", "runtime surface collision is rejected", "a disappearing engagement ground is rejected", "a signal outside the safe command field is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-surface presentation token: ${token}`);
+for (const token of ["SHI.Cinematic.WetFieldEnvironmentPresentationV1", "reviewed wet-field environment passes its presentation contract", "wet field is a bounded identity-root environment below the command surface", "wet field is not an interaction target", "wet field collision is disabled", "wet field does not affect navigation", "wet field persists beneath Broken Crossing", "environment review camera sees the whole bounded field", "unreviewed field scaling is rejected", "runtime field collision is rejected", "runtime field navigation authority is rejected", "a disappearing engagement environment is rejected", "terrain that violates command-surface clearance is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits wet-field presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.ResolutionGrammarV1", "opening sequence includes order, established oath, four response layers and position", "complete consequence sequence stays below five seconds", "first consequence shot cuts from unknowable prior inspection", "near pursuit-to-method translation uses one restrained ease", "pressure close reading has the narrowest authored lens", "position resolves through the widest authored lens", "cinematic cut/ease authorship cannot drift from spatial bounds", "cinematic lens grammar rejects disorienting drift", "cinematic planning never appends campaign history", "unbound cinematic world targets are rejected", "overlong cinematic shots are rejected", "cinematic layer reordering is rejected", "captured terminal position has a bounded consequence plan", "cinematic final resources must match resolution and world snapshots", "failed cinematic rebuild is atomic", "prepared world signal count"]) if (!automation.includes(token)) errors.push(`Unreal automation omits cinematic resolution/motion token: ${token}`);
 for (const token of ["SHI.Engagement.BrokenCrossingParityV1", "native exhaustive traversal matches Web route count", "native exhaustive traversal matches Web viable count", "every authored outcome is reachable", "every authored command is reachable", "each field condition preserves at least two viable plans", "same command from the same state is deterministic", "copy resolution never mutates the source position", "engagement replay rejects an invented authored response", "failed replay cannot mutate the accepted engagement", "native model rejects premature campaign authority", "native model rejects campaign condition drift", "six bounded 3D tallies follow every native position", "engagement signal height encodes its exact metric", "overlapping engagement pointers are rejected", "missing engagement metric rejects signal rebuild", "failed engagement signal rebuild is atomic"]) if (!engagementAutomation.includes(token)) errors.push(`Unreal engagement automation omits parity/hostile/spatial token: ${token}`);
 
@@ -301,4 +426,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, command surface, and a hash-bound runtime-presented command-weight production blockout with authored materials and explicit final-art red gates.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface and wet-field production blockouts with explicit final-art red gates.`);

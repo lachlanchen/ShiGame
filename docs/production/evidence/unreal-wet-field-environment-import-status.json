@@ -1,0 +1,102 @@
+{
+  "assetId": "shi-wet-field-environment-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Isolated Unreal 5.8.1 wet-field static-mesh admission, bounded material inspection, full cook/package and packaged launch smoke. This accepts a runtime production blockout, not a surveyed reconstruction, final environment or marketing asset.",
+  "engine": {
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "assetPath": "/Game/SHI/Art/Environment/WetField/SM_SHI_WetFieldEnvironment_01.SM_SHI_WetFieldEnvironment_01"
+  },
+  "import": {
+    "passed": true,
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "trackedUassetHashesUnchanged": true
+    },
+    "boundsCentimeters": {
+      "minimum": [-1200.0, -1200.0, -32.00005340576172],
+      "maximum": [1200.0, 1200.0, -7.599975109100342],
+      "dimensions": [2400.0, 2400.0, 24.400078296661377]
+    },
+    "lodTriangles": [9120, 2492],
+    "lodVertices": [5480, 1662],
+    "lodUvChannels": [2, 2],
+    "lodScreenSizes": [1.0, 0.07999999821186066],
+    "materialSlots": ["M_SHI_WetFieldGround", "M_SHI_ShallowRainwater"],
+    "simpleCollisionCount": 0,
+    "convexCollisionCount": 1,
+    "lightMapResolution": 256,
+    "lightMapCoordinateIndex": 1,
+    "naniteEnabled": false,
+    "naniteDecision": "Deliberately off for this bounded 9,120-triangle environment blockout; the 2,492-triangle LOD1 is explicit and sufficient."
+  },
+  "trackedUnrealAssets": [
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/WetField/M_SHI_ShallowRainwater.uasset",
+      "bytes": 8329,
+      "sha256": "ddb5dab3ff0217a96d23ce0b1aed8b7ab6da5603ead453aa3c222e836fd65e9d"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/WetField/M_SHI_WetFieldGround.uasset",
+      "bytes": 14763,
+      "sha256": "f9d9067f2061e1db0c70a814576f9636b9f327cb782f836049c2a2efb571bd7e"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/WetField/SM_SHI_WetFieldEnvironment_01.uasset",
+      "bytes": 605737,
+      "sha256": "9ffcaca23cd18b6e1cea2feea6d52d43b8e4d7c1cfd3cd953809c0340bc54432"
+    }
+  ],
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-WetField-Review-v2/Linux",
+    "packageCount": 505,
+    "priorAcceptedPackageCount": 502,
+    "addedPackageCount": 3,
+    "alwaysCookPath": "/Game/SHI/Art/Environment/WetField",
+    "artifacts": [
+      {
+        "role": "Linux development executable",
+        "bytes": 298496176,
+        "sha256": "659390dd652260c6139a04d018d28c18534e09ceed22d8ddecd9bbbe80fe9a19"
+      },
+      {
+        "role": "Pak metadata and non-IoStore payload",
+        "bytes": 10423851,
+        "sha256": "8798b4733e049d873d7626cd8b9d1fd5f04d343b93ecbf86742e778a2e464330"
+      },
+      {
+        "role": "IoStore data container",
+        "bytes": 165194400,
+        "sha256": "b540f715f3074aa01f37dcee189ef420f1fbc66b3b578dead999107d5b229c07"
+      },
+      {
+        "role": "IoStore table of contents",
+        "bytes": 146836,
+        "sha256": "ca11e54421912e5897f19f2bff61f5f466928eb4d0ded8cb17f6f523d5352efa"
+      }
+    ]
+  },
+  "smokeTest": {
+    "command": "./SHI.sh -nullrhi -unattended -nosound -ExecCmds=quit",
+    "exitCode": 0,
+    "containerPackageCount": 505,
+    "gameMode": "ShiGameMode",
+    "map": "/Engine/Maps/Entry",
+    "cleanRequestedExit": true,
+    "observed": [
+      "IoStore container mounted",
+      "premade AssetRegistry loaded with 505 packages",
+      "entry map loaded for play",
+      "clean command-requested shutdown"
+    ]
+  },
+  "decision": "approved-engine-wet-field-production-blockout-packaged-not-final-environment",
+  "remainingGates": [
+    "author the Daze shelter, bounded rain VFX, vegetation and final sky/lighting around this terrain",
+    "replace primitive council figures, floating light proxy and BasicShape signals with historically reviewed figures, props and formation language",
+    "repeat physical-display performance, camera, controller and accessibility evidence after final scene assembly",
+    "complete human historical, cinematic and final art-direction review before shipping or marketing use"
+  ]
+}

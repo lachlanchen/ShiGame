@@ -1,0 +1,166 @@
+{
+  "assetId": "shi-wet-field-environment-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Packaged Unreal 5.8.1 wet-field presentation, normal story progression and complete three-pulse Broken Crossing exercise/return review through an isolated localhost noVNC desktop. This accepts the terrain as a production blockout only.",
+  "decision": "approved-runtime-wet-field-production-blockout-council-engagement-story-reviewed-not-final-environment",
+  "historicalBoundary": "Project-authored fictional Daze rain-pressure environment. Its relief, routes, puddles and dimensions are not claimed as a surveyed or attested late-Qin landscape reconstruction.",
+  "presentation": {
+    "transform": "identity at world origin",
+    "boundsCentimeters": {
+      "minimum": [-1200.0, -1200.0, -32.00005340576172],
+      "maximum": [1200.0, 1200.0, -7.599975109100342]
+    },
+    "minimumRequiredCommandSurfaceClearanceCentimeters": 4.0,
+    "observedCommandSurfaceClearanceCentimeters": 5.599975109100342,
+    "interactive": false,
+    "runtimeCollision": false,
+    "navigationInfluence": false,
+    "visibleDuringNonAuthoritativeEngagement": true,
+    "actorTags": ["ShiEnvironment:WetField", "ShiPresentation:NonAuthoritative"],
+    "developmentReview": {
+      "flag": "-ShiWetFieldEnvironmentReview",
+      "fieldOfViewDegrees": 52.0,
+      "exposureCompensation": -1.5,
+      "excludedFromShipping": true
+    }
+  },
+  "materials": {
+    "authoringTool": "scripts/author-field-environment-materials-unreal.py",
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "passed": true,
+      "trackedUassetHashesUnchanged": true,
+      "compileErrors": 0
+    },
+    "wetFieldGround": {
+      "nodeCount": 15,
+      "fieldShadow": [0.004, 0.006, 0.0055],
+      "fieldDamp": [0.025, 0.019, 0.013],
+      "routeShadow": [0.006, 0.008, 0.009],
+      "routeDamp": [0.018, 0.021, 0.020],
+      "roughnessRange": [0.68, 0.86],
+      "metallic": 0.0,
+      "specular": 0.20,
+      "ambientOcclusion": 0.94,
+      "noise": "one bounded two-octave Fast Gradient 3D node",
+      "vertexColorRouteMask": true,
+      "normalInput": false,
+      "textures": 0
+    },
+    "shallowRainwater": {
+      "nodeCount": 5,
+      "color": [0.003, 0.008, 0.009],
+      "roughness": 0.10,
+      "metallic": 0.0,
+      "specular": 0.50,
+      "ambientOcclusion": 1.0,
+      "normalInput": false,
+      "textures": 0
+    }
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 14,
+    "passed": 14,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.WetFieldEnvironmentPresentationV1",
+    "negativeCases": [
+      "unreviewed world scale",
+      "runtime collision enabled",
+      "navigation authority enabled",
+      "environment hidden during engagement",
+      "terrain raised through command-surface clearance"
+    ]
+  },
+  "visiblePlaytest": {
+    "desktop": "isolated Xvfb :125, localhost-only x11vnc 5936 and noVNC 6136",
+    "package": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-WetField-Review-v2/Linux",
+    "inputs": [
+      "Return issued two selected campaign orders",
+      "Space skipped bounded consequence camera beats",
+      "X opened Broken Crossing",
+      "Return issued all three engagement pulse orders",
+      "X returned from the completed exercise to the campaign"
+    ],
+    "campaignStart": "Act I, Scene 1, turn 1",
+    "campaignObserved": "Act III, Scene 5 Broken Crossing, turn 3, two decisions, resources grain 49, trust 61, momentum 23, people 71 and danger 66",
+    "engagementObserved": "Broken Crossing pulse 1 through pulse 3 and deterministic COSTLY-SUCCESS completion; all six field metrics changed after player and field responses",
+    "campaignReturn": "same Act III scene, resource values, turn and decision count after leaving the byte-guarded non-authoritative exercise",
+    "storyAdvanced": true,
+    "engagementAdvanced": true,
+    "engagementCompleted": true,
+    "campaignUnchangedByEngagement": true
+  },
+  "screenshots": [
+    {
+      "file": "docs/production/evidence/unreal-wet-field-environment-review-v2.png",
+      "role": "development-only full-field geometry, material, boundary and command-surface clearance review",
+      "dimensions": [1600, 1000],
+      "bytes": 726966,
+      "sha256": "f596ed551b1b393888dd1b5076d2ab6e3019523ca0c08cf580f246c47ca37c1a"
+    },
+    {
+      "file": "docs/production/evidence/unreal-wet-field-council-opening-v2.png",
+      "role": "normal packaged opening council state on the admitted terrain",
+      "dimensions": [1600, 1000],
+      "bytes": 594347,
+      "sha256": "847df9d984aa0c63b067666553a5926dff5ae748a1c6705a52157e3cd48a32e1"
+    },
+    {
+      "file": "docs/production/evidence/unreal-wet-field-story-advanced-v2.png",
+      "role": "normal packaged Act-III story progression after two verified campaign transactions",
+      "dimensions": [1600, 1000],
+      "bytes": 601915,
+      "sha256": "bb99ca3ad0fa08d5b2601dc229bedd54e82d3fa1e999a3cb3af03850c6ede654"
+    },
+    {
+      "file": "docs/production/evidence/unreal-wet-field-engagement-opening-v2.png",
+      "role": "Broken Crossing pulse-one command state with six live signals",
+      "dimensions": [1600, 1000],
+      "bytes": 657175,
+      "sha256": "2a225f383b8fe99db073ee069d6747c5ed0baa26708fb7d82981906adf144ae4"
+    },
+    {
+      "file": "docs/production/evidence/unreal-wet-field-engagement-pulse-02-v2.png",
+      "role": "Broken Crossing pulse-two state after one deterministic player/field response",
+      "dimensions": [1600, 1000],
+      "bytes": 647591,
+      "sha256": "6ce27ef014764a36a5e737293d304e1d7792f381bbb8ec0ef0edfcc9ed532615"
+    },
+    {
+      "file": "docs/production/evidence/unreal-wet-field-engagement-complete-v2.png",
+      "role": "completed three-pulse deterministic COSTLY-SUCCESS exercise",
+      "dimensions": [1600, 1000],
+      "bytes": 637785,
+      "sha256": "6d65da0e56eb772ba5c22f2d1ea3ef5662ab826f5d35ed00146eba990630a871"
+    },
+    {
+      "file": "docs/production/evidence/unreal-wet-field-engagement-return-v2.png",
+      "role": "campaign return proving the exercise did not mutate canonical campaign state",
+      "dimensions": [1600, 1000],
+      "bytes": 585585,
+      "sha256": "12d0a680b8b2a46fa9b402f8cdc8f503866627ac25107e5536e391cf32c92bdd"
+    }
+  ],
+  "review": {
+    "rejectedFirstPass": [
+      "the first packaged material/exposure pass read as pale sand and flat teal rather than cold rain-soaked ground",
+      "disabling eye adaptation without compensation made the entire council composition too dark",
+      "neither rejected pass is accepted, published as evidence or described as final"
+    ],
+    "accepted": [
+      "the reviewed cooler field and shallow water read as damp, restrained ground beneath the warmer firelit command surface",
+      "the 24 by 24 metre bounded environment replaces the visually dominant engine-native white plane",
+      "the field stays collision-free, non-navigable and subordinate to campaign and engagement authority",
+      "normal packaged input advances two campaign transactions and the complete engagement returns without campaign mutation",
+      "the accepted judgment is explicitly production blockout, not final cinematic environment"
+    ],
+    "remainingRedGates": [
+      "Daze shelter architecture, rain VFX, vegetation, final sky and final lighting are absent",
+      "primitive proxy figures, floating light proxy and BasicShape signals are not final characters, props or formation language",
+      "historically reviewed period figures, formations, interaction hands, deformation and final weather/audio response remain open",
+      "physical-display performance/accessibility and human historical/cinematic/art review must be repeated on the final scene"
+    ]
+  }
+}

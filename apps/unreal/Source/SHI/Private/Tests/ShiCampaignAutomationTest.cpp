@@ -13,6 +13,7 @@
 #include "ShiCommandSignalModel.h"
 #include "ShiCommandSurfacePresentationModel.h"
 #include "ShiCommandWeightPresentationModel.h"
+#include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiWartableModel.h"
@@ -259,6 +260,59 @@ bool FShiCommandSurfacePresentationTest::RunTest(const FString& Parameters)
     EscapedSignals[0].Location.X = FShiCommandSurfacePresentationModel::HalfWidth() + 1.f;
     TestFalse(TEXT("a signal outside the safe command field is rejected"),
         FShiCommandSurfacePresentationModel::Validate(Presentation, Campaign.Sites, EscapedSignals, Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiWetFieldEnvironmentPresentationTest, "SHI.Cinematic.WetFieldEnvironmentPresentationV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiWetFieldEnvironmentPresentationTest::RunTest(const FString& Parameters)
+{
+    const FShiWetFieldEnvironmentPresentationData Presentation = FShiWetFieldEnvironmentPresentationModel::Build();
+    FString Error;
+    TestTrue(TEXT("reviewed wet-field environment passes its presentation contract"),
+        FShiWetFieldEnvironmentPresentationModel::Validate(Presentation, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestTrue(TEXT("wet field is a bounded identity-root environment below the command surface"),
+        Presentation.Transform.Equals(FTransform::Identity, .0001f)
+        && FMath::IsNearlyEqual(Presentation.BoundsMinimum.X, -FShiWetFieldEnvironmentPresentationModel::HalfExtent())
+        && FMath::IsNearlyEqual(Presentation.BoundsMaximum.Y, FShiWetFieldEnvironmentPresentationModel::HalfExtent())
+        && Presentation.BoundsMaximum.Z <= FShiCommandSurfacePresentationModel::Build().BoundsMinimum.Z
+            - FShiWetFieldEnvironmentPresentationModel::MinimumCommandSurfaceClearance());
+    TestFalse(TEXT("wet field is not an interaction target"), Presentation.bInteractive);
+    TestFalse(TEXT("wet field collision is disabled"), Presentation.bCollisionEnabled);
+    TestFalse(TEXT("wet field does not affect navigation"), Presentation.bAffectsNavigation);
+    TestTrue(TEXT("wet field persists beneath Broken Crossing"), Presentation.bVisibleDuringEngagement);
+
+    const FTransform ReviewCamera = FShiWetFieldEnvironmentPresentationModel::ReviewCameraTransform();
+    const FVector ReviewTarget(0.f, 0.f, -10.f);
+    TestTrue(TEXT("environment review camera sees the whole bounded field"),
+        FVector::DotProduct(ReviewCamera.GetRotation().GetForwardVector(),
+            (ReviewTarget - ReviewCamera.GetLocation()).GetSafeNormal()) > .9999f
+        && FVector::Dist(ReviewCamera.GetLocation(), ReviewTarget) > 2400.f
+        && FMath::IsNearlyEqual(FShiWetFieldEnvironmentPresentationModel::ReviewFieldOfViewDegrees(), 52.f)
+        && FMath::IsNearlyEqual(FShiWetFieldEnvironmentPresentationModel::ExposureCompensation(), -1.5f));
+
+    FShiWetFieldEnvironmentPresentationData Scaled = Presentation;
+    Scaled.Transform.SetScale3D(FVector(1.01f));
+    TestFalse(TEXT("unreviewed field scaling is rejected"),
+        FShiWetFieldEnvironmentPresentationModel::Validate(Scaled, Error));
+    FShiWetFieldEnvironmentPresentationData Colliding = Presentation;
+    Colliding.bCollisionEnabled = true;
+    TestFalse(TEXT("runtime field collision is rejected"),
+        FShiWetFieldEnvironmentPresentationModel::Validate(Colliding, Error));
+    FShiWetFieldEnvironmentPresentationData Navigable = Presentation;
+    Navigable.bAffectsNavigation = true;
+    TestFalse(TEXT("runtime field navigation authority is rejected"),
+        FShiWetFieldEnvironmentPresentationModel::Validate(Navigable, Error));
+    FShiWetFieldEnvironmentPresentationData HiddenExercise = Presentation;
+    HiddenExercise.bVisibleDuringEngagement = false;
+    TestFalse(TEXT("a disappearing engagement environment is rejected"),
+        FShiWetFieldEnvironmentPresentationModel::Validate(HiddenExercise, Error));
+    FShiWetFieldEnvironmentPresentationData Raised = Presentation;
+    Raised.BoundsMaximum.Z = -5.f;
+    TestFalse(TEXT("terrain that violates command-surface clearance is rejected"),
+        FShiWetFieldEnvironmentPresentationModel::Validate(Raised, Error));
     return !HasAnyErrors();
 }
 

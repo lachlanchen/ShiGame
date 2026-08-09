@@ -31,6 +31,7 @@
 #include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilFigure.h"
 #include "ShiCouncilStagingModel.h"
+#include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiWartableModel.h"
@@ -54,6 +55,7 @@ void AShiGameMode::BeginPlay()
     bCommandWeightReview = bCommandWeightReviewBack
         || FParse::Param(FCommandLine::Get(), TEXT("ShiCommandWeightReviewFront"));
     bCommandSurfaceReview = FParse::Param(FCommandLine::Get(), TEXT("ShiCommandSurfaceReview"));
+    bWetFieldEnvironmentReview = FParse::Param(FCommandLine::Get(), TEXT("ShiWetFieldEnvironmentReview"));
 #endif
     LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
@@ -95,7 +97,8 @@ void AShiGameMode::BeginPlay()
         CreateCommandSpace();
     }
 
-    if (!bCommandWeightReview && !bCommandSurfaceReview && GEngine && GEngine->GameViewport)
+    if (!bCommandWeightReview && !bCommandSurfaceReview && !bWetFieldEnvironmentReview
+        && GEngine && GEngine->GameViewport)
     {
         SAssignNew(CommandScreen, SShiCommandScreen).GameMode(this);
         GEngine->GameViewport->AddViewportWidgetContent(CommandScreen.ToSharedRef(), 100);
@@ -1214,6 +1217,10 @@ void AShiGameMode::CreateCommandSpace()
     }
     CommandCamera = Camera;
     Camera->GetCameraComponent()->SetFieldOfView(InspectionFieldOfViewDegrees);
+    Camera->GetCameraComponent()->PostProcessSettings.bOverride_AutoExposureBias = true;
+    Camera->GetCameraComponent()->PostProcessSettings.AutoExposureBias =
+        FShiWetFieldEnvironmentPresentationModel::ExposureCompensation();
+    Camera->GetCameraComponent()->PostProcessBlendWeight = 1.f;
     CameraBaseLocation = Camera->GetActorLocation();
     CameraBaseRotation = Camera->GetActorRotation();
     if (APlayerController* Controller = UGameplayStatics::GetPlayerController(World, 0))
@@ -1241,22 +1248,59 @@ void AShiGameMode::CreateCommandSpace()
     if (Fog) Fog->GetComponent()->SetFogDensity(0.025f);
 
     UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
-    UStaticMesh* Plane = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
     UStaticMesh* Cylinder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
     UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-    if (!Cube || !Plane || !Cylinder || !Sphere)
+    if (!Cube || !Cylinder || !Sphere)
     {
         LoadError = TEXT("Required engine-native command-space meshes are unavailable.");
         return;
     }
-    if (Plane)
+    const FShiWetFieldEnvironmentPresentationData WetFieldPresentation = FShiWetFieldEnvironmentPresentationModel::Build();
+    FString WetFieldError;
+    if (!FShiWetFieldEnvironmentPresentationModel::Validate(WetFieldPresentation, WetFieldError))
     {
-        AStaticMeshActor* Ground = World->SpawnActor<AStaticMeshActor>(FVector(0, 0, -12), FRotator::ZeroRotator);
-        if (!Ground) { LoadError = TEXT("Command-space ground could not spawn."); return; }
-        Ground->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
-        Ground->GetStaticMeshComponent()->SetStaticMesh(Plane);
-        Ground->SetActorScale3D(FVector(24.f, 24.f, 1.f));
+        LoadError = FString::Printf(TEXT("Wet-field environment presentation rejected: %s"), *WetFieldError);
+        return;
     }
+    UStaticMesh* WetFieldMesh = LoadObject<UStaticMesh>(nullptr, *WetFieldPresentation.MeshPath);
+    if (!WetFieldMesh)
+    {
+        LoadError = TEXT("Reviewed wet-field environment mesh is unavailable.");
+        return;
+    }
+    const FBox WetFieldBounds = WetFieldMesh->GetBoundingBox();
+    TSet<FName> WetFieldMaterialSlots;
+    for (const FStaticMaterial& Material : WetFieldMesh->GetStaticMaterials())
+    {
+        WetFieldMaterialSlots.Add(Material.MaterialSlotName);
+    }
+    if (!WetFieldBounds.Min.Equals(WetFieldPresentation.BoundsMinimum, .08f)
+        || !WetFieldBounds.Max.Equals(WetFieldPresentation.BoundsMaximum, .08f)
+        || WetFieldMaterialSlots.Num() != 2
+        || !WetFieldMaterialSlots.Contains(FName(TEXT("M_SHI_WetFieldGround")))
+        || !WetFieldMaterialSlots.Contains(FName(TEXT("M_SHI_ShallowRainwater"))))
+    {
+        LoadError = TEXT("Reviewed wet-field runtime bounds or material slots drifted from the admitted asset.");
+        return;
+    }
+    AStaticMeshActor* WetFieldEnvironment = World->SpawnActor<AStaticMeshActor>(
+        WetFieldPresentation.Transform.GetLocation(), WetFieldPresentation.Transform.Rotator());
+    if (!WetFieldEnvironment)
+    {
+        LoadError = TEXT("Reviewed wet-field environment could not spawn.");
+        return;
+    }
+    UStaticMeshComponent* WetFieldComponent = WetFieldEnvironment->GetStaticMeshComponent();
+    WetFieldComponent->SetMobility(EComponentMobility::Movable);
+    WetFieldComponent->SetStaticMesh(WetFieldMesh);
+    WetFieldComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    WetFieldComponent->SetGenerateOverlapEvents(false);
+    WetFieldComponent->SetCanEverAffectNavigation(false);
+    WetFieldEnvironment->SetActorScale3D(WetFieldPresentation.Transform.GetScale3D());
+    WetFieldEnvironment->SetActorEnableCollision(false);
+    WetFieldEnvironment->Tags.Add(FName(TEXT("ShiEnvironment:WetField")));
+    WetFieldEnvironment->Tags.Add(FName(TEXT("ShiPresentation:NonAuthoritative")));
+    WetFieldEnvironmentProp = WetFieldEnvironment;
     const FShiCommandSurfacePresentationData CommandSurfacePresentation = FShiCommandSurfacePresentationModel::Build();
     FString CommandSurfaceError;
     if (!FShiCommandSurfacePresentationModel::Validate(CommandSurfacePresentation, Campaign.Sites,
@@ -1475,7 +1519,12 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Live council staging rejected: %s"), *CouncilError);
         return;
     }
-    if (bCommandSurfaceReview)
+    if (bWetFieldEnvironmentReview)
+    {
+        SetCameraImmediate(FShiWetFieldEnvironmentPresentationModel::ReviewCameraTransform(),
+            FShiWetFieldEnvironmentPresentationModel::ReviewFieldOfViewDegrees());
+    }
+    else if (bCommandSurfaceReview)
     {
         SetCameraImmediate(FShiCommandSurfacePresentationModel::ReviewCameraTransform(),
             FShiCommandSurfacePresentationModel::ReviewFieldOfViewDegrees());

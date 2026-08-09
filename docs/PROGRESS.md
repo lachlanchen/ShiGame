@@ -1,5 +1,18 @@
 # SHI progress log
 
+## 2026-08-10 · Wet-field Unreal environment and complete engagement checkpoint
+
+- Replaced the surrounding engine-native white plane with an original `24 × 24 m` Daze wet-field production blockout. The bounded relief, route masks and five shallow-water components are project-authored environment design, not a surveyed or attested late-Qin landscape reconstruction.
+- Built the terrain deterministically in the pinned Blender 4.0.2 pipeline. Clean GLB/FBX inspection passes exact bounds, two UV channels per LOD, exact ground/water slots, one named convex source-collision receipt and `9,120 → 2,492` triangle LOD reduction; the central terrain stays below the already accepted command-ground clearance.
+- Rejected the first packaged look because pale sand and flat teal broke the rain-soaked thesis. Also rejected a no-eye-adaptation experiment because it crushed the council into darkness. The accepted cooler retune uses compile-clean 15-node ground and five-node shallow-water PBR graphs, no textures or unsupported normal detail, plus a bounded `-1.5` camera exposure compensation.
+- Added a pure `FShiWetFieldEnvironmentPresentationModel` and fail-closed runtime admission for exact asset identity, bounds, identity transform, material slots, clearance, noninteraction, disabled collision/navigation and persistence beneath Broken Crossing. The old plane load/spawn path is gone.
+- The official UE 5.8.1 editor target compiles and all **14 / 14** native `SHI.` suites pass. The new hostile suite rejects scale, collision, navigation, disappearance and raised-terrain drift. Read-only mesh/material inspections exit 0 while preserving all three tracked Unreal hashes.
+- A clean outside-Git BuildCookRun succeeds with **505 packages**, exactly the accepted 502 baseline plus two materials and one mesh. The archived-player smoke mounts all 505, loads `ShiGameMode`/Entry and exits cleanly; primary package artifacts have SHA-256 receipts.
+- Visible input-driven review on isolated localhost noVNC accepted the wet-field blockout, advanced two canonical campaign decisions from Act I to Act III, completed all three Broken Crossing pulses with deterministic **COSTLY-SUCCESS**, and returned to the same Act III scene, turn, decision count and five campaign resource values. Seven hash-bound 1600×1000 frames retain field, opening, story, pulse and return evidence.
+- This remains a **production blockout, not final cinematic environment**. Shelter architecture, rain VFX, vegetation, sky/final lighting, historically reviewed figures/formations, interaction hands, physical-display performance/accessibility and human historical/cinematic/art approval remain red.
+
+Next gate: build the Daze shelter and bounded rain/vegetation layer, then replace primitive figures, floating light and BasicShape signals with period-reviewed character and formation language while preserving the accepted campaign and engagement contracts.
+
 ## 2026-08-10 · Runtime command-ground and engagement continuity checkpoint
 
 - Replaced the `580 × 370 × 16 cm` default-white engine cube with an explicitly fictional low command-ground platform: a continuous packed-earth field and narrow dark worked-wood perimeter at the exact existing `Z = 14 cm` contact plane. It is interface-stage architecture, not an attested Qin object, sand table, map or historical reconstruction.
@@ -10,9 +23,9 @@
 - A clean outside-Git BuildCookRun succeeds with 502 packages. The separate archived-player smoke mounts IoStore, loads `ShiGameMode`/Entry and exits cleanly; executable, Pak, IoStore and all source/Unreal/evidence assets have SHA-256 receipts.
 - Visible packaged review on isolated localhost noVNC accepted the full surface/contact pass, advanced the campaign from Act I through two verified transactions to Act III, opened Broken Crossing, advanced pulse 1 → 2 with all six live state pieces changing, and returned to the exact same campaign turn/resources/decision count. The new surface remains visible beneath both council and engagement grammars.
 - Exact implementation `d2d3ca8ebd073f3d57767a5a6172554d3b3bcd05` is pushed to `main`. Hosted validation `31334321489` and playable Pages deployment `31334321496` both pass at that SHA; the remote branch matched before this receipt was added.
-- This is a **runtime-presented production blockout, not final environment art**. The surrounding white engine ground and primitive figures, floating proxy, signals, hands, terrain, formations, weather/VFX, final lighting, physical-display performance and human historical/cinematic/accessibility/art approval remain red.
+- This was accepted as a **runtime-presented production blockout, not final environment art**. Its then-open surrounding-white-ground defect is closed by the wet-field checkpoint above; primitive figures, floating proxy, signals, hands, shelter/vegetation, formations, weather/VFX, final lighting, physical-display performance and human historical/cinematic/accessibility/art approval remain red.
 
-Next gate: replace the surrounding white ground with a bounded wet-road/field-shelter terrain kit, then replace the five council proxies with reviewed late-Qin character blockouts and deformation-tested hands while preserving every accepted gameplay, source, save, surface and camera contract.
+Next gate completed in part by the wet-field checkpoint above; shelter/rain/vegetation and the five reviewed late-Qin character blockouts with deformation-tested hands remain open.
 
 ## 2026-08-10 · Reviewed lookdev, toolchain and runtime-presented prop checkpoint
 

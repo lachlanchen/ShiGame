@@ -4,7 +4,7 @@ Status: packaged runtime production blockout accepted for council, story and Bro
 
 ## Production problem
 
-The current Unreal command space uses a `580 × 370 × 16 cm` engine cube with the default white BasicShape material. It preserves tested marker positions and the `Z = 14 cm` interaction plane, but it reads as an unshaded game-board slab, overwhelms the command weight, and conflicts with SHI's wet-earth, worked-wood and oxidized-bronze visual thesis.
+Before this checkpoint, the Unreal command space used a `580 × 370 × 16 cm` engine cube with the default white BasicShape material. It preserved tested marker positions and the `Z = 14 cm` interaction plane, but read as an unshaded game-board slab, overwhelmed the command weight, and conflicted with SHI's wet-earth, worked-wood and oxidized-bronze visual thesis.
 
 This pass must replace that visible defect without disguising an unsupported giant table as historical furniture. The replacement is a low **command-ground platform**: an explicitly fictional staging abstraction beneath the field shelter, where physical signals are arranged close to the earth. It is not an attested Qin command practice, excavated object, sand table, measured map or literal reconstruction of Daze Village.
 
@@ -94,4 +94,4 @@ Both engine materials are ten-node opaque one-sided PBR graphs with one bounded 
 
 The official editor target compiles and all `13 / 13` native SHI suites pass. A fresh Linux package advances the campaign from Act I to Act III, opens Broken Crossing, advances one pulse with all six live 3D states changing, then returns to the byte-guarded campaign without changing its turn, resources or decisions. Full hashes, screenshots and the deliberately bounded decision are recorded in `assets/provenance/shi-command-surface-v1.json` and `docs/production/evidence/unreal-command-surface-*.json`.
 
-This closes the default-white command-surface defect only. The surrounding white engine ground, primitive figures/signals, interaction hands, terrain, formations, weather, final lighting and human review remain red.
+This closed the default-white command-surface defect only. The following wet-field checkpoint has since replaced the surrounding white engine plane; primitive figures/signals, interaction hands, shelter/vegetation, formations, weather, final lighting and human review remain red.
