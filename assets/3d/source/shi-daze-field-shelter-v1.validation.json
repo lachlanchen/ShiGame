@@ -1,0 +1,4718 @@
+{
+  "assetId": "shi-daze-field-shelter-v1",
+  "validator": "clean Blender import plus bmesh topology/material/UV/color/bounds/clearance inspection",
+  "blender": "4.0.2",
+  "exports": [
+    {
+      "path": "export/shi-daze-field-shelter-v1-lod0.glb",
+      "format": "glb",
+      "lod": "LOD0",
+      "objects": [
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Brace01",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.004585270481571559,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Brace02",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.004585270481571405,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Brace03",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.004585270481571678,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Brace04",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.004585270481571265,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Brace05",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.004238406460529621,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Brace06",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0042384064605286344,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Brace07",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.00423839973645815,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Brace08",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.004238399736458149,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord1_1",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.00033398162285508924,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord1_2",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0003339816228548594,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord1_3",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0003339816228549808,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord2_1",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.00033398162285504213,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord2_2",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0003339816228548702,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord2_3",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.00033398162285502587,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord3_1",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.00033398162285504544,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord3_2",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.00033398162285485505,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord3_3",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.000333981622855022,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord4_1",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0003339816228550537,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord4_2",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0003339816228549171,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Cord4_3",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.00033398162285500196,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_CrossTie01",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.09787500060600197,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_CrossTie02",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.09787500060599967,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_EaveBeam01",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.193427902435092,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_EaveBeam02",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.19342790243508945,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_1_01",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718228021358636,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_1_02",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718229157468587,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_1_03",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182285894136146,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_1_04",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182291574686066,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_1_05",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182285894136445,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_1_06",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718229157468664,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_1_07",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718228021358612,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_2_01",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182549292723164,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_2_02",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718256065387709,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_2_03",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182554973300125,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_2_04",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718256065387688,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_2_05",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182554973300055,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_2_06",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718256065387679,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_2_07",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718254929272326,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_3_01",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04815350084382604,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_3_02",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04815351041106854,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_3_03",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.048153505627447094,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_3_04",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0481535104110687,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_3_05",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04815350562744735,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_3_06",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.048153510411068676,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat1_3_07",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04815350084382601,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_1_01",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718228021358636,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_1_02",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182291574685885,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_1_03",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182285894136146,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_1_04",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182291574686066,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_1_05",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182285894136445,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_1_06",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718229157468664,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_1_07",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182280213586116,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_2_01",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182549292723164,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_2_02",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718256065387707,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_2_03",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182554973300125,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_2_04",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718256065387688,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_2_05",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.057182554973300055,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_2_06",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718256065387679,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_2_07",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.05718254929272325,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_3_01",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04815350084382604,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_3_02",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04815351041106854,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_3_03",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.048153505627447094,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_3_04",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0481535104110687,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_3_05",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04815350562744735,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_3_06",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.048153510411068676,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Mat2_3_07",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.04815350084382601,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Post01",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.11426401709427486,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Post02",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.11426401709427503,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Post03",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.11426401709427485,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_Post04",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.11426401709427489,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterN01",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245275499069052,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterN02",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245275499067598,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterN03",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.01824529842098353,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterN04",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.01824528352350293,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterN05",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245298420983918,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterN06",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.01824527549906729,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterN07",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245275499069312,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterS01",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245267622577565,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterS02",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245267622577954,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterS03",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245267622579366,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterS04",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.01824527567076764,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterS05",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.01824526762258026,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterS06",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245267622580517,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RafterS07",
+          "vertices": 44,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 26,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.018245267622580275,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RidgeBeam",
+          "vertices": 56,
+          "weldedVertices": 24,
+          "normalOrAttributeSplitVertices": 32,
+          "triangles": 44,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.21930753406740344,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RidgeCord01",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0002469585096472795,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RidgeCord02",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.00024695973630904075,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RidgeCord03",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0002469597363090562,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD0_RidgeCord04",
+          "vertices": 192,
+          "weldedVertices": 48,
+          "normalOrAttributeSplitVertices": 144,
+          "triangles": 96,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.0002469585096472626,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -4.199999809265137,
+          -3.3674368858337402,
+          -0.18000006675720215
+        ],
+        "maximum": [
+          4.199999809265137,
+          3.3674368858337402,
+          3.369999885559082
+        ],
+        "dimensions": [
+          8.399999618530273,
+          6.7348737716674805,
+          3.549999952316284
+        ]
+      },
+      "totalTriangles": 3948,
+      "importedMaterials": {
+        "M_SHI_CoarseFiberCord": {
+          "baseColor": [
+            0.008999999612569809,
+            0.004999999888241291,
+            0.0024999999441206455,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.9300000071525574
+        },
+        "M_SHI_RainDarkenedWood": {
+          "baseColor": [
+            0.014000000432133675,
+            0.007000000216066837,
+            0.003000000026077032,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8199999928474426
+        },
+        "M_SHI_WovenReedMat": {
+          "baseColor": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8799999952316284
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "componentIdentity": true,
+        "collisionAbsent": true,
+        "materialSlots": true,
+        "darkPhysicalFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "reedVertexSignal": true,
+        "componentTopologyOrBoundedAuthoredJoints": true,
+        "positiveVolume": true,
+        "exactMeterBounds": true,
+        "groundEmbedAndHeightEnvelope": true,
+        "commandClearance": true,
+        "appliedIdentity": true,
+        "exactTriangleBudget": true,
+        "boundedTriangleBudget": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-field-shelter-v1-lod1.glb",
+      "format": "glb",
+      "lod": "LOD1",
+      "objects": [
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_CrossTie01",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.13287944765327386,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_CrossTie02",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.13287944765327278,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_EaveBeam01",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.24821983559350594,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_EaveBeam02",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.2482198355935059,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_Mat1_1_01",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ],
+              "maximumRgb": [
+                0.06847818195819855,
+                0.042311422526836395,
+                0.01228648703545332
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 1.3860002474784667,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_Mat2_1_01",
+          "vertices": 56,
+          "weldedVertices": 18,
+          "normalOrAttributeSplitVertices": 38,
+          "triangles": 32,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [
+            "Col"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "Col",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_WovenReedMat"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 1.3860002474784652,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_Post01",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.13766543732808179,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_Post02",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.13766543732808156,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_Post03",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.13766543732808173,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_Post04",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.13766543732808162,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_RafterN01",
+          "vertices": 34,
+          "weldedVertices": 14,
+          "normalOrAttributeSplitVertices": 20,
+          "triangles": 24,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.03588380342771125,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_RafterN02",
+          "vertices": 34,
+          "weldedVertices": 14,
+          "normalOrAttributeSplitVertices": 20,
+          "triangles": 24,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.03588378839836413,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_RafterN03",
+          "vertices": 34,
+          "weldedVertices": 14,
+          "normalOrAttributeSplitVertices": 20,
+          "triangles": 24,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.03588380342771398,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_RafterS01",
+          "vertices": 34,
+          "weldedVertices": 14,
+          "normalOrAttributeSplitVertices": 20,
+          "triangles": 24,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.03588377611513327,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_RafterS02",
+          "vertices": 34,
+          "weldedVertices": 14,
+          "normalOrAttributeSplitVertices": 20,
+          "triangles": 24,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.03588376104798123,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_RafterS03",
+          "vertices": 34,
+          "weldedVertices": 14,
+          "normalOrAttributeSplitVertices": 20,
+          "triangles": 24,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.03588377611513063,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "SM_SHI_DazeShelter_LOD1_RidgeBeam",
+          "vertices": 40,
+          "weldedVertices": 16,
+          "normalOrAttributeSplitVertices": 24,
+          "triangles": 28,
+          "uvLayers": [
+            "UVMap",
+            "UVMap.001"
+          ],
+          "colorAttributes": [],
+          "colorAttributeRanges": [],
+          "materials": [
+            "M_SHI_RainDarkenedWood"
+          ],
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 0.27721425995816273,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -4.199999809265137,
+          -3.370722770690918,
+          -0.18000006675720215
+        ],
+        "maximum": [
+          4.199999809265137,
+          3.370722770690918,
+          3.369999885559082
+        ],
+        "dimensions": [
+          8.399999618530273,
+          6.741445541381836,
+          3.549999952316284
+        ]
+      },
+      "totalTriangles": 460,
+      "importedMaterials": {
+        "M_SHI_RainDarkenedWood": {
+          "baseColor": [
+            0.014000000432133675,
+            0.007000000216066837,
+            0.003000000026077032,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8199999928474426
+        },
+        "M_SHI_WovenReedMat": {
+          "baseColor": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8799999952316284
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "componentIdentity": true,
+        "collisionAbsent": true,
+        "materialSlots": true,
+        "darkPhysicalFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "reedVertexSignal": true,
+        "componentTopologyOrBoundedAuthoredJoints": true,
+        "positiveVolume": true,
+        "exactMeterBounds": true,
+        "groundEmbedAndHeightEnvelope": true,
+        "commandClearance": true,
+        "appliedIdentity": true,
+        "exactTriangleBudget": true,
+        "boundedTriangleBudget": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-field-shelter-v1.fbx",
+      "format": "fbx",
+      "lod": "LOD0",
+      "objects": [
+        {
+          "name": "SM_SHI_DazeFieldShelter_01",
+          "vertices": 2120,
+          "weldedVertices": 1874,
+          "normalOrAttributeSplitVertices": 246,
+          "triangles": 3948,
+          "uvLayers": [
+            "UVMap",
+            "LightmapUV"
+          ],
+          "colorAttributes": [
+            "ShiReedWeave"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "ShiReedWeave",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_RainDarkenedWood",
+            "M_SHI_WovenReedMat",
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 240,
+          "inconsistentWindingEdges": 53,
+          "signedVolume": 3.831706032955745,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -4.199999809265137,
+          -3.3674368858337402,
+          -0.1800002157688141
+        ],
+        "maximum": [
+          4.199999809265137,
+          3.3674371242523193,
+          3.370000123977661
+        ],
+        "dimensions": [
+          8.399999618530273,
+          6.73487401008606,
+          3.550000339746475
+        ]
+      },
+      "totalTriangles": 3948,
+      "importedMaterials": {
+        "M_SHI_CoarseFiberCord": {
+          "baseColor": [
+            0.008999999612569809,
+            0.004999999888241291,
+            0.0024999999441206455,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.9300000071525574
+        },
+        "M_SHI_RainDarkenedWood": {
+          "baseColor": [
+            0.014000000432133675,
+            0.007000000216066837,
+            0.003000000026077032,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8199999928474426
+        },
+        "M_SHI_WovenReedMat": {
+          "baseColor": [
+            0.052000001072883606,
+            0.039000000804662704,
+            0.014000000432133675,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8799999952316284
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "componentIdentity": true,
+        "collisionAbsent": true,
+        "materialSlots": true,
+        "darkPhysicalFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "reedVertexSignal": true,
+        "componentTopologyOrBoundedAuthoredJoints": true,
+        "positiveVolume": true,
+        "exactMeterBounds": true,
+        "groundEmbedAndHeightEnvelope": true,
+        "commandClearance": true,
+        "appliedIdentity": true,
+        "exactTriangleBudget": true,
+        "boundedTriangleBudget": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-field-shelter-v1-lod1.fbx",
+      "format": "fbx",
+      "lod": "LOD1",
+      "objects": [
+        {
+          "name": "SM_SHI_DazeFieldShelter_01",
+          "vertices": 264,
+          "weldedVertices": 258,
+          "normalOrAttributeSplitVertices": 6,
+          "triangles": 460,
+          "uvLayers": [
+            "UVMap",
+            "LightmapUV"
+          ],
+          "colorAttributes": [
+            "ShiReedWeave"
+          ],
+          "colorAttributeRanges": [
+            {
+              "name": "ShiReedWeave",
+              "minimumRgb": [
+                0.051269467920064926,
+                0.031896039843559265,
+                0.009134056977927685
+              ],
+              "maximumRgb": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            }
+          ],
+          "materials": [
+            "M_SHI_RainDarkenedWood",
+            "M_SHI_WovenReedMat",
+            "M_SHI_CoarseFiberCord"
+          ],
+          "nonManifoldEdges": 6,
+          "inconsistentWindingEdges": 0,
+          "signedVolume": 4.577377777396364,
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotationEuler": [
+            -4.371138828673793e-08,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "boundsMeters": {
+        "minimum": [
+          -4.199999809265137,
+          -3.370722770690918,
+          -0.1800002157688141
+        ],
+        "maximum": [
+          4.199999809265137,
+          3.370723009109497,
+          3.370000123977661
+        ],
+        "dimensions": [
+          8.399999618530273,
+          6.741445779800415,
+          3.550000339746475
+        ]
+      },
+      "totalTriangles": 460,
+      "importedMaterials": {
+        "M_SHI_CoarseFiberCord": {
+          "baseColor": [
+            0.008999999612569809,
+            0.004999999888241291,
+            0.0024999999441206455,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.9300000071525574
+        },
+        "M_SHI_RainDarkenedWood": {
+          "baseColor": [
+            0.014000000432133675,
+            0.007000000216066837,
+            0.003000000026077032,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8199999928474426
+        },
+        "M_SHI_WovenReedMat": {
+          "baseColor": [
+            0.052000001072883606,
+            0.039000000804662704,
+            0.014000000432133675,
+            1.0
+          ],
+          "metallic": 0.0,
+          "roughness": 0.8799999952316284
+        }
+      },
+      "checks": {
+        "renderComponentCount": true,
+        "componentIdentity": true,
+        "collisionAbsent": true,
+        "materialSlots": true,
+        "darkPhysicalFallbacks": true,
+        "uv0AndLightmapUv": true,
+        "reedVertexSignal": true,
+        "componentTopologyOrBoundedAuthoredJoints": true,
+        "positiveVolume": true,
+        "exactMeterBounds": true,
+        "groundEmbedAndHeightEnvelope": true,
+        "commandClearance": true,
+        "appliedIdentity": true,
+        "exactTriangleBudget": true,
+        "boundedTriangleBudget": true
+      },
+      "passed": true
+    }
+  ],
+  "lodReductionRatio": 0.11651469098277609,
+  "checks": {
+    "allExportsPass": true,
+    "lodReduction": true,
+    "metricsMaterialContract": true,
+    "metricsCollisionContract": true,
+    "metricsHistoricalLabel": true
+  },
+  "passed": true
+}

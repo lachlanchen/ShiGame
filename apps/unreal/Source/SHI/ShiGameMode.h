@@ -116,6 +116,7 @@ private:
     bool bCommandWeightReviewBack = false;
     bool bCommandSurfaceReview = false;
     bool bWetFieldEnvironmentReview = false;
+    bool bDazeFieldShelterReview = false;
     int32 SelectedEngagementCommandIndex = 0;
     FString EngagementCampaignSnapshot;
     TArray<FShiEngagementSignalData> EngagementSignals;
@@ -134,6 +135,7 @@ private:
     TWeakObjectPtr<AStaticMeshActor> CommandWeightProp;
     TWeakObjectPtr<AStaticMeshActor> CommandSurfaceProp;
     TWeakObjectPtr<AStaticMeshActor> WetFieldEnvironmentProp;
+    TWeakObjectPtr<AStaticMeshActor> DazeFieldShelterProp;
     FShiCouncilStageData CouncilStage;
     TArray<FShiCinematicBeatData> CinematicBeats;
     int32 CinematicBeatIndex = INDEX_NONE;

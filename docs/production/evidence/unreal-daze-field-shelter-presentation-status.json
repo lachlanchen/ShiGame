@@ -1,0 +1,183 @@
+{
+  "assetId": "shi-daze-field-shelter-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Packaged Unreal 5.8.1 shelter review, normal story progression and complete three-pulse Broken Crossing exercise/return through an isolated localhost noVNC desktop. This accepts the fictional practical shelter as a production blockout only.",
+  "decision": "approved-runtime-daze-field-shelter-production-blockout-council-engagement-story-reviewed-not-final-environment",
+  "historicalBoundary": "Project-authored fictional practical field construction. The frame, roof, mat layout, dimensions and connections are not claimed as an attested, excavated or reconstructed Daze shelter.",
+  "requiredDisclosure": "FICTIONAL PRACTICAL FIELD CONSTRUCTION · NOT AN ATTESTED DAZE RECONSTRUCTION · PRODUCTION BLOCKOUT",
+  "presentation": {
+    "transform": "identity at world origin",
+    "boundsCentimeters": {
+      "minimum": [-419.9999694824219, -336.74371337890625, -18.000019073486328],
+      "maximum": [419.9999694824219, 336.7436828613281, 337.0]
+    },
+    "postCentersCentimeters": [[-360.0, -260.0], [360.0, -260.0], [-360.0, 260.0], [360.0, 260.0]],
+    "postRadiusCentimeters": 13.0,
+    "minimumPostClearanceBeyondCommandSurfaceAxesCentimeters": 50.0,
+    "minimumEaveHeightCentimeters": 278.0,
+    "maximumAllowedStructureHeightCentimeters": 345.0,
+    "historicallyAttested": false,
+    "finalArt": false,
+    "interactive": false,
+    "runtimeCollision": false,
+    "navigationInfluence": false,
+    "visibleDuringNonAuthoritativeEngagement": true,
+    "actorTags": [
+      "ShiEnvironment:DazeShelter",
+      "ShiPresentation:FictionalPracticalConstruction",
+      "ShiArtStatus:ProductionBlockout"
+    ],
+    "developmentReview": {
+      "flag": "-ShiDazeFieldShelterReview",
+      "fieldOfViewDegrees": 52.0,
+      "locationCentimeters": [1150.0, -1050.0, 600.0],
+      "targetCentimeters": [0.0, 0.0, 150.0],
+      "excludedFromShipping": true
+    }
+  },
+  "materials": {
+    "authoringTool": "scripts/author-daze-field-shelter-materials-unreal.py",
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "passed": true,
+      "trackedUassetHashesUnchanged": true,
+      "compileErrors": 0
+    },
+    "rainDarkenedWood": {
+      "nodeCount": 8,
+      "shadow": [0.003, 0.0015, 0.0007],
+      "damp": [0.018, 0.007, 0.002],
+      "roughness": 0.84,
+      "metallic": 0.0,
+      "specular": 0.22,
+      "ambientOcclusion": 0.88,
+      "noise": "one bounded two-level Fast Gradient 3D node",
+      "normalInput": false,
+      "textures": 0
+    },
+    "wovenReedMat": {
+      "nodeCount": 11,
+      "shadow": [0.012, 0.007, 0.0017],
+      "damp": [0.052, 0.031, 0.007],
+      "panelLift": [0.085, 0.05, 0.012],
+      "roughness": 0.89,
+      "metallic": 0.0,
+      "specular": 0.18,
+      "ambientOcclusion": 0.92,
+      "noise": "one bounded two-level Fast Gradient 3D node",
+      "vertexColorPanelSignal": true,
+      "normalInput": false,
+      "textures": 0
+    },
+    "coarseFiberCord": {
+      "nodeCount": 8,
+      "shadow": [0.002, 0.001, 0.0005],
+      "damp": [0.012, 0.006, 0.002],
+      "roughness": 0.93,
+      "metallic": 0.0,
+      "specular": 0.15,
+      "ambientOcclusion": 0.86,
+      "noise": "one bounded two-level Fast Gradient 3D node",
+      "normalInput": false,
+      "textures": 0
+    }
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 15,
+    "passed": 15,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.DazeFieldShelterPresentationV1",
+    "negativeCases": [
+      "unreviewed world scale",
+      "runtime collision enabled",
+      "navigation authority enabled",
+      "shelter hidden during engagement",
+      "unsupported historical reconstruction claim",
+      "premature final-art status",
+      "post entering command clearance",
+      "eave compromising the council sightline",
+      "structure outside the reviewed vertical envelope"
+    ]
+  },
+  "visiblePlaytest": {
+    "desktop": "isolated Xvfb :126, localhost-only x11vnc 5937 and noVNC 6137",
+    "package": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeShelter-Review-v1/Linux",
+    "inputs": [
+      "Pointer selected and issued two different campaign orders",
+      "Space skipped bounded consequence-camera holds",
+      "Pointer opened Broken Crossing from Act III",
+      "Pointer selected and issued all three engagement pulse orders",
+      "Pointer returned from the completed exercise to the campaign"
+    ],
+    "campaignStart": "Act I, Scene 1, turn 1",
+    "campaignObserved": "Act III, Scene 5 Broken Crossing, turn 3, two decisions, resources grain 41, trust 68, momentum 17, people 80 and danger 63",
+    "engagementObserved": "Broken Crossing pulse 1 through pulse 3 and deterministic SUCCESS / Orderly crossing completion; all six field metrics changed after player and field responses",
+    "engagementFinalMetrics": {
+      "crossing": 58,
+      "rear": 59,
+      "reserve": 41,
+      "supplies": 57,
+      "pursuit": 45,
+      "signals": 63
+    },
+    "campaignReturn": "same Act III scene, grain 41, trust 68, momentum 17, people 80, danger 63, turn 3 and two decisions after leaving the byte-guarded non-authoritative exercise",
+    "storyAdvanced": true,
+    "engagementAdvanced": true,
+    "engagementCompleted": true,
+    "campaignUnchangedByEngagement": true,
+    "shelterVisibleDuringEngagement": true
+  },
+  "screenshots": [
+    {
+      "file": "docs/production/evidence/unreal-daze-field-shelter-review-v1.png",
+      "role": "development-only whole-shelter geometry, material, roof, post and command-space-clearance review",
+      "dimensions": [1600, 1000],
+      "bytes": 667644,
+      "sha256": "5806d2bcfb8ac897b9312259efa3e553a4c401b252dbd290f58d50314c96ee91"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-field-shelter-story-act-3-v1.png",
+      "role": "normal packaged Act-III story progression after two verified campaign transactions",
+      "dimensions": [1600, 1000],
+      "bytes": 458188,
+      "sha256": "c3e81d68183f579045611b16e17530923afffa8ac3a165bbd119a0c1781a3c7d"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-field-shelter-engagement-complete-v1.png",
+      "role": "completed three-pulse deterministic SUCCESS exercise with the shelter persisting in the command space",
+      "dimensions": [1600, 1000],
+      "bytes": 365683,
+      "sha256": "72b4e383b10d26ee51210e9ba93f64a9551ea0fb5529bf622919c2b718ad75a1"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-field-shelter-campaign-return-v1.png",
+      "role": "campaign return proving the exercise did not mutate canonical campaign state",
+      "dimensions": [1600, 1000],
+      "bytes": 456185,
+      "sha256": "1659b42ede03cfeaa1fcead5d44c84e79c1bffc8e9ac2d9ec26d58cf7085195c"
+    }
+  ],
+  "review": {
+    "rejectedFirstPass": [
+      "the first interchange render exposed a red/green checker caused by unbounded vertex-color values; the reed signal was constrained to a subtle brown range",
+      "ridge/eave beams and rafters initially pierced the mat roof; their vertical placement was corrected beneath the roof surface",
+      "ridge lashings initially read on the wrong axis and were reoriented around the structural member",
+      "the first LOD1 silhouette drifted above the reviewed roof envelope and was corrected to match the 3.37-metre ridge"
+    ],
+    "accepted": [
+      "the low open-sided frame shelters the decision plane while leaving the wet field and command relation legible",
+      "wood, reed mat and cord remain restrained practical materials without pavilion, palace, tiled-eave, glyph, modern-hardware or fantasy-tent language",
+      "the shelter stays collision-free, non-navigable, noninteractive and subordinate to campaign and engagement authority",
+      "normal packaged input advances two campaign transactions and the complete engagement returns without campaign mutation",
+      "the accepted judgment is explicitly a fictional practical production blockout, not final cinematic environment or historical reconstruction"
+    ],
+    "remainingRedGates": [
+      "bounded rain VFX, vegetation, final sky and final lighting are absent",
+      "primitive proxy figures, floating light proxy and BasicShape signals are not final characters, props or formation language",
+      "historically reviewed period figures, formations, interaction hands, deformation and final weather/audio response remain open",
+      "physical-display final-scene performance/accessibility and human historical/cinematic/art review must be repeated"
+    ]
+  }
+}

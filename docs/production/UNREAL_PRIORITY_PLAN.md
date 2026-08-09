@@ -27,7 +27,7 @@ The first native gate is one high-quality Daze order, not a vast empty map:
 9. Save/reload and source/evidence access. The source slice is authored; native interaction proof remains open.
 10. Linux Development and packaged builds, automation tests and visible noVNC play evidence.
 
-Current 2026-08-10 checkpoint: the official UE 5.8.1 client compiles, passes 14 native suites, packages and visibly plays. The command weight, fictional earth/wood command ground and `24 × 24 m` wet field are admitted production blockouts with exact source/import/material/package hashes. The 505-package player advances two campaign transactions, completes the three-pulse Broken Crossing exercise and returns the campaign unchanged. This clears the engine/playability and default-white-surface defects only; shelter, motivated rain, vegetation, historically reviewed figures/formations, final sky/lighting, final-scene performance/accessibility and human review remain open before “film quality.”
+Current 2026-08-10 checkpoint: the official UE 5.8.1 client compiles, passes 15 native suites, packages and visibly plays. The command weight, fictional earth/wood command ground, `24 × 24 m` wet field and open Daze field shelter are admitted production blockouts with exact source/import/material/package hashes. The 509-package player advances two campaign transactions, completes the three-pulse Broken Crossing exercise beneath the shelter and returns the campaign unchanged. This clears engine/playability, default-white-surface and empty-sky shelter defects only; motivated rain, vegetation, historically reviewed figures/formations, final sky/lighting, final-scene performance/accessibility and human review remain open before “film quality.”
 
 ## Film-feel principles
 

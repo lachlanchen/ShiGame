@@ -13,6 +13,7 @@
 #include "ShiCommandSignalModel.h"
 #include "ShiCommandSurfacePresentationModel.h"
 #include "ShiCommandWeightPresentationModel.h"
+#include "ShiDazeFieldShelterPresentationModel.h"
 #include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
@@ -313,6 +314,90 @@ bool FShiWetFieldEnvironmentPresentationTest::RunTest(const FString& Parameters)
     Raised.BoundsMaximum.Z = -5.f;
     TestFalse(TEXT("terrain that violates command-surface clearance is rejected"),
         FShiWetFieldEnvironmentPresentationModel::Validate(Raised, Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiDazeFieldShelterPresentationTest,
+    "SHI.Cinematic.DazeFieldShelterPresentationV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiDazeFieldShelterPresentationTest::RunTest(const FString& Parameters)
+{
+    const FShiDazeFieldShelterPresentationData Presentation =
+        FShiDazeFieldShelterPresentationModel::Build();
+    FString Error;
+    TestTrue(TEXT("reviewed Daze field shelter passes its disclosed blockout contract"),
+        FShiDazeFieldShelterPresentationModel::Validate(Presentation, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestTrue(TEXT("shelter is identity-rooted around rather than on the command surface"),
+        Presentation.Transform.Equals(FTransform::Identity, .0001f)
+        && Presentation.PostCenters.Num() == 4
+        && FMath::IsNearlyEqual(Presentation.BoundsMaximum.Z,
+            FShiDazeFieldShelterPresentationModel::MaximumZ(), .001f)
+        && Presentation.MinimumEaveHeight >= 250.f);
+    for (const FVector2D& Post : Presentation.PostCenters)
+    {
+        TestTrue(TEXT("each shelter post clears both command-surface axes"),
+            FMath::Abs(Post.X) - Presentation.ConservativePostRadius
+                >= FShiCommandSurfacePresentationModel::HalfWidth()
+                    + FShiDazeFieldShelterPresentationModel::MinimumPostClearance()
+            && FMath::Abs(Post.Y) - Presentation.ConservativePostRadius
+                >= FShiCommandSurfacePresentationModel::HalfDepth()
+                    + FShiDazeFieldShelterPresentationModel::MinimumPostClearance());
+    }
+    TestFalse(TEXT("shelter is not presented as an attested Daze reconstruction"),
+        Presentation.bHistoricallyAttested);
+    TestFalse(TEXT("shelter remains explicitly below final-art status"), Presentation.bFinalArt);
+    TestFalse(TEXT("shelter is not an interaction target"), Presentation.bInteractive);
+    TestFalse(TEXT("shelter collision is disabled"), Presentation.bCollisionEnabled);
+    TestFalse(TEXT("shelter does not affect navigation"), Presentation.bAffectsNavigation);
+    TestTrue(TEXT("shelter persists around the Broken Crossing exercise"),
+        Presentation.bVisibleDuringEngagement);
+
+    const FTransform ReviewCamera = FShiDazeFieldShelterPresentationModel::ReviewCameraTransform();
+    const FVector ReviewTarget(0.f, 0.f, 150.f);
+    TestTrue(TEXT("shelter review camera holds the roof and council clearance envelope"),
+        FVector::DotProduct(ReviewCamera.GetRotation().GetForwardVector(),
+            (ReviewTarget - ReviewCamera.GetLocation()).GetSafeNormal()) > .9999f
+        && FVector::Dist(ReviewCamera.GetLocation(), ReviewTarget) > 1500.f
+        && FMath::IsNearlyEqual(FShiDazeFieldShelterPresentationModel::ReviewFieldOfViewDegrees(), 52.f));
+
+    FShiDazeFieldShelterPresentationData Scaled = Presentation;
+    Scaled.Transform.SetScale3D(FVector(1.01f));
+    TestFalse(TEXT("unreviewed shelter scaling is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(Scaled, Error));
+    FShiDazeFieldShelterPresentationData Colliding = Presentation;
+    Colliding.bCollisionEnabled = true;
+    TestFalse(TEXT("runtime shelter collision is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(Colliding, Error));
+    FShiDazeFieldShelterPresentationData Navigable = Presentation;
+    Navigable.bAffectsNavigation = true;
+    TestFalse(TEXT("runtime shelter navigation authority is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(Navigable, Error));
+    FShiDazeFieldShelterPresentationData HiddenExercise = Presentation;
+    HiddenExercise.bVisibleDuringEngagement = false;
+    TestFalse(TEXT("a disappearing engagement shelter is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(HiddenExercise, Error));
+    FShiDazeFieldShelterPresentationData FalseHistory = Presentation;
+    FalseHistory.bHistoricallyAttested = true;
+    TestFalse(TEXT("an unsupported reconstruction claim is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(FalseHistory, Error));
+    FShiDazeFieldShelterPresentationData PrematureFinal = Presentation;
+    PrematureFinal.bFinalArt = true;
+    TestFalse(TEXT("premature final-art status is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(PrematureFinal, Error));
+    FShiDazeFieldShelterPresentationData IntrudingPost = Presentation;
+    IntrudingPost.PostCenters[0] = FVector2D(-330.f, -230.f);
+    TestFalse(TEXT("a post entering command clearance is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(IntrudingPost, Error));
+    FShiDazeFieldShelterPresentationData LowEave = Presentation;
+    LowEave.MinimumEaveHeight = 240.f;
+    TestFalse(TEXT("a shelter that compromises the council sightline is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(LowEave, Error));
+    FShiDazeFieldShelterPresentationData TooTall = Presentation;
+    TooTall.BoundsMaximum.Z = FShiDazeFieldShelterPresentationModel::MaximumAllowedHeight() + 1.f;
+    TestFalse(TEXT("a shelter outside the reviewed vertical envelope is rejected"),
+        FShiDazeFieldShelterPresentationModel::Validate(TooTall, Error));
     return !HasAnyErrors();
 }
 

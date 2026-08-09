@@ -1,0 +1,176 @@
+{
+  "assetId": "shi-daze-field-shelter-v1",
+  "createdAt": "2026-08-10",
+  "status": "approved-runtime-daze-field-shelter-production-blockout-council-engagement-story-reviewed-not-final-environment",
+  "rightsStatus": "original SHI project-authored geometry, vertex masks, materials, renders, source scripts and runtime presentation",
+  "historicalStatus": "fictional practical field construction; not an attested, excavated or reconstructed Daze shelter",
+  "designSource": "../../docs/art/DAZE_FIELD_SHELTER_BRIEF.md",
+  "engineImportEvidence": "../../docs/production/evidence/unreal-daze-field-shelter-import-status.json",
+  "engineEvidence": "../../docs/production/evidence/unreal-daze-field-shelter-presentation-status.json",
+  "toolchain": {
+    "authoring": "AgenticApp portable Blender 4.0.2 and official Unreal Engine 5.8.1",
+    "generation": "deterministic Blender Python and bounded engine-authored material graphs; no neural mesh, generated texture, model weights or private source material",
+    "generator": {
+      "file": "../../scripts/build-daze-field-shelter.py",
+      "sha256": "4e829b2d3958f2470b1eb72acb3eed9e074b54b66e9f5645849a7a035b43098a"
+    },
+    "validator": {
+      "file": "../../scripts/validate-daze-field-shelter.py",
+      "sha256": "79f863d63bf44be3f2278cb1c64924a811b3dd305f138cc4190c123b03417c98",
+      "method": "clean GLB/FBX import, topology/material/UV/vertex-color/bounds/clearance, LOD and collision inspection plus clean-import render"
+    },
+    "unrealImporter": {
+      "file": "../../scripts/import-daze-field-shelter-unreal.py",
+      "sha256": "76cf0362542dedab92b43c884c818fe60b02f25280ba7dbfca5405cbb334ca78",
+      "method": "isolated FBX LOD0/LOD1 import or read-only inspection with exact UE 5.8 bounds, LOD, UV, slot, collision, lightmap, Nanite and screen-size assertions"
+    },
+    "unrealMaterialAuthor": {
+      "file": "../../scripts/author-daze-field-shelter-materials-unreal.py",
+      "sha256": "371e7b5048962b0967cee0c7af5d96e531c39eaf9541b974578ab4e61dbcd7de",
+      "method": "read-only by default; exact three-material authoring or structurally reviewed retune behind SHI_DAZE_FIELD_SHELTER_AUTHOR_MATERIALS=1, followed by graph, output, noise, vertex-mask, texture, normal and compile inspection"
+    }
+  },
+  "outputs": [
+    {
+      "file": "../3d/rendered/shi-daze-field-shelter-v1.blend",
+      "role": "editable source and authored-material lookdev",
+      "bytes": 1952924,
+      "sha256": "7c1a7b1f4fb4c443b8be7446fae49907967d0c4cab9c40a920b1e22784cbbd5d"
+    },
+    {
+      "file": "../3d/export/shi-daze-field-shelter-v1-lod0.glb",
+      "role": "LOD0 editable-component interchange",
+      "bytes": 397724,
+      "sha256": "f44227e8fc6540e82e1703506b432684a3c2236bab4402909319fb1b0a0ec3a6"
+    },
+    {
+      "file": "../3d/export/shi-daze-field-shelter-v1-lod1.glb",
+      "role": "LOD1 editable-component interchange",
+      "bytes": 47100,
+      "sha256": "d29743edbc008b0812dfde9c64474ca4dd22fe3ffd2f8c0a77a01859800e0fd2"
+    },
+    {
+      "file": "../3d/export/shi-daze-field-shelter-v1.fbx",
+      "role": "Unreal LOD0 import",
+      "bytes": 445868,
+      "sha256": "11fee99e4beb446d5a95974f0d3635757bb1364b9149f3ed1b5844d49f3bf7a1"
+    },
+    {
+      "file": "../3d/export/shi-daze-field-shelter-v1-lod1.fbx",
+      "role": "Unreal LOD1 static-mesh import",
+      "bytes": 71836,
+      "sha256": "00d0fcee58d643a0c5f54eaa1fe9ba64d4b08662de5cd6d81dbdfb34d816981a"
+    },
+    {
+      "file": "../3d/rendered/shi-daze-field-shelter-v1.png",
+      "role": "oblique authored-material source inspection",
+      "bytes": 1724533,
+      "sha256": "e982082f9a567cc2395a96c8e9424a2f03d1f26002bb229ca540bc69e66186b4"
+    },
+    {
+      "file": "../3d/rendered/shi-daze-field-shelter-v1-profile.png",
+      "role": "profile eave and post-clearance inspection",
+      "bytes": 1622342,
+      "sha256": "093a39bfad33a58bc94af20bfe5a657805a0deeed77d637ef919bfd19249f9f2"
+    },
+    {
+      "file": "../3d/rendered/shi-daze-field-shelter-v1-underside.png",
+      "role": "beam, rafter and lashing inspection",
+      "bytes": 1699996,
+      "sha256": "f9263cfe939e469f21dec5d8b11943201c2554dec7715ad37bf6d6f71511af28"
+    },
+    {
+      "file": "../3d/rendered/shi-daze-field-shelter-v1-glb-import.png",
+      "role": "clean LOD0 GLB interchange inspection",
+      "bytes": 1632073,
+      "sha256": "81d1620ee1e9ce8576f120809c217d55d034461c7caad113453671490156b3ae"
+    },
+    {
+      "file": "../3d/source/shi-daze-field-shelter-v1.metrics.json",
+      "role": "deterministic generation metrics",
+      "bytes": 5265,
+      "sha256": "588a7d51f18e0b3405c24a748c61632499d212c1f8a3ef7430d97a8248b67a2a"
+    },
+    {
+      "file": "../3d/source/shi-daze-field-shelter-v1.validation.json",
+      "role": "clean interchange machine validation",
+      "bytes": 115797,
+      "sha256": "78a15d7ef2c91283a36d6e437ab286b7a6d4ee785b163baeb79d5196a22803c1"
+    },
+    {
+      "file": "../../apps/unreal/Content/SHI/Art/Environment/DazeShelter/M_SHI_CoarseFiberCord.uasset",
+      "role": "Unreal authored coarse-fibre-cord production-blockout PBR graph",
+      "bytes": 10482,
+      "sha256": "9719db6ce92cae282b2580faa144e4588b37710654181401488f44791b204b2f"
+    },
+    {
+      "file": "../../apps/unreal/Content/SHI/Art/Environment/DazeShelter/M_SHI_RainDarkenedWood.uasset",
+      "role": "Unreal authored rain-darkened-wood production-blockout PBR graph",
+      "bytes": 10488,
+      "sha256": "c20c4b9b9882740e546fbffda943bfc7543d8c431f846c9c7ebdf498765f8a16"
+    },
+    {
+      "file": "../../apps/unreal/Content/SHI/Art/Environment/DazeShelter/M_SHI_WovenReedMat.uasset",
+      "role": "Unreal authored woven-reed-mat production-blockout PBR graph",
+      "bytes": 12245,
+      "sha256": "6ad0235194eff9d5cb1b7e78de4e8b490d1282a5d64ff89212c8661a25636d8f"
+    },
+    {
+      "file": "../../apps/unreal/Content/SHI/Art/Environment/DazeShelter/SM_SHI_DazeFieldShelter_01.uasset",
+      "role": "Unreal static mesh with exact LOD0/LOD1, dual UVs and zero collision",
+      "bytes": 316032,
+      "sha256": "d6149e9071a80c2fb7a2e0e772fd11629b964bc87371d7d89235726e575404d7"
+    },
+    {
+      "file": "../../docs/production/evidence/unreal-daze-field-shelter-review-v1.png",
+      "role": "packaged development-only whole-shelter review",
+      "bytes": 667644,
+      "sha256": "5806d2bcfb8ac897b9312259efa3e553a4c401b252dbd290f58d50314c96ee91"
+    },
+    {
+      "file": "../../docs/production/evidence/unreal-daze-field-shelter-story-act-3-v1.png",
+      "role": "packaged Act-III story-progression review",
+      "bytes": 458188,
+      "sha256": "c3e81d68183f579045611b16e17530923afffa8ac3a165bbd119a0c1781a3c7d"
+    },
+    {
+      "file": "../../docs/production/evidence/unreal-daze-field-shelter-engagement-complete-v1.png",
+      "role": "packaged completed Broken Crossing review under the shelter",
+      "bytes": 365683,
+      "sha256": "72b4e383b10d26ee51210e9ba93f64a9551ea0fb5529bf622919c2b718ad75a1"
+    },
+    {
+      "file": "../../docs/production/evidence/unreal-daze-field-shelter-campaign-return-v1.png",
+      "role": "packaged unchanged-campaign return review",
+      "bytes": 456185,
+      "sha256": "1659b42ede03cfeaa1fcead5d44c84e79c1bffc8e9ac2d9ec26d58cf7085195c"
+    }
+  ],
+  "technicalReview": {
+    "dimensionsMeters": [8.399999618530273, 6.7348737716674805, 3.549999952316284],
+    "boundsMeters": {
+      "minimum": [-4.199999809265137, -3.3674368858337402, -0.18000006675720215],
+      "maximum": [4.199999809265137, 3.3674368858337402, 3.369999885559082]
+    },
+    "lod0Triangles": 3948,
+    "lod1Triangles": 460,
+    "collisionTriangles": 0,
+    "materialSlots": ["M_SHI_RainDarkenedWood", "M_SHI_WovenReedMat", "M_SHI_CoarseFiberCord"],
+    "uvChannelsPerLod": [2, 2],
+    "cleanGlbImport": "pass",
+    "cleanFbxImport": "pass",
+    "unrealImport": "pass",
+    "unrealMaterials": "pass: compile-clean eight-node wood, eleven-node reed and eight-node cord PBR graphs; no textures and no normal pretence",
+    "unrealNativeAutomation": "15 of 15 SHI suites pass, including DazeFieldShelterPresentationV1 hostile scale, collision, navigation, disclosure, final-art, post-clearance and vertical-envelope cases",
+    "unrealVisibleCampaign": "pass: Act I to Act III with two verified transactions",
+    "unrealVisibleEngagement": "pass: Broken Crossing completes three pulses with Orderly crossing and the campaign returns unchanged",
+    "lodReduction": "88.3 percent fewer triangles from LOD0 to LOD1"
+  },
+  "constraints": [
+    "Do not describe this fictional practical construction as historically attested, excavated or reconstructed",
+    "Keep the identity transform, four post centers outside the command-surface axes, eave at or above 2.78 metres and structure no higher than 3.45 metres",
+    "Keep the shelter noninteractive, collision-free, non-navigable and visible during the non-authoritative engagement",
+    "Do not promote this production blockout to final environment, shipping art or marketing status",
+    "Complete bounded rain, vegetation, period-reviewed figures and formations, final sky/lighting, final-scene performance/accessibility and human historical/cinematic/art review before final scene acceptance"
+  ]
+}

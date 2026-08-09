@@ -1,0 +1,115 @@
+{
+  "assetId": "shi-daze-field-shelter-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Isolated Unreal 5.8.1 Daze field-shelter static-mesh admission, bounded material inspection, full cook/package, cooked-container inspection and packaged launch smoke. This accepts a fictional practical production blockout, not an attested reconstruction, final environment or marketing asset.",
+  "engine": {
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "assetPath": "/Game/SHI/Art/Environment/DazeShelter/SM_SHI_DazeFieldShelter_01.SM_SHI_DazeFieldShelter_01"
+  },
+  "import": {
+    "passed": true,
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "trackedUassetHashesUnchanged": true
+    },
+    "boundsCentimeters": {
+      "minimum": [-419.9999694824219, -336.74371337890625, -18.000019073486328],
+      "maximum": [419.9999694824219, 336.7436828613281, 337.0],
+      "dimensions": [839.9999389648438, 673.4873962402344, 355.0000190734863]
+    },
+    "lodTriangles": [3948, 460],
+    "lodVertices": [8589, 712],
+    "lodUvChannels": [2, 2],
+    "lodScreenSizes": [1.0, 0.11999999731779099],
+    "materialSlots": ["M_SHI_RainDarkenedWood", "M_SHI_WovenReedMat", "M_SHI_CoarseFiberCord"],
+    "simpleCollisionCount": 0,
+    "convexCollisionCount": 0,
+    "lightMapResolution": 256,
+    "lightMapCoordinateIndex": 1,
+    "naniteEnabled": false,
+    "naniteDecision": "Deliberately off for this bounded 3,948-triangle shelter blockout; the explicit 460-triangle LOD1 is sufficient."
+  },
+  "trackedUnrealAssets": [
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/DazeShelter/M_SHI_CoarseFiberCord.uasset",
+      "bytes": 10482,
+      "sha256": "9719db6ce92cae282b2580faa144e4588b37710654181401488f44791b204b2f"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/DazeShelter/M_SHI_RainDarkenedWood.uasset",
+      "bytes": 10488,
+      "sha256": "c20c4b9b9882740e546fbffda943bfc7543d8c431f846c9c7ebdf498765f8a16"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/DazeShelter/M_SHI_WovenReedMat.uasset",
+      "bytes": 12245,
+      "sha256": "6ad0235194eff9d5cb1b7e78de4e8b490d1282a5d64ff89212c8661a25636d8f"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/DazeShelter/SM_SHI_DazeFieldShelter_01.uasset",
+      "bytes": 316032,
+      "sha256": "d6149e9071a80c2fb7a2e0e772fd11629b964bc87371d7d89235726e575404d7"
+    }
+  ],
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeShelter-Review-v1/Linux",
+    "packageCount": 509,
+    "priorAcceptedPackageCount": 505,
+    "addedPackageCount": 4,
+    "alwaysCookPath": "/Game/SHI/Art/Environment/DazeShelter",
+    "cookedEntries": [
+      "M_SHI_CoarseFiberCord.uasset",
+      "M_SHI_RainDarkenedWood.uasset",
+      "M_SHI_WovenReedMat.uasset",
+      "SM_SHI_DazeFieldShelter_01.uasset",
+      "SM_SHI_DazeFieldShelter_01.ubulk"
+    ],
+    "artifacts": [
+      {
+        "role": "Linux development executable",
+        "bytes": 298512560,
+        "sha256": "706f132aab9a0b705267b0718cb3e26fac580c2e9cca094b7a517585d36011fb"
+      },
+      {
+        "role": "Pak metadata and non-IoStore payload",
+        "bytes": 10424173,
+        "sha256": "2da553b68b376949ff758cad9f502c0f230e5c5fa512886be01584df56729df2"
+      },
+      {
+        "role": "IoStore data container",
+        "bytes": 165666912,
+        "sha256": "863889020c51db01d3d460768e108546b11cbc245b7fc900bbd431d0672fe4c6"
+      },
+      {
+        "role": "IoStore table of contents",
+        "bytes": 147832,
+        "sha256": "da6fd4b2730867eabcce67c998063e44a3cbf07848ec1035f43d2c2de7d2c31b"
+      }
+    ]
+  },
+  "smokeTest": {
+    "command": "./SHI.sh -nullrhi -unattended -NoSound -NoSplash -ExecCmds=quit -log",
+    "exitCode": 0,
+    "containerPackageCount": 509,
+    "assetRegistryNewPackages": 509,
+    "gameMode": "ShiGameMode",
+    "map": "/Engine/Maps/Entry",
+    "cleanRequestedExit": true,
+    "observed": [
+      "IoStore container mounted with 509 packages",
+      "premade AssetRegistry updated with 509 packages",
+      "entry map loaded for play under ShiGameMode",
+      "clean command-requested shutdown"
+    ]
+  },
+  "decision": "approved-engine-daze-field-shelter-production-blockout-packaged-not-final-environment",
+  "remainingGates": [
+    "author bounded rain VFX, vegetation and final sky/lighting around this shelter",
+    "replace primitive council figures, floating light proxy and BasicShape signals with historically reviewed figures, props and formation language",
+    "repeat physical-display performance, camera, controller and accessibility evidence after final scene assembly",
+    "complete human historical, material, cinematic and final art-direction review before shipping or marketing use"
+  ]
+}

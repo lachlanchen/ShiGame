@@ -31,6 +31,7 @@
 #include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilFigure.h"
 #include "ShiCouncilStagingModel.h"
+#include "ShiDazeFieldShelterPresentationModel.h"
 #include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiSoundscapeComponent.h"
@@ -56,6 +57,7 @@ void AShiGameMode::BeginPlay()
         || FParse::Param(FCommandLine::Get(), TEXT("ShiCommandWeightReviewFront"));
     bCommandSurfaceReview = FParse::Param(FCommandLine::Get(), TEXT("ShiCommandSurfaceReview"));
     bWetFieldEnvironmentReview = FParse::Param(FCommandLine::Get(), TEXT("ShiWetFieldEnvironmentReview"));
+    bDazeFieldShelterReview = FParse::Param(FCommandLine::Get(), TEXT("ShiDazeFieldShelterReview"));
 #endif
     LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
@@ -98,6 +100,7 @@ void AShiGameMode::BeginPlay()
     }
 
     if (!bCommandWeightReview && !bCommandSurfaceReview && !bWetFieldEnvironmentReview
+        && !bDazeFieldShelterReview
         && GEngine && GEngine->GameViewport)
     {
         SAssignNew(CommandScreen, SShiCommandScreen).GameMode(this);
@@ -1301,6 +1304,55 @@ void AShiGameMode::CreateCommandSpace()
     WetFieldEnvironment->Tags.Add(FName(TEXT("ShiEnvironment:WetField")));
     WetFieldEnvironment->Tags.Add(FName(TEXT("ShiPresentation:NonAuthoritative")));
     WetFieldEnvironmentProp = WetFieldEnvironment;
+    const FShiDazeFieldShelterPresentationData ShelterPresentation =
+        FShiDazeFieldShelterPresentationModel::Build();
+    FString ShelterError;
+    if (!FShiDazeFieldShelterPresentationModel::Validate(ShelterPresentation, ShelterError))
+    {
+        LoadError = FString::Printf(TEXT("Daze field-shelter presentation rejected: %s"), *ShelterError);
+        return;
+    }
+    UStaticMesh* ShelterMesh = LoadObject<UStaticMesh>(nullptr, *ShelterPresentation.MeshPath);
+    if (!ShelterMesh)
+    {
+        LoadError = TEXT("Reviewed Daze field-shelter mesh is unavailable.");
+        return;
+    }
+    const FBox ShelterBounds = ShelterMesh->GetBoundingBox();
+    TSet<FName> ShelterMaterialSlots;
+    for (const FStaticMaterial& Material : ShelterMesh->GetStaticMaterials())
+    {
+        ShelterMaterialSlots.Add(Material.MaterialSlotName);
+    }
+    if (!ShelterBounds.Min.Equals(ShelterPresentation.BoundsMinimum, .10f)
+        || !ShelterBounds.Max.Equals(ShelterPresentation.BoundsMaximum, .10f)
+        || ShelterMaterialSlots.Num() != 3
+        || !ShelterMaterialSlots.Contains(FName(TEXT("M_SHI_RainDarkenedWood")))
+        || !ShelterMaterialSlots.Contains(FName(TEXT("M_SHI_WovenReedMat")))
+        || !ShelterMaterialSlots.Contains(FName(TEXT("M_SHI_CoarseFiberCord"))))
+    {
+        LoadError = TEXT("Reviewed Daze field-shelter runtime bounds or material slots drifted from the admitted asset.");
+        return;
+    }
+    AStaticMeshActor* Shelter = World->SpawnActor<AStaticMeshActor>(
+        ShelterPresentation.Transform.GetLocation(), ShelterPresentation.Transform.Rotator());
+    if (!Shelter)
+    {
+        LoadError = TEXT("Reviewed Daze field shelter could not spawn.");
+        return;
+    }
+    UStaticMeshComponent* ShelterComponent = Shelter->GetStaticMeshComponent();
+    ShelterComponent->SetMobility(EComponentMobility::Movable);
+    ShelterComponent->SetStaticMesh(ShelterMesh);
+    ShelterComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    ShelterComponent->SetGenerateOverlapEvents(false);
+    ShelterComponent->SetCanEverAffectNavigation(false);
+    Shelter->SetActorScale3D(ShelterPresentation.Transform.GetScale3D());
+    Shelter->SetActorEnableCollision(false);
+    Shelter->Tags.Add(FName(TEXT("ShiEnvironment:DazeShelter")));
+    Shelter->Tags.Add(FName(TEXT("ShiPresentation:FictionalPracticalConstruction")));
+    Shelter->Tags.Add(FName(TEXT("ShiArtStatus:ProductionBlockout")));
+    DazeFieldShelterProp = Shelter;
     const FShiCommandSurfacePresentationData CommandSurfacePresentation = FShiCommandSurfacePresentationModel::Build();
     FString CommandSurfaceError;
     if (!FShiCommandSurfacePresentationModel::Validate(CommandSurfacePresentation, Campaign.Sites,
@@ -1519,7 +1571,12 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Live council staging rejected: %s"), *CouncilError);
         return;
     }
-    if (bWetFieldEnvironmentReview)
+    if (bDazeFieldShelterReview)
+    {
+        SetCameraImmediate(FShiDazeFieldShelterPresentationModel::ReviewCameraTransform(),
+            FShiDazeFieldShelterPresentationModel::ReviewFieldOfViewDegrees());
+    }
+    else if (bWetFieldEnvironmentReview)
     {
         SetCameraImmediate(FShiWetFieldEnvironmentPresentationModel::ReviewCameraTransform(),
             FShiWetFieldEnvironmentPresentationModel::ReviewFieldOfViewDegrees());
