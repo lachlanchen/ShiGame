@@ -23,8 +23,13 @@ private:
     TSharedPtr<SScrollBox> EvidenceScroll;
     TSharedRef<SWidget> BuildLayout();
     TSharedRef<SWidget> BuildEvidenceLayout(AShiGameMode& Mode, const FShiNodeData& Node);
+    TSharedRef<SWidget> BuildEngagementLayout(AShiGameMode& Mode);
     FReply Select(int32 Index);
     FReply Issue();
+    FReply OpenEngagement();
+    FReply CloseEngagement();
+    FReply SelectEngagement(int32 Index);
+    FReply IssueEngagement();
     FReply SkipCinematic();
     FReply NewChronicle();
     FReply ToggleEvidence();

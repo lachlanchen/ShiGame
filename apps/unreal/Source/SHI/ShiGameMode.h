@@ -7,6 +7,9 @@
 #include "ShiCinematicBeatModel.h"
 #include "ShiCommandSignalModel.h"
 #include "ShiCouncilStagingModel.h"
+#include "ShiEngagementModel.h"
+#include "ShiEngagementSession.h"
+#include "ShiEngagementSignalModel.h"
 #include "ShiGameMode.generated.h"
 
 class SShiCommandScreen;
@@ -63,6 +66,13 @@ public:
     bool IsCinematicSequenceActive() const { return CinematicBeats.IsValidIndex(CinematicBeatIndex); }
     bool IsInspectingRemoteSite() const;
     bool IsCouncilFocused() const { return bCouncilFocused; }
+    bool IsEngagementAvailable() const;
+    bool IsEngagementOpen() const { return bEngagementOpen; }
+    const FShiEngagementModel& GetEngagementModel() const { return Engagement; }
+    const FShiEngagementSession& GetEngagementSession() const { return EngagementSession; }
+    TArray<const FShiEngagementCommandData*> GetAvailableEngagementCommands() const;
+    const FShiEngagementCommandData* GetSelectedEngagementCommand() const;
+    int32 GetSelectedEngagementCommandIndex() const { return SelectedEngagementCommandIndex; }
 
     void SelectChoice(int32 Index);
     void CycleChoice(int32 Direction);
@@ -78,10 +88,17 @@ public:
     void ToggleReducedMotion();
     void SkipCinematicSequence();
     void PresentCouncil();
+    void OpenEngagement();
+    void CloseEngagement();
+    void SelectEngagementCommand(int32 Index);
+    void CycleEngagementCommand(int32 Direction);
+    void IssueEngagementCommand();
 
 private:
     FShiCampaignModel Campaign;
     FShiCampaignSession Session;
+    FShiEngagementModel Engagement;
+    FShiEngagementSession EngagementSession;
     FString Locale = TEXT("en");
     FString LastConsequence;
     FString LoadError;
@@ -94,6 +111,10 @@ private:
     bool bEvidenceOpen = false;
     bool bReducedMotion = false;
     bool bCouncilFocused = false;
+    bool bEngagementOpen = false;
+    int32 SelectedEngagementCommandIndex = 0;
+    FString EngagementCampaignSnapshot;
+    TArray<FShiEngagementSignalData> EngagementSignals;
     FString InspectedSiteId;
     FString InspectedCommandSignalId;
     TArray<FShiCommandSignalData> CommandSignals;
@@ -104,6 +125,7 @@ private:
     TWeakObjectPtr<ACameraActor> CommandCamera;
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> SiteMarkers;
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> CommandSignalMarkers;
+    TMap<FString, TWeakObjectPtr<AStaticMeshActor>> EngagementMetricMarkers;
     TMap<FString, TWeakObjectPtr<AShiCouncilFigure>> CouncilFigures;
     FShiCouncilStageData CouncilStage;
     TArray<FShiCinematicBeatData> CinematicBeats;
@@ -143,6 +165,8 @@ private:
     void UpdateWartableSelection();
     bool RebuildCommandSignals(FString& OutError);
     void UpdateCommandSignalSelection();
+    void ApplyEngagementCommandSpace(bool bVisible);
+    bool CampaignMatchesEngagementSnapshot(FString& OutError) const;
     void SelectFirstAvailableChoice();
     void ResumeSoundFromGesture();
     void LoadCinematicPreferences();

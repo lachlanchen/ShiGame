@@ -4,6 +4,7 @@
 #include "ShiCampaignModel.h"
 #include "ShiEngagementModel.h"
 #include "ShiEngagementSession.h"
+#include "ShiEngagementSignalModel.h"
 
 namespace
 {
@@ -29,6 +30,14 @@ namespace
     void VisitRoutes(const FShiEngagementModel& Model, const FShiEngagementSession& Session, FRouteStats& Stats,
         FAutomationTestBase& Test)
     {
+        TArray<FShiEngagementSignalData> Signals;
+        FString SignalError;
+        Test.TestTrue(TEXT("six bounded 3D tallies follow every native position"),
+            FShiEngagementSignalModel::Build(Session.GetMetrics(), Signals, SignalError));
+        Test.TestEqual(TEXT("every native position owns exactly six 3D tallies"), Signals.Num(), 6);
+        for (const FShiEngagementSignalData& Signal : Signals)
+            Test.TestEqual(TEXT("engagement signal height encodes its exact metric"), Signal.Value, Session.GetMetrics().FindRef(Signal.MetricId));
+        if (!SignalError.IsEmpty()) Test.AddError(SignalError);
         if (Session.IsCompleted())
         {
             ++Stats.Routes;
@@ -196,6 +205,24 @@ bool FShiBrokenCrossingEngagementTest::RunTest(const FString& Parameters)
         [](const FShiNodeData& Node) { return Node.Id == TEXT("broken-crossing"); });
     if (MissingCondition.Nodes.IsValidIndex(NodeIndex)) MissingCondition.Nodes[NodeIndex].Conditions.Pop();
     TestFalse(TEXT("native model rejects campaign condition drift"), Model.Validate(MissingCondition, Error));
+
+    TArray<FShiEngagementSignalData> AcceptedSignals;
+    TestTrue(TEXT("canonical initial metrics build a bounded engagement command space"),
+        FShiEngagementSignalModel::Build(Model.InitialMetrics, AcceptedSignals, Error));
+    TestEqual(TEXT("engagement command space exposes six metric pieces"), AcceptedSignals.Num(), 6);
+    TestTrue(TEXT("engagement command-space camera is finite"),
+        !FShiEngagementSignalModel::CameraTransform().ContainsNaN());
+    TArray<FShiEngagementSignalData> Overlap = AcceptedSignals;
+    if (Overlap.Num() >= 2) Overlap[1].Location = Overlap[0].Location;
+    TestFalse(TEXT("overlapping engagement pointers are rejected"), FShiEngagementSignalModel::Validate(Overlap, Error));
+    TMap<FString, int32> MissingMetric = Model.InitialMetrics;
+    MissingMetric.Remove(TEXT("rearCohesion"));
+    const FVector PreservedLocation = AcceptedSignals.IsEmpty() ? FVector::ZeroVector : AcceptedSignals[0].Location;
+    TestFalse(TEXT("missing engagement metric rejects signal rebuild"),
+        FShiEngagementSignalModel::Build(MissingMetric, AcceptedSignals, Error));
+    TestEqual(TEXT("failed engagement signal rebuild is atomic"), AcceptedSignals.Num(), 6);
+    if (!AcceptedSignals.IsEmpty()) TestEqual(TEXT("failed engagement signal rebuild preserves accepted geometry"),
+        AcceptedSignals[0].Location, PreservedLocation);
     return !HasAnyErrors();
 }
 

@@ -28,6 +28,34 @@ namespace
         if (Status == TEXT("authored-reconstruction")) return TEXT("AUTHORED RECONSTRUCTION");
         return TEXT("EVIDENCE LOCATED · REVIEW OPEN");
     }
+
+    FString EngagementMetricLabel(const FString& MetricId)
+    {
+        if (MetricId == TEXT("crossingProgress")) return TEXT("CROSSING");
+        if (MetricId == TEXT("rearCohesion")) return TEXT("REAR");
+        if (MetricId == TEXT("reserveReadiness")) return TEXT("RESERVE");
+        if (MetricId == TEXT("supplyLoads")) return TEXT("SUPPLIES");
+        if (MetricId == TEXT("pursuitClosure")) return TEXT("PURSUIT");
+        if (MetricId == TEXT("signalIntegrity")) return TEXT("SIGNALS");
+        return MetricId.ToUpper();
+    }
+
+    FString DeltaSummary(const TMap<FString, int32>& Effects)
+    {
+        TArray<FString> Parts;
+        const TArray<FString> OrderedKeys = {
+            TEXT("crossingProgress"), TEXT("rearCohesion"), TEXT("reserveReadiness"),
+            TEXT("supplyLoads"), TEXT("pursuitClosure"), TEXT("signalIntegrity"),
+            TEXT("grain"), TEXT("trust"), TEXT("momentum"), TEXT("people"), TEXT("danger")
+        };
+        for (const FString& Key : OrderedKeys)
+        {
+            const int32* Value = Effects.Find(Key);
+            if (Value && *Value != 0)
+                Parts.Add(FString::Printf(TEXT("%s %+d"), *EngagementMetricLabel(Key), *Value));
+        }
+        return Parts.IsEmpty() ? TEXT("NO DIRECT CHANGE") : FString::Join(Parts, TEXT(" · "));
+    }
 }
 
 void SShiCommandScreen::Construct(const FArguments& InArgs)
@@ -61,6 +89,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     if (!Node) return SNew(STextBlock).Text(FText::FromString(TEXT("Campaign node is unavailable.")));
     const FString Locale = Mode->GetLocale();
     if (Mode->IsEvidenceOpen()) return BuildEvidenceLayout(*Mode, *Node);
+    if (Mode->IsEngagementOpen()) return BuildEngagementLayout(*Mode);
     EvidenceScroll.Reset();
     const FShiActData* Act = Mode->GetCampaign().FindAct(Node->ActId);
     const FShiSiteData* Site = Mode->GetCampaign().FindSite(Node->SiteId);
@@ -265,6 +294,15 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     }
     Root->AddSlot().AutoHeight().Padding(21, 10)[Choices];
 
+    if (Mode->IsEngagementAvailable())
+    {
+        Root->AddSlot().AutoHeight().Padding(28, 2, 28, 10)[
+            SNew(SButton).OnClicked(this, &SShiCommandScreen::OpenEngagement).ContentPadding(15)[
+                SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("OPEN 3-PULSE COMMAND EXERCISE · X / GAMEPAD X\nNATIVE PARITY · CAMPAIGN AUTHORITY REMAINS BYTE-GUARDED")))
+            ]
+        ];
+    }
+
     const FShiChoiceData& Selected = Node->Choices[Mode->GetSelectedChoiceIndex()];
     FString OrderReading;
     if (const FShiFieldConditionData* Field = Mode->GetCurrentFieldCondition())
@@ -305,7 +343,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · D / R3 COUNCIL · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT GROUND · SPACE / B SKIPS CONSEQUENCE · E / LB EVIDENCE · V / MENU MOTION · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · D / R3 COUNCIL · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT GROUND · X / GAMEPAD X TACTICAL EXERCISE WHEN AVAILABLE · SPACE / B SKIPS CONSEQUENCE · E / LB EVIDENCE · V / MENU MOTION · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
         ]
     ];
 
@@ -317,6 +355,146 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(0.52f)[SNullWidget::NullWidget];
+}
+
+TSharedRef<SWidget> SShiCommandScreen::BuildEngagementLayout(AShiGameMode& Mode)
+{
+    EvidenceScroll.Reset();
+    const FShiEngagementModel& Model = Mode.GetEngagementModel();
+    const FShiEngagementSession& Session = Mode.GetEngagementSession();
+    const FString Locale = Mode.GetLocale();
+    const FShiEngagementPlanData* Plan = Model.FindPlan(Session.GetPlanId());
+    const FShiEngagementConditionData* Condition = Model.FindCondition(Session.GetConditionId());
+    const FShiEngagementPulseData* Pulse = Session.IsCompleted() ? nullptr : Model.Pulses.IsValidIndex(Session.GetPulseIndex())
+        ? &Model.Pulses[Session.GetPulseIndex()] : nullptr;
+    const FShiEngagementOutcomeData* Outcome = Session.IsCompleted() ? Model.FindOutcome(Session.GetOutcomeId()) : nullptr;
+    const TArray<const FShiEngagementCommandData*> Commands = Mode.GetAvailableEngagementCommands();
+    const FShiEngagementCommandData* Selected = Mode.GetSelectedEngagementCommand();
+    TSharedRef<SVerticalBox> Root = SNew(SVerticalBox);
+
+    Root->AddSlot().AutoHeight().Padding(26, 18, 26, 3)[
+        SNew(STextBlock).Text(FText::FromString(TEXT("勢  SHI · FIELD COMMAND EXERCISE")))
+    ];
+    Root->AddSlot().AutoHeight().Padding(26, 3, 26, 5)[
+        SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("%s\n%s"),
+            *Model.Title.Resolve(Locale), *Model.Objective.Resolve(Locale))))
+    ];
+    Root->AddSlot().AutoHeight().Padding(26, 3, 26, 10)[
+        SNew(SBorder).Padding(11).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+        .BorderBackgroundColor(FLinearColor(.10f, .055f, .035f, .98f))[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("NON-AUTHORITATIVE TACTICAL LAYER · CAMPAIGN SAVE BYTE-GUARDED · PLAYER EFFECT RESOLVES BEFORE THE AUTHORED FIELD ANSWER")))
+        ]
+    ];
+    if (Plan)
+    {
+        Root->AddSlot().AutoHeight().Padding(26, 2, 26, 8)[
+            SNew(SBorder).Padding(12)[
+                SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("PLAN · %s\nMAIN EFFORT · %s\nWITHDRAWAL CONDITION · %s"),
+                    *Plan->Title.Resolve(Locale), *Plan->MainEffort.Resolve(Locale), *Plan->WithdrawalCondition.Resolve(Locale))))
+            ]
+        ];
+    }
+    if (Condition)
+    {
+        Root->AddSlot().AutoHeight().Padding(26, 2, 26, 8)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("FIELD CONDITION · %s\n%s"),
+                *Condition->Title.Resolve(Locale), *Condition->Signal.Resolve(Locale))))
+        ];
+    }
+
+    TSharedRef<SHorizontalBox> Metrics = SNew(SHorizontalBox);
+    for (const FString& MetricId : FShiEngagementModel::MetricKeys())
+    {
+        Metrics->AddSlot().FillWidth(1.f).Padding(2)[
+            SNew(SBorder).Padding(7)[
+                SNew(STextBlock).Justification(ETextJustify::Center).Text(FText::FromString(FString::Printf(TEXT("%s\n%d"),
+                    *EngagementMetricLabel(MetricId), Session.GetMetrics().FindRef(MetricId))))
+            ]
+        ];
+    }
+    Root->AddSlot().AutoHeight().Padding(24, 2, 24, 10)[Metrics];
+    Root->AddSlot().AutoHeight().Padding(26, 1, 26, 8)[
+        SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("SIX LIVE 3D TALLIES · HEIGHT AND SILHOUETTE CHANGE WITH THE BOUNDED 0–100 STATE")))
+    ];
+
+    if (Pulse)
+    {
+        Root->AddSlot().AutoHeight().Padding(26, 4, 26, 8)[
+            SNew(SBorder).Padding(12)[
+                SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("PULSE %d / %d · %s\nOBJECTIVE · %s"),
+                    Session.GetPulseIndex() + 1, Model.Pulses.Num(), *Pulse->Title.Resolve(Locale), *Pulse->Objective.Resolve(Locale))))
+            ]
+        ];
+    }
+
+    if (!Session.GetHistory().IsEmpty())
+    {
+        const FShiEngagementCommandRecord& Record = Session.GetHistory().Last();
+        const FShiEngagementCommandData* PreviousCommand = Model.FindCommand(Record.CommandId);
+        if (PreviousCommand)
+        {
+            Root->AddSlot().AutoHeight().Padding(26, 2, 26, 9)[
+                SNew(SBorder).Padding(12).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+                .BorderBackgroundColor(FLinearColor(.035f, .075f, .075f, .98f))[
+                    SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("LAST ORDER · %s\n%s\nPLAYER EFFECT · %s\nFIELD ANSWER · %s · %s\nAFTER ANSWER · %s"),
+                        *PreviousCommand->Title.Resolve(Locale), *PreviousCommand->Intent.Resolve(Locale), *DeltaSummary(PreviousCommand->Effects),
+                        *PreviousCommand->Response.Kind.ToUpper(), *PreviousCommand->Response.Reveal.Resolve(Locale), *DeltaSummary(PreviousCommand->Response.Effects))))
+                ]
+            ];
+        }
+    }
+
+    if (!Session.IsCompleted())
+    {
+        TSharedRef<SHorizontalBox> CommandCards = SNew(SHorizontalBox);
+        for (int32 Index = 0; Index < Commands.Num(); ++Index)
+        {
+            const FShiEngagementCommandData* Command = Commands[Index];
+            const bool bSelected = Index == Mode.GetSelectedEngagementCommandIndex();
+            const FString Copy = FString::Printf(TEXT("%s%s\n%s\n\n%s"), bSelected ? TEXT("◆ SELECTED\n") : TEXT(""),
+                *Command->Title.Resolve(Locale), *Command->Intent.Resolve(Locale), *DeltaSummary(Command->Effects));
+            CommandCards->AddSlot().FillWidth(1.f).Padding(5)[
+                SNew(SButton).OnClicked(this, &SShiCommandScreen::SelectEngagement, Index).ContentPadding(11)[
+                    SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Copy))
+                ]
+            ];
+        }
+        Root->AddSlot().AutoHeight().Padding(21, 2, 21, 8)[CommandCards];
+        Root->AddSlot().AutoHeight().Padding(26, 2, 26, 7)[
+            SNew(SButton).IsEnabled(Selected != nullptr).OnClicked(this, &SShiCommandScreen::IssueEngagement).ContentPadding(15)[
+                SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Selected
+                    ? FString::Printf(TEXT("ISSUE PULSE ORDER · %s · ENTER / GAMEPAD A"), *Selected->Title.Resolve(Locale))
+                    : TEXT("NO LEGAL PULSE ORDER · COMMAND HELD")))
+            ]
+        ];
+    }
+    else if (Outcome)
+    {
+        Root->AddSlot().AutoHeight().Padding(26, 4, 26, 9)[
+            SNew(SBorder).Padding(14).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+            .BorderBackgroundColor(FLinearColor(.08f, .07f, .025f, .98f))[
+                SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("EXERCISE COMPLETE · %s · %s\n%s\nCAMPAIGN EFFECT PREVIEW · %s\nPREVIEW ONLY · NO CAMPAIGN RESOURCE HAS CHANGED"),
+                    *Outcome->Status.ToUpper(), *Outcome->Title.Resolve(Locale), *Outcome->Summary.Resolve(Locale), *DeltaSummary(Session.GetCampaignEffects()))))
+            ]
+        ];
+    }
+    Root->AddSlot().AutoHeight().Padding(26, 3, 26, 9)[
+        SNew(SButton).OnClicked(this, &SShiCommandScreen::CloseEngagement).ContentPadding(11)[
+            SNew(STextBlock).Text(FText::FromString(TEXT("RETURN TO CAMPAIGN UNCHANGED · X / ESC / GAMEPAD X OR B")))
+        ]
+    ];
+    Root->AddSlot().AutoHeight().Padding(26, 1, 26, 22)[
+        SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("← / → OR DPAD SELECTS · ENTER / GAMEPAD A ISSUES · THREE PULSES THEN A DETERMINISTIC OUTCOME · EVERY LEGAL ROUTE IS REPLAY-VERIFIED")))
+    ];
+
+    return SNew(SHorizontalBox)
+        + SHorizontalBox::Slot().FillWidth(.55f)[
+            SNew(SBorder).Padding(4).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+            .BorderBackgroundColor(FLinearColor(.018f, .025f, .025f, .97f))[
+                SNew(SScrollBox) + SScrollBox::Slot()[Root]
+            ]
+        ]
+        + SHorizontalBox::Slot().FillWidth(.45f)[SNullWidget::NullWidget];
 }
 
 TSharedRef<SWidget> SShiCommandScreen::BuildEvidenceLayout(AShiGameMode& Mode, const FShiNodeData& Node)
@@ -437,6 +615,30 @@ FReply SShiCommandScreen::Select(int32 Index)
 FReply SShiCommandScreen::Issue()
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->IssueSelectedOrder();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::OpenEngagement()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->OpenEngagement();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::CloseEngagement()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->CloseEngagement();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::SelectEngagement(int32 Index)
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->SelectEngagementCommand(Index);
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::IssueEngagement()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->IssueEngagementCommand();
     return FReply::Handled();
 }
 

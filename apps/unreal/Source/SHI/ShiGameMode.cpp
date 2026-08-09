@@ -50,6 +50,11 @@ void AShiGameMode::BeginPlay()
     {
         UE_LOG(LogTemp, Error, TEXT("SHI campaign load failed: %s"), *LoadError);
     }
+    else if (!Engagement.LoadCanonical(Campaign, LoadError))
+    {
+        LoadError = FString::Printf(TEXT("SHI engagement load failed: %s"), *LoadError);
+        UE_LOG(LogTemp, Error, TEXT("%s"), *LoadError);
+    }
     else
     {
         const bool bSaveExists = FPaths::FileExists(GetSavePath());
@@ -98,7 +103,7 @@ void AShiGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AShiGameMode::SelectChoice(int32 Index)
 {
-    if (IsCinematicSequenceActive()) return;
+    if (IsCinematicSequenceActive() || bEngagementOpen) return;
     const FShiNodeData* Node = GetCurrentNode();
     if (!Node || !Node->Choices.IsValidIndex(Index) || !CanChoose(Node->Choices[Index]) || Session.IsCompleted()) return;
     SelectedChoiceIndex = Index;
@@ -119,7 +124,7 @@ void AShiGameMode::SelectChoice(int32 Index)
 
 void AShiGameMode::CycleChoice(int32 Direction)
 {
-    if (IsCinematicSequenceActive()) return;
+    if (IsCinematicSequenceActive() || bEngagementOpen) return;
     const FShiNodeData* Node = GetCurrentNode();
     if (!Node || Node->Choices.IsEmpty() || Session.IsCompleted() || Direction == 0) return;
     for (int32 Offset = 1; Offset <= Node->Choices.Num(); ++Offset)
@@ -160,31 +165,184 @@ bool AShiGameMode::IsInspectingRemoteSite() const
 
 void AShiGameMode::CycleInspectedSite(int32 Direction)
 {
-    if (bEvidenceOpen || IsCinematicSequenceActive() || Direction == 0) return;
+    if (bEvidenceOpen || bEngagementOpen || IsCinematicSequenceActive() || Direction == 0) return;
     InspectSite(FShiWartableModel::CycleSite(Campaign.Sites, GetInspectedSite() ? GetInspectedSite()->Id : FString(), Direction));
 }
 
 void AShiGameMode::CycleInspectedCommandSignal(int32 Direction)
 {
-    if (bEvidenceOpen || IsCinematicSequenceActive() || Direction == 0) return;
+    if (bEvidenceOpen || bEngagementOpen || IsCinematicSequenceActive() || Direction == 0) return;
     InspectCommandSignal(FShiCommandSignalModel::CycleSignal(CommandSignals,
         GetInspectedCommandSignal() ? GetInspectedCommandSignal()->Id : FString(), Direction));
 }
 
 void AShiGameMode::ResetInspectedSite()
 {
-    if (bEvidenceOpen || IsCinematicSequenceActive()) return;
+    if (bEvidenceOpen || bEngagementOpen || IsCinematicSequenceActive()) return;
     if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId);
 }
 
 void AShiGameMode::PresentCouncil()
 {
-    if (bEvidenceOpen || IsCinematicSequenceActive()) return;
+    if (bEvidenceOpen || bEngagementOpen || IsCinematicSequenceActive()) return;
     FocusCouncil(false, true);
+}
+
+bool AShiGameMode::IsEngagementAvailable() const
+{
+    const FShiNodeData* Node = GetCurrentNode();
+    const FShiFieldConditionData* Condition = GetCurrentFieldCondition();
+    return !Session.IsCompleted() && Node && Node->Id == Engagement.NodeId && Condition
+        && Engagement.FindCondition(Condition->Id) && Node->Choices.IsValidIndex(SelectedChoiceIndex)
+        && Engagement.FindPlan(Node->Choices[SelectedChoiceIndex].Id);
+}
+
+TArray<const FShiEngagementCommandData*> AShiGameMode::GetAvailableEngagementCommands() const
+{
+    TArray<const FShiEngagementCommandData*> Commands;
+    FString Error;
+    if (bEngagementOpen) EngagementSession.AvailableCommands(Commands, Error);
+    return Commands;
+}
+
+const FShiEngagementCommandData* AShiGameMode::GetSelectedEngagementCommand() const
+{
+    const TArray<const FShiEngagementCommandData*> Commands = GetAvailableEngagementCommands();
+    return Commands.IsValidIndex(SelectedEngagementCommandIndex) ? Commands[SelectedEngagementCommandIndex] : nullptr;
+}
+
+void AShiGameMode::OpenEngagement()
+{
+    if (bEngagementOpen || bEvidenceOpen || IsCinematicSequenceActive() || !IsEngagementAvailable()) return;
+    const FShiNodeData* Node = GetCurrentNode();
+    const FShiFieldConditionData* Condition = GetCurrentFieldCondition();
+    FString Error;
+    FString CampaignSnapshot;
+    FShiEngagementSession CandidateEngagementSession;
+    TArray<FShiEngagementSignalData> CandidateSignals;
+    if (!Node || !Condition || !Session.ExportSaveJson(CampaignSnapshot, Error)
+        || !CandidateEngagementSession.Initialize(Engagement, Node->Choices[SelectedChoiceIndex].Id, Condition->Id, Error)
+        || !FShiEngagementSignalModel::Build(CandidateEngagementSession.GetMetrics(), CandidateSignals, Error))
+    {
+        LastConsequence = FString::Printf(TEXT("COMMAND EXERCISE HELD · CAMPAIGN UNCHANGED · %s"), *Error);
+        RefreshScreen();
+        return;
+    }
+    for (const FShiEngagementSignalData& Signal : CandidateSignals)
+    {
+        const TWeakObjectPtr<AStaticMeshActor>* Marker = EngagementMetricMarkers.Find(Signal.MetricId);
+        if (!Marker || !Marker->IsValid() || !Marker->Get()->GetStaticMeshComponent())
+        {
+            LastConsequence = FString::Printf(TEXT("COMMAND EXERCISE HELD · CAMPAIGN UNCHANGED · metric actor %s is unavailable"), *Signal.MetricId);
+            RefreshScreen();
+            return;
+        }
+    }
+    EngagementSession = MoveTemp(CandidateEngagementSession);
+    EngagementSignals = MoveTemp(CandidateSignals);
+    EngagementCampaignSnapshot = MoveTemp(CampaignSnapshot);
+    SelectedEngagementCommandIndex = 0;
+    bEngagementOpen = true;
+    bCouncilFocused = false;
+    ApplyEngagementCommandSpace(true);
+    BeginCameraTransition(FShiEngagementSignalModel::CameraTransform(), .72f, 48.f);
+    ResumeSoundFromGesture();
+    if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("drawer")));
+    RefreshScreen();
+}
+
+void AShiGameMode::CloseEngagement()
+{
+    if (!bEngagementOpen) return;
+    FString Error;
+    if (!CampaignMatchesEngagementSnapshot(Error))
+    {
+        LoadError = FString::Printf(TEXT("Engagement authority guard failed: %s"), *Error);
+        RefreshScreen();
+        return;
+    }
+    if (EngagementSession.IsCompleted())
+    {
+        const FShiEngagementOutcomeData* Outcome = Engagement.FindOutcome(EngagementSession.GetOutcomeId());
+        LastConsequence = Outcome
+            ? FString::Printf(TEXT("NATIVE COMMAND EXERCISE · %s · CAMPAIGN SAVE UNCHANGED\n%s"),
+                *Outcome->Title.Resolve(Locale).ToUpper(), *Outcome->Summary.Resolve(Locale))
+            : TEXT("NATIVE COMMAND EXERCISE CLOSED · CAMPAIGN SAVE UNCHANGED");
+    }
+    else LastConsequence = TEXT("NATIVE COMMAND EXERCISE CLOSED EARLY · CAMPAIGN SAVE UNCHANGED");
+    bEngagementOpen = false;
+    SelectedEngagementCommandIndex = 0;
+    EngagementCampaignSnapshot.Empty();
+    ApplyEngagementCommandSpace(false);
+    ResumeSoundFromGesture();
+    if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("close")));
+    FocusCouncil(false, false);
+}
+
+void AShiGameMode::SelectEngagementCommand(int32 Index)
+{
+    if (!bEngagementOpen || EngagementSession.IsCompleted()) return;
+    const TArray<const FShiEngagementCommandData*> Commands = GetAvailableEngagementCommands();
+    if (!Commands.IsValidIndex(Index)) return;
+    SelectedEngagementCommandIndex = Index;
+    ResumeSoundFromGesture();
+    if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("select")));
+    RefreshScreen();
+}
+
+void AShiGameMode::CycleEngagementCommand(int32 Direction)
+{
+    if (!bEngagementOpen || EngagementSession.IsCompleted() || Direction == 0) return;
+    const TArray<const FShiEngagementCommandData*> Commands = GetAvailableEngagementCommands();
+    if (Commands.IsEmpty()) return;
+    SelectEngagementCommand((SelectedEngagementCommandIndex + (Direction < 0 ? -1 : 1) + Commands.Num()) % Commands.Num());
+}
+
+void AShiGameMode::IssueEngagementCommand()
+{
+    if (!bEngagementOpen || EngagementSession.IsCompleted()) return;
+    const FShiEngagementCommandData* Selected = GetSelectedEngagementCommand();
+    if (!Selected) return;
+    FString Error;
+    if (!CampaignMatchesEngagementSnapshot(Error))
+    {
+        LoadError = FString::Printf(TEXT("Engagement authority guard failed before command: %s"), *Error);
+        RefreshScreen();
+        return;
+    }
+    FShiEngagementSession Candidate = EngagementSession;
+    FShiEngagementCommandRecord Record;
+    TArray<FShiEngagementSignalData> CandidateSignals;
+    if (!Candidate.ResolveCommand(Selected->Id, Record, Error)
+        || !FShiEngagementSignalModel::Build(Candidate.GetMetrics(), CandidateSignals, Error)
+        || !CampaignMatchesEngagementSnapshot(Error))
+    {
+        LastConsequence = FString::Printf(TEXT("COMMAND HELD · EXERCISE AND CAMPAIGN UNCHANGED · %s"), *Error);
+        RefreshScreen();
+        return;
+    }
+    for (const FShiEngagementSignalData& Signal : CandidateSignals)
+    {
+        const TWeakObjectPtr<AStaticMeshActor>* Marker = EngagementMetricMarkers.Find(Signal.MetricId);
+        if (!Marker || !Marker->IsValid() || !Marker->Get()->GetStaticMeshComponent())
+        {
+            LastConsequence = FString::Printf(TEXT("COMMAND HELD · EXERCISE AND CAMPAIGN UNCHANGED · metric actor %s is unavailable"), *Signal.MetricId);
+            RefreshScreen();
+            return;
+        }
+    }
+    EngagementSession = MoveTemp(Candidate);
+    EngagementSignals = MoveTemp(CandidateSignals);
+    SelectedEngagementCommandIndex = 0;
+    ApplyEngagementCommandSpace(true);
+    ResumeSoundFromGesture();
+    if (AudioDirector) AudioDirector->PlayCue(EngagementSession.IsCompleted() ? FName(TEXT("ending")) : FName(TEXT("commit")));
+    RefreshScreen();
 }
 
 void AShiGameMode::IssueSelectedOrder()
 {
+    if (bEngagementOpen) { IssueEngagementCommand(); return; }
     if (IsCinematicSequenceActive()) return;
     const FShiNodeData* Node = GetCurrentNode();
     if (!Node || !Node->Choices.IsValidIndex(SelectedChoiceIndex) || !CanChoose(Node->Choices[SelectedChoiceIndex]) || Session.IsCompleted()) return;
@@ -273,6 +431,21 @@ void AShiGameMode::Tick(float DeltaSeconds)
     {
         const bool bEvidenceToggle = Controller->WasInputKeyJustPressed(EKeys::E)
             || Controller->WasInputKeyJustPressed(EKeys::Gamepad_LeftShoulder);
+        if (bEngagementOpen)
+        {
+            if (Controller->WasInputKeyJustPressed(EKeys::X)
+                || Controller->WasInputKeyJustPressed(EKeys::Escape)
+                || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Left)
+                || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Right)) CloseEngagement();
+            else if (Controller->WasInputKeyJustPressed(EKeys::Left)
+                || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Left)) CycleEngagementCommand(-1);
+            else if (Controller->WasInputKeyJustPressed(EKeys::Right)
+                || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Right)) CycleEngagementCommand(1);
+            else if (Controller->WasInputKeyJustPressed(EKeys::Enter)
+                || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Bottom)) IssueEngagementCommand();
+            TickCamera(DeltaSeconds);
+            return;
+        }
         if (bEvidenceOpen)
         {
             if (CommandScreen.IsValid()
@@ -288,6 +461,12 @@ void AShiGameMode::Tick(float DeltaSeconds)
         if (bEvidenceToggle)
         {
             ToggleEvidence();
+            return;
+        }
+        if ((Controller->WasInputKeyJustPressed(EKeys::X)
+            || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Left)) && IsEngagementAvailable())
+        {
+            OpenEngagement();
             return;
         }
         if (Controller->WasInputKeyJustPressed(EKeys::LeftMouseButton) && InspectWorldUnderCursor(*Controller)) return;
@@ -706,6 +885,59 @@ bool AShiGameMode::RebuildCommandSignals(FString& OutError)
     return true;
 }
 
+bool AShiGameMode::CampaignMatchesEngagementSnapshot(FString& OutError) const
+{
+    if (EngagementCampaignSnapshot.IsEmpty())
+    {
+        OutError = TEXT("the protected campaign snapshot is unavailable");
+        return false;
+    }
+    FString CurrentCampaign;
+    if (!Session.ExportSaveJson(CurrentCampaign, OutError)) return false;
+    if (CurrentCampaign != EngagementCampaignSnapshot)
+    {
+        OutError = TEXT("the campaign save changed while the non-authoritative exercise was open");
+        return false;
+    }
+    OutError.Empty();
+    return true;
+}
+
+void AShiGameMode::ApplyEngagementCommandSpace(bool bVisible)
+{
+    const auto SetStandardVisibility = [bVisible](const auto& Markers)
+    {
+        for (const auto& Pair : Markers)
+        {
+            if (AActor* Actor = Pair.Value.Get())
+            {
+                Actor->SetActorHiddenInGame(bVisible);
+                Actor->SetActorEnableCollision(!bVisible);
+            }
+        }
+    };
+    SetStandardVisibility(SiteMarkers);
+    SetStandardVisibility(CommandSignalMarkers);
+    SetStandardVisibility(CouncilFigures);
+
+    for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : EngagementMetricMarkers)
+    {
+        AStaticMeshActor* Marker = Pair.Value.Get();
+        const FShiEngagementSignalData* Signal = EngagementSignals.FindByPredicate(
+            [&Pair](const FShiEngagementSignalData& Item) { return Item.MetricId == Pair.Key; });
+        if (!Marker || !Signal || !Marker->GetStaticMeshComponent()) continue;
+        Marker->SetActorLocation(Signal->Location);
+        Marker->SetActorScale3D(Signal->Scale);
+        Marker->SetActorHiddenInGame(!bVisible);
+        Marker->SetActorEnableCollision(bVisible);
+        UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
+        Component->SetRenderCustomDepth(bVisible);
+        Component->SetCustomDepthStencilValue(Signal->StencilValue);
+        if (UMaterialInstanceDynamic* Material = Cast<UMaterialInstanceDynamic>(Component->GetMaterial(0)))
+            Material->SetVectorParameterValue(FName(TEXT("Color")), Signal->Color);
+    }
+}
+
 void AShiGameMode::UpdateCommandSignalSelection()
 {
     const FShiCinematicBeatData* CinematicBeat = GetActiveCinematicBeat();
@@ -785,7 +1017,7 @@ bool AShiGameMode::SaveChronicle(const FShiCampaignSession& SourceSession, FStri
 
 void AShiGameMode::RequestNewChronicle()
 {
-    if (!LoadError.IsEmpty() || IsCinematicSequenceActive()) return;
+    if (!LoadError.IsEmpty() || bEngagementOpen || IsCinematicSequenceActive()) return;
     if (!bRestartArmed)
     {
         bRestartArmed = true;
@@ -831,7 +1063,7 @@ void AShiGameMode::RequestNewChronicle()
 
 void AShiGameMode::ToggleEvidence()
 {
-    if (!LoadError.IsEmpty() || IsCinematicSequenceActive()) return;
+    if (!LoadError.IsEmpty() || bEngagementOpen || IsCinematicSequenceActive()) return;
     bEvidenceOpen = !bEvidenceOpen;
     ResumeSoundFromGesture();
     if (AudioDirector) AudioDirector->PlayCue(bEvidenceOpen ? FName(TEXT("drawer")) : FName(TEXT("close")));
@@ -884,7 +1116,7 @@ void AShiGameMode::AdjustEffects(int32 Direction)
 
 void AShiGameMode::ToggleReducedMotion()
 {
-    if (!LoadError.IsEmpty() || bEvidenceOpen || IsCinematicSequenceActive()) return;
+    if (!LoadError.IsEmpty() || bEvidenceOpen || bEngagementOpen || IsCinematicSequenceActive()) return;
     bReducedMotion = !bReducedMotion;
     if (bReducedMotion && CameraTransitionDuration > 0.f)
         SetCameraImmediate(FTransform(CameraTransitionTargetRotation, CameraTransitionTargetLocation), CameraTransitionTargetFieldOfView);
@@ -1102,6 +1334,48 @@ void AShiGameMode::CreateCommandSpace()
         Marker->Tags.Add(FName(*FString::Printf(TEXT("ShiSignal:%s"), *Signal.Id)));
         Marker->SetActorScale3D(Signal.Scale);
         CommandSignalMarkers.Add(Signal.Id, Marker);
+    }
+    TArray<FShiEngagementSignalData> InitialEngagementSignals;
+    FString EngagementSignalError;
+    if (!FShiEngagementSignalModel::Build(Engagement.InitialMetrics, InitialEngagementSignals, EngagementSignalError))
+    {
+        LoadError = FString::Printf(TEXT("Engagement command-space signals rejected: %s"), *EngagementSignalError);
+        return;
+    }
+    EngagementMetricMarkers.Empty();
+    for (const FShiEngagementSignalData& Signal : InitialEngagementSignals)
+    {
+        UStaticMesh* SignalMesh = LoadObject<UStaticMesh>(nullptr, *Signal.MeshPath);
+        if (!SignalMesh)
+        {
+            LoadError = FString::Printf(TEXT("Engagement metric mesh missing for %s."), *Signal.MetricId);
+            return;
+        }
+        AStaticMeshActor* Marker = World->SpawnActor<AStaticMeshActor>(Signal.Location, FRotator::ZeroRotator);
+        if (!Marker)
+        {
+            LoadError = FString::Printf(TEXT("Engagement metric could not spawn for %s."), *Signal.MetricId);
+            return;
+        }
+        UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
+        Component->SetMobility(EComponentMobility::Movable);
+        Component->SetStaticMesh(SignalMesh);
+        Component->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+        Component->SetCollisionResponseToAllChannels(ECR_Ignore);
+        Component->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+        UMaterialInstanceDynamic* Material = Component->CreateDynamicMaterialInstance(0, BasicMaterial, NAME_None);
+        if (!Material)
+        {
+            LoadError = FString::Printf(TEXT("Engagement metric material could not initialize for %s."), *Signal.MetricId);
+            return;
+        }
+        Material->SetVectorParameterValue(FName(TEXT("Color")), Signal.Color);
+        Component->SetCustomDepthStencilValue(Signal.StencilValue);
+        Marker->Tags.Add(FName(*FString::Printf(TEXT("ShiEngagement:%s"), *Signal.MetricId)));
+        Marker->SetActorScale3D(Signal.Scale);
+        Marker->SetActorHiddenInGame(true);
+        Marker->SetActorEnableCollision(false);
+        EngagementMetricMarkers.Add(Signal.MetricId, Marker);
     }
     if (!CanPresentCouncilStage(CouncilStage, CouncilError))
     {
