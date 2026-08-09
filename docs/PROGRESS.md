@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Sunzi `軍爭第七` transcription-audit checkpoint
+
+- Resolved the registered Sunzi public link from the `孫子` redirect to the canonical Chinese Wikisource `孫子兵法` transcription in the edition register, campaign source ledger, martial-source queue and human documentation.
+- Pinned canonical page `11779`, revision `7906064` at `2026-07-02T02:39:46Z` and its MediaWiki SHA-1. The complete public `軍爭第七` body and private discovery mirror lines 89–101 produce the same normalized SHA-256 after removing only heading syntax and Unicode whitespace; the unnormalized private section and whole private mirror have independent SHA-256 records.
+- Kept the epistemic boundary fail-closed. This proves transcription correspondence only—not authorship/date, translation, interpretation, late-Qin practice or Daze attribution. The candidate remains blocked on independent intellectual-history and original-translation review; no source excerpt, private book text, generated translation, quotation or new runtime doctrine was committed.
+- Bounded the candidate to three existing encounter questions—supply loads, reserve readiness and signal integrity—without granting a combat bonus or changing the authored Broken Crossing route. The validator rejects an unexpected audited section, noncanonical origin/anchor, malformed revision metadata, changed line range/hash, broadened metric list or missing human-review hold.
+- Canonicalizing the playable source URL changed the campaign SHA-256 to `3cd32c23c29c68d0ae402701260423059db00becc366d1b5f313072ef32370e0`; all 46 cross-engine fixtures and Web/Unreal/Unity staged payloads were regenerated from source. Exact implementation `dfa578fcdcf1374af62f1c76ed13d78aeed32f47` passes the complete production build, 57 TypeScript/UI tests, 76 engagement routes, 689 successful and 87 failure campaign routes, every static Unreal/history/audio/accessibility/font/privacy gate and all Web budgets.
+- The SHA-pinned localhost noVNC route repeats all 264 checks across the complete campaign and command exercise with thirty-five axe states, twenty-seven target states, eleven locale/font states, three audio-UI states and zero console errors, remote requests/resources or failed requests. Its cache-disabled traversal records 242 same-origin requests and 151 self-hosted font slices.
+
+Next gate: preserve this exact research/content boundary through hosted validation and public replay, then complete official Unreal installation and prove the regenerated campaign hash in native automation before adding native engagement rules.
+
 ## 2026-08-09 · Web broken-crossing command-board checkpoint
 
 - Turned the shared `broken-crossing` candidate into a complete three-pulse Web command exercise. The board binds the selected campaign plan and current seeded field condition, exposes only legal orders, applies the pure shared resolver, separates each player effect from the field's authored answer, updates six local command states and resolves to one of the four authored outcomes.
