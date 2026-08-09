@@ -11,8 +11,9 @@
 - The expanded guide initially pushed startup JavaScript over the unchanged 100 KiB cap. Moving detailed eleven-locale guide prose behind its existing lazy drawer boundary restores the production budget: 98.21 KiB initial JavaScript, 10.29 KiB CSS, 178.95 KiB largest lazy JavaScript, 22.94 MiB fonts and 26.80 MiB total deploy.
 - Visible noVNC acceptance first found that the larger decision card could not fit Chrome's 228-CSS-pixel viewport at actual 400% zoom. A shallow-viewport card now stays wholly focusable while retaining complete internally scrollable content. A second run exposed an offscreen coordinate assumption in the harness; explicit visible scrolling before commitment fixed the test action without changing game state.
 - The complete rerun passes 202 checks, twenty-eight axe states, twenty target states, eleven locale/font states and three audio-UI states with zero console errors, cross-origin requests/resources or non-cancelled failures. Reviewed evidence shows `witness-chain` at two observed compacts, a changed-method miss forecast, the matching +3 Exposure hit, isolated five-layer deltas and save-v5 identity.
+- Pinned implementation `d7afcd6bd7e838a64397f500e919af112221dcc8` passes `npm ci` and the complete production build from a fresh clone. The visible localhost desktop then repeats all 202 checks against that exact commit and records the immutable identity in its machine report.
 
-Next gate: pin the implementation in Git, validate it from a detached clean checkout, deploy the exact checkpoint, repeat the 202-check route publicly, then continue the licensed-Unity and human/specialist/player gates. Chapter II remains gated.
+Next gate: push and deploy the evidence boundary, repeat the 202-check route publicly, then continue the licensed-Unity and human/specialist/player gates. Chapter II remains gated.
 
 ## 2026-08-09 · Persistent Qin pursuit checkpoint
 
