@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal procedural-soundscape checkpoint
+
+- Implemented the shared Chapter I audio contract directly in Unreal C++ rather than leaving sound as a future asset task. The loader fail-closes on schema, identity, opt-in, cap, ambience, envelope, wave, range and exact seven-cue drift.
+- Added a modern `USynthComponent`/`FSoundGenerator` renderer with deterministic zero-mean rain, filtered looping ambience, sine/triangle semantic cues, atomic mix controls, an MPSC handoff with bounded active voices, exact dual-mono output, fade-safe stop and explicit component shutdown.
+- Sound never autoplays. A saved enabled preference begins only as **Sound armed** and resumes after the next game command; the explicit button, `M` or Gamepad Y toggles it, while deliberate rain/cue adjustments opt in. Ambience and cue levels persist independently under conservative canonical caps, and all information remains visible without sound.
+- Added Slate sound status/mix controls and semantic cues for selection, commit, ending, failure and chronicle reset. Added native automation source for deterministic rain, seed separation, zero mean, normalization, cue audibility/duration, exact cue count and opt-in/cap policy.
+- Exact implementation `3f7b87d764294303cbacc7602fd2dcbd9ab8d1da` passes `npm ci` and the complete build from a detached clean checkout: 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 golden cross-engine routes, canonical audio/content/conformance, accessibility/font/privacy/type gates, Unreal static preflight and Web budgets.
+- This closes authored source and non-native engineering validation only. The official Unreal 5.8 installation is still waiting at Epic sign-in, so C++ compilation, native automation, audible output capture, device/listening review, PIE interaction and packaging remain red.
+
+Next gate: after Epic sign-in, install the official build, compile, run the replay/audio automation, record native silence/output, then visibly play and listen through a complete PIE route before adding cinematic voice or music.
+
 ## 2026-08-09 · Unreal deterministic-session and replay checkpoint
 
 - Made the difficult Unreal boundary concrete before expanding spectacle: extracted gameplay from `AShiGameMode` into a presentation-independent `FShiCampaignSession` with legal-choice checks, deterministic field selection, opponent posture/method memory, player commitments, all six resolution layers, failure/completion and complete intermediate records.

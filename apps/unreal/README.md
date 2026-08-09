@@ -11,11 +11,12 @@ This is the priority Unreal Engine 5.8 C++ client for SHI. It consumes the same 
 - Slate command surface with visible resources, act/scene/site/date, reversible order selection, requirements, explicit issue-order progression, autosave state and guarded restart;
 - deterministic choice, oath, pressure, pursuit, prepared-method-read and field-condition resolution in the canonical six-layer order;
 - authoritative save-v6 export/replay, resume and atomic local writes that reject tampered routes without trusting stored totals;
+- a canonical procedural-audio loader and modern `FSoundGenerator` renderer for the reviewed rain bed and seven semantic cues, with explicit opt-in, fade-safe shutdown and persistent rain/cue controls;
 - mouse, keyboard and standard-gamepad command input;
-- schema-v7, 46-route conformance and save-integrity automation source;
+- schema-v7, procedural-audio, 46-route conformance and save-integrity automation source;
 - content sync, static project validation and official editor/build/test/package wrapper.
 
-The current source slice implements the canonical six-layer decision order, advances all six authored nodes and defines exact Web-parity evidence. It does **not yet claim native execution**, film quality, a packaged player or human playability: the 46-route C++ suite has been authored but cannot be executed until the official engine is installed. Audio, source-ledger, deeper camera grammar, final asset import and art-direction parity remain native implementation gates.
+The current source slice implements the canonical six-layer decision order, advances all six authored nodes and defines exact Web-parity evidence. It also implements the first native sound path in source: sound starts silent, a remembered preference is only armed until a player command, `M`/Gamepad Y and the Slate control toggle it, and rain/cue levels persist independently. It does **not yet claim native execution**, film quality, a packaged player, audible Unreal output or human playability: the C++ suites are authored but cannot execute until the official engine is installed. Native audio capture/listening, source-ledger parity, deeper camera grammar, final asset import and art-direction parity remain open gates.
 
 Runtime chronicles are written under Unreal's ignored `Saved/SaveGames/shi-chapter-01-v6.json`. A malformed or inconsistent file is left in place, gameplay enters a clearly labeled unsaved preview, and replacement requires pressing **New chronicle** twice.
 
