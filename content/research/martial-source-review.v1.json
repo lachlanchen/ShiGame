@@ -8,8 +8,8 @@
       "id": "sunzi",
       "title": "孫子兵法",
       "runtimeStatus": "registered-strategic-lens",
-      "publicPage": "https://zh.wikisource.org/wiki/孫子",
-      "publicPageStatus": "landing-page-inspected",
+      "publicPage": "https://zh.wikisource.org/wiki/孫子兵法",
+      "publicPageStatus": "canonical-transcription-page-inspected",
       "privateMirror": "../ZhJpBook/books/sunzi-bingfa/markdown/wenyan.md",
       "privateMirrorSha256": "f0cc284f2c6ca424fca05d4cfc3b6b21dd340344f750a1bc2a01c449ddf8aca6",
       "textualStatusNote": {
@@ -57,6 +57,29 @@
           "evidenceBoundary": {
             "en": "The text frames a mechanic; the broken-crossing weather and route remain authored reconstruction.",
             "zh-Hans": "文本只用于构造机制；断渡的天气与路线仍属原创重构。"
+          },
+          "evidenceAudit": {
+            "status": "transcription-correspondence-verified-human-review-required",
+            "accessDate": "2026-08-09",
+            "publicCanonicalPage": "https://zh.wikisource.org/wiki/孫子兵法#軍爭第七",
+            "publicPageId": 11779,
+            "publicRevisionId": 7906064,
+            "publicRevisionTimestamp": "2026-07-02T02:39:46Z",
+            "publicRevisionSha1": "459d8e5fd0f5b1b8676b20e39befdd3e76877be8",
+            "privateLineStart": 89,
+            "privateLineEnd": 101,
+            "privateSectionSha256": "fc6d71cf1f7cfaf2abfeac025fd75ca070a1080212ef0ee23a32f5b8618c92b0",
+            "normalizedBodySha256": "b852ba062804cf88541d6d01ef58e54de9f4a377d4f412a9d552f368c204a10b",
+            "comparisonMethod": "complete chapter body exact after removing the Markdown/Wikisource heading syntax and Unicode whitespace",
+            "mechanicLinks": [
+              "supplyLoads",
+              "reserveReadiness",
+              "signalIntegrity"
+            ],
+            "runtimeHold": {
+              "en": "Transcription correspondence is verified. Runtime wording remains blocked on independent intellectual-history and original-translation review; the record does not attribute a named doctrine to the Daze characters.",
+              "zh-Hans": "已验证底本文字对应；运行时措辞仍须等待独立思想史与原创翻译审阅，且不得把具名学说归于大泽乡人物。"
+            }
           }
         },
         {

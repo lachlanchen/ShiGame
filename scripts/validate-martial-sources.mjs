@@ -30,6 +30,7 @@ visit(queue);
 
 const workIds = new Set();
 const sectionIds = new Set();
+const auditedSectionIds = new Set();
 for (const work of queue.works ?? []) {
   assert(requiredWorks.has(work.id), `unexpected martial source work ${work.id}`);
   assert(!workIds.has(work.id), `duplicate martial source work ${work.id}`);
@@ -57,11 +58,37 @@ for (const work of queue.works ?? []) {
     assert(["p0", "p1", "p2"].includes(section.priority), `section ${section.id} has invalid priority`);
     localized(section.gameQuestion, `section ${section.id}.gameQuestion`);
     localized(section.evidenceBoundary, `section ${section.id}.evidenceBoundary`);
+    if (section.evidenceAudit) {
+      const audit = section.evidenceAudit;
+      auditedSectionIds.add(section.id);
+      assert(section.id === "sunzi-junzheng-seven", `unexpected exact evidence audit on ${section.id}`);
+      assert(audit.status === "transcription-correspondence-verified-human-review-required", `section ${section.id} audit must preserve its human-review hold`);
+      assert(/^\d{4}-\d{2}-\d{2}$/.test(audit.accessDate ?? ""), `section ${section.id} audit requires an access date`);
+      try {
+        const publicUrl = new URL(audit.publicCanonicalPage);
+        assert(publicUrl.origin === queue.allowedPublicOrigin, `section ${section.id} audited page leaves the allowlisted origin`);
+        assert(decodeURIComponent(publicUrl.hash) === "#軍爭第七", `section ${section.id} audited page requires its exact chapter anchor`);
+      } catch {
+        assert(false, `section ${section.id} has an invalid audited public page`);
+      }
+      assert(Number.isInteger(audit.publicPageId) && audit.publicPageId > 0, `section ${section.id} audit requires a positive public page id`);
+      assert(Number.isInteger(audit.publicRevisionId) && audit.publicRevisionId > 0, `section ${section.id} audit requires a positive public revision id`);
+      assert(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(audit.publicRevisionTimestamp ?? ""), `section ${section.id} audit requires a UTC revision timestamp`);
+      assert(/^[a-f0-9]{40}$/.test(audit.publicRevisionSha1 ?? ""), `section ${section.id} audit requires the MediaWiki revision SHA-1`);
+      assert(Number.isInteger(audit.privateLineStart) && audit.privateLineStart > 0, `section ${section.id} audit requires a positive private start line`);
+      assert(Number.isInteger(audit.privateLineEnd) && audit.privateLineEnd >= audit.privateLineStart, `section ${section.id} audit requires an ordered private line range`);
+      assert(/^[a-f0-9]{64}$/.test(audit.privateSectionSha256 ?? ""), `section ${section.id} audit requires a private section SHA-256`);
+      assert(/^[a-f0-9]{64}$/.test(audit.normalizedBodySha256 ?? ""), `section ${section.id} audit requires a normalized body SHA-256`);
+      assert(typeof audit.comparisonMethod === "string" && audit.comparisonMethod.trim(), `section ${section.id} audit requires a comparison method`);
+      assert(audit.mechanicLinks?.join(",") === "supplyLoads,reserveReadiness,signalIntegrity", `section ${section.id} audit must stay bounded to the three reviewed encounter metrics`);
+      localized(audit.runtimeHold, `section ${section.id}.evidenceAudit.runtimeHold`);
+    }
   }
 }
 for (const required of requiredWorks) assert(workIds.has(required), `martial source queue is missing ${required}`);
 assert(queue.works?.filter((work) => work.runtimeStatus === "registered-strategic-lens").map((work) => work.id).join(",") === "sunzi", "only the already registered Sunzi lens may be runtime-active");
 assert(queue.works?.find((work) => work.id === "weiliaozi")?.publicPageStatus === "landing-page-marked-incomplete", "Weiliaozi public transcription risk must remain explicit");
+assert([...auditedSectionIds].join(",") === "sunzi-junzheng-seven", "only the exact Sunzi Junzheng transcription audit may be recorded at this checkpoint");
 
 if (verifyPrivateMirrors) {
   for (const work of queue.works ?? []) {
@@ -69,6 +96,15 @@ if (verifyPrivateMirrors) {
       const bytes = await readFile(resolve(root, work.privateMirror));
       const digest = createHash("sha256").update(bytes).digest("hex");
       assert(digest === work.privateMirrorSha256, `work ${work.id} private discovery mirror hash drifted`);
+      for (const section of work.candidateSections ?? []) {
+        const audit = section.evidenceAudit;
+        if (!audit) continue;
+        const lines = bytes.toString("utf8").split(/\r?\n/);
+        const sectionBytes = `${lines.slice(audit.privateLineStart - 1, audit.privateLineEnd).join("\n")}\n`;
+        const normalizedBody = lines.slice(audit.privateLineStart, audit.privateLineEnd).join("\n").replace(/\s/g, "");
+        assert(createHash("sha256").update(sectionBytes).digest("hex") === audit.privateSectionSha256, `section ${section.id} private line-range hash drifted`);
+        assert(createHash("sha256").update(normalizedBody).digest("hex") === audit.normalizedBodySha256, `section ${section.id} normalized private body hash drifted`);
+      }
     } catch {
       assert(false, `work ${work.id} private discovery mirror is unavailable`);
     }
@@ -80,4 +116,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Martial source queue valid: ${workIds.size} works, ${sectionIds.size} candidate sections, metadata-only with one registered runtime lens${verifyPrivateMirrors ? ", private discovery hashes verified" : ""}.`);
+console.log(`Martial source queue valid: ${workIds.size} works, ${sectionIds.size} candidate sections, ${auditedSectionIds.size} exact transcription audit, metadata-only with one registered runtime lens${verifyPrivateMirrors ? ", private discovery hashes verified" : ""}.`);
