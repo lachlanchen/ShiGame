@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "kind": "packaged-unreal-runtime-acceptance",
-  "checkedAt": "2026-08-09T22:34:08+08:00",
+  "checkedAt": "2026-08-09T22:50:31+08:00",
   "testedSourceCommit": "8de7fa0c7ff869e447e816c1d04cd977244ee451",
   "packageExecutableSha256": "c1e131857d4529ad713d94a715860ba09d3b3b07134d7a3d2a9732e3f551cb9f",
   "configuration": "Development",
@@ -16,6 +16,16 @@
       "visibleStatus": "ORDER NOT ISSUED · AUTOSAVE FAILED · the temporary chronicle could not be written",
       "nodeTurnResourcesAndWorldUnchanged": true,
       "saveHashUnchanged": true,
+      "originalModesRestored": true
+    },
+    "unwritableRestart": {
+      "twoStepConfirmation": true,
+      "visibleArmedStatus": "RESTART ARMED · PRESS NEW CHRONICLE AGAIN TO REPLACE THE LOCAL RUN",
+      "visibleFailureStatus": "RESTART NOT APPLIED · CURRENT CHRONICLE PRESERVED · the temporary chronicle could not be written",
+      "temporaryFileCreated": false,
+      "campaignSaveSha256Before": "86cdbc7f9537330c3696906410b6773bc26b68bf21ffd34c8cdcc6d5ee03a6a2",
+      "campaignSaveSha256After": "86cdbc7f9537330c3696906410b6773bc26b68bf21ffd34c8cdcc6d5ee03a6a2",
+      "turnHistoryResourcesAndWorldUnchanged": true,
       "originalModesRestored": true
     },
     "missingCouncilFigures": {
@@ -46,6 +56,17 @@
     "postOrderSaveSha256": "86cdbc7f9537330c3696906410b6773bc26b68bf21ffd34c8cdcc6d5ee03a6a2",
     "restartResumedExactSave": true,
     "restartPreservedCutsOnlyPreference": true
+  },
+  "sealedChapter": {
+    "finalDurableOrderIssued": true,
+    "turn": 5,
+    "decisionCount": 4,
+    "issueInputDisabled": true,
+    "visibleCompletion": "CHAPTER POSITION COMPLETE · YOUR CHRONICLE IS SEALED",
+    "saveSha256": "03f581a9f97de20d39ce07eddf314ed4ffeb396e9bebb435e9c3154e19fa3aee",
+    "coldResumeReplayedExactSave": true,
+    "coldResumePreservedCutsOnlyPreference": true,
+    "coldResumeSoundState": "off"
   },
   "nativeAudio": {
     "routing": "inspected direct PipeWire link from SDL Application output_FL/output_FR to pw-record input_FL/input_FR",
@@ -97,7 +118,9 @@
   "finalVisibleState": {
     "display": ":121",
     "scene": "Scene 6/6 · Chen · South of Chen",
-    "turn": 4,
+    "turn": 5,
+    "decisionCount": 4,
+    "chapterPositionComplete": true,
     "sound": "off",
     "motion": "cuts-only",
     "normalRenderThreads": true,
