@@ -66,6 +66,12 @@ const contrastPairs = [
   ["dialogue metadata", ".dialogue footer", "color", "#1d1d18"],
   ["choice input hint", ".choices-heading small", "color", "#181915"],
   ["choice arrow", ".choice-arrow", "color", "#272720"],
+  ["selected order label", ".decision-inspector-head p", "color", "#211f19"],
+  ["selected order intent", ".decision-inspector-head div > span", "color", "#211f19"],
+  ["selected strategic reading", ".decision-principle p", "color", "#211f19"],
+  ["order review reminder", ".decision-confirmation small", "color", "#151712"],
+  ["issue order action", ".issue-order-button", "color", "#c09a60"],
+  ["issue order label", ".issue-order-button span", "color", "#c09a60"],
   ["source section", ".source-section", "color", "#171713"],
   ["claim confidence", ".claim-meta code", "color", "#171713"],
   ["record number", ".record-list li > span", "color", "#171713"],
@@ -97,6 +103,8 @@ const microtypeSelectors = [
   ".resolution-copy:has(.commitment-reveal) span", ".resolution-copy:has(.commitment-reveal) p",
   ".field-signal-head", ".field-signal-head code", ".field-effects span", ".dialogue footer em",
   ".choice-reading span", ".pressure-warning > span", ".effects span, .delta-list span", ".locked",
+  ".decision-inspector-head p", ".decision-inspector-head div > span", ".decision-principle > span", ".decision-principle p",
+  ".decision-confirmation small", ".issue-order-button span", ".issue-order-button strong",
   ".resolution-copy span", ".controller-callout span", ".controller-callout p", ".source-status",
   ".source-section", ".source-external", ".claim-meta span", ".claim-meta code", ".claim p",
   ".record-list small", ".record-pressure b", ".record-opposition b", ".record-field b",
@@ -115,6 +123,7 @@ const targetSelectors = [
   [".map-intel footer button", "min-height"], [".source-link", "min-height"], [".resolution-banner > button", "min-height"],
   [".icon-button", "height"], [".source-external", "min-height"],
   [".audio-enable input", "width"], [".audio-channel input[type=\"range\"]", "height"], [".audio-preview", "min-height"],
+  [".issue-order-button", "min-height"],
 ];
 for (const [selector, property] of targetSelectors) {
   const size = declaration(selector, property);
@@ -128,7 +137,7 @@ const forcedColors = css.slice(forcedColorStart);
 const forcedColorSelectors = [
   ".three-backdrop", ".title-image", ".map-sweep", ".meter", ".resource.danger",
   ".site-marker.site-reported i", ".site-marker.site-reference i", ".site-marker.active i",
-  ".choice-card.is-gamepad-selected:not(:disabled)", ".choice-card:disabled", ".effects span", ".map-intel-uncertainty",
+  ".choice-card.is-selected:not(:disabled)", ".choice-card:disabled", ".decision-inspector", ".issue-order-button", ".effects span", ".map-intel-uncertainty",
   ".opposition-panel", ".opposition-effects span",
   ".method-read-panel", ".method-read-effects span", ".method-read-counts span", ".method-choice", ".method-read-reveal",
   ".commitment-panel", ".commitment-establish", ".commitment-forecast", ".commitment-forecast-effects span", ".commitment-reveal",

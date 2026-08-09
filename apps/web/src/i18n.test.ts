@@ -5,6 +5,7 @@ import { mapUi } from "./map-i18n";
 import { audioUi } from "./audio-i18n";
 import { translateSound } from "./audio-labels";
 import { oppositionUi } from "./opposition-i18n";
+import { decisionUi } from "./decision-i18n";
 
 describe("interface localization", () => {
   it("covers every interface key in every supported locale", () => {
@@ -44,6 +45,14 @@ describe("interface localization", () => {
     for (const locale of supportedLocales) {
       expect(Object.keys(oppositionUi[locale]).sort(), locale).toEqual([...keys].sort());
       for (const key of keys) expect(oppositionUi[locale][key as keyof typeof oppositionUi.en].trim(), `${locale}.opposition.${key}`).not.toBe("");
+    }
+  });
+
+  it("covers every deliberate-order label in every locale", () => {
+    const keys = Object.keys(decisionUi.en);
+    for (const locale of supportedLocales) {
+      expect(Object.keys(decisionUi[locale]).sort(), locale).toEqual([...keys].sort());
+      for (const key of keys) expect(decisionUi[locale][key as keyof typeof decisionUi.en].trim(), `${locale}.decision.${key}`).not.toBe("");
     }
   });
 });

@@ -344,7 +344,7 @@ namespace SHI
 
             if (!state.Completed)
             {
-                var choiceY = Screen.height - 255;
+                var choiceY = Screen.height - 260;
                 if (activeCommitment != null)
                 {
                     var stakeholder = campaign.Character(activeCommitment.StakeholderId);
@@ -360,27 +360,40 @@ namespace SHI
                     var choice = node.Choices[index];
                     var method = campaign.Method(choice.MethodId);
                     var readMatched = methodRead.TargetMethodId == method.Id;
+                    var selected = index == selectedChoiceIndex;
                     GUI.enabled = state.CanChoose(choice);
                     var text = $"{(char)('A' + index)}   {campaign.Text(choice.Label, locale)}\n<size=13>{campaign.Text(choice.Intent, locale)}</size>";
-                    var establishedCommitment = campaign.EstablishedCommitment(choice);
-                    if (establishedCommitment != null)
+                    text += $"\n<size=12>{EffectsText(choice.Effects)}</size>";
+                    if (selected)
                     {
-                        var stakeholder = campaign.Character(establishedCommitment.StakeholderId);
-                        text += $"\n<size=11><color=#CDB587>{T("commitmentEstablishes")}: {campaign.Text(establishedCommitment.Title, locale)} · {campaign.Text(stakeholder.Name, locale)}\n{campaign.Text(establishedCommitment.Promise, locale)}</color></size>";
+                        text = $"{T("selectedOrder").ToUpperInvariant()}\n" + text;
+                        text += $"\n<size=11><color=#B99A67>{T("strategicReading")}: {campaign.Text(choice.Strategy, locale)}</color></size>";
+                        var establishedCommitment = campaign.EstablishedCommitment(choice);
+                        if (establishedCommitment != null)
+                        {
+                            var stakeholder = campaign.Character(establishedCommitment.StakeholderId);
+                            text += $"\n<size=11><color=#CDB587>{T("commitmentEstablishes")}: {campaign.Text(establishedCommitment.Title, locale)} · {campaign.Text(stakeholder.Name, locale)}\n{campaign.Text(establishedCommitment.Promise, locale)}</color></size>";
+                        }
+                        var commitmentOutcome = activeCommitment?.Outcomes.Find(candidate => candidate.ChoiceId == choice.Id);
+                        if (commitmentOutcome != null)
+                            text += $"\n<size=11><color=#CDB587>{T("commitmentAnswer")} · {T("commitment" + char.ToUpperInvariant(commitmentOutcome.Status[0]) + commitmentOutcome.Status.Substring(1))}: {campaign.Text(commitmentOutcome.Forecast, locale)} · {EffectsText(commitmentOutcome.Effects)}</color></size>";
+                        text += $"\n<size=11><color=#78AAA0>{T("method")}: {campaign.Text(method.Title, locale)} · {T(readMatched ? "readHits" : "readMisses")} · {(readMatched ? EffectsText(methodRead.Effects) : T("noAddedPressure"))}</color></size>";
+                        if (choice.Pressure != null)
+                            text += $"\n<size=11><color=#B88976>{T("pressureForecast")}: {campaign.Text(choice.Pressure.Warning, locale)}</color></size>";
                     }
-                    var commitmentOutcome = activeCommitment?.Outcomes.Find(candidate => candidate.ChoiceId == choice.Id);
-                    if (commitmentOutcome != null)
-                        text += $"\n<size=11><color=#CDB587>{T("commitmentAnswer")} · {T("commitment" + char.ToUpperInvariant(commitmentOutcome.Status[0]) + commitmentOutcome.Status.Substring(1))}: {campaign.Text(commitmentOutcome.Forecast, locale)} · {EffectsText(commitmentOutcome.Effects)}</color></size>";
-                    text += $"\n<size=12><color=#78AAA0>{T("method")}: {campaign.Text(method.Title, locale)} · {T(readMatched ? "readHits" : "readMisses")} · {(readMatched ? EffectsText(methodRead.Effects) : T("noAddedPressure"))}</color></size>";
-                    if (choice.Pressure != null)
-                        text += $"\n<size=12><color=#B88976>{T("pressureForecast")}: {campaign.Text(choice.Pressure.Warning, locale)}</color></size>";
-                    var style = index == selectedChoiceIndex ? selectedButtonStyle : buttonStyle;
-                    if (GUI.Button(new Rect(32 + index * (choiceWidth + 14), choiceY, choiceWidth, 200), text, style))
+                    var style = selected ? selectedButtonStyle : buttonStyle;
+                    if (GUI.Button(new Rect(32 + index * (choiceWidth + 14), choiceY, choiceWidth, 180), text, style))
                     {
+                        if (selectedChoiceIndex != index) audioDirector?.PlayCue("select");
                         selectedChoiceIndex = index;
-                        CommitChoice(node, choice);
                     }
                 }
+                GUI.enabled = true;
+                var selectedChoice = node.Choices[selectedChoiceIndex];
+                GUI.Label(new Rect(32, Screen.height - 70, Mathf.Max(180, Screen.width * .33f), 42), T("reviewOrder"), smallStyle);
+                GUI.enabled = state.CanChoose(selectedChoice);
+                if (GUI.Button(new Rect(Screen.width - 370, Screen.height - 76, 338, 50), T("issueOrder") + " · " + campaign.Text(selectedChoice.Label, locale), selectedButtonStyle))
+                    CommitChoice(node, selectedChoice);
                 GUI.enabled = true;
             }
             else

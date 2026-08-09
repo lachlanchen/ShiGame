@@ -137,7 +137,7 @@ describe("playable web shell", () => {
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("fire-council"));
   });
 
-  it("resolves a keyboard decision and reveals the authored pressure response", async () => {
+  it("selects without mutation, then explicitly issues a keyboard-reviewed order", async () => {
     const view = render(<App />);
     fireEvent.click(view.getByTestId("begin-game"));
 
@@ -148,11 +148,17 @@ describe("playable web shell", () => {
     expect(view.getByTestId("opposition-posture").textContent).toContain("Scattered watch");
     expect(view.getByTestId("opposition-posture").textContent).toContain("No added pressure");
     expect(view.getByTestId("method-read").textContent).toContain("Unresolved pattern");
-    expect(document.querySelector("[data-choice-id='read-the-names'] [data-method-id='witnessed-compact']")?.textContent).toContain("Witnessed compact");
+    expect((await view.findByTestId("decision-inspector")).getAttribute("data-selected-choice")).toBe("read-the-names");
+    expect(view.getByTestId("decision-inspector").querySelector("[data-method-id='witnessed-compact']")?.textContent).toContain("Witnessed compact");
     expect(view.getByTestId("field-signal").textContent).toContain("Water over the axle");
     expect(view.getByTestId("field-signal").textContent).toContain("-3 Grain");
     expect((await view.findByTestId("commitment-establish-names-under-protection")).textContent).toContain("Aunt Yu");
     fireEvent.keyDown(window, { key: "!", code: "Digit1", shiftKey: true });
+
+    expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("rain-order");
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v6") ?? "{}")?.history ?? []).toHaveLength(0);
+    expect(document.querySelector("[data-choice-id='read-the-names']")?.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(view.getByTestId("commit-selected"));
 
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council"));
     expect(view.getByTestId("resolution").textContent).toContain("The position answers");
@@ -247,24 +253,28 @@ describe("playable web shell", () => {
     fireEvent.click(view.getByTestId("begin-game"));
 
     fireEvent.click(document.querySelector("[data-choice-id='read-the-names']")!);
+    fireEvent.click(await view.findByTestId("commit-selected"));
     fireEvent.click(view.getByTestId("resolution").querySelector("button")!);
     fireEvent.click(document.querySelector("[data-choice-id='issue-grain-tallies']")!);
+    fireEvent.click(view.getByTestId("commit-selected"));
     fireEvent.click(view.getByTestId("resolution").querySelector("button")!);
 
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-method-read-id")).toBe("witness-chain"));
     expect((await view.findByTestId("commitment-panel")).textContent).toContain("Names under protection");
-    expect(document.querySelectorAll(".commitment-forecast")).toHaveLength(3);
-    expect(document.querySelector("[data-choice-id='families-first'] [data-commitment-status='kept']")?.textContent).toContain("+4 Trust");
-    expect(document.querySelector("[data-choice-id='repair-the-ford'] [data-commitment-status='strained']")?.textContent).toContain("-2 Trust");
-    expect(document.querySelector("[data-choice-id='cut-the-carts'] [data-commitment-status='broken']")?.textContent).toContain("+2 Exposure");
+    expect(view.getByTestId("decision-inspector").querySelector("[data-commitment-status='kept']")?.textContent).toContain("+4 Trust");
+    fireEvent.click(document.querySelector("[data-choice-id='repair-the-ford']")!);
+    expect(view.getByTestId("decision-inspector").querySelector("[data-commitment-status='strained']")?.textContent).toContain("-2 Trust");
+    expect(view.getByTestId("decision-inspector").querySelector("[data-read-hit='false']")?.textContent).toContain("No added pressure");
+    fireEvent.click(document.querySelector("[data-choice-id='cut-the-carts']")!);
+    expect(view.getByTestId("decision-inspector").querySelector("[data-commitment-status='broken']")?.textContent).toContain("+2 Exposure");
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v6") ?? "null")?.history).toHaveLength(2);
     const read = view.getByTestId("method-read");
     expect(read.textContent).toContain("Witness chain");
     expect(read.querySelector("[data-method-id='witnessed-compact']")?.textContent).toContain("2");
     expect(read.querySelector("[data-method-id='witnessed-compact']")?.getAttribute("data-targeted")).toBe("true");
-    expect(document.querySelector("[data-choice-id='families-first'] [data-read-hit='true']")?.textContent).toContain("+3 Exposure");
-    expect(document.querySelector("[data-choice-id='repair-the-ford'] [data-read-hit='false']")?.textContent).toContain("No added pressure");
-
     fireEvent.click(document.querySelector("[data-choice-id='families-first']")!);
+    expect(view.getByTestId("decision-inspector").querySelector("[data-read-hit='true']")?.textContent).toContain("+3 Exposure");
+    fireEvent.click(view.getByTestId("commit-selected"));
     expect(view.getByTestId("resolution").textContent).toContain("Read hits");
     expect(view.getByTestId("resolution").textContent).toContain("Repeated public commitments");
     expect(view.getByTestId("resolution").textContent).toContain("+3 Exposure");

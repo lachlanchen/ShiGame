@@ -112,7 +112,7 @@ namespace SHI.Tests
                 Assert.That(site.ClaimRefs.All(claims.Contains), Is.True, $"Unknown claim on site {site.Id}");
                 foreach (var claimRef in site.ClaimRefs)
                     Assert.That(campaign.Claims.First(claim => claim.Id == claimRef).SourceRefs.All(site.SourceRefs.Contains), Is.True, $"Claim source is not exposed on site {site.Id}");
-                Assert.That(site.Status, Is.AnyOf("known", "reported", "reference"));
+                Assert.That(site.Status == "known" || site.Status == "reported" || site.Status == "reference", Is.True);
             }
 
             while (pending.Count > 0)
@@ -310,6 +310,7 @@ namespace SHI.Tests
                 "mapIntel", "inspectMap", "knownGround", "reportedGround", "referenceOnly", "uncertainty",
                 "opponentPosture", "opponentResponse", "counterplay", "noAddedPressure", "methodRead", "method", "observedMethods", "readHits", "readMisses",
                 "commitmentEstablishes", "commitmentCarried", "commitmentAnswer", "commitmentKept", "commitmentStrained", "commitmentBroken", "chapterCommitment",
+                "selectedOrder", "issueOrder", "reviewOrder", "strategicReading",
             };
 
             foreach (var locale in locales)

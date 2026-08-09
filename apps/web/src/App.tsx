@@ -44,17 +44,15 @@ const OppositionPanel = lazy(() => import("./components/OppositionLayer").then((
 const OppositionResolutionCopy = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionResolutionCopy })));
 const OppositionResolutionDeltas = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionResolutionDeltas })));
 const OppositionRecord = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionRecord })));
-const ChoiceMethodForecast = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.ChoiceMethodForecast })));
 const MethodReadResolutionCopy = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadResolutionCopy })));
 const MethodReadResolutionDeltas = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadResolutionDeltas })));
 const MethodReadRecord = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadRecord })));
 const CommitmentPanel = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentPanel })));
-const CommitmentEstablishForecast = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentEstablishForecast })));
-const CommitmentForecast = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentForecast })));
 const CommitmentResolutionCopy = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentResolutionCopy })));
 const CommitmentResolutionDeltas = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentResolutionDeltas })));
 const CommitmentRecord = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentRecord })));
 const CommitmentEndingSummary = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentEndingSummary })));
+const DecisionInspector = lazy(() => import("./components/DecisionInspector").then((module) => ({ default: module.DecisionInspector })));
 const SAVE_KEY = "shi.chapter-01.save.v6";
 const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v5", "shi.chapter-01.save.v4", "shi.chapter-01.save.v3", "shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
@@ -471,7 +469,7 @@ export function App() {
       const choice = node.choices[index];
       if (index >= 0 && choice && canChoose(choice, state.resources)) {
         event.preventDefault();
-        choose(choice);
+        focusChoice(index);
       }
     };
     window.addEventListener("keydown", handleShortcut);
@@ -612,24 +610,30 @@ export function App() {
 
       {!state.completed ? (
         <section className="choices-panel" inert={Boolean(resolution)}>
-          <div className="choices-heading"><span>{translate(locale, "choice")} · {translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1} · {controllerConnected ? `${translate(locale, "controllerReady")} · ${translate(locale, "controllerHint")} · Y/△ · M` : translate(locale, "keyboardHint")}</small></div>
+          <div className="choices-heading"><span>{translate(locale, "choice")} · {translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1}{controllerConnected && <> · {translate(locale, "controllerReady")}</>}<span className="choices-input-detail"> · {controllerConnected ? `${translate(locale, "controllerHint")} · Y/△ · M` : translate(locale, "keyboardHint")}</span></small></div>
           <div className="choices-grid">
             {node.choices.map((choice, index) => {
               const enabled = canChoose(choice, state.resources);
-              const commitmentOutcome = selectCommitmentOutcome(campaign, state, choice);
-              const establishedCommitment = selectEstablishedCommitment(campaign, choice);
-              const establishingStakeholder = establishedCommitment ? campaign.characters.find((character) => character.id === establishedCommitment.stakeholderId)! : null;
+              const selected = selectedChoiceIndex === index;
               return (
-                <button className={`choice-card ${controllerConnected && selectedChoiceIndex === index ? "is-gamepad-selected" : ""}`} data-choice-id={choice.id} aria-keyshortcuts={`Shift+${index + 1}`} key={choice.id} ref={(element) => { choiceRefs.current[index] = element; }} onFocus={() => setSelectedChoiceIndex(index)} onClick={() => { setSelectedChoiceIndex(index); choose(choice); }} disabled={!enabled}>
+                <button className={`choice-card ${selected ? "is-selected" : ""}${controllerConnected && selected ? " is-gamepad-selected" : ""}`} data-choice-id={choice.id} aria-keyshortcuts={`Shift+${index + 1}`} aria-pressed={selected} key={choice.id} ref={(element) => { choiceRefs.current[index] = element; }} onFocus={() => setSelectedChoiceIndex(index)} onClick={() => { setSelectedChoiceIndex(index); playAudioCue("select"); }} disabled={!enabled}>
                   <span className="choice-index">{String.fromCharCode(65 + index)}</span>
-                  <div className="choice-main"><h2 dir={contentDirection(choice.label, locale)}>{localize(choice.label, locale)}</h2><p dir={contentDirection(choice.intent, locale)}>{localize(choice.intent, locale)}</p><div className="choice-reading"><span>{translate(locale, "principle")}</span><span className="choice-reading-copy" dir={contentDirection(choice.strategy, locale)}>{localize(choice.strategy, locale)}</span></div>{establishedCommitment && establishingStakeholder && <Suspense fallback={null}><CommitmentEstablishForecast commitmentId={establishedCommitment.id} stakeholder={establishingStakeholder.name} locale={locale} /></Suspense>}{commitmentOutcome && <Suspense fallback={null}><CommitmentForecast commitmentId={commitmentOutcome.commitment.id} outcomeId={commitmentOutcome.outcome.id} locale={locale} /></Suspense>}<Suspense fallback={null}><ChoiceMethodForecast methodId={choice.methodId} readId={methodRead.read.id} locale={locale} /></Suspense>{choice.pressure && <div className={`pressure-warning pressure-${choice.pressure.kind}`}><span>{translate(locale, "pressureForecast")}</span><p dir={contentDirection(choice.pressure.warning, locale)}>{localize(choice.pressure.warning, locale)}</p></div>}</div>
+                  <div className="choice-main"><h2 dir={contentDirection(choice.label, locale)}>{localize(choice.label, locale)}</h2><p dir={contentDirection(choice.intent, locale)}>{localize(choice.intent, locale)}</p></div>
                   <div className="effects">{Object.entries(choice.effects).map(([key, value]) => <span className={`${(value ?? 0) < 0 ? "negative" : "positive"} ${key === "danger" ? "risk" : ""}`} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
                   {!enabled && <span className="locked">{translate(locale, "locked")} {Object.entries(choice.requirements?.min ?? {}).map(([key, value]) => `${translate(locale, key as ResourceKey)} ${value}`).join(" · ")}</span>}
-                  <span className="choice-arrow">↗</span>
+                  <span className="choice-arrow">{selected ? "◆" : "◇"}</span>
                 </button>
               );
             })}
           </div>
+          {(() => {
+            const choice = node.choices[selectedChoiceIndex] ?? node.choices.find((candidate) => canChoose(candidate, state.resources));
+            if (!choice) return null;
+            const commitmentOutcome = selectCommitmentOutcome(campaign, state, choice);
+            const establishedCommitment = selectEstablishedCommitment(campaign, choice);
+            const establishingStakeholder = establishedCommitment ? campaign.characters.find((character) => character.id === establishedCommitment.stakeholderId) : null;
+            return <Suspense fallback={<div className="decision-inspector decision-inspector-loading" aria-busy="true" />}><DecisionInspector choice={choice} choiceIndex={node.choices.indexOf(choice)} locale={locale} readId={methodRead.read.id} establishedCommitmentId={establishedCommitment?.id} establishingStakeholder={establishingStakeholder?.name} activeCommitmentId={commitmentOutcome?.commitment.id} commitmentOutcomeId={commitmentOutcome?.outcome.id} enabled={canChoose(choice, state.resources)} onCommit={() => choose(choice)} /></Suspense>;
+          })()}
         </section>
       ) : (
         <section className="ending-panel">

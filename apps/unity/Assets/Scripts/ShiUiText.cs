@@ -56,17 +56,17 @@ namespace SHI
         private static readonly string[] CommitmentGuideKeys = { "guideIntro", "guideMoveText", "guideReplyText" };
         private static readonly Dictionary<string, string[]> CommitmentGuideValues = new()
         {
-            ["en"] = new[] { "Every order resolves in six visible layers: your move, a commitment answer when due, authored pressure, pursuit posture, Qin’s method read, and the disclosed field condition.", "A card shows exact immediate effects, its strategic method, any commitment it establishes or answers, and whether Qin’s current read will hit it.", "Promises name their stakeholder and exact cost. Pursuit reads Exposure; changing a repeated method makes Qin’s disclosed read miss. Every delta is recorded separately." },
-            ["ar"] = new[] { "يُحسم كل أمر في ست طبقات ظاهرة: حركتك، وجواب الالتزام عند استحقاقه، والضغط المؤلَّف، ووضع المطاردة، وقراءة تشين للأسلوب، وظرف الميدان المعلن.", "تعرض البطاقة الآثار الفورية الدقيقة، وأسلوبها الاستراتيجي، وأي التزام تنشئه أو تجيب عنه، وهل ستصيبه قراءة تشين الحالية.", "تسمّي الوعود صاحب المصلحة وكلفتها الدقيقة. تقرأ المطاردة الانكشاف، وتغيير الأسلوب المتكرر يجعل قراءة تشين المعلنة تخطئ. تُسجل كل التغيرات منفصلة." },
-            ["de"] = new[] { "Jeder Befehl wird in sechs sichtbaren Ebenen aufgelöst: dein Zug, eine fällige Antwort auf das Versprechen, verfasster Druck, Verfolgungslage, Qins Methodenanalyse und die angekündigte Feldbedingung.", "Eine Karte zeigt Sofortwirkungen, strategische Methode, ein begründetes oder beantwortetes Versprechen und ob Qins aktuelle Analyse trifft.", "Versprechen nennen Anspruchsträger und genaue Kosten. Die Verfolgung liest Entdeckung; ein Methodenwechsel lässt Qins offengelegte Analyse verfehlen. Jede Änderung wird getrennt notiert." },
-            ["es"] = new[] { "Cada orden se resuelve en seis capas visibles: tu movimiento, la respuesta a un compromiso cuando corresponda, la presión escrita, la postura de persecución, la lectura de método de Qin y la condición anunciada del terreno.", "Una carta muestra efectos inmediatos, método estratégico, cualquier compromiso que establezca o responda y si la lectura actual de Qin acertará.", "Las promesas nombran a la parte interesada y su coste exacto. La persecución lee la Exposición; cambiar el método repetido hace fallar la lectura anunciada de Qin. Cada cambio queda registrado aparte." },
-            ["fr"] = new[] { "Chaque ordre se résout en six couches visibles : votre coup, la réponse à un engagement lorsqu’elle est due, la pression écrite, le dispositif de poursuite, la lecture de méthode des Qin et la condition annoncée du terrain.", "Une carte montre les effets immédiats, la méthode stratégique, tout engagement établi ou tranché et si la lecture actuelle des Qin la visera.", "Les promesses nomment leur partie prenante et leur coût exact. La poursuite lit l’Exposition ; changer de méthode répétée fait échouer la lecture annoncée des Qin. Chaque écart est consigné séparément." },
-            ["ja"] = new[] { "一つの命令は六つの可視層で決着する。自分の一手、必要な時の約束への応答、既定の圧力、追撃態勢、秦の手筋読み、そして予告された戦場条件だ。", "札には即時効果、戦略的手筋、立てる／応える約束、秦の現在の読みが当たるかが示される。", "約束には当事者と正確な代価が示される。追撃は露見を読み、反復手筋を変えれば秦の公開された読みは外れる。変化はすべて別に記録される。" },
-            ["ko"] = new[] { "하나의 명령은 여섯 개의 보이는 층으로 결산된다. 나의 수, 때가 된 약속의 응답, 서술된 압력, 추격 태세, 진의 수법 판독, 그리고 예고된 전장 조건이다.", "선택지는 즉시 효과와 전략 수법, 세우거나 응답할 약속, 진의 현재 판독이 적중하는지를 보여 준다.", "약속에는 당사자와 정확한 대가가 표시된다. 추격은 노출을 읽으며 반복 수법을 바꾸면 진이 공개한 판독이 빗나간다. 모든 변화는 따로 기록된다." },
-            ["ru"] = new[] { "Каждый приказ разрешается в шести видимых слоях: ваш ход, ответ на обязательство, когда он требуется, заданное давление, состояние погони, разбор метода Цинь и объявленное условие поля.", "Карточка показывает немедленные эффекты, стратегический метод, создаваемое или разрешаемое обязательство и попадёт ли текущий расчёт Цинь.", "Обещания называют заинтересованную сторону и точную цену. Погоня читает Раскрытие; смена повторяемого метода рушит объявленный расчёт Цинь. Все изменения записываются отдельно." },
-            ["vi"] = new[] { "Mỗi mệnh lệnh được kết toán qua sáu lớp hiển thị: nước đi, cách đáp cam kết khi đến hạn, áp lực soạn sẵn, thế truy đuổi, cách Tần đọc thủ pháp và điều kiện bàn thế đã báo.", "Mỗi thẻ cho biết hiệu ứng tức thời, thủ pháp chiến lược, cam kết được lập hay được đáp và cách đọc hiện tại của Tần có trúng hay không.", "Lời hứa nêu rõ bên liên quan và cái giá chính xác. Truy đuổi đọc Bại lộ; đổi thủ pháp lặp lại khiến cách đọc công khai của Tần trượt. Mọi thay đổi được ghi riêng." },
-            ["zh-Hans"] = new[] { "每道命令分六层明示结算：你的落子、到期的应诺、既定压力、追捕态势、秦吏手法识势，以及预先公开的局势条件。", "选择牌会显示即时变化、战略手法、将立下或回应的承诺，以及秦吏当前识势是否命中。", "承诺会写明关系人和确切代价。追捕读取险；改变重复手法即可让秦吏公开的识势落空。每层变化都会单独记录。" },
-            ["zh-Hant"] = new[] { "每道命令分六層明示結算：你的落子、到期的應諾、既定壓力、追捕態勢、秦吏手法識勢，以及預先公開的局勢條件。", "選擇牌會顯示即時變化、戰略手法、將立下或回應的承諾，以及秦吏當前識勢是否命中。", "承諾會寫明關係人和確切代價。追捕讀取險；改變重複手法即可讓秦吏公開的識勢落空。每層變化都會單獨記錄。" },
+            ["en"] = new[] { "Every order resolves in six visible layers: your move, a commitment answer when due, authored pressure, pursuit posture, Qin’s method read, and the disclosed field condition.", "Select an order to open its complete strategic reading. Only Issue order commits it; selection never changes the campaign.", "The reading discloses exact effects, method, commitments, and Qin’s current hit or miss. Every resolved delta is recorded separately." },
+            ["ar"] = new[] { "يُحسم كل أمر في ست طبقات ظاهرة: حركتك، وجواب الالتزام عند استحقاقه، والضغط المؤلَّف، ووضع المطاردة، وقراءة تشين للأسلوب، وظرف الميدان المعلن.", "اختر أمرًا لفتح قراءته الاستراتيجية الكاملة. لا يُثبّته إلا «أصدر الأمر»؛ والاختيار وحده لا يغيّر الحملة.", "تكشف القراءة الآثار الدقيقة والأسلوب والالتزامات وهل تصيب قراءة تشين الحالية أم تخطئ. يُسجّل كل تغيّر محسوم منفصلًا." },
+            ["de"] = new[] { "Jeder Befehl wird in sechs sichtbaren Ebenen aufgelöst: dein Zug, eine fällige Antwort auf das Versprechen, verfasster Druck, Verfolgungslage, Qins Methodenanalyse und die angekündigte Feldbedingung.", "Wähle einen Befehl, um seine vollständige strategische Lesart zu öffnen. Erst Befehl erteilen legt ihn fest; die Auswahl verändert die Kampagne nie.", "Die Lesart zeigt genaue Wirkungen, Methode, Versprechen und ob Qins aktuelle Analyse trifft oder verfehlt. Jede aufgelöste Änderung wird getrennt notiert." },
+            ["es"] = new[] { "Cada orden se resuelve en seis capas visibles: tu movimiento, la respuesta a un compromiso cuando corresponda, la presión escrita, la postura de persecución, la lectura de método de Qin y la condición anunciada del terreno.", "Selecciona una orden para abrir su lectura estratégica completa. Solo Dar la orden la confirma; seleccionar nunca altera la campaña.", "La lectura revela efectos exactos, método, compromisos y si el cálculo actual de Qin acierta o falla. Cada cambio resuelto queda registrado aparte." },
+            ["fr"] = new[] { "Chaque ordre se résout en six couches visibles : votre coup, la réponse à un engagement lorsqu’elle est due, la pression écrite, le dispositif de poursuite, la lecture de méthode des Qin et la condition annoncée du terrain.", "Sélectionnez un ordre pour ouvrir sa lecture stratégique complète. Seul Donner l’ordre le confirme ; la sélection ne modifie jamais la campagne.", "La lecture dévoile effets exacts, méthode, engagements et si l’analyse actuelle des Qin vise juste ou échoue. Chaque écart résolu est consigné séparément." },
+            ["ja"] = new[] { "一つの命令は六つの可視層で決着する。自分の一手、必要な時の約束への応答、既定の圧力、追撃態勢、秦の手筋読み、そして予告された戦場条件だ。", "命令を選ぶと、完全な戦略的解釈が開く。確定するのは「命令を下す」だけで、選択だけでは戦況は変わらない。", "解釈には正確な効果、手筋、約束、秦の現在の読みの的中・不的中が示される。決着した変化はすべて別に記録される。" },
+            ["ko"] = new[] { "하나의 명령은 여섯 개의 보이는 층으로 결산된다. 나의 수, 때가 된 약속의 응답, 서술된 압력, 추격 태세, 진의 수법 판독, 그리고 예고된 전장 조건이다.", "명령을 선택하면 완전한 전략 해설이 열린다. ‘명령 내리기’만 확정하며, 선택만으로는 전황이 바뀌지 않는다.", "해설은 정확한 효과와 수법, 약속, 진의 현재 판독이 적중하는지 빗나가는지를 밝힌다. 결산된 변화는 모두 따로 기록된다." },
+            ["ru"] = new[] { "Каждый приказ разрешается в шести видимых слоях: ваш ход, ответ на обязательство, когда он требуется, заданное давление, состояние погони, разбор метода Цинь и объявленное условие поля.", "Выберите приказ, чтобы открыть полный стратегический разбор. Только Отдать приказ подтверждает его; выбор не меняет кампанию.", "Разбор раскрывает точные последствия, метод, обязательства и попадание либо промах текущего расчёта Цинь. Каждое разрешённое изменение записывается отдельно." },
+            ["vi"] = new[] { "Mỗi mệnh lệnh được kết toán qua sáu lớp hiển thị: nước đi, cách đáp cam kết khi đến hạn, áp lực soạn sẵn, thế truy đuổi, cách Tần đọc thủ pháp và điều kiện bàn thế đã báo.", "Chọn một mệnh lệnh để mở toàn bộ luận thế chiến lược. Chỉ Ban lệnh mới xác nhận; việc chọn không bao giờ làm đổi chiến dịch.", "Luận thế công khai hiệu ứng chính xác, thủ pháp, cam kết và cách đọc hiện tại của Tần trúng hay trượt. Mọi thay đổi đã kết toán đều được ghi riêng." },
+            ["zh-Hans"] = new[] { "每道命令分六层明示结算：你的落子、到期的应诺、既定压力、追捕态势、秦吏手法识势，以及预先公开的局势条件。", "选择一道命令，打开完整的战略解读。只有“下达命令”才会落子；仅作选择绝不会改变战局。", "解读会明示确切影响、战略手法、承诺，以及秦吏当前识势命中或落空。结算后的每层变化都会单独记录。" },
+            ["zh-Hant"] = new[] { "每道命令分六層明示結算：你的落子、到期的應諾、既定壓力、追捕態勢、秦吏手法識勢，以及預先公開的局勢條件。", "選擇一道命令，打開完整的戰略解讀。只有「下達命令」才會落子；僅作選擇絕不會改變戰局。", "解讀會明示確切影響、戰略手法、承諾，以及秦吏當前識勢命中或落空。結算後的每層變化都會單獨記錄。" },
         };
 
         private static readonly string[] EvidenceKeys =
@@ -135,6 +135,23 @@ namespace SHI
             ["zh-Hant"] = new[] { "立下承諾", "隨行承諾", "應諾", "兌現", "承壓", "背棄", "本章承諾" },
         };
 
+        private static readonly string[] DecisionKeys = { "selectedOrder", "issueOrder", "reviewOrder", "strategicReading" };
+
+        private static readonly Dictionary<string, string[]> DecisionValues = new()
+        {
+            ["en"] = new[] { "Selected order", "Issue order", "Review every disclosed effect before commitment.", "Strategic reading" },
+            ["ar"] = new[] { "الأمر المختار", "أصدر الأمر", "راجع كل أثر معلن قبل الالتزام.", "القراءة الاستراتيجية" },
+            ["de"] = new[] { "Gewählter Befehl", "Befehl erteilen", "Prüfe vor der Festlegung jede offengelegte Folge.", "Strategische Lesart" },
+            ["es"] = new[] { "Orden seleccionada", "Dar la orden", "Revisa cada efecto revelado antes de comprometerte.", "Lectura estratégica" },
+            ["fr"] = new[] { "Ordre sélectionné", "Donner l’ordre", "Examinez chaque effet annoncé avant de vous engager.", "Lecture stratégique" },
+            ["ja"] = new[] { "選択中の命令", "命令を下す", "決定前に、開示されたすべての効果を確認する。", "戦略的解釈" },
+            ["ko"] = new[] { "선택한 명령", "명령 내리기", "결정하기 전에 공개된 모든 효과를 검토하십시오.", "전략 해설" },
+            ["ru"] = new[] { "Выбранный приказ", "Отдать приказ", "Перед решением проверьте все раскрытые последствия.", "Стратегическая оценка" },
+            ["vi"] = new[] { "Mệnh lệnh đã chọn", "Ban lệnh", "Xem lại mọi hệ quả đã công bố trước khi cam kết.", "Luận thế chiến lược" },
+            ["zh-Hans"] = new[] { "已选命令", "下达命令", "落子前，复核所有已经明示的影响。", "战略解读" },
+            ["zh-Hant"] = new[] { "已選命令", "下達命令", "落子前，複核所有已經明示的影響。", "戰略解讀" },
+        };
+
         private static readonly Dictionary<string, string[]> MapValues = new()
         {
             ["en"] = new[] { "Strategic intelligence map", "Inspect map", "Known ground", "Reported network", "Reference only", "Uncertainty" },
@@ -194,6 +211,12 @@ namespace SHI
             {
                 var commitmentValues = CommitmentValues.TryGetValue(locale, out var localizedCommitment) ? localizedCommitment : CommitmentValues["en"];
                 return commitmentValues[index];
+            }
+            index = Array.IndexOf(DecisionKeys, key);
+            if (index >= 0)
+            {
+                var decisionValues = DecisionValues.TryGetValue(locale, out var localizedDecision) ? localizedDecision : DecisionValues["en"];
+                return decisionValues[index];
             }
             index = Array.IndexOf(MapKeys, key);
             if (index < 0) return key;

@@ -201,12 +201,12 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 .choices-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; color: var(--bronze-bright); font-size: .62rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
 .choices-heading small { color: #898b82; font-weight: 400; letter-spacing: .06em; }
 .choices-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; }
-.choice-card { position: relative; display: grid; min-height: 205px; grid-template-columns: 34px 1fr; grid-template-rows: 1fr auto; gap: 0 12px; overflow: hidden; padding: 19px 42px 16px 17px; color: #c8c1b2; border: 1px solid rgba(219,204,175,.13); border-radius: 2px; background: linear-gradient(140deg, rgba(39,39,32,.72), rgba(24,25,21,.84)); cursor: pointer; text-align: left; transition: border-color .2s, background .2s, transform .2s; }
+.choice-card { position: relative; display: grid; min-height: 146px; grid-template-columns: 34px 1fr; grid-template-rows: 1fr auto; gap: 0 12px; overflow: hidden; padding: 17px 42px 14px 17px; color: #c8c1b2; border: 1px solid rgba(219,204,175,.13); border-radius: 2px; background: linear-gradient(140deg, rgba(39,39,32,.72), rgba(24,25,21,.84)); cursor: pointer; text-align: left; transition: border-color .2s, background .2s, transform .2s; }
 [dir="rtl"] .choice-card { padding-right: 17px; padding-left: 42px; text-align: right; }
 .choice-card::before { position: absolute; inset: 0; content: ""; opacity: 0; background: radial-gradient(circle at 15% 20%, rgba(184,148,89,.12), transparent 45%); transition: opacity .2s; }
 .choice-card:hover:not(:disabled) { border-color: rgba(201,164,102,.52); background: linear-gradient(140deg, rgba(47,44,34,.84), rgba(26,26,22,.9)); transform: translateY(-2px); }
-.choice-card.is-gamepad-selected:not(:disabled) { border-color: rgba(210,178,120,.72); background: linear-gradient(140deg, rgba(53,48,36,.9), rgba(27,28,23,.94)); box-shadow: inset 3px 0 0 rgba(210,178,120,.78), 0 0 0 1px rgba(210,178,120,.08); }
-[dir="rtl"] .choice-card.is-gamepad-selected:not(:disabled) { box-shadow: inset -3px 0 0 rgba(210,178,120,.78), 0 0 0 1px rgba(210,178,120,.08); }
+.choice-card.is-selected:not(:disabled) { border-color: rgba(210,178,120,.72); background: linear-gradient(140deg, rgba(53,48,36,.9), rgba(27,28,23,.94)); box-shadow: inset 3px 0 0 rgba(210,178,120,.78), 0 0 0 1px rgba(210,178,120,.08); }
+[dir="rtl"] .choice-card.is-selected:not(:disabled) { box-shadow: inset -3px 0 0 rgba(210,178,120,.78), 0 0 0 1px rgba(210,178,120,.08); }
 .choice-card:hover::before { opacity: 1; }
 .choice-card:disabled { opacity: .42; cursor: not-allowed; }
 .choice-index { position: relative; z-index: 1; display: grid; width: 29px; height: 29px; place-items: center; color: #b69a6b; border: 1px solid rgba(190,155,97,.35); font-family: var(--serif); font-size: .77rem; }
@@ -259,6 +259,34 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 .choice-card:hover .choice-arrow { color: var(--bronze-bright); transform: translate(2px, -2px); }
 .choices-grid:has(.choice-card:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .locked { position: absolute; right: 10px; bottom: 8px; color: #d18873; font-size: .6rem; }
+.decision-inspector { display: grid; margin-top: 12px; overflow: hidden; border: 1px solid rgba(192,155,96,.34); border-top: 3px double rgba(205,171,111,.48); background: linear-gradient(120deg, rgba(33,31,25,.94), rgba(20,22,19,.96)); box-shadow: 0 13px 34px rgba(0,0,0,.16); }
+.decision-inspector-loading { min-height: 210px; }
+.decision-inspector-head { display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: center; padding: 15px 18px 13px; border-bottom: 1px solid rgba(190,153,91,.18); }
+.decision-seal { display: grid; width: 38px; height: 38px; place-items: center; color: #d1b274; border: 3px double rgba(198,159,95,.46); font-family: var(--serif); font-size: 1rem; }
+.decision-inspector-head p { margin: 0 0 3px; color: #c39a60; font-size: .6rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.decision-inspector-head h2 { display: inline; margin: 0; color: #e0d7c5; font-family: var(--cjk); font-size: 1rem; font-weight: 500; }
+.decision-inspector-head div > span { margin-inline-start: 12px; color: #99978d; font-family: var(--cjk); font-size: .68rem; }
+.decision-inspector-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; }
+.decision-inspector-grid > div { min-width: 0; margin: 0; padding: 13px 16px 14px; border: 0; border-inline-end: 1px solid rgba(202,173,124,.14); background: transparent; }
+.decision-inspector-grid > div:last-child { border-inline-end: 0; }
+.decision-principle > span { color: #ac865a; font-family: "Inter Variable", sans-serif; font-size: .6rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
+.decision-principle p { margin: 5px 0 0; color: #99978d; font-family: var(--cjk); font-size: .66rem; line-height: 1.55; }
+.decision-inspector .commitment-establish, .decision-inspector .commitment-forecast, .decision-inspector .method-choice, .decision-inspector .pressure-warning { margin: 0; }
+.decision-inspector .commitment-establish { border-style: double; border-width: 0 1px 0 0; }
+[dir="rtl"] .decision-inspector .commitment-establish { border-width: 0 0 0 1px; }
+.decision-inspector .commitment-forecast { border-left-width: 0; }
+[dir="rtl"] .decision-inspector .commitment-forecast { border-right-width: 0; }
+.decision-confirmation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, 330px); gap: 18px; align-items: center; padding: 12px 15px 14px 18px; border-top: 1px solid rgba(205,171,111,.22); background: rgba(10,12,10,.24); }
+.decision-confirmation > div { display: flex; min-width: 0; align-items: center; gap: 13px; }
+.decision-confirmation .effects { grid-column: auto; margin: 0; }
+.decision-confirmation small { color: #8f9087; font-family: var(--cjk); font-size: .62rem; line-height: 1.4; }
+.issue-order-button { display: grid; min-height: 52px; grid-template-columns: 1fr auto; align-items: center; padding: 9px 13px 9px 18px; color: #181712; border: 1px solid #d1ae70; border-radius: 1px; background: linear-gradient(105deg, #c09a60, #d2b476); cursor: pointer; text-align: left; box-shadow: 0 7px 24px rgba(0,0,0,.22); }
+[dir="rtl"] .issue-order-button { padding-right: 18px; padding-left: 13px; text-align: right; }
+.issue-order-button span { grid-column: 1; color: #342819; font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.issue-order-button strong { grid-column: 1; overflow: hidden; font-family: var(--cjk); font-size: .72rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.issue-order-button i { grid-column: 2; grid-row: 1 / span 2; font-family: var(--serif); font-size: 1.15rem; font-style: normal; }
+.issue-order-button:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); }
+.issue-order-button:disabled { color: #827868; border-color: #665b49; background: #312e27; cursor: not-allowed; box-shadow: none; }
 .resolution-banner { position: fixed; top: 88px; left: 50%; z-index: 8; display: grid; width: min(1320px, 96vw); grid-template-columns: minmax(0, 1fr) auto 24px; align-items: center; gap: 18px; padding: 15px 18px; border: 1px solid rgba(201,164,102,.42); background: rgba(26,25,20,.97); box-shadow: 0 16px 60px rgba(0,0,0,.45); transform: translateX(-50%); animation: enter .35s ease-out; }
 @keyframes enter { from { opacity: 0; transform: translate(-50%, -12px); } }
 .resolution-copy { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
@@ -425,7 +453,10 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
   [dir="rtl"] .map-column { border-left: 0; }
   .story-panel { max-width: none; }
   .choices-grid, .choices-grid:has(.choice-card:nth-child(2):last-child) { grid-template-columns: 1fr; }
-  .choice-card { min-height: 178px; }
+  .choice-card { min-height: 132px; }
+  .decision-inspector-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .decision-inspector-grid > div { border-bottom: 1px solid rgba(202,173,124,.14); }
+  .decision-inspector-grid > div:nth-child(even) { border-inline-end: 0; }
 }
 
 @media (max-width: 600px) {
@@ -465,8 +496,18 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
   .dialogue footer { align-items: flex-start; flex-direction: column; gap: 4px; }
   .choices-panel { padding: 17px 14px 25px; }
   .choice-card { padding-right: 34px; }
-  .choices-heading small { max-width: 62%; text-align: right; }
+  .choices-heading { align-items: flex-start; gap: 14px; }
+  .choices-heading > span { max-width: 56%; line-height: 1.45; }
+  .choices-heading small { max-width: 44%; line-height: 1.45; text-align: right; }
+  .choices-input-detail { display: none; }
   [dir="rtl"] .choices-heading small { text-align: left; }
+  .decision-inspector-head { padding-inline: 14px; }
+  .decision-inspector-head div > span { display: block; margin: 4px 0 0; }
+  .decision-inspector-grid { grid-template-columns: 1fr; }
+  .decision-inspector-grid > div, .decision-inspector-grid > div:nth-child(even) { border-inline-end: 0; border-bottom: 1px solid rgba(202,173,124,.14); }
+  .decision-confirmation { grid-template-columns: 1fr; padding: 13px 14px 15px; }
+  .decision-confirmation > div { align-items: flex-start; flex-direction: column; }
+  .issue-order-button { width: 100%; }
   .resolution-banner { top: 70px; display: block; max-height: calc(100vh - 90px); overflow-y: auto; }
   .resolution-copy { grid-template-columns: 1fr; gap: 10px; }
   .resolution-copy:has(.commitment-reveal) { grid-template-columns: 1fr; }
@@ -494,7 +535,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 @media (max-width: 600px) and (max-height: 300px) {
   .choice-card {
     min-height: 0;
-    height: calc(100vh - 18px);
+    max-height: calc(100vh - 18px);
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-color: rgba(183, 143, 80, .62) rgba(20, 22, 18, .72);
@@ -520,13 +561,13 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 @media (forced-colors: active) {
   .three-backdrop, .title-image, .title-vignette, .game-shell::before, .map-card::before, .map-sweep { display: none !important; }
   .title-screen, .game-shell, .game-header, .resource-rail, .opposition-panel, .method-read-panel, .commitment-panel, .map-column, .story-panel, .choices-panel,
-  .choice-card, .field-signal, .dialogue, .map-intel, .drawer, .resolution-banner, .ending-panel {
+  .choice-card, .decision-inspector, .issue-order-button, .field-signal, .dialogue, .map-intel, .drawer, .resolution-banner, .ending-panel {
     color: CanvasText;
     background: Canvas;
     background-image: none;
   }
   .title-screen *, .game-shell * { color: CanvasText !important; }
-  .game-header, .resource-rail, .opposition-panel, .method-read-panel, .commitment-panel, .game-grid, .map-column, .story-panel, .choices-panel, .choice-card,
+  .game-header, .resource-rail, .opposition-panel, .method-read-panel, .commitment-panel, .game-grid, .map-column, .story-panel, .choices-panel, .choice-card, .decision-inspector, .issue-order-button,
   .field-signal, .dialogue, .map-intel, .drawer, .resolution-banner, .ending-panel, .guide-steps li, .audio-enable, .audio-preview {
     border-color: CanvasText;
   }
@@ -545,7 +586,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
     outline: 3px solid Highlight;
     outline-offset: 2px;
   }
-  .choice-card.is-gamepad-selected:not(:disabled), .site-marker.inspected {
+  .choice-card.is-selected:not(:disabled), .site-marker.inspected {
     border-color: Highlight;
     outline: 3px solid Highlight;
     outline-offset: -4px;

@@ -413,6 +413,9 @@ snapshot = await evaluate(`({
   methodCounts: [...document.querySelectorAll('.method-read-counts [data-method-id]')].map((item) => ({ id: item.getAttribute('data-method-id'), count: item.querySelector('b')?.textContent?.trim(), targeted: item.getAttribute('data-targeted') })),
   methodChoices: [...document.querySelectorAll('.method-choice')].map((item) => ({ id: item.getAttribute('data-method-id'), hit: item.getAttribute('data-read-hit'), text: item.textContent?.trim() })),
   establishingCommitments: [...document.querySelectorAll('.commitment-establish')].map((item) => ({ id: item.getAttribute('data-commitment-id'), text: item.textContent?.trim() })),
+  selectedChoice: document.querySelector('[data-testid=decision-inspector]')?.getAttribute('data-selected-choice'),
+  selectedPressed: document.querySelector('[data-choice-id=read-the-names]')?.getAttribute('aria-pressed'),
+  issueOrder: document.querySelector('[data-testid=commit-selected]')?.getAttribute('aria-label'),
   seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'),
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   saveVersion: document.querySelector('[data-save-version]')?.getAttribute('data-save-version'),
@@ -423,14 +426,15 @@ check(snapshot.heading === "The road has become a river", "opening story node re
 check(snapshot.choices === 3, "opening offers three strategic choices");
 check(snapshot.meters === 5, "all five strategic resources are visible");
 check(snapshot.sourceButton.includes("4"), "node source count is visible");
-check(snapshot.pressureWarnings === 3, "every opening choice exposes a qualitative pressure warning");
+check(snapshot.pressureWarnings === 1, "the focused opening order exposes its qualitative pressure warning without repeating dense text across every card");
 check(snapshot.fieldTitle === "Water over the axle", "seeded field signal is disclosed before commitment");
 check(snapshot.fieldEffects.includes("-3 Grain") && snapshot.fieldEffects.includes("+2 Exposure"), "field signal exposes its exact resource effects");
 check(snapshot.oppositionStage === "scattered-watch" && snapshot.opposition.includes("Scattered watch") && snapshot.opposition.includes("No added pressure"), "opening pursuit posture discloses its stage, exact modifier and reconstruction boundary");
 check(snapshot.methodReadId === "unresolved-pattern" && snapshot.methodRead.includes("Qin method read") && snapshot.methodRead.includes("Unresolved pattern") && snapshot.methodRead.includes("No added pressure"), "opening method read discloses its reconstruction boundary, neutral state and exact modifier");
 check(snapshot.methodCounts.length === 3 && snapshot.methodCounts.every((item) => item.count === "0" && item.targeted === "false"), "opening method memory visibly starts at zero for all three strategic methods");
-check(snapshot.methodChoices.length === 3 && snapshot.methodChoices.every((item) => item.hit === "false" && item.text.includes("Read misses") && item.text.includes("No added pressure")), "each opening choice discloses its strategic method and current read result before commitment");
-check(snapshot.establishingCommitments.length === 3 && snapshot.establishingCommitments.some((item) => item.id === "names-under-protection" && item.text.includes("Aunt Yu")) && snapshot.establishingCommitments.some((item) => item.id === "movement-before-answer" && item.text.includes("Wu Guang")) && snapshot.establishingCommitments.some((item) => item.id === "register-stays-dark" && item.text.includes("Courier Han")), "every opening card discloses the commitment and stakeholder it will establish before commitment");
+check(snapshot.methodChoices.length === 1 && snapshot.methodChoices[0].hit === "false" && snapshot.methodChoices[0].text.includes("Read misses") && snapshot.methodChoices[0].text.includes("No added pressure"), "the focused order discloses its strategic method and current read result before commitment");
+check(snapshot.establishingCommitments.length === 1 && snapshot.establishingCommitments[0].id === "names-under-protection" && snapshot.establishingCommitments[0].text.includes("Aunt Yu"), "the focused opening order discloses the named commitment and stakeholder it will establish");
+check(snapshot.selectedChoice === "read-the-names" && snapshot.selectedPressed === "true" && snapshot.issueOrder.includes("Issue order") && snapshot.issueOrder.includes("Read every name aloud"), "one selected order, its complete inspector and a separately named Issue order control form a deliberate decision flow");
 check(snapshot.seed === "5EED2026", "shareable hexadecimal chronicle seed is visible");
 check(snapshot.onboarding === "complete", "dismissed onboarding preference is stored outside campaign state");
 check(snapshot.saveVersion === "6", "web client advertises save contract version 6");
@@ -439,6 +443,33 @@ check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 await auditAccessibility("gameplay-en");
 await auditTargets("gameplay-en");
 
+await evaluate("document.querySelector('[data-choice-id=take-the-beacon]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await click("[data-choice-id=take-the-beacon]");
+await wait(250);
+await evaluate("document.querySelector('[data-testid=decision-inspector]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-37-deliberate-order.png");
+snapshot = await evaluate(`({
+  node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'),
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length ?? 0,
+  selectedChoice: document.querySelector('[data-testid=decision-inspector]')?.getAttribute('data-selected-choice'),
+  selectedPressed: document.querySelector('[data-choice-id=take-the-beacon]')?.getAttribute('aria-pressed'),
+  inspector: document.querySelector('[data-testid=decision-inspector]')?.textContent?.trim(),
+  issueOrder: document.querySelector('[data-testid=commit-selected]')?.getAttribute('aria-label'),
+  issueHeight: document.querySelector('[data-testid=commit-selected]')?.getBoundingClientRect().height,
+  overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+})`);
+check(snapshot.node === "rain-order" && snapshot.history === 0, "pointer selection changes no campaign node, resource or history state");
+check(snapshot.selectedChoice === "take-the-beacon" && snapshot.selectedPressed === "true" && snapshot.inspector.includes("Wu Guang") && snapshot.inspector.includes("Read misses") && snapshot.inspector.includes("Pressure forecast"), "selection replaces the focused strategic reading with the chosen order's commitment, method and pressure forecast");
+check(snapshot.issueOrder.includes("Issue order") && snapshot.issueOrder.includes("Seize the relay beacon") && snapshot.issueHeight >= 52 && snapshot.overflow <= 1, "the explicit confirmation is choice-specific, comfortably targeted and horizontally fitted");
+await auditAccessibility("decision-inspector-en");
+await auditTargets("decision-inspector-en");
+await shiftDigit("1");
+await wait(150);
+
+await evaluate("scrollTo(0, 0); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
 await click("[data-testid=audio-toggle]");
 await waitForSelector("[data-testid=audio-drawer]");
 const desktopMixerSettled = await waitForCondition(`(() => {
@@ -647,6 +678,18 @@ await waitForFontReady();
 await wait(250);
 await click(".story-panel");
 await shiftDigit("1");
+await wait(250);
+snapshot = await evaluate(`({
+  node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'),
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length ?? 0,
+  selected: document.querySelector('[data-testid=decision-inspector]')?.getAttribute('data-selected-choice'),
+  issue: document.querySelector('[data-testid=commit-selected]')?.getAttribute('aria-label')
+})`);
+check(snapshot.node === "rain-order" && snapshot.history === 0 && snapshot.selected === "read-the-names", "Shift+1 focuses the first order without issuing it");
+check(snapshot.issue.includes("Read every name aloud"), "keyboard selection updates the separately named confirmation target");
+await evaluate("document.querySelector('[data-testid=commit-selected]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await click("[data-testid=commit-selected]");
 await wait(650);
 await screenshot("web-05-choice-resolution.png");
 snapshot = await evaluate(`({
@@ -744,11 +787,30 @@ await screenshot("web-08-mobile-choices.png");
 snapshot = await evaluate(`(() => {
   const cards = [...document.querySelectorAll('.choice-card')];
   const visible = cards.filter((card) => { const box = card.getBoundingClientRect(); return box.bottom > 0 && box.top < innerHeight; });
-  return { visible: visible.length, warnings: visible.reduce((count, card) => count + card.querySelectorAll('.pressure-warning').length, 0), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+  const inspector = document.querySelector('[data-testid=decision-inspector]');
+  return { visible: visible.length, inspector: Boolean(inspector), warnings: inspector?.querySelectorAll('.pressure-warning').length ?? 0, issueOrder: inspector?.querySelector('[data-testid=commit-selected]')?.textContent?.trim(), overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
 })()`);
 check(snapshot.visible >= 1, "mobile scroll reaches a complete decision card");
-check(snapshot.warnings >= 1, "mobile decision card keeps its pressure warning readable");
+check(snapshot.inspector && snapshot.warnings === 1 && snapshot.issueOrder.includes("Issue order"), "mobile decisions retain the focused pressure reading and explicit confirmation");
 check(snapshot.overflow <= 1, "scrolled mobile decisions retain horizontal fit");
+await evaluate("document.querySelector('[data-testid=decision-inspector]')?.scrollIntoView({ block: 'start' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-38-mobile-order-reading.png");
+snapshot = await evaluate(`(() => {
+  const inspector = document.querySelector('[data-testid=decision-inspector]');
+  const box = inspector?.getBoundingClientRect();
+  return { selected: inspector?.getAttribute('data-selected-choice'), left: box?.left, right: box?.right, width: innerWidth, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+})()`);
+check(snapshot.selected && snapshot.left >= 0 && snapshot.right <= snapshot.width && snapshot.overflow <= 1, "mobile scroll exposes a horizontally fitted complete strategic reading");
+await evaluate("document.querySelector('[data-testid=commit-selected]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-39-mobile-issue-order.png");
+snapshot = await evaluate(`(() => {
+  const button = document.querySelector('[data-testid=commit-selected]');
+  const box = button?.getBoundingClientRect();
+  return { label: button?.getAttribute('aria-label'), visible: Boolean(box && box.top >= 0 && box.bottom <= innerHeight && box.left >= 0 && box.right <= innerWidth), height: box?.height, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+})()`);
+check(snapshot.label.includes("Issue order") && snapshot.visible && snapshot.height >= 52 && snapshot.overflow <= 1, "mobile players can reach a fully visible, comfortably targeted confirmation after review");
 await gamepadButton(9);
 await waitForSelector("[data-testid=guide-drawer]");
 await wait(250);
@@ -901,7 +963,7 @@ await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => reques
 await screenshot("web-22-forced-colors-overview.png");
 snapshot = await evaluate(`(() => {
   const style = (selector, pseudo) => getComputedStyle(document.querySelector(selector), pseudo);
-  const selected = style('.choice-card.is-gamepad-selected');
+  const selected = style('.choice-card.is-selected');
   const meter = style('.meter');
   const danger = style('.resource.danger');
   const reported = style('.site-marker.site-reported i');
@@ -924,15 +986,15 @@ snapshot = await evaluate(`(() => {
 report.forcedColorsAudit = snapshot;
 check(snapshot.active && snapshot.decorativeLayersHidden, "forced-colors mode is active and removes non-informational visual layers");
 check(snapshot.meterHeight >= 4 && snapshot.meterBorder === "solid" && snapshot.dangerOutline === "dashed", "forced-colors resources retain meter structure and a non-color danger marker");
-check(snapshot.selectedOutline === "solid" && snapshot.selectedOutlineWidth >= 3, "forced-colors controller selection retains a system-highlight outline");
+check(snapshot.selectedOutline === "solid" && snapshot.selectedOutlineWidth >= 3, "forced-colors order selection retains a system-highlight outline");
 check(snapshot.reportedBorder === "dashed" && snapshot.reportedBorderWidth >= 2 && snapshot.referenceRadius === 0 && snapshot.activeBorder === "double", "forced-colors wartable intelligence retains distinct reported, reference and active marker shapes");
 await auditAccessibility("gameplay-forced-colors");
 await auditTargets("gameplay-forced-colors");
-await evaluate("document.querySelector('.choice-card.is-gamepad-selected')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("document.querySelector('.choice-card.is-selected')?.scrollIntoView({ block: 'center' }); true");
 await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
 await screenshot("web-23-forced-colors-decisions.png");
 snapshot = await evaluate(`(() => {
-  const box = document.querySelector('.choice-card.is-gamepad-selected')?.getBoundingClientRect();
+  const box = document.querySelector('.choice-card.is-selected')?.getBoundingClientRect();
   return { visible: Boolean(box && box.top >= 0 && box.bottom <= innerHeight), overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth) };
 })()`);
 check(snapshot.visible && snapshot.overflow <= 1, "forced-colors selected decision is visibly framed without horizontal scrolling");
@@ -981,11 +1043,11 @@ try {
   check(snapshot.cardFit && snapshot.controlFit && snapshot.scrollHeight > browserZoom.height, "actual 400% gameplay keeps every decision/control fitted and vertically reachable");
   await auditAccessibility("gameplay-browser-zoom-400");
   await auditTargets("gameplay-browser-zoom-400");
-  await evaluate("document.querySelector('.choice-card.is-gamepad-selected')?.scrollIntoView({ block: 'center' }); true");
+  await evaluate("document.querySelector('.choice-card.is-selected')?.scrollIntoView({ block: 'center' }); true");
   await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
   await screenshot("web-25-browser-zoom-400-decisions.png");
   snapshot = await evaluate(`(() => {
-    const box = document.querySelector('.choice-card.is-gamepad-selected')?.getBoundingClientRect();
+    const box = document.querySelector('.choice-card.is-selected')?.getBoundingClientRect();
     return { visible: Boolean(box && box.top >= 0 && box.bottom <= innerHeight), overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth) };
   })()`);
   check(snapshot.visible && snapshot.overflow <= 1, "actual 400% keeps the selected decision fully visible without horizontal scrolling");
@@ -1036,6 +1098,11 @@ check(snapshot.stage === "road-search" && snapshot.posture.includes("+2 Exposure
 await evaluate("document.querySelector('[data-choice-id=issue-grain-tallies]')?.scrollIntoView({ block: 'center' }); true");
 await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
 await click("[data-choice-id=issue-grain-tallies]");
+snapshot = await evaluate(`({ node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'), history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length, selected: document.querySelector('[data-testid=decision-inspector]')?.getAttribute('data-selected-choice') })`);
+check(snapshot.node === "open-council" && snapshot.history === 1 && snapshot.selected === "issue-grain-tallies", "selecting the grain tallies previews the order without resolving the road search");
+await evaluate("document.querySelector('[data-testid=commit-selected]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await click("[data-testid=commit-selected]");
 await waitForSelector(".opposition-reveal");
 await evaluate("document.querySelector('.resolution-banner')?.scrollIntoView({ block: 'center' }); true");
 await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
@@ -1057,15 +1124,41 @@ await click(".resolution-banner > button");
 await waitForSelector("[data-testid=commitment-panel]");
 await evaluate("document.querySelector('[data-testid=commitment-panel]')?.scrollIntoView({ block: 'center' }); true");
 await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+const crossingForecasts = [];
+for (const choiceId of ["repair-the-ford", "cut-the-carts", "families-first"]) {
+  await evaluate(`document.querySelector('[data-choice-id=${choiceId}]')?.scrollIntoView({ block: 'center' }); true`);
+  await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+  await click(`[data-choice-id=${choiceId}]`);
+  await wait(150);
+  crossingForecasts.push(await evaluate(`(() => {
+    const inspector = document.querySelector('[data-testid=decision-inspector]');
+    const answer = inspector?.querySelector('.commitment-forecast');
+    const method = inspector?.querySelector('.method-choice');
+    return {
+      choiceId: inspector?.getAttribute('data-selected-choice'),
+      node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'),
+      history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length,
+      status: answer?.getAttribute('data-commitment-status'),
+      outcome: answer?.getAttribute('data-commitment-outcome'),
+      answerText: answer?.textContent?.trim(),
+      methodId: method?.getAttribute('data-method-id'),
+      methodHit: method?.getAttribute('data-read-hit'),
+      methodText: method?.textContent?.trim()
+    };
+  })()`));
+}
 await screenshot("web-33-commitment-carried.png");
 snapshot = await evaluate(`({
   id: document.querySelector('[data-testid=commitment-panel]')?.getAttribute('data-commitment-id'),
   panel: document.querySelector('[data-testid=commitment-panel]')?.textContent?.trim(),
-  answers: [...document.querySelectorAll('.commitment-forecast')].map((item) => ({ status: item.getAttribute('data-commitment-status'), outcome: item.getAttribute('data-commitment-outcome'), text: item.textContent?.trim() })),
+  focusedAnswers: document.querySelectorAll('[data-testid=decision-inspector] .commitment-forecast').length,
+  selected: document.querySelector('[data-testid=decision-inspector]')?.getAttribute('data-selected-choice'),
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
 check(snapshot.id === "names-under-protection" && snapshot.panel.includes("Aunt Yu") && snapshot.panel.includes("Dramatic reconstruction"), "the broken crossing visibly carries the unresolved names commitment, stakeholder and reconstruction boundary");
-check(snapshot.answers.length === 3 && snapshot.answers.some((item) => item.status === "kept" && item.outcome === "names-families-kept" && item.text.includes("+4 Trust")) && snapshot.answers.some((item) => item.status === "strained" && item.outcome === "names-ford-strained" && item.text.includes("-2 Trust")) && snapshot.answers.some((item) => item.status === "broken" && item.outcome === "names-carts-broken" && item.text.includes("+2 Exposure")), "all crossing choices disclose kept, strained or broken answers and their exact effects before commitment");
+check(crossingForecasts.length === 3 && crossingForecasts.every((item) => item.node === "broken-crossing" && item.history === 2), "browsing all three crossing orders leaves the campaign and chronicle unchanged");
+check(crossingForecasts.some((item) => item.status === "kept" && item.outcome === "names-families-kept" && item.answerText.includes("+4 Trust")) && crossingForecasts.some((item) => item.status === "strained" && item.outcome === "names-ford-strained" && item.answerText.includes("-2 Trust")) && crossingForecasts.some((item) => item.status === "broken" && item.outcome === "names-carts-broken" && item.answerText.includes("+2 Exposure")), "the focused inspector discloses each kept, strained or broken answer and exact effect before commitment");
+check(snapshot.focusedAnswers === 1 && snapshot.selected === "families-first", "only the selected crossing order receives the dense commitment reading");
 check(snapshot.overflow <= 1, "carried commitment and its three answers have no desktop horizontal overflow");
 await auditAccessibility("commitment-answers");
 await auditTargets("commitment-answers");
@@ -1096,7 +1189,7 @@ try {
     };
   })()`);
   report.browserZoomAudits.push({ state: "commitment-answers", zoomPercent: commitmentZoomPercent, zoomIncrements: commitmentZoomIncrements, ...commitmentZoom, ...snapshot });
-  check(commitmentZoomPercent === 400 && snapshot.answers === 3 && snapshot.cardFit && snapshot.selectedVisible && snapshot.overflow <= 1, "actual 400% zoom keeps every commitment answer fitted and the selected decision fully reachable");
+  check(commitmentZoomPercent === 400 && snapshot.answers === 1 && snapshot.cardFit && snapshot.selectedVisible && snapshot.overflow <= 1, "actual 400% zoom keeps compact orders fitted, the focused commitment answer unique and the selected decision fully reachable");
   await auditAccessibility("commitment-answers-browser-zoom-400");
   await auditTargets("commitment-answers-browser-zoom-400");
 } finally {
@@ -1113,21 +1206,26 @@ snapshot = await evaluate(`({
   readId: document.querySelector('[data-testid=method-read]')?.getAttribute('data-read-id'),
   panel: document.querySelector('[data-testid=method-read]')?.textContent?.trim(),
   counts: [...document.querySelectorAll('.method-read-counts [data-method-id]')].map((item) => ({ id: item.getAttribute('data-method-id'), count: item.querySelector('b')?.textContent?.trim(), targeted: item.getAttribute('data-targeted') })),
-  family: document.querySelector('[data-choice-id=families-first] .method-choice') && ({ hit: document.querySelector('[data-choice-id=families-first] .method-choice')?.getAttribute('data-read-hit'), text: document.querySelector('[data-choice-id=families-first] .method-choice')?.textContent?.trim() }),
-  repair: document.querySelector('[data-choice-id=repair-the-ford] .method-choice') && ({ hit: document.querySelector('[data-choice-id=repair-the-ford] .method-choice')?.getAttribute('data-read-hit'), text: document.querySelector('[data-choice-id=repair-the-ford] .method-choice')?.textContent?.trim() }),
-  commitmentAnswers: [...document.querySelectorAll('.commitment-forecast')].map((item) => ({ status: item.getAttribute('data-commitment-status'), text: item.textContent?.trim() })),
+  selected: document.querySelector('[data-testid=decision-inspector]')?.getAttribute('data-selected-choice'),
+  focusedMethodForecasts: document.querySelectorAll('[data-testid=decision-inspector] .method-choice').length,
+  focusedCommitmentAnswers: document.querySelectorAll('[data-testid=decision-inspector] .commitment-forecast').length,
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
 check(snapshot.readId === "witness-chain" && snapshot.panel.includes("Witness chain") && snapshot.panel.includes("+3 Exposure") && snapshot.panel.includes("Choose Forced tempo or Distributed cover"), "prepared witness-chain discloses its exact penalty and actionable counterplay before commitment");
 check(snapshot.counts.find((item) => item.id === "witnessed-compact")?.count === "2" && snapshot.counts.find((item) => item.id === "witnessed-compact")?.targeted === "true", "method memory exposes the two observations and marks only the unique leading method as targeted");
-check(snapshot.family?.hit === "true" && snapshot.family.text.includes("Read hits") && snapshot.family.text.includes("+3 Exposure"), "a repeated Witnessed compact visibly forecasts the prepared read hit and exact modifier");
-check(snapshot.repair?.hit === "false" && snapshot.repair.text.includes("Read misses") && snapshot.repair.text.includes("No added pressure"), "changing to Distributed cover visibly forecasts that the prepared read will miss");
-check(snapshot.commitmentAnswers.length === 3 && new Set(snapshot.commitmentAnswers.map((item) => item.status)).size === 3, "commitment answers remain legible beside the independent method-read forecast");
+check(crossingForecasts.find((item) => item.choiceId === "families-first")?.methodHit === "true" && crossingForecasts.find((item) => item.choiceId === "families-first")?.methodText.includes("Read hits") && crossingForecasts.find((item) => item.choiceId === "families-first")?.methodText.includes("+3 Exposure"), "a repeated Witnessed compact visibly forecasts the prepared read hit and exact modifier");
+check(crossingForecasts.find((item) => item.choiceId === "repair-the-ford")?.methodHit === "false" && crossingForecasts.find((item) => item.choiceId === "repair-the-ford")?.methodText.includes("Read misses") && crossingForecasts.find((item) => item.choiceId === "repair-the-ford")?.methodText.includes("No added pressure"), "changing to Distributed cover visibly forecasts that the prepared read will miss");
+check(snapshot.selected === "families-first" && snapshot.focusedMethodForecasts === 1 && snapshot.focusedCommitmentAnswers === 1, "the selected order keeps its commitment answer and independent method-read forecast together in one complete reading");
 check(snapshot.overflow <= 1, "method-read posture and counterplay have no desktop horizontal overflow");
 
 await evaluate("document.querySelector('[data-choice-id=families-first]')?.scrollIntoView({ block: 'center' }); true");
 await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
 await click("[data-choice-id=families-first]");
+snapshot = await evaluate(`({ node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'), history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length, selected: document.querySelector('[data-testid=decision-inspector]')?.getAttribute('data-selected-choice') })`);
+check(snapshot.node === "broken-crossing" && snapshot.history === 2 && snapshot.selected === "families-first", "reselecting Families first remains a reversible preview until explicit confirmation");
+await evaluate("document.querySelector('[data-testid=commit-selected]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await click("[data-testid=commit-selected]");
 await waitForSelector(".method-read-reveal");
 await evaluate("document.querySelector('.resolution-banner')?.scrollIntoView({ block: 'center' }); true");
 await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
@@ -1153,7 +1251,14 @@ await screenshot("web-35-commitment-kept.png");
 
 await click(".resolution-banner > button");
 await waitForSelector("[data-choice-id=root-in-villages]");
+await evaluate("document.querySelector('[data-choice-id=root-in-villages]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
 await click("[data-choice-id=root-in-villages]");
+snapshot = await evaluate(`({ completed: document.querySelector('[data-testid=shi-app]')?.classList.contains('is-complete'), history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length, selected: document.querySelector('[data-testid=decision-inspector]')?.getAttribute('data-selected-choice') })`);
+check(!snapshot.completed && snapshot.history === 3 && snapshot.selected === "root-in-villages", "the final order can be inspected without prematurely completing the chapter");
+await evaluate("document.querySelector('[data-testid=commit-selected]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await click("[data-testid=commit-selected]");
 await waitForSelector(".resolution-banner");
 await click(".resolution-banner > button");
 await waitForSelector("[data-testid=commitment-ending]");
@@ -1177,10 +1282,11 @@ if (accessibilityViolations.length > 0) {
   await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
   throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
 }
-check(report.accessibilityAudits.length === 31, "WCAG 2.2 AA automation passes across thirty-one visible interface states");
+check(report.accessibilityAudits.length === 32, "WCAG 2.2 AA automation passes across thirty-two visible interface states");
 const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
+if (unexpectedIncomplete.length > 0) console.error("Unexpected axe incomplete results:", JSON.stringify(unexpectedIncomplete, null, 2));
 check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
-check(report.targetAudits.length === 23, "24 CSS pixel target checks pass across twenty-three interaction states");
+check(report.targetAudits.length === 24, "24 CSS pixel target checks pass across twenty-four interaction states");
 check(report.audioAudits.length === 3, "audio consent, independent mixing and responsive layout have three visible audit records");
 check(report.fontAudits.length === 11, "all eleven interface locales pass their self-hosted font, direction and fit contracts");
 check(report.reflowAudits.length === 2 && report.reflowAudits.every((audit) => audit.width === 320 && audit.overflow <= 1), "title and gameplay pass the 320 CSS pixel 400% equivalent reflow gate");
