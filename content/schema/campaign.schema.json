@@ -1,16 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shi.game/schema/campaign-v5.json",
-  "title": "SHI Campaign v5",
+  "$id": "https://shi.game/schema/campaign-v6.json",
+  "title": "SHI Campaign v6",
   "type": "object",
-  "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "initialResources", "opposition", "sites", "characters", "sources", "claims", "nodes"],
+  "required": ["schemaVersion", "id", "title", "subtitle", "startNodeId", "initialResources", "commitments", "opposition", "sites", "characters", "sources", "claims", "nodes"],
   "properties": {
-    "schemaVersion": { "const": 5 },
+    "schemaVersion": { "const": 6 },
     "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
     "title": { "$ref": "#/$defs/localizedText" },
     "subtitle": { "$ref": "#/$defs/localizedText" },
     "startNodeId": { "type": "string" },
     "initialResources": { "$ref": "#/$defs/resources" },
+    "commitments": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/commitment" } },
     "opposition": { "$ref": "#/$defs/opposition" },
     "sites": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/site" } },
     "characters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/character" } },
@@ -232,6 +233,33 @@
         "warning": { "$ref": "#/$defs/localizedText" },
         "reveal": { "$ref": "#/$defs/localizedText" },
         "effects": { "$ref": "#/$defs/resourceEffects" }
+      },
+      "additionalProperties": false
+    },
+    "commitmentOutcome": {
+      "type": "object",
+      "required": ["id", "choiceId", "status", "forecast", "response", "effects"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "choiceId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "status": { "enum": ["kept", "strained", "broken"] },
+        "forecast": { "$ref": "#/$defs/localizedText" },
+        "response": { "$ref": "#/$defs/localizedText" },
+        "effects": { "$ref": "#/$defs/optionalResourceEffects" }
+      },
+      "additionalProperties": false
+    },
+    "commitment": {
+      "type": "object",
+      "required": ["id", "claimStatus", "establishedByChoiceId", "stakeholderId", "title", "promise", "outcomes"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "claimStatus": { "const": "dramatic-reconstruction" },
+        "establishedByChoiceId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "stakeholderId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "promise": { "$ref": "#/$defs/localizedText" },
+        "outcomes": { "type": "array", "minItems": 3, "items": { "$ref": "#/$defs/commitmentOutcome" } }
       },
       "additionalProperties": false
     },

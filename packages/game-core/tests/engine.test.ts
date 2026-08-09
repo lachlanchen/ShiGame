@@ -1,14 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, methodReadMatches, migrateGameState, resolveChoice, selectFieldCondition, selectMethodRead, selectOppositionStage } from "../src";
+import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, methodReadMatches, migrateGameState, resolveChoice, selectActiveCommitment, selectEstablishedCommitment, selectFieldCondition, selectMethodRead, selectOppositionStage } from "../src";
 import type { Campaign } from "../src";
 
 const campaign: Campaign = {
-  schemaVersion: 5,
+  schemaVersion: 6,
   id: "test",
   title: { en: "Test", "zh-Hans": "测试" },
   subtitle: { en: "Test", "zh-Hans": "测试" },
   startNodeId: "start",
   initialResources: { grain: 50, trust: 50, momentum: 50, people: 50, danger: 50 },
+  commitments: [],
   opposition: {
     id: "test-pursuit",
     claimStatus: "dramatic-reconstruction",
@@ -78,6 +79,51 @@ const campaign: Campaign = {
   }],
 };
 
+const buildCommitmentCampaign = (includeCommitment = true): Campaign => {
+  const result = structuredClone(campaign);
+  result.characters = [{ id: "stakeholder", name: { en: "Stakeholder", "zh-Hans": "承诺见证人" }, role: { en: "Witness", "zh-Hans": "见证人" }, historical: false }];
+  result.nodes[0]!.choices[0]!.effects = {};
+  result.nodes[0]!.choices[0]!.nextNodeId = "carry";
+  const carry = structuredClone(result.nodes[0]!);
+  carry.id = "carry";
+  carry.choices[0]!.id = "carry-choice";
+  carry.choices[0]!.effects = {};
+  carry.choices[0]!.nextNodeId = "answer";
+  const answer = structuredClone(result.nodes[0]!);
+  answer.id = "answer";
+  answer.choices[0]!.id = "answer-choice";
+  answer.choices[0]!.effects = { trust: 1 };
+  answer.choices[0]!.pressure = {
+    kind: "network",
+    warning: { en: "The answer carries a cost.", "zh-Hans": "应诺有代价。" },
+    reveal: { en: "The network answers.", "zh-Hans": "网络作出回应。" },
+    effects: { trust: -1 },
+  };
+  answer.choices[0]!.nextNodeId = "finish";
+  const finish = structuredClone(result.nodes[0]!);
+  finish.id = "finish";
+  finish.choices[0]!.id = "finish-choice";
+  delete finish.choices[0]!.nextNodeId;
+  result.nodes = [result.nodes[0]!, carry, answer, finish];
+  result.commitments = includeCommitment ? [{
+    id: "test-promise",
+    claimStatus: "dramatic-reconstruction",
+    establishedByChoiceId: "choose",
+    stakeholderId: "stakeholder",
+    title: { en: "Test promise", "zh-Hans": "测试承诺" },
+    promise: { en: "Carry the promise.", "zh-Hans": "带着承诺前行。" },
+    outcomes: [{
+      id: "test-promise-kept",
+      choiceId: "answer-choice",
+      status: "kept",
+      forecast: { en: "This keeps the promise.", "zh-Hans": "此举兑现承诺。" },
+      response: { en: "The promise is kept.", "zh-Hans": "承诺得到兑现。" },
+      effects: { trust: 4 },
+    }],
+  }] : [];
+  return result;
+};
+
 describe("campaign engine", () => {
   it("clamps resources and records a deterministic choice", () => {
     const result = resolveChoice(campaign, createInitialState(campaign), "choose");
@@ -85,9 +131,10 @@ describe("campaign engine", () => {
     expect(result.state.resources.danger).toBe(0);
     expect(result.state.history).toHaveLength(1);
     expect(result.state.history.at(0)!.afterChoice.grain).toBe(100);
-    expect(result.state.saveVersion).toBe(5);
+    expect(result.state.saveVersion).toBe(6);
     expect(result.state.legacyDecisionCount).toBe(0);
     expect(result.state.preMethodReadDecisionCount).toBe(0);
+    expect(result.state.preCommitmentDecisionCount).toBe(0);
     expect(result.state.completed).toBe(true);
   });
 
@@ -106,6 +153,57 @@ describe("campaign engine", () => {
     expect(result.state.resources).toEqual({ grain: 90, trust: 50, momentum: 50, people: 50, danger: 25 });
     expect(result.playerDeltas).toEqual({ grain: 50, danger: -50 });
     expect(result.pressureDeltas).toEqual({ grain: -10, danger: 25 });
+  });
+
+  it("carries one commitment and applies its disclosed answer before authored pressure", () => {
+    const committed = buildCommitmentCampaign();
+    expect(selectEstablishedCommitment(committed, committed.nodes[0]!.choices[0]!)?.id).toBe("test-promise");
+    expect(selectEstablishedCommitment(committed, committed.nodes[1]!.choices[0]!)).toBeUndefined();
+    const afterOpening = resolveChoice(committed, createInitialState(committed), "choose").state;
+    expect(selectActiveCommitment(committed, afterOpening)?.id).toBe("test-promise");
+    const afterCarry = resolveChoice(committed, afterOpening, "carry-choice").state;
+    expect(selectActiveCommitment(committed, afterCarry)?.id).toBe("test-promise");
+
+    const answered = resolveChoice(committed, afterCarry, "answer-choice");
+
+    expect(answered.commitment?.commitment.id).toBe("test-promise");
+    expect(answered.commitment?.outcome.id).toBe("test-promise-kept");
+    expect(answered.commitmentDeltas).toEqual({ trust: 4 });
+    expect(answered.state.history[2]!.afterChoice.trust).toBe(51);
+    expect(answered.state.history[2]!.afterCommitment.trust).toBe(55);
+    expect(answered.state.history[2]!.afterPressure.trust).toBe(54);
+    expect(answered.state.history[2]!.commitmentId).toBe("test-promise");
+    expect(answered.state.history[2]!.commitmentOutcomeId).toBe("test-promise-kept");
+    expect(selectActiveCommitment(committed, answered.state)).toBeUndefined();
+  });
+
+  it("preserves version-five outcomes without retroactive commitment effects", () => {
+    const committed = buildCommitmentCampaign();
+    const former = buildCommitmentCampaign(false);
+    const afterOpening = resolveChoice(former, createInitialState(former), "choose").state;
+    const afterCarry = resolveChoice(former, afterOpening, "carry-choice").state;
+    const priorResult = resolveChoice(former, afterCarry, "answer-choice").state;
+    const legacy = structuredClone(priorResult) as unknown as Record<string, unknown>;
+    legacy.saveVersion = 5;
+    delete legacy.preCommitmentDecisionCount;
+
+    const migrated = migrateGameState(committed, legacy);
+
+    expect(migrated?.saveVersion).toBe(6);
+    expect(migrated?.preCommitmentDecisionCount).toBe(3);
+    expect(selectActiveCommitment(committed, migrated!)).toBeUndefined();
+    expect(migrated?.resources.trust).toBe(50);
+    expect(migrated?.history[2]!.commitmentOutcomeId).toBeUndefined();
+  });
+
+  it("rejects a current history with a tampered commitment outcome", () => {
+    const committed = buildCommitmentCampaign();
+    const afterOpening = resolveChoice(committed, createInitialState(committed), "choose").state;
+    const afterCarry = resolveChoice(committed, afterOpening, "carry-choice").state;
+    const answered = resolveChoice(committed, afterCarry, "answer-choice").state;
+    const tampered = structuredClone(answered);
+    tampered.history[2]!.commitmentOutcomeId = "invented-answer";
+    expect(migrateGameState(committed, tampered)).toBeNull();
   });
 
   it("applies the disclosed opposition posture after authored pressure", () => {
@@ -163,9 +261,10 @@ describe("campaign engine", () => {
 
     const migrated = migrateGameState(campaign, legacy);
 
-    expect(migrated?.saveVersion).toBe(5);
+    expect(migrated?.saveVersion).toBe(6);
     expect(migrated?.legacyDecisionCount).toBe(1);
     expect(migrated?.preMethodReadDecisionCount).toBe(1);
+    expect(migrated?.preCommitmentDecisionCount).toBe(1);
     expect(migrated?.seed).toBe(0);
     expect(migrated?.resources.grain).toBe(100);
     expect(migrated?.flags).toEqual([]);
@@ -300,9 +399,10 @@ describe("campaign engine", () => {
     };
 
     const migrated = migrateGameState(adaptive, legacy);
-    expect(migrated?.saveVersion).toBe(5);
+    expect(migrated?.saveVersion).toBe(6);
     expect(migrated?.legacyDecisionCount).toBe(0);
     expect(migrated?.preMethodReadDecisionCount).toBe(2);
+    expect(migrated?.preCommitmentDecisionCount).toBe(2);
     expect(migrated?.history[0]!.methodReadId).toBeUndefined();
     expect(migrated?.history[1]!.methodReadId).toBeUndefined();
     const next = resolveChoice(adaptive, migrated!, "finish");

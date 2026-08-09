@@ -376,13 +376,13 @@ snapshot = await evaluate(`({
   modal: document.querySelector('[data-testid=guide-drawer]')?.getAttribute('aria-modal'),
   steps: document.querySelectorAll('.guide-steps li').length,
   controller: document.querySelector('.controller-callout')?.textContent?.trim(),
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.length ?? 0,
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length ?? 0,
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   stageInert: document.querySelector('[data-testid=game-stage]')?.inert,
   active: document.activeElement?.className,
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
-check(snapshot.modal === "true" && snapshot.steps === 3, "first-run field guide teaches three guidance sections and the five-layer resolution model");
+check(snapshot.modal === "true" && snapshot.steps === 3, "first-run field guide teaches three guidance sections and the six-layer resolution model");
 check(snapshot.controller.includes("Controller ready"), "field guide reports the connected controller textually");
 check(snapshot.history === 0 && snapshot.onboarding === null, "field guide changes no campaign state before dismissal");
 check(snapshot.stageInert === true && String(snapshot.active).includes("icon-button"), "modal makes the game stage inert and receives focus");
@@ -412,6 +412,7 @@ snapshot = await evaluate(`({
   methodRead: document.querySelector('[data-testid=method-read]')?.textContent?.trim(),
   methodCounts: [...document.querySelectorAll('.method-read-counts [data-method-id]')].map((item) => ({ id: item.getAttribute('data-method-id'), count: item.querySelector('b')?.textContent?.trim(), targeted: item.getAttribute('data-targeted') })),
   methodChoices: [...document.querySelectorAll('.method-choice')].map((item) => ({ id: item.getAttribute('data-method-id'), hit: item.getAttribute('data-read-hit'), text: item.textContent?.trim() })),
+  establishingCommitments: [...document.querySelectorAll('.commitment-establish')].map((item) => ({ id: item.getAttribute('data-commitment-id'), text: item.textContent?.trim() })),
   seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'),
   onboarding: localStorage.getItem('shi.onboarding.field-guide.v1'),
   saveVersion: document.querySelector('[data-save-version]')?.getAttribute('data-save-version'),
@@ -429,9 +430,10 @@ check(snapshot.oppositionStage === "scattered-watch" && snapshot.opposition.incl
 check(snapshot.methodReadId === "unresolved-pattern" && snapshot.methodRead.includes("Qin method read") && snapshot.methodRead.includes("Unresolved pattern") && snapshot.methodRead.includes("No added pressure"), "opening method read discloses its reconstruction boundary, neutral state and exact modifier");
 check(snapshot.methodCounts.length === 3 && snapshot.methodCounts.every((item) => item.count === "0" && item.targeted === "false"), "opening method memory visibly starts at zero for all three strategic methods");
 check(snapshot.methodChoices.length === 3 && snapshot.methodChoices.every((item) => item.hit === "false" && item.text.includes("Read misses") && item.text.includes("No added pressure")), "each opening choice discloses its strategic method and current read result before commitment");
+check(snapshot.establishingCommitments.length === 3 && snapshot.establishingCommitments.some((item) => item.id === "names-under-protection" && item.text.includes("Aunt Yu")) && snapshot.establishingCommitments.some((item) => item.id === "movement-before-answer" && item.text.includes("Wu Guang")) && snapshot.establishingCommitments.some((item) => item.id === "register-stays-dark" && item.text.includes("Courier Han")), "every opening card discloses the commitment and stakeholder it will establish before commitment");
 check(snapshot.seed === "5EED2026", "shareable hexadecimal chronicle seed is visible");
 check(snapshot.onboarding === "complete", "dismissed onboarding preference is stored outside campaign state");
-check(snapshot.saveVersion === "5", "web client advertises save contract version 5");
+check(snapshot.saveVersion === "6", "web client advertises save contract version 6");
 check(String(snapshot.active).includes("story-panel"), "closing first-run guidance restores focus to the narrative");
 check(snapshot.overflow <= 1, "desktop gameplay has no horizontal overflow");
 await auditAccessibility("gameplay-en");
@@ -539,7 +541,7 @@ snapshot = await evaluate(`({
   reported: document.querySelectorAll('.site-reported').length,
   reference: document.querySelectorAll('.site-reference').length,
   selected: document.querySelector('.site-marker[aria-pressed=true]')?.getAttribute('data-site-id'),
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.length ?? 0
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length ?? 0
 })`);
 check(snapshot.title === "Daze Village" && snapshot.status === "Known ground", "Y/Triangle opens intelligence on the active known site");
 check(snapshot.known === 2 && snapshot.reported === 2 && snapshot.reference === 1, "wartable differentiates known, reported and reference-only sites");
@@ -656,17 +658,20 @@ snapshot = await evaluate(`({
   oppositionStage: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-opposition-stage'),
   oppositionDeltas: [...document.querySelectorAll('.opposition-deltas span')].map((item) => item.textContent?.trim()),
   methodReadDeltas: [...document.querySelectorAll('.method-read-deltas span')].map((item) => item.textContent?.trim()),
+  activeCommitmentId: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-commitment-id'),
+  activeCommitment: document.querySelector('[data-testid=commitment-panel]')?.textContent?.trim(),
   field: document.querySelector('.field-reveal')?.textContent?.trim(),
   pressureDeltas: document.querySelectorAll('.pressure-deltas span').length,
   fieldDeltas: document.querySelectorAll('.field-deltas span').length,
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.length,
-  conditionId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.[0]?.conditionId,
-  savedOppositionStage: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.[0]?.oppositionStageId,
-  savedMethodId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.[0]?.methodId,
-  savedMethodReadId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.[0]?.methodReadId,
-  savedMethodReadMatched: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.[0]?.methodReadMatched,
-  seed: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').seed,
-  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').saveVersion,
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length,
+  conditionId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.[0]?.conditionId,
+  savedOppositionStage: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.[0]?.oppositionStageId,
+  savedMethodId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.[0]?.methodId,
+  savedMethodReadId: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.[0]?.methodReadId,
+  savedMethodReadMatched: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.[0]?.methodReadMatched,
+  seed: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').seed,
+  saveVersion: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').saveVersion,
+  preCommitmentDecisionCount: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').preCommitmentDecisionCount,
   choicesInert: document.querySelector('.choices-panel')?.inert
 })`);
 check(snapshot.heading === "A covenant must eat", "choice advances to the authored branch");
@@ -675,15 +680,16 @@ check(snapshot.pressure.includes("relay clerk"), "authored pressure response is 
 check(snapshot.pressureDeltas === 2, "pressure resource deltas remain visually separate");
 check(snapshot.opposition.includes("Scattered watch") && snapshot.oppositionDeltas.includes("No added pressure"), "the pre-commit pursuit posture resolves separately without inventing a modifier");
 check(snapshot.methodRead.includes("Read misses") && snapshot.methodRead.includes("Unresolved pattern") && snapshot.methodRead.includes("Witnessed compact") && snapshot.methodReadDeltas.includes("No added pressure"), "the pre-commit neutral method read resolves as its own visible layer without inventing a modifier");
+check(snapshot.activeCommitmentId === "names-under-protection" && snapshot.activeCommitment.includes("Names under protection") && snapshot.activeCommitment.includes("Aunt Yu"), "the opening decision carries its named promise and stakeholder into the next position");
 check(snapshot.oppositionStage === "road-search", "the resulting Exposure escalates the next visible pursuit posture");
-check(snapshot.field.includes("Water over the axle") && snapshot.fieldDeltas === 2, "disclosed field condition resolves as the separate fifth layer");
+check(snapshot.field.includes("Water over the axle") && snapshot.fieldDeltas === 2, "disclosed field condition resolves as the separate final layer");
 check(snapshot.history === 1, "choice is persisted locally");
 check(snapshot.conditionId === "water-over-axle" && snapshot.savedOppositionStage === "scattered-watch" && snapshot.savedMethodId === "witnessed-compact" && snapshot.savedMethodReadId === "unresolved-pattern" && snapshot.savedMethodReadMatched === false && snapshot.seed === 0x5eed2026, "save records the matching seed, field, pursuit, strategic-method and method-read identities");
-check(snapshot.saveVersion === 5, "persisted save uses replayable format 5");
-check(snapshot.choicesInert === true, "decision controls become inert while the five-layer consequence is open");
+check(snapshot.saveVersion === 6 && snapshot.preCommitmentDecisionCount === 0, "persisted save uses replayable format 6 with its commitment-era boundary");
+check(snapshot.choicesInert === true, "decision controls become inert while the six-layer consequence is open");
 await click(".choice-card", 0);
 await wait(250);
-snapshot = await evaluate(`({ node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'), history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history?.length })`);
+snapshot = await evaluate(`({ node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'), history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history?.length })`);
 check(snapshot.node === "open-council" && snapshot.history === 1, "pointer input cannot commit another decision through an open consequence");
 await auditAccessibility("resolution-en");
 await auditTargets("resolution-en");
@@ -695,9 +701,10 @@ snapshot = await evaluate(`({ primary: document.querySelector('.primary-button')
 check(snapshot.primary.includes("Continue"), "reload offers save continuation");
 await click(".primary-button");
 await wait(400);
-snapshot = await evaluate(`({ heading: document.querySelector('.story-panel h1')?.textContent?.trim(), seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'), condition: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-condition-id') })`);
+snapshot = await evaluate(`({ heading: document.querySelector('.story-panel h1')?.textContent?.trim(), seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'), condition: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-condition-id'), commitment: document.querySelector('[data-testid=commitment-panel]')?.textContent?.trim() })`);
 check(snapshot.heading === "A covenant must eat", "save resumes at the exact branch node");
 check(snapshot.seed === "5EED2026" && Boolean(snapshot.condition), "reload preserves the seed and derives the next field condition");
+check(snapshot.commitment.includes("Names under protection") && snapshot.commitment.includes("Aunt Yu"), "save-v6 reload restores the unresolved commitment without relying on stored resource totals");
 
 await gamepadButton(4);
 await wait(300);
@@ -1037,7 +1044,7 @@ snapshot = await evaluate(`({
   node: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-node-id'),
   response: document.querySelector('.opposition-reveal')?.textContent?.trim(),
   deltas: [...document.querySelectorAll('.opposition-deltas span')].map((item) => item.textContent?.trim()),
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history,
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history,
   choicesInert: document.querySelector('.choices-panel')?.inert
 })`);
 check(snapshot.node === "broken-crossing" && snapshot.response.includes("Road search") && snapshot.response.includes("Cross-checked reports"), "road-search pursuit answers the committed order as disclosed");
@@ -1047,6 +1054,56 @@ await auditAccessibility("resolution-road-search");
 await auditTargets("resolution-road-search");
 
 await click(".resolution-banner > button");
+await waitForSelector("[data-testid=commitment-panel]");
+await evaluate("document.querySelector('[data-testid=commitment-panel]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-33-commitment-carried.png");
+snapshot = await evaluate(`({
+  id: document.querySelector('[data-testid=commitment-panel]')?.getAttribute('data-commitment-id'),
+  panel: document.querySelector('[data-testid=commitment-panel]')?.textContent?.trim(),
+  answers: [...document.querySelectorAll('.commitment-forecast')].map((item) => ({ status: item.getAttribute('data-commitment-status'), outcome: item.getAttribute('data-commitment-outcome'), text: item.textContent?.trim() })),
+  overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+})`);
+check(snapshot.id === "names-under-protection" && snapshot.panel.includes("Aunt Yu") && snapshot.panel.includes("Dramatic reconstruction"), "the broken crossing visibly carries the unresolved names commitment, stakeholder and reconstruction boundary");
+check(snapshot.answers.length === 3 && snapshot.answers.some((item) => item.status === "kept" && item.outcome === "names-families-kept" && item.text.includes("+4 Trust")) && snapshot.answers.some((item) => item.status === "strained" && item.outcome === "names-ford-strained" && item.text.includes("-2 Trust")) && snapshot.answers.some((item) => item.status === "broken" && item.outcome === "names-carts-broken" && item.text.includes("+2 Exposure")), "all crossing choices disclose kept, strained or broken answers and their exact effects before commitment");
+check(snapshot.overflow <= 1, "carried commitment and its three answers have no desktop horizontal overflow");
+await auditAccessibility("commitment-answers");
+await auditTargets("commitment-answers");
+
+let commitmentZoomBaseline;
+try {
+  await resetBrowserZoom();
+  commitmentZoomBaseline = await readBrowserZoom();
+  let commitmentZoom = commitmentZoomBaseline;
+  let commitmentZoomIncrements = 0;
+  while (commitmentZoom.dpr < 3.95 && commitmentZoomIncrements < 12) {
+    await browserZoomShortcut("ctrl+plus");
+    commitmentZoom = await readBrowserZoom();
+    commitmentZoomIncrements += 1;
+  }
+  const commitmentZoomPercent = Math.round((commitmentZoom.dpr / commitmentZoomBaseline.dpr) * 100);
+  await evaluate("document.querySelector('[data-choice-id=families-first]')?.scrollIntoView({ block: 'center' }); true");
+  await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+  await screenshot("web-34-commitment-answers-zoom-400.png");
+  snapshot = await evaluate(`(() => {
+    const cards = [...document.querySelectorAll('.choice-card')].map((element) => element.getBoundingClientRect());
+    const selected = document.querySelector('[data-choice-id=families-first]')?.getBoundingClientRect();
+    return {
+      answers: document.querySelectorAll('.commitment-forecast').length,
+      selectedVisible: Boolean(selected && selected.top >= 0 && selected.bottom <= innerHeight),
+      cardFit: cards.length === 3 && cards.every((box) => box.left >= 0 && box.right <= innerWidth),
+      overflow: Math.max(0, document.documentElement.scrollWidth - innerWidth)
+    };
+  })()`);
+  report.browserZoomAudits.push({ state: "commitment-answers", zoomPercent: commitmentZoomPercent, zoomIncrements: commitmentZoomIncrements, ...commitmentZoom, ...snapshot });
+  check(commitmentZoomPercent === 400 && snapshot.answers === 3 && snapshot.cardFit && snapshot.selectedVisible && snapshot.overflow <= 1, "actual 400% zoom keeps every commitment answer fitted and the selected decision fully reachable");
+  await auditAccessibility("commitment-answers-browser-zoom-400");
+  await auditTargets("commitment-answers-browser-zoom-400");
+} finally {
+  await resetBrowserZoom();
+  await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1600, screenHeight: 1000 });
+}
+
 const witnessReadReady = await waitForCondition(`document.querySelector('[data-testid=shi-app]')?.getAttribute('data-method-read-id') === 'witness-chain'`, 3000);
 check(witnessReadReady, "two witnessed commitments deterministically prepare the witness-chain method read");
 await evaluate("document.querySelector('[data-testid=method-read]')?.scrollIntoView({ block: 'center' }); true");
@@ -1058,12 +1115,14 @@ snapshot = await evaluate(`({
   counts: [...document.querySelectorAll('.method-read-counts [data-method-id]')].map((item) => ({ id: item.getAttribute('data-method-id'), count: item.querySelector('b')?.textContent?.trim(), targeted: item.getAttribute('data-targeted') })),
   family: document.querySelector('[data-choice-id=families-first] .method-choice') && ({ hit: document.querySelector('[data-choice-id=families-first] .method-choice')?.getAttribute('data-read-hit'), text: document.querySelector('[data-choice-id=families-first] .method-choice')?.textContent?.trim() }),
   repair: document.querySelector('[data-choice-id=repair-the-ford] .method-choice') && ({ hit: document.querySelector('[data-choice-id=repair-the-ford] .method-choice')?.getAttribute('data-read-hit'), text: document.querySelector('[data-choice-id=repair-the-ford] .method-choice')?.textContent?.trim() }),
+  commitmentAnswers: [...document.querySelectorAll('.commitment-forecast')].map((item) => ({ status: item.getAttribute('data-commitment-status'), text: item.textContent?.trim() })),
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
 })`);
 check(snapshot.readId === "witness-chain" && snapshot.panel.includes("Witness chain") && snapshot.panel.includes("+3 Exposure") && snapshot.panel.includes("Choose Forced tempo or Distributed cover"), "prepared witness-chain discloses its exact penalty and actionable counterplay before commitment");
 check(snapshot.counts.find((item) => item.id === "witnessed-compact")?.count === "2" && snapshot.counts.find((item) => item.id === "witnessed-compact")?.targeted === "true", "method memory exposes the two observations and marks only the unique leading method as targeted");
 check(snapshot.family?.hit === "true" && snapshot.family.text.includes("Read hits") && snapshot.family.text.includes("+3 Exposure"), "a repeated Witnessed compact visibly forecasts the prepared read hit and exact modifier");
 check(snapshot.repair?.hit === "false" && snapshot.repair.text.includes("Read misses") && snapshot.repair.text.includes("No added pressure"), "changing to Distributed cover visibly forecasts that the prepared read will miss");
+check(snapshot.commitmentAnswers.length === 3 && new Set(snapshot.commitmentAnswers.map((item) => item.status)).size === 3, "commitment answers remain legible beside the independent method-read forecast");
 check(snapshot.overflow <= 1, "method-read posture and counterplay have no desktop horizontal overflow");
 
 await evaluate("document.querySelector('[data-choice-id=families-first]')?.scrollIntoView({ block: 'center' }); true");
@@ -1076,29 +1135,56 @@ await screenshot("web-32-method-read-hit.png");
 snapshot = await evaluate(`({
   response: document.querySelector('.method-read-reveal')?.textContent?.trim(),
   deltas: [...document.querySelectorAll('.method-read-deltas span')].map((item) => item.textContent?.trim()),
-  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v5') || '{}').history,
+  commitment: document.querySelector('[data-testid=commitment-resolution]')?.textContent?.trim(),
+  commitmentStatus: document.querySelector('[data-testid=commitment-resolution]')?.getAttribute('data-commitment-status'),
+  commitmentDeltas: [...document.querySelectorAll('.commitment-deltas span')].map((item) => item.textContent?.trim()),
+  history: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}').history,
   choicesInert: document.querySelector('.choices-panel')?.inert ?? true
 })`);
 check(snapshot.response.includes("Read hits") && snapshot.response.includes("Witness chain") && snapshot.response.includes("Repeated public commitments") && snapshot.response.includes("Witnessed compact"), "the committed repeated method resolves with the authored witness-chain hit response");
 check(snapshot.deltas.includes("+3 Exposure"), "the method-read penalty remains visually isolated from action, pressure, pursuit and field deltas");
-check(snapshot.history?.length === 3 && snapshot.history?.[2]?.methodReadId === "witness-chain" && snapshot.history?.[2]?.methodId === "witnessed-compact" && snapshot.history?.[2]?.methodReadMatched === true && snapshot.history?.[2]?.methodReadEffects?.danger === 3, "save v5 persists the method, prepared read, hit identity and exact +3 Exposure effect");
+check(snapshot.commitmentStatus === "kept" && snapshot.commitment.includes("Aunt Yu") && snapshot.commitmentDeltas.includes("+4 Trust"), "the crossing resolves the names commitment as kept and isolates its exact +4 Trust effect before pressure");
+check(snapshot.history?.length === 3 && snapshot.history?.[2]?.commitmentId === "names-under-protection" && snapshot.history?.[2]?.commitmentOutcomeId === "names-families-kept" && snapshot.history?.[2]?.commitmentEffects?.trust === 4, "save v6 persists the commitment, authored answer identity and exact effect");
+check(snapshot.history?.[2]?.methodReadId === "witness-chain" && snapshot.history?.[2]?.methodId === "witnessed-compact" && snapshot.history?.[2]?.methodReadMatched === true && snapshot.history?.[2]?.methodReadEffects?.danger === 3, "save v6 independently persists the method, prepared read, hit identity and exact +3 Exposure effect");
 check(snapshot.choicesInert === true, "the method-read hit retains one-record-per-commit decision isolation");
 await auditAccessibility("resolution-method-read-hit");
 await auditTargets("resolution-method-read-hit");
+await screenshot("web-35-commitment-kept.png");
+
+await click(".resolution-banner > button");
+await waitForSelector("[data-choice-id=root-in-villages]");
+await click("[data-choice-id=root-in-villages]");
+await waitForSelector(".resolution-banner");
+await click(".resolution-banner > button");
+await waitForSelector("[data-testid=commitment-ending]");
+await evaluate("document.querySelector('[data-testid=commitment-ending]')?.scrollIntoView({ block: 'center' }); true");
+await evaluate("new Promise((resolveFrame) => requestAnimationFrame(() => requestAnimationFrame(() => resolveFrame(true))))");
+await screenshot("web-36-commitment-ending.png");
+snapshot = await evaluate(`({
+  completed: document.querySelector('[data-testid=shi-app]')?.classList.contains('is-complete'),
+  status: document.querySelector('[data-testid=commitment-ending]')?.getAttribute('data-commitment-status'),
+  summary: document.querySelector('[data-testid=commitment-ending]')?.textContent?.trim(),
+  activeCommitment: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-commitment-id'),
+  saved: JSON.parse(localStorage.getItem('shi.chapter-01.save.v6') || '{}')
+})`);
+check(snapshot.completed && snapshot.status === "kept" && snapshot.summary.includes("Chapter commitment") && snapshot.summary.includes("Names under protection"), "the authored ending preserves the chapter's answered commitment without creating a global morality score");
+check(snapshot.activeCommitment === "none" && snapshot.saved?.history?.length === 4 && snapshot.saved?.saveVersion === 6, "the completed save contains one resolved commitment and no unresolved promise");
+await auditAccessibility("ending-with-commitment");
+await auditTargets("ending-with-commitment");
 
 const accessibilityViolations = report.accessibilityAudits.flatMap((audit) => audit.violations.map((violation) => ({ state: audit.label, ...violation })));
 if (accessibilityViolations.length > 0) {
   await writeFile(resolve(outputDir, "web-accessibility-failure.json"), `${JSON.stringify({ ok: false, target: testUrl.href, testedCommit, violations: accessibilityViolations, audits: report.accessibilityAudits }, null, 2)}\n`);
   throw new Error(`Accessibility audit failed with ${accessibilityViolations.length} state/rule violations.`);
 }
-check(report.accessibilityAudits.length === 28, "WCAG 2.2 AA automation passes across twenty-eight visible interface states");
+check(report.accessibilityAudits.length === 31, "WCAG 2.2 AA automation passes across thirty-one visible interface states");
 const unexpectedIncomplete = report.accessibilityAudits.flatMap((audit) => audit.incomplete.filter((item) => item.id !== "color-contrast").map((item) => ({ state: audit.label, ...item })));
 check(unexpectedIncomplete.length === 0, "axe manual-review queue is limited to layered color contrast covered by the static contrast contract");
-check(report.targetAudits.length === 20, "24 CSS pixel target checks pass across twenty interaction states");
+check(report.targetAudits.length === 23, "24 CSS pixel target checks pass across twenty-three interaction states");
 check(report.audioAudits.length === 3, "audio consent, independent mixing and responsive layout have three visible audit records");
 check(report.fontAudits.length === 11, "all eleven interface locales pass their self-hosted font, direction and fit contracts");
 check(report.reflowAudits.length === 2 && report.reflowAudits.every((audit) => audit.width === 320 && audit.overflow <= 1), "title and gameplay pass the 320 CSS pixel 400% equivalent reflow gate");
-check(report.browserZoomAudits.length === 2 && report.browserZoomAudits.every((audit) => audit.zoomPercent === 400 && audit.overflow <= 1), "title and gameplay pass the actual Chrome 400% page-zoom gate");
+check(report.browserZoomAudits.length === 3 && report.browserZoomAudits.every((audit) => audit.zoomPercent === 400 && audit.overflow <= 1), "title, gameplay and commitment answers pass the actual Chrome 400% page-zoom gate");
 check(Boolean(report.forcedColorsAudit?.active), "forced-colors visual contract is recorded in the machine-readable report");
 const remoteRequests = networkRequests.filter((request) => {
   try { const url = new URL(request.url); return ["http:", "https:"].includes(url.protocol) && url.origin !== testUrl.origin; } catch { return false; }

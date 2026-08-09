@@ -66,6 +66,32 @@ export interface Character {
   historical: boolean;
 }
 
+export type CommitmentStatus = "kept" | "strained" | "broken";
+
+export interface CommitmentOutcome {
+  id: string;
+  choiceId: string;
+  status: CommitmentStatus;
+  forecast: LocalizedText;
+  response: LocalizedText;
+  effects: Partial<Resources>;
+}
+
+export interface PlayerCommitment {
+  id: string;
+  claimStatus: "dramatic-reconstruction";
+  establishedByChoiceId: string;
+  stakeholderId: string;
+  title: LocalizedText;
+  promise: LocalizedText;
+  outcomes: CommitmentOutcome[];
+}
+
+export interface CommitmentSelection {
+  commitment: PlayerCommitment;
+  outcome: CommitmentOutcome;
+}
+
 export interface OppositionStage {
   id: string;
   minDanger: number;
@@ -182,6 +208,7 @@ export interface Campaign {
   subtitle: LocalizedText;
   startNodeId: string;
   initialResources: Resources;
+  commitments: PlayerCommitment[];
   opposition: OppositionModel;
   sites: MapSite[];
   characters: Character[];
@@ -196,6 +223,10 @@ export interface ChoiceRecord {
   conditionId: string;
   before: Resources;
   afterChoice: Resources;
+  commitmentId?: string;
+  commitmentOutcomeId?: string;
+  commitmentEffects: Partial<Resources>;
+  afterCommitment: Resources;
   pressureEffects: Partial<Resources>;
   afterPressure: Resources;
   oppositionStageId?: string;
@@ -211,9 +242,10 @@ export interface ChoiceRecord {
 }
 
 export interface GameState {
-  saveVersion: 5;
+  saveVersion: 6;
   legacyDecisionCount: number;
   preMethodReadDecisionCount: number;
+  preCommitmentDecisionCount: number;
   campaignId: string;
   seed: number;
   currentNodeId: string;
@@ -233,7 +265,9 @@ export interface ChoiceResolution {
   method: StrategicMethod;
   methodRead?: MethodReadSelection;
   methodReadMatched: boolean;
+  commitment?: CommitmentSelection;
   playerDeltas: Partial<Resources>;
+  commitmentDeltas: Partial<Resources>;
   pressureDeltas: Partial<Resources>;
   oppositionDeltas: Partial<Resources>;
   methodReadDeltas: Partial<Resources>;

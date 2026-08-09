@@ -1,7 +1,7 @@
-import type { Campaign, CampaignNode, Choice, ChoiceResolution, FieldCondition, GameState, Locale, LocalizedText, MethodCountermeasure, MethodReadSelection, OppositionStage, Resources, StrategicMethod } from "./types";
+import type { Campaign, CampaignNode, Choice, ChoiceResolution, CommitmentSelection, FieldCondition, GameState, Locale, LocalizedText, MethodCountermeasure, MethodReadSelection, OppositionStage, PlayerCommitment, Resources, StrategicMethod } from "./types";
 import { resourceKeys } from "./types";
 
-export const currentSaveVersion = 5 as const;
+export const currentSaveVersion = 6 as const;
 const clamp = (value: number): number => Math.max(0, Math.min(100, Math.round(value)));
 
 const applyEffects = (resources: Resources, effects: Partial<Resources>): Resources => resourceKeys.reduce<Resources>((result, key) => {
@@ -85,11 +85,37 @@ export function methodReadMatches(selection: MethodReadSelection, choice: Choice
   return isMethodCountermeasure(selection.read) && selection.read.targetMethodId === choice.methodId;
 }
 
+export function selectActiveCommitment(campaign: Campaign, state: GameState): PlayerCommitment | undefined {
+  // A migrated save may contain the establishing choice, but commitments did
+  // not exist when that decision was made. Only version-six decisions can
+  // establish or resolve one, so an old run never acquires a retroactive oath.
+  const commitmentHistory = state.history.slice(state.preCommitmentDecisionCount);
+  const resolvedIds = new Set(commitmentHistory.flatMap((record) => record.commitmentId ? [record.commitmentId] : []));
+  const chosenIds = new Set(commitmentHistory.map((record) => record.choiceId));
+  const active = campaign.commitments.filter((commitment) => chosenIds.has(commitment.establishedByChoiceId) && !resolvedIds.has(commitment.id));
+  if (active.length > 1) throw new Error(`Multiple unresolved commitments are active: ${active.map((commitment) => commitment.id).join(", ")}.`);
+  return active[0];
+}
+
+export function selectEstablishedCommitment(campaign: Campaign, choice: Choice): PlayerCommitment | undefined {
+  const established = campaign.commitments.filter((commitment) => commitment.establishedByChoiceId === choice.id);
+  if (established.length > 1) throw new Error(`Choice ${choice.id} establishes multiple commitments: ${established.map((commitment) => commitment.id).join(", ")}.`);
+  return established[0];
+}
+
+export function selectCommitmentOutcome(campaign: Campaign, state: GameState, choice: Choice): CommitmentSelection | undefined {
+  const commitment = selectActiveCommitment(campaign, state);
+  if (!commitment) return undefined;
+  const outcome = commitment.outcomes.find((candidate) => candidate.choiceId === choice.id);
+  return outcome ? { commitment, outcome } : undefined;
+}
+
 export function createInitialState(campaign: Campaign, seed = 0): GameState {
   return {
     saveVersion: currentSaveVersion,
     legacyDecisionCount: 0,
     preMethodReadDecisionCount: 0,
+    preCommitmentDecisionCount: 0,
     campaignId: campaign.id,
     seed: normalizeSeed(seed),
     currentNodeId: campaign.startNodeId,
@@ -117,7 +143,7 @@ export function canChoose(choice: Choice, resources: Resources): boolean {
   });
 }
 
-function resolveChoiceWithRules(campaign: Campaign, state: GameState, choiceId: string, includeOpposition: boolean, includeMethodRead: boolean): ChoiceResolution {
+function resolveChoiceWithRules(campaign: Campaign, state: GameState, choiceId: string, includeOpposition: boolean, includeMethodRead: boolean, includeCommitment: boolean): ChoiceResolution {
   if (state.completed) throw new Error("The campaign is already complete.");
   const node = getNode(campaign, state.currentNodeId);
   const choice = node.choices.find((candidate) => candidate.id === choiceId);
@@ -128,10 +154,12 @@ function resolveChoiceWithRules(campaign: Campaign, state: GameState, choiceId: 
   const oppositionStage = includeOpposition ? selectOppositionStage(campaign, state.resources) : undefined;
   const methodRead = includeMethodRead ? selectMethodRead(campaign, state) : undefined;
   const methodReadMatched = methodRead ? methodReadMatches(methodRead, choice) : false;
+  const commitment = includeCommitment ? selectCommitmentOutcome(campaign, state, choice) : undefined;
 
   const before = { ...state.resources };
   const afterChoice = applyEffects(before, choice.effects);
-  const afterPressure = applyEffects(afterChoice, choice.pressure?.effects ?? {});
+  const afterCommitment = applyEffects(afterChoice, commitment?.outcome.effects ?? {});
+  const afterPressure = applyEffects(afterCommitment, choice.pressure?.effects ?? {});
   const afterOpposition = applyEffects(afterPressure, oppositionStage?.effects ?? {});
   const afterMethodRead = applyEffects(afterOpposition, methodReadMatched && methodRead && isMethodCountermeasure(methodRead.read) ? methodRead.read.effects : {});
   const after = applyEffects(afterMethodRead, condition.effects);
@@ -148,7 +176,11 @@ function resolveChoiceWithRules(campaign: Campaign, state: GameState, choiceId: 
       conditionId: condition.id,
       before,
       afterChoice,
-      pressureEffects: resourceDeltas(afterChoice, afterPressure),
+      commitmentId: commitment?.commitment.id,
+      commitmentOutcomeId: commitment?.outcome.id,
+      commitmentEffects: resourceDeltas(afterChoice, afterCommitment),
+      afterCommitment,
+      pressureEffects: resourceDeltas(afterCommitment, afterPressure),
       afterPressure,
       oppositionStageId: oppositionStage?.id,
       oppositionEffects: resourceDeltas(afterPressure, afterOpposition),
@@ -174,8 +206,10 @@ function resolveChoiceWithRules(campaign: Campaign, state: GameState, choiceId: 
     method,
     methodRead,
     methodReadMatched,
+    commitment,
     playerDeltas: resourceDeltas(before, afterChoice),
-    pressureDeltas: resourceDeltas(afterChoice, afterPressure),
+    commitmentDeltas: resourceDeltas(afterChoice, afterCommitment),
+    pressureDeltas: resourceDeltas(afterCommitment, afterPressure),
     oppositionDeltas: resourceDeltas(afterPressure, afterOpposition),
     methodReadDeltas: resourceDeltas(afterOpposition, afterMethodRead),
     fieldDeltas: resourceDeltas(afterMethodRead, after),
@@ -184,44 +218,50 @@ function resolveChoiceWithRules(campaign: Campaign, state: GameState, choiceId: 
 }
 
 export function resolveChoice(campaign: Campaign, state: GameState, choiceId: string): ChoiceResolution {
-  return resolveChoiceWithRules(campaign, state, choiceId, true, true);
+  return resolveChoiceWithRules(campaign, state, choiceId, true, true, true);
 }
 
 /**
  * Rebuild a save from its decision history. Stored resource totals are never
  * trusted. Decisions from older formats replay under their original layer
  * contract; current-format decisions verify field, pursuit, strategic-method
- * and prepared-read identities.
+ * prepared-read, and commitment identities.
  * Impossible or tampered routes fail closed.
  */
 export function migrateGameState(campaign: Campaign, input: unknown): GameState | null {
   if (!input || typeof input !== "object") return null;
-  const saved = input as { saveVersion?: unknown; legacyDecisionCount?: unknown; preMethodReadDecisionCount?: unknown; campaignId?: unknown; seed?: unknown; history?: unknown };
+  const saved = input as { saveVersion?: unknown; legacyDecisionCount?: unknown; preMethodReadDecisionCount?: unknown; preCommitmentDecisionCount?: unknown; campaignId?: unknown; seed?: unknown; history?: unknown };
   if (saved.campaignId !== campaign.id || !Array.isArray(saved.history)) return null;
-  if (saved.saveVersion !== undefined && saved.saveVersion !== 1 && saved.saveVersion !== 2 && saved.saveVersion !== 3 && saved.saveVersion !== 4 && saved.saveVersion !== currentSaveVersion) return null;
-  const seeded = saved.saveVersion === 3 || saved.saveVersion === 4 || saved.saveVersion === currentSaveVersion;
+  if (saved.saveVersion !== undefined && saved.saveVersion !== 1 && saved.saveVersion !== 2 && saved.saveVersion !== 3 && saved.saveVersion !== 4 && saved.saveVersion !== 5 && saved.saveVersion !== currentSaveVersion) return null;
+  const seeded = saved.saveVersion === 3 || saved.saveVersion === 4 || saved.saveVersion === 5 || saved.saveVersion === currentSaveVersion;
   if (seeded && (typeof saved.seed !== "number" || !Number.isInteger(saved.seed) || saved.seed < 0 || saved.seed > 0xffffffff)) return null;
-  const legacyDecisionCount = saved.saveVersion === 4 || saved.saveVersion === currentSaveVersion ? saved.legacyDecisionCount : saved.history.length;
+  const legacyDecisionCount = saved.saveVersion === 4 || saved.saveVersion === 5 || saved.saveVersion === currentSaveVersion ? saved.legacyDecisionCount : saved.history.length;
   if (!Number.isInteger(legacyDecisionCount) || (legacyDecisionCount as number) < 0 || (legacyDecisionCount as number) > saved.history.length) return null;
-  const preMethodReadDecisionCount = saved.saveVersion === currentSaveVersion ? saved.preMethodReadDecisionCount : saved.history.length;
+  const preMethodReadDecisionCount = saved.saveVersion === 5 || saved.saveVersion === currentSaveVersion ? saved.preMethodReadDecisionCount : saved.history.length;
   if (!Number.isInteger(preMethodReadDecisionCount) || (preMethodReadDecisionCount as number) < (legacyDecisionCount as number) || (preMethodReadDecisionCount as number) > saved.history.length) return null;
+  const preCommitmentDecisionCount = saved.saveVersion === currentSaveVersion ? saved.preCommitmentDecisionCount : saved.history.length;
+  if (!Number.isInteger(preCommitmentDecisionCount) || (preCommitmentDecisionCount as number) < (preMethodReadDecisionCount as number) || (preCommitmentDecisionCount as number) > saved.history.length) return null;
 
   let state = createInitialState(campaign, seeded ? saved.seed as number : 0);
   state.legacyDecisionCount = legacyDecisionCount as number;
   state.preMethodReadDecisionCount = preMethodReadDecisionCount as number;
+  state.preCommitmentDecisionCount = preCommitmentDecisionCount as number;
   try {
     for (const [index, value] of saved.history.entries()) {
       if (!value || typeof value !== "object" || state.completed) return null;
-      const record = value as { nodeId?: unknown; choiceId?: unknown; conditionId?: unknown; oppositionStageId?: unknown; methodId?: unknown; methodReadId?: unknown; methodReadMatched?: unknown };
+      const record = value as { nodeId?: unknown; choiceId?: unknown; conditionId?: unknown; oppositionStageId?: unknown; methodId?: unknown; methodReadId?: unknown; methodReadMatched?: unknown; commitmentId?: unknown; commitmentOutcomeId?: unknown };
       if (record.nodeId !== state.currentNodeId || typeof record.choiceId !== "string") return null;
       const includeOpposition = index >= state.legacyDecisionCount;
       const includeMethodRead = index >= state.preMethodReadDecisionCount;
-      const resolution = resolveChoiceWithRules(campaign, state, record.choiceId, includeOpposition, includeMethodRead);
+      const includeCommitment = index >= state.preCommitmentDecisionCount;
+      const resolution = resolveChoiceWithRules(campaign, state, record.choiceId, includeOpposition, includeMethodRead, includeCommitment);
       if (seeded && record.conditionId !== resolution.condition.id) return null;
       if (includeOpposition && record.oppositionStageId !== resolution.oppositionStage?.id) return null;
       if (!includeOpposition && record.oppositionStageId !== undefined && record.oppositionStageId !== "") return null;
       if (includeMethodRead && (record.methodId !== resolution.method.id || record.methodReadId !== resolution.methodRead?.read.id || record.methodReadMatched !== resolution.methodReadMatched)) return null;
       if (!includeMethodRead && (record.methodId !== undefined || record.methodReadId !== undefined || record.methodReadMatched !== undefined)) return null;
+      if (includeCommitment && (record.commitmentId !== resolution.commitment?.commitment.id || record.commitmentOutcomeId !== resolution.commitment?.outcome.id)) return null;
+      if (!includeCommitment && (record.commitmentId !== undefined || record.commitmentOutcomeId !== undefined)) return null;
       state = resolution.state;
     }
   } catch {

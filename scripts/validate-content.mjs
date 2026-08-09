@@ -54,7 +54,7 @@ const methodReadFor = (methodHistory) => {
     : campaign.opposition.methodRead.neutral;
 };
 
-assert(campaign.schemaVersion === 5, "campaign schemaVersion must be 5");
+assert(campaign.schemaVersion === 6, "campaign schemaVersion must be 6");
 assert(editionRegister.schemaVersion === 1, "edition register schemaVersion must be 1");
 assert(typeof campaign.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(campaign.id), "campaign.id must use ASCII kebab-case");
 hasRequiredText(campaign.title, "campaign.title");
@@ -267,6 +267,39 @@ for (const node of campaign.nodes ?? []) {
 }
 for (const id of claimIds) assert(referencedClaimIds.has(id), `claim is not exposed by any playable node: ${id}`);
 
+const commitmentIds = unique(campaign.commitments ?? [], "commitments");
+const commitmentOutcomeIds = new Set();
+const commitmentEstablishers = new Set();
+const commitmentStatuses = ["kept", "strained", "broken"];
+for (const commitment of campaign.commitments ?? []) {
+  assert(commitment.claimStatus === "dramatic-reconstruction", `commitment ${commitment.id} must be classified as dramatic-reconstruction`);
+  assert(allChoiceIds.has(commitment.establishedByChoiceId), `commitment ${commitment.id} has unknown establishing choice ${commitment.establishedByChoiceId}`);
+  assert(!commitmentEstablishers.has(commitment.establishedByChoiceId), `choice ${commitment.establishedByChoiceId} establishes more than one commitment`);
+  commitmentEstablishers.add(commitment.establishedByChoiceId);
+  assert(characterIds.has(commitment.stakeholderId), `commitment ${commitment.id} references unknown stakeholder ${commitment.stakeholderId}`);
+  hasRequiredText(commitment.title, `commitment ${commitment.id}.title`);
+  hasRequiredText(commitment.promise, `commitment ${commitment.id}.promise`);
+  const targetChoices = new Set();
+  const statusCounts = Object.fromEntries(commitmentStatuses.map((status) => [status, 0]));
+  assert(Array.isArray(commitment.outcomes) && commitment.outcomes.length === 3, `commitment ${commitment.id} requires exactly three outcomes`);
+  for (const outcome of commitment.outcomes ?? []) {
+    assert(typeof outcome.id === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(outcome.id), `commitment ${commitment.id} has invalid outcome id ${outcome.id}`);
+    assert(!commitmentOutcomeIds.has(outcome.id), `campaign contains duplicate commitment outcome ${outcome.id}`);
+    commitmentOutcomeIds.add(outcome.id);
+    assert(allChoiceIds.has(outcome.choiceId), `commitment outcome ${outcome.id} references unknown choice ${outcome.choiceId}`);
+    assert(!targetChoices.has(outcome.choiceId), `commitment ${commitment.id} answers choice ${outcome.choiceId} more than once`);
+    targetChoices.add(outcome.choiceId);
+    assert(commitmentStatuses.includes(outcome.status), `commitment outcome ${outcome.id} has invalid status ${outcome.status}`);
+    if (commitmentStatuses.includes(outcome.status)) statusCounts[outcome.status]++;
+    hasRequiredText(outcome.forecast, `commitment outcome ${outcome.id}.forecast`);
+    hasRequiredText(outcome.response, `commitment outcome ${outcome.id}.response`);
+    validateResourceMap(outcome.effects, `commitment outcome ${outcome.id}.effects`, -4, 4);
+    assert(Object.values(outcome.effects ?? {}).some((amount) => amount !== 0), `commitment outcome ${outcome.id}.effects must change the position`);
+  }
+  for (const status of commitmentStatuses) assert(statusCounts[status] === 1, `commitment ${commitment.id} requires exactly one ${status} outcome`);
+}
+assert(commitmentIds.size === 3, "Chapter I requires exactly three opening commitments");
+
 const reachable = new Set();
 const visit = (nodeId, stack = []) => {
   assert(!stack.includes(nodeId), `campaign graph contains a cycle: ${[...stack, nodeId].join(" -> ")}`);
@@ -289,8 +322,10 @@ const routeStats = {
   oppositionVisits: Object.fromEntries([...oppositionStageIds].map((id) => [id, 0])),
   methodReadVisits: Object.fromEntries(methodReadIds.map((id) => [id, 0])),
   methodReadHits: Object.fromEntries(methodRead.countermeasures.map((countermeasure) => [countermeasure.id, 0])),
+  commitmentVisits: Object.fromEntries([...commitmentOutcomeIds].map((id) => [id, 0])),
 };
-const walkRoutes = (nodeId, resources, flags, methodHistory = [], path = []) => {
+const activeCommitmentsFor = (choiceHistory, resolvedCommitments) => campaign.commitments.filter((commitment) => choiceHistory.includes(commitment.establishedByChoiceId) && !resolvedCommitments.has(commitment.id));
+const walkRoutes = (nodeId, resources, flags, methodHistory = [], choiceHistory = [], resolvedCommitments = new Set(), path = []) => {
   const node = campaign.nodes.find((candidate) => candidate.id === nodeId);
   const available = (node?.choices ?? []).filter((choice) => canChoose(choice, resources));
   if (available.length === 0) {
@@ -309,21 +344,33 @@ const walkRoutes = (nodeId, resources, flags, methodHistory = [], path = []) => 
       routeStats.oppositionVisits[oppositionStage.id]++;
       routeStats.methodReadVisits[methodReadSelection.id]++;
       const afterChoice = applyEffects(resources, choice.effects);
-      const afterPressure = applyEffects(afterChoice, choice.pressure?.effects);
+      const activeCommitments = activeCommitmentsFor(choiceHistory, resolvedCommitments);
+      assert(activeCommitments.length <= 1, `route has multiple unresolved commitments at ${nodeId}: ${activeCommitments.map((commitment) => commitment.id).join(", ")}`);
+      const activeCommitment = activeCommitments[0];
+      const commitmentOutcome = activeCommitment?.outcomes.find((outcome) => outcome.choiceId === choice.id);
+      if (commitmentOutcome) routeStats.commitmentVisits[commitmentOutcome.id]++;
+      const afterCommitment = applyEffects(afterChoice, commitmentOutcome?.effects);
+      const afterPressure = applyEffects(afterCommitment, choice.pressure?.effects);
       const afterOpposition = applyEffects(afterPressure, oppositionStage.effects);
       const methodReadMatched = methodReadSelection.targetMethodId === choice.methodId;
       if (methodReadMatched) routeStats.methodReadHits[methodReadSelection.id]++;
       const afterMethodRead = applyEffects(afterOpposition, methodReadMatched ? methodReadSelection.effects : {});
       const after = applyEffects(afterMethodRead, condition.effects);
       const nextFlags = new Set([...flags, ...(choice.flags ?? [])]);
+      const nextChoiceHistory = [...choiceHistory, choice.id];
+      const nextResolvedCommitments = new Set(resolvedCommitments);
+      if (activeCommitment && commitmentOutcome) nextResolvedCommitments.add(activeCommitment.id);
+      const unresolvedAfter = activeCommitmentsFor(nextChoiceHistory, nextResolvedCommitments);
       const nextPath = [...path, `${condition.id}:${choice.id}`];
       if (after.danger >= 100 || after.people <= 0) {
         routeStats.failed++;
+        assert(unresolvedAfter.length === 0, `failure route ends with unresolved commitment ${unresolvedAfter.map((commitment) => commitment.id).join(", ")}: ${nextPath.join(" -> ")}`);
       } else if (!choice.nextNodeId) {
         routeStats.successful++;
+        assert(unresolvedAfter.length === 0, `authored ending leaves unresolved commitment ${unresolvedAfter.map((commitment) => commitment.id).join(", ")}: ${nextPath.join(" -> ")}`);
         for (const flag of nextFlags) if (flag.startsWith("ending-")) routeStats.endings.add(flag);
       } else {
-        walkRoutes(choice.nextNodeId, after, nextFlags, [...methodHistory, choice.methodId], nextPath);
+        walkRoutes(choice.nextNodeId, after, nextFlags, [...methodHistory, choice.methodId], nextChoiceHistory, nextResolvedCommitments, nextPath);
       }
     }
   }
@@ -337,6 +384,7 @@ assert(routeStats.failed >= 1, "campaign pressure must expose at least one real 
 for (const [stage, visits] of Object.entries(routeStats.oppositionVisits)) assert(visits > 0, `opposition stage ${stage} is never reached by exhaustive traversal`);
 for (const [read, visits] of Object.entries(routeStats.methodReadVisits)) assert(visits > 0, `method read ${read} is never selected by exhaustive traversal`);
 for (const [read, hits] of Object.entries(routeStats.methodReadHits)) assert(hits > 0, `method countermeasure ${read} never matches a legal choice`);
+for (const [outcome, visits] of Object.entries(routeStats.commitmentVisits)) assert(visits > 0, `commitment outcome ${outcome} is never reached by exhaustive traversal`);
 
 if (errors.length) {
   console.error(`Content validation failed with ${errors.length} error(s):`);
@@ -344,4 +392,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${allConditionIds.size} field conditions, ${oppositionStageIds.size} opponent postures, ${campaign.sources.length} source records, ${campaign.claims.length} claim records, ${editionRegister.editions.length} registered editions, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);
+console.log(`Content valid: ${campaign.nodes.length} nodes, ${campaign.nodes.reduce((sum, node) => sum + node.choices.length, 0)} choices, ${commitmentIds.size} commitments with ${commitmentOutcomeIds.size} outcomes, ${allConditionIds.size} field conditions, ${oppositionStageIds.size} opponent postures, ${campaign.sources.length} source records, ${campaign.claims.length} claim records, ${editionRegister.editions.length} registered editions, ${finaleCount} conclusions, ${routeStats.successful} successful condition-routes, ${routeStats.failed} failure condition-routes.`);

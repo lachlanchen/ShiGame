@@ -50,6 +50,25 @@ namespace SHI
             ["zh-Hant"] = new[] { "觀勢入門", "第一道命令之前", "每道命令分五層明示結算：你的落子、既定壓力、追捕態勢、秦吏手法識勢，以及預先公開的局勢條件。", "先讀全局", "糧、信、勢、民、險是五種不同的力量。任何一個數值都不等於勝利。", "再落一子", "選擇牌會顯示即時變化、戰略手法，以及秦吏當前識勢是否命中。", "預判應手", "追捕讀取險，秦吏識勢只懲罰明示的重複手法。改變手法即可讓識勢落空；每層變化都會單獨記錄。", "手把已就緒", "支援手把", "方向鍵/搖桿選擇 · A/叉確認 · B/圈關閉 · 肩鍵打開簡牘 · Start打開入門", "開始觀勢", "重開一卷", "局勢信號", "本局種子", "局勢條件結算", "你的選擇會像濕泥上的刻痕一樣留在這裡。" },
         };
 
+        // These three instructions describe the current six-layer contract.
+        // They override the retained legacy guide arrays so older localization
+        // entries cannot silently teach pre-commitment rules.
+        private static readonly string[] CommitmentGuideKeys = { "guideIntro", "guideMoveText", "guideReplyText" };
+        private static readonly Dictionary<string, string[]> CommitmentGuideValues = new()
+        {
+            ["en"] = new[] { "Every order resolves in six visible layers: your move, a commitment answer when due, authored pressure, pursuit posture, Qin’s method read, and the disclosed field condition.", "A card shows exact immediate effects, its strategic method, any commitment it establishes or answers, and whether Qin’s current read will hit it.", "Promises name their stakeholder and exact cost. Pursuit reads Exposure; changing a repeated method makes Qin’s disclosed read miss. Every delta is recorded separately." },
+            ["ar"] = new[] { "يُحسم كل أمر في ست طبقات ظاهرة: حركتك، وجواب الالتزام عند استحقاقه، والضغط المؤلَّف، ووضع المطاردة، وقراءة تشين للأسلوب، وظرف الميدان المعلن.", "تعرض البطاقة الآثار الفورية الدقيقة، وأسلوبها الاستراتيجي، وأي التزام تنشئه أو تجيب عنه، وهل ستصيبه قراءة تشين الحالية.", "تسمّي الوعود صاحب المصلحة وكلفتها الدقيقة. تقرأ المطاردة الانكشاف، وتغيير الأسلوب المتكرر يجعل قراءة تشين المعلنة تخطئ. تُسجل كل التغيرات منفصلة." },
+            ["de"] = new[] { "Jeder Befehl wird in sechs sichtbaren Ebenen aufgelöst: dein Zug, eine fällige Antwort auf das Versprechen, verfasster Druck, Verfolgungslage, Qins Methodenanalyse und die angekündigte Feldbedingung.", "Eine Karte zeigt Sofortwirkungen, strategische Methode, ein begründetes oder beantwortetes Versprechen und ob Qins aktuelle Analyse trifft.", "Versprechen nennen Anspruchsträger und genaue Kosten. Die Verfolgung liest Entdeckung; ein Methodenwechsel lässt Qins offengelegte Analyse verfehlen. Jede Änderung wird getrennt notiert." },
+            ["es"] = new[] { "Cada orden se resuelve en seis capas visibles: tu movimiento, la respuesta a un compromiso cuando corresponda, la presión escrita, la postura de persecución, la lectura de método de Qin y la condición anunciada del terreno.", "Una carta muestra efectos inmediatos, método estratégico, cualquier compromiso que establezca o responda y si la lectura actual de Qin acertará.", "Las promesas nombran a la parte interesada y su coste exacto. La persecución lee la Exposición; cambiar el método repetido hace fallar la lectura anunciada de Qin. Cada cambio queda registrado aparte." },
+            ["fr"] = new[] { "Chaque ordre se résout en six couches visibles : votre coup, la réponse à un engagement lorsqu’elle est due, la pression écrite, le dispositif de poursuite, la lecture de méthode des Qin et la condition annoncée du terrain.", "Une carte montre les effets immédiats, la méthode stratégique, tout engagement établi ou tranché et si la lecture actuelle des Qin la visera.", "Les promesses nomment leur partie prenante et leur coût exact. La poursuite lit l’Exposition ; changer de méthode répétée fait échouer la lecture annoncée des Qin. Chaque écart est consigné séparément." },
+            ["ja"] = new[] { "一つの命令は六つの可視層で決着する。自分の一手、必要な時の約束への応答、既定の圧力、追撃態勢、秦の手筋読み、そして予告された戦場条件だ。", "札には即時効果、戦略的手筋、立てる／応える約束、秦の現在の読みが当たるかが示される。", "約束には当事者と正確な代価が示される。追撃は露見を読み、反復手筋を変えれば秦の公開された読みは外れる。変化はすべて別に記録される。" },
+            ["ko"] = new[] { "하나의 명령은 여섯 개의 보이는 층으로 결산된다. 나의 수, 때가 된 약속의 응답, 서술된 압력, 추격 태세, 진의 수법 판독, 그리고 예고된 전장 조건이다.", "선택지는 즉시 효과와 전략 수법, 세우거나 응답할 약속, 진의 현재 판독이 적중하는지를 보여 준다.", "약속에는 당사자와 정확한 대가가 표시된다. 추격은 노출을 읽으며 반복 수법을 바꾸면 진이 공개한 판독이 빗나간다. 모든 변화는 따로 기록된다." },
+            ["ru"] = new[] { "Каждый приказ разрешается в шести видимых слоях: ваш ход, ответ на обязательство, когда он требуется, заданное давление, состояние погони, разбор метода Цинь и объявленное условие поля.", "Карточка показывает немедленные эффекты, стратегический метод, создаваемое или разрешаемое обязательство и попадёт ли текущий расчёт Цинь.", "Обещания называют заинтересованную сторону и точную цену. Погоня читает Раскрытие; смена повторяемого метода рушит объявленный расчёт Цинь. Все изменения записываются отдельно." },
+            ["vi"] = new[] { "Mỗi mệnh lệnh được kết toán qua sáu lớp hiển thị: nước đi, cách đáp cam kết khi đến hạn, áp lực soạn sẵn, thế truy đuổi, cách Tần đọc thủ pháp và điều kiện bàn thế đã báo.", "Mỗi thẻ cho biết hiệu ứng tức thời, thủ pháp chiến lược, cam kết được lập hay được đáp và cách đọc hiện tại của Tần có trúng hay không.", "Lời hứa nêu rõ bên liên quan và cái giá chính xác. Truy đuổi đọc Bại lộ; đổi thủ pháp lặp lại khiến cách đọc công khai của Tần trượt. Mọi thay đổi được ghi riêng." },
+            ["zh-Hans"] = new[] { "每道命令分六层明示结算：你的落子、到期的应诺、既定压力、追捕态势、秦吏手法识势，以及预先公开的局势条件。", "选择牌会显示即时变化、战略手法、将立下或回应的承诺，以及秦吏当前识势是否命中。", "承诺会写明关系人和确切代价。追捕读取险；改变重复手法即可让秦吏公开的识势落空。每层变化都会单独记录。" },
+            ["zh-Hant"] = new[] { "每道命令分六層明示結算：你的落子、到期的應諾、既定壓力、追捕態勢、秦吏手法識勢，以及預先公開的局勢條件。", "選擇牌會顯示即時變化、戰略手法、將立下或回應的承諾，以及秦吏當前識勢是否命中。", "承諾會寫明關係人和確切代價。追捕讀取險；改變重複手法即可讓秦吏公開的識勢落空。每層變化都會單獨記錄。" },
+        };
+
         private static readonly string[] EvidenceKeys =
         {
             "reconstruction", "later", "strategicText", "received", "claimRegister", "evidenceLocated",
@@ -96,6 +115,26 @@ namespace SHI
             ["zh-Hant"] = new[] { "追捕態勢", "追捕應手", "反制", "無追加壓力", "手法識勢", "手法", "已見手法", "識勢命中", "識勢落空" },
         };
 
+        private static readonly string[] CommitmentKeys =
+        {
+            "commitmentEstablishes", "commitmentCarried", "commitmentAnswer", "commitmentKept", "commitmentStrained", "commitmentBroken", "chapterCommitment",
+        };
+
+        private static readonly Dictionary<string, string[]> CommitmentValues = new()
+        {
+            ["en"] = new[] { "Establishes commitment", "Commitment carried", "Commitment answer", "Kept", "Strained", "Broken", "Chapter commitment" },
+            ["ar"] = new[] { "ينشئ التزامًا", "التزام مستمر", "جواب الالتزام", "تم الوفاء به", "تعرّض للضغط", "نُقض", "التزام الفصل" },
+            ["de"] = new[] { "Begründet ein Versprechen", "Mitgeführte Verpflichtung", "Antwort auf das Versprechen", "Gehalten", "Beansprucht", "Gebrochen", "Kapitelversprechen" },
+            ["es"] = new[] { "Establece un compromiso", "Compromiso vigente", "Respuesta al compromiso", "Cumplido", "Tensionado", "Roto", "Compromiso del capítulo" },
+            ["fr"] = new[] { "Établit un engagement", "Engagement en cours", "Réponse à l’engagement", "Tenu", "Mis à l’épreuve", "Rompu", "Engagement du chapitre" },
+            ["ja"] = new[] { "約束を立てる", "持ち越された約束", "約束への応答", "守った", "揺らいだ", "破った", "章の約束" },
+            ["ko"] = new[] { "약속을 세움", "이어지는 약속", "약속에 대한 응답", "지킴", "흔들림", "어김", "장의 약속" },
+            ["ru"] = new[] { "Создаёт обязательство", "Действующее обязательство", "Ответ на обязательство", "Исполнено", "Под напряжением", "Нарушено", "Обязательство главы" },
+            ["vi"] = new[] { "Lập một cam kết", "Cam kết đang mang theo", "Cách đáp lại cam kết", "Giữ lời", "Bị thử thách", "Thất hứa", "Cam kết của chương" },
+            ["zh-Hans"] = new[] { "立下承诺", "随行承诺", "应诺", "兑现", "承压", "背弃", "本章承诺" },
+            ["zh-Hant"] = new[] { "立下承諾", "隨行承諾", "應諾", "兌現", "承壓", "背棄", "本章承諾" },
+        };
+
         private static readonly Dictionary<string, string[]> MapValues = new()
         {
             ["en"] = new[] { "Strategic intelligence map", "Inspect map", "Known ground", "Reported network", "Reference only", "Uncertainty" },
@@ -126,6 +165,12 @@ namespace SHI
                 var values = Values.TryGetValue(locale, out var localized) ? localized : Values["en"];
                 return values[index];
             }
+            index = Array.IndexOf(CommitmentGuideKeys, key);
+            if (index >= 0)
+            {
+                var guideValues = CommitmentGuideValues.TryGetValue(locale, out var localizedCommitmentGuide) ? localizedCommitmentGuide : CommitmentGuideValues["en"];
+                return guideValues[index];
+            }
             index = Array.IndexOf(GuideKeys, key);
             if (index >= 0)
             {
@@ -143,6 +188,12 @@ namespace SHI
             {
                 var oppositionValues = OppositionValues.TryGetValue(locale, out var localizedOpposition) ? localizedOpposition : OppositionValues["en"];
                 return oppositionValues[index];
+            }
+            index = Array.IndexOf(CommitmentKeys, key);
+            if (index >= 0)
+            {
+                var commitmentValues = CommitmentValues.TryGetValue(locale, out var localizedCommitment) ? localizedCommitment : CommitmentValues["en"];
+                return commitmentValues[index];
             }
             index = Array.IndexOf(MapKeys, key);
             if (index < 0) return key;

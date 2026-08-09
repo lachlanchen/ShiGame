@@ -28,6 +28,7 @@ namespace SHI.Editor
         private static readonly string[] RightsStatuses = { "public-link-metadata-only", "project-original" };
         private static readonly string[] SiteStatuses = { "known", "reported", "reference" };
         private static readonly string[] PressureKinds = { "state", "terrain", "supply", "network" };
+        private static readonly string[] CommitmentStatuses = { "kept", "strained", "broken" };
 
         [MenuItem("SHI/Validate Production Content")]
         public static void Preflight()
@@ -41,6 +42,7 @@ namespace SHI.Editor
 
             Debug.Log($"SHI preflight passed: {campaign.Nodes.Count} nodes, " +
                       $"{campaign.Nodes.Sum(node => node.Choices.Count)} choices, " +
+                      $"{campaign.Commitments.Count} commitments with {campaign.Commitments.Sum(commitment => commitment.Outcomes.Count)} outcomes, " +
                       $"{campaign.Nodes.Sum(node => node.Conditions.Count)} field conditions, " +
                       $"{campaign.Opposition.Stages.Count} opponent postures, " +
                       $"{campaign.Opposition.Methods.Count} strategic methods, " +
@@ -72,7 +74,7 @@ namespace SHI.Editor
             var choiceIds = new HashSet<string>();
             var referencedClaimIds = new HashSet<string>();
 
-            if (campaign.SchemaVersion != 5) errors.Add($"Campaign schema must be 5; found {campaign.SchemaVersion}.");
+            if (campaign.SchemaVersion != 6) errors.Add($"Campaign schema must be 6; found {campaign.SchemaVersion}.");
             if (!Regex.IsMatch(campaign.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add("Campaign id must use ASCII kebab-case.");
 
             RequireUnique(campaign.Nodes.Select(node => node.Id), "node", errors);
@@ -293,6 +295,37 @@ namespace SHI.Editor
                     RequireText(choice.Intent, $"choice '{choice.Id}' intent", errors);
                     RequireText(choice.Consequence, $"choice '{choice.Id}' consequence", errors);
                     RequireText(choice.Strategy, $"choice '{choice.Id}' strategy", errors);
+                }
+            }
+
+            RequireUnique(campaign.Commitments.Select(commitment => commitment.Id), "commitment", errors);
+            RequireUnique(campaign.Commitments.SelectMany(commitment => commitment.Outcomes).Select(outcome => outcome.Id), "commitment outcome", errors);
+            var establishingChoices = new HashSet<string>();
+            foreach (var commitment in campaign.Commitments)
+            {
+                if (!Regex.IsMatch(commitment.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Commitment '{commitment.Id}' must use an ASCII kebab-case id.");
+                if (commitment.ClaimStatus != "dramatic-reconstruction") errors.Add($"Commitment '{commitment.Id}' must be classified as dramatic-reconstruction.");
+                if (!choiceIds.Contains(commitment.EstablishedByChoiceId)) errors.Add($"Commitment '{commitment.Id}' has unknown establishing choice '{commitment.EstablishedByChoiceId}'.");
+                if (!establishingChoices.Add(commitment.EstablishedByChoiceId)) errors.Add($"Choice '{commitment.EstablishedByChoiceId}' establishes multiple commitments.");
+                if (!characterIds.Contains(commitment.StakeholderId)) errors.Add($"Commitment '{commitment.Id}' has unknown stakeholder '{commitment.StakeholderId}'.");
+                RequireText(commitment.Title, $"commitment '{commitment.Id}' title", errors);
+                RequireText(commitment.Promise, $"commitment '{commitment.Id}' promise", errors);
+                if (commitment.Outcomes.Count != 3) errors.Add($"Commitment '{commitment.Id}' requires exactly three outcomes.");
+                if (!commitment.Outcomes.Select(outcome => outcome.Status).OrderBy(value => value).SequenceEqual(CommitmentStatuses.OrderBy(value => value)))
+                    errors.Add($"Commitment '{commitment.Id}' must contain exactly one kept, strained and broken outcome.");
+                if (commitment.Outcomes.Select(outcome => outcome.ChoiceId).Distinct().Count() != commitment.Outcomes.Count)
+                    errors.Add($"Commitment '{commitment.Id}' answers the same choice more than once.");
+                foreach (var outcome in commitment.Outcomes)
+                {
+                    if (!Regex.IsMatch(outcome.Id, "^[a-z0-9]+(?:-[a-z0-9]+)*$")) errors.Add($"Commitment outcome '{outcome.Id}' must use an ASCII kebab-case id.");
+                    if (!choiceIds.Contains(outcome.ChoiceId)) errors.Add($"Commitment outcome '{outcome.Id}' references unknown choice '{outcome.ChoiceId}'.");
+                    if (!CommitmentStatuses.Contains(outcome.Status)) errors.Add($"Commitment outcome '{outcome.Id}' has invalid status '{outcome.Status}'.");
+                    RequireText(outcome.Forecast, $"commitment outcome '{outcome.Id}' forecast", errors);
+                    RequireText(outcome.Response, $"commitment outcome '{outcome.Id}' response", errors);
+                    ValidateEffects(outcome.Effects, $"Commitment outcome '{outcome.Id}'", errors);
+                    if (outcome.Effects.Count == 0) errors.Add($"Commitment outcome '{outcome.Id}' has no effects.");
+                    foreach (var effect in outcome.Effects.Where(effect => effect.Value < -4 || effect.Value > 4))
+                        errors.Add($"Commitment outcome '{outcome.Id}' effect '{effect.Key}' is outside -4–4.");
                 }
             }
 

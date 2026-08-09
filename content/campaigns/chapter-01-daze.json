@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 5,
+  "schemaVersion": 6,
   "id": "chapter-01-daze",
   "title": {
     "en": "SHI — The Shape of Power",
@@ -35,6 +35,206 @@
     "people": 58,
     "danger": 46
   },
+  "commitments": [
+    {
+      "id": "names-under-protection",
+      "claimStatus": "dramatic-reconstruction",
+      "establishedByChoiceId": "read-the-names",
+      "stakeholderId": "yu-mu",
+      "title": {
+        "en": "Names under protection",
+        "zh-Hans": "名在护约之下",
+        "zh-Hant": "名在護約之下"
+      },
+      "promise": {
+        "en": "Every name read into the covenant will cross as a person, not be discarded as anonymous freight.",
+        "zh-Hans": "每个被读入盟约的名字，都要作为人过河，而不是作为无名负担被丢下。",
+        "zh-Hant": "每個被讀入盟約的名字，都要作為人過河，而不是作為無名負擔被丟下。"
+      },
+      "outcomes": [
+        {
+          "id": "names-families-kept",
+          "choiceId": "families-first",
+          "status": "kept",
+          "forecast": {
+            "en": "Households cross before carts. The covenant's named protection is kept.",
+            "zh-Hans": "家户先于车辆过河。盟约对有名之人的保护得到兑现。",
+            "zh-Hant": "家戶先於車輛過河。盟約對有名之人的保護得到兌現。"
+          },
+          "response": {
+            "en": "Aunt Yu counts the last household onto the far bank before she nods to the rear guard.",
+            "zh-Hans": "妪母数着最后一户登上对岸，才向后卫点头。",
+            "zh-Hant": "嫗母數著最後一戶登上對岸，才向後衛點頭。"
+          },
+          "effects": { "trust": 4 }
+        },
+        {
+          "id": "names-ford-strained",
+          "choiceId": "repair-the-ford",
+          "status": "strained",
+          "forecast": {
+            "en": "Bracing the ford protects the column, but named households wait in the pursuing rain.",
+            "zh-Hans": "加固渡口能保全队伍，有名在册的家户却要在追兵迫近的雨里等待。",
+            "zh-Hant": "加固渡口能保全隊伍，有名在冊的家戶卻要在追兵迫近的雨裡等待。"
+          },
+          "response": {
+            "en": "The braces hold. Aunt Yu accepts the passage, not the delay imposed on those promised protection first.",
+            "zh-Hans": "支架撑住了。妪母接受这条生路，却不接受让先受保护者久候。",
+            "zh-Hant": "支架撐住了。嫗母接受這條生路，卻不接受讓先受保護者久候。"
+          },
+          "effects": { "momentum": 1, "trust": -2 }
+        },
+        {
+          "id": "names-carts-broken",
+          "choiceId": "cut-the-carts",
+          "status": "broken",
+          "forecast": {
+            "en": "Abandoning the loads leaves named households to recover what the movement will not carry.",
+            "zh-Hans": "弃下车辆，会让有名在册的家户折返去取队伍不再承担的物资。",
+            "zh-Hant": "棄下車輛，會讓有名在冊的家戶折返去取隊伍不再承擔的物資。"
+          },
+          "response": {
+            "en": "Aunt Yu sees families turn back toward the carts. Their names remain in the covenant; its protection does not.",
+            "zh-Hans": "妪母看着家户转身寻找车辆。名字仍在盟约里，保护却已不在。",
+            "zh-Hant": "嫗母看著家戶轉身尋找車輛。名字仍在盟約裡，保護卻已不在。"
+          },
+          "effects": { "trust": -4, "danger": 2 }
+        }
+      ]
+    },
+    {
+      "id": "movement-before-answer",
+      "claimStatus": "dramatic-reconstruction",
+      "establishedByChoiceId": "take-the-beacon",
+      "stakeholderId": "wu-guang",
+      "title": {
+        "en": "Movement before the posts answer",
+        "zh-Hans": "先于亭驿回应而动",
+        "zh-Hant": "先於亭驛回應而動"
+      },
+      "promise": {
+        "en": "The seized beacon will become movement before the relay network can take back the initiative.",
+        "zh-Hans": "夺下的烽燧必须化为行动，不能让亭驿传信网夺回先手。",
+        "zh-Hant": "奪下的烽燧必須化為行動，不能讓亭驛傳信網奪回先手。"
+      },
+      "outcomes": [
+        {
+          "id": "movement-families-strained",
+          "choiceId": "families-first",
+          "status": "strained",
+          "forecast": {
+            "en": "Protecting households slows the seized tempo but makes the delay publicly defensible.",
+            "zh-Hans": "保护家户会放慢抢来的节奏，却能让延误有公开可辩的理由。",
+            "zh-Hant": "保護家戶會放慢搶來的節奏，卻能讓延誤有公開可辯的理由。"
+          },
+          "response": {
+            "en": "Wu Guang watches the rear guard wait. The movement loses time, but not the reason people gave it time.",
+            "zh-Hans": "吴广看着后卫停步。队伍失去了时间，却没有失去众人愿意给它时间的理由。",
+            "zh-Hant": "吳廣看著後衛停步。隊伍失去了時間，卻沒有失去眾人願意給它時間的理由。"
+          },
+          "effects": { "trust": 1, "momentum": -2 }
+        },
+        {
+          "id": "movement-ford-broken",
+          "choiceId": "repair-the-ford",
+          "status": "broken",
+          "forecast": {
+            "en": "Stationary labor at the ford returns initiative to the relay posts.",
+            "zh-Hans": "在渡口停留劳作，会把先手还给亭驿。",
+            "zh-Hant": "在渡口停留勞作，會把先手還給亭驛。"
+          },
+          "response": {
+            "en": "The repair saves provisions, but the captured signal becomes yesterday's fact while patrol reports catch up.",
+            "zh-Hans": "修渡保住了物资，夺烽却在巡报追上时变成了昨日的既成事实。",
+            "zh-Hant": "修渡保住了物資，奪烽卻在巡報追上時變成了昨日的既成事實。"
+          },
+          "effects": { "momentum": -4, "danger": 2 }
+        },
+        {
+          "id": "movement-carts-kept",
+          "choiceId": "cut-the-carts",
+          "status": "kept",
+          "forecast": {
+            "en": "Cutting the carts turns the stolen signal into immediate movement.",
+            "zh-Hans": "弃车疾进，会把夺来的信号立即化为行动。",
+            "zh-Hant": "棄車疾進，會把奪來的信號立即化為行動。"
+          },
+          "response": {
+            "en": "Wu Guang beats the captured rhythm once. The column is already moving when the echo reaches the posts.",
+            "zh-Hans": "吴广只击了一次夺来的节拍。回声传到亭驿时，队伍已经在路上。",
+            "zh-Hant": "吳廣只擊了一次奪來的節拍。回聲傳到亭驛時，隊伍已經在路上。"
+          },
+          "effects": { "momentum": 4, "trust": -1 }
+        }
+      ]
+    },
+    {
+      "id": "register-stays-dark",
+      "claimStatus": "dramatic-reconstruction",
+      "establishedByChoiceId": "hide-the-register",
+      "stakeholderId": "qin-courier",
+      "title": {
+        "en": "The register stays dark",
+        "zh-Hans": "名籍不再见光",
+        "zh-Hant": "名籍不再見光"
+      },
+      "promise": {
+        "en": "No official channel will receive a trace it can join back to the hidden register.",
+        "zh-Hans": "不能让任何官府渠道得到一条能接回被藏名籍的踪迹。",
+        "zh-Hant": "不能讓任何官府渠道得到一條能接回被藏名籍的蹤跡。"
+      },
+      "outcomes": [
+        {
+          "id": "register-families-strained",
+          "choiceId": "families-first",
+          "status": "strained",
+          "forecast": {
+            "en": "A visible household procession protects people but gives witnesses one route to describe.",
+            "zh-Hans": "让家户列队过河能保护众人，也会给见证者留下一条可描述的路线。",
+            "zh-Hant": "讓家戶列隊過河能保護眾人，也會給見證者留下一條可描述的路線。"
+          },
+          "response": {
+            "en": "Courier Han cannot recover the names, but he can describe the order in which their households crossed.",
+            "zh-Hans": "韩驿使无法找回名字，却能描述这些名字所属家户过河的次序。",
+            "zh-Hant": "韓驛使無法找回名字，卻能描述這些名字所屬家戶過河的次序。"
+          },
+          "effects": { "trust": 1, "danger": 2 }
+        },
+        {
+          "id": "register-ford-broken",
+          "choiceId": "repair-the-ford",
+          "status": "broken",
+          "forecast": {
+            "en": "Cut timbers and wet grain leave a trace the relay can join to the missing list.",
+            "zh-Hans": "新砍木料与湿粮会留下一条亭驿能够接回失踪名籍的踪迹。",
+            "zh-Hant": "新砍木料與濕糧會留下一條亭驛能夠接回失蹤名籍的蹤跡。"
+          },
+          "response": {
+            "en": "Courier Han reads the repair like an entry in a ledger: materials, direction, numbers, time.",
+            "zh-Hans": "韩驿使像读名籍一样读懂修渡痕迹：材料、方向、人数、时辰。",
+            "zh-Hant": "韓驛使像讀名籍一樣讀懂修渡痕跡：材料、方向、人數、時辰。"
+          },
+          "effects": { "trust": -2, "danger": 3 }
+        },
+        {
+          "id": "register-carts-kept",
+          "choiceId": "cut-the-carts",
+          "status": "kept",
+          "forecast": {
+            "en": "Scattered tracks deny the relay one continuous route, even as the column loses supplies.",
+            "zh-Hans": "散开的车辙让亭驿无法拼出一条连续路线，队伍却要损失物资。",
+            "zh-Hant": "散開的車轍讓亭驛無法拼出一條連續路線，隊伍卻要損失物資。"
+          },
+          "response": {
+            "en": "Courier Han finds three false trails and no continuous column. The hidden register remains unjoined to the road.",
+            "zh-Hans": "韩驿使找到三条假迹，却找不到一支连续的队伍。被藏名籍仍无法与道路接合。",
+            "zh-Hant": "韓驛使找到三條假跡，卻找不到一支連續的隊伍。被藏名籍仍無法與道路接合。"
+          },
+          "effects": { "danger": -4, "grain": -1 }
+        }
+      ]
+    }
+  ],
   "opposition": {
     "id": "qin-pursuit",
     "claimStatus": "dramatic-reconstruction",

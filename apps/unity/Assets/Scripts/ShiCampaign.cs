@@ -15,6 +15,7 @@ namespace SHI
         public JObject Subtitle = new();
         public string StartNodeId = "";
         public Dictionary<string, int> InitialResources = new();
+        public List<ShiCommitment> Commitments = new();
         public ShiOpposition Opposition = new();
         public List<ShiSite> Sites = new();
         public List<ShiCharacter> Characters = new();
@@ -25,7 +26,7 @@ namespace SHI
         public static ShiCampaign Parse(string json)
         {
             var result = JsonConvert.DeserializeObject<ShiCampaign>(json) ?? throw new InvalidOperationException("Campaign JSON was empty.");
-            if (result.SchemaVersion != 5) throw new InvalidOperationException($"Unsupported SHI campaign schema {result.SchemaVersion}.");
+            if (result.SchemaVersion != 6) throw new InvalidOperationException($"Unsupported SHI campaign schema {result.SchemaVersion}.");
             if (result.Nodes.All(node => node.Id != result.StartNodeId)) throw new InvalidOperationException("Campaign start node is missing.");
             return result;
         }
@@ -33,11 +34,20 @@ namespace SHI
         public ShiNode Node(string id) => Nodes.FirstOrDefault(node => node.Id == id) ?? throw new InvalidOperationException($"Unknown node {id}.");
         public ShiCharacter Character(string id) => Characters.FirstOrDefault(character => character.Id == id) ?? throw new InvalidOperationException($"Unknown character {id}.");
         public ShiStrategicMethod Method(string id) => Opposition.Methods.FirstOrDefault(method => method.Id == id) ?? throw new InvalidOperationException($"Unknown strategic method {id}.");
+        public ShiCommitment? EstablishedCommitment(ShiChoice choice)
+        {
+            var matches = Commitments.Where(commitment => commitment.EstablishedByChoiceId == choice.Id).ToList();
+            if (matches.Count > 1) throw new InvalidOperationException($"Choice {choice.Id} establishes multiple commitments: {string.Join(", ", matches.Select(commitment => commitment.Id))}.");
+            return matches.FirstOrDefault();
+        }
         public string Text(JObject value, string locale) => value.Value<string>(locale) ?? value.Value<string>("en") ?? value.Value<string>("zh-Hans") ?? "";
     }
 
     public sealed class ShiSite { public string Id = ""; public JObject Name = new(); public float X; public float Z; public string Status = ""; public JObject Summary = new(); public JObject Uncertainty = new(); public List<string> SourceRefs = new(); public List<string> ClaimRefs = new(); }
     public sealed class ShiCharacter { public string Id = ""; public JObject Name = new(); public JObject Role = new(); public bool Historical; }
+    public sealed class ShiCommitment { public string Id = ""; public string ClaimStatus = ""; public string EstablishedByChoiceId = ""; public string StakeholderId = ""; public JObject Title = new(); public JObject Promise = new(); public List<ShiCommitmentOutcome> Outcomes = new(); }
+    public sealed class ShiCommitmentOutcome { public string Id = ""; public string ChoiceId = ""; public string Status = ""; public JObject Forecast = new(); public JObject Response = new(); public Dictionary<string, int> Effects = new(); }
+    public sealed class ShiCommitmentSelection { public ShiCommitment Commitment = new(); public ShiCommitmentOutcome Outcome = new(); }
     public sealed class ShiOpposition { public string Id = ""; public string ClaimStatus = ""; public JObject Title = new(); public JObject Description = new(); public List<ShiStrategicMethod> Methods = new(); public ShiMethodRead MethodRead = new(); public List<ShiOppositionStage> Stages = new(); }
     public sealed class ShiOppositionStage { public string Id = ""; public int MinDanger; public int MaxDanger; public JObject Title = new(); public JObject Forecast = new(); public JObject Response = new(); public JObject Counterplay = new(); public Dictionary<string, int> Effects = new(); }
     public sealed class ShiStrategicMethod { public string Id = ""; public JObject Title = new(); public JObject Reading = new(); }
@@ -56,10 +66,11 @@ namespace SHI
     [Serializable]
     public sealed class ShiState
     {
-        // Zero can mean a legacy JSON payload omitted this field; Create always writes v5.
+        // Zero can mean a legacy JSON payload omitted this field; Create always writes v6.
         public int SaveVersion;
         public int LegacyDecisionCount;
         public int PreMethodReadDecisionCount;
+        public int PreCommitmentDecisionCount;
         public string CampaignId = "";
         public uint Seed;
         public string CurrentNodeId = "";
@@ -71,9 +82,10 @@ namespace SHI
 
         public static ShiState Create(ShiCampaign campaign, uint seed = 0) => new()
         {
-            SaveVersion = 5,
+            SaveVersion = 6,
             LegacyDecisionCount = 0,
             PreMethodReadDecisionCount = 0,
+            PreCommitmentDecisionCount = 0,
             CampaignId = campaign.Id,
             Seed = seed,
             CurrentNodeId = campaign.StartNodeId,
@@ -87,9 +99,9 @@ namespace SHI
                 && choice.Requirements.Max.All(pair => Resources.GetValueOrDefault(pair.Key) <= pair.Value);
         }
 
-        public ShiResolution Resolve(ShiCampaign campaign, ShiNode node, ShiChoice choice) => ResolveWithRules(campaign, node, choice, true, true);
+        public ShiResolution Resolve(ShiCampaign campaign, ShiNode node, ShiChoice choice) => ResolveWithRules(campaign, node, choice, true, true, true);
 
-        private ShiResolution ResolveWithRules(ShiCampaign campaign, ShiNode node, ShiChoice choice, bool includeOpposition, bool includeMethodRead)
+        private ShiResolution ResolveWithRules(ShiCampaign campaign, ShiNode node, ShiChoice choice, bool includeOpposition, bool includeMethodRead, bool includeCommitment)
         {
             if (Completed || node.Id != CurrentNodeId || !CanChoose(choice)) throw new InvalidOperationException("Choice is unavailable.");
             var method = campaign.Method(choice.MethodId);
@@ -97,9 +109,11 @@ namespace SHI
             var oppositionStage = includeOpposition ? ActiveOppositionStage(campaign) : null;
             var methodRead = includeMethodRead ? ActiveMethodRead(campaign) : null;
             var methodReadMatched = methodRead?.TargetMethodId == choice.MethodId;
+            var commitment = includeCommitment ? ActiveCommitmentOutcome(campaign, choice) : null;
             var before = new Dictionary<string, int>(Resources);
             var afterChoice = ApplyEffects(before, choice.Effects);
-            var afterPressure = ApplyEffects(afterChoice, choice.Pressure?.Effects ?? new Dictionary<string, int>());
+            var afterCommitment = ApplyEffects(afterChoice, commitment?.Outcome.Effects ?? new Dictionary<string, int>());
+            var afterPressure = ApplyEffects(afterCommitment, choice.Pressure?.Effects ?? new Dictionary<string, int>());
             var afterOpposition = ApplyEffects(afterPressure, oppositionStage?.Effects ?? new Dictionary<string, int>());
             var afterMethodRead = ApplyEffects(afterOpposition, methodReadMatched ? methodRead?.Effects ?? new Dictionary<string, int>() : new Dictionary<string, int>());
             var after = ApplyEffects(afterMethodRead, condition.Effects);
@@ -112,14 +126,18 @@ namespace SHI
                 ConditionId = condition.Id,
                 Before = before,
                 AfterChoice = afterChoice,
-                PressureEffects = Deltas(afterChoice, afterPressure),
+                CommitmentId = commitment?.Commitment.Id ?? "",
+                CommitmentOutcomeId = commitment?.Outcome.Id ?? "",
+                CommitmentEffects = Deltas(afterChoice, afterCommitment),
+                AfterCommitment = afterCommitment,
+                PressureEffects = Deltas(afterCommitment, afterPressure),
                 AfterPressure = afterPressure,
                 OppositionStageId = oppositionStage?.Id,
                 OppositionEffects = Deltas(afterPressure, afterOpposition),
                 AfterOpposition = afterOpposition,
                 MethodId = includeMethodRead ? method.Id : "",
                 MethodReadId = methodRead?.Id ?? "",
-                MethodReadMatched = includeMethodRead ? methodReadMatched : null,
+                MethodReadMatched = includeMethodRead ? (bool?)methodReadMatched : null,
                 MethodReadEffects = Deltas(afterOpposition, afterMethodRead),
                 AfterMethodRead = afterMethodRead,
                 ConditionEffects = Deltas(afterMethodRead, after),
@@ -136,8 +154,11 @@ namespace SHI
                 Method = method,
                 MethodRead = methodRead,
                 MethodReadMatched = methodReadMatched,
+                Commitment = commitment?.Commitment,
+                CommitmentOutcome = commitment?.Outcome,
                 PlayerDeltas = Deltas(before, afterChoice),
-                PressureDeltas = Deltas(afterChoice, afterPressure),
+                CommitmentDeltas = Deltas(afterChoice, afterCommitment),
+                PressureDeltas = Deltas(afterCommitment, afterPressure),
                 OppositionDeltas = Deltas(afterPressure, afterOpposition),
                 MethodReadDeltas = Deltas(afterOpposition, afterMethodRead),
                 FieldDeltas = Deltas(afterMethodRead, after),
@@ -187,6 +208,24 @@ namespace SHI
             return new ShiMethodReadSelection { Id = countermeasure.Id, Counts = counts, Countermeasure = countermeasure };
         }
 
+        public ShiCommitment? ActiveCommitment(ShiCampaign campaign)
+        {
+            var commitmentHistory = History.Skip(PreCommitmentDecisionCount).ToList();
+            var resolved = new HashSet<string>(commitmentHistory.Where(record => !string.IsNullOrEmpty(record.CommitmentId)).Select(record => record.CommitmentId));
+            var chosen = new HashSet<string>(commitmentHistory.Select(record => record.ChoiceId));
+            var active = campaign.Commitments.Where(commitment => chosen.Contains(commitment.EstablishedByChoiceId) && !resolved.Contains(commitment.Id)).ToList();
+            if (active.Count > 1) throw new InvalidOperationException($"Multiple unresolved commitments are active: {string.Join(", ", active.Select(commitment => commitment.Id))}.");
+            return active.FirstOrDefault();
+        }
+
+        public ShiCommitmentSelection? ActiveCommitmentOutcome(ShiCampaign campaign, ShiChoice choice)
+        {
+            var commitment = ActiveCommitment(campaign);
+            if (commitment == null) return null;
+            var outcome = commitment.Outcomes.Find(candidate => candidate.ChoiceId == choice.Id);
+            return outcome == null ? null : new ShiCommitmentSelection { Commitment = commitment, Outcome = outcome };
+        }
+
         public static uint HashSeedKey(string value)
         {
             unchecked
@@ -206,15 +245,18 @@ namespace SHI
         public static ShiState? Replay(ShiCampaign campaign, ShiState? saved)
         {
             if (saved == null || saved.CampaignId != campaign.Id || saved.History == null) return null;
-            if (saved.SaveVersion < 0 || saved.SaveVersion > 5) return null;
+            if (saved.SaveVersion < 0 || saved.SaveVersion > 6) return null;
             var seeded = saved.SaveVersion >= 3;
             var legacyDecisionCount = saved.SaveVersion >= 4 ? saved.LegacyDecisionCount : saved.History.Count;
             if (legacyDecisionCount < 0 || legacyDecisionCount > saved.History.Count) return null;
-            var preMethodReadDecisionCount = saved.SaveVersion == 5 ? saved.PreMethodReadDecisionCount : saved.History.Count;
+            var preMethodReadDecisionCount = saved.SaveVersion >= 5 ? saved.PreMethodReadDecisionCount : saved.History.Count;
             if (preMethodReadDecisionCount < legacyDecisionCount || preMethodReadDecisionCount > saved.History.Count) return null;
+            var preCommitmentDecisionCount = saved.SaveVersion == 6 ? saved.PreCommitmentDecisionCount : saved.History.Count;
+            if (preCommitmentDecisionCount < preMethodReadDecisionCount || preCommitmentDecisionCount > saved.History.Count) return null;
             var replayed = Create(campaign, seeded ? saved.Seed : 0);
             replayed.LegacyDecisionCount = legacyDecisionCount;
             replayed.PreMethodReadDecisionCount = preMethodReadDecisionCount;
+            replayed.PreCommitmentDecisionCount = preCommitmentDecisionCount;
             try
             {
                 for (var index = 0; index < saved.History.Count; index++)
@@ -226,12 +268,15 @@ namespace SHI
                     if (choice == null || !replayed.CanChoose(choice)) return null;
                     var includeOpposition = index >= legacyDecisionCount;
                     var includeMethodRead = index >= preMethodReadDecisionCount;
-                    var result = replayed.ResolveWithRules(campaign, node, choice, includeOpposition, includeMethodRead);
+                    var includeCommitment = index >= preCommitmentDecisionCount;
+                    var result = replayed.ResolveWithRules(campaign, node, choice, includeOpposition, includeMethodRead, includeCommitment);
                     if (seeded && record.ConditionId != result.Condition.Id) return null;
                     if (includeOpposition && record.OppositionStageId != result.OppositionStage?.Id) return null;
                     if (!includeOpposition && !string.IsNullOrEmpty(record.OppositionStageId)) return null;
                     if (includeMethodRead && (record.MethodId != result.Method.Id || record.MethodReadId != result.MethodRead?.Id || record.MethodReadMatched != result.MethodReadMatched)) return null;
                     if (!includeMethodRead && (!string.IsNullOrEmpty(record.MethodId) || !string.IsNullOrEmpty(record.MethodReadId) || record.MethodReadMatched != null)) return null;
+                    if (includeCommitment && (record.CommitmentId != (result.Commitment?.Id ?? "") || record.CommitmentOutcomeId != (result.CommitmentOutcome?.Id ?? ""))) return null;
+                    if (!includeCommitment && (!string.IsNullOrEmpty(record.CommitmentId) || !string.IsNullOrEmpty(record.CommitmentOutcomeId))) return null;
                 }
             }
             catch
@@ -273,6 +318,10 @@ namespace SHI
         public string ConditionId = "";
         public Dictionary<string, int> Before = new();
         public Dictionary<string, int> AfterChoice = new();
+        public string CommitmentId = "";
+        public string CommitmentOutcomeId = "";
+        public Dictionary<string, int> CommitmentEffects = new();
+        public Dictionary<string, int> AfterCommitment = new();
         public Dictionary<string, int> PressureEffects = new();
         public Dictionary<string, int> AfterPressure = new();
         public string? OppositionStageId;
@@ -295,7 +344,10 @@ namespace SHI
         public ShiStrategicMethod Method = new();
         public ShiMethodReadSelection? MethodRead;
         public bool MethodReadMatched;
+        public ShiCommitment? Commitment;
+        public ShiCommitmentOutcome? CommitmentOutcome;
         public Dictionary<string, int> PlayerDeltas = new();
+        public Dictionary<string, int> CommitmentDeltas = new();
         public Dictionary<string, int> PressureDeltas = new();
         public Dictionary<string, int> OppositionDeltas = new();
         public Dictionary<string, int> MethodReadDeltas = new();

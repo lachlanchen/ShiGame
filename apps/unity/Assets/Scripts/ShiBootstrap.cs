@@ -22,7 +22,8 @@ namespace SHI
 
     public sealed class ShiGameController : MonoBehaviour
     {
-        private const string SaveKey = "shi.chapter-01.state.v5";
+        private const string SaveKey = "shi.chapter-01.state.v6";
+        private const string LegacySaveKeyV5 = "shi.chapter-01.state.v5";
         private const string LegacySaveKeyV4 = "shi.chapter-01.state.v4";
         private const string LegacySaveKeyV3 = "shi.chapter-01.state.v3";
         private const string LegacySaveKeyV2 = "shi.chapter-01.state.v2";
@@ -174,7 +175,7 @@ namespace SHI
 
         private ShiState? LoadState()
         {
-            foreach (var key in new[] { SaveKey, LegacySaveKeyV4, LegacySaveKeyV3, LegacySaveKeyV2, LegacySaveKeyV1 })
+            foreach (var key in new[] { SaveKey, LegacySaveKeyV5, LegacySaveKeyV4, LegacySaveKeyV3, LegacySaveKeyV2, LegacySaveKeyV1 })
             {
                 if (!PlayerPrefs.HasKey(key)) continue;
                 try
@@ -183,6 +184,7 @@ namespace SHI
                     var replayed = campaign == null ? null : ShiState.Replay(campaign, loaded);
                     if (replayed == null || replayed.History.Count == 0) continue;
                     PlayerPrefs.SetString(SaveKey, JsonConvert.SerializeObject(replayed));
+                    PlayerPrefs.DeleteKey(LegacySaveKeyV5);
                     PlayerPrefs.DeleteKey(LegacySaveKeyV4);
                     PlayerPrefs.DeleteKey(LegacySaveKeyV3);
                     PlayerPrefs.SetString(DraftSeedKey, replayed.Seed.ToString());
@@ -292,6 +294,7 @@ namespace SHI
             var condition = state.ActiveCondition(node);
             var oppositionStage = state.ActiveOppositionStage(campaign);
             var methodRead = state.ActiveMethodRead(campaign);
+            var activeCommitment = state.ActiveCommitment(campaign);
             GUI.Box(new Rect(0, 0, Screen.width, 74), "");
             if (GUI.Button(new Rect(32, 16, 205, 40), "勢  SHI", GUI.skin.button)) { title = true; audioDirector?.SetAmbienceActive(false); }
             if (GUI.Button(new Rect(260, 20, 105, 30), T("guide"))) ToggleGuide();
@@ -342,6 +345,15 @@ namespace SHI
             if (!state.Completed)
             {
                 var choiceY = Screen.height - 255;
+                if (activeCommitment != null)
+                {
+                    var stakeholder = campaign.Character(activeCommitment.StakeholderId);
+                    var commitmentY = Mathf.Max(535, choiceY - 96);
+                    GUI.Box(new Rect(storyX, commitmentY, storyWidth, 82), "");
+                    GUI.Label(new Rect(storyX + 16, commitmentY + 9, storyWidth - 32, 18), T("commitmentCarried") + " · " + T("reconstruction"), smallStyle);
+                    GUI.Label(new Rect(storyX + 16, commitmentY + 29, storyWidth - 32, 22), campaign.Text(activeCommitment.Title, locale) + " · " + campaign.Text(stakeholder.Name, locale), bodyStyle);
+                    GUI.Label(new Rect(storyX + 16, commitmentY + 53, storyWidth - 32, 22), campaign.Text(activeCommitment.Promise, locale), smallStyle);
+                }
                 var choiceWidth = (Screen.width - 64f - 14f * (node.Choices.Count - 1)) / node.Choices.Count;
                 for (var index = 0; index < node.Choices.Count; index++)
                 {
@@ -350,6 +362,15 @@ namespace SHI
                     var readMatched = methodRead.TargetMethodId == method.Id;
                     GUI.enabled = state.CanChoose(choice);
                     var text = $"{(char)('A' + index)}   {campaign.Text(choice.Label, locale)}\n<size=13>{campaign.Text(choice.Intent, locale)}</size>";
+                    var establishedCommitment = campaign.EstablishedCommitment(choice);
+                    if (establishedCommitment != null)
+                    {
+                        var stakeholder = campaign.Character(establishedCommitment.StakeholderId);
+                        text += $"\n<size=11><color=#CDB587>{T("commitmentEstablishes")}: {campaign.Text(establishedCommitment.Title, locale)} · {campaign.Text(stakeholder.Name, locale)}\n{campaign.Text(establishedCommitment.Promise, locale)}</color></size>";
+                    }
+                    var commitmentOutcome = activeCommitment?.Outcomes.Find(candidate => candidate.ChoiceId == choice.Id);
+                    if (commitmentOutcome != null)
+                        text += $"\n<size=11><color=#CDB587>{T("commitmentAnswer")} · {T("commitment" + char.ToUpperInvariant(commitmentOutcome.Status[0]) + commitmentOutcome.Status.Substring(1))}: {campaign.Text(commitmentOutcome.Forecast, locale)} · {EffectsText(commitmentOutcome.Effects)}</color></size>";
                     text += $"\n<size=12><color=#78AAA0>{T("method")}: {campaign.Text(method.Title, locale)} · {T(readMatched ? "readHits" : "readMisses")} · {(readMatched ? EffectsText(methodRead.Effects) : T("noAddedPressure"))}</color></size>";
                     if (choice.Pressure != null)
                         text += $"\n<size=12><color=#B88976>{T("pressureForecast")}: {campaign.Text(choice.Pressure.Warning, locale)}</color></size>";
@@ -367,6 +388,14 @@ namespace SHI
                 GUI.Box(new Rect(storyX, Screen.height - 190, storyWidth, 135), "");
                 var ending = state.FailureReason != null ? T("failed") : state.Flags.Contains("ending-wildfire") ? T("endingWildfire") : state.Flags.Contains("ending-deep-roots") ? T("endingRoots") : T("endingWatchful");
                 GUI.Label(new Rect(storyX + 20, Screen.height - 175, storyWidth - 200, 60), ending, titleStyle);
+                var answeredCommitment = state.History.FindLast(entry => !string.IsNullOrEmpty(entry.CommitmentId) && !string.IsNullOrEmpty(entry.CommitmentOutcomeId));
+                if (answeredCommitment != null)
+                {
+                    var commitment = campaign.Commitments.Find(candidate => candidate.Id == answeredCommitment.CommitmentId);
+                    var outcome = commitment?.Outcomes.Find(candidate => candidate.Id == answeredCommitment.CommitmentOutcomeId);
+                    if (commitment != null && outcome != null)
+                        GUI.Label(new Rect(storyX + 20, Screen.height - 112, storyWidth - 220, 24), T("chapterCommitment") + " · " + T("commitment" + char.ToUpperInvariant(outcome.Status[0]) + outcome.Status.Substring(1)) + " · " + campaign.Text(commitment.Title, locale), smallStyle);
+                }
                 if (state.FailureReason != null)
                     GUI.Label(new Rect(storyX + 20, Screen.height - 115, storyWidth - 220, 48), T(state.FailureReason!), smallStyle);
                 if (GUI.Button(new Rect(storyX + storyWidth - 180, Screen.height - 150, 150, 50), T("restart") + "  ↺")) Restart();
@@ -384,17 +413,29 @@ namespace SHI
         {
             if (campaign == null || resolution == null) return;
             var width = Mathf.Min(940, Screen.width - 80);
-            var oppositionY = resolution.Choice.Pressure == null ? 80 : 142;
+            var cursorY = 80;
+            var commitmentY = -1f;
+            if (resolution.Commitment != null && resolution.CommitmentOutcome != null) { commitmentY = cursorY; cursorY += 62; }
+            var pressureY = -1f;
+            if (resolution.Choice.Pressure != null) { pressureY = cursorY; cursorY += 62; }
+            var oppositionY = cursorY;
             var methodReadY = oppositionY + 62;
             var fieldY = methodReadY + 62;
             var rect = new Rect((Screen.width - width) / 2, 125, width, fieldY + 52);
             GUI.Box(rect, "");
             GUI.Label(new Rect(rect.x + 18, rect.y + 12, width - 80, 22), T("consequence"), smallStyle);
             GUI.Label(new Rect(rect.x + 18, rect.y + 35, width - 50, 42), campaign.Text(resolution.Choice.Consequence, locale), bodyStyle);
+            if (commitmentY >= 0 && resolution.Commitment != null && resolution.CommitmentOutcome != null)
+            {
+                var outcome = resolution.CommitmentOutcome;
+                var stakeholder = campaign.Character(resolution.Commitment.StakeholderId);
+                GUI.Label(new Rect(rect.x + 18, rect.y + commitmentY, width - 80, 20), T("commitmentAnswer") + " · " + T("commitment" + char.ToUpperInvariant(outcome.Status[0]) + outcome.Status.Substring(1)), smallStyle);
+                GUI.Label(new Rect(rect.x + 18, rect.y + commitmentY + 21, width - 50, 38), campaign.Text(outcome.Response, locale) + " · " + campaign.Text(stakeholder.Name, locale) + " · " + EffectsText(resolution.CommitmentDeltas), smallStyle);
+            }
             if (resolution.Choice.Pressure != null)
             {
-                GUI.Label(new Rect(rect.x + 18, rect.y + 80, width - 80, 20), T("pressureResponse"), smallStyle);
-                GUI.Label(new Rect(rect.x + 18, rect.y + 101, width - 50, 38), campaign.Text(resolution.Choice.Pressure.Reveal, locale), smallStyle);
+                GUI.Label(new Rect(rect.x + 18, rect.y + pressureY, width - 80, 20), T("pressureResponse"), smallStyle);
+                GUI.Label(new Rect(rect.x + 18, rect.y + pressureY + 21, width - 50, 38), campaign.Text(resolution.Choice.Pressure.Reveal, locale), smallStyle);
             }
             if (resolution.OppositionStage != null)
             {
@@ -520,7 +561,7 @@ namespace SHI
                 GUI.Label(new Rect(x + 25, 95, width - 50, 90), T("recordEmpty"), bodyStyle);
                 return;
             }
-            var contentHeight = state.History.Count * 260 + 70;
+            var contentHeight = state.History.Count * 330 + 70;
             recordScroll = GUI.BeginScrollView(new Rect(x + 18, 82, width - 30, Screen.height - 94), recordScroll, new Rect(0, 0, width - 55, contentHeight));
             var y = 8f;
             for (var index = 0; index < state.History.Count; index++)
@@ -534,10 +575,17 @@ namespace SHI
                 var method = string.IsNullOrEmpty(entry.MethodId) ? null : campaign.Opposition.Methods.Find(candidate => candidate.Id == entry.MethodId);
                 var methodCounter = string.IsNullOrEmpty(entry.MethodReadId) ? null : campaign.Opposition.MethodRead.Countermeasures.Find(candidate => candidate.Id == entry.MethodReadId);
                 var neutralRead = entry.MethodReadId == campaign.Opposition.MethodRead.Neutral.Id ? campaign.Opposition.MethodRead.Neutral : null;
+                var commitment = string.IsNullOrEmpty(entry.CommitmentId) ? null : campaign.Commitments.Find(candidate => candidate.Id == entry.CommitmentId);
+                var commitmentOutcome = commitment?.Outcomes.Find(candidate => candidate.Id == entry.CommitmentOutcomeId);
                 GUI.Label(new Rect(7, y, 32, 24), (index + 1).ToString("00"), smallStyle);
                 GUI.Label(new Rect(44, y, width - 99, 28), campaign.Text(choice.Label, locale), bodyStyle);
                 GUI.Label(new Rect(44, y + 30, width - 99, 42), campaign.Text(choice.Consequence, locale), smallStyle);
                 var detailY = y + 72;
+                if (commitment != null && commitmentOutcome != null)
+                {
+                    GUI.Label(new Rect(44, detailY, width - 99, 40), T("commitmentAnswer") + " · " + T("commitment" + char.ToUpperInvariant(commitmentOutcome.Status[0]) + commitmentOutcome.Status.Substring(1)) + ": " + campaign.Text(commitment.Title, locale) + " · " + EffectsText(entry.CommitmentEffects), smallStyle);
+                    detailY += 42;
+                }
                 if (choice.Pressure != null)
                 {
                     GUI.Label(new Rect(44, detailY, width - 99, 40), T("pressureResponse") + ": " + campaign.Text(choice.Pressure.Reveal, locale), smallStyle);
@@ -808,6 +856,7 @@ namespace SHI
         {
             if (campaign == null || state == null) return;
             PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV5);
             PlayerPrefs.DeleteKey(LegacySaveKeyV4);
             PlayerPrefs.DeleteKey(LegacySaveKeyV3);
             PlayerPrefs.DeleteKey(LegacySaveKeyV2);
@@ -829,6 +878,7 @@ namespace SHI
         {
             if (campaign == null) return;
             PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.DeleteKey(LegacySaveKeyV5);
             PlayerPrefs.DeleteKey(LegacySaveKeyV4);
             PlayerPrefs.DeleteKey(LegacySaveKeyV3);
             PlayerPrefs.DeleteKey(LegacySaveKeyV2);

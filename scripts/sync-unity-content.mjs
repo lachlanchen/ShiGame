@@ -27,6 +27,13 @@ for (const output of [
 const webGameplay = {
   ...campaign,
   claims: [],
+  commitments: campaign.commitments.map(({ id, claimStatus, establishedByChoiceId, stakeholderId, outcomes }) => ({
+    id,
+    claimStatus,
+    establishedByChoiceId,
+    stakeholderId,
+    outcomes: outcomes.map(({ id: outcomeId, choiceId, status, effects }) => ({ id: outcomeId, choiceId, status, effects })),
+  })),
   opposition: {
     id: campaign.opposition.id,
     claimStatus: campaign.opposition.claimStatus,
@@ -42,6 +49,7 @@ const webGameplay = {
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-gameplay.json"), `${JSON.stringify(webGameplay)}\n`);
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-claims.json"), `${JSON.stringify(campaign.claims)}\n`);
 await writeFile(resolve(root, "apps/web/src/generated/chapter-01-opposition.json"), `${JSON.stringify(campaign.opposition)}\n`);
+await writeFile(resolve(root, "apps/web/src/generated/chapter-01-commitments.json"), `${JSON.stringify(campaign.commitments)}\n`);
 const webKeyArt = resolve(root, "apps/web/public/art/keyart/daze-village-rain-v1.png");
 await mkdir(dirname(webKeyArt), { recursive: true });
 await copyFile(resolve(root, "assets/art/keyart/daze-village-rain-v1.png"), webKeyArt);
