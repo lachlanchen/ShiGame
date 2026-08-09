@@ -399,7 +399,6 @@ export function App() {
   }, [node.id, screen, state.history.length]);
 
   useLayoutEffect(() => {
-    if (!drawer) return;
     const trapFocus = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
       const panel = document.querySelector<HTMLElement>(".drawer[role='dialog']");
@@ -415,7 +414,7 @@ export function App() {
     };
     document.addEventListener("keydown", trapFocus);
     return () => document.removeEventListener("keydown", trapFocus);
-  }, [drawer]);
+  }, []);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
