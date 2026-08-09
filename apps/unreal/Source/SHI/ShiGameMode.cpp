@@ -85,6 +85,7 @@ void AShiGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AShiGameMode::SelectChoice(int32 Index)
 {
+    if (IsCinematicSequenceActive()) return;
     const FShiNodeData* Node = GetCurrentNode();
     if (!Node || !Node->Choices.IsValidIndex(Index) || !CanChoose(Node->Choices[Index]) || Session.IsCompleted()) return;
     SelectedChoiceIndex = Index;
@@ -105,6 +106,7 @@ void AShiGameMode::SelectChoice(int32 Index)
 
 void AShiGameMode::CycleChoice(int32 Direction)
 {
+    if (IsCinematicSequenceActive()) return;
     const FShiNodeData* Node = GetCurrentNode();
     if (!Node || Node->Choices.IsEmpty() || Session.IsCompleted() || Direction == 0) return;
     for (int32 Offset = 1; Offset <= Node->Choices.Num(); ++Offset)
@@ -126,6 +128,11 @@ const FShiCommandSignalData* AShiGameMode::GetInspectedCommandSignal() const
     return FShiCommandSignalModel::Find(CommandSignals, InspectedCommandSignalId);
 }
 
+const FShiCinematicBeatData* AShiGameMode::GetActiveCinematicBeat() const
+{
+    return CinematicBeats.IsValidIndex(CinematicBeatIndex) ? &CinematicBeats[CinematicBeatIndex] : nullptr;
+}
+
 bool AShiGameMode::IsInspectingRemoteSite() const
 {
     const FShiNodeData* Node = GetCurrentNode();
@@ -135,25 +142,26 @@ bool AShiGameMode::IsInspectingRemoteSite() const
 
 void AShiGameMode::CycleInspectedSite(int32 Direction)
 {
-    if (bEvidenceOpen || Direction == 0) return;
+    if (bEvidenceOpen || IsCinematicSequenceActive() || Direction == 0) return;
     InspectSite(FShiWartableModel::CycleSite(Campaign.Sites, GetInspectedSite() ? GetInspectedSite()->Id : FString(), Direction));
 }
 
 void AShiGameMode::CycleInspectedCommandSignal(int32 Direction)
 {
-    if (bEvidenceOpen || Direction == 0) return;
+    if (bEvidenceOpen || IsCinematicSequenceActive() || Direction == 0) return;
     InspectCommandSignal(FShiCommandSignalModel::CycleSignal(CommandSignals,
         GetInspectedCommandSignal() ? GetInspectedCommandSignal()->Id : FString(), Direction));
 }
 
 void AShiGameMode::ResetInspectedSite()
 {
-    if (bEvidenceOpen) return;
+    if (bEvidenceOpen || IsCinematicSequenceActive()) return;
     if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId);
 }
 
 void AShiGameMode::IssueSelectedOrder()
 {
+    if (IsCinematicSequenceActive()) return;
     const FShiNodeData* Node = GetCurrentNode();
     if (!Node || !Node->Choices.IsValidIndex(SelectedChoiceIndex) || !CanChoose(Node->Choices[SelectedChoiceIndex]) || Session.IsCompleted()) return;
     const double Now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0;
@@ -161,7 +169,6 @@ void AShiGameMode::IssueSelectedOrder()
     LastOrderIssueTime = Now;
     ResumeSoundFromGesture();
 
-    const bool bWasInspectingCommandSignal = GetInspectedCommandSignal() != nullptr;
     FShiResolutionResult Resolution;
     FString ResolutionError;
     if (!Session.ResolveChoice(Node->Choices[SelectedChoiceIndex].Id, Resolution, ResolutionError))
@@ -210,10 +217,12 @@ void AShiGameMode::IssueSelectedOrder()
             : Session.IsCompleted() ? FName(TEXT("ending")) : FName(TEXT("commit"));
         AudioDirector->PlayCue(Cue);
     }
-    if (const FShiNodeData* NextNode = GetCurrentNode())
+    FString CinematicError;
+    if (!BeginResolutionSequence(Resolution, CinematicError))
     {
-        if (bWasInspectingCommandSignal || InspectedSiteId != NextNode->SiteId) InspectSite(NextNode->SiteId, false, false);
-        else BeginCameraBeat();
+        LoadError = FString::Printf(TEXT("Cinematic consequence rejected: %s"), *CinematicError);
+        RefreshScreen();
+        return;
     }
     RefreshScreen();
 }
@@ -221,7 +230,17 @@ void AShiGameMode::IssueSelectedOrder()
 void AShiGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    if (APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+    APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+    if (IsCinematicSequenceActive())
+    {
+        const bool bSkip = Controller && (Controller->WasInputKeyJustPressed(EKeys::SpaceBar)
+            || Controller->WasInputKeyJustPressed(EKeys::Escape)
+            || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Right));
+        if (bSkip) SkipCinematicSequence();
+        else TickCinematicSequence(DeltaSeconds);
+        return;
+    }
+    if (Controller)
     {
         const bool bEvidenceToggle = Controller->WasInputKeyJustPressed(EKeys::E)
             || Controller->WasInputKeyJustPressed(EKeys::Gamepad_LeftShoulder);
@@ -270,26 +289,14 @@ void AShiGameMode::Tick(float DeltaSeconds)
         if (Controller->WasInputKeyJustPressed(EKeys::SpaceBar))
         {
             if (CameraTransitionDuration > 0.f) CameraTransitionElapsed = CameraTransitionDuration;
-            if (CameraBeatDuration > 0.f) CameraBeatElapsed = CameraBeatDuration;
         }
     }
     TickCamera(DeltaSeconds);
 }
 
-void AShiGameMode::BeginCameraBeat()
-{
-    if (!CommandCamera.IsValid()) return;
-    CameraTransitionDuration = 0.f;
-    CameraBaseLocation = CommandCamera->GetActorLocation();
-    CameraBaseRotation = CommandCamera->GetActorRotation();
-    CameraBeatElapsed = 0.f;
-    CameraBeatDuration = 1.4f;
-}
-
 void AShiGameMode::BeginCameraTransition(const FTransform& Target, float Duration)
 {
     if (!CommandCamera.IsValid()) return;
-    CameraBeatDuration = 0.f;
     CameraTransitionStartLocation = CommandCamera->GetActorLocation();
     CameraTransitionStartRotation = CommandCamera->GetActorRotation();
     CameraTransitionTargetLocation = Target.GetLocation();
@@ -316,17 +323,130 @@ void AShiGameMode::TickCamera(float DeltaSeconds)
         }
         return;
     }
-    if (CameraBeatDuration <= 0.f) return;
-    CameraBeatElapsed += DeltaSeconds;
-    const float Alpha = FMath::Clamp(CameraBeatElapsed / CameraBeatDuration, 0.f, 1.f);
-    const float Arc = FMath::Sin(Alpha * PI);
-    CommandCamera->SetActorLocation(CameraBaseLocation + FVector(-38.f * Arc, 34.f * Arc, 16.f * Arc));
-    CommandCamera->SetActorRotation(CameraBaseRotation + FRotator(-1.8f * Arc, 2.8f * Arc, 0.f));
-    if (Alpha >= 1.f)
+}
+
+bool AShiGameMode::BeginResolutionSequence(const FShiResolutionResult& Resolution, FString& OutError)
+{
+    if (!CommandCamera.IsValid())
     {
-        CommandCamera->SetActorLocation(CameraBaseLocation);
-        CommandCamera->SetActorRotation(CameraBaseRotation);
-        CameraBeatDuration = 0.f;
+        OutError = TEXT("Cinematic consequence camera is unavailable.");
+        return false;
+    }
+    const FShiNodeData* PositionNode = GetCurrentNode();
+    const FShiSiteData* PositionSite = PositionNode ? Campaign.FindSite(PositionNode->SiteId) : nullptr;
+    TArray<FShiCinematicBeatData> Candidate;
+    if (!FShiCinematicBeatModel::Build(Resolution, Session.GetActiveCommitment(), Session.GetResources(), PositionSite,
+        Session.IsCompleted(), Session.GetFailureReason(), CommandSignals, Locale, Candidate, OutError)) return false;
+    for (const FShiCinematicBeatData& Beat : Candidate)
+    {
+        const TWeakObjectPtr<AStaticMeshActor>* Actor = Beat.FocusKind == TEXT("signal")
+            ? CommandSignalMarkers.Find(Beat.FocusId) : SiteMarkers.Find(Beat.FocusId);
+        if (!Actor || !Actor->IsValid())
+        {
+            OutError = FString::Printf(TEXT("Cinematic beat %s has no live world actor."), *Beat.Id);
+            return false;
+        }
+    }
+
+    CinematicBeats = MoveTemp(Candidate);
+    CinematicBeatIndex = 0;
+    CinematicHoldElapsed = 0.f;
+    bCinematicHolding = false;
+    if (PositionNode) InspectedSiteId = PositionNode->SiteId;
+    InspectedCommandSignalId.Empty();
+    StartCinematicBeat();
+    return true;
+}
+
+void AShiGameMode::StartCinematicBeat()
+{
+    const FShiCinematicBeatData* Beat = GetActiveCinematicBeat();
+    if (!Beat)
+    {
+        CompleteCinematicSequence();
+        return;
+    }
+    if (!CommandCamera.IsValid())
+    {
+        CompleteCinematicSequence();
+        return;
+    }
+
+    FTransform Target;
+    if (Beat->FocusKind == TEXT("signal"))
+    {
+        const FShiCommandSignalData* Signal = FShiCommandSignalModel::Find(CommandSignals, Beat->FocusId);
+        if (!Signal)
+        {
+            LoadError = FString::Printf(TEXT("Cinematic focus signal %s disappeared."), *Beat->FocusId);
+            CompleteCinematicSequence();
+            return;
+        }
+        Target = FShiCommandSignalModel::CameraTransform(*Signal);
+    }
+    else
+    {
+        const FShiSiteData* Site = Campaign.FindSite(Beat->FocusId);
+        if (!Site)
+        {
+            LoadError = FString::Printf(TEXT("Cinematic focus site %s disappeared."), *Beat->FocusId);
+            CompleteCinematicSequence();
+            return;
+        }
+        Target = FShiWartableModel::CameraTransform(*Site);
+    }
+
+    CinematicHoldElapsed = 0.f;
+    bCinematicHolding = false;
+    BeginCameraTransition(Target, Beat->TransitionSeconds);
+    UpdateWartableSelection();
+    UpdateCommandSignalSelection();
+    RefreshScreen();
+}
+
+void AShiGameMode::TickCinematicSequence(float DeltaSeconds)
+{
+    const FShiCinematicBeatData* Beat = GetActiveCinematicBeat();
+    if (!Beat) return;
+    const bool bWasTransitioning = CameraTransitionDuration > 0.f;
+    TickCamera(DeltaSeconds);
+    if (bWasTransitioning)
+    {
+        if (CameraTransitionDuration <= 0.f)
+        {
+            bCinematicHolding = true;
+            CinematicHoldElapsed = 0.f;
+        }
+        return;
+    }
+    if (!bCinematicHolding) bCinematicHolding = true;
+    CinematicHoldElapsed += DeltaSeconds;
+    if (CinematicHoldElapsed < Beat->HoldSeconds) return;
+
+    ++CinematicBeatIndex;
+    if (IsCinematicSequenceActive()) StartCinematicBeat();
+    else CompleteCinematicSequence();
+}
+
+void AShiGameMode::SkipCinematicSequence()
+{
+    if (!IsCinematicSequenceActive()) return;
+    CompleteCinematicSequence();
+}
+
+void AShiGameMode::CompleteCinematicSequence()
+{
+    CinematicBeats.Empty();
+    CinematicBeatIndex = INDEX_NONE;
+    CinematicHoldElapsed = 0.f;
+    bCinematicHolding = false;
+    CameraTransitionDuration = 0.f;
+    if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId, true, false);
+    else
+    {
+        UpdateWartableSelection();
+        UpdateCommandSignalSelection();
+        RefreshScreen();
     }
 }
 
@@ -344,7 +464,6 @@ void AShiGameMode::InspectSite(const FString& SiteId, bool bImmediate, bool bPla
     if (bImmediate && CommandCamera.IsValid())
     {
         CameraTransitionDuration = 0.f;
-        CameraBeatDuration = 0.f;
         CameraBaseLocation = Target.GetLocation();
         CameraBaseRotation = Target.GetRotation().Rotator();
         CommandCamera->SetActorLocation(CameraBaseLocation);
@@ -408,12 +527,15 @@ bool AShiGameMode::InspectWorldUnderCursor(APlayerController& Controller)
 
 void AShiGameMode::UpdateWartableSelection()
 {
+    const FShiCinematicBeatData* CinematicBeat = GetActiveCinematicBeat();
     for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : SiteMarkers)
     {
         AStaticMeshActor* Marker = Pair.Value.Get();
         const FShiSiteData* Site = Campaign.FindSite(Pair.Key);
         if (!Marker || !Site) continue;
-        const bool bSelected = InspectedCommandSignalId.IsEmpty() && Pair.Key == InspectedSiteId;
+        const bool bSelected = CinematicBeat
+            ? CinematicBeat->FocusKind == TEXT("site") && Pair.Key == CinematicBeat->FocusId
+            : InspectedCommandSignalId.IsEmpty() && Pair.Key == InspectedSiteId;
         const FShiWartableMarkerStyle Style = FShiWartableModel::MarkerStyle(Site->Status, bSelected);
         Marker->SetActorScale3D(Style.Scale);
         UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
@@ -442,12 +564,15 @@ bool AShiGameMode::RebuildCommandSignals(FString& OutError)
 
 void AShiGameMode::UpdateCommandSignalSelection()
 {
+    const FShiCinematicBeatData* CinematicBeat = GetActiveCinematicBeat();
     for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : CommandSignalMarkers)
     {
         AStaticMeshActor* Marker = Pair.Value.Get();
         const FShiCommandSignalData* Signal = FShiCommandSignalModel::Find(CommandSignals, Pair.Key);
         if (!Marker || !Signal) continue;
-        const bool bSelected = Pair.Key == InspectedCommandSignalId;
+        const bool bSelected = CinematicBeat
+            ? CinematicBeat->FocusKind == TEXT("signal") && Pair.Key == CinematicBeat->FocusId
+            : Pair.Key == InspectedCommandSignalId;
         const FShiCommandSignalData Style = FShiCommandSignalModel::SelectedStyle(*Signal, bSelected);
         Marker->SetActorLocationAndRotation(Style.Location, Style.Rotation);
         Marker->SetActorScale3D(Style.Scale);
@@ -511,7 +636,7 @@ bool AShiGameMode::SaveChronicle(FString& OutError) const
 
 void AShiGameMode::RequestNewChronicle()
 {
-    if (!LoadError.IsEmpty()) return;
+    if (!LoadError.IsEmpty() || IsCinematicSequenceActive()) return;
     if (!bRestartArmed)
     {
         bRestartArmed = true;
@@ -543,7 +668,7 @@ void AShiGameMode::RequestNewChronicle()
 
 void AShiGameMode::ToggleEvidence()
 {
-    if (!LoadError.IsEmpty()) return;
+    if (!LoadError.IsEmpty() || IsCinematicSequenceActive()) return;
     bEvidenceOpen = !bEvidenceOpen;
     ResumeSoundFromGesture();
     if (AudioDirector) AudioDirector->PlayCue(bEvidenceOpen ? FName(TEXT("drawer")) : FName(TEXT("close")));
@@ -558,7 +683,7 @@ float AShiGameMode::GetEffectsLevel() const { return AudioDirector ? AudioDirect
 
 void AShiGameMode::ToggleSound()
 {
-    if (!IsAudioReady()) return;
+    if (!IsAudioReady() || IsCinematicSequenceActive()) return;
     if (AudioDirector->IsSoundEnabled())
     {
         AudioDirector->PlayCue(FName(TEXT("close")));
@@ -576,7 +701,7 @@ void AShiGameMode::ToggleSound()
 
 void AShiGameMode::AdjustAmbience(int32 Direction)
 {
-    if (!IsAudioReady() || Direction == 0) return;
+    if (!IsAudioReady() || IsCinematicSequenceActive() || Direction == 0) return;
     if (!AudioDirector->IsSoundEnabled()) AudioDirector->SetSoundEnabled(true);
     AudioDirector->SetAmbienceLevel(AudioDirector->GetAmbienceLevel() + Direction * .05f);
     AudioDirector->PlayCue(FName(TEXT("inspect")));
@@ -586,7 +711,7 @@ void AShiGameMode::AdjustAmbience(int32 Direction)
 
 void AShiGameMode::AdjustEffects(int32 Direction)
 {
-    if (!IsAudioReady() || Direction == 0) return;
+    if (!IsAudioReady() || IsCinematicSequenceActive() || Direction == 0) return;
     if (!AudioDirector->IsSoundEnabled()) AudioDirector->SetSoundEnabled(true);
     AudioDirector->SetEffectsLevel(AudioDirector->GetEffectsLevel() + Direction * .05f);
     AudioDirector->PlayCue(FName(TEXT("select")));

@@ -65,6 +65,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     const FShiSiteData* Site = Mode->GetCampaign().FindSite(Node->SiteId);
     const FShiSiteData* InspectedSite = Mode->GetInspectedSite();
     const FShiCommandSignalData* InspectedSignal = Mode->GetInspectedCommandSignal();
+    const FShiCinematicBeatData* CinematicBeat = Mode->GetActiveCinematicBeat();
     TArray<FString> ActiveSourceRefs = Mode->IsInspectingRemoteSite() ? TArray<FString>() : Node->SourceRefs;
     TArray<FString> ActiveClaimRefs = Mode->IsInspectingRemoteSite() ? TArray<FString>() : Node->ClaimRefs;
     if (InspectedSite)
@@ -94,12 +95,32 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
         SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("TURN %d · %s"), Mode->GetDecisionCount() + 1, *Mode->GetSaveStatus())))
     ];
     Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
-        SNew(SButton).OnClicked(this, &SShiCommandScreen::ToggleEvidence).ContentPadding(10)[
+        SNew(SButton).IsEnabled(!Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::ToggleEvidence).ContentPadding(10)[
             SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("HISTORICAL BASIS · %s · %d SOURCES · %d CLAIMS"),
                 InspectedSite ? *InspectedSite->Name.Resolve(Locale) : TEXT("?"), ActiveSourceRefs.Num(), ActiveClaimRefs.Num())))
         ]
     ];
-    if (InspectedSignal)
+    if (CinematicBeat)
+    {
+        TSharedRef<SVerticalBox> ConsequenceBeat = SNew(SVerticalBox);
+        ConsequenceBeat->AddSlot().AutoHeight()[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("CONSEQUENCE %d / %d · %s"),
+                Mode->GetCinematicBeatIndex() + 1, Mode->GetCinematicBeatCount(), *CinematicBeat->Label)))
+        ];
+        ConsequenceBeat->AddSlot().AutoHeight().Padding(0, 7, 0, 5)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(CinematicBeat->Detail))
+        ];
+        ConsequenceBeat->AddSlot().AutoHeight().Padding(0, 2, 0, 7)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CAMERA ONLY · THE GAMEPLAY RESULT IS ALREADY RESOLVED · PRESENTATION CANNOT CHANGE THE CHRONICLE")))
+        ];
+        ConsequenceBeat->AddSlot().AutoHeight()[
+            SNew(SButton).OnClicked(this, &SShiCommandScreen::SkipCinematic).ContentPadding(9)[
+                SNew(STextBlock).Text(FText::FromString(TEXT("SKIP CONSEQUENCE CAMERA · SPACE / GAMEPAD B")))
+            ]
+        ];
+        Root->AddSlot().AutoHeight().Padding(28, 2, 28, 9)[SNew(SBorder).Padding(12)[ConsequenceBeat]];
+    }
+    if (!CinematicBeat && InspectedSignal)
     {
         TSharedRef<SVerticalBox> SignalCard = SNew(SVerticalBox);
         SignalCard->AddSlot().AutoHeight()[
@@ -131,7 +152,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
         ];
         Root->AddSlot().AutoHeight().Padding(28, 2, 28, 9)[SNew(SBorder).Padding(12)[SignalCard]];
     }
-    else if (InspectedSite)
+    else if (!CinematicBeat && InspectedSite)
     {
         TSharedRef<SVerticalBox> IntelCard = SNew(SVerticalBox);
         IntelCard->AddSlot().AutoHeight()[
@@ -164,7 +185,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     Root->AddSlot().AutoHeight().Padding(28, 2, 28, 4)[
         SNew(SHorizontalBox)
         + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 10, 0)[
-            SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::ToggleSound).ContentPadding(8)[
+            SNew(SButton).IsEnabled(Mode->IsAudioReady() && !Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::ToggleSound).ContentPadding(8)[
                 SNew(STextBlock).Text(FText::FromString(Mode->IsSoundEnabled() ? TEXT("SOUND ON")
                     : Mode->IsSoundPreferred() ? TEXT("SOUND ARMED") : TEXT("SOUND OFF")))
             ]
@@ -175,12 +196,12 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     ];
     Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
         SNew(SHorizontalBox)
-        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::AdjustAmbience, -1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("RAIN −")))]]
+        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady() && !Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::AdjustAmbience, -1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("RAIN −")))]]
         + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0)[SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("%d%%"), FMath::RoundToInt(Mode->GetAmbienceLevel() * 100.f))))]
-        + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 18, 0)[SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::AdjustAmbience, 1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("RAIN +")))]]
-        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::AdjustEffects, -1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("CUES −")))]]
+        + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 18, 0)[SNew(SButton).IsEnabled(Mode->IsAudioReady() && !Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::AdjustAmbience, 1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("RAIN +")))]]
+        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady() && !Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::AdjustEffects, -1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("CUES −")))]]
         + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0)[SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("%d%%"), FMath::RoundToInt(Mode->GetEffectsLevel() * 100.f))))]
-        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady()).OnClicked(this, &SShiCommandScreen::AdjustEffects, 1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("CUES +")))]]
+        + SHorizontalBox::Slot().AutoWidth()[SNew(SButton).IsEnabled(Mode->IsAudioReady() && !Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::AdjustEffects, 1).ContentPadding(7)[SNew(STextBlock).Text(FText::FromString(TEXT("CUES +")))]]
     ];
     Root->AddSlot().AutoHeight().Padding(28, 14, 28, 4)[SNew(STextBlock).Text(FText::FromString(Node->Title.Resolve(Locale)))];
     Root->AddSlot().AutoHeight().Padding(28, 4)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Node->Context.Resolve(Locale)))];
@@ -196,7 +217,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             bSelected ? TEXT("◆ SELECTED ORDER\n") : TEXT(""), bAvailable ? TEXT("") : TEXT("LOCKED · REQUIREMENTS NOT MET\n"),
             *Choice.Label.Resolve(Locale), *Choice.Intent.Resolve(Locale), *Choice.Strategy.Resolve(Locale), *Choice.MethodId.ToUpper());
         Choices->AddSlot().FillWidth(1).Padding(7)[
-            SNew(SButton).IsEnabled(bAvailable).OnClicked(this, &SShiCommandScreen::Select, Index).ContentPadding(14)[
+            SNew(SButton).IsEnabled(bAvailable && !Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::Select, Index).ContentPadding(14)[
                 SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Copy))
             ]
         ];
@@ -222,7 +243,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     if (!OrderReading.IsEmpty())
         Root->AddSlot().AutoHeight().Padding(28, 4)[SNew(SBorder).Padding(14)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(OrderReading))]];
     Root->AddSlot().AutoHeight().Padding(28, 4)[
-        SNew(SButton).IsEnabled(!Mode->IsCompleted() && Mode->CanChoose(Selected)).OnClicked(this, &SShiCommandScreen::Issue).ContentPadding(16)[
+        SNew(SButton).IsEnabled(!Mode->IsCinematicSequenceActive() && !Mode->IsCompleted() && Mode->CanChoose(Selected)).OnClicked(this, &SShiCommandScreen::Issue).ContentPadding(16)[
             SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("ISSUE ORDER · %s"), *Selected.Label.Resolve(Locale))))
         ]
     ];
@@ -238,12 +259,12 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     Root->AddSlot().AutoHeight().Padding(28, 8, 28, 4)[
         SNew(SHorizontalBox)
         + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 12, 0)[
-            SNew(SButton).OnClicked(this, &SShiCommandScreen::NewChronicle).ContentPadding(10)[
+            SNew(SButton).IsEnabled(!Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::NewChronicle).ContentPadding(10)[
                 SNew(STextBlock).Text(FText::FromString(Mode->IsRestartArmed() ? TEXT("CONFIRM NEW CHRONICLE") : TEXT("NEW CHRONICLE")))
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT · SPACE SKIPS CAMERA · E / LB EVIDENCE · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT · SPACE / B SKIPS CONSEQUENCE · E / LB EVIDENCE · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
         ]
     ];
 
@@ -373,6 +394,12 @@ FReply SShiCommandScreen::Select(int32 Index)
 FReply SShiCommandScreen::Issue()
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->IssueSelectedOrder();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::SkipCinematic()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->SkipCinematicSequence();
     return FReply::Handled();
 }
 

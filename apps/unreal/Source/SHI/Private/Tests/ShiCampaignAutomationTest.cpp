@@ -9,6 +9,7 @@
 #include "ShiAudioModel.h"
 #include "ShiCampaignModel.h"
 #include "ShiCampaignSession.h"
+#include "ShiCinematicBeatModel.h"
 #include "ShiCommandSignalModel.h"
 #include "ShiWartableModel.h"
 
@@ -331,6 +332,114 @@ bool FShiCommandSpaceLiveSignalsTest::RunTest(const FString& Parameters)
     return !HasAnyErrors();
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCinematicResolutionGrammarTest, "SHI.Cinematic.ResolutionGrammarV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCinematicResolutionGrammarTest::RunTest(const FString& Parameters)
+{
+    FShiCampaignModel Campaign;
+    FString Error;
+    if (!Campaign.LoadCanonical(Error)) { AddError(Error); return false; }
+    FShiCampaignSession Session;
+    Session.Initialize(Campaign, 0x5EED2026u);
+    FShiResolutionResult Resolution;
+    TestTrue(TEXT("opening order resolves before cinematic planning"), Session.ResolveChoice(TEXT("read-the-names"), Resolution, Error));
+    const FShiNodeData* PositionNode = Session.GetCurrentNode();
+    const FShiSiteData* PositionSite = PositionNode ? Campaign.FindSite(PositionNode->SiteId) : nullptr;
+    TestNotNull(TEXT("cinematic final position site exists"), PositionSite);
+    if (!PositionNode || PositionNode->Choices.IsEmpty() || !PositionSite) return false;
+
+    TArray<FShiCommandSignalData> Signals;
+    TestTrue(TEXT("cinematic world snapshot builds from post-order state"), FShiCommandSignalModel::Build(Session.GetResources(),
+        Session.GetCurrentFieldCondition(), Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(),
+        Session.GetActiveCommitment(), &PositionNode->Choices[0], TEXT("en"), Signals, Error));
+    const int32 StableHistoryCount = Session.GetHistory().Num();
+    TMap<FString, int32> StableResources = Session.GetResources();
+
+    TArray<FShiCinematicBeatData> Beats;
+    TestTrue(TEXT("resolution layers build one deterministic cinematic plan"), FShiCinematicBeatModel::Build(Resolution,
+        Session.GetActiveCommitment(), Session.GetResources(), PositionSite, Session.IsCompleted(), Session.GetFailureReason(),
+        Signals, TEXT("en"), Beats, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestEqual(TEXT("opening sequence includes order, established oath, four response layers and position"), Beats.Num(), 7);
+    TestTrue(TEXT("cinematic plan passes world-target validation"), FShiCinematicBeatModel::Validate(Beats, Signals, PositionSite, Error));
+    TestTrue(TEXT("complete consequence sequence stays below five seconds"), FShiCinematicBeatModel::TotalDuration(Beats) <= 5.f);
+    const TArray<FString> ExpectedIds = {
+        TEXT("resolution-order"), TEXT("resolution-commitment"), TEXT("resolution-pressure"), TEXT("resolution-pursuit"),
+        TEXT("resolution-method-read"), TEXT("resolution-field"), TEXT("resolution-position")
+    };
+    for (int32 Index = 0; Index < ExpectedIds.Num() && Beats.IsValidIndex(Index); ++Index)
+        TestEqual(*FString::Printf(TEXT("cinematic beat %d keeps canonical order"), Index), Beats[Index].Id, ExpectedIds[Index]);
+    TestTrue(TEXT("opening oath establishment is narrated"), Beats[1].Label.Contains(TEXT("OATH ESTABLISHED")));
+    TestTrue(TEXT("neutral method read remains an explicit beat"), Beats[4].Label.Contains(TEXT("NEUTRAL")));
+    TestEqual(TEXT("final beat returns to the authoritative position site"), Beats.Last().FocusId, PositionSite->Id);
+    TestEqual(TEXT("cinematic planning never appends campaign history"), Session.GetHistory().Num(), StableHistoryCount);
+    for (const TPair<FString, int32>& Resource : StableResources)
+        TestEqual(*FString::Printf(TEXT("cinematic planning preserves %s"), *Resource.Key), Session.GetResources().FindRef(Resource.Key), Resource.Value);
+
+    TArray<FShiCinematicBeatData> InvalidFocus = Beats;
+    InvalidFocus[0].FocusKind = TEXT("signal");
+    InvalidFocus[0].FocusId = TEXT("resource-imperial-favor");
+    TestFalse(TEXT("unbound cinematic world targets are rejected"), FShiCinematicBeatModel::Validate(InvalidFocus, Signals, PositionSite, Error));
+    TArray<FShiCinematicBeatData> Slow = Beats;
+    Slow[0].TransitionSeconds = 1.2f;
+    TestFalse(TEXT("overlong cinematic shots are rejected"), FShiCinematicBeatModel::Validate(Slow, Signals, PositionSite, Error));
+    TArray<FShiCinematicBeatData> MissingPosition = Beats;
+    MissingPosition.Pop();
+    TestFalse(TEXT("cinematic plan cannot omit its final position"), FShiCinematicBeatModel::Validate(MissingPosition, Signals, PositionSite, Error));
+    TArray<FShiCinematicBeatData> Reordered = Beats;
+    Swap(Reordered[2], Reordered[3]);
+    TestFalse(TEXT("cinematic layer reordering is rejected"), FShiCinematicBeatModel::Validate(Reordered, Signals, PositionSite, Error));
+    TArray<FShiCinematicBeatData> Relabeled = Beats;
+    Relabeled[2].Layer = TEXT("spectacle");
+    TestFalse(TEXT("cinematic layer identity drift is rejected"), FShiCinematicBeatModel::Validate(Relabeled, Signals, PositionSite, Error));
+
+    FShiCampaignSession CapturedSession;
+    CapturedSession.Initialize(Campaign, 0x5EED2026u);
+    FShiResolutionResult CapturedResolution;
+    const TArray<FString> CaptureRoute = {
+        TEXT("read-the-names"), TEXT("issue-grain-tallies"), TEXT("families-first"), TEXT("race-for-chen")
+    };
+    for (const FString& ChoiceId : CaptureRoute)
+        TestTrue(*FString::Printf(TEXT("capture route resolves %s"), *ChoiceId), CapturedSession.ResolveChoice(ChoiceId, CapturedResolution, Error));
+    TestTrue(TEXT("capture route reaches its exact terminal state"), CapturedSession.IsCompleted()
+        && CapturedSession.GetFailureReason() == TEXT("captured") && CapturedSession.GetResources().FindRef(TEXT("danger")) == 100);
+    const FShiNodeData* CapturedNode = CapturedSession.GetCurrentNode();
+    const FShiSiteData* CapturedSite = CapturedNode ? Campaign.FindSite(CapturedNode->SiteId) : nullptr;
+    TestNotNull(TEXT("captured route retains a position site"), CapturedSite);
+    TArray<FShiCommandSignalData> CapturedSignals;
+    TestTrue(TEXT("captured world snapshot remains cinematic-readable"), CapturedNode && !CapturedNode->Choices.IsEmpty()
+        && FShiCommandSignalModel::Build(CapturedSession.GetResources(), CapturedSession.GetCurrentFieldCondition(), nullptr,
+            CapturedSession.GetCurrentMethodRead(), CapturedSession.GetActiveCommitment(), &CapturedNode->Choices[0],
+            TEXT("en"), CapturedSignals, Error));
+    TArray<FShiCinematicBeatData> CapturedBeats;
+    TestTrue(TEXT("captured terminal position has a bounded consequence plan"), CapturedSite
+        && FShiCinematicBeatModel::Build(CapturedResolution, CapturedSession.GetActiveCommitment(), CapturedSession.GetResources(),
+            CapturedSite, CapturedSession.IsCompleted(), CapturedSession.GetFailureReason(), CapturedSignals,
+            TEXT("en"), CapturedBeats, Error));
+    TestTrue(TEXT("captured plan ends on an exact lost-position beat"),
+        !CapturedBeats.IsEmpty() && CapturedBeats.Last().Label.Contains(TEXT("POSITION LOST · CAPTURED")));
+
+    const int32 StableBeatCount = Beats.Num();
+    const FString StableFirstBeatId = Beats[0].Id;
+    TestFalse(TEXT("cinematic failure label cannot appear on a nonterminal position"), FShiCinematicBeatModel::Build(Resolution,
+        Session.GetActiveCommitment(), Session.GetResources(), PositionSite, false, TEXT("captured"), Signals,
+        TEXT("en"), Beats, Error));
+    TestTrue(TEXT("invalid failure state cannot replace the accepted cinematic plan"), Beats.Num() == StableBeatCount && Beats[0].Id == StableFirstBeatId);
+    TMap<FString, int32> DriftedResources = Session.GetResources();
+    DriftedResources.FindOrAdd(TEXT("grain")) += 1;
+    TestFalse(TEXT("cinematic final resources must match resolution and world snapshots"), FShiCinematicBeatModel::Build(Resolution,
+        Session.GetActiveCommitment(), DriftedResources, PositionSite, Session.IsCompleted(), Session.GetFailureReason(),
+        Signals, TEXT("en"), Beats, Error));
+    TestTrue(TEXT("resource drift cannot replace the accepted cinematic plan"), Beats.Num() == StableBeatCount && Beats[0].Id == StableFirstBeatId);
+    FShiResolutionResult BrokenResolution = Resolution;
+    BrokenResolution.Choice = nullptr;
+    TestFalse(TEXT("incomplete resolution cannot replace the cinematic plan"), FShiCinematicBeatModel::Build(BrokenResolution,
+        Session.GetActiveCommitment(), Session.GetResources(), PositionSite, Session.IsCompleted(), Session.GetFailureReason(),
+        Signals, TEXT("en"), Beats, Error));
+    TestTrue(TEXT("failed cinematic rebuild is atomic"), Beats.Num() == StableBeatCount && Beats[0].Id == StableFirstBeatId);
+    return !HasAnyErrors();
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiAudioContractTest, "SHI.Audio.ProceduralContractV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FShiAudioContractTest::RunTest(const FString& Parameters)
@@ -428,6 +537,26 @@ bool FShiCampaignReplayConformanceTest::RunTest(const FString& Parameters)
             TestEqual(*FString::Printf(TEXT("%s completion"), *Context), Session.IsCompleted(), Expected->GetBoolField(TEXT("completed")));
             TestEqual(*FString::Printf(TEXT("%s failure"), *Context), Session.GetFailureReason(), OptionalString(Expected, TEXT("failureReason")));
             TestEqual(*FString::Printf(TEXT("%s active commitment"), *Context), Session.GetActiveCommitmentId(), OptionalString(Expected, TEXT("activeCommitmentId")));
+
+            const FShiNodeData* PositionNode = Session.GetCurrentNode();
+            const FShiSiteData* PositionSite = PositionNode ? Campaign.FindSite(PositionNode->SiteId) : nullptr;
+            TArray<FShiCommandSignalData> Signals;
+            if (!PositionNode || PositionNode->Choices.IsEmpty() || !PositionSite
+                || !FShiCommandSignalModel::Build(Session.GetResources(), Session.GetCurrentFieldCondition(),
+                    Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(), Session.GetActiveCommitment(),
+                    &PositionNode->Choices[0], TEXT("en"), Signals, Error))
+            {
+                AddError(FString::Printf(TEXT("%s could not build its post-order world: %s"), *Context, *Error));
+                break;
+            }
+            TArray<FShiCinematicBeatData> Beats;
+            if (!FShiCinematicBeatModel::Build(Resolution, Session.GetActiveCommitment(), Session.GetResources(), PositionSite,
+                Session.IsCompleted(), Session.GetFailureReason(), Signals, TEXT("en"), Beats, Error))
+            {
+                AddError(FString::Printf(TEXT("%s could not build its consequence cinema: %s"), *Context, *Error));
+                break;
+            }
+            TestTrue(*FString::Printf(TEXT("%s cinematic ceiling"), *Context), FShiCinematicBeatModel::TotalDuration(Beats) <= 5.f);
         }
 
         const TSharedPtr<FJsonObject> Final = Route->GetObjectField(TEXT("final"));

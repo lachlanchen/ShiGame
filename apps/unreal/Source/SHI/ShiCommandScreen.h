@@ -25,6 +25,7 @@ private:
     TSharedRef<SWidget> BuildEvidenceLayout(AShiGameMode& Mode, const FShiNodeData& Node);
     FReply Select(int32 Index);
     FReply Issue();
+    FReply SkipCinematic();
     FReply NewChronicle();
     FReply ToggleEvidence();
     FReply CycleSite(int32 Direction);

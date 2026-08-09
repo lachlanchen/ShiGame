@@ -4,6 +4,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "ShiCampaignModel.h"
 #include "ShiCampaignSession.h"
+#include "ShiCinematicBeatModel.h"
 #include "ShiCommandSignalModel.h"
 #include "ShiGameMode.generated.h"
 
@@ -51,6 +52,10 @@ public:
     const FShiCommitmentData* GetActiveCommitment() const { return Session.GetActiveCommitment(); }
     const FShiSiteData* GetInspectedSite() const;
     const FShiCommandSignalData* GetInspectedCommandSignal() const;
+    const FShiCinematicBeatData* GetActiveCinematicBeat() const;
+    int32 GetCinematicBeatIndex() const { return CinematicBeatIndex; }
+    int32 GetCinematicBeatCount() const { return CinematicBeats.Num(); }
+    bool IsCinematicSequenceActive() const { return CinematicBeats.IsValidIndex(CinematicBeatIndex); }
     bool IsInspectingRemoteSite() const;
 
     void SelectChoice(int32 Index);
@@ -64,6 +69,7 @@ public:
     void ToggleSound();
     void AdjustAmbience(int32 Direction);
     void AdjustEffects(int32 Direction);
+    void SkipCinematicSequence();
 
 private:
     FShiCampaignModel Campaign;
@@ -88,6 +94,10 @@ private:
     TWeakObjectPtr<ACameraActor> CommandCamera;
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> SiteMarkers;
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> CommandSignalMarkers;
+    TArray<FShiCinematicBeatData> CinematicBeats;
+    int32 CinematicBeatIndex = INDEX_NONE;
+    float CinematicHoldElapsed = 0.f;
+    bool bCinematicHolding = false;
     FVector CameraBaseLocation;
     FRotator CameraBaseRotation;
     FVector CameraTransitionStartLocation;
@@ -96,15 +106,16 @@ private:
     FRotator CameraTransitionTargetRotation;
     float CameraTransitionElapsed = 0.f;
     float CameraTransitionDuration = 0.f;
-    float CameraBeatElapsed = 0.f;
-    float CameraBeatDuration = 0.f;
 
     void CreateCommandSpace();
     void CreateSoundscape();
     void RefreshScreen();
-    void BeginCameraBeat();
     void BeginCameraTransition(const FTransform& Target, float Duration);
     void TickCamera(float DeltaSeconds);
+    bool BeginResolutionSequence(const FShiResolutionResult& Resolution, FString& OutError);
+    void StartCinematicBeat();
+    void TickCinematicSequence(float DeltaSeconds);
+    void CompleteCinematicSequence();
     void InspectSite(const FString& SiteId, bool bImmediate = false, bool bPlayCue = true);
     void InspectCommandSignal(const FString& SignalId, bool bPlayCue = true);
     bool InspectWorldUnderCursor(APlayerController& Controller);
