@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shi-game.example/schema/engagement.schema.json",
+  "title": "SHI deterministic martial engagement",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "campaignId",
+    "nodeId",
+    "deliveryStatus",
+    "claimStatus",
+    "title",
+    "objective",
+    "sourceRefs",
+    "claimRefs",
+    "metrics",
+    "initialMetrics",
+    "conditions",
+    "plans",
+    "pulses",
+    "commands",
+    "outcomes"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "$ref": "#/$defs/id" },
+    "campaignId": { "$ref": "#/$defs/id" },
+    "nodeId": { "$ref": "#/$defs/id" },
+    "deliveryStatus": { "const": "validated-shared-contract-not-campaign-authority" },
+    "claimStatus": { "const": "dramatic-reconstruction" },
+    "title": { "$ref": "#/$defs/localizedText" },
+    "objective": { "$ref": "#/$defs/localizedText" },
+    "sourceRefs": { "$ref": "#/$defs/idList" },
+    "claimRefs": { "$ref": "#/$defs/idList" },
+    "metrics": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "crossingProgress" },
+        { "const": "rearCohesion" },
+        { "const": "reserveReadiness" },
+        { "const": "supplyLoads" },
+        { "const": "pursuitClosure" },
+        { "const": "signalIntegrity" }
+      ],
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "initialMetrics": { "$ref": "#/$defs/completeMetrics" },
+    "conditions": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "$ref": "#/$defs/condition" }
+    },
+    "plans": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "$ref": "#/$defs/plan" }
+    },
+    "pulses": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/pulse" }
+    },
+    "commands": {
+      "type": "array",
+      "minItems": 6,
+      "items": { "$ref": "#/$defs/command" }
+    },
+    "outcomes": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/outcome" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "idList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "localizedText": {
+      "type": "object",
+      "required": ["en", "zh-Hans"],
+      "properties": {
+        "en": { "type": "string", "minLength": 1 },
+        "zh-Hans": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "metricEffects": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "crossingProgress": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "rearCohesion": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "reserveReadiness": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "supplyLoads": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "pursuitClosure": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "signalIntegrity": { "type": "integer", "minimum": -25, "maximum": 25 }
+      }
+    },
+    "completeMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["crossingProgress", "rearCohesion", "reserveReadiness", "supplyLoads", "pursuitClosure", "signalIntegrity"],
+      "properties": {
+        "crossingProgress": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "rearCohesion": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "reserveReadiness": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "supplyLoads": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "pursuitClosure": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "signalIntegrity": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "campaignEffects": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "grain": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "trust": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "momentum": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "people": { "type": "integer", "minimum": -25, "maximum": 25 },
+        "danger": { "type": "integer", "minimum": -25, "maximum": 25 }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min": { "$ref": "#/$defs/completeOrPartialThresholds" },
+        "max": { "$ref": "#/$defs/completeOrPartialThresholds" }
+      },
+      "anyOf": [
+        { "required": ["min"] },
+        { "required": ["max"] }
+      ]
+    },
+    "completeOrPartialThresholds": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "crossingProgress": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "rearCohesion": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "reserveReadiness": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "supplyLoads": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "pursuitClosure": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "signalIntegrity": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "signal", "localEffects"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "signal": { "$ref": "#/$defs/localizedText" },
+        "localEffects": { "$ref": "#/$defs/metricEffects" }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "mainEffort", "withdrawalCondition", "initialEffects", "campaignEffects", "allowedCommands"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "mainEffort": { "$ref": "#/$defs/localizedText" },
+        "withdrawalCondition": { "$ref": "#/$defs/localizedText" },
+        "initialEffects": { "$ref": "#/$defs/metricEffects" },
+        "campaignEffects": { "$ref": "#/$defs/campaignEffects" },
+        "allowedCommands": {
+          "type": "object",
+          "minProperties": 3,
+          "additionalProperties": { "$ref": "#/$defs/idList" }
+        }
+      }
+    },
+    "pulse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "objective", "commandIds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "objective": { "$ref": "#/$defs/localizedText" },
+        "commandIds": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "reveal", "effects"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["state", "terrain", "supply", "network"] },
+        "reveal": { "$ref": "#/$defs/localizedText" },
+        "effects": { "$ref": "#/$defs/metricEffects" }
+      }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "pulseId", "order", "title", "intent", "effects", "response"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "pulseId": { "$ref": "#/$defs/id" },
+        "order": { "enum": ["anchor", "advance", "screen", "shift", "feint", "reserve", "withdraw"] },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "intent": { "$ref": "#/$defs/localizedText" },
+        "effects": { "$ref": "#/$defs/metricEffects" },
+        "requirements": { "$ref": "#/$defs/requirements" },
+        "response": { "$ref": "#/$defs/response" }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "title", "summary", "campaignEffects"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["success", "costly-success", "withdrawal", "failure"] },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "summary": { "$ref": "#/$defs/localizedText" },
+        "requirements": { "$ref": "#/$defs/requirements" },
+        "campaignEffects": { "$ref": "#/$defs/campaignEffects" }
+      }
+    }
+  }
+}

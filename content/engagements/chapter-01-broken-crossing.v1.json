@@ -1,0 +1,653 @@
+{
+  "schemaVersion": 1,
+  "id": "chapter-01-broken-crossing",
+  "campaignId": "chapter-01-daze",
+  "nodeId": "broken-crossing",
+  "deliveryStatus": "validated-shared-contract-not-campaign-authority",
+  "claimStatus": "dramatic-reconstruction",
+  "title": {
+    "en": "The Broken Crossing",
+    "zh-Hans": "断渡"
+  },
+  "objective": {
+    "en": "Move the protected column across, retain an organized rear element, and break contact before pursuit closes.",
+    "zh-Hans": "护送队伍渡河，保留有组织的后卫，并在追捕合拢前脱离接触。"
+  },
+  "sourceRefs": [
+    "dramatic-daze-keeper",
+    "sunzi-1-calculation"
+  ],
+  "claimRefs": [
+    "sunzi-five-factors-design-lens",
+    "fictional-cast-and-councils",
+    "schematic-campaign-map",
+    "field-conditions-reconstruction"
+  ],
+  "metrics": [
+    "crossingProgress",
+    "rearCohesion",
+    "reserveReadiness",
+    "supplyLoads",
+    "pursuitClosure",
+    "signalIntegrity"
+  ],
+  "initialMetrics": {
+    "crossingProgress": 10,
+    "rearCohesion": 60,
+    "reserveReadiness": 60,
+    "supplyLoads": 70,
+    "pursuitClosure": 35,
+    "signalIntegrity": 70
+  },
+  "conditions": [
+    {
+      "id": "ford-rises",
+      "title": {
+        "en": "The ford rises another hand",
+        "zh-Hans": "渡口又涨一掌"
+      },
+      "signal": {
+        "en": "The current climbs against the stakes; footing, loads, and the rear interval are already degrading.",
+        "zh-Hans": "水流正沿木桩上涨；脚下、载荷与后队间距都已开始恶化。"
+      },
+      "localEffects": {
+        "crossingProgress": -4,
+        "rearCohesion": -4,
+        "supplyLoads": -6,
+        "pursuitClosure": 6,
+        "signalIntegrity": -2
+      }
+    },
+    {
+      "id": "rope-ferry-returns",
+      "title": {
+        "en": "A rope ferry returns upstream",
+        "zh-Hans": "上游缆渡归来"
+      },
+      "signal": {
+        "en": "A small ferry brings hands and a little grain, but the added witnesses complicate signals and concealment.",
+        "zh-Hans": "一只小缆渡带来人手与少量粮食，但新增见证者也让信号与隐蔽更复杂。"
+      },
+      "localEffects": {
+        "crossingProgress": 5,
+        "reserveReadiness": 4,
+        "supplyLoads": 3,
+        "pursuitClosure": 2,
+        "signalIntegrity": -2
+      }
+    }
+  ],
+  "plans": [
+    {
+      "id": "families-first",
+      "title": {
+        "en": "Households first",
+        "zh-Hans": "家户先渡"
+      },
+      "mainEffort": {
+        "en": "Protect the households and make the movement's obligation visible.",
+        "zh-Hans": "保护家户，让队伍承担的责任变得可见。"
+      },
+      "withdrawalCondition": {
+        "en": "The rear may disengage only after the protected column clears the landing signal.",
+        "zh-Hans": "只有受保护队伍越过登陆信号后，后卫方可脱离。"
+      },
+      "initialEffects": {
+        "crossingProgress": 8,
+        "rearCohesion": -4,
+        "reserveReadiness": -2,
+        "pursuitClosure": 6,
+        "signalIntegrity": 4
+      },
+      "campaignEffects": {
+        "people": 6,
+        "trust": 5,
+        "momentum": -2,
+        "danger": 4
+      },
+      "allowedCommands": {
+        "establish-shape": ["screen-through-reeds", "brace-the-approach"],
+        "answer-disruption": ["reinforce-the-rear", "repair-the-landing"],
+        "break-contact": ["hold-for-the-last-household", "staggered-withdrawal", "release-the-reserve"]
+      }
+    },
+    {
+      "id": "repair-the-ford",
+      "title": {
+        "en": "Brace the ford",
+        "zh-Hans": "固渡"
+      },
+      "mainEffort": {
+        "en": "Spend material and labor to preserve one organized crossing lane.",
+        "zh-Hans": "投入物资与人力，保住一条有组织的渡河通道。"
+      },
+      "withdrawalCondition": {
+        "en": "Withdraw when the braced lane can carry the final organized element without further repair.",
+        "zh-Hans": "当加固通道无需再次修补即可承载最后一支有组织队伍时撤出。"
+      },
+      "initialEffects": {
+        "crossingProgress": 2,
+        "rearCohesion": 6,
+        "reserveReadiness": 4,
+        "supplyLoads": -12,
+        "pursuitClosure": -4
+      },
+      "campaignEffects": {
+        "grain": -8,
+        "trust": 2,
+        "momentum": 2,
+        "danger": -4
+      },
+      "allowedCommands": {
+        "establish-shape": ["brace-the-approach", "open-three-files"],
+        "answer-disruption": ["reinforce-the-rear", "repair-the-landing", "abandon-the-loads"],
+        "break-contact": ["hold-for-the-last-household", "staggered-withdrawal", "release-the-reserve"]
+      }
+    },
+    {
+      "id": "cut-the-carts",
+      "title": {
+        "en": "Cut the carts loose",
+        "zh-Hans": "弃车轻行"
+      },
+      "mainEffort": {
+        "en": "Recover movement and conceal the column's true route before the cordon closes.",
+        "zh-Hans": "在合围完成前恢复机动，并隐藏队伍的真实路线。"
+      },
+      "withdrawalCondition": {
+        "en": "Break contact as soon as the moving column no longer depends on the abandoned loads.",
+        "zh-Hans": "一旦行进队伍不再依赖弃置载荷，立即脱离接触。"
+      },
+      "initialEffects": {
+        "crossingProgress": 12,
+        "rearCohesion": -6,
+        "reserveReadiness": 8,
+        "supplyLoads": -20,
+        "pursuitClosure": -8,
+        "signalIntegrity": -4
+      },
+      "campaignEffects": {
+        "grain": -7,
+        "trust": -5,
+        "momentum": 5,
+        "people": -2,
+        "danger": -6
+      },
+      "allowedCommands": {
+        "establish-shape": ["screen-through-reeds", "open-three-files"],
+        "answer-disruption": ["reinforce-the-rear", "abandon-the-loads"],
+        "break-contact": ["staggered-withdrawal", "release-the-reserve"]
+      }
+    }
+  ],
+  "pulses": [
+    {
+      "id": "establish-shape",
+      "title": {
+        "en": "I · Establish the shape",
+        "zh-Hans": "一 · 定形"
+      },
+      "objective": {
+        "en": "Assign the screen, crossing frontage, and first reserve interval before pursuit reads the bank.",
+        "zh-Hans": "在追捕方读懂河岸前，安排掩护、渡河正面与第一道预备间距。"
+      },
+      "commandIds": ["screen-through-reeds", "brace-the-approach", "open-three-files"]
+    },
+    {
+      "id": "answer-disruption",
+      "title": {
+        "en": "II · Answer disruption",
+        "zh-Hans": "二 · 应变"
+      },
+      "objective": {
+        "en": "Answer the field's disruption without losing the rear, the landing, or the route home.",
+        "zh-Hans": "回应现场扰动，同时不失后卫、登陆点与退路。"
+      },
+      "commandIds": ["reinforce-the-rear", "repair-the-landing", "abandon-the-loads"]
+    },
+    {
+      "id": "break-contact",
+      "title": {
+        "en": "III · Break contact",
+        "zh-Hans": "三 · 脱离"
+      },
+      "objective": {
+        "en": "Choose what must still cross and what must remain uncommitted when the rear signal changes.",
+        "zh-Hans": "后方信号改变时，决定仍须渡河之物与必须保留的未投入力量。"
+      },
+      "commandIds": ["hold-for-the-last-household", "staggered-withdrawal", "release-the-reserve"]
+    }
+  ],
+  "commands": [
+    {
+      "id": "screen-through-reeds",
+      "pulseId": "establish-shape",
+      "order": "screen",
+      "title": {
+        "en": "Screen through the reeds",
+        "zh-Hans": "借芦苇设障幕"
+      },
+      "intent": {
+        "en": "Hide the crossing frontage and make the patrol spend time proving where the column is moving.",
+        "zh-Hans": "遮蔽渡河正面，迫使巡卒花时间确认队伍去向。"
+      },
+      "effects": {
+        "crossingProgress": 10,
+        "rearCohesion": -3,
+        "reserveReadiness": -3,
+        "pursuitClosure": -6,
+        "signalIntegrity": -2
+      },
+      "requirements": {
+        "min": { "signalIntegrity": 40 }
+      },
+      "response": {
+        "id": "patrol-probes-reeds",
+        "kind": "state",
+        "reveal": {
+          "en": "The patrol does not commit. Small probes force the screen to answer from two points, thinning the rear interval.",
+          "zh-Hans": "巡卒没有直接投入；小股试探迫使障幕从两处回应，后队间距因此变薄。"
+        },
+        "effects": {
+          "rearCohesion": -2,
+          "pursuitClosure": 3,
+          "signalIntegrity": -2
+        }
+      }
+    },
+    {
+      "id": "brace-the-approach",
+      "pulseId": "establish-shape",
+      "order": "anchor",
+      "title": {
+        "en": "Brace the approach",
+        "zh-Hans": "加固入口"
+      },
+      "intent": {
+        "en": "Create one reliable lane and give the rear a fixed reference for every later signal.",
+        "zh-Hans": "建立一条可靠通道，并为后续信号提供固定参照。"
+      },
+      "effects": {
+        "crossingProgress": 8,
+        "rearCohesion": 6,
+        "supplyLoads": -7,
+        "pursuitClosure": 2,
+        "signalIntegrity": 3
+      },
+      "requirements": {
+        "min": { "supplyLoads": 40 }
+      },
+      "response": {
+        "id": "repair-marks-the-bank",
+        "kind": "terrain",
+        "reveal": {
+          "en": "Cut stakes and concentrated labor reveal the true lane. Pursuit closes with a clearer route but no immediate breach.",
+          "zh-Hans": "新砍木桩与集中劳作暴露了真实通道；追捕方沿更清楚的路线逼近，却尚未突破。"
+        },
+        "effects": {
+          "pursuitClosure": 4,
+          "signalIntegrity": -1
+        }
+      }
+    },
+    {
+      "id": "open-three-files",
+      "pulseId": "establish-shape",
+      "order": "shift",
+      "title": {
+        "en": "Open three narrow files",
+        "zh-Hans": "分开三列窄队"
+      },
+      "intent": {
+        "en": "Trade rear density and signal simplicity for immediate movement across a wider frontage.",
+        "zh-Hans": "以削弱后队密度与信号简洁性，换取更宽正面的即时移动。"
+      },
+      "effects": {
+        "crossingProgress": 15,
+        "rearCohesion": -7,
+        "reserveReadiness": -5,
+        "pursuitClosure": -3,
+        "signalIntegrity": -6
+      },
+      "requirements": {
+        "min": { "signalIntegrity": 50 }
+      },
+      "response": {
+        "id": "whistles-split-the-rear",
+        "kind": "network",
+        "reveal": {
+          "en": "Patrol whistles echo from both banks. The three files move, but the rear answers two false directions before finding the command signal.",
+          "zh-Hans": "两岸都响起巡卒哨声；三列继续移动，后队却先回应了两个假方向，才重新找到指挥信号。"
+        },
+        "effects": {
+          "rearCohesion": -3,
+          "pursuitClosure": 2,
+          "signalIntegrity": -2
+        }
+      }
+    },
+    {
+      "id": "reinforce-the-rear",
+      "pulseId": "answer-disruption",
+      "order": "reserve",
+      "title": {
+        "en": "Reinforce the rear",
+        "zh-Hans": "增援后卫"
+      },
+      "intent": {
+        "en": "Commit part of the reserve to restore intervals and keep the crossing order intelligible.",
+        "zh-Hans": "投入部分预备力量，恢复间距并维持渡河次序的可理解性。"
+      },
+      "effects": {
+        "crossingProgress": 5,
+        "rearCohesion": 12,
+        "reserveReadiness": -14,
+        "pursuitClosure": 3,
+        "signalIntegrity": 2
+      },
+      "requirements": {
+        "min": { "reserveReadiness": 45 }
+      },
+      "response": {
+        "id": "pressure-shifts-to-ford",
+        "kind": "state",
+        "reveal": {
+          "en": "Seeing weight move rearward, the patrol presses the landing instead. The column pauses while the fixed rear holds.",
+          "zh-Hans": "巡卒看到力量后移，转而压迫登陆点；固定下来的后卫守住了，队伍却短暂停滞。"
+        },
+        "effects": {
+          "crossingProgress": -2,
+          "supplyLoads": -2,
+          "pursuitClosure": 5
+        }
+      }
+    },
+    {
+      "id": "repair-the-landing",
+      "pulseId": "answer-disruption",
+      "order": "anchor",
+      "title": {
+        "en": "Repair the landing",
+        "zh-Hans": "修整登陆点"
+      },
+      "intent": {
+        "en": "Spend loads and labor now so the crossing can continue without repeated breaks in formation.",
+        "zh-Hans": "立即投入载荷与人力，让渡河无需反复打断队形。"
+      },
+      "effects": {
+        "crossingProgress": 11,
+        "rearCohesion": 2,
+        "supplyLoads": -12,
+        "pursuitClosure": 2,
+        "signalIntegrity": 4
+      },
+      "requirements": {
+        "min": { "supplyLoads": 45 }
+      },
+      "response": {
+        "id": "cut-timber-confirms-route",
+        "kind": "terrain",
+        "reveal": {
+          "en": "The repaired lip holds, but fresh timber and wet sacks confirm the route to every observer on the bank.",
+          "zh-Hans": "修整后的岸缘撑住了，但新木料与湿粮袋也向河岸上的观察者确认了路线。"
+        },
+        "effects": {
+          "pursuitClosure": 5,
+          "signalIntegrity": -2
+        }
+      }
+    },
+    {
+      "id": "abandon-the-loads",
+      "pulseId": "answer-disruption",
+      "order": "withdraw",
+      "title": {
+        "en": "Abandon the heaviest loads",
+        "zh-Hans": "弃下最重载荷"
+      },
+      "intent": {
+        "en": "Recover movement and reopen the rear route before material fixes the column in place.",
+        "zh-Hans": "在物资把队伍钉死之前恢复移动，并重新打开后方路线。"
+      },
+      "effects": {
+        "crossingProgress": 14,
+        "rearCohesion": -4,
+        "reserveReadiness": 2,
+        "supplyLoads": -16,
+        "pursuitClosure": -8,
+        "signalIntegrity": -3
+      },
+      "requirements": {
+        "min": { "supplyLoads": 30 }
+      },
+      "response": {
+        "id": "owners-turn-back",
+        "kind": "network",
+        "reveal": {
+          "en": "The patrol follows the discarded track, but several carriers turn back before the rear signal reaches them.",
+          "zh-Hans": "巡卒追向弃置痕迹，但几名载物者在后方信号传到前已经折返。"
+        },
+        "effects": {
+          "crossingProgress": -3,
+          "rearCohesion": -2,
+          "pursuitClosure": 2,
+          "signalIntegrity": -2
+        }
+      }
+    },
+    {
+      "id": "hold-for-the-last-household",
+      "pulseId": "break-contact",
+      "order": "anchor",
+      "title": {
+        "en": "Hold for the last household",
+        "zh-Hans": "守到最后一户"
+      },
+      "intent": {
+        "en": "Fix the rear long enough for the protected tail of the column to clear the landing.",
+        "zh-Hans": "固定后卫，直到受保护队伍的最后部分越过登陆点。"
+      },
+      "effects": {
+        "crossingProgress": 20,
+        "rearCohesion": -14,
+        "reserveReadiness": -4,
+        "supplyLoads": -3,
+        "pursuitClosure": 8,
+        "signalIntegrity": -3
+      },
+      "requirements": {
+        "min": { "rearCohesion": 42 }
+      },
+      "response": {
+        "id": "patrol-commits-to-rear",
+        "kind": "state",
+        "reveal": {
+          "en": "The patrol finally commits against the fixed rear. The households clear, but contact becomes close and costly.",
+          "zh-Hans": "巡卒终于向固定后卫投入；家户得以通过，接触却变得近而昂贵。"
+        },
+        "effects": {
+          "rearCohesion": -4,
+          "pursuitClosure": 7,
+          "signalIntegrity": -2
+        }
+      }
+    },
+    {
+      "id": "staggered-withdrawal",
+      "pulseId": "break-contact",
+      "order": "withdraw",
+      "title": {
+        "en": "Withdraw by alternating files",
+        "zh-Hans": "交替列队撤出"
+      },
+      "intent": {
+        "en": "Let one file move while another preserves the signal and rear interval.",
+        "zh-Hans": "一列移动时由另一列维持信号与后方间距。"
+      },
+      "effects": {
+        "crossingProgress": 12,
+        "rearCohesion": -5,
+        "reserveReadiness": -6,
+        "supplyLoads": -4,
+        "pursuitClosure": -8,
+        "signalIntegrity": 4
+      },
+      "requirements": {
+        "min": { "signalIntegrity": 35 }
+      },
+      "response": {
+        "id": "patrol-probes-withdrawal",
+        "kind": "state",
+        "reveal": {
+          "en": "The patrol probes each opening but cannot find one continuous collapse. The rear gives ground without becoming a rout.",
+          "zh-Hans": "巡卒试探每个空隙，却找不到一次连续崩溃；后卫让出地面，却没有变成溃退。"
+        },
+        "effects": {
+          "rearCohesion": -3,
+          "pursuitClosure": 4,
+          "signalIntegrity": -1
+        }
+      }
+    },
+    {
+      "id": "release-the-reserve",
+      "pulseId": "break-contact",
+      "order": "reserve",
+      "title": {
+        "en": "Release the reserve across the open lane",
+        "zh-Hans": "放出预备队通过空道"
+      },
+      "intent": {
+        "en": "Use the uncommitted element to reopen movement, steady the rear, and then leave before it becomes fixed.",
+        "zh-Hans": "用未投入力量重开通道、稳住后卫，并在其被钉住前离开。"
+      },
+      "effects": {
+        "crossingProgress": 16,
+        "rearCohesion": 8,
+        "reserveReadiness": -18,
+        "supplyLoads": -4,
+        "pursuitClosure": -6,
+        "signalIntegrity": -5
+      },
+      "requirements": {
+        "min": { "reserveReadiness": 40 }
+      },
+      "response": {
+        "id": "patrol-closes-secondary-lane",
+        "kind": "state",
+        "reveal": {
+          "en": "Pursuit yields the reopened lane and closes on the secondary track. The reserve buys movement, not a decisive defeat.",
+          "zh-Hans": "追捕方让出重开的通道，转而逼近次要小路；预备队买到的是移动，而非决定性击败。"
+        },
+        "effects": {
+          "crossingProgress": -2,
+          "rearCohesion": -2,
+          "pursuitClosure": 4,
+          "signalIntegrity": -2
+        }
+      }
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "orderly-crossing",
+      "status": "success",
+      "title": {
+        "en": "Orderly crossing",
+        "zh-Hans": "整队过河"
+      },
+      "summary": {
+        "en": "The protected column clears the landing, the rear remains answerable, and pursuit never finds a single collapse to exploit.",
+        "zh-Hans": "受保护队伍越过登陆点，后卫仍能回应命令，追捕方始终找不到可利用的整体崩溃。"
+      },
+      "requirements": {
+        "min": {
+          "crossingProgress": 58,
+          "rearCohesion": 38,
+          "signalIntegrity": 35
+        },
+        "max": { "pursuitClosure": 65 }
+      },
+      "campaignEffects": {
+        "grain": -2,
+        "trust": 3,
+        "momentum": 4,
+        "people": 4,
+        "danger": -5
+      }
+    },
+    {
+      "id": "costly-crossing",
+      "status": "costly-success",
+      "title": {
+        "en": "Crossing under pressure",
+        "zh-Hans": "受压过河"
+      },
+      "summary": {
+        "en": "Most of the objective is secured, but lost time, material, or rear cohesion makes the next position more fragile.",
+        "zh-Hans": "大部分目标得以保全，但损失的时间、物资或后卫凝聚让下一步更加脆弱。"
+      },
+      "requirements": {
+        "min": {
+          "crossingProgress": 48,
+          "rearCohesion": 24,
+          "signalIntegrity": 25
+        },
+        "max": { "pursuitClosure": 82 }
+      },
+      "campaignEffects": {
+        "grain": -5,
+        "trust": 1,
+        "momentum": -1,
+        "people": 1,
+        "danger": 4
+      }
+    },
+    {
+      "id": "fighting-withdrawal",
+      "status": "withdrawal",
+      "title": {
+        "en": "Fighting withdrawal",
+        "zh-Hans": "边战边撤"
+      },
+      "summary": {
+        "en": "The movement breaks contact without completing the intended crossing. People survive, but the obligation and route remain unresolved.",
+        "zh-Hans": "队伍未完成预定渡河，却成功脱离接触；人得以保存，责任与路线仍未解决。"
+      },
+      "requirements": {
+        "min": {
+          "crossingProgress": 38,
+          "rearCohesion": 18,
+          "signalIntegrity": 20
+        },
+        "max": { "pursuitClosure": 95 }
+      },
+      "campaignEffects": {
+        "grain": -4,
+        "trust": -2,
+        "momentum": -5,
+        "people": -3,
+        "danger": -2
+      }
+    },
+    {
+      "id": "rear-broken",
+      "status": "failure",
+      "title": {
+        "en": "The rear breaks",
+        "zh-Hans": "后卫崩解"
+      },
+      "summary": {
+        "en": "Signals no longer hold one organized rear. The crossing record must explain who was separated and what recovery remains possible.",
+        "zh-Hans": "信号已无法维持一个有组织的后卫；战果记录必须说明谁被隔离，以及还存在哪些恢复可能。"
+      },
+      "campaignEffects": {
+        "grain": -6,
+        "trust": -6,
+        "momentum": -8,
+        "people": -8,
+        "danger": 8
+      }
+    }
+  ]
+}

@@ -102,6 +102,8 @@ The three existing doctrines—households first, brace the ford with grain and a
 4. Build the Unreal terrain zones, formations, signals, controller/pointer interaction, command pulses and restrained camera language from that same record.
 5. Replace the old one-click crossing resolution only after both clients replay byte-identical engagement outcomes and save migration is proven.
 
+Stage 2 source checkpoint, 2026-08-09: [`chapter-01-broken-crossing.v1.json`](../../content/engagements/chapter-01-broken-crossing.v1.json) now carries three plans, two field conditions, three command pulses, nine orders with separate authored responses, six local command metrics and four ordered outcomes. The pure TypeScript resolver records command effects before the field answer, derives campaign deltas only at completion and rebuilds saves from identifiers instead of trusting stored totals. Exhaustive validation covers all 76 legal plan/condition routes: all four outcomes and all nine commands are reachable, every plan remains viable under both conditions, and altered response or metric history is rejected. Its explicit delivery status is `validated-shared-contract-not-campaign-authority`; the existing campaign choice remains authoritative until the Web command board and native Unreal client produce the same replay evidence.
+
 ## Cinematic and embodied presentation
 
 The default Unreal viewpoint moves between a human-scale command position and a readable elevated field view. The player can inspect an officer, messenger, formation or terrain edge directly, then return to command without losing selection or history.
@@ -128,7 +130,7 @@ The private `../ZhJpBook` and `../Books` copies are research inputs only. SHI co
 
 ## Shared architecture
 
-The future engagement payload must be versioned beside the campaign, not embedded in Unreal assets:
+The engagement payload is versioned beside the campaign, not embedded in Unreal assets:
 
 ```text
 engagement definition + historical claims + authored conditions
