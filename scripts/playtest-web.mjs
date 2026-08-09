@@ -756,7 +756,7 @@ await waitForFontReady();
 snapshot = await evaluate(`({ primary: document.querySelector('.primary-button')?.textContent?.trim() })`);
 check(snapshot.primary.includes("Continue"), "reload offers save continuation");
 await click(".primary-button");
-await wait(400);
+await waitForSelector("[data-testid=commitment-panel]", 10000);
 snapshot = await evaluate(`({ heading: document.querySelector('.story-panel h1')?.textContent?.trim(), seed: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-seed'), condition: document.querySelector('[data-testid=shi-app]')?.getAttribute('data-condition-id'), commitment: document.querySelector('[data-testid=commitment-panel]')?.textContent?.trim(), horizonAct: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-act-id'), horizonTime: document.querySelector('[data-testid=campaign-horizon]')?.getAttribute('data-time-index') })`);
 check(snapshot.heading === "A covenant must eat", "save resumes at the exact branch node");
 check(snapshot.seed === "5EED2026" && Boolean(snapshot.condition), "reload preserves the seed and derives the next field condition");
