@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal deterministic consequence-cinema checkpoint
+
+- Replaced the generic post-order camera arc with a pure, atomic consequence grammar over the command space. Every accepted resolution yields order → optional oath → pressure → pursuit → method read → field → position in stable order, with a 3.52–4.08-second authored duration and a five-second hard ceiling.
+- Bound every shot to the exact resolved record and post-order live world: choice/pressure focus uses actual resource deltas after clamping, tactical layers focus their current signal, and the final beat carries all five exact totals at the authoritative campaign site. Final resources must agree across the session, resolution record and live signals; invalid layers, labels, timings, targets, terminal states or actor closure fail before playback and cannot replace an accepted plan.
+- Added one-target world highlighting, per-beat Slate text and an explicit boundary that cinema cannot change the already-resolved chronicle. All order, inspection, evidence, restart and mixer commands are blocked at UI and GameMode boundaries during playback. `Space`, `Escape` or Gamepad B skips the whole sequence and returns immediately to current ground; natural completion uses the same exact return.
+- Added `SHI.Cinematic.ResolutionGrammarV1` automation source for order/timing, oath/neutral-read/capture states, non-mutation, target closure and hostile failure. Strengthened `SHI.Campaign.CrossEngineReplayV1` so every turn of all 46 fixed-seed routes—including six terminal failure routes—must build a valid post-order signal snapshot and consequence plan under five seconds.
+- Exact implementation `d7df7b6081adeed88a3108ad19218cd661fc2376` passes `npm ci` and the complete build from a detached clean checkout: 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 golden cross-engine routes, canonical history/audio/content/conformance, accessibility/font/privacy/type gates, Unreal cinematic preflight and Web budgets.
+- This is source-level and reproducible clean-build evidence, not native Unreal proof. Official Unreal 5.8 acquisition still waits at Epic sign-in, so C++ compilation, automation execution, visible PIE natural/skip playback, camera/Slate review, audio capture/listening, performance capture and Linux packaging remain red.
+
+Next gate: after Epic sign-in, install the official build, compile and execute every suite, then capture one complete route with both natural consequence completion and a mid-beat skip while verifying exact focus/text, input isolation, camera return and unchanged history.
+
 ## 2026-08-09 · Unreal live-command-signal checkpoint
 
 - Materialized the authoritative command position as nine bounded 3D world pieces rather than leaving resource and counterplay state in Slate alone: five exact resource tallies plus field, Qin pursuit, selected-order method read and carried-oath signals. Shape, location, anchored height, text and selected outline/scale carry meaning together so color is non-exclusive.

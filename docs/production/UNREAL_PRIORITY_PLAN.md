@@ -20,9 +20,9 @@ The first native gate is one high-quality Daze order, not a vast empty map:
 2. Inspectable route/intelligence ground and command state are source-authored as five bounded canonical 3D sites plus nine live grain/trust/momentum/people/exposure/field/pursuit/method/oath signals with pointer/keyboard/gamepad focus, non-color-only shape/height/text grammar and scoped evidence. Native staging and review remain open.
 3. Three selectable orders and one complete, readable selected-order briefing.
 4. Explicit issue-order input from mouse, keyboard and controller.
-5. In-world and UI feedback for resource/commitment/enemy/field state is source-authored and refreshes after order resolution; native consequence staging and review remain open.
+5. In-world and UI feedback for resource/commitment/enemy/field state is source-authored and refreshes after order resolution; a deterministic consequence plan then binds the actual order/oath/pressure/pursuit/method/field/position record to those live actors. Native execution and review remain open.
 6. Act, scene, site and date advance from the register into organization.
-7. A short authored camera transition that preserves control and can be skipped.
+7. A 3.52–4.08-second six-or-seven-beat camera sentence with a five-second hard ceiling, one highlighted world target, exact Slate readout, complete command isolation and whole-sequence skip back to authoritative ground. Source and hostile automation are authored; native motion/input acceptance remains open.
 8. Opt-in rain and semantic order/consequence sound with independent persistent controls and no exclusive information.
 9. Save/reload and source/evidence access. The source slice is authored; native interaction proof remains open.
 10. Linux Development and packaged builds, automation tests and visible noVNC play evidence.
@@ -56,10 +56,10 @@ Official references:
 | Engine truth | official UnrealEditor version recorded; project files generate; C++ editor target compiles |
 | Rule truth | Unreal automation tests parse schema v7 and prove act/time/choice/effect closure |
 | Historical truth | edition rights, source/claim closure, exact locators, reconstruction labels, current scene/site scope and remote site-only scope pass native automation and visible interaction |
-| Replay truth | all 46 golden routes, six intermediate layer states, save round-trip and tamper rejection pass natively |
-| Interaction truth | visible PIE route performs site/signal click and cycle → exact state read → evidence → current-ground return → select/method-read refresh → issue → world-state refresh → response → progression without campaign-state mutation during inspection |
+| Replay truth | all 46 golden routes, six intermediate gameplay-layer states, post-turn consequence-plan closure, save round-trip and tamper rejection pass natively |
+| Interaction truth | visible PIE route performs site/signal click and cycle → exact state read → evidence → current-ground return → select/method-read refresh → issue → world-state refresh → natural consequence sequence plus mid-beat skip → progression without campaign-state mutation during inspection or presentation |
 | Audio truth | pre-consent silence, native output capture, mixer persistence, rapid-input fatigue and human listening review pass |
-| Presentation truth | reviewed desktop capture passes camera, lighting, legibility, motion and provenance review |
+| Presentation truth | reviewed desktop capture proves exact beat text/target closure, one highlighted focus, natural completion, immediate authoritative skip return, camera/lighting legibility, restrained motion, frame timing and provenance review |
 | Build truth | Development and packaged Linux builds launch from clean output with receipts/hashes |
 | Player truth | observed first-time players understand and enjoy the loop without developer coaching |
 

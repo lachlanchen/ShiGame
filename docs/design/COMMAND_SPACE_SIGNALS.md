@@ -26,7 +26,7 @@ Shape, position, relative height, text and selected outline/scale carry identity
 
 - Pointer selection raycasts against query-only visibility collision on site and signal actors.
 - `Tab` or Gamepad RB cycles sites. `C` or Gamepad L3 cycles signals. Holding Shift reverses either rail; `Home` returns to current playable ground.
-- A short eased camera transition aims at the selected piece. `Space` completes an active focus transition or order-response beat without changing state.
+- A short eased camera transition aims at the selected piece. Outside consequence presentation, `Space` completes an active focus transition without changing state; the separately validated [consequence-cinema contract](UNREAL_CONSEQUENCE_CINEMA.md) owns post-order motion and whole-sequence skip.
 - Exactly one world object owns selected scale/color/stencil feedback. Site selection turns off while a command signal is focused.
 - The Slate signal card exposes category, label, state and detail, and states that inspection is read-only. Previous/next signal and current-ground controls call the same focus model as physical input.
 - Signal inspection resets historical-basis scope to the current node site. Dynamic mechanical/reconstruction state is never inserted into the historical source ledger.
@@ -54,4 +54,4 @@ Exposure 100 is a deliberate terminal exception: pursuit has ended because the p
 
 ## Acceptance
 
-Source validation and `SHI.CommandSpace.LiveSignalsV1` automation are authored for count/order, exact values, base anchoring, camera aim, selection, cycling, post-order refresh, active oath, captured terminal state, pointer spacing, missing inputs and atomic failure. This is not native proof. Acceptance still requires official Unreal C++ compilation, automation execution, visible PIE mouse/keyboard/gamepad traversal, selected-state and text review, camera-motion review, Linux packaging and an observed complete route.
+Source validation and `SHI.CommandSpace.LiveSignalsV1` automation are authored for count/order, exact values, base anchoring, camera aim, selection, cycling, post-order refresh, active oath, captured terminal state, pointer spacing, missing inputs and atomic failure. Consequence cinema additionally validates every planned focus against this live snapshot. This is not native proof. Acceptance still requires official Unreal C++ compilation, automation execution, visible PIE mouse/keyboard/gamepad traversal, selected-state and text review, camera-motion review, Linux packaging and an observed complete route.
