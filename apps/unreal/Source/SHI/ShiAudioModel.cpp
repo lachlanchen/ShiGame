@@ -91,7 +91,7 @@ bool FShiAudioModel::LoadCanonical(FString& OutError)
     Ambience.Seed = static_cast<uint32>(SeedNumber);
     Envelope.Curve = FName(*EnvelopeCurve);
 
-    for (const TPair<FString, TSharedPtr<FJsonValue>>& CuePair : CuesObject->Values)
+    for (const auto& CuePair : CuesObject->Values)
     {
         const TArray<TSharedPtr<FJsonValue>>* ToneValues = nullptr;
         if (!CuePair.Value.IsValid() || !CuePair.Value->TryGetArray(ToneValues) || !ToneValues)

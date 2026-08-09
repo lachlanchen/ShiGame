@@ -36,6 +36,9 @@ apps/unity/*.user
 
 # Unreal generated state, synchronized payloads and builds
 apps/unreal/.vs/
+apps/unreal/.ignore
+apps/unreal/Makefile
+apps/unreal/*.code-workspace
 apps/unreal/Binaries/
 apps/unreal/Build/
 apps/unreal/DerivedDataCache/

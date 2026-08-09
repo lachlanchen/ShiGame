@@ -2,6 +2,7 @@
 
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
+#include "Components/ExponentialHeightFogComponent.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/Engine.h"
 #include "Engine/ExponentialHeightFog.h"
@@ -980,7 +981,15 @@ void AShiGameMode::CreateCommandSpace()
     ADirectionalLight* Moon = World->SpawnActor<ADirectionalLight>(FVector::ZeroVector, FRotator(-42, 28, 0));
     if (Moon) { Moon->GetLightComponent()->SetIntensity(2.4f); Moon->GetLightComponent()->SetLightColor(FLinearColor(0.34f, 0.44f, 0.56f)); }
     APointLight* Fire = World->SpawnActor<APointLight>(FVector(-160, -110, 135), FRotator::ZeroRotator);
-    if (Fire) { Fire->GetPointLightComponent()->SetIntensity(1850.f); Fire->GetPointLightComponent()->SetLightColor(FLinearColor(1.f, 0.36f, 0.10f)); Fire->GetPointLightComponent()->SetAttenuationRadius(720.f); }
+    if (Fire)
+    {
+        if (UPointLightComponent* FireLight = Cast<UPointLightComponent>(Fire->GetLightComponent()))
+        {
+            FireLight->SetIntensity(1850.f);
+            FireLight->SetLightColor(FLinearColor(1.f, 0.36f, 0.10f));
+            FireLight->SetAttenuationRadius(720.f);
+        }
+    }
     AExponentialHeightFog* Fog = World->SpawnActor<AExponentialHeightFog>();
     if (Fog) Fog->GetComponent()->SetFogDensity(0.025f);
 

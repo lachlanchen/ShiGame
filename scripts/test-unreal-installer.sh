@@ -22,9 +22,11 @@ EOF
   printf '#!/usr/bin/env bash\nexit 0\n' >"$tree/UE/Engine/Binaries/Linux/UnrealEditor"
   printf '#!/usr/bin/env bash\nexit 0\n' >"$tree/UE/Engine/Binaries/Linux/UnrealEditor-Cmd"
   printf '#!/usr/bin/env bash\nexit 0\n' >"$tree/UE/Engine/Build/BatchFiles/Linux/Build.sh"
+  printf '#!/usr/bin/env bash\nexit 0\n' >"$tree/UE/Engine/Build/BatchFiles/Linux/GenerateProjectFiles.sh"
   chmod +x "$tree/UE/Engine/Binaries/Linux/UnrealEditor" \
     "$tree/UE/Engine/Binaries/Linux/UnrealEditor-Cmd" \
-    "$tree/UE/Engine/Build/BatchFiles/Linux/Build.sh"
+    "$tree/UE/Engine/Build/BatchFiles/Linux/Build.sh" \
+    "$tree/UE/Engine/Build/BatchFiles/Linux/GenerateProjectFiles.sh"
   (cd "$tree" && zip -qr "$archive" UE)
 }
 
@@ -47,6 +49,7 @@ fi
 SHI_TEST_DESTINATION="$SHI_TEST_ROOT/installed/UE_5.8.1"
 "$SHI_TEST_INSTALLER" install "$SHI_TEST_GOOD_ARCHIVE" "$SHI_TEST_DESTINATION" >/dev/null
 [[ -x "$SHI_TEST_DESTINATION/Engine/Binaries/Linux/UnrealEditor" ]]
+[[ -x "$SHI_TEST_DESTINATION/Engine/Build/BatchFiles/Linux/GenerateProjectFiles.sh" ]]
 [[ -f "$SHI_TEST_DESTINATION/.shi-official-install" ]]
 grep -q '^version=5.8.1$' "$SHI_TEST_DESTINATION/.shi-official-install"
 

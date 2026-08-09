@@ -103,6 +103,8 @@ SHI_INSTALL_ENGINE_ROOT="${SHI_INSTALL_EDITOR%/Engine/Binaries/Linux/UnrealEdito
 [[ -x "$SHI_INSTALL_EDITOR" ]] || fail "extracted UnrealEditor is not executable"
 [[ -x "$SHI_INSTALL_ENGINE_ROOT/Engine/Binaries/Linux/UnrealEditor-Cmd" ]] || fail "extracted UnrealEditor-Cmd is not executable"
 [[ -x "$SHI_INSTALL_ENGINE_ROOT/Engine/Build/BatchFiles/Linux/Build.sh" ]] || fail "extracted Linux Build.sh is not executable"
+[[ -x "$SHI_INSTALL_ENGINE_ROOT/Engine/Build/BatchFiles/Linux/GenerateProjectFiles.sh" ]] \
+  || fail "extracted Linux GenerateProjectFiles.sh is not executable"
 
 jq -e --argjson patch "$SHI_INSTALL_PATCH" '
   (.MajorVersion == 5) and (.MinorVersion == 8) and (.PatchVersion == $patch)

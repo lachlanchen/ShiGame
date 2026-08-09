@@ -10,5 +10,6 @@ public class SHI : ModuleRules
             "Core", "CoreUObject", "Engine", "InputCore", "Json", "JsonUtilities", "AudioMixer",
             "Slate", "SlateCore"
         });
+        PrivateIncludePaths.Add(ModuleDirectory);
     }
 }

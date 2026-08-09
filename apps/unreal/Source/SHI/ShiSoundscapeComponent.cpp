@@ -81,7 +81,7 @@ namespace
             while (Control->PendingCues.Dequeue(PendingCue))
             {
                 if (!CueSamples.Contains(PendingCue)) continue;
-                if (ActiveCues.Num() >= 8) ActiveCues.RemoveAt(0, 1, false);
+                if (ActiveCues.Num() >= 8) ActiveCues.RemoveAt(0, 1, EAllowShrinking::No);
                 ActiveCues.Add({PendingCue, 0});
             }
 
@@ -114,11 +114,11 @@ namespace
                     const TArray<float>* Samples = CueSamples.Find(Active.Name);
                     if (!Samples || !Samples->IsValidIndex(Active.SampleIndex))
                     {
-                        ActiveCues.RemoveAtSwap(CueIndex, 1, false);
+                        ActiveCues.RemoveAtSwap(CueIndex, 1, EAllowShrinking::No);
                         continue;
                     }
                     CueValue += (*Samples)[Active.SampleIndex++];
-                    if (Active.SampleIndex >= Samples->Num()) ActiveCues.RemoveAtSwap(CueIndex, 1, false);
+                    if (Active.SampleIndex >= Samples->Num()) ActiveCues.RemoveAtSwap(CueIndex, 1, EAllowShrinking::No);
                 }
 
                 const float Master = MasterFader.Advance();
@@ -130,8 +130,8 @@ namespace
             return NumSamples;
         }
 
-        virtual int32 GetNumChannels() override { return 2; }
-        virtual bool IsFinished() override { return false; }
+        virtual int32 GetNumChannels() const override { return 2; }
+        virtual bool IsFinished() const override { return false; }
 
     private:
         struct FActiveCue

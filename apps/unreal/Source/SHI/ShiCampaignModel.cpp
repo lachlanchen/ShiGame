@@ -13,10 +13,10 @@ namespace
     {
         FShiLocalizedText Result;
         if (!Object.IsValid()) return Result;
-        for (const TPair<FString, TSharedPtr<FJsonValue>>& Pair : Object->Values)
+        for (const auto& Pair : Object->Values)
         {
             FString Value;
-            if (Pair.Value.IsValid() && Pair.Value->TryGetString(Value)) Result.Values.Add(Pair.Key, Value);
+            if (Pair.Value.IsValid() && Pair.Value->TryGetString(Value)) Result.Values.Add(FString(Pair.Key), Value);
         }
         return Result;
     }
@@ -25,10 +25,10 @@ namespace
     {
         TMap<FString, int32> Result;
         if (!Object.IsValid()) return Result;
-        for (const TPair<FString, TSharedPtr<FJsonValue>>& Pair : Object->Values)
+        for (const auto& Pair : Object->Values)
         {
             double Number = 0;
-            if (Pair.Value.IsValid() && Pair.Value->TryGetNumber(Number)) Result.Add(Pair.Key, FMath::RoundToInt(Number));
+            if (Pair.Value.IsValid() && Pair.Value->TryGetNumber(Number)) Result.Add(FString(Pair.Key), FMath::RoundToInt(Number));
         }
         return Result;
     }

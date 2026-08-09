@@ -1275,10 +1275,10 @@
       "timeIndex": 2,
       "dateLabel": { "en": "209 BCE · Third day", "zh-Hans": "秦二世元年 · 第三日" },
       "siteId": "chen",
-      "speakerId": "keeper",
+      "speakerId": "chen-sheng",
       "title": { "en": "The ford remembers the flood", "zh-Hans": "渡口记得洪水" },
       "context": { "en": "The column reaches a damaged crossing. Scouts report patrols behind and uncertain towns ahead. Families, grain carts, and armed ranks cannot all cross at once. This is a recovery turn: reduce exposure, restore supplies, or preserve cohesion before the final commitment.", "zh-Hans": "队伍来到一处被洪水毁坏的渡口。斥候报告追兵在后，前方城邑态度不明。家户、粮车与持械队伍无法同时过河。这是一轮整顿：在最终下注前，降低暴露、补充粮草，或维系队伍。" },
-      "dialogue": { "en": "You lay three tally slips on the wet rail: people, provisions, pursuit. The river will collect one kind of debt before sunset.", "zh-Hans": "你把三根筹片摆在湿漉漉的栏木上：人、粮、追兵。日落前，这条河必会来收一种债。" },
+      "dialogue": { "en": "Chen Sheng watches you lay three tally slips on the wet rail: people, provisions, pursuit. “The river will collect one kind of debt before sunset. Which debt will we choose?”", "zh-Hans": "陈胜看着你把三根筹片摆在湿漉漉的栏木上：人、粮、追兵。“日落前，这条河必会来收一种债。我们选择还哪一种？”" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
       "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "schematic-campaign-map", "field-conditions-reconstruction"],
       "conditions": [
