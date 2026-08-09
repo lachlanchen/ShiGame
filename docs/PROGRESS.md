@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Packaged failure, reduced-motion and native-audio checkpoint
+
+- Attacked the archived normal-thread player at the transaction boundary instead of relying only on model tests. Making the exact SaveGames directory/file read-only produced **Order not issued · Autosave failed**, created no temporary file and left node, turn, resources, world and save SHA-256 `e9cbb4c857005fc04ac3dfe63b735296566655e0675e12c8045e8ccede2f42e8` unchanged; the original modes were restored immediately.
+- Used the Development console to remove the two live council figures, then separately all generic 3D command/site markers. Both order attempts failed before persistence or in-memory commit with explicit **World preflight failed · Chronicle unchanged** messages naming the absent `speaker` council slot and `resource-grain` command signal. The same save hash remained exact, and bounded process restarts restored every actor.
+- Enabled the persisted **Reduced motion · Cuts only** mode and issued a real durable order from Broken Crossing. The player cut directly through the resolved seven-beat consequence, exposed **2 / 7 · Oath kept**, allowed `Space` to skip presentation without altering the resolved chronicle, and handed control to the exact next Chen Sheng council at Scene 6/6. A full restart resumed Turn 4, all four resources/history and the cuts-only preference at save SHA-256 `86cdbc7f9537330c3696906410b6773bc26b68bf21ffd34c8cdcc6d5ee03a6a2`.
+- Captured the packaged SDL audio stream directly through an inspected PipeWire graph. A 4.01-second pre-consent programme and 3.97-second post-disable programme are digital silence; the 16.13-second explicitly enabled programme is non-silent at −39.7 LUFS integrated, −27.7 dBFS peak, 3.6 LU LRA, zero DC and exact dual-mono parity. WAVs remain ignored; hashes, routing and metrics are recorded in `docs/production/evidence/unreal-runtime-acceptance-status.json`.
+- Kept the subjective and hardware boundaries honest. The UI still labels sound as an engineering preview requiring human listening, and the host exposes no joystick node or USB game controller. Physical-controller feel and human audio approval therefore remain red rather than being replaced by synthetic input or numeric audio checks.
+- Exact package-evidence commit `8de7fa0c7ff869e447e816c1d04cd977244ee451` passes both hosted validation run `31317728057` and Pages deployment run `31317728010`.
+
+Next gate: inject the remaining failed-restart path, connect and review a physical Xbox/PlayStation-layout controller, complete human listening/comfort review, then begin reviewed terrain, formation and character replacement while retaining the accepted fixed-window performance baseline.
+
 ## 2026-08-09 · Official Unreal packaged-player and performance checkpoint
 
 - Produced the first clean Unreal Linux development player with Epic's official UE `5.8.1` BuildCookRun path. Compilation, cook, IoStore/Pak staging and outside-Git archive all completed with exit code 0 in 102.32 seconds; 496 packages were cooked and the archived directory is 1,099,965,122 bytes. The executable and every primary container have recorded SHA-256 receipts in `docs/production/evidence/unreal-linux-package-status.json`.

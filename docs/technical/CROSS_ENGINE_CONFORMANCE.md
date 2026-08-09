@@ -34,7 +34,9 @@ The separate Broken Crossing contract remains non-authoritative but now has exac
 | Unreal Broken Crossing TypeScript/native route parity | Green; exact 76/47 matrix, replay/tamper and six-piece spatial states pass |
 | Unreal visible engagement/save observation | Green in standalone and archived normal-thread package; three pulses/outcome/return and unchanged disk-save hash observed |
 | Unreal Linux package and performance | Green for the fixed-window development player; BuildCookRun exits 0 and real-display chart records 195.18 FPS average with zero hitches |
+| Unreal packaged transaction/runtime faults | Green for unwritable save, missing council figures and missing command signals; exact save and active state remain unchanged |
+| Unreal reduced-motion/audio-device boundary | Green for cuts-only order/skip/restart and measured PipeWire silence/active/disable; human review remains open |
 | Unreal editor PIE and physical-controller observation | Red; PIE hit an NVIDIA Vulkan swapchain crash and physical-controller review remains open |
 | Unity consumption of the fixture | Staged; native parity test remains open |
 
-Static validation never substitutes for native compiler and runtime evidence. The official native run proves both the C++ campaign corpus and the non-authoritative Broken Crossing parity boundary; the archived normal-thread route proves interaction, save isolation and fixed-window performance on this host. It still does not prove stable editor PIE, physical-controller feel, final art or human enjoyment.
+Static validation never substitutes for native compiler and runtime evidence. The official native run proves both the C++ campaign corpus and the non-authoritative Broken Crossing parity boundary; the archived normal-thread route proves interaction, save isolation, fixed-window performance, three fail-closed faults, cuts-only persistence and native audio gating on this host. It still does not prove stable editor PIE, physical-controller feel, human audio/comfort approval, final art or human enjoyment.

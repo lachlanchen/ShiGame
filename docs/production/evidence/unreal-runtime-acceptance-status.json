@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "kind": "packaged-unreal-runtime-acceptance",
+  "checkedAt": "2026-08-09T22:34:08+08:00",
+  "testedSourceCommit": "8de7fa0c7ff869e447e816c1d04cd977244ee451",
+  "packageExecutableSha256": "c1e131857d4529ad713d94a715860ba09d3b3b07134d7a3d2a9732e3f551cb9f",
+  "configuration": "Development",
+  "faultInjection": {
+    "campaignSaveSha256": "e9cbb4c857005fc04ac3dfe63b735296566655e0675e12c8045e8ccede2f42e8",
+    "unwritableSave": {
+      "originalDirectoryMode": "0775",
+      "originalFileMode": "0664",
+      "injectedDirectoryMode": "0555",
+      "injectedFileMode": "0444",
+      "temporaryFileCreated": false,
+      "visibleStatus": "ORDER NOT ISSUED · AUTOSAVE FAILED · the temporary chronicle could not be written",
+      "nodeTurnResourcesAndWorldUnchanged": true,
+      "saveHashUnchanged": true,
+      "originalModesRestored": true
+    },
+    "missingCouncilFigures": {
+      "developmentConsoleCommand": "DestroyAll ShiCouncilFigure",
+      "actorsVisiblyAbsent": true,
+      "visibleStatus": "ORDER HELD · WORLD PREFLIGHT FAILED · CHRONICLE UNCHANGED · Prepared council slot speaker has no initialized live figure.",
+      "saveHashUnchanged": true,
+      "restartRestoredActors": true
+    },
+    "missingCommandAndSiteActors": {
+      "developmentConsoleCommand": "DestroyAll StaticMeshActor",
+      "actorsVisiblyAbsent": true,
+      "visibleStatus": "ORDER HELD · WORLD PREFLIGHT FAILED · CHRONICLE UNCHANGED · Prepared command signal resource-grain has no live world actor.",
+      "saveHashUnchanged": true,
+      "restartRestoredActors": true
+    },
+    "shippingExposure": "fault commands are built-in Development console operations and are not a shipping player feature"
+  },
+  "reducedMotion": {
+    "visibleMode": "REDUCED MOTION · CUTS ONLY",
+    "sourceNode": "broken-crossing",
+    "durableOrderIssued": true,
+    "observedConsequence": "2 / 7 · OATH KEPT",
+    "presentationSkipAccepted": true,
+    "nextScene": "Scene 6/6 · Chen · South of Chen",
+    "nextTurn": 4,
+    "nextDecisionCount": 3,
+    "postOrderSaveSha256": "86cdbc7f9537330c3696906410b6773bc26b68bf21ffd34c8cdcc6d5ee03a6a2",
+    "restartResumedExactSave": true,
+    "restartPreservedCutsOnlyPreference": true
+  },
+  "nativeAudio": {
+    "routing": "inspected direct PipeWire link from SDL Application output_FL/output_FR to pw-record input_FL/input_FR",
+    "format": {
+      "codec": "pcm_s24le",
+      "sampleRate": 48000,
+      "channels": 2
+    },
+    "preConsent": {
+      "seconds": 4.010667,
+      "peakDbfs": "-inf",
+      "rmsDbfs": "-inf",
+      "dcOffset": 0,
+      "digitalSilence": true,
+      "sha256": "ff58415e6e582ea8f7a56dc9c8311af8634cff70c6706d324f74bfdfd69d3155",
+      "committed": false
+    },
+    "active": {
+      "seconds": 16.128,
+      "integratedLufs": -39.7,
+      "loudnessRangeLu": 3.6,
+      "peakDbfs": -27.7,
+      "rmsDbfs": -44.0768,
+      "dcOffset": 0,
+      "stereoDifferencePeakDbfs": "-inf",
+      "stereoDifferenceRmsDbfs": "-inf",
+      "exactDualMono": true,
+      "sha256": "77632e58ea5efd7832ef4c73a9817cc39985755961fcc961513f22ee5d1a7f01",
+      "committed": false
+    },
+    "postDisable": {
+      "seconds": 3.968,
+      "peakDbfs": "-inf",
+      "rmsDbfs": "-inf",
+      "dcOffset": 0,
+      "digitalSilence": true,
+      "sha256": "17c3dc3723770a5225d1c4da1904b28aa620ce4c79946800f90560ec539ca276",
+      "committed": false
+    },
+    "humanListeningApproved": false,
+    "approvalBoundary": "numeric capture passes; UI and documentation retain the engineering-preview/human-listening requirement"
+  },
+  "physicalController": {
+    "joystickNodesFound": 0,
+    "usbGameControllersFound": 0,
+    "reviewCompleted": false,
+    "gate": "attach a physical Xbox/PlayStation-layout controller"
+  },
+  "finalVisibleState": {
+    "display": ":121",
+    "scene": "Scene 6/6 · Chen · South of Chen",
+    "turn": 4,
+    "sound": "off",
+    "motion": "cuts-only",
+    "normalRenderThreads": true,
+    "playerRunning": true
+  },
+  "containsCredentialsOrPrivatePaths": false
+}
