@@ -17,10 +17,10 @@ Decision date: 2026-08-09. Unreal is now the priority 3D/cinematic delivery trac
 The first native gate is one high-quality Daze order, not a vast empty map:
 
 1. Rain-soaked Daze command space with an explorable wartable/assembly composition.
-2. Inspectable route/intelligence ground is now authored as five bounded canonical 3D site markers with pointer/keyboard/gamepad focus, non-color-only status shapes and scoped evidence; people, supply and pursuit world signals remain open for native staging.
+2. Inspectable route/intelligence ground and command state are source-authored as five bounded canonical 3D sites plus nine live grain/trust/momentum/people/exposure/field/pursuit/method/oath signals with pointer/keyboard/gamepad focus, non-color-only shape/height/text grammar and scoped evidence. Native staging and review remain open.
 3. Three selectable orders and one complete, readable selected-order briefing.
 4. Explicit issue-order input from mouse, keyboard and controller.
-5. In-world and UI feedback for resource/commitment/enemy/field consequences.
+5. In-world and UI feedback for resource/commitment/enemy/field state is source-authored and refreshes after order resolution; native consequence staging and review remain open.
 6. Act, scene, site and date advance from the register into organization.
 7. A short authored camera transition that preserves control and can be skipped.
 8. Opt-in rain and semantic order/consequence sound with independent persistent controls and no exclusive information.
@@ -57,7 +57,7 @@ Official references:
 | Rule truth | Unreal automation tests parse schema v7 and prove act/time/choice/effect closure |
 | Historical truth | edition rights, source/claim closure, exact locators, reconstruction labels, current scene/site scope and remote site-only scope pass native automation and visible interaction |
 | Replay truth | all 46 golden routes, six intermediate layer states, save round-trip and tamper rejection pass natively |
-| Interaction truth | visible PIE route performs marker click/cycle → evidence → current-ground return → select → issue → response → progression without campaign-state mutation during inspection |
+| Interaction truth | visible PIE route performs site/signal click and cycle → exact state read → evidence → current-ground return → select/method-read refresh → issue → world-state refresh → response → progression without campaign-state mutation during inspection |
 | Audio truth | pre-consent silence, native output capture, mixer persistence, rapid-input fatigue and human listening review pass |
 | Presentation truth | reviewed desktop capture passes camera, lighting, legibility, motion and provenance review |
 | Build truth | Development and packaged Linux builds launch from clean output with receipts/hashes |

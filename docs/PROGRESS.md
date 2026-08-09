@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal live-command-signal checkpoint
+
+- Materialized the authoritative command position as nine bounded 3D world pieces rather than leaving resource and counterplay state in Slate alone: five exact resource tallies plus field, Qin pursuit, selected-order method read and carried-oath signals. Shape, location, anchored height, text and selected outline/scale carry meaning together so color is non-exclusive.
+- Added pointer picking, `C`/Gamepad L3 signal cycling, Shift reverse, current-ground return and skippable focus transitions. Signal inspection is explicitly read-only, owns exactly one focus state and restores current-site evidence scope; selected-order changes and resolved orders rebuild the live snapshot from the campaign session.
+- Added fail-closed atomic validation for stable identity/order, exact 0–100 resource state, table anchoring, finite bounds, unique stencils, signal spacing and joint site/signal pointer spacing. Exposure 100 has an explicit captured terminal signal instead of pretending a normal pursuit posture still exists.
+- Added `SHI.CommandSpace.LiveSignalsV1` automation source for initial/post-order state, oath activation, method/pursuit reads, selection anchoring, camera aim, wrap behavior, terminal capture and hostile malformed snapshots. Static preflight requires the model, renderer, controls, Slate boundary and automation contract.
+- Exact implementation `ed4dcc6d3e4955f0115f6d98b7ccb83d4fe977c3` passes `npm ci` and the complete build from a detached clean checkout: 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 golden cross-engine routes, canonical history/audio/content/conformance, accessibility/font/privacy/type gates, Unreal command-space preflight and Web budgets.
+- This is source-level and clean-build evidence, not native Unreal proof. Official Unreal 5.8 acquisition still waits at Epic sign-in, so C++ compilation, automation execution, PIE site/signal interaction, visual/camera review, audio capture/listening and Linux packaging remain red.
+
+Next gate: publish this checkpoint, then after Epic sign-in install the official build, compile and execute all suites, and visibly traverse every site/signal plus one complete order and state refresh in PIE before accepting presentation work.
+
 ## 2026-08-09 · Unreal spatial-wartable checkpoint
 
 - Replaced the decorative seven-cube line with five canonical Daze/Chen/Pei/Kuaiji/Xianyang 3D intelligence markers projected from the shared schematic coordinates. Known, reported and reference states use distinct cylinder, sphere and cone geometry plus text, selected scaling/color and a configured custom-depth stencil.
