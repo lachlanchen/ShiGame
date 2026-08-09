@@ -422,12 +422,15 @@ export function App() {
   }, [node.id, screen, state.history.length]);
 
   useLayoutEffect(() => {
+    if (!drawer) return;
     const trapFocus = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
-      const panel = document.querySelector<HTMLElement>(".drawer[role='dialog']");
+      const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      const panel = active?.closest<HTMLElement>(".drawer[role='dialog']")
+        ?? document.querySelector<HTMLElement>(".drawer[role='dialog']");
       if (!panel) { event.preventDefault(); return; }
-      const controls = [...panel.querySelectorAll<HTMLElement>("button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), [tabindex]:not([tabindex='-1'])")]
-        .filter((element) => !element.hidden && getComputedStyle(element).display !== "none" && getComputedStyle(element).visibility !== "hidden");
+      const controls = [...panel.querySelectorAll<HTMLElement>("button:not(:disabled), a[href], input:not(:disabled):not([type='hidden']), select:not(:disabled), [tabindex]:not([tabindex='-1'])")]
+        .filter((element) => !element.hidden && !element.closest("[hidden], [aria-hidden='true']"));
       if (controls.length === 0) { event.preventDefault(); panel.focus({ preventScroll: true }); return; }
       const first = controls[0]!;
       const last = controls[controls.length - 1]!;
@@ -437,7 +440,7 @@ export function App() {
     };
     document.addEventListener("keydown", trapFocus);
     return () => document.removeEventListener("keydown", trapFocus);
-  }, []);
+  }, [drawer]);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {

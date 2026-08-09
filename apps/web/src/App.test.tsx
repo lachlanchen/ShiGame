@@ -83,6 +83,10 @@ describe("playable web shell", () => {
     localStorage.removeItem("shi.onboarding.field-guide.v1");
     const view = render(<App />);
 
+    const titleTab = new KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true });
+    document.dispatchEvent(titleTab);
+    expect(titleTab.defaultPrevented).toBe(false);
+
     fireEvent.click(view.getByTestId("begin-game"));
     expect((await view.findByTestId("guide-drawer")).textContent).toContain("Every order resolves in six visible layers");
     fireEvent.click(view.getByTestId("guide-continue"));
