@@ -12,7 +12,7 @@ The first campaign begins with the late-Qin crisis, the Daze Village uprising, a
 
 - Primary audience: players who enjoy consequential narrative, political strategy, readable systems, and history without requiring prior specialist knowledge.
 - Session shape: 20–35 minute chapter decisions inside a 10–15 hour campaign arc.
-- Platforms: modern web client for reach and iteration; Unity 6 client for the authored 3D experience and later desktop/mobile distribution.
+- Platforms: modern web client for reach and continuous playable validation; Unreal Engine 5.8 is the priority cinematic/native 3D experience; Unity 6 remains a shared-schema baseline rather than a feature fork.
 - Rating target: teen, with violence conveyed through aftermath, testimony, logistics, and decisions rather than spectacle.
 - Business model is undecided. No monetization mechanics may be added without a separate ethical/economic review.
 
@@ -77,7 +77,7 @@ The campaign does not use a conventional “attack for damage” loop as its str
 - **Narrative authority:** whose account makes action seem legitimate or inevitable?
 - **Material constraint:** weather, river crossings, harvest, weapons, distance, animal power.
 
-Later tactical encounters will use spatial command and indirect control, but must feed these campaign fields rather than become disconnected combat minigames.
+Later tactical encounters use the versioned [historical martial-command system](HISTORICAL_MARTIAL_COMMAND.md): spatial command, formation, terrain, signals, command delay, morale/cohesion, reserves and withdrawal feed these campaign fields rather than becoming disconnected combat minigames.
 
 ## Failure and recovery
 

@@ -4,7 +4,7 @@ This roadmap is a sequence of quality gates, not permission for uncontrolled con
 
 ## Year-one outcomes
 
-- A complete, replayable late-Qin-to-Chu–Han campaign slice with a coherent authored ending.
+- A complete, replayable late-Qin-to-Chu–Han campaign slice with a coherent authored ending and a shared-rules historical martial-command encounter.
 - Shippable web release and stable Unreal cinematic desktop vertical slice; Unity remains a maintained shared-schema baseline.
 - Source, localization, asset, audio, build, accessibility, performance and playtest pipelines capable of supporting a full game.
 - A small reviewed corpus and character/system bible that makes adding content safer rather than faster at any cost.
@@ -15,11 +15,11 @@ This roadmap is a sequence of quality gates, not permission for uncontrolled con
 | --- | --- | --- |
 | Month 1 | Foundation and Daze vertical slice | Public repo; playable web chapter; schema-v7 act horizon; source ledger; real Unreal C++ project; visible Web QA |
 | Month 2 | Unreal interaction proof | Official editor compile; six-layer Daze route in PIE; inspect/select/issue/progress; keyboard/mouse/controller; first observed playtests |
-| Month 3 | Historical production cell | Qin law/geography/material P0 review; claim database; approved termbase; source edition register |
-| Month 4 | Cinematic 3D interaction slice | Unreal environment, wartable interaction, camera/audio language, Linux build and performance capture; Unity baseline revalidated |
+| Month 3 | Historical production and martial-command prototype | Qin law/geography/material P0 review; claim database; source edition register; shared deterministic broken-crossing command contract and Web reference |
+| Month 4 | Cinematic 3D command slice | Unreal terrain/formations/signals, wartable interaction, camera/audio language, complete broken-crossing route, Linux build and performance capture; Unity baseline revalidated |
 | Month 5 | Chapter II: Chen | County politics, recruitment, restitution, opponent model; complete research/localization pass |
 | Month 6 | Pei/Kuaiji dual view | Liu Bang/Xiang clan networks introduced without hindsight; Unreal cinematic language applied without predetermining either path |
-| Month 7 | Tactical command prototype | Spatial indirect-control encounter connected to campaign resources; reject if it becomes detached combat |
+| Month 7 | Campaign battle integration | Scale the proven indirect-control grammar to the first multi-force engagement with officers, opponent reserves and campaign aftermath; reject if it becomes detached combat |
 | Month 8 | Art/audio production | Final environment kit, reviewed character approach, adaptive music/ambience pipeline, LOD and memory budgets |
 | Month 9 | Campaign integration | Multi-chapter state, relationship memory, accessibility audit, narrative continuity review |
 | Month 10 | Closed alpha | External players, telemetry only with consent, crash reporting/privacy review, all 11 UI locales and 3 full narrative locales |
