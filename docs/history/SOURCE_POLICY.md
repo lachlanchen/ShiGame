@@ -23,7 +23,7 @@ Schema v4 retains the explicit replacement for the ambiguous `primary-account` l
 
 ## Planned classical corpus
 
-The research register includes: 《史记》, 《资治通鉴》, 《左传》, 《战国策》, 《国语》, 《汉书》, 《后汉书》, 《三国志》, 《孟子》, 《论语》, 《韩非子》, 《孙子兵法》, 《孙膑兵法》, 《庄子》, and 《淮南子》. Inclusion in this list is not evidence that a work is relevant to every chapter.
+The research register includes: 《史记》, 《资治通鉴》, 《左传》, 《战国策》, 《国语》, 《汉书》, 《后汉书》, 《三国志》, 《孟子》, 《论语》, 《韩非子》, 《孙子兵法》, 《孙膑兵法》, 《司马法》, 《尉缭子》, 《吴子兵法》, 《鬼谷子》, 《庄子》, and 《淮南子》. Inclusion in this list is not evidence that a work is relevant to every chapter. The six-work [martial-source review queue](MARTIAL_SOURCE_REVIEW.md) records candidate sections and explicit non-runtime boundaries for the command system.
 
 ## Claim record
 

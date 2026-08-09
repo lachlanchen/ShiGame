@@ -121,9 +121,10 @@ Classical military and political works are design lenses, not proof that a histo
 | `Sima Fa` | discipline, political purpose, restraint and the relation between civil order and military force | do not flatten contested textual layers into universal rules |
 | `Wei Liaozi` | organization, command authority, rewards, punishment and material preparation | distinguish design abstraction from Qin institutional evidence |
 | `Guiguzi` | persuasion, information, divided interests and diplomatic reading | use in councils/intelligence, not as automatic battlefield doctrine |
+| `Wuzi` | preparation, cohesion, fatigue, observable disorder and adaptive command | reject faction stereotypes; distinguish received prescription from actual practice |
 | `Shiji`, `Hanshu`, `Zizhi Tongjian` | event sequence, people, later narrative framing and comparison | preserve later-compilation status and anti-hindsight rules |
 
-The private `../ZhJpBook` and `../Books` copies are research inputs only. SHI commits edition metadata, pinpoint locators, short reviewed original paraphrase or rights-cleared public text, uncertainty and gameplay use. It does not copy private PDFs, translations or generated chunks into the public repository.
+The private `../ZhJpBook` and `../Books` copies are research inputs only. SHI commits edition metadata, pinpoint locators, short reviewed original paraphrase or rights-cleared public text, uncertainty and gameplay use. It does not copy private PDFs, translations or generated chunks into the public repository. Candidate military passages and their promotion gates are versioned in the [martial-source review queue](../history/MARTIAL_SOURCE_REVIEW.md).
 
 ## Shared architecture
 

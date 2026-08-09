@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 1,
+  "accessDate": "2026-08-09",
+  "publicationMode": "metadata-review-queue-only",
+  "allowedPublicOrigin": "https://zh.wikisource.org",
+  "works": [
+    {
+      "id": "sunzi",
+      "title": "孫子兵法",
+      "runtimeStatus": "registered-strategic-lens",
+      "publicPage": "https://zh.wikisource.org/wiki/孫子",
+      "publicPageStatus": "landing-page-inspected",
+      "privateMirror": "../ZhJpBook/books/sunzi-bingfa/markdown/wenyan.md",
+      "privateMirrorSha256": "f0cc284f2c6ca424fca05d4cfc3b6b21dd340344f750a1bc2a01c449ddf8aca6",
+      "textualStatusNote": {
+        "en": "The received text is already registered for Chapter I's five-factor design lens. Additional chapters remain candidate lenses, not episode evidence.",
+        "zh-Hans": "传世文本已登记为第一章五事设计视角；其余篇章仍只是候选设计视角，不是事件史料。"
+      },
+      "candidateSections": [
+        {
+          "id": "sunzi-bingshi-five",
+          "locator": "兵勢第五",
+          "systemTarget": "formation-and-positional-force",
+          "priority": "p0",
+          "gameQuestion": {
+            "en": "Can formation, timing and concentrated direction create force without adding a hidden combat-power score?",
+            "zh-Hans": "阵形、时机与力量指向能否在不增加隐藏战力值的前提下形成势？"
+          },
+          "evidenceBoundary": {
+            "en": "Strategic design lens only; it cannot prove a Daze participant used a named doctrine.",
+            "zh-Hans": "只作战略设计视角；不能证明大泽乡人物曾采用具名学说。"
+          }
+        },
+        {
+          "id": "sunzi-xushi-six",
+          "locator": "虛實第六",
+          "systemTarget": "visibility-probe-and-counterposition",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "How should scouting and revealed commitment let a player redirect pressure toward an opening?",
+            "zh-Hans": "侦察与已暴露的投入应如何让玩家把压力转向空隙？"
+          },
+          "evidenceBoundary": {
+            "en": "Use as a comparison vocabulary after translation review, never as a universal tactical bonus.",
+            "zh-Hans": "经翻译审阅后只作比较词汇，绝不转化为普遍战术加成。"
+          }
+        },
+        {
+          "id": "sunzi-junzheng-seven",
+          "locator": "軍爭第七",
+          "systemTarget": "march-fatigue-and-baggage",
+          "priority": "p0",
+          "gameQuestion": {
+            "en": "How do speed, fatigue, baggage and arrival order create a meaningful crossing decision?",
+            "zh-Hans": "速度、疲劳、辎重与到达次序如何共同形成有意义的渡河抉择？"
+          },
+          "evidenceBoundary": {
+            "en": "The text frames a mechanic; the broken-crossing weather and route remain authored reconstruction.",
+            "zh-Hans": "文本只用于构造机制；断渡的天气与路线仍属原创重构。"
+          }
+        },
+        {
+          "id": "sunzi-dixing-ten",
+          "locator": "地形第十",
+          "systemTarget": "terrain-affordance-and-command-responsibility",
+          "priority": "p0",
+          "gameQuestion": {
+            "en": "Can terrain change legal orders and make a command failure explainable rather than random?",
+            "zh-Hans": "地形能否改变合法命令，并让指挥失败变得可解释而非随机？"
+          },
+          "evidenceBoundary": {
+            "en": "Historical terrain categories require specialist interpretation before naming them in play.",
+            "zh-Hans": "历史地形分类在进入游戏命名之前必须经过专家解释。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sunbin-bingfa",
+      "title": "孫臏兵法",
+      "runtimeStatus": "candidate-not-runtime",
+      "publicPage": "https://zh.wikisource.org/wiki/孫臏兵法",
+      "publicPageStatus": "recovered-text-with-lacunae",
+      "privateMirror": "../ZhJpBook/books/sunbin-bingfa/markdown/wenyan.md",
+      "privateMirrorSha256": "d827c4a038316bbdf3a28382fc24415fe2e60b9600ddc8ed72264dec343f965a",
+      "textualStatusNote": {
+        "en": "The received archaeological text is fragmentary and contains editorial restorations. No formation name or translation enters gameplay before a sinological review of the exact passage and reconstruction marks.",
+        "zh-Hans": "出土传世文本残缺并含整理者补释；任何阵名或译文进入玩法前，都必须逐段审查原文与补缺标记。"
+      },
+      "candidateSections": [
+        {
+          "id": "sunbin-bingqing",
+          "locator": "兵情",
+          "systemTarget": "commander-signal-unit-alignment",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "How should commander intent, signal transmission, formation balance and unit execution fail independently?",
+            "zh-Hans": "主将意图、信号传递、阵形平衡与部伍执行应如何各自发生失效？"
+          },
+          "evidenceBoundary": {
+            "en": "Preserve lacunae and editorial uncertainty; do not turn an analogy into a literal simulation formula.",
+            "zh-Hans": "保留残缺与整理不确定性；不得把比喻直接改成模拟公式。"
+          }
+        },
+        {
+          "id": "sunbin-shizhen",
+          "locator": "十陣",
+          "systemTarget": "formation-footprints-and-use-cases",
+          "priority": "p0",
+          "gameQuestion": {
+            "en": "Which formation differences can be made visually legible through frontage, depth, facing and terrain use?",
+            "zh-Hans": "哪些阵形差异能够通过正面宽度、纵深、朝向与地形利用而直观呈现？"
+          },
+          "evidenceBoundary": {
+            "en": "Formation labels are blocked until the recovered text, punctuation and modern interpretation are reviewed.",
+            "zh-Hans": "在出土文本、断句与现代解释通过审阅前，阵形名称不得进入游戏。"
+          }
+        },
+        {
+          "id": "sunbin-dibao",
+          "locator": "地葆",
+          "systemTarget": "terrain-zone-review",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "Which ground observations should alter movement, visibility and formation stability?",
+            "zh-Hans": "哪些地面观察应改变移动、视野与阵形稳定性？"
+          },
+          "evidenceBoundary": {
+            "en": "No schematic terrain rule becomes historical geography for Daze or Chen.",
+            "zh-Hans": "任何示意地形规则都不能被当作大泽乡或陈县的历史地理。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "simafa",
+      "title": "司馬法",
+      "runtimeStatus": "candidate-not-runtime",
+      "publicPage": "https://zh.wikisource.org/wiki/司馬法",
+      "publicPageStatus": "received-text-transcription",
+      "privateMirror": "../ZhJpBook/books/simafa/markdown/wenyan.md",
+      "privateMirrorSha256": "07ad843129bd2d1d18ab22d67a259e9c1338dd2340659a05d1841713fdb5691c",
+      "textualStatusNote": {
+        "en": "The surviving received text has its own transmission history. It is a candidate ethical and organizational lens, not direct evidence for late-Qin conduct.",
+        "zh-Hans": "今本自有复杂流传史；它只是伦理与组织设计候选视角，并非秦末军事实践的直接证据。"
+      },
+      "candidateSections": [
+        {
+          "id": "simafa-renben",
+          "locator": "仁本",
+          "systemTarget": "civilian-protection-and-war-purpose",
+          "priority": "p0",
+          "gameQuestion": {
+            "en": "How should restraint, protection and the political purpose of force remain operational rather than decorative morality?",
+            "zh-Hans": "克制、保护与用兵目的如何成为实际机制，而非装饰性的道德评价？"
+          },
+          "evidenceBoundary": {
+            "en": "Do not present the received norm as a description of what every army actually did.",
+            "zh-Hans": "不得把传世规范写成所有军队的实际行为。"
+          }
+        },
+        {
+          "id": "simafa-yanwei",
+          "locator": "嚴位",
+          "systemTarget": "cohesion-fear-and-command-readability",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "How can posture, spacing, signals and fear be readable without a single morale bar?",
+            "zh-Hans": "姿态、间距、信号与恐惧如何在不依赖单一士气条的情况下被读懂？"
+          },
+          "evidenceBoundary": {
+            "en": "Player-facing language must distinguish interpretation from translation and avoid glorifying coercion.",
+            "zh-Hans": "玩家文本必须区分解释与翻译，并避免美化强制。"
+          }
+        },
+        {
+          "id": "simafa-yongzhong",
+          "locator": "用眾",
+          "systemTarget": "large-force-command-and-aftermath",
+          "priority": "p2",
+          "gameQuestion": {
+            "en": "Which responsibilities scale with force size, and how should a commander own failure?",
+            "zh-Hans": "哪些责任会随兵力规模扩大，主将又应如何承担失败？"
+          },
+          "evidenceBoundary": {
+            "en": "This is a later-scale design question and does not authorize mass-unit rendering in the first prototype.",
+            "zh-Hans": "这是后续大规模设计问题，不构成首个原型渲染大军的许可。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "weiliaozi",
+      "title": "尉繚子",
+      "runtimeStatus": "candidate-not-runtime",
+      "publicPage": "https://zh.wikisource.org/wiki/尉繚子",
+      "publicPageStatus": "landing-page-marked-incomplete",
+      "privateMirror": "../ZhJpBook/books/weiliaozi/markdown/wenyan.md",
+      "privateMirrorSha256": "2351376d37001324082a21fce804d17cc3cbf85e572207e348028cc821cbc5db",
+      "textualStatusNote": {
+        "en": "The public landing page is explicitly marked incomplete. A complete edition and textual-history review are required before runtime registration.",
+        "zh-Hans": "公开入口明确标注未完成；登记为运行时资料前，必须选择完整版本并审查文本流传。"
+      },
+      "candidateSections": [
+        {
+          "id": "weiliaozi-zhitan",
+          "locator": "制談",
+          "systemTarget": "organization-before-contact",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "Which organizational failures should be visible before physical contact begins?",
+            "zh-Hans": "哪些组织失效应在实际接触发生前就能被玩家看见？"
+          },
+          "evidenceBoundary": {
+            "en": "Institutional prescriptions are a textual lens, not proof of a uniform Qin command system.",
+            "zh-Hans": "制度性主张只是文本视角，不能证明秦军存在统一对应的指挥体系。"
+          }
+        },
+        {
+          "id": "weiliaozi-zhanquan",
+          "locator": "戰權",
+          "systemTarget": "precommitment-and-command-confidence",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "How should uncertain command, contradictory signals and premature commitment create defeat?",
+            "zh-Hans": "指挥犹疑、信号矛盾与过早投入应如何导致失败？"
+          },
+          "evidenceBoundary": {
+            "en": "Any coercive prescription requires ethical review and cannot become player reward copy by default.",
+            "zh-Hans": "任何强制性主张都必须经过伦理审查，不能默认写成奖励玩家的文本。"
+          }
+        },
+        {
+          "id": "weiliaozi-zhongjunling",
+          "locator": "踵軍令",
+          "systemTarget": "reserve-supply-and-march-timing",
+          "priority": "p0",
+          "gameQuestion": {
+            "en": "How can reserve timing, prepared food and route coordination become one readable command problem?",
+            "zh-Hans": "预备队时机、熟食准备与路线协同如何合成为一个清晰可读的指挥问题？"
+          },
+          "evidenceBoundary": {
+            "en": "Exact distances and organization cannot be transplanted into Daze without institutional and metrological review.",
+            "zh-Hans": "未经制度史与度量衡审查，具体距离和编制不得移植到大泽乡。"
+          }
+        },
+        {
+          "id": "weiliaozi-bingjiaoshang",
+          "locator": "兵教上",
+          "systemTarget": "signal-training-and-command-delay",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "How should prior training affect signal receipt and command delay without becoming a flat unit level?",
+            "zh-Hans": "既有训练应如何影响信号接收与命令延迟，而不沦为简单的单位等级？"
+          },
+          "evidenceBoundary": {
+            "en": "Training mechanics must remain role- and period-specific and require material-culture review.",
+            "zh-Hans": "训练机制必须限定于角色与时代，并接受物质文化审查。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "guiguzi",
+      "title": "鬼谷子",
+      "runtimeStatus": "candidate-not-runtime",
+      "publicPage": "https://zh.wikisource.org/wiki/鬼谷子_(四庫全書本)",
+      "publicPageStatus": "siku-transcription-candidate",
+      "privateMirror": "../ZhJpBook/books/guiguzi/markdown/wenyan.md",
+      "privateMirrorSha256": "5691b2ab2cab36112bc4993ea2e8cb0794b2c83a199d591e1d47f482e3a47487",
+      "textualStatusNote": {
+        "en": "Authorship, date and textual layers require specialist review. Candidate use is limited to persuasion and intelligence design, never direct battlefield evidence.",
+        "zh-Hans": "作者、年代与文本层次均需专家审查；候选用途只限说服与情报设计，绝不作为战场直接史料。"
+      },
+      "candidateSections": [
+        {
+          "id": "guiguzi-baihe",
+          "locator": "捭闔",
+          "systemTarget": "dialogue-intent-and-disclosure",
+          "priority": "p2",
+          "gameQuestion": {
+            "en": "How can a council reveal, withhold and test intent without reducing dialogue to a persuasion percentage?",
+            "zh-Hans": "议事如何揭示、隐藏并试探意图，而不把对话简化成说服百分比？"
+          },
+          "evidenceBoundary": {
+            "en": "Use only after authorship and reception review; never label a fictional speaker as a practitioner.",
+            "zh-Hans": "须经作者与接受史审查后方可使用；不得把虚构人物标成该术的实践者。"
+          }
+        },
+        {
+          "id": "guiguzi-fanying",
+          "locator": "反應",
+          "systemTarget": "opponent-read-and-counterquestion",
+          "priority": "p2",
+          "gameQuestion": {
+            "en": "How should an opponent's response expose what it believes about the player's method?",
+            "zh-Hans": "对手的回应应如何暴露其对玩家手法的判断？"
+          },
+          "evidenceBoundary": {
+            "en": "The existing Qin method read remains project-authored reconstruction, not an attributed Guiguzi technique.",
+            "zh-Hans": "现有秦方识势仍是项目原创重构，不得归为《鬼谷子》术法。"
+          }
+        },
+        {
+          "id": "guiguzi-neijian",
+          "locator": "內揵",
+          "systemTarget": "officer-relationship-and-command-trust",
+          "priority": "p2",
+          "gameQuestion": {
+            "en": "How can an officer relationship affect interpretation and candor without granting mind reading?",
+            "zh-Hans": "将领关系如何影响命令理解与进言坦率，而不赋予读心能力？"
+          },
+          "evidenceBoundary": {
+            "en": "Relationship mechanics must preserve uncertainty and cannot claim private historical motives.",
+            "zh-Hans": "关系机制必须保留不确定性，不能声称掌握历史人物的私下动机。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wuzi",
+      "title": "吳子兵法",
+      "runtimeStatus": "candidate-not-runtime",
+      "publicPage": "https://zh.wikisource.org/wiki/吳子兵法",
+      "publicPageStatus": "received-text-transcription",
+      "privateMirror": "../ZhJpBook/books/wuzi/markdown/wenyan.md",
+      "privateMirrorSha256": "e331fcfe422c1d993e20decc54c1aed633eba3ffe907de52ded2373a4b1a6a22",
+      "textualStatusNote": {
+        "en": "The received six-chapter text and its relation to Warring States practice require review. Candidate use concerns preparation, cohesion, fatigue and adaptive command.",
+        "zh-Hans": "今本六篇及其与战国实践的关系均需审查；候选用途聚焦准备、凝聚、疲劳与应变指挥。"
+      },
+      "candidateSections": [
+        {
+          "id": "wuzi-tuguo-one",
+          "locator": "圖國第一",
+          "systemTarget": "polity-army-cohesion",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "How should political cohesion constrain whether a force can deploy at all?",
+            "zh-Hans": "政治凝聚应如何限制一支军队能否真正展开？"
+          },
+          "evidenceBoundary": {
+            "en": "A normative received argument cannot stand in for measured popular support in a specific campaign.",
+            "zh-Hans": "传世规范论述不能替代对具体战役民意的测量。"
+          }
+        },
+        {
+          "id": "wuzi-liaodi-two",
+          "locator": "料敵第二",
+          "systemTarget": "opponent-condition-reading",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "Which observable signs can justify a player inference about fatigue, disorder or incomplete deployment?",
+            "zh-Hans": "哪些可观察迹象足以支持玩家推断疲劳、混乱或部署未完？"
+          },
+          "evidenceBoundary": {
+            "en": "Faction stereotypes and universalized state character are prohibited; only situation-specific observations may inform play.",
+            "zh-Hans": "禁止使用国家性格刻板印象；玩法只能依据具体情境中的观察。"
+          }
+        },
+        {
+          "id": "wuzi-zhibing-three",
+          "locator": "治兵第三",
+          "systemTarget": "training-signals-and-cohesion",
+          "priority": "p0",
+          "gameQuestion": {
+            "en": "How can practiced movement, signal consistency and mutual support be shown before contact?",
+            "zh-Hans": "操练、信号一致性与相互支援如何在接战前被直观呈现？"
+          },
+          "evidenceBoundary": {
+            "en": "Do not convert severe punishments into entertainment rewards or a generic efficiency buff.",
+            "zh-Hans": "不得把严酷刑罚改写为娱乐奖励或通用效率增益。"
+          }
+        },
+        {
+          "id": "wuzi-yingbian-five",
+          "locator": "應變第五",
+          "systemTarget": "command-revision-and-withdrawal",
+          "priority": "p1",
+          "gameQuestion": {
+            "en": "When should a commander revise, hold or withdraw after the position changes?",
+            "zh-Hans": "局势改变后，主将何时应调整、坚守或撤出？"
+          },
+          "evidenceBoundary": {
+            "en": "Adaptation must arise from disclosed state, not a context-free tactic card.",
+            "zh-Hans": "应变必须来自已揭示的状态，不能做成脱离语境的战术卡牌。"
+          }
+        }
+      ]
+    }
+  ]
+}
