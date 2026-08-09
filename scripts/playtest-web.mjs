@@ -41,7 +41,10 @@ socket.addEventListener("message", (event) => {
     if (message.error) reject(new Error(message.error.message)); else resolveCall(message.result);
   }
   if (message.method === "Runtime.exceptionThrown") consoleErrors.push(message.params.exceptionDetails.text);
-  if (message.method === "Log.entryAdded" && message.params.entry.level === "error") consoleErrors.push(message.params.entry.text);
+  if (message.method === "Log.entryAdded" && message.params.entry.level === "error") {
+    const { text, url } = message.params.entry;
+    consoleErrors.push(url ? `${text} (${url})` : text);
+  }
   if (message.method === "Network.requestWillBeSent") networkRequests.push({ url: message.params.request.url, type: message.params.type, method: message.params.request.method });
   if (message.method === "Network.loadingFailed") networkFailures.push({ blockedReason: message.params.blockedReason ?? null, error: message.params.errorText, canceled: Boolean(message.params.canceled), type: message.params.type });
 });
@@ -436,7 +439,11 @@ await auditTargets("gameplay-en");
 
 await click("[data-testid=audio-toggle]");
 await waitForSelector("[data-testid=audio-drawer]");
-await wait(450);
+const desktopMixerSettled = await waitForCondition(`(() => {
+  const drawer = document.querySelector('[data-testid=audio-drawer]');
+  const box = drawer?.getBoundingClientRect();
+  return Boolean(box && box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight && document.documentElement.scrollWidth - document.documentElement.clientWidth <= 1);
+})()`, 2000);
 snapshot = await evaluate(`(() => {
   const drawer = document.querySelector('[data-testid=audio-drawer]');
   const checkbox = document.querySelector('[data-testid=audio-enabled]');
@@ -462,7 +469,9 @@ report.audioAudits.push({ state: "desktop-disabled", ...snapshot });
 check(snapshot.title === "Soundscape" && snapshot.enabled === false && snapshot.status === "off", "soundscape drawer opens in the disclosed off state");
 check(snapshot.ambienceDisabled && snapshot.effectsDisabled && snapshot.previewDisabled, "opt-in controls cannot synthesize audio before consent");
 check(snapshot.review.includes("human listening"), "desktop mixer discloses the human listening gate");
-check(snapshot.fitted && snapshot.overflow <= 1, "desktop mixer fits the viewport without horizontal overflow");
+const desktopMixerMessage = "desktop mixer fits the viewport without horizontal overflow";
+assert(desktopMixerSettled && snapshot.fitted && snapshot.overflow <= 1, `${desktopMixerMessage} (settled: ${desktopMixerSettled}, actual: ${JSON.stringify({ geometry: snapshot.geometry, overflow: snapshot.overflow })})`);
+report.checks.push(desktopMixerMessage);
 check(snapshot.controlSizes.every((size) => size.width >= 24 && size.height >= 24), "mixer inputs and preview meet the 24 CSS pixel control floor");
 await auditAccessibility("audio-drawer-disabled-en");
 await auditTargets("audio-drawer-disabled-en");
@@ -750,7 +759,12 @@ await evaluate("scrollTo(0, 0); true");
 await wait(200);
 await click("[data-testid=audio-toggle]");
 await waitForSelector("[data-testid=audio-drawer]");
-await wait(450);
+const mobileMixerSettled = await waitForCondition(`(() => {
+  const drawer = document.querySelector('[data-testid=audio-drawer]');
+  const box = drawer?.getBoundingClientRect();
+  const controls = [...(drawer?.querySelectorAll('button, input') ?? [])].map((element) => element.getBoundingClientRect());
+  return Boolean(box && box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight && controls.length === 5 && controls.every((control) => control.left >= 0 && control.right <= innerWidth && control.width >= 24 && control.height >= 24) && document.documentElement.scrollWidth - document.documentElement.clientWidth <= 1);
+})()`, 2000);
 await screenshot("web-29-mobile-audio-mixer.png");
 snapshot = await evaluate(`(() => {
   const drawer = document.querySelector('[data-testid=audio-drawer]');
@@ -767,7 +781,9 @@ snapshot = await evaluate(`(() => {
 })()`);
 report.audioAudits.push({ state: "mobile-enabled", ...snapshot });
 check(snapshot.width === 390 && snapshot.enabled === true && snapshot.status === "ready", "mobile mixer retains the enabled runtime and exact persisted consent");
-check(snapshot.fitted && snapshot.controlsFit && snapshot.overflow <= 1, "mobile soundscape drawer and all five controls fit without horizontal scrolling");
+const mobileMixerMessage = "mobile soundscape drawer and all five controls fit without horizontal scrolling";
+assert(mobileMixerSettled && snapshot.fitted && snapshot.controlsFit && snapshot.overflow <= 1, `${mobileMixerMessage} (settled: ${mobileMixerSettled}, actual: ${JSON.stringify(snapshot)})`);
+report.checks.push(mobileMixerMessage);
 await auditAccessibility("audio-drawer-mobile-en");
 await auditTargets("audio-drawer-mobile-en");
 await click(".audio-drawer .icon-button");

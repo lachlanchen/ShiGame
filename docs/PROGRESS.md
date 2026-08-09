@@ -12,8 +12,10 @@
 - Visible noVNC acceptance first found that the larger decision card could not fit Chrome's 228-CSS-pixel viewport at actual 400% zoom. A shallow-viewport card now stays wholly focusable while retaining complete internally scrollable content. A second run exposed an offscreen coordinate assumption in the harness; explicit visible scrolling before commitment fixed the test action without changing game state.
 - The complete rerun passes 202 checks, twenty-eight axe states, twenty target states, eleven locale/font states and three audio-UI states with zero console errors, cross-origin requests/resources or non-cancelled failures. Reviewed evidence shows `witness-chain` at two observed compacts, a changed-method miss forecast, the matching +3 Exposure hit, isolated five-layer deltas and save-v5 identity.
 - Pinned implementation `d7afcd6bd7e838a64397f500e919af112221dcc8` passes `npm ci` and the complete production build from a fresh clone. The visible localhost desktop then repeats all 202 checks against that exact commit and records the immutable identity in its machine report.
+- Hosted validation run `31286163890` and Pages deployment run `31286163900` pass at evidence boundary `1c92d90dc1ab938cb5e83dc0c9e58584c7332b17`; the deployed game returns HTTP 200 and repeats all 202 visible checks. The public stress traversal records 233 requests and 167 same-origin font slices with zero cross-origin requests/resources, failed loads or console errors.
+- The first hosted replay sampled the audio drawer while its entrance animation was still translated under network-load timing. Replacing the fixed delay with the actual viewport/control-fit condition preserves the strict gate and removes the race. A later traversal was rejected for one transient Pages HTTP 503; URL-aware error diagnostics were added and the complete clean rerun—not a subset—passes.
 
-Next gate: push and deploy the evidence boundary, repeat the 202-check route publicly, then continue the licensed-Unity and human/specialist/player gates. Chapter II remains gated.
+Next gate: continue the licensed-Unity and human assistive-technology, listening, physical-controller, specialist and observed-player gates. Chapter II remains gated.
 
 ## 2026-08-09 · Persistent Qin pursuit checkpoint
 
