@@ -45,6 +45,7 @@ public:
     bool IsSoundPreferred() const;
     float GetAmbienceLevel() const;
     float GetEffectsLevel() const;
+    bool IsReducedMotion() const { return bReducedMotion; }
     bool CanChoose(const FShiChoiceData& Choice) const { return Session.CanChoose(Choice); }
     const FShiFieldConditionData* GetCurrentFieldCondition() const { return Session.GetCurrentFieldCondition(); }
     const FShiOppositionStageData* GetCurrentOppositionStage() const { return Session.GetCurrentOppositionStage(); }
@@ -69,6 +70,7 @@ public:
     void ToggleSound();
     void AdjustAmbience(int32 Direction);
     void AdjustEffects(int32 Direction);
+    void ToggleReducedMotion();
     void SkipCinematicSequence();
 
 private:
@@ -84,6 +86,7 @@ private:
     bool bPersistenceEnabled = true;
     bool bRestartArmed = false;
     bool bEvidenceOpen = false;
+    bool bReducedMotion = false;
     FString InspectedSiteId;
     FString InspectedCommandSignalId;
     TArray<FShiCommandSignalData> CommandSignals;
@@ -106,11 +109,14 @@ private:
     FRotator CameraTransitionTargetRotation;
     float CameraTransitionElapsed = 0.f;
     float CameraTransitionDuration = 0.f;
+    float CameraTransitionStartFieldOfView = 50.f;
+    float CameraTransitionTargetFieldOfView = 50.f;
 
     void CreateCommandSpace();
     void CreateSoundscape();
     void RefreshScreen();
-    void BeginCameraTransition(const FTransform& Target, float Duration);
+    void BeginCameraTransition(const FTransform& Target, float Duration, float FieldOfViewDegrees = 50.f);
+    void SetCameraImmediate(const FTransform& Target, float FieldOfViewDegrees);
     void TickCamera(float DeltaSeconds);
     bool BeginResolutionSequence(const FShiResolutionResult& Resolution, FString& OutError);
     void StartCinematicBeat();
@@ -124,6 +130,8 @@ private:
     void UpdateCommandSignalSelection();
     void SelectFirstAvailableChoice();
     void ResumeSoundFromGesture();
+    void LoadCinematicPreferences();
+    void SaveCinematicPreferences() const;
     FString GetSavePath() const;
     bool RestoreChronicle(FString& OutError);
     bool SaveChronicle(FString& OutError) const;

@@ -1,8 +1,12 @@
 #include "ShiCinematicBeatModel.h"
 
+#include "ShiWartableModel.h"
+
 namespace
 {
     constexpr float MaximumSequenceSeconds = 5.f;
+    constexpr float MaximumEasedTranslation = 100.f;
+    constexpr float MaximumEasedRotationDegrees = 6.f;
     const TArray<FString> ResourceKeys = {TEXT("grain"), TEXT("trust"), TEXT("momentum"), TEXT("people"), TEXT("danger")};
     const TArray<FString> StableBeatIds = {
         TEXT("resolution-order"), TEXT("resolution-commitment"), TEXT("resolution-pressure"),
@@ -68,6 +72,44 @@ namespace
         Beat.TransitionSeconds = TransitionSeconds;
         Beat.HoldSeconds = HoldSeconds;
         return Beat;
+    }
+
+    float FieldOfViewForBeat(const FString& BeatId)
+    {
+        if (BeatId == TEXT("resolution-order")) return 44.f;
+        if (BeatId == TEXT("resolution-commitment")) return 48.f;
+        if (BeatId == TEXT("resolution-pressure")) return 40.f;
+        if (BeatId == TEXT("resolution-pursuit")) return 52.f;
+        if (BeatId == TEXT("resolution-method-read")) return 43.f;
+        if (BeatId == TEXT("resolution-field")) return 54.f;
+        return BeatId == TEXT("resolution-position") ? 58.f : 0.f;
+    }
+
+    bool ResolveCameraTarget(const FShiCinematicBeatData& Beat, const TArray<FShiCommandSignalData>& Signals,
+        const FShiSiteData* PositionSite, FTransform& OutTarget)
+    {
+        if (Beat.FocusKind == TEXT("signal"))
+        {
+            const FShiCommandSignalData* Signal = FShiCommandSignalModel::Find(Signals, Beat.FocusId);
+            if (!Signal) return false;
+            OutTarget = FShiCommandSignalModel::CameraTransform(*Signal);
+            return true;
+        }
+        if (Beat.FocusKind == TEXT("site") && PositionSite && Beat.FocusId == PositionSite->Id)
+        {
+            OutTarget = FShiWartableModel::CameraTransform(*PositionSite);
+            return true;
+        }
+        return false;
+    }
+
+    FString CameraMotionBetween(const FTransform* Previous, const FTransform& Current)
+    {
+        if (!Previous) return TEXT("cut");
+        const float Translation = FVector::Distance(Previous->GetLocation(), Current.GetLocation());
+        const float RotationDegrees = FMath::RadiansToDegrees(Previous->GetRotation().AngularDistance(Current.GetRotation()));
+        return Translation <= MaximumEasedTranslation && RotationDegrees <= MaximumEasedRotationDegrees
+            ? TEXT("ease") : TEXT("cut");
     }
 }
 
@@ -166,6 +208,22 @@ bool FShiCinematicBeatModel::Build(const FShiResolutionResult& Resolution, const
     Position.HoldSeconds = .34f;
     BuiltBeats.Add(MoveTemp(Position));
 
+    FTransform PreviousCameraTarget;
+    bool bHasPreviousCameraTarget = false;
+    for (FShiCinematicBeatData& Beat : BuiltBeats)
+    {
+        FTransform CameraTarget;
+        if (!ResolveCameraTarget(Beat, Signals, PositionSite, CameraTarget))
+        {
+            OutError = FString::Printf(TEXT("Cinematic beat %s has no deterministic camera target."), *Beat.Id);
+            return false;
+        }
+        Beat.CameraMotion = CameraMotionBetween(bHasPreviousCameraTarget ? &PreviousCameraTarget : nullptr, CameraTarget);
+        Beat.FieldOfViewDegrees = FieldOfViewForBeat(Beat.Id);
+        PreviousCameraTarget = CameraTarget;
+        bHasPreviousCameraTarget = true;
+    }
+
     if (!Validate(BuiltBeats, Signals, PositionSite, OutError)) return false;
     OutBeats = MoveTemp(BuiltBeats);
     return true;
@@ -182,14 +240,24 @@ bool FShiCinematicBeatModel::Validate(const TArray<FShiCinematicBeatData>& Beats
     }
     int32 StableIndex = 0;
     TSet<FString> BeatIds;
+    FTransform PreviousCameraTarget;
+    bool bHasPreviousCameraTarget = false;
     for (const FShiCinematicBeatData& Beat : Beats)
     {
         while (StableIndex < StableBeatIds.Num() && StableBeatIds[StableIndex] != Beat.Id) ++StableIndex;
         const bool bSignalFocus = Beat.FocusKind == TEXT("signal");
         const bool bSiteFocus = Beat.FocusKind == TEXT("site");
         const FString ExpectedLayer = Beat.Id.StartsWith(TEXT("resolution-")) ? Beat.Id.RightChop(11) : FString();
+        FTransform CameraTarget;
+        const bool bCameraTargetValid = ResolveCameraTarget(Beat, Signals, PositionSite, CameraTarget);
+        const FString ExpectedCameraMotion = bCameraTargetValid
+            ? CameraMotionBetween(bHasPreviousCameraTarget ? &PreviousCameraTarget : nullptr, CameraTarget) : FString();
         if (StableIndex >= StableBeatIds.Num() || BeatIds.Contains(Beat.Id) || Beat.Layer != ExpectedLayer || Beat.Label.IsEmpty()
             || Beat.Detail.IsEmpty() || (!bSignalFocus && !bSiteFocus) || Beat.FocusId.IsEmpty()
+            || !bCameraTargetValid || Beat.CameraMotion != ExpectedCameraMotion
+            || !FMath::IsFinite(Beat.FieldOfViewDegrees)
+            || !FMath::IsNearlyEqual(Beat.FieldOfViewDegrees, FieldOfViewForBeat(Beat.Id), .001f)
+            || Beat.FieldOfViewDegrees < 40.f || Beat.FieldOfViewDegrees > 58.f
             || !FMath::IsFinite(Beat.TransitionSeconds) || !FMath::IsFinite(Beat.HoldSeconds)
             || Beat.TransitionSeconds < .20f || Beat.TransitionSeconds > .60f
             || Beat.HoldSeconds < .12f || Beat.HoldSeconds > .50f
@@ -200,6 +268,8 @@ bool FShiCinematicBeatModel::Validate(const TArray<FShiCinematicBeatData>& Beats
             return false;
         }
         BeatIds.Add(Beat.Id);
+        PreviousCameraTarget = CameraTarget;
+        bHasPreviousCameraTarget = true;
         ++StableIndex;
     }
     if (Beats[0].Id != TEXT("resolution-order") || Beats.Last().Id != TEXT("resolution-position")

@@ -190,6 +190,12 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
                     : Mode->IsSoundPreferred() ? TEXT("SOUND ARMED") : TEXT("SOUND OFF")))
             ]
         ]
+        + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 10, 0)[
+            SNew(SButton).IsEnabled(!Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::ToggleReducedMotion).ContentPadding(8)[
+                SNew(STextBlock).Text(FText::FromString(Mode->IsReducedMotion()
+                    ? TEXT("REDUCED MOTION · CUTS ONLY") : TEXT("CAMERA MOTION · RESTRAINED")))
+            ]
+        ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
             SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Mode->GetAudioStatus()))
         ]
@@ -264,7 +270,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT · SPACE / B SKIPS CONSEQUENCE · E / LB EVIDENCE · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT · SPACE / B SKIPS CONSEQUENCE · E / LB EVIDENCE · V / MENU MOTION · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
         ]
     ];
 
@@ -442,6 +448,12 @@ FReply SShiCommandScreen::OpenPublicEdition(FString Url)
 FReply SShiCommandScreen::ToggleSound()
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->ToggleSound();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::ToggleReducedMotion()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->ToggleReducedMotion();
     return FReply::Handled();
 }
 

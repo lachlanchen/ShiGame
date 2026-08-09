@@ -12,6 +12,8 @@ struct FShiCinematicBeatData
     FString Detail;
     FString FocusKind;
     FString FocusId;
+    FString CameraMotion;
+    float FieldOfViewDegrees = 50.f;
     float TransitionSeconds = 0.f;
     float HoldSeconds = 0.f;
 };

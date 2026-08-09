@@ -1,6 +1,7 @@
 #include "ShiGameMode.h"
 
 #include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/Engine.h"
 #include "Engine/ExponentialHeightFog.h"
@@ -20,10 +21,17 @@
 #include "Materials/MaterialInterface.h"
 #include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
+#include "Misc/ConfigCacheIni.h"
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiWartableModel.h"
+
+namespace
+{
+    const TCHAR* CinematicSettingsSection = TEXT("/Script/SHI.ShiCinematic");
+    constexpr float InspectionFieldOfViewDegrees = 50.f;
+}
 
 AShiGameMode::AShiGameMode()
 {
@@ -33,6 +41,7 @@ AShiGameMode::AShiGameMode()
 void AShiGameMode::BeginPlay()
 {
     Super::BeginPlay();
+    LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
     {
         UE_LOG(LogTemp, Error, TEXT("SHI campaign load failed: %s"), *LoadError);
@@ -279,6 +288,11 @@ void AShiGameMode::Tick(float DeltaSeconds)
             CycleInspectedCommandSignal(bReverse ? -1 : 1);
             return;
         }
+        if (Controller->WasInputKeyJustPressed(EKeys::V) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_Special_Right))
+        {
+            ToggleReducedMotion();
+            return;
+        }
         if (Controller->WasInputKeyJustPressed(EKeys::One) || Controller->WasInputKeyJustPressed(EKeys::NumPadOne)) SelectChoice(0);
         if (Controller->WasInputKeyJustPressed(EKeys::Two) || Controller->WasInputKeyJustPressed(EKeys::NumPadTwo)) SelectChoice(1);
         if (Controller->WasInputKeyJustPressed(EKeys::Three) || Controller->WasInputKeyJustPressed(EKeys::NumPadThree)) SelectChoice(2);
@@ -294,15 +308,38 @@ void AShiGameMode::Tick(float DeltaSeconds)
     TickCamera(DeltaSeconds);
 }
 
-void AShiGameMode::BeginCameraTransition(const FTransform& Target, float Duration)
+void AShiGameMode::BeginCameraTransition(const FTransform& Target, float Duration, float FieldOfViewDegrees)
 {
     if (!CommandCamera.IsValid()) return;
+    if (bReducedMotion)
+    {
+        SetCameraImmediate(Target, FieldOfViewDegrees);
+        return;
+    }
     CameraTransitionStartLocation = CommandCamera->GetActorLocation();
     CameraTransitionStartRotation = CommandCamera->GetActorRotation();
     CameraTransitionTargetLocation = Target.GetLocation();
     CameraTransitionTargetRotation = Target.GetRotation().Rotator();
+    CameraTransitionStartFieldOfView = CommandCamera->GetCameraComponent()->FieldOfView;
+    CameraTransitionTargetFieldOfView = FMath::Clamp(FieldOfViewDegrees, 35.f, 65.f);
     CameraTransitionElapsed = 0.f;
     CameraTransitionDuration = FMath::Max(Duration, .01f);
+}
+
+void AShiGameMode::SetCameraImmediate(const FTransform& Target, float FieldOfViewDegrees)
+{
+    if (!CommandCamera.IsValid()) return;
+    CameraTransitionDuration = 0.f;
+    CameraTransitionElapsed = 0.f;
+    CameraBaseLocation = Target.GetLocation();
+    CameraBaseRotation = Target.GetRotation().Rotator();
+    CameraTransitionTargetLocation = CameraBaseLocation;
+    CameraTransitionTargetRotation = CameraBaseRotation;
+    CameraTransitionTargetFieldOfView = FMath::Clamp(FieldOfViewDegrees, 35.f, 65.f);
+    CameraTransitionStartFieldOfView = CameraTransitionTargetFieldOfView;
+    CommandCamera->SetActorLocation(CameraBaseLocation);
+    CommandCamera->SetActorRotation(CameraBaseRotation);
+    CommandCamera->GetCameraComponent()->SetFieldOfView(CameraTransitionTargetFieldOfView);
 }
 
 void AShiGameMode::TickCamera(float DeltaSeconds)
@@ -315,6 +352,7 @@ void AShiGameMode::TickCamera(float DeltaSeconds)
         const float Ease = FMath::InterpEaseInOut(0.f, 1.f, Alpha, 2.f);
         CommandCamera->SetActorLocation(FMath::Lerp(CameraTransitionStartLocation, CameraTransitionTargetLocation, Ease));
         CommandCamera->SetActorRotation(FQuat::Slerp(CameraTransitionStartRotation.Quaternion(), CameraTransitionTargetRotation.Quaternion(), Ease));
+        CommandCamera->GetCameraComponent()->SetFieldOfView(FMath::Lerp(CameraTransitionStartFieldOfView, CameraTransitionTargetFieldOfView, Ease));
         if (Alpha >= 1.f)
         {
             CameraBaseLocation = CameraTransitionTargetLocation;
@@ -398,7 +436,16 @@ void AShiGameMode::StartCinematicBeat()
 
     CinematicHoldElapsed = 0.f;
     bCinematicHolding = false;
-    BeginCameraTransition(Target, Beat->TransitionSeconds);
+    if (bReducedMotion || Beat->CameraMotion == TEXT("cut"))
+    {
+        SetCameraImmediate(Target, Beat->FieldOfViewDegrees);
+        bCinematicHolding = true;
+        CinematicHoldElapsed = -Beat->TransitionSeconds;
+    }
+    else
+    {
+        BeginCameraTransition(Target, Beat->TransitionSeconds, Beat->FieldOfViewDegrees);
+    }
     UpdateWartableSelection();
     UpdateCommandSignalSelection();
     RefreshScreen();
@@ -463,15 +510,11 @@ void AShiGameMode::InspectSite(const FString& SiteId, bool bImmediate, bool bPla
     const FTransform Target = FShiWartableModel::CameraTransform(*Site);
     if (bImmediate && CommandCamera.IsValid())
     {
-        CameraTransitionDuration = 0.f;
-        CameraBaseLocation = Target.GetLocation();
-        CameraBaseRotation = Target.GetRotation().Rotator();
-        CommandCamera->SetActorLocation(CameraBaseLocation);
-        CommandCamera->SetActorRotation(CameraBaseRotation);
+        SetCameraImmediate(Target, InspectionFieldOfViewDegrees);
     }
     else if (bChanged || bReturningFromCommandSignal || CameraTransitionDuration <= 0.f)
     {
-        BeginCameraTransition(Target, .72f);
+        BeginCameraTransition(Target, .72f, InspectionFieldOfViewDegrees);
     }
     if (bPlayCue)
     {
@@ -489,7 +532,7 @@ void AShiGameMode::InspectCommandSignal(const FString& SignalId, bool bPlayCue)
     InspectedCommandSignalId = SignalId;
     UpdateWartableSelection();
     UpdateCommandSignalSelection();
-    BeginCameraTransition(FShiCommandSignalModel::CameraTransform(*Signal), .64f);
+    BeginCameraTransition(FShiCommandSignalModel::CameraTransform(*Signal), .64f, InspectionFieldOfViewDegrees);
     if (bPlayCue)
     {
         ResumeSoundFromGesture();
@@ -719,6 +762,17 @@ void AShiGameMode::AdjustEffects(int32 Direction)
     RefreshScreen();
 }
 
+void AShiGameMode::ToggleReducedMotion()
+{
+    if (!LoadError.IsEmpty() || bEvidenceOpen || IsCinematicSequenceActive()) return;
+    bReducedMotion = !bReducedMotion;
+    if (bReducedMotion && CameraTransitionDuration > 0.f)
+        SetCameraImmediate(FTransform(CameraTransitionTargetRotation, CameraTransitionTargetLocation), CameraTransitionTargetFieldOfView);
+    SaveCinematicPreferences();
+    if (AudioDirector) AudioDirector->PlayCue(bReducedMotion ? FName(TEXT("close")) : FName(TEXT("drawer")));
+    RefreshScreen();
+}
+
 void AShiGameMode::RefreshScreen()
 {
     if (CommandScreen.IsValid()) CommandScreen->Refresh();
@@ -728,6 +782,19 @@ void AShiGameMode::ResumeSoundFromGesture()
 {
     if (AudioDirector && AudioDirector->ResumePreferredFromGesture())
         AudioStatus = TEXT("SOUND ON · ENGINEERING PREVIEW · HUMAN LISTENING REVIEW OPEN");
+}
+
+void AShiGameMode::LoadCinematicPreferences()
+{
+    bReducedMotion = false;
+    if (GConfig) GConfig->GetBool(CinematicSettingsSection, TEXT("ReducedMotion"), bReducedMotion, GGameUserSettingsIni);
+}
+
+void AShiGameMode::SaveCinematicPreferences() const
+{
+    if (!GConfig) return;
+    GConfig->SetBool(CinematicSettingsSection, TEXT("ReducedMotion"), bReducedMotion, GGameUserSettingsIni);
+    GConfig->Flush(false, GGameUserSettingsIni);
 }
 
 void AShiGameMode::CreateSoundscape()
@@ -771,6 +838,7 @@ void AShiGameMode::CreateCommandSpace()
         return;
     }
     CommandCamera = Camera;
+    Camera->GetCameraComponent()->SetFieldOfView(InspectionFieldOfViewDegrees);
     CameraBaseLocation = Camera->GetActorLocation();
     CameraBaseRotation = Camera->GetActorRotation();
     if (APlayerController* Controller = UGameplayStatics::GetPlayerController(World, 0))

@@ -33,6 +33,7 @@ private:
     FReply ResetSiteFocus();
     FReply OpenPublicEdition(FString Url);
     FReply ToggleSound();
+    FReply ToggleReducedMotion();
     FReply AdjustAmbience(int32 Direction);
     FReply AdjustEffects(int32 Direction);
 };

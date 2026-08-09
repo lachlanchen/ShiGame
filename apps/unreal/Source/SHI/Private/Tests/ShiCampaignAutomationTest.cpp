@@ -363,6 +363,10 @@ bool FShiCinematicResolutionGrammarTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("opening sequence includes order, established oath, four response layers and position"), Beats.Num(), 7);
     TestTrue(TEXT("cinematic plan passes world-target validation"), FShiCinematicBeatModel::Validate(Beats, Signals, PositionSite, Error));
     TestTrue(TEXT("complete consequence sequence stays below five seconds"), FShiCinematicBeatModel::TotalDuration(Beats) <= 5.f);
+    TestEqual(TEXT("first consequence shot cuts from unknowable prior inspection"), Beats[0].CameraMotion, FString(TEXT("cut")));
+    TestEqual(TEXT("near pursuit-to-method translation uses one restrained ease"), Beats[4].CameraMotion, FString(TEXT("ease")));
+    TestEqual(TEXT("pressure close reading has the narrowest authored lens"), Beats[2].FieldOfViewDegrees, 40.f);
+    TestEqual(TEXT("position resolves through the widest authored lens"), Beats.Last().FieldOfViewDegrees, 58.f);
     const TArray<FString> ExpectedIds = {
         TEXT("resolution-order"), TEXT("resolution-commitment"), TEXT("resolution-pressure"), TEXT("resolution-pursuit"),
         TEXT("resolution-method-read"), TEXT("resolution-field"), TEXT("resolution-position")
@@ -392,6 +396,12 @@ bool FShiCinematicResolutionGrammarTest::RunTest(const FString& Parameters)
     TArray<FShiCinematicBeatData> Relabeled = Beats;
     Relabeled[2].Layer = TEXT("spectacle");
     TestFalse(TEXT("cinematic layer identity drift is rejected"), FShiCinematicBeatModel::Validate(Relabeled, Signals, PositionSite, Error));
+    TArray<FShiCinematicBeatData> UnsafeMotion = Beats;
+    UnsafeMotion[4].CameraMotion = TEXT("cut");
+    TestFalse(TEXT("cinematic cut/ease authorship cannot drift from spatial bounds"), FShiCinematicBeatModel::Validate(UnsafeMotion, Signals, PositionSite, Error));
+    TArray<FShiCinematicBeatData> UnsafeLens = Beats;
+    UnsafeLens[2].FieldOfViewDegrees = 72.f;
+    TestFalse(TEXT("cinematic lens grammar rejects disorienting drift"), FShiCinematicBeatModel::Validate(UnsafeLens, Signals, PositionSite, Error));
 
     FShiCampaignSession CapturedSession;
     CapturedSession.Initialize(Campaign, 0x5EED2026u);
