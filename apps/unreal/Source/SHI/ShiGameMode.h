@@ -118,7 +118,10 @@ private:
     void BeginCameraTransition(const FTransform& Target, float Duration, float FieldOfViewDegrees = 50.f);
     void SetCameraImmediate(const FTransform& Target, float FieldOfViewDegrees);
     void TickCamera(float DeltaSeconds);
-    bool BeginResolutionSequence(const FShiResolutionResult& Resolution, FString& OutError);
+    bool CanPresentCommandSignals(const TArray<FShiCommandSignalData>& PreparedSignals, FString& OutError) const;
+    bool CanPresentResolutionSequence(const TArray<FShiCommandSignalData>& PreparedSignals,
+        const TArray<FShiCinematicBeatData>& PreparedBeats, FString& OutError) const;
+    void BeginPreparedResolutionSequence(TArray<FShiCinematicBeatData>&& PreparedBeats);
     void StartCinematicBeat();
     void TickCinematicSequence(float DeltaSeconds);
     void CompleteCinematicSequence();
@@ -135,4 +138,5 @@ private:
     FString GetSavePath() const;
     bool RestoreChronicle(FString& OutError);
     bool SaveChronicle(FString& OutError) const;
+    bool SaveChronicle(const FShiCampaignSession& SourceSession, FString& OutError) const;
 };

@@ -11,6 +11,7 @@
 #include "ShiCampaignSession.h"
 #include "ShiCinematicBeatModel.h"
 #include "ShiCommandSignalModel.h"
+#include "ShiOrderTransactionModel.h"
 #include "ShiWartableModel.h"
 
 namespace
@@ -332,6 +333,68 @@ bool FShiCommandSpaceLiveSignalsTest::RunTest(const FString& Parameters)
     return !HasAnyErrors();
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiOrderTransactionTest, "SHI.Campaign.OrderTransactionV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiOrderTransactionTest::RunTest(const FString& Parameters)
+{
+    FShiCampaignModel Campaign;
+    FString Error;
+    if (!Campaign.LoadCanonical(Error)) { AddError(Error); return false; }
+    FShiCampaignSession Session;
+    Session.Initialize(Campaign, 0x5EED2026u);
+    FString BeforeSave;
+    TestTrue(TEXT("pre-order session exports for immutability proof"), Session.ExportSaveJson(BeforeSave, Error));
+
+    FShiOrderTransactionData Transaction;
+    TestTrue(TEXT("one order preflights rule, world and cinema together"), FShiOrderTransactionModel::Build(
+        Session, Campaign, TEXT("read-the-names"), TEXT("en"), Transaction, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    FString UnchangedSave;
+    TestTrue(TEXT("preflight source session still exports"), Session.ExportSaveJson(UnchangedSave, Error));
+    TestEqual(TEXT("order preflight never mutates the active chronicle"), UnchangedSave, BeforeSave);
+    TestEqual(TEXT("prepared transaction appends exactly one decision"), Transaction.Session.GetHistory().Num(), 1);
+    TestEqual(TEXT("prepared transaction advances to organization"), Transaction.Session.GetCurrentNodeId(), FString(TEXT("open-council")));
+    TestEqual(TEXT("prepared world contains five resources and four tactical layers"), Transaction.CommandSignals.Num(), 9);
+    TestEqual(TEXT("prepared opening cinema retains its oath beat"), Transaction.CinematicBeats.Num(), 7);
+    TestTrue(TEXT("prepared selection is valid in the post-order node"),
+        Transaction.Session.GetCurrentNode() && Transaction.Session.GetCurrentNode()->Choices.IsValidIndex(Transaction.SelectedChoiceIndex));
+    TestTrue(TEXT("complete order transaction revalidates from the unchanged source"), FShiOrderTransactionModel::Validate(
+        Session, Campaign, TEXT("read-the-names"), TEXT("en"), Transaction, Error));
+
+    FShiOrderTransactionData DriftedResolution = Transaction;
+    DriftedResolution.Resolution.Record.AfterChoice.FindOrAdd(TEXT("grain")) += 1;
+    TestFalse(TEXT("resolution drift rejects the entire prepared transaction"), FShiOrderTransactionModel::Validate(
+        Session, Campaign, TEXT("read-the-names"), TEXT("en"), DriftedResolution, Error));
+    FShiOrderTransactionData DriftedWorld = Transaction;
+    DriftedWorld.CommandSignals[0].NumericValue += 1;
+    TestFalse(TEXT("world drift rejects the entire prepared transaction"), FShiOrderTransactionModel::Validate(
+        Session, Campaign, TEXT("read-the-names"), TEXT("en"), DriftedWorld, Error));
+    FShiOrderTransactionData DriftedCinema = Transaction;
+    DriftedCinema.CinematicBeats[0].Label = TEXT("UNBOUND SPECTACLE");
+    TestFalse(TEXT("cinematic drift rejects the entire prepared transaction"), FShiOrderTransactionModel::Validate(
+        Session, Campaign, TEXT("read-the-names"), TEXT("en"), DriftedCinema, Error));
+    FShiOrderTransactionData DriftedSelection = Transaction;
+    DriftedSelection.SelectedChoiceIndex = 99;
+    TestFalse(TEXT("post-order briefing drift rejects the entire prepared transaction"), FShiOrderTransactionModel::Validate(
+        Session, Campaign, TEXT("read-the-names"), TEXT("en"), DriftedSelection, Error));
+    FShiOrderTransactionData DriftedSession = Transaction;
+    FShiResolutionResult ExtraResolution;
+    TestTrue(TEXT("hostile transaction can be advanced for state-drift attack"),
+        DriftedSession.Session.ResolveChoice(TEXT("issue-grain-tallies"), ExtraResolution, Error));
+    TestFalse(TEXT("extra hidden decision rejects the entire prepared transaction"), FShiOrderTransactionModel::Validate(
+        Session, Campaign, TEXT("read-the-names"), TEXT("en"), DriftedSession, Error));
+
+    FShiOrderTransactionData AtomicOutput = Transaction;
+    const FString StableFirstBeat = AtomicOutput.CinematicBeats[0].Id;
+    TestFalse(TEXT("illegal order cannot replace an accepted transaction"), FShiOrderTransactionModel::Build(
+        Session, Campaign, TEXT("invented-order"), TEXT("en"), AtomicOutput, Error));
+    TestTrue(TEXT("failed order transaction build is atomic"), AtomicOutput.Session.GetHistory().Num() == 1
+        && AtomicOutput.CommandSignals.Num() == 9 && AtomicOutput.CinematicBeats[0].Id == StableFirstBeat);
+    TestTrue(TEXT("hostile validation never mutates the active chronicle"), Session.ExportSaveJson(UnchangedSave, Error));
+    TestEqual(TEXT("active chronicle remains byte-identical after every attack"), UnchangedSave, BeforeSave);
+    return !HasAnyErrors();
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCinematicResolutionGrammarTest, "SHI.Cinematic.ResolutionGrammarV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FShiCinematicResolutionGrammarTest::RunTest(const FString& Parameters)
@@ -516,12 +579,23 @@ bool FShiCampaignReplayConformanceTest::RunTest(const FString& Parameters)
             const TSharedPtr<FJsonObject> Expected = Turns[TurnIndex]->AsObject();
             const FString Context = FString::Printf(TEXT("route %s turn %d"), *RouteId, TurnIndex + 1);
             if (!Expected.IsValid()) { AddError(Context + TEXT(" is not an object.")); break; }
-            FShiResolutionResult Resolution;
-            if (!Session.ResolveChoice(Expected->GetStringField(TEXT("choiceId")), Resolution, Error))
+            const int32 StableHistoryCount = Session.GetHistory().Num();
+            const FString StableNodeId = Session.GetCurrentNodeId();
+            FShiOrderTransactionData Transaction;
+            const FString ChoiceId = Expected->GetStringField(TEXT("choiceId"));
+            if (!FShiOrderTransactionModel::Build(Session, Campaign, ChoiceId, TEXT("en"), Transaction, Error))
             {
-                AddError(FString::Printf(TEXT("%s did not resolve: %s"), *Context, *Error));
+                AddError(FString::Printf(TEXT("%s transaction did not preflight: %s"), *Context, *Error));
                 break;
             }
+            TestEqual(*FString::Printf(TEXT("%s preflight history is immutable"), *Context), Session.GetHistory().Num(), StableHistoryCount);
+            TestEqual(*FString::Printf(TEXT("%s preflight position is immutable"), *Context), Session.GetCurrentNodeId(), StableNodeId);
+            TestTrue(*FString::Printf(TEXT("%s full transaction revalidates"), *Context), FShiOrderTransactionModel::Validate(
+                Session, Campaign, ChoiceId, TEXT("en"), Transaction, Error));
+            FShiResolutionResult Resolution = Transaction.Resolution;
+            TArray<FShiCommandSignalData> Signals = MoveTemp(Transaction.CommandSignals);
+            TArray<FShiCinematicBeatData> Beats = MoveTemp(Transaction.CinematicBeats);
+            Session = MoveTemp(Transaction.Session);
             const FShiDecisionRecord& Record = Resolution.Record;
             TestEqual(*FString::Printf(TEXT("%s node"), *Context), Record.NodeId, Expected->GetStringField(TEXT("nodeId")));
             TestEqual(*FString::Printf(TEXT("%s condition"), *Context), Record.ConditionId, Expected->GetStringField(TEXT("conditionId")));
@@ -548,24 +622,7 @@ bool FShiCampaignReplayConformanceTest::RunTest(const FString& Parameters)
             TestEqual(*FString::Printf(TEXT("%s failure"), *Context), Session.GetFailureReason(), OptionalString(Expected, TEXT("failureReason")));
             TestEqual(*FString::Printf(TEXT("%s active commitment"), *Context), Session.GetActiveCommitmentId(), OptionalString(Expected, TEXT("activeCommitmentId")));
 
-            const FShiNodeData* PositionNode = Session.GetCurrentNode();
-            const FShiSiteData* PositionSite = PositionNode ? Campaign.FindSite(PositionNode->SiteId) : nullptr;
-            TArray<FShiCommandSignalData> Signals;
-            if (!PositionNode || PositionNode->Choices.IsEmpty() || !PositionSite
-                || !FShiCommandSignalModel::Build(Session.GetResources(), Session.GetCurrentFieldCondition(),
-                    Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(), Session.GetActiveCommitment(),
-                    &PositionNode->Choices[0], TEXT("en"), Signals, Error))
-            {
-                AddError(FString::Printf(TEXT("%s could not build its post-order world: %s"), *Context, *Error));
-                break;
-            }
-            TArray<FShiCinematicBeatData> Beats;
-            if (!FShiCinematicBeatModel::Build(Resolution, Session.GetActiveCommitment(), Session.GetResources(), PositionSite,
-                Session.IsCompleted(), Session.GetFailureReason(), Signals, TEXT("en"), Beats, Error))
-            {
-                AddError(FString::Printf(TEXT("%s could not build its consequence cinema: %s"), *Context, *Error));
-                break;
-            }
+            TestEqual(*FString::Printf(TEXT("%s prepared world signal count"), *Context), Signals.Num(), 9);
             TestTrue(*FString::Printf(TEXT("%s cinematic ceiling"), *Context), FShiCinematicBeatModel::TotalDuration(Beats) <= 5.f);
         }
 

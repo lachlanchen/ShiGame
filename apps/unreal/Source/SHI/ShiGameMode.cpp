@@ -24,6 +24,7 @@
 #include "Misc/ConfigCacheIni.h"
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
+#include "ShiOrderTransactionModel.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiWartableModel.h"
 
@@ -176,16 +177,35 @@ void AShiGameMode::IssueSelectedOrder()
     const double Now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0;
     if (Now - LastOrderIssueTime < 0.15) return;
     LastOrderIssueTime = Now;
-    ResumeSoundFromGesture();
-
-    FShiResolutionResult Resolution;
-    FString ResolutionError;
-    if (!Session.ResolveChoice(Node->Choices[SelectedChoiceIndex].Id, Resolution, ResolutionError))
+    const FString ChoiceId = Node->Choices[SelectedChoiceIndex].Id;
+    FShiOrderTransactionData Transaction;
+    FString TransactionError;
+    if (!FShiOrderTransactionModel::Build(Session, Campaign, ChoiceId, Locale, Transaction, TransactionError))
     {
-        LastConsequence = FString::Printf(TEXT("ORDER REJECTED · %s"), *ResolutionError);
+        LastConsequence = FString::Printf(TEXT("ORDER HELD · CHRONICLE UNCHANGED · %s"), *TransactionError);
         RefreshScreen();
         return;
     }
+    if (!CanPresentResolutionSequence(Transaction.CommandSignals, Transaction.CinematicBeats, TransactionError))
+    {
+        LastConsequence = FString::Printf(TEXT("ORDER HELD · WORLD PREFLIGHT FAILED · CHRONICLE UNCHANGED · %s"), *TransactionError);
+        RefreshScreen();
+        return;
+    }
+    if (bPersistenceEnabled && !SaveChronicle(Transaction.Session, TransactionError))
+    {
+        SaveStatus = FString::Printf(TEXT("ORDER NOT ISSUED · AUTOSAVE FAILED · %s"), *TransactionError);
+        LastConsequence = TEXT("ORDER HELD · THE PREVIOUS CHRONICLE AND WORLD POSITION REMAIN AUTHORITATIVE");
+        RefreshScreen();
+        return;
+    }
+
+    const FShiResolutionResult Resolution = Transaction.Resolution;
+    Session = MoveTemp(Transaction.Session);
+    CommandSignals = MoveTemp(Transaction.CommandSignals);
+    SelectedChoiceIndex = Transaction.SelectedChoiceIndex;
+    UpdateCommandSignalSelection();
+    ResumeSoundFromGesture();
     const FShiChoiceData& Choice = *Resolution.Choice;
 
     TArray<FString> ConsequenceParts;
@@ -204,35 +224,18 @@ void AShiGameMode::IssueSelectedOrder()
     LastConsequence = FString::Join(ConsequenceParts, TEXT("\n\n"));
 
     bRestartArmed = false;
-    SelectedChoiceIndex = 0;
-    SelectFirstAvailableChoice();
-    FString SignalError;
-    if (!RebuildCommandSignals(SignalError))
-    {
-        LoadError = FString::Printf(TEXT("Command signals rejected after order: %s"), *SignalError);
-        RefreshScreen();
-        return;
-    }
     if (bPersistenceEnabled)
     {
-        FString PersistenceError;
-        SaveStatus = SaveChronicle(PersistenceError)
-            ? FString::Printf(TEXT("AUTOSAVED · %d DECISIONS"), Session.GetHistory().Num())
-            : FString::Printf(TEXT("AUTOSAVE FAILED · %s"), *PersistenceError);
+        SaveStatus = FString::Printf(TEXT("AUTOSAVED · %d DECISIONS · TRANSACTION VERIFIED"), Session.GetHistory().Num());
     }
+    else SaveStatus = TEXT("UNSAVED PREVIEW ADVANCED · REJECTED LOCAL SAVE REMAINS UNCHANGED");
     if (AudioDirector)
     {
         const FName Cue = !Session.GetFailureReason().IsEmpty() ? FName(TEXT("failure"))
             : Session.IsCompleted() ? FName(TEXT("ending")) : FName(TEXT("commit"));
         AudioDirector->PlayCue(Cue);
     }
-    FString CinematicError;
-    if (!BeginResolutionSequence(Resolution, CinematicError))
-    {
-        LoadError = FString::Printf(TEXT("Cinematic consequence rejected: %s"), *CinematicError);
-        RefreshScreen();
-        return;
-    }
+    BeginPreparedResolutionSequence(MoveTemp(Transaction.CinematicBeats));
     RefreshScreen();
 }
 
@@ -363,19 +366,31 @@ void AShiGameMode::TickCamera(float DeltaSeconds)
     }
 }
 
-bool AShiGameMode::BeginResolutionSequence(const FShiResolutionResult& Resolution, FString& OutError)
+bool AShiGameMode::CanPresentCommandSignals(const TArray<FShiCommandSignalData>& PreparedSignals, FString& OutError) const
+{
+    for (const FShiCommandSignalData& Signal : PreparedSignals)
+    {
+        const TWeakObjectPtr<AStaticMeshActor>* Actor = CommandSignalMarkers.Find(Signal.Id);
+        if (!Actor || !Actor->IsValid() || !Actor->Get()->GetStaticMeshComponent())
+        {
+            OutError = FString::Printf(TEXT("Prepared command signal %s has no live world actor."), *Signal.Id);
+            return false;
+        }
+    }
+    OutError.Empty();
+    return true;
+}
+
+bool AShiGameMode::CanPresentResolutionSequence(const TArray<FShiCommandSignalData>& PreparedSignals,
+    const TArray<FShiCinematicBeatData>& PreparedBeats, FString& OutError) const
 {
     if (!CommandCamera.IsValid())
     {
         OutError = TEXT("Cinematic consequence camera is unavailable.");
         return false;
     }
-    const FShiNodeData* PositionNode = GetCurrentNode();
-    const FShiSiteData* PositionSite = PositionNode ? Campaign.FindSite(PositionNode->SiteId) : nullptr;
-    TArray<FShiCinematicBeatData> Candidate;
-    if (!FShiCinematicBeatModel::Build(Resolution, Session.GetActiveCommitment(), Session.GetResources(), PositionSite,
-        Session.IsCompleted(), Session.GetFailureReason(), CommandSignals, Locale, Candidate, OutError)) return false;
-    for (const FShiCinematicBeatData& Beat : Candidate)
+    if (!CanPresentCommandSignals(PreparedSignals, OutError)) return false;
+    for (const FShiCinematicBeatData& Beat : PreparedBeats)
     {
         const TWeakObjectPtr<AStaticMeshActor>* Actor = Beat.FocusKind == TEXT("signal")
             ? CommandSignalMarkers.Find(Beat.FocusId) : SiteMarkers.Find(Beat.FocusId);
@@ -385,15 +400,19 @@ bool AShiGameMode::BeginResolutionSequence(const FShiResolutionResult& Resolutio
             return false;
         }
     }
+    OutError.Empty();
+    return true;
+}
 
-    CinematicBeats = MoveTemp(Candidate);
+void AShiGameMode::BeginPreparedResolutionSequence(TArray<FShiCinematicBeatData>&& PreparedBeats)
+{
+    CinematicBeats = MoveTemp(PreparedBeats);
     CinematicBeatIndex = 0;
     CinematicHoldElapsed = 0.f;
     bCinematicHolding = false;
-    if (PositionNode) InspectedSiteId = PositionNode->SiteId;
+    if (const FShiNodeData* PositionNode = GetCurrentNode()) InspectedSiteId = PositionNode->SiteId;
     InspectedCommandSignalId.Empty();
     StartCinematicBeat();
-    return true;
 }
 
 void AShiGameMode::StartCinematicBeat()
@@ -653,8 +672,13 @@ bool AShiGameMode::RestoreChronicle(FString& OutError)
 
 bool AShiGameMode::SaveChronicle(FString& OutError) const
 {
+    return SaveChronicle(Session, OutError);
+}
+
+bool AShiGameMode::SaveChronicle(const FShiCampaignSession& SourceSession, FString& OutError) const
+{
     FString Json;
-    if (!Session.ExportSaveJson(Json, OutError)) return false;
+    if (!SourceSession.ExportSaveJson(Json, OutError)) return false;
     const FString SavePath = GetSavePath();
     const FString SaveDirectory = FPaths::GetPath(SavePath);
     if (!IFileManager::Get().DirectoryExists(*SaveDirectory) && !IFileManager::Get().MakeDirectory(*SaveDirectory, true))
@@ -687,23 +711,32 @@ void AShiGameMode::RequestNewChronicle()
         RefreshScreen();
         return;
     }
-    Session.Initialize(Campaign, CampaignSeed);
-    LastConsequence.Empty();
-    SelectedChoiceIndex = 0;
-    SelectFirstAvailableChoice();
-    FString SignalError;
-    if (!RebuildCommandSignals(SignalError))
+    FShiCampaignSession CandidateSession;
+    CandidateSession.Initialize(Campaign, CampaignSeed);
+    int32 CandidateSelection = INDEX_NONE;
+    TArray<FShiCommandSignalData> CandidateSignals;
+    FString RestartError;
+    if (!FShiOrderTransactionModel::BuildTurnSnapshot(CandidateSession, Campaign, Locale,
+        CandidateSelection, CandidateSignals, RestartError) || !CanPresentCommandSignals(CandidateSignals, RestartError))
     {
-        LoadError = FString::Printf(TEXT("Command signals rejected during restart: %s"), *SignalError);
+        SaveStatus = FString::Printf(TEXT("RESTART HELD · CURRENT CHRONICLE PRESERVED · %s"), *RestartError);
         RefreshScreen();
         return;
     }
+    if (!SaveChronicle(CandidateSession, RestartError))
+    {
+        SaveStatus = FString::Printf(TEXT("RESTART NOT APPLIED · CURRENT CHRONICLE PRESERVED · %s"), *RestartError);
+        RefreshScreen();
+        return;
+    }
+    Session = MoveTemp(CandidateSession);
+    CommandSignals = MoveTemp(CandidateSignals);
+    SelectedChoiceIndex = CandidateSelection;
+    LastConsequence.Empty();
+    UpdateCommandSignalSelection();
     bPersistenceEnabled = true;
     bRestartArmed = false;
-    FString PersistenceError;
-    SaveStatus = SaveChronicle(PersistenceError)
-        ? TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY")
-        : FString::Printf(TEXT("NEW CHRONICLE · AUTOSAVE FAILED · %s"), *PersistenceError);
+    SaveStatus = TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY · RESTART TRANSACTION VERIFIED");
     if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("close")));
     if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId, false, false);
     RefreshScreen();
