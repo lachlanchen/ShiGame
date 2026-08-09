@@ -30,7 +30,8 @@ The first campaign begins with the late-Qin crisis, the Daze Village uprising, a
 ```text
 Read the position
   → inspect people, supplies, momentum, trust, exposure, intelligence horizons and sources
-  → choose a doctrine and accept its opportunity cost
+  → select a doctrine and open its complete focused reading without changing the position
+  → issue the order and accept its opportunity cost
   → establish or answer a promise whose stakeholder will remember it
   → see immediate movement on the shared state
   → reveal the authored state, terrain, supply or network response
@@ -90,7 +91,7 @@ Later tactical encounters will use spatial command and indirect control, but mus
 
 - The title communicates the thesis in one sentence.
 - Five resources appear before the first choice.
-- Every choice shows intent, strategic reading, first-order deltas, and a qualitative warning about the weakness it exposes.
+- Compact choice cards show the order title, intent and immediate deltas without committing. The selected-order inspector shows the complete strategic reading, method hit/miss, commitment forecast, exact effects and qualitative pressure warning; only the separate **Issue order** action commits.
 - Every opening choice names the promise and stakeholder it will establish. The promise remains visible until the broken ford, where all legal answers disclose **kept**, **strained**, or **broken** and their exact operational effects before commitment.
 - The current Qin pursuit posture shows its exact Exposure band, modifier and counterplay before commitment; it is explicitly dramatic reconstruction.
 - The Qin method read shows all observed method counts, its prepared target and exact effect. Each choice names its method and whether the current read will hit; changing method makes the read miss.

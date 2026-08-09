@@ -1,5 +1,18 @@
 # SHI progress log
 
+## 2026-08-09 · Deliberate order checkpoint
+
+- Reworked the decision surface around a player-comprehension problem: fifteen mechanically rich choices had become dense enough to read like reports, while one click both inspected and irreversibly committed. Compact cards now select only; one focused reading presents the selected order's complete strategic intent, method hit/miss, commitment answer, pressure warning and exact effects; a separate order-named **Issue order** action is the only pointer/keyboard commitment.
+- Proved that pointer and `Shift+1`–`Shift+3` selection do not change resources, history, route or save state. Selection may cycle across all legal orders and their crossing forecasts before commitment. Gamepad south still confirms the visibly selected order through the same deterministic resolver after the full reading is present.
+- Added the deliberate flow and localized guide/decision terminology to all eleven Web and Unity UI locales. Mobile uses the same complete reading and a full-width 52-pixel confirmation control; compact cards and the selected inspector remain reachable at 320-pixel reflow and actual Chrome 400% zoom.
+- Added focused Web/core tests and offline Unity compile coverage for selection, explicit confirmation and localized labels. The fresh-clone build passes 46 tests plus content/schema, rights, audio, typography, static-accessibility, type and bundle-budget gates. Static accessibility now enforces 57 contrast pairs, 70 microtype floors, 15 target dimensions and 28 forced-colors selectors.
+- Visible noVNC review caught an invalid accessible-name placement on the exact-effects group and a cramped mobile input hint; both were corrected before acceptance. Reviewed frames are `web-37-deliberate-order.png`, `web-38-mobile-order-reading.png` and `web-39-mobile-issue-order.png`.
+- Exact implementation `b7531c90917485dc0ea613c23925198593ea60f5` passes the fresh-clone build and the complete visible localhost run: 231 checks, thirty-two axe states, twenty-four target states, eleven locale/font states and three audio-UI states. Its cache-disabled traversal records 245 requests and 167 same-origin font slices with zero console errors, cross-origin requests/resources or failed loads.
+- The production caps remain intact at 99.32 KiB initial JavaScript, 11.94 KiB CSS, 178.95 KiB largest lazy JavaScript, 22.94 MiB complete fonts and 26.83 MiB deployable output. Unity runtime, editor-validation and EditMode-test sources compile as separate warning-clean assemblies against installed Unity 2022.3/Newtonsoft/NUnit references.
+- Hosted deployment and public replay for this exact evidence boundary are pending. No public-pass claim is made until the same complete route succeeds against GitHub Pages.
+
+Next gate: publish and replay the exact deliberate-order evidence boundary, then obtain licensed Unity import/build evidence and begin human assistive-technology, listening, physical-controller, specialist and observed-player sessions. Chapter II remains gated.
+
 ## 2026-08-09 · Player commitment memory checkpoint
 
 - Added one player-facing memory dimension that answers the game's promise that trust has operational consequences. Each opening choice now establishes a named commitment to Aunt Yu, Wu Guang or Courier Han; it remains visible through the council and resolves at the broken ford.

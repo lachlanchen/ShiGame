@@ -6,7 +6,7 @@ Status: implementation contract · 2026-08-09 · owner: systems design
 
 Exposure makes Qin pursuit persistent, but an Exposure band alone does not notice *how* the player keeps solving problems. A credible strategic opponent should form a readable hypothesis, prepare against repetition, and sometimes be wrong. The player must be able to see that hypothesis before committing and break it by changing the shape of play.
 
-Chapter I therefore adds a **Qin method read** beside pursuit posture. Every authored choice declares one of three strategic methods. Before each commitment, the game counts methods in the recorded decision history. After at least two observations, a unique most-used method produces one disclosed countermeasure. Repeating the targeted method activates its exact effect; choosing another method makes the prepared read miss.
+Chapter I therefore adds a **Qin method read** beside pursuit posture. Every authored choice declares one of three strategic methods. Before each commitment, the game counts methods in the recorded decision history. After at least two observations, a unique most-used method produces one disclosed countermeasure. The selected-order inspector shows whether repeating the targeted method activates its exact effect or choosing another method makes the prepared read miss.
 
 The system is dramatic reconstruction. It is a game model of institutional learning under pursuit, not a claim that a surviving Qin record documents these exact searches, thresholds, or labels.
 
@@ -80,7 +80,7 @@ Versions 1–3 retain their original action → pressure → field outcomes. Ver
 
 - No runtime randomness, machine learning, telemetry, difficulty scaling or secret weight affects the read.
 - A tie is intentionally unresolved; deterministic array order never breaks it in Qin's favor.
-- Every choice card names its method and whether the current read will hit it.
+- The selected-order inspector names the choice's method and whether the current read will hit it; cycling selection never changes history.
 - Changing method has no hidden penalty and can force a tie on the next turn.
 - Method-read effects alter resources only. They cannot create routes, requirements, source claims, dialogue, flags or endings.
 - Method titles and countermeasures are labeled dramatic reconstruction wherever the system is explained.
@@ -90,6 +90,6 @@ Versions 1–3 retain their original action → pressure → field outcomes. Ver
 
 - Schema/content validation: known method IDs, unique counter IDs, bounded adverse effects, target closure, authored text and reachability/hit coverage.
 - Engine tests: unique leader, minimum observation count, tie behavior, match/miss application, six-layer ordering and v1–v6 replay/tamper rejection.
-- Web tests: method/count disclosure, per-choice hit/miss forecast, resolution and decision-record persistence, keyboard/modal isolation and save-v6 reload.
+- Web tests: method/count disclosure, select-only per-choice hit/miss forecasts, explicit confirmation, resolution and decision-record persistence, keyboard/modal isolation and save-v6 reload.
 - Unity: matching selection/application, preflight closure, immediate-mode presentation and EditMode source tests.
 - Visible QA: a route that creates `witness-chain`, one matching choice with +3 Exposure, one changed-method miss, mobile fit, RTL direction, 320-pixel reflow, actual 400% browser zoom and zero console/network errors.

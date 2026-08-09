@@ -61,13 +61,13 @@ The commitment layer is absent rather than fabricated on decisions that merely c
 
 ## Presentation contract
 
-- Every opening choice previews the commitment it will establish, its stakeholder and dramatic-reconstruction boundary before the player commits.
+- Selecting every opening choice reveals the commitment it will establish, its stakeholder and dramatic-reconstruction boundary in the focused reading before the player commits.
 - An unresolved commitment appears in a compact, visually distinct band naming its stakeholder, promise and dramatic-reconstruction boundary.
-- At the resolution node, every choice card states **keeps**, **strains** or **breaks**, includes the exact effects, and uses words plus geometry rather than color alone.
+- At the resolution node, the selected-order inspector states **keeps**, **strains** or **breaks**, includes the exact effects, and uses words plus geometry rather than color alone. Players can cycle every legal answer without changing campaign state.
 - The consequence banner separates the commitment answer and deltas from action, pressure, pursuit, method-read and field layers.
 - The decision ledger preserves the commitment title, answer and exact deltas.
 - The ending summarizes the chapter's answered commitment without converting it into a global virtue score.
-- At 400% zoom, commitment detail may scroll inside a fully reachable choice card; no text may be silently removed to make the card fit.
+- At 400% zoom, the selected-order reading may scroll while the compact choice and separate confirmation remain fully reachable; no text may be silently removed to make the surface fit.
 
 ## Save and replay
 

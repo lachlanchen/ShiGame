@@ -10,7 +10,7 @@ Chapter I already makes immediate costs visible, but a choice currently resolves
 
 Every nonterminal decision begins with two choice-specific deterministic layers:
 
-1. **Player action.** The card states the intent, strategic reading and exact immediate resource effects.
+1. **Player action.** The compact card states intent and immediate effects; selecting it opens the complete strategic reading without committing.
 2. **Pressure response.** Before commitment, a qualitative warning names the exposed weakness. After commitment, the authored response and its exact resource effects are revealed and recorded.
 
 Pressure has one of four origins:
@@ -39,7 +39,7 @@ Save format `6` treats decision history as the authority. Loading replays choice
 
 ## Presentation
 
-- Choice card: one concise pressure warning, labelled as a forecast rather than certainty.
+- Selected-order inspector: one complete pressure warning, labelled as a forecast rather than certainty, with the separate **Issue order** action as the commitment boundary.
 - Resolution panel: consequence plus separately identified action, commitment answer when applicable, pressure, pursuit, method-read and field responses/deltas.
 - Decision ledger: the chosen action and every revealed response remain reviewable.
-- Keyboard contract: `Shift+1`–`Shift+3` choose visible cards, `Alt+S` opens sources, `Alt+R` opens the record, and `Escape` closes transient layers. Shortcuts never fire while typing or using a select control.
+- Keyboard contract: `Shift+1`–`Shift+3` select visible cards without state mutation, the focused **Issue order** control commits with `Enter`/`Space`, `Alt+S` opens sources, `Alt+R` opens the record, and `Escape` closes transient layers. Shortcuts never fire while typing or using a select control.
