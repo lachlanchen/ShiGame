@@ -66,6 +66,8 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     const FShiSiteData* InspectedSite = Mode->GetInspectedSite();
     const FShiCommandSignalData* InspectedSignal = Mode->GetInspectedCommandSignal();
     const FShiCinematicBeatData* CinematicBeat = Mode->GetActiveCinematicBeat();
+    const FShiCouncilStageData& CouncilStage = Mode->GetCouncilStage();
+    const FShiCouncilParticipantData* CouncilSpeaker = Mode->GetCouncilSpeaker();
     TArray<FString> ActiveSourceRefs = Mode->IsInspectingRemoteSite() ? TArray<FString>() : Node->SourceRefs;
     TArray<FString> ActiveClaimRefs = Mode->IsInspectingRemoteSite() ? TArray<FString>() : Node->ClaimRefs;
     if (InspectedSite)
@@ -100,6 +102,12 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
                 InspectedSite ? *InspectedSite->Name.Resolve(Locale) : TEXT("?"), ActiveSourceRefs.Num(), ActiveClaimRefs.Num())))
         ]
     ];
+    Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
+        SNew(SButton).IsEnabled(!Mode->IsCinematicSequenceActive()).OnClicked(this, &SShiCommandScreen::FocusCouncil).ContentPadding(10)[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("RETURN TO COUNCIL · %s · D / R3"),
+                CouncilSpeaker ? *CouncilSpeaker->Name : TEXT("?"))))
+        ]
+    ];
     if (CinematicBeat)
     {
         TSharedRef<SVerticalBox> ConsequenceBeat = SNew(SVerticalBox);
@@ -120,7 +128,24 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
         ];
         Root->AddSlot().AutoHeight().Padding(28, 2, 28, 9)[SNew(SBorder).Padding(12)[ConsequenceBeat]];
     }
-    if (!CinematicBeat && InspectedSignal)
+    if (!CinematicBeat && Mode->IsCouncilFocused() && CouncilSpeaker)
+    {
+        TSharedRef<SVerticalBox> CouncilCard = SNew(SVerticalBox);
+        CouncilCard->AddSlot().AutoHeight()[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("COUNCIL SPEAKER · %s"), *CouncilSpeaker->ProvenanceLabel)))
+        ];
+        CouncilCard->AddSlot().AutoHeight().Padding(0, 7, 0, 2)[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("%s · %s"), *CouncilSpeaker->Name, *CouncilSpeaker->Role)))
+        ];
+        CouncilCard->AddSlot().AutoHeight().Padding(0, 2, 0, 7)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(CouncilStage.Disclosure))
+        ];
+        CouncilCard->AddSlot().AutoHeight()[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK A FIGURE OR PRESS D / R3 TO RESTORE THIS BLOCKED DIALOGUE SHOT · CAMERA FOCUS NEVER ISSUES AN ORDER")))
+        ];
+        Root->AddSlot().AutoHeight().Padding(28, 2, 28, 9)[SNew(SBorder).Padding(12)[CouncilCard]];
+    }
+    else if (!CinematicBeat && InspectedSignal)
     {
         TSharedRef<SVerticalBox> SignalCard = SNew(SVerticalBox);
         SignalCard->AddSlot().AutoHeight()[
@@ -211,7 +236,16 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     ];
     Root->AddSlot().AutoHeight().Padding(28, 14, 28, 4)[SNew(STextBlock).Text(FText::FromString(Node->Title.Resolve(Locale)))];
     Root->AddSlot().AutoHeight().Padding(28, 4)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Node->Context.Resolve(Locale)))];
-    Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(SBorder).Padding(16)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Node->Dialogue.Resolve(Locale)))]];
+    TSharedRef<SVerticalBox> DialogueCard = SNew(SVerticalBox);
+    if (CouncilSpeaker)
+    {
+        DialogueCard->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("%s · %s"),
+            *CouncilSpeaker->Name, *CouncilSpeaker->ProvenanceLabel)))];
+        DialogueCard->AddSlot().AutoHeight().Padding(0, 4, 0, 8)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(CouncilSpeaker->Role))];
+    }
+    DialogueCard->AddSlot().AutoHeight()[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Node->Dialogue.Resolve(Locale)))];
+    DialogueCard->AddSlot().AutoHeight().Padding(0, 8, 0, 0)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(CouncilStage.Disclosure))];
+    Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(SBorder).Padding(16)[DialogueCard]];
 
     TSharedRef<SHorizontalBox> Choices = SNew(SHorizontalBox);
     for (int32 Index = 0; Index < Node->Choices.Num(); ++Index)
@@ -270,7 +304,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT · SPACE / B SKIPS CONSEQUENCE · E / LB EVIDENCE · V / MENU MOTION · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("CLICK 3D PIECE · D / R3 COUNCIL · TAB / RB SITES · C / L3 SIGNALS · SHIFT REVERSES · HOME CURRENT GROUND · SPACE / B SKIPS CONSEQUENCE · E / LB EVIDENCE · V / MENU MOTION · 1–3 SELECT · ←/→ ORDER · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND")))
         ]
     ];
 
@@ -436,6 +470,12 @@ FReply SShiCommandScreen::CycleCommandSignal(int32 Direction)
 FReply SShiCommandScreen::ResetSiteFocus()
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->ResetInspectedSite();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::FocusCouncil()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->PresentCouncil();
     return FReply::Handled();
 }
 

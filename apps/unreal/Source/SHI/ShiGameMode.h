@@ -6,11 +6,13 @@
 #include "ShiCampaignSession.h"
 #include "ShiCinematicBeatModel.h"
 #include "ShiCommandSignalModel.h"
+#include "ShiCouncilStagingModel.h"
 #include "ShiGameMode.generated.h"
 
 class SShiCommandScreen;
 class ACameraActor;
 class APlayerController;
+class AShiCouncilFigure;
 class AStaticMeshActor;
 class UShiSoundscapeComponent;
 
@@ -54,10 +56,13 @@ public:
     const FShiSiteData* GetInspectedSite() const;
     const FShiCommandSignalData* GetInspectedCommandSignal() const;
     const FShiCinematicBeatData* GetActiveCinematicBeat() const;
+    const FShiCouncilStageData& GetCouncilStage() const { return CouncilStage; }
+    const FShiCouncilParticipantData* GetCouncilSpeaker() const;
     int32 GetCinematicBeatIndex() const { return CinematicBeatIndex; }
     int32 GetCinematicBeatCount() const { return CinematicBeats.Num(); }
     bool IsCinematicSequenceActive() const { return CinematicBeats.IsValidIndex(CinematicBeatIndex); }
     bool IsInspectingRemoteSite() const;
+    bool IsCouncilFocused() const { return bCouncilFocused; }
 
     void SelectChoice(int32 Index);
     void CycleChoice(int32 Direction);
@@ -72,6 +77,7 @@ public:
     void AdjustEffects(int32 Direction);
     void ToggleReducedMotion();
     void SkipCinematicSequence();
+    void PresentCouncil();
 
 private:
     FShiCampaignModel Campaign;
@@ -87,6 +93,7 @@ private:
     bool bRestartArmed = false;
     bool bEvidenceOpen = false;
     bool bReducedMotion = false;
+    bool bCouncilFocused = false;
     FString InspectedSiteId;
     FString InspectedCommandSignalId;
     TArray<FShiCommandSignalData> CommandSignals;
@@ -97,6 +104,8 @@ private:
     TWeakObjectPtr<ACameraActor> CommandCamera;
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> SiteMarkers;
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> CommandSignalMarkers;
+    TMap<FString, TWeakObjectPtr<AShiCouncilFigure>> CouncilFigures;
+    FShiCouncilStageData CouncilStage;
     TArray<FShiCinematicBeatData> CinematicBeats;
     int32 CinematicBeatIndex = INDEX_NONE;
     float CinematicHoldElapsed = 0.f;
@@ -121,6 +130,9 @@ private:
     bool CanPresentCommandSignals(const TArray<FShiCommandSignalData>& PreparedSignals, FString& OutError) const;
     bool CanPresentResolutionSequence(const TArray<FShiCommandSignalData>& PreparedSignals,
         const TArray<FShiCinematicBeatData>& PreparedBeats, FString& OutError) const;
+    bool CanPresentCouncilStage(const FShiCouncilStageData& PreparedStage, FString& OutError) const;
+    void ApplyCouncilStage();
+    void FocusCouncil(bool bImmediate, bool bPlayCue);
     void BeginPreparedResolutionSequence(TArray<FShiCinematicBeatData>&& PreparedBeats);
     void StartCinematicBeat();
     void TickCinematicSequence(float DeltaSeconds);

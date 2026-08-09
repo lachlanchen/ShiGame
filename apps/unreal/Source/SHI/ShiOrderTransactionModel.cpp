@@ -72,6 +72,26 @@ namespace
         return true;
     }
 
+    bool SameParticipant(const FShiCouncilParticipantData& Left, const FShiCouncilParticipantData& Right)
+    {
+        return Left.SlotId == Right.SlotId && Left.CharacterId == Right.CharacterId && Left.Name == Right.Name
+            && Left.Role == Right.Role && Left.ProvenanceLabel == Right.ProvenanceLabel
+            && Left.bHistorical == Right.bHistorical && Left.bSpeaker == Right.bSpeaker
+            && Left.Transform.Equals(Right.Transform, .0001f) && Left.Color.Equals(Right.Color, .0001f)
+            && Left.StencilValue == Right.StencilValue;
+    }
+
+    bool SameCouncilStage(const FShiCouncilStageData& Left, const FShiCouncilStageData& Right)
+    {
+        if (Left.NodeId != Right.NodeId || Left.SpeakerId != Right.SpeakerId || Left.Dialogue != Right.Dialogue
+            || Left.Disclosure != Right.Disclosure || !Left.CameraTransform.Equals(Right.CameraTransform, .0001f)
+            || !FMath::IsNearlyEqual(Left.FieldOfViewDegrees, Right.FieldOfViewDegrees, .0001f)
+            || Left.Participants.Num() != Right.Participants.Num()) return false;
+        for (int32 Index = 0; Index < Left.Participants.Num(); ++Index)
+            if (!SameParticipant(Left.Participants[Index], Right.Participants[Index])) return false;
+        return true;
+    }
+
     bool BuildUnchecked(const FShiCampaignSession& CurrentSession, const FShiCampaignModel& Campaign,
         const FString& ChoiceId, const FString& Locale, FShiOrderTransactionData& OutTransaction, FString& OutError)
     {
@@ -98,7 +118,7 @@ namespace
             return false;
         }
         if (!FShiOrderTransactionModel::BuildTurnSnapshot(Candidate.Session, Campaign, Locale,
-            Candidate.SelectedChoiceIndex, Candidate.CommandSignals, OutError)) return false;
+            Candidate.SelectedChoiceIndex, Candidate.CommandSignals, Candidate.CouncilStage, OutError)) return false;
         if (!FShiCinematicBeatModel::Build(Candidate.Resolution, Candidate.Session.GetActiveCommitment(),
             Candidate.Session.GetResources(), PositionSite, Candidate.Session.IsCompleted(), Candidate.Session.GetFailureReason(),
             Candidate.CommandSignals, Locale, Candidate.CinematicBeats, OutError)) return false;
@@ -110,7 +130,8 @@ namespace
 }
 
 bool FShiOrderTransactionModel::BuildTurnSnapshot(const FShiCampaignSession& Session, const FShiCampaignModel& Campaign,
-    const FString& Locale, int32& OutSelectedChoiceIndex, TArray<FShiCommandSignalData>& OutSignals, FString& OutError)
+    const FString& Locale, int32& OutSelectedChoiceIndex, TArray<FShiCommandSignalData>& OutSignals,
+    FShiCouncilStageData& OutCouncilStage, FString& OutError)
 {
     if (Session.GetCampaign() != &Campaign)
     {
@@ -144,8 +165,11 @@ bool FShiOrderTransactionModel::BuildTurnSnapshot(const FShiCampaignSession& Ses
         Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(), Session.GetActiveCommitment(),
         &Node->Choices[SelectedChoiceIndex], Locale, Signals, OutError)) return false;
     if (!FShiCommandSignalModel::ValidateAgainstSites(Signals, Campaign.Sites, OutError)) return false;
+    FShiCouncilStageData CouncilStage;
+    if (!FShiCouncilStagingModel::Build(Campaign, *Node, Locale, CouncilStage, OutError)) return false;
     OutSelectedChoiceIndex = SelectedChoiceIndex;
     OutSignals = MoveTemp(Signals);
+    OutCouncilStage = MoveTemp(CouncilStage);
     OutError.Empty();
     return true;
 }
@@ -174,10 +198,11 @@ bool FShiOrderTransactionModel::Validate(const FShiCampaignSession& CurrentSessi
         || Transaction.SelectedChoiceIndex != Expected.SelectedChoiceIndex
         || !SameResolution(Transaction.Resolution, Expected.Resolution)
         || !SameSignals(Transaction.CommandSignals, Expected.CommandSignals)
-        || !SameBeats(Transaction.CinematicBeats, Expected.CinematicBeats))
+        || !SameBeats(Transaction.CinematicBeats, Expected.CinematicBeats)
+        || !SameCouncilStage(Transaction.CouncilStage, Expected.CouncilStage))
     {
         OutError = SaveError.IsEmpty()
-            ? TEXT("Order transaction differs from deterministic replay, world state, or cinematic authorship.")
+            ? TEXT("Order transaction differs from deterministic replay, world state, council staging, or cinematic authorship.")
             : FString::Printf(TEXT("Order transaction save preflight failed: %s"), *SaveError);
         return false;
     }

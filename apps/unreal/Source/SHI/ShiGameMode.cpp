@@ -24,6 +24,8 @@
 #include "Misc/ConfigCacheIni.h"
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
+#include "ShiCouncilFigure.h"
+#include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiWartableModel.h"
@@ -143,6 +145,11 @@ const FShiCinematicBeatData* AShiGameMode::GetActiveCinematicBeat() const
     return CinematicBeats.IsValidIndex(CinematicBeatIndex) ? &CinematicBeats[CinematicBeatIndex] : nullptr;
 }
 
+const FShiCouncilParticipantData* AShiGameMode::GetCouncilSpeaker() const
+{
+    return FShiCouncilStagingModel::FindParticipant(CouncilStage, TEXT("speaker"));
+}
+
 bool AShiGameMode::IsInspectingRemoteSite() const
 {
     const FShiNodeData* Node = GetCurrentNode();
@@ -169,6 +176,12 @@ void AShiGameMode::ResetInspectedSite()
     if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId);
 }
 
+void AShiGameMode::PresentCouncil()
+{
+    if (bEvidenceOpen || IsCinematicSequenceActive()) return;
+    FocusCouncil(false, true);
+}
+
 void AShiGameMode::IssueSelectedOrder()
 {
     if (IsCinematicSequenceActive()) return;
@@ -186,7 +199,8 @@ void AShiGameMode::IssueSelectedOrder()
         RefreshScreen();
         return;
     }
-    if (!CanPresentResolutionSequence(Transaction.CommandSignals, Transaction.CinematicBeats, TransactionError))
+    if (!CanPresentResolutionSequence(Transaction.CommandSignals, Transaction.CinematicBeats, TransactionError)
+        || !CanPresentCouncilStage(Transaction.CouncilStage, TransactionError))
     {
         LastConsequence = FString::Printf(TEXT("ORDER HELD · WORLD PREFLIGHT FAILED · CHRONICLE UNCHANGED · %s"), *TransactionError);
         RefreshScreen();
@@ -203,7 +217,9 @@ void AShiGameMode::IssueSelectedOrder()
     const FShiResolutionResult Resolution = Transaction.Resolution;
     Session = MoveTemp(Transaction.Session);
     CommandSignals = MoveTemp(Transaction.CommandSignals);
+    CouncilStage = MoveTemp(Transaction.CouncilStage);
     SelectedChoiceIndex = Transaction.SelectedChoiceIndex;
+    ApplyCouncilStage();
     UpdateCommandSignalSelection();
     ResumeSoundFromGesture();
     const FShiChoiceData& Choice = *Resolution.Choice;
@@ -283,6 +299,11 @@ void AShiGameMode::Tick(float DeltaSeconds)
         if (Controller->WasInputKeyJustPressed(EKeys::Home))
         {
             ResetInspectedSite();
+            return;
+        }
+        if (Controller->WasInputKeyJustPressed(EKeys::D) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_RightThumbstick))
+        {
+            PresentCouncil();
             return;
         }
         if (Controller->WasInputKeyJustPressed(EKeys::C) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_LeftThumbstick))
@@ -404,6 +425,36 @@ bool AShiGameMode::CanPresentResolutionSequence(const TArray<FShiCommandSignalDa
     return true;
 }
 
+bool AShiGameMode::CanPresentCouncilStage(const FShiCouncilStageData& PreparedStage, FString& OutError) const
+{
+    const FShiNodeData* Node = Campaign.FindNode(PreparedStage.NodeId);
+    if (!CommandCamera.IsValid() || !Node || !FShiCouncilStagingModel::Validate(Campaign, *Node, Locale, PreparedStage, OutError))
+    {
+        if (OutError.IsEmpty()) OutError = TEXT("Prepared council stage has no live camera or canonical node.");
+        return false;
+    }
+    for (const FShiCouncilParticipantData& Participant : PreparedStage.Participants)
+    {
+        const TWeakObjectPtr<AShiCouncilFigure>* Figure = CouncilFigures.Find(Participant.SlotId);
+        if (!Figure || !Figure->IsValid() || Figure->Get()->GetSlotId() != Participant.SlotId)
+        {
+            OutError = FString::Printf(TEXT("Prepared council slot %s has no initialized live figure."), *Participant.SlotId);
+            return false;
+        }
+    }
+    OutError.Empty();
+    return true;
+}
+
+void AShiGameMode::ApplyCouncilStage()
+{
+    for (const FShiCouncilParticipantData& Participant : CouncilStage.Participants)
+    {
+        if (TWeakObjectPtr<AShiCouncilFigure>* Figure = CouncilFigures.Find(Participant.SlotId))
+            if (Figure->IsValid()) Figure->Get()->ApplyParticipant(Participant);
+    }
+}
+
 void AShiGameMode::BeginPreparedResolutionSequence(TArray<FShiCinematicBeatData>&& PreparedBeats)
 {
     CinematicBeats = MoveTemp(PreparedBeats);
@@ -412,6 +463,7 @@ void AShiGameMode::BeginPreparedResolutionSequence(TArray<FShiCinematicBeatData>
     bCinematicHolding = false;
     if (const FShiNodeData* PositionNode = GetCurrentNode()) InspectedSiteId = PositionNode->SiteId;
     InspectedCommandSignalId.Empty();
+    bCouncilFocused = false;
     StartCinematicBeat();
 }
 
@@ -507,7 +559,7 @@ void AShiGameMode::CompleteCinematicSequence()
     CinematicHoldElapsed = 0.f;
     bCinematicHolding = false;
     CameraTransitionDuration = 0.f;
-    if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId, true, false);
+    if (GetCurrentNode()) FocusCouncil(false, false);
     else
     {
         UpdateWartableSelection();
@@ -524,6 +576,7 @@ void AShiGameMode::InspectSite(const FString& SiteId, bool bImmediate, bool bPla
     const bool bReturningFromCommandSignal = !InspectedCommandSignalId.IsEmpty();
     InspectedSiteId = SiteId;
     InspectedCommandSignalId.Empty();
+    bCouncilFocused = false;
     UpdateWartableSelection();
     UpdateCommandSignalSelection();
     const FTransform Target = FShiWartableModel::CameraTransform(*Site);
@@ -549,9 +602,29 @@ void AShiGameMode::InspectCommandSignal(const FString& SignalId, bool bPlayCue)
     if (!Signal) return;
     if (const FShiNodeData* Node = GetCurrentNode()) InspectedSiteId = Node->SiteId;
     InspectedCommandSignalId = SignalId;
+    bCouncilFocused = false;
     UpdateWartableSelection();
     UpdateCommandSignalSelection();
     BeginCameraTransition(FShiCommandSignalModel::CameraTransform(*Signal), .64f, InspectionFieldOfViewDegrees);
+    if (bPlayCue)
+    {
+        ResumeSoundFromGesture();
+        if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("inspect")));
+    }
+    RefreshScreen();
+}
+
+void AShiGameMode::FocusCouncil(bool bImmediate, bool bPlayCue)
+{
+    const FShiNodeData* Node = GetCurrentNode();
+    if (!Node || CouncilStage.NodeId != Node->Id || !CommandCamera.IsValid()) return;
+    InspectedSiteId = Node->SiteId;
+    InspectedCommandSignalId.Empty();
+    bCouncilFocused = true;
+    UpdateWartableSelection();
+    UpdateCommandSignalSelection();
+    if (bImmediate) SetCameraImmediate(CouncilStage.CameraTransform, CouncilStage.FieldOfViewDegrees);
+    else BeginCameraTransition(CouncilStage.CameraTransform, .82f, CouncilStage.FieldOfViewDegrees);
     if (bPlayCue)
     {
         ResumeSoundFromGesture();
@@ -568,6 +641,14 @@ bool AShiGameMode::InspectWorldUnderCursor(APlayerController& Controller)
     FHitResult Hit;
     if (!Controller.GetHitResultAtScreenPosition(FVector2D(MouseX, MouseY), ECC_Visibility, false, Hit)) return false;
     AActor* HitActor = Hit.GetActor();
+    for (const TPair<FString, TWeakObjectPtr<AShiCouncilFigure>>& Pair : CouncilFigures)
+    {
+        if (Pair.Value.Get() == HitActor)
+        {
+            PresentCouncil();
+            return true;
+        }
+    }
     for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : CommandSignalMarkers)
     {
         if (Pair.Value.Get() == HitActor)
@@ -597,7 +678,7 @@ void AShiGameMode::UpdateWartableSelection()
         if (!Marker || !Site) continue;
         const bool bSelected = CinematicBeat
             ? CinematicBeat->FocusKind == TEXT("site") && Pair.Key == CinematicBeat->FocusId
-            : InspectedCommandSignalId.IsEmpty() && Pair.Key == InspectedSiteId;
+            : !bCouncilFocused && InspectedCommandSignalId.IsEmpty() && Pair.Key == InspectedSiteId;
         const FShiWartableMarkerStyle Style = FShiWartableModel::MarkerStyle(Site->Status, bSelected);
         Marker->SetActorScale3D(Style.Scale);
         UStaticMeshComponent* Component = Marker->GetStaticMeshComponent();
@@ -634,7 +715,7 @@ void AShiGameMode::UpdateCommandSignalSelection()
         if (!Marker || !Signal) continue;
         const bool bSelected = CinematicBeat
             ? CinematicBeat->FocusKind == TEXT("signal") && Pair.Key == CinematicBeat->FocusId
-            : Pair.Key == InspectedCommandSignalId;
+            : !bCouncilFocused && Pair.Key == InspectedCommandSignalId;
         const FShiCommandSignalData Style = FShiCommandSignalModel::SelectedStyle(*Signal, bSelected);
         Marker->SetActorLocationAndRotation(Style.Location, Style.Rotation);
         Marker->SetActorScale3D(Style.Scale);
@@ -715,9 +796,12 @@ void AShiGameMode::RequestNewChronicle()
     CandidateSession.Initialize(Campaign, CampaignSeed);
     int32 CandidateSelection = INDEX_NONE;
     TArray<FShiCommandSignalData> CandidateSignals;
+    FShiCouncilStageData CandidateCouncilStage;
     FString RestartError;
     if (!FShiOrderTransactionModel::BuildTurnSnapshot(CandidateSession, Campaign, Locale,
-        CandidateSelection, CandidateSignals, RestartError) || !CanPresentCommandSignals(CandidateSignals, RestartError))
+        CandidateSelection, CandidateSignals, CandidateCouncilStage, RestartError)
+        || !CanPresentCommandSignals(CandidateSignals, RestartError)
+        || !CanPresentCouncilStage(CandidateCouncilStage, RestartError))
     {
         SaveStatus = FString::Printf(TEXT("RESTART HELD · CURRENT CHRONICLE PRESERVED · %s"), *RestartError);
         RefreshScreen();
@@ -731,14 +815,16 @@ void AShiGameMode::RequestNewChronicle()
     }
     Session = MoveTemp(CandidateSession);
     CommandSignals = MoveTemp(CandidateSignals);
+    CouncilStage = MoveTemp(CandidateCouncilStage);
     SelectedChoiceIndex = CandidateSelection;
     LastConsequence.Empty();
+    ApplyCouncilStage();
     UpdateCommandSignalSelection();
     bPersistenceEnabled = true;
     bRestartArmed = false;
     SaveStatus = TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY · RESTART TRANSACTION VERIFIED");
     if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("close")));
-    if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId, false, false);
+    if (GetCurrentNode()) FocusCouncil(false, false);
     RefreshScreen();
 }
 
@@ -864,6 +950,14 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Command signals rejected: %s"), *CommandSignalError);
         return;
     }
+    const FShiNodeData* OpeningNode = GetCurrentNode();
+    FShiCouncilStageData OpeningCouncilStage;
+    FString CouncilError;
+    if (!OpeningNode || !FShiCouncilStagingModel::Build(Campaign, *OpeningNode, Locale, OpeningCouncilStage, CouncilError))
+    {
+        LoadError = FString::Printf(TEXT("Council staging rejected: %s"), *CouncilError);
+        return;
+    }
     ACameraActor* Camera = World->SpawnActor<ACameraActor>(FVector(720, -760, 520), FRotator(-24, 133, 0));
     if (!Camera)
     {
@@ -892,7 +986,9 @@ void AShiGameMode::CreateCommandSpace()
 
     UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
     UStaticMesh* Plane = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
-    if (!Cube || !Plane)
+    UStaticMesh* Cylinder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+    UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    if (!Cube || !Plane || !Cylinder || !Sphere)
     {
         LoadError = TEXT("Required engine-native command-space meshes are unavailable.");
         return;
@@ -919,6 +1015,20 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = TEXT("Required engine-native wartable material is unavailable.");
         return;
     }
+    CouncilFigures.Empty();
+    for (const FShiCouncilParticipantData& Participant : OpeningCouncilStage.Participants)
+    {
+        AShiCouncilFigure* Figure = World->SpawnActor<AShiCouncilFigure>();
+        FString FigureError;
+        if (!Figure || !Figure->InitializeFigure(Cylinder, Sphere, Cube, BasicMaterial, FigureError))
+        {
+            LoadError = FString::Printf(TEXT("Council figure %s could not initialize: %s"), *Participant.SlotId, *FigureError);
+            return;
+        }
+        Figure->ApplyParticipant(Participant);
+        CouncilFigures.Add(Participant.SlotId, Figure);
+    }
+    CouncilStage = MoveTemp(OpeningCouncilStage);
     SiteMarkers.Empty();
     for (const FShiSiteData& Site : Campaign.Sites)
     {
@@ -984,5 +1094,10 @@ void AShiGameMode::CreateCommandSpace()
         Marker->SetActorScale3D(Signal.Scale);
         CommandSignalMarkers.Add(Signal.Id, Marker);
     }
-    if (const FShiNodeData* Node = GetCurrentNode()) InspectSite(Node->SiteId, false, false);
+    if (!CanPresentCouncilStage(CouncilStage, CouncilError))
+    {
+        LoadError = FString::Printf(TEXT("Live council staging rejected: %s"), *CouncilError);
+        return;
+    }
+    if (GetCurrentNode()) FocusCouncil(true, false);
 }

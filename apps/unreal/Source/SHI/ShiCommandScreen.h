@@ -31,6 +31,7 @@ private:
     FReply CycleSite(int32 Direction);
     FReply CycleCommandSignal(int32 Direction);
     FReply ResetSiteFocus();
+    FReply FocusCouncil();
     FReply OpenPublicEdition(FString Url);
     FReply ToggleSound();
     FReply ToggleReducedMotion();

@@ -15,6 +15,14 @@ struct FShiActData
     FShiLocalizedText Objective;
 };
 
+struct FShiCharacterData
+{
+    FString Id;
+    FShiLocalizedText Name;
+    FShiLocalizedText Role;
+    bool bHistorical = false;
+};
+
 struct FShiChoiceData
 {
     FString Id;
@@ -46,6 +54,7 @@ struct FShiNodeData
 {
     FString Id;
     FString ActId;
+    FString SpeakerId;
     int32 TimeIndex = 0;
     FString SiteId;
     FShiLocalizedText DateLabel;
@@ -155,6 +164,7 @@ public:
     FString StartNodeId;
     TMap<FString, int32> InitialResources;
     TArray<FShiActData> Acts;
+    TArray<FShiCharacterData> Characters;
     TArray<FShiNodeData> Nodes;
     TArray<FShiSiteData> Sites;
     TArray<FShiEditionData> Editions;
@@ -170,6 +180,7 @@ public:
     bool LoadCanonical(FString& OutError);
     const FShiNodeData* FindNode(const FString& NodeId) const;
     const FShiActData* FindAct(const FString& ActId) const;
+    const FShiCharacterData* FindCharacter(const FString& CharacterId) const;
     const FShiSiteData* FindSite(const FString& SiteId) const;
     const FShiEditionData* FindEdition(const FString& EditionId) const;
     const FShiSourceData* FindSource(const FString& SourceId) const;

@@ -11,6 +11,7 @@
 #include "ShiCampaignSession.h"
 #include "ShiCinematicBeatModel.h"
 #include "ShiCommandSignalModel.h"
+#include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiWartableModel.h"
 
@@ -125,9 +126,74 @@ bool FShiCampaignSchemaTest::RunTest(const FString& Parameters)
     }
     TestEqual(TEXT("initial Exposure"), Campaign.InitialResources.FindRef(TEXT("danger")), 46);
     TestEqual(TEXT("canonical commitments"), Campaign.Commitments.Num(), 3);
+    TestEqual(TEXT("canonical council cast"), Campaign.Characters.Num(), 5);
+    TestEqual(TEXT("opening canonical speaker"), Start ? Start->SpeakerId : FString(), FString(TEXT("chen-sheng")));
     TestEqual(TEXT("pursuit stages"), Campaign.OppositionStages.Num(), 3);
     TestTrue(TEXT("act/time transitions validate"), Campaign.ValidateHorizon(Error));
     if (!Error.IsEmpty()) AddError(Error);
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCouncilStagingTest, "SHI.Cinematic.CouncilStagingV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCouncilStagingTest::RunTest(const FString& Parameters)
+{
+    FShiCampaignModel Campaign;
+    FString Error;
+    if (!Campaign.LoadCanonical(Error)) { AddError(Error); return false; }
+    const FShiNodeData* Opening = Campaign.FindNode(Campaign.StartNodeId);
+    TestNotNull(TEXT("opening council node exists"), Opening);
+    if (!Opening) return false;
+
+    FShiCouncilStageData Stage;
+    TestTrue(TEXT("opening council blocks from canonical speaker data"),
+        FShiCouncilStagingModel::Build(Campaign, *Opening, TEXT("en"), Stage, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestEqual(TEXT("council stage binds its exact node"), Stage.NodeId, Opening->Id);
+    TestEqual(TEXT("council stage binds Chen Sheng"), Stage.SpeakerId, FString(TEXT("chen-sheng")));
+    TestEqual(TEXT("speaker and keeper occupy the scene"), Stage.Participants.Num(), 2);
+    TestEqual(TEXT("authored dialogue shot uses a restrained lens"), Stage.FieldOfViewDegrees, 44.f);
+    TestTrue(TEXT("historical dialogue is explicitly not a transcript"), Stage.Disclosure.Contains(TEXT("NOT TRANSCRIPT")));
+    const FShiCouncilParticipantData* Speaker = FShiCouncilStagingModel::FindParticipant(Stage, TEXT("speaker"));
+    const FShiCouncilParticipantData* Keeper = FShiCouncilStagingModel::FindParticipant(Stage, TEXT("keeper"));
+    TestTrue(TEXT("historical speaker provenance survives staging"), Speaker && Speaker->bHistorical && Speaker->CharacterId == TEXT("chen-sheng"));
+    TestTrue(TEXT("player viewpoint remains an identified reconstruction"), Keeper && !Keeper->bHistorical && Keeper->CharacterId == TEXT("keeper"));
+    TestTrue(TEXT("canonical council stage validates"), FShiCouncilStagingModel::Validate(Campaign, *Opening, TEXT("en"), Stage, Error));
+
+    const FTransform Camera = Stage.CameraTransform;
+    const FVector SpeakerHead = Speaker ? Speaker->Transform.GetLocation() + FVector(0.f, 0.f, 118.f) : FVector::ZeroVector;
+    const FVector SpeakerDirection = (SpeakerHead - Camera.GetLocation()).GetSafeNormal();
+    TestTrue(TEXT("dialogue camera looks at the speaking figure"), FVector::DotProduct(Camera.GetRotation().GetForwardVector(), SpeakerDirection) > .9999f);
+
+    FShiCampaignSession Session;
+    Session.Initialize(Campaign, 0x5EED2026u);
+    FShiResolutionResult Resolution;
+    TestTrue(TEXT("opening order reaches the fictional household council"), Session.ResolveChoice(TEXT("read-the-names"), Resolution, Error));
+    const FShiNodeData* HouseholdCouncil = Session.GetCurrentNode();
+    FShiCouncilStageData FictionalStage;
+    TestTrue(TEXT("next council restages from the new canonical node"), HouseholdCouncil
+        && FShiCouncilStagingModel::Build(Campaign, *HouseholdCouncil, TEXT("en"), FictionalStage, Error));
+    const FShiCouncilParticipantData* FictionalSpeaker = FShiCouncilStagingModel::FindParticipant(FictionalStage, TEXT("speaker"));
+    TestTrue(TEXT("Aunt Yu is never presented as a historical person"), FictionalSpeaker
+        && FictionalSpeaker->CharacterId == TEXT("yu-mu") && !FictionalSpeaker->bHistorical
+        && FictionalStage.Disclosure.Contains(TEXT("FICTIONAL CHARACTER")));
+
+    FShiCouncilStageData CastDrift = Stage;
+    CastDrift.Participants[0].CharacterId = TEXT("wu-guang");
+    TestFalse(TEXT("cast identity drift is rejected"), FShiCouncilStagingModel::Validate(Campaign, *Opening, TEXT("en"), CastDrift, Error));
+    FShiCouncilStageData DialogueDrift = Stage;
+    DialogueDrift.Dialogue = TEXT("Invented transcript");
+    TestFalse(TEXT("dialogue drift is rejected"), FShiCouncilStagingModel::Validate(Campaign, *Opening, TEXT("en"), DialogueDrift, Error));
+    FShiCouncilStageData CameraDrift = Stage;
+    CameraDrift.CameraTransform.AddToTranslation(FVector(60.f, 0.f, 0.f));
+    TestFalse(TEXT("unauthored dialogue camera drift is rejected"), FShiCouncilStagingModel::Validate(Campaign, *Opening, TEXT("en"), CameraDrift, Error));
+
+    const FString StableStageNode = Stage.NodeId;
+    FShiNodeData MissingSpeaker = *Opening;
+    MissingSpeaker.SpeakerId = TEXT("unknown-person");
+    TestFalse(TEXT("missing canonical speaker cannot replace an accepted stage"),
+        FShiCouncilStagingModel::Build(Campaign, MissingSpeaker, TEXT("en"), Stage, Error));
+    TestEqual(TEXT("failed council rebuild is atomic"), Stage.NodeId, StableStageNode);
     return !HasAnyErrors();
 }
 
@@ -356,6 +422,9 @@ bool FShiOrderTransactionTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("prepared transaction advances to organization"), Transaction.Session.GetCurrentNodeId(), FString(TEXT("open-council")));
     TestEqual(TEXT("prepared world contains five resources and four tactical layers"), Transaction.CommandSignals.Num(), 9);
     TestEqual(TEXT("prepared opening cinema retains its oath beat"), Transaction.CinematicBeats.Num(), 7);
+    TestEqual(TEXT("prepared post-order council binds its exact scene"), Transaction.CouncilStage.NodeId, FString(TEXT("open-council")));
+    TestEqual(TEXT("prepared post-order council binds Aunt Yu"), Transaction.CouncilStage.SpeakerId, FString(TEXT("yu-mu")));
+    TestEqual(TEXT("prepared post-order council contains speaker and keeper"), Transaction.CouncilStage.Participants.Num(), 2);
     TestTrue(TEXT("prepared selection is valid in the post-order node"),
         Transaction.Session.GetCurrentNode() && Transaction.Session.GetCurrentNode()->Choices.IsValidIndex(Transaction.SelectedChoiceIndex));
     TestTrue(TEXT("complete order transaction revalidates from the unchanged source"), FShiOrderTransactionModel::Validate(
@@ -373,6 +442,10 @@ bool FShiOrderTransactionTest::RunTest(const FString& Parameters)
     DriftedCinema.CinematicBeats[0].Label = TEXT("UNBOUND SPECTACLE");
     TestFalse(TEXT("cinematic drift rejects the entire prepared transaction"), FShiOrderTransactionModel::Validate(
         Session, Campaign, TEXT("read-the-names"), TEXT("en"), DriftedCinema, Error));
+    FShiOrderTransactionData DriftedCouncil = Transaction;
+    DriftedCouncil.CouncilStage.Participants[0].Name = TEXT("False speaker");
+    TestFalse(TEXT("council staging drift rejects the entire prepared transaction"), FShiOrderTransactionModel::Validate(
+        Session, Campaign, TEXT("read-the-names"), TEXT("en"), DriftedCouncil, Error));
     FShiOrderTransactionData DriftedSelection = Transaction;
     DriftedSelection.SelectedChoiceIndex = 99;
     TestFalse(TEXT("post-order briefing drift rejects the entire prepared transaction"), FShiOrderTransactionModel::Validate(
@@ -389,7 +462,8 @@ bool FShiOrderTransactionTest::RunTest(const FString& Parameters)
     TestFalse(TEXT("illegal order cannot replace an accepted transaction"), FShiOrderTransactionModel::Build(
         Session, Campaign, TEXT("invented-order"), TEXT("en"), AtomicOutput, Error));
     TestTrue(TEXT("failed order transaction build is atomic"), AtomicOutput.Session.GetHistory().Num() == 1
-        && AtomicOutput.CommandSignals.Num() == 9 && AtomicOutput.CinematicBeats[0].Id == StableFirstBeat);
+        && AtomicOutput.CommandSignals.Num() == 9 && AtomicOutput.CinematicBeats[0].Id == StableFirstBeat
+        && AtomicOutput.CouncilStage.NodeId == TEXT("open-council"));
     TestTrue(TEXT("hostile validation never mutates the active chronicle"), Session.ExportSaveJson(UnchangedSave, Error));
     TestEqual(TEXT("active chronicle remains byte-identical after every attack"), UnchangedSave, BeforeSave);
     return !HasAnyErrors();
@@ -623,6 +697,10 @@ bool FShiCampaignReplayConformanceTest::RunTest(const FString& Parameters)
             TestEqual(*FString::Printf(TEXT("%s active commitment"), *Context), Session.GetActiveCommitmentId(), OptionalString(Expected, TEXT("activeCommitmentId")));
 
             TestEqual(*FString::Printf(TEXT("%s prepared world signal count"), *Context), Signals.Num(), 9);
+            TestEqual(*FString::Printf(TEXT("%s prepared council follows position"), *Context),
+                Transaction.CouncilStage.NodeId, Session.GetCurrentNodeId());
+            TestEqual(*FString::Printf(TEXT("%s prepared council participant count"), *Context),
+                Transaction.CouncilStage.Participants.Num(), 2);
             TestTrue(*FString::Printf(TEXT("%s cinematic ceiling"), *Context), FShiCinematicBeatModel::TotalDuration(Beats) <= 5.f);
         }
 

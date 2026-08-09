@@ -83,6 +83,7 @@ bool FShiCampaignModel::LoadCanonical(FString& OutError)
     StartNodeId.Empty();
     InitialResources.Empty();
     Acts.Empty();
+    Characters.Empty();
     Nodes.Empty();
     Sites.Empty();
     Editions.Empty();
@@ -148,6 +149,16 @@ bool FShiCampaignModel::LoadCanonical(FString& OutError)
         Act.Objective = ReadLocalized(Object->GetObjectField(TEXT("objective")));
     }
 
+    for (const TSharedPtr<FJsonValue>& Value : Root->GetArrayField(TEXT("characters")))
+    {
+        const TSharedPtr<FJsonObject> Object = Value->AsObject();
+        FShiCharacterData& Character = Characters.AddDefaulted_GetRef();
+        Character.Id = Object->GetStringField(TEXT("id"));
+        Character.Name = ReadLocalized(Object->GetObjectField(TEXT("name")));
+        Character.Role = ReadLocalized(Object->GetObjectField(TEXT("role")));
+        Character.bHistorical = Object->GetBoolField(TEXT("historical"));
+    }
+
     for (const TSharedPtr<FJsonValue>& Value : Root->GetArrayField(TEXT("sites")))
     {
         const TSharedPtr<FJsonObject> Object = Value->AsObject();
@@ -201,6 +212,7 @@ bool FShiCampaignModel::LoadCanonical(FString& OutError)
         FShiNodeData& Node = Nodes.AddDefaulted_GetRef();
         Node.Id = Object->GetStringField(TEXT("id"));
         Node.ActId = Object->GetStringField(TEXT("actId"));
+        Node.SpeakerId = Object->GetStringField(TEXT("speakerId"));
         Node.TimeIndex = Object->GetIntegerField(TEXT("timeIndex"));
         Node.SiteId = Object->GetStringField(TEXT("siteId"));
         Node.DateLabel = ReadLocalized(Object->GetObjectField(TEXT("dateLabel")));
@@ -311,6 +323,7 @@ bool FShiCampaignModel::LoadCanonical(FString& OutError)
 
 const FShiNodeData* FShiCampaignModel::FindNode(const FString& NodeId) const { return Nodes.FindByPredicate([&](const FShiNodeData& Node) { return Node.Id == NodeId; }); }
 const FShiActData* FShiCampaignModel::FindAct(const FString& ActId) const { return Acts.FindByPredicate([&](const FShiActData& Act) { return Act.Id == ActId; }); }
+const FShiCharacterData* FShiCampaignModel::FindCharacter(const FString& CharacterId) const { return Characters.FindByPredicate([&](const FShiCharacterData& Character) { return Character.Id == CharacterId; }); }
 const FShiSiteData* FShiCampaignModel::FindSite(const FString& SiteId) const { return Sites.FindByPredicate([&](const FShiSiteData& Site) { return Site.Id == SiteId; }); }
 const FShiEditionData* FShiCampaignModel::FindEdition(const FString& EditionId) const { return Editions.FindByPredicate([&](const FShiEditionData& Edition) { return Edition.Id == EditionId; }); }
 const FShiSourceData* FShiCampaignModel::FindSource(const FString& SourceId) const { return Sources.FindByPredicate([&](const FShiSourceData& Source) { return Source.Id == SourceId; }); }
@@ -460,17 +473,36 @@ bool FShiCampaignModel::ValidateEvidence(FString& OutError) const
 bool FShiCampaignModel::ValidateHorizon(FString& OutError) const
 {
     if (!ValidateEvidence(OutError)) return false;
-    if (SchemaVersion != 7 || Acts.Num() != 3 || !FindNode(StartNodeId))
+    if (SchemaVersion != 7 || Acts.Num() != 3 || !FindNode(StartNodeId) || Characters.IsEmpty())
     {
-        OutError = TEXT("Unreal requires schema v7, exactly three authored acts and a valid start node.");
+        OutError = TEXT("Unreal requires schema v7, exactly three authored acts, a character register and a valid start node.");
+        return false;
+    }
+    TSet<FString> CharacterIds;
+    for (const FShiCharacterData& Character : Characters)
+    {
+        if (Character.Id.IsEmpty() || CharacterIds.Contains(Character.Id) || Character.Name.Resolve(TEXT("en")).IsEmpty()
+            || Character.Role.Resolve(TEXT("en")).IsEmpty())
+        {
+            OutError = FString::Printf(TEXT("Invalid or duplicate canonical character %s."), *Character.Id);
+            return false;
+        }
+        CharacterIds.Add(Character.Id);
+    }
+    if (!FindCharacter(TEXT("keeper")))
+    {
+        OutError = TEXT("The playable council requires the canonical keeper character.");
         return false;
     }
     for (const FShiNodeData& Node : Nodes)
     {
         const int32 ActIndex = Acts.IndexOfByPredicate([&](const FShiActData& Act) { return Act.Id == Node.ActId; });
-        if (ActIndex == INDEX_NONE || Node.TimeIndex < 0 || !FindSite(Node.SiteId) || Node.Conditions.IsEmpty() || Node.Choices.IsEmpty())
+        const FShiCharacterData* Speaker = FindCharacter(Node.SpeakerId);
+        if (ActIndex == INDEX_NONE || Node.TimeIndex < 0 || !FindSite(Node.SiteId) || !Speaker
+            || Node.SpeakerId == TEXT("keeper") || Node.Dialogue.Resolve(TEXT("en")).IsEmpty()
+            || Node.Conditions.IsEmpty() || Node.Choices.IsEmpty())
         {
-            OutError = FString::Printf(TEXT("Invalid act/time/site closure at node %s."), *Node.Id);
+            OutError = FString::Printf(TEXT("Invalid act/time/site/speaker closure at node %s."), *Node.Id);
             return false;
         }
         for (const FShiChoiceData& Choice : Node.Choices)
