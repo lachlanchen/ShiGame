@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   canChoose,
   createInitialState,
@@ -398,7 +398,7 @@ export function App() {
     return () => window.cancelAnimationFrame(frame);
   }, [node.id, screen, state.history.length]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!drawer) return;
     const trapFocus = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
