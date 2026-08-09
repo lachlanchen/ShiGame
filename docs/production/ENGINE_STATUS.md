@@ -23,7 +23,7 @@ Unreal Engine 5.8 is now the priority cinematic/3D client by explicit product de
 
 ### Unreal Editor acquisition and native proof
 
-The committed Unreal project now includes a runtime module, canonical schema-v7 loader, act/time/site validation, full six-layer decision resolution, reversible Slate order UI, requirements, all-six-scene progression, a runtime Daze command space, motivated skippable camera beat, automation-test source and official build/test/package wrapper. `npm run unreal:preflight` proves project closure and byte-identical canonical staging; it does not compile Unreal headers or execute the engine.
+The committed Unreal project now includes a runtime module, canonical schema-v7 loader, act/time/site validation, presentation-independent deterministic campaign session, full six-layer decision resolution, detailed intermediate history, fail-closed save-v6 export/replay, atomic autosave/resume, protected restart, keyboard/controller input, reversible Slate order UI, requirements, all-six-scene progression, a runtime Daze command space, motivated skippable camera beat, automation-test source and official build/test/package wrapper. The Web oracle now emits a campaign-hash-bound corpus of all 46 legal fixed-seed terminal routes; Unreal automation is authored to compare every identity, delta and intermediate resource state plus save round-trip/tamper behavior. `npm run unreal:preflight` proves project closure and exact canonical/conformance staging; it does not compile Unreal headers or execute those tests.
 
 No official Unreal installed build is present. Epic's Linux route requires an Epic-account sign-in for the precompiled installed-build ZIP, or an Epic-linked GitHub account for the private source repository. The active GitHub account cannot currently read `EpicGames/UnrealEngine`, so the source route is unavailable. Do not substitute an unofficial engine archive.
 
@@ -32,7 +32,7 @@ Host audit: Ubuntu 24.04, 125 GiB RAM, 28 logical CPUs, two 24 GiB RTX 4090 D GP
 Resolution path:
 
 1. In the dedicated localhost-only noVNC desktop, sign in at Epic's official Linux download page and download the Unreal 5.8 installed build outside Git.
-2. Set `SHI_UNREAL_ROOT`, then run `./scripts/unreal-pipeline.sh projectfiles`, `build`, and `test`.
+2. Set `SHI_UNREAL_ROOT`, then run `./scripts/unreal-pipeline.sh projectfiles`, `build`, and `test`; the 46-route replay suite is the first native behavior gate.
 3. Open the project through `./scripts/unreal-pipeline.sh editor`; fix API/import issues under native compiler evidence.
 4. Run the complete visible inspect → select → issue → consequence → act/time progression route and review camera/lighting/UI together.
 5. Package Linux, launch from clean output, record receipts, hashes, frame timing and screenshots.

@@ -20,4 +20,5 @@ private:
     TSharedRef<SWidget> BuildLayout();
     FReply Select(int32 Index);
     FReply Issue();
+    FReply NewChronicle();
 };

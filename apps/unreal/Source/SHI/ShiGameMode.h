@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "ShiCampaignModel.h"
+#include "ShiCampaignSession.h"
 #include "ShiGameMode.generated.h"
 
 class SShiCommandScreen;
@@ -20,37 +21,41 @@ public:
     virtual void Tick(float DeltaSeconds) override;
 
     const FShiCampaignModel& GetCampaign() const { return Campaign; }
-    const FShiNodeData* GetCurrentNode() const { return Campaign.FindNode(CurrentNodeId); }
-    const TMap<FString, int32>& GetResources() const { return Resources; }
+    const FShiNodeData* GetCurrentNode() const { return Session.GetCurrentNode(); }
+    const TMap<FString, int32>& GetResources() const { return Session.GetResources(); }
     int32 GetSelectedChoiceIndex() const { return SelectedChoiceIndex; }
     const FString& GetLocale() const { return Locale; }
     const FString& GetLastConsequence() const { return LastConsequence; }
-    const FString& GetActiveCommitmentId() const { return ActiveCommitmentId; }
+    const FString& GetActiveCommitmentId() const { return Session.GetActiveCommitmentId(); }
     const FString& GetLoadError() const { return LoadError; }
-    bool IsCompleted() const { return bCompleted; }
-    bool CanChoose(const FShiChoiceData& Choice) const;
-    const FShiFieldConditionData* GetCurrentFieldCondition() const;
-    const FShiOppositionStageData* GetCurrentOppositionStage() const { return SelectOppositionStage(); }
-    const FShiMethodReadData* GetCurrentMethodRead() const { return SelectMethodRead(); }
-    const FShiCommitmentData* GetActiveCommitment() const;
+    const FString& GetSaveStatus() const { return SaveStatus; }
+    const FString& GetFailureReason() const { return Session.GetFailureReason(); }
+    int32 GetDecisionCount() const { return Session.GetHistory().Num(); }
+    bool IsCompleted() const { return Session.IsCompleted(); }
+    bool IsRestartArmed() const { return bRestartArmed; }
+    bool CanChoose(const FShiChoiceData& Choice) const { return Session.CanChoose(Choice); }
+    const FShiFieldConditionData* GetCurrentFieldCondition() const { return Session.GetCurrentFieldCondition(); }
+    const FShiOppositionStageData* GetCurrentOppositionStage() const { return Session.GetCurrentOppositionStage(); }
+    const FShiMethodReadData* GetCurrentMethodRead() const { return Session.GetCurrentMethodRead(); }
+    const FShiCommitmentData* GetActiveCommitment() const { return Session.GetActiveCommitment(); }
 
     void SelectChoice(int32 Index);
+    void CycleChoice(int32 Direction);
     void IssueSelectedOrder();
+    void RequestNewChronicle();
 
 private:
     FShiCampaignModel Campaign;
-    FString CurrentNodeId;
+    FShiCampaignSession Session;
     FString Locale = TEXT("en");
     FString LastConsequence;
-    FString ActiveCommitmentId;
     FString LoadError;
-    TMap<FString, int32> Resources;
-    TArray<FString> MethodHistory;
-    TArray<FString> ChoiceHistory;
-    TArray<FString> Flags;
+    FString SaveStatus;
     int32 SelectedChoiceIndex = 0;
-    uint32 CampaignSeed = 0x5EED2026u;
-    bool bCompleted = false;
+    static constexpr uint32 CampaignSeed = 0x5EED2026u;
+    bool bPersistenceEnabled = true;
+    bool bRestartArmed = false;
+    double LastOrderIssueTime = -1000.0;
     TSharedPtr<SShiCommandScreen> CommandScreen;
     TWeakObjectPtr<ACameraActor> CommandCamera;
     FVector CameraRestLocation;
@@ -61,8 +66,8 @@ private:
     void CreateCommandSpace();
     void RefreshScreen();
     void BeginCameraBeat();
-    void ApplyEffects(const TMap<FString, int32>& Effects);
-    const FShiFieldConditionData* SelectFieldCondition(const FShiNodeData& Node) const;
-    const FShiOppositionStageData* SelectOppositionStage() const;
-    const FShiMethodReadData* SelectMethodRead() const;
+    void SelectFirstAvailableChoice();
+    FString GetSavePath() const;
+    bool RestoreChronicle(FString& OutError);
+    bool SaveChronicle(FString& OutError) const;
 };

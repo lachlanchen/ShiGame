@@ -53,6 +53,9 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     for (const FString& Key : ResourceKeys)
         ResourceLine += FString::Printf(TEXT("%s %d    "), *Key.ToUpper(), Mode->GetResources().FindRef(Key));
     Root->AddSlot().AutoHeight().Padding(28, 5)[SNew(STextBlock).Text(FText::FromString(ResourceLine))];
+    Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
+        SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("TURN %d · %s"), Mode->GetDecisionCount() + 1, *Mode->GetSaveStatus())))
+    ];
     Root->AddSlot().AutoHeight().Padding(28, 14, 28, 4)[SNew(STextBlock).Text(FText::FromString(Node->Title.Resolve(Locale)))];
     Root->AddSlot().AutoHeight().Padding(28, 4)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Node->Context.Resolve(Locale)))];
     Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(SBorder).Padding(16)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Node->Dialogue.Resolve(Locale)))]];
@@ -93,14 +96,30 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     if (!OrderReading.IsEmpty())
         Root->AddSlot().AutoHeight().Padding(28, 4)[SNew(SBorder).Padding(14)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(OrderReading))]];
     Root->AddSlot().AutoHeight().Padding(28, 4)[
-        SNew(SButton).IsEnabled(Mode->CanChoose(Selected)).OnClicked(this, &SShiCommandScreen::Issue).ContentPadding(16)[
+        SNew(SButton).IsEnabled(!Mode->IsCompleted() && Mode->CanChoose(Selected)).OnClicked(this, &SShiCommandScreen::Issue).ContentPadding(16)[
             SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("ISSUE ORDER · %s"), *Selected.Label.Resolve(Locale))))
         ]
     ];
     if (!Mode->GetLastConsequence().IsEmpty())
         Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(SBorder).Padding(14)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Mode->GetLastConsequence()))]];
     if (Mode->IsCompleted())
-        Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(STextBlock).Text(FText::FromString(TEXT("CHAPTER POSITION COMPLETE · RECONSTRUCTION CONTINUES")))];
+    {
+        const FString Completion = Mode->GetFailureReason().IsEmpty()
+            ? TEXT("CHAPTER POSITION COMPLETE · YOUR CHRONICLE IS SEALED")
+            : FString::Printf(TEXT("CHAPTER POSITION LOST · %s · THE CHRONICLE REMAINS REVIEWABLE"), *Mode->GetFailureReason().ToUpper());
+        Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(STextBlock).Text(FText::FromString(Completion))];
+    }
+    Root->AddSlot().AutoHeight().Padding(28, 8, 28, 4)[
+        SNew(SHorizontalBox)
+        + SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 12, 0)[
+            SNew(SButton).OnClicked(this, &SShiCommandScreen::NewChronicle).ContentPadding(10)[
+                SNew(STextBlock).Text(FText::FromString(Mode->IsRestartArmed() ? TEXT("CONFIRM NEW CHRONICLE") : TEXT("NEW CHRONICLE")))
+            ]
+        ]
+        + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("1–3 SELECT · ←/→ CYCLE · ENTER / GAMEPAD A ISSUE · SPACE SKIPS CAMERA BEAT")))
+        ]
+    ];
 
     return SNew(SHorizontalBox)
         + SHorizontalBox::Slot().FillWidth(0.48f)[
@@ -120,5 +139,11 @@ FReply SShiCommandScreen::Select(int32 Index)
 FReply SShiCommandScreen::Issue()
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->IssueSelectedOrder();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::NewChronicle()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->RequestNewChronicle();
     return FReply::Handled();
 }

@@ -8,6 +8,7 @@ Decision date: 2026-08-09. Unreal is now the priority 3D/cinematic delivery trac
 - Unreal may own presentation, camera, world interaction, animation and platform integration; it may not fork story facts, choice effects or historical classifications.
 - Generated engine mirrors are disposable. The canonical payload remains under `content/` and is byte/hash validated.
 - C++ owns deterministic loading, state and tests. Blueprints may author staging and presentation against stable C++ interfaces.
+- Every rules change regenerates a hash-bound exhaustive replay corpus; native automation must match all identities, deltas and intermediate resources before presentation work can certify a checkpoint.
 - Sequencer supports transitions and performance beats; it never replaces player agency.
 - Every imported/generated asset has provenance, license, scale, LOD, collision, performance and visual-review status.
 
@@ -53,6 +54,7 @@ Official references:
 | Project truth | `.uproject`, targets/modules/config and canonical-content sync validate in Git |
 | Engine truth | official UnrealEditor version recorded; project files generate; C++ editor target compiles |
 | Rule truth | Unreal automation tests parse schema v7 and prove act/time/choice/effect closure |
+| Replay truth | all 46 golden routes, six intermediate layer states, save round-trip and tamper rejection pass natively |
 | Interaction truth | visible PIE route performs inspect → select → issue → response → progression |
 | Presentation truth | reviewed desktop capture passes camera, lighting, legibility, motion and provenance review |
 | Build truth | Development and packaged Linux builds launch from clean output with receipts/hashes |

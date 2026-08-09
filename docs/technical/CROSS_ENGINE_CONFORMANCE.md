@@ -1,0 +1,35 @@
+# Cross-engine replay conformance
+
+SHI treats the TypeScript rules package as the current behavioral oracle while Unreal and Unity mature. That authority is not an excuse for hand-waved parity: the oracle emits a reviewed, versioned replay corpus that native clients must execute exactly.
+
+## Golden corpus
+
+`content/conformance/chapter-01-replays.v1.json` exhaustively traverses every legal decision path for Chapter I at seed `5EED2026`. The current corpus contains 46 terminal routes: 40 completed positions and 6 captured/scattered failures. Each turn records:
+
+- node, choice, field condition, pursuit posture, strategic method and prepared-read identity;
+- carried commitment and answer identity when applicable;
+- player, commitment, pressure, pursuit, method-read and field deltas;
+- resources after every one of the six resolution layers;
+- next node, completion/failure state and active commitment;
+- final resources, flags, failure and ending.
+
+The fixture includes the canonical campaign SHA-256. `npm run validate:conformance` regenerates it in memory and byte-compares the reviewed file; any narrative, balance, route or rule change must deliberately regenerate and review the resulting diff with `npm run conformance:write`. Content sync stages the exact fixture for Unreal and Unity, and repository validation rejects stale mirrors.
+
+## Unreal boundary
+
+`FShiCampaignSession` is a pure C++ gameplay state machine separated from camera, Slate and world actors. It owns legal-choice checks, deterministic FNV field selection, opponent posture and method memory, carried commitments, the six-layer resolution order, failure/completion and detailed history.
+
+The Unreal automation suite is authored to run every golden route and compare every intermediate snapshot and delta. A separate save test exports version 6, rebuilds the position only from authoritative decisions, verifies terminal state, rejects an altered condition identity and proves failed replay cannot mutate the live session. Runtime saves use the same replay path, write through a temporary file, and preserve a rejected local save until the player explicitly confirms a new chronicle.
+
+## Evidence status
+
+| Boundary | Status |
+| --- | --- |
+| Fixture generation and byte/hash validation | Green |
+| Unreal fixture staging and static contract | Green |
+| Unreal C++ automation source for all 46 routes | Green (authored) |
+| Unreal native compilation and automation execution | Red until official Unreal 5.8 is installed |
+| Unreal PIE save/resume/controller observation | Red until native execution |
+| Unity consumption of the fixture | Staged; native parity test remains open |
+
+Static validation never substitutes for native compiler and runtime evidence. A golden fixture proves what must happen; only the official native automation run proves the C++ client does it.

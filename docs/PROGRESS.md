@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal deterministic-session and replay checkpoint
+
+- Made the difficult Unreal boundary concrete before expanding spectacle: extracted gameplay from `AShiGameMode` into a presentation-independent `FShiCampaignSession` with legal-choice checks, deterministic field selection, opponent posture/method memory, player commitments, all six resolution layers, failure/completion and complete intermediate records.
+- Generated a versioned, campaign-hash-bound cross-engine corpus by exhaustively traversing every legal Chapter I route at seed `5EED2026`: 46 terminal routes, including 40 completed positions and 6 captured/scattered failures. Validation regenerates the corpus in memory and requires an exact reviewed-byte match.
+- Authored Unreal automation that replays every route and compares layer identities, six effect sets, six intermediate resource snapshots, next node, commitment, failure and final flags. A separate test proves save-v6 round-trip, tamper rejection and atomic failure behavior.
+- Replaced the duplicate GameMode resolver with the deterministic session. The cinematic UI now has local autosave/resume, visible persistence status, protected two-step restart, keyboard number/arrow/Enter controls and standard-gamepad selection/issue input.
+- Save loading never trusts stored totals. It rebuilds the full position from decisions, verifies current node/resources/flags/completion/failure, and leaves an invalid local chronicle untouched until the player explicitly confirms replacement. Writes use a temporary file followed by replacement.
+- The complete repository validation passes 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 golden cross-engine routes, schema/content/audio/accessibility/font/privacy/type gates and Unreal static preflight. Native Unreal compilation, automation execution, PIE/noVNC interaction and Linux packaging remain honestly red until Epic account sign-in provides the official 5.8 installed build.
+
+Next gate: acquire the official Unreal 5.8 build, compile the C++ target, execute all native automation, then visibly play save → issue → consequence → resume through PIE before expanding cinematic assets.
+
 ## 2026-08-09 · Campaign horizon and Unreal-priority foundation
 
 - Promoted the campaign payload to schema v7. Three localized authored acts now bind every scene to an `actId` and monotonic `timeIndex`; schema, TypeScript, Unity and repository gates reject backward time, skipped acts, unknown sites and invalid route closure.

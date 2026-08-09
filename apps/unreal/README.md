@@ -6,13 +6,18 @@ This is the priority Unreal Engine 5.8 C++ client for SHI. It consumes the same 
 
 - `.uproject`, Game/Editor targets and runtime module;
 - canonical JSON loader with act/time/site/choice parsing and chronology validation;
+- pure deterministic campaign session checked against a 46-route, fixed-seed cross-engine replay corpus;
 - programmatic Daze command space, camera, fog, light and field markers;
-- Slate command surface with visible resources, act/scene/site/date, reversible order selection, requirements and explicit issue-order progression;
+- Slate command surface with visible resources, act/scene/site/date, reversible order selection, requirements, explicit issue-order progression, autosave state and guarded restart;
 - deterministic choice, oath, pressure, pursuit, prepared-method-read and field-condition resolution in the canonical six-layer order;
-- schema-v7 automation test;
+- authoritative save-v6 export/replay, resume and atomic local writes that reject tampered routes without trusting stored totals;
+- mouse, keyboard and standard-gamepad command input;
+- schema-v7, 46-route conformance and save-integrity automation source;
 - content sync, static project validation and official editor/build/test/package wrapper.
 
-The current source slice implements the canonical six-layer decision order and advances all six authored nodes. It does **not yet claim exact Web parity**, native execution, film quality, a packaged player or human playability. Detailed resolution records, save/replay, controller, audio, source-ledger, camera grammar and art-direction parity are the next native implementation gates.
+The current source slice implements the canonical six-layer decision order, advances all six authored nodes and defines exact Web-parity evidence. It does **not yet claim native execution**, film quality, a packaged player or human playability: the 46-route C++ suite has been authored but cannot be executed until the official engine is installed. Audio, source-ledger, deeper camera grammar, final asset import and art-direction parity remain native implementation gates.
+
+Runtime chronicles are written under Unreal's ignored `Saved/SaveGames/shi-chapter-01-v6.json`. A malformed or inconsistent file is left in place, gameplay enters a clearly labeled unsaved preview, and replacement requires pressing **New chronicle** twice.
 
 ## Prepare and validate
 

@@ -21,7 +21,8 @@ The user has explicitly prioritized Unreal 5.8 for the difficult cinematic 3D wo
 - `content/audio/chapter-01-audio.json` is the Web/Unity sound truth. It fixes opt-in defaults, mix caps, deterministic rain synthesis and the seven semantic cue envelopes; its provenance record contains no source media and keeps human listening review open.
 - Schema v7 adds exactly three authored acts plus monotonic `timeIndex` progression to the schema-v6 evidence, commitment, opposition and uncertainty contract. Every playable transition moves forward in time, stays within its act or advances one act, and closes on a registered site.
 - `scripts/validate-content.mjs` checks edition/right pairings, HTTPS public links, identifiers, claim/source/node/site closure, site coordinate/status bounds, reconstruction boundaries, translations, action/commitment/pressure/pursuit/method-read/field effects, commitment resolution and outcome reachability, opponent-band coverage, method/read closure and hit reachability, requirements, cycles, deadlocks, every field-condition branch, real failure reachability, and all three conclusions.
-- `scripts/sync-unity-content.mjs` copies canonical campaign/audio bytes to Unreal, Unity and browser mirrors, writes the campaign SHA-256 record, and emits lossless gameplay/horizon/claim/commitment/opposition browser slices. Repository validation reassembles and compares the exact campaign.
+- `scripts/generate-conformance-fixtures.ts` exhaustively materializes all 46 legal fixed-seed terminal routes with every six-layer intermediate state. The fixture carries the campaign SHA-256; validation regenerates and byte-compares it before native clients receive it.
+- `scripts/sync-unity-content.mjs` copies canonical campaign/audio bytes and the reviewed conformance corpus to Unreal, Unity and browser mirrors, writes the campaign SHA-256 record, and emits lossless gameplay/horizon/claim/commitment/opposition browser slices. Repository validation reassembles and compares the exact campaign.
 - Client-specific code may format or animate content; it may not silently change narrative outcomes.
 - Schema changes require a migration, updated validator, all three clients, and tests.
 
@@ -33,9 +34,11 @@ Each chronicle records an unsigned 32-bit seed. FNV-1a over `campaignId|seed|nod
 
 - Pin: Unreal Engine 5.8; engine binaries and generated state stay outside Git.
 - C++ parses the canonical schema-v7 payload, validates act/time/site transitions and resolves order → oath → pressure → pursuit → prepared method read → deterministic field condition.
+- A presentation-independent `FShiCampaignSession` owns deterministic state, detailed intermediate records, legal decisions and fail-closed save-v6 replay. Runtime state is never reconstructed from trusted resource totals.
 - A programmatic Slate command surface keeps selection reversible, discloses field/pursuit/method/oath/pressure before commitment and exposes one explicit issue-order boundary.
+- Autosave/resume writes through a temporary file, rejects altered decision identities atomically, preserves an incompatible save until explicit two-step restart, and exposes its state in the command surface. Number/arrows/Enter and standard-gamepad controls call the same commands as pointer UI.
 - The runtime builds a Daze command space with directional moonlight, motivated fire light, fog, ground, wartable and field markers. A short skippable camera move follows an issued order while the consequence remains interactive.
-- Static repository validation is green. Native target compilation, automation execution, PIE play, asset import, Linux packaging and human cinematic/playability review remain red until an official Epic installed build is available.
+- Static repository validation is green. Unreal automation source executes all 46 golden routes, every intermediate layer, save round-trip, tamper rejection and atomic failure behavior. Native target compilation, automation execution, PIE play, asset import, Linux packaging and human cinematic/playability review remain red until an official Epic installed build is available.
 
 ## Web client
 

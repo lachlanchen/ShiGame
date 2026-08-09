@@ -16,6 +16,9 @@
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "HAL/FileManager.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
 
 AShiGameMode::AShiGameMode()
@@ -32,8 +35,30 @@ void AShiGameMode::BeginPlay()
     }
     else
     {
-        CurrentNodeId = Campaign.StartNodeId;
-        Resources = Campaign.InitialResources;
+        const bool bSaveExists = FPaths::FileExists(GetSavePath());
+        FString PersistenceError;
+        if (bSaveExists && RestoreChronicle(PersistenceError))
+        {
+            SaveStatus = FString::Printf(TEXT("RESUMED · TURN %d · AUTOSAVE READY"), Session.GetHistory().Num() + 1);
+        }
+        else
+        {
+            Session.Initialize(Campaign, CampaignSeed);
+            if (bSaveExists)
+            {
+                bPersistenceEnabled = false;
+                SaveStatus = FString::Printf(TEXT("SAVE REJECTED · %s · FRESH PREVIEW IS NOT WRITING OVER IT"), *PersistenceError);
+            }
+            else if (SaveChronicle(PersistenceError))
+            {
+                SaveStatus = TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY");
+            }
+            else
+            {
+                SaveStatus = FString::Printf(TEXT("AUTOSAVE UNAVAILABLE · %s"), *PersistenceError);
+            }
+        }
+        SelectFirstAvailableChoice();
         CreateCommandSpace();
     }
 
@@ -55,61 +80,67 @@ void AShiGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AShiGameMode::SelectChoice(int32 Index)
 {
     const FShiNodeData* Node = GetCurrentNode();
-    if (!Node || !Node->Choices.IsValidIndex(Index) || !CanChoose(Node->Choices[Index]) || bCompleted) return;
+    if (!Node || !Node->Choices.IsValidIndex(Index) || !CanChoose(Node->Choices[Index]) || Session.IsCompleted()) return;
     SelectedChoiceIndex = Index;
+    if (bRestartArmed) SaveStatus = TEXT("RESTART CANCELLED · CURRENT CHRONICLE PRESERVED");
+    bRestartArmed = false;
     LastConsequence.Empty();
     RefreshScreen();
+}
+
+void AShiGameMode::CycleChoice(int32 Direction)
+{
+    const FShiNodeData* Node = GetCurrentNode();
+    if (!Node || Node->Choices.IsEmpty() || Session.IsCompleted() || Direction == 0) return;
+    for (int32 Offset = 1; Offset <= Node->Choices.Num(); ++Offset)
+    {
+        const int32 Candidate = (SelectedChoiceIndex + Direction * Offset + Node->Choices.Num() * 2) % Node->Choices.Num();
+        if (CanChoose(Node->Choices[Candidate])) { SelectChoice(Candidate); return; }
+    }
 }
 
 void AShiGameMode::IssueSelectedOrder()
 {
     const FShiNodeData* Node = GetCurrentNode();
-    if (!Node || !Node->Choices.IsValidIndex(SelectedChoiceIndex) || !CanChoose(Node->Choices[SelectedChoiceIndex]) || bCompleted) return;
-    const FShiChoiceData Choice = Node->Choices[SelectedChoiceIndex];
+    if (!Node || !Node->Choices.IsValidIndex(SelectedChoiceIndex) || !CanChoose(Node->Choices[SelectedChoiceIndex]) || Session.IsCompleted()) return;
+    const double Now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0;
+    if (Now - LastOrderIssueTime < 0.15) return;
+    LastOrderIssueTime = Now;
 
-    const FShiFieldConditionData* Condition = SelectFieldCondition(*Node);
-    const FShiOppositionStageData* Opposition = SelectOppositionStage();
-    const FShiMethodReadData* MethodRead = SelectMethodRead();
-    const bool bMethodReadHit = MethodRead && !MethodRead->TargetMethodId.IsEmpty() && MethodRead->TargetMethodId == Choice.MethodId;
-    const FShiCommitmentData* ActiveCommitment = Campaign.Commitments.FindByPredicate([&](const FShiCommitmentData& Item) { return Item.Id == ActiveCommitmentId; });
-    const FShiCommitmentOutcomeData* CommitmentOutcome = ActiveCommitment
-        ? ActiveCommitment->Outcomes.FindByPredicate([&](const FShiCommitmentOutcomeData& Item) { return Item.ChoiceId == Choice.Id; }) : nullptr;
-
-    ApplyEffects(Choice.Effects);
-    if (CommitmentOutcome) ApplyEffects(CommitmentOutcome->Effects);
-    ApplyEffects(Choice.PressureEffects);
-    if (Opposition) ApplyEffects(Opposition->Effects);
-    if (bMethodReadHit) ApplyEffects(MethodRead->Effects);
-    if (Condition) ApplyEffects(Condition->Effects);
+    FShiResolutionResult Resolution;
+    FString ResolutionError;
+    if (!Session.ResolveChoice(Node->Choices[SelectedChoiceIndex].Id, Resolution, ResolutionError))
+    {
+        LastConsequence = FString::Printf(TEXT("ORDER REJECTED · %s"), *ResolutionError);
+        RefreshScreen();
+        return;
+    }
+    const FShiChoiceData& Choice = *Resolution.Choice;
 
     TArray<FString> ConsequenceParts;
     ConsequenceParts.Add(Choice.Consequence.Resolve(Locale));
-    if (CommitmentOutcome)
-    {
-        ConsequenceParts.Add(FString::Printf(TEXT("OATH %s · %s"), *CommitmentOutcome->Status.ToUpper(), *CommitmentOutcome->Response.Resolve(Locale)));
-        ActiveCommitmentId.Empty();
-    }
+    if (Resolution.CommitmentOutcome)
+        ConsequenceParts.Add(FString::Printf(TEXT("OATH %s · %s"), *Resolution.CommitmentOutcome->Status.ToUpper(), *Resolution.CommitmentOutcome->Response.Resolve(Locale)));
     if (!Choice.PressureReveal.Resolve(Locale).IsEmpty()) ConsequenceParts.Add(Choice.PressureReveal.Resolve(Locale));
-    if (Opposition) ConsequenceParts.Add(FString::Printf(TEXT("%s · %s"), *Opposition->Title.Resolve(Locale), *Opposition->Response.Resolve(Locale)));
-    if (MethodRead && !MethodRead->TargetMethodId.IsEmpty())
+    if (Resolution.Opposition) ConsequenceParts.Add(FString::Printf(TEXT("%s · %s"), *Resolution.Opposition->Title.Resolve(Locale), *Resolution.Opposition->Response.Resolve(Locale)));
+    if (Resolution.MethodRead && !Resolution.MethodRead->TargetMethodId.IsEmpty())
     {
-        const FString ReadResponse = bMethodReadHit ? MethodRead->HitResponse.Resolve(Locale) : MethodRead->MissResponse.Resolve(Locale);
-        ConsequenceParts.Add(FString::Printf(TEXT("METHOD READ %s · %s"), bMethodReadHit ? TEXT("HIT") : TEXT("MISSED"), *ReadResponse));
+        const FString ReadResponse = Resolution.Record.bMethodReadMatched ? Resolution.MethodRead->HitResponse.Resolve(Locale) : Resolution.MethodRead->MissResponse.Resolve(Locale);
+        ConsequenceParts.Add(FString::Printf(TEXT("METHOD READ %s · %s"), Resolution.Record.bMethodReadMatched ? TEXT("HIT") : TEXT("MISSED"), *ReadResponse));
     }
-    if (Condition) ConsequenceParts.Add(FString::Printf(TEXT("FIELD · %s"), *Condition->Title.Resolve(Locale)));
+    if (Resolution.Condition) ConsequenceParts.Add(FString::Printf(TEXT("FIELD · %s"), *Resolution.Condition->Title.Resolve(Locale)));
+    if (!Session.GetFailureReason().IsEmpty()) ConsequenceParts.Add(FString::Printf(TEXT("POSITION LOST · %s"), *Session.GetFailureReason().ToUpper()));
     LastConsequence = FString::Join(ConsequenceParts, TEXT("\n\n"));
 
-    if (const FShiCommitmentData* Established = Campaign.FindEstablishedCommitment(Choice.Id)) ActiveCommitmentId = Established->Id;
-    MethodHistory.Add(Choice.MethodId);
-    ChoiceHistory.Add(Choice.Id);
-    Flags.Append(Choice.Flags);
-
-    const bool bFailed = Resources.FindRef(TEXT("danger")) >= 100 || Resources.FindRef(TEXT("people")) <= 0;
-    if (Choice.Next.IsEmpty() || bFailed) bCompleted = true;
-    else
+    bRestartArmed = false;
+    SelectedChoiceIndex = 0;
+    SelectFirstAvailableChoice();
+    if (bPersistenceEnabled)
     {
-        CurrentNodeId = Choice.Next;
-        SelectedChoiceIndex = 0;
+        FString PersistenceError;
+        SaveStatus = SaveChronicle(PersistenceError)
+            ? FString::Printf(TEXT("AUTOSAVED · %d DECISIONS"), Session.GetHistory().Num())
+            : FString::Printf(TEXT("AUTOSAVE FAILED · %s"), *PersistenceError);
     }
     BeginCameraBeat();
     RefreshScreen();
@@ -118,10 +149,18 @@ void AShiGameMode::IssueSelectedOrder()
 void AShiGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    if (APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+    {
+        if (Controller->WasInputKeyJustPressed(EKeys::One) || Controller->WasInputKeyJustPressed(EKeys::NumPadOne)) SelectChoice(0);
+        if (Controller->WasInputKeyJustPressed(EKeys::Two) || Controller->WasInputKeyJustPressed(EKeys::NumPadTwo)) SelectChoice(1);
+        if (Controller->WasInputKeyJustPressed(EKeys::Three) || Controller->WasInputKeyJustPressed(EKeys::NumPadThree)) SelectChoice(2);
+        if (Controller->WasInputKeyJustPressed(EKeys::Left) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Left)) CycleChoice(-1);
+        if (Controller->WasInputKeyJustPressed(EKeys::Right) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Right)) CycleChoice(1);
+        if (Controller->WasInputKeyJustPressed(EKeys::Enter) || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Bottom)) IssueSelectedOrder();
+        if (CameraBeatDuration > 0.f && Controller->WasInputKeyJustPressed(EKeys::SpaceBar)) CameraBeatElapsed = CameraBeatDuration;
+    }
     if (CameraBeatDuration <= 0.f || !CommandCamera.IsValid()) return;
     CameraBeatElapsed += DeltaSeconds;
-    if (APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0))
-        if (Controller->WasInputKeyJustPressed(EKeys::SpaceBar)) CameraBeatElapsed = CameraBeatDuration;
     const float Alpha = FMath::Clamp(CameraBeatElapsed / CameraBeatDuration, 0.f, 1.f);
     const float Ease = FMath::InterpEaseInOut(0.f, 1.f, Alpha, 2.f);
     const float Arc = FMath::Sin(Alpha * PI);
@@ -144,75 +183,77 @@ void AShiGameMode::BeginCameraBeat()
     CameraBeatDuration = 1.4f;
 }
 
-bool AShiGameMode::CanChoose(const FShiChoiceData& Choice) const
+void AShiGameMode::SelectFirstAvailableChoice()
 {
-    for (const TPair<FString, int32>& Minimum : Choice.Minimums)
-        if (Resources.FindRef(Minimum.Key) < Minimum.Value) return false;
-    for (const TPair<FString, int32>& Maximum : Choice.Maximums)
-        if (Resources.FindRef(Maximum.Key) > Maximum.Value) return false;
+    const FShiNodeData* Node = GetCurrentNode();
+    if (!Node) return;
+    for (int32 Index = 0; Index < Node->Choices.Num(); ++Index)
+        if (CanChoose(Node->Choices[Index])) { SelectedChoiceIndex = Index; return; }
+}
+
+FString AShiGameMode::GetSavePath() const
+{
+    return FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("SaveGames"), TEXT("shi-chapter-01-v6.json"));
+}
+
+bool AShiGameMode::RestoreChronicle(FString& OutError)
+{
+    FString Json;
+    if (!FFileHelper::LoadFileToString(Json, *GetSavePath()))
+    {
+        OutError = TEXT("the local chronicle could not be read");
+        return false;
+    }
+    return Session.ReplaySaveJson(Campaign, Json, OutError);
+}
+
+bool AShiGameMode::SaveChronicle(FString& OutError) const
+{
+    FString Json;
+    if (!Session.ExportSaveJson(Json, OutError)) return false;
+    const FString SavePath = GetSavePath();
+    const FString SaveDirectory = FPaths::GetPath(SavePath);
+    if (!IFileManager::Get().DirectoryExists(*SaveDirectory) && !IFileManager::Get().MakeDirectory(*SaveDirectory, true))
+    {
+        OutError = TEXT("the save directory could not be created");
+        return false;
+    }
+    const FString TemporaryPath = SavePath + TEXT(".tmp");
+    if (!FFileHelper::SaveStringToFile(Json, *TemporaryPath, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
+    {
+        OutError = TEXT("the temporary chronicle could not be written");
+        return false;
+    }
+    if (!IFileManager::Get().Move(*SavePath, *TemporaryPath, true, true, false, true))
+    {
+        OutError = TEXT("the verified chronicle could not replace the previous save");
+        return false;
+    }
+    OutError.Empty();
     return true;
 }
 
-const FShiFieldConditionData* AShiGameMode::GetCurrentFieldCondition() const
+void AShiGameMode::RequestNewChronicle()
 {
-    const FShiNodeData* Node = GetCurrentNode();
-    return Node ? SelectFieldCondition(*Node) : nullptr;
-}
-
-const FShiCommitmentData* AShiGameMode::GetActiveCommitment() const
-{
-    return Campaign.Commitments.FindByPredicate([&](const FShiCommitmentData& Item) { return Item.Id == ActiveCommitmentId; });
-}
-
-void AShiGameMode::ApplyEffects(const TMap<FString, int32>& Effects)
-{
-    for (const TPair<FString, int32>& Effect : Effects)
+    if (!LoadError.IsEmpty()) return;
+    if (!bRestartArmed)
     {
-        int32& Value = Resources.FindOrAdd(Effect.Key);
-        Value = FMath::Clamp(Value + Effect.Value, 0, 100);
+        bRestartArmed = true;
+        SaveStatus = TEXT("RESTART ARMED · PRESS NEW CHRONICLE AGAIN TO REPLACE THE LOCAL RUN");
+        RefreshScreen();
+        return;
     }
-}
-
-const FShiFieldConditionData* AShiGameMode::SelectFieldCondition(const FShiNodeData& Node) const
-{
-    int32 TotalWeight = 0;
-    for (const FShiFieldConditionData& Condition : Node.Conditions) TotalWeight += Condition.Weight;
-    if (TotalWeight <= 0) return nullptr;
-    const FString Key = FString::Printf(TEXT("%s|%u|%s|%d"), *Campaign.Id, CampaignSeed, *Node.Id, ChoiceHistory.Num());
-    uint32 Hash = 0x811c9dc5u;
-    for (TCHAR Character : Key) { Hash ^= static_cast<uint32>(Character); Hash *= 0x01000193u; }
-    int32 Roll = static_cast<int32>(Hash % static_cast<uint32>(TotalWeight));
-    for (const FShiFieldConditionData& Condition : Node.Conditions)
-    {
-        if (Roll < Condition.Weight) return &Condition;
-        Roll -= Condition.Weight;
-    }
-    return nullptr;
-}
-
-const FShiOppositionStageData* AShiGameMode::SelectOppositionStage() const
-{
-    const int32 Danger = Resources.FindRef(TEXT("danger"));
-    return Campaign.OppositionStages.FindByPredicate([&](const FShiOppositionStageData& Stage) { return Danger >= Stage.MinDanger && Danger <= Stage.MaxDanger; });
-}
-
-const FShiMethodReadData* AShiGameMode::SelectMethodRead() const
-{
-    if (MethodHistory.Num() < Campaign.MinimumMethodObservations) return &Campaign.NeutralMethodRead;
-    TMap<FString, int32> Counts;
-    for (const FString& MethodId : Campaign.MethodIds) Counts.Add(MethodId, 0);
-    for (const FString& MethodId : MethodHistory) Counts.FindOrAdd(MethodId) += 1;
-    int32 Highest = -1;
-    FString Leader;
-    bool bTie = false;
-    for (const TPair<FString, int32>& Count : Counts)
-    {
-        if (Count.Value > Highest) { Highest = Count.Value; Leader = Count.Key; bTie = false; }
-        else if (Count.Value == Highest) bTie = true;
-    }
-    if (bTie) return &Campaign.NeutralMethodRead;
-    if (const FShiMethodReadData* Read = Campaign.MethodReads.FindByPredicate([&](const FShiMethodReadData& Item) { return Item.TargetMethodId == Leader; })) return Read;
-    return &Campaign.NeutralMethodRead;
+    Session.Initialize(Campaign, CampaignSeed);
+    LastConsequence.Empty();
+    SelectedChoiceIndex = 0;
+    SelectFirstAvailableChoice();
+    bPersistenceEnabled = true;
+    bRestartArmed = false;
+    FString PersistenceError;
+    SaveStatus = SaveChronicle(PersistenceError)
+        ? TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY")
+        : FString::Printf(TEXT("NEW CHRONICLE · AUTOSAVE FAILED · %s"), *PersistenceError);
+    RefreshScreen();
 }
 
 void AShiGameMode::RefreshScreen()
@@ -228,7 +269,14 @@ void AShiGameMode::CreateCommandSpace()
     CommandCamera = Camera;
     CameraRestLocation = Camera->GetActorLocation();
     CameraRestRotation = Camera->GetActorRotation();
-    if (APlayerController* Controller = UGameplayStatics::GetPlayerController(World, 0)) Controller->SetViewTarget(Camera);
+    if (APlayerController* Controller = UGameplayStatics::GetPlayerController(World, 0))
+    {
+        Controller->SetViewTarget(Camera);
+        Controller->SetShowMouseCursor(true);
+        FInputModeGameAndUI InputMode;
+        InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+        Controller->SetInputMode(InputMode);
+    }
     ADirectionalLight* Moon = World->SpawnActor<ADirectionalLight>(FVector::ZeroVector, FRotator(-42, 28, 0));
     if (Moon) { Moon->GetLightComponent()->SetIntensity(2.4f); Moon->GetLightComponent()->SetLightColor(FLinearColor(0.34f, 0.44f, 0.56f)); }
     APointLight* Fire = World->SpawnActor<APointLight>(FVector(-160, -110, 135), FRotator::ZeroRotator);
