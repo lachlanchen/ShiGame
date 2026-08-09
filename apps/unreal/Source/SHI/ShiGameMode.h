@@ -35,6 +35,7 @@ public:
     int32 GetDecisionCount() const { return Session.GetHistory().Num(); }
     bool IsCompleted() const { return Session.IsCompleted(); }
     bool IsRestartArmed() const { return bRestartArmed; }
+    bool IsEvidenceOpen() const { return bEvidenceOpen; }
     bool IsAudioReady() const;
     bool IsSoundEnabled() const;
     bool IsSoundPreferred() const;
@@ -50,6 +51,7 @@ public:
     void CycleChoice(int32 Direction);
     void IssueSelectedOrder();
     void RequestNewChronicle();
+    void ToggleEvidence();
     void ToggleSound();
     void AdjustAmbience(int32 Direction);
     void AdjustEffects(int32 Direction);
@@ -66,6 +68,7 @@ private:
     static constexpr uint32 CampaignSeed = 0x5EED2026u;
     bool bPersistenceEnabled = true;
     bool bRestartArmed = false;
+    bool bEvidenceOpen = false;
     double LastOrderIssueTime = -1000.0;
     TSharedPtr<SShiCommandScreen> CommandScreen;
     UPROPERTY(Transient)

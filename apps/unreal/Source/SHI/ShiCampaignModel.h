@@ -52,6 +52,8 @@ struct FShiNodeData
     FShiLocalizedText Title;
     FShiLocalizedText Context;
     FShiLocalizedText Dialogue;
+    TArray<FString> SourceRefs;
+    TArray<FString> ClaimRefs;
     TArray<FShiFieldConditionData> Conditions;
     TArray<FShiChoiceData> Choices;
 };
@@ -60,6 +62,48 @@ struct FShiSiteData
 {
     FString Id;
     FShiLocalizedText Name;
+    float X = 0.f;
+    float Z = 0.f;
+    FString Status;
+    FShiLocalizedText Summary;
+    FShiLocalizedText Uncertainty;
+    TArray<FString> SourceRefs;
+    TArray<FString> ClaimRefs;
+};
+
+struct FShiEditionData
+{
+    FString Id;
+    FString SourceUrl;
+    FString RightsStatus;
+};
+
+struct FShiSourceData
+{
+    FString Id;
+    FString EditionId;
+    FString Work;
+    FString Section;
+    FString Locator;
+    FString Url;
+    FString Author;
+    FString Date;
+    FShiLocalizedText Note;
+    FString ClaimStatus;
+    FString RightsStatus;
+};
+
+struct FShiClaimData
+{
+    FString Id;
+    FString Kind;
+    FShiLocalizedText Statement;
+    TArray<FString> SourceRefs;
+    FString ReviewStatus;
+    FString Confidence;
+    FShiLocalizedText Uncertainty;
+    FShiLocalizedText GameUse;
+    FString Reviewer;
 };
 
 struct FShiOppositionStageData
@@ -113,6 +157,9 @@ public:
     TArray<FShiActData> Acts;
     TArray<FShiNodeData> Nodes;
     TArray<FShiSiteData> Sites;
+    TArray<FShiEditionData> Editions;
+    TArray<FShiSourceData> Sources;
+    TArray<FShiClaimData> Claims;
     TArray<FString> MethodIds;
     int32 MinimumMethodObservations = 0;
     FShiMethodReadData NeutralMethodRead;
@@ -124,6 +171,10 @@ public:
     const FShiNodeData* FindNode(const FString& NodeId) const;
     const FShiActData* FindAct(const FString& ActId) const;
     const FShiSiteData* FindSite(const FString& SiteId) const;
+    const FShiEditionData* FindEdition(const FString& EditionId) const;
+    const FShiSourceData* FindSource(const FString& SourceId) const;
+    const FShiClaimData* FindClaim(const FString& ClaimId) const;
     const FShiCommitmentData* FindEstablishedCommitment(const FString& ChoiceId) const;
+    bool ValidateEvidence(FString& OutError) const;
     bool ValidateHorizon(FString& OutError) const;
 };

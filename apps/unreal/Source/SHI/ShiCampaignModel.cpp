@@ -32,6 +32,39 @@ namespace
         }
         return Result;
     }
+
+    TArray<FString> ReadStrings(const TArray<TSharedPtr<FJsonValue>>& Values)
+    {
+        TArray<FString> Result;
+        Result.Reserve(Values.Num());
+        for (const TSharedPtr<FJsonValue>& Value : Values)
+        {
+            FString Text;
+            if (Value.IsValid() && Value->TryGetString(Text)) Result.Add(Text);
+        }
+        return Result;
+    }
+
+    bool HasUniqueNonEmptyValues(const TArray<FString>& Values)
+    {
+        TSet<FString> Unique;
+        for (const FString& Value : Values)
+        {
+            if (Value.IsEmpty() || Unique.Contains(Value)) return false;
+            Unique.Add(Value);
+        }
+        return Unique.Num() == Values.Num();
+    }
+
+    FString HttpsAuthority(const FString& Url)
+    {
+        if (!Url.StartsWith(TEXT("https://"), ESearchCase::CaseSensitive)) return FString();
+        FString AuthorityAndPath = Url.RightChop(8);
+        int32 Boundary = INDEX_NONE;
+        if (AuthorityAndPath.FindChar(TEXT('/'), Boundary)) AuthorityAndPath.LeftInline(Boundary);
+        if (AuthorityAndPath.IsEmpty() || AuthorityAndPath.Contains(TEXT("@"))) return FString();
+        return AuthorityAndPath.ToLower();
+    }
 }
 
 FString FShiLocalizedText::Resolve(const FString& Locale) const
@@ -44,6 +77,24 @@ FString FShiLocalizedText::Resolve(const FString& Locale) const
 
 bool FShiCampaignModel::LoadCanonical(FString& OutError)
 {
+    OutError.Empty();
+    SchemaVersion = 0;
+    Id.Empty();
+    StartNodeId.Empty();
+    InitialResources.Empty();
+    Acts.Empty();
+    Nodes.Empty();
+    Sites.Empty();
+    Editions.Empty();
+    Sources.Empty();
+    Claims.Empty();
+    MethodIds.Empty();
+    MinimumMethodObservations = 0;
+    NeutralMethodRead = FShiMethodReadData();
+    MethodReads.Empty();
+    OppositionStages.Empty();
+    Commitments.Empty();
+
     const FString Path = FPaths::Combine(FPaths::ProjectContentDir(), TEXT("StreamingAssets/chapter-01-daze.json"));
     FString Json;
     if (!FFileHelper::LoadFileToString(Json, *Path))
@@ -58,6 +109,29 @@ bool FShiCampaignModel::LoadCanonical(FString& OutError)
     {
         OutError = TEXT("Canonical campaign JSON could not be parsed.");
         return false;
+    }
+
+    const FString EditionPath = FPaths::Combine(FPaths::ProjectContentDir(), TEXT("StreamingAssets/editions.json"));
+    FString EditionJson;
+    TSharedPtr<FJsonObject> EditionRoot;
+    if (!FFileHelper::LoadFileToString(EditionJson, *EditionPath))
+    {
+        OutError = FString::Printf(TEXT("Public edition registry missing: %s. Run npm run sync:content."), *EditionPath);
+        return false;
+    }
+    const TSharedRef<TJsonReader<>> EditionReader = TJsonReaderFactory<>::Create(EditionJson);
+    if (!FJsonSerializer::Deserialize(EditionReader, EditionRoot) || !EditionRoot.IsValid() || EditionRoot->GetIntegerField(TEXT("schemaVersion")) != 1)
+    {
+        OutError = TEXT("Public edition registry is not valid schema v1 JSON.");
+        return false;
+    }
+    for (const TSharedPtr<FJsonValue>& Value : EditionRoot->GetArrayField(TEXT("editions")))
+    {
+        const TSharedPtr<FJsonObject> Object = Value->AsObject();
+        FShiEditionData& Edition = Editions.AddDefaulted_GetRef();
+        Edition.Id = Object->GetStringField(TEXT("id"));
+        Object->TryGetStringField(TEXT("sourceUrl"), Edition.SourceUrl);
+        Edition.RightsStatus = Object->GetStringField(TEXT("rightsStatus"));
     }
 
     SchemaVersion = Root->GetIntegerField(TEXT("schemaVersion"));
@@ -80,6 +154,45 @@ bool FShiCampaignModel::LoadCanonical(FString& OutError)
         FShiSiteData& Site = Sites.AddDefaulted_GetRef();
         Site.Id = Object->GetStringField(TEXT("id"));
         Site.Name = ReadLocalized(Object->GetObjectField(TEXT("name")));
+        Site.X = static_cast<float>(Object->GetNumberField(TEXT("x")));
+        Site.Z = static_cast<float>(Object->GetNumberField(TEXT("z")));
+        Site.Status = Object->GetStringField(TEXT("status"));
+        Site.Summary = ReadLocalized(Object->GetObjectField(TEXT("summary")));
+        Site.Uncertainty = ReadLocalized(Object->GetObjectField(TEXT("uncertainty")));
+        Site.SourceRefs = ReadStrings(Object->GetArrayField(TEXT("sourceRefs")));
+        Site.ClaimRefs = ReadStrings(Object->GetArrayField(TEXT("claimRefs")));
+    }
+
+    for (const TSharedPtr<FJsonValue>& Value : Root->GetArrayField(TEXT("sources")))
+    {
+        const TSharedPtr<FJsonObject> Object = Value->AsObject();
+        FShiSourceData& Source = Sources.AddDefaulted_GetRef();
+        Source.Id = Object->GetStringField(TEXT("id"));
+        Source.EditionId = Object->GetStringField(TEXT("editionId"));
+        Source.Work = Object->GetStringField(TEXT("work"));
+        Source.Section = Object->GetStringField(TEXT("section"));
+        Source.Locator = Object->GetStringField(TEXT("locator"));
+        Object->TryGetStringField(TEXT("url"), Source.Url);
+        Object->TryGetStringField(TEXT("author"), Source.Author);
+        Object->TryGetStringField(TEXT("date"), Source.Date);
+        Source.Note = ReadLocalized(Object->GetObjectField(TEXT("note")));
+        Source.ClaimStatus = Object->GetStringField(TEXT("claimStatus"));
+        Source.RightsStatus = Object->GetStringField(TEXT("rightsStatus"));
+    }
+
+    for (const TSharedPtr<FJsonValue>& Value : Root->GetArrayField(TEXT("claims")))
+    {
+        const TSharedPtr<FJsonObject> Object = Value->AsObject();
+        FShiClaimData& Claim = Claims.AddDefaulted_GetRef();
+        Claim.Id = Object->GetStringField(TEXT("id"));
+        Claim.Kind = Object->GetStringField(TEXT("kind"));
+        Claim.Statement = ReadLocalized(Object->GetObjectField(TEXT("statement")));
+        Claim.SourceRefs = ReadStrings(Object->GetArrayField(TEXT("sourceRefs")));
+        Claim.ReviewStatus = Object->GetStringField(TEXT("reviewStatus"));
+        Claim.Confidence = Object->GetStringField(TEXT("confidence"));
+        Claim.Uncertainty = ReadLocalized(Object->GetObjectField(TEXT("uncertainty")));
+        Claim.GameUse = ReadLocalized(Object->GetObjectField(TEXT("gameUse")));
+        Claim.Reviewer = Object->GetStringField(TEXT("reviewer"));
     }
 
     for (const TSharedPtr<FJsonValue>& Value : Root->GetArrayField(TEXT("nodes")))
@@ -94,6 +207,8 @@ bool FShiCampaignModel::LoadCanonical(FString& OutError)
         Node.Title = ReadLocalized(Object->GetObjectField(TEXT("title")));
         Node.Context = ReadLocalized(Object->GetObjectField(TEXT("context")));
         Node.Dialogue = ReadLocalized(Object->GetObjectField(TEXT("dialogue")));
+        Node.SourceRefs = ReadStrings(Object->GetArrayField(TEXT("sourceRefs")));
+        Node.ClaimRefs = ReadStrings(Object->GetArrayField(TEXT("claimRefs")));
         for (const TSharedPtr<FJsonValue>& ConditionValue : Object->GetArrayField(TEXT("conditions")))
         {
             const TSharedPtr<FJsonObject> ConditionObject = ConditionValue->AsObject();
@@ -197,10 +312,154 @@ bool FShiCampaignModel::LoadCanonical(FString& OutError)
 const FShiNodeData* FShiCampaignModel::FindNode(const FString& NodeId) const { return Nodes.FindByPredicate([&](const FShiNodeData& Node) { return Node.Id == NodeId; }); }
 const FShiActData* FShiCampaignModel::FindAct(const FString& ActId) const { return Acts.FindByPredicate([&](const FShiActData& Act) { return Act.Id == ActId; }); }
 const FShiSiteData* FShiCampaignModel::FindSite(const FString& SiteId) const { return Sites.FindByPredicate([&](const FShiSiteData& Site) { return Site.Id == SiteId; }); }
+const FShiEditionData* FShiCampaignModel::FindEdition(const FString& EditionId) const { return Editions.FindByPredicate([&](const FShiEditionData& Edition) { return Edition.Id == EditionId; }); }
+const FShiSourceData* FShiCampaignModel::FindSource(const FString& SourceId) const { return Sources.FindByPredicate([&](const FShiSourceData& Source) { return Source.Id == SourceId; }); }
+const FShiClaimData* FShiCampaignModel::FindClaim(const FString& ClaimId) const { return Claims.FindByPredicate([&](const FShiClaimData& Claim) { return Claim.Id == ClaimId; }); }
 const FShiCommitmentData* FShiCampaignModel::FindEstablishedCommitment(const FString& ChoiceId) const { return Commitments.FindByPredicate([&](const FShiCommitmentData& Commitment) { return Commitment.EstablishedByChoiceId == ChoiceId; }); }
+
+bool FShiCampaignModel::ValidateEvidence(FString& OutError) const
+{
+    static const TSet<FString> SourceStatuses = {
+        TEXT("received-account"), TEXT("later-compilation"), TEXT("strategic-text"), TEXT("dramatic-reconstruction")
+    };
+    static const TSet<FString> RightsStatuses = {TEXT("public-link-metadata-only"), TEXT("project-original")};
+    static const TSet<FString> ClaimKinds = {
+        TEXT("chronology"), TEXT("event"), TEXT("institution"), TEXT("person"), TEXT("geography"), TEXT("strategic-lens"), TEXT("reconstruction")
+    };
+    static const TSet<FString> ReviewStatuses = {
+        TEXT("evidence-located"), TEXT("specialist-review-required"), TEXT("authored-reconstruction")
+    };
+    static const TSet<FString> ConfidenceLevels = {TEXT("high"), TEXT("medium"), TEXT("low"), TEXT("not-applicable")};
+    static const TSet<FString> SiteStatuses = {TEXT("known"), TEXT("reported"), TEXT("reference")};
+
+    if (Editions.IsEmpty() || Sources.IsEmpty() || Claims.IsEmpty())
+    {
+        OutError = TEXT("Historical evidence requires a public edition registry plus non-empty source and claim registers.");
+        return false;
+    }
+
+    TSet<FString> EditionIds;
+    for (const FShiEditionData& Edition : Editions)
+    {
+        if (Edition.Id.IsEmpty() || EditionIds.Contains(Edition.Id) || !RightsStatuses.Contains(Edition.RightsStatus)
+            || (Edition.RightsStatus == TEXT("public-link-metadata-only") && HttpsAuthority(Edition.SourceUrl).IsEmpty())
+            || (Edition.RightsStatus == TEXT("project-original") && !Edition.SourceUrl.IsEmpty()))
+        {
+            OutError = FString::Printf(TEXT("Invalid or duplicate public edition record %s."), *Edition.Id);
+            return false;
+        }
+        EditionIds.Add(Edition.Id);
+    }
+
+    TSet<FString> SourceIds;
+    TSet<FString> UsedEditions;
+    for (const FShiSourceData& Source : Sources)
+    {
+        const FShiEditionData* Edition = FindEdition(Source.EditionId);
+        const bool bPublicMetadata = Source.RightsStatus == TEXT("public-link-metadata-only");
+        if (Source.Id.IsEmpty() || SourceIds.Contains(Source.Id) || !Edition || Source.Work.IsEmpty() || Source.Section.IsEmpty()
+            || Source.Locator.IsEmpty() || Source.Note.Resolve(TEXT("en")).IsEmpty() || !SourceStatuses.Contains(Source.ClaimStatus)
+            || !RightsStatuses.Contains(Source.RightsStatus) || Edition->RightsStatus != Source.RightsStatus
+            || (bPublicMetadata && (HttpsAuthority(Source.Url).IsEmpty() || HttpsAuthority(Source.Url) != HttpsAuthority(Edition->SourceUrl)))
+            || (!bPublicMetadata && !Source.Url.IsEmpty())
+            || ((Source.ClaimStatus == TEXT("dramatic-reconstruction")) != (Source.RightsStatus == TEXT("project-original"))))
+        {
+            OutError = FString::Printf(TEXT("Invalid source, edition, rights, locator, or URL boundary at %s."), *Source.Id);
+            return false;
+        }
+        SourceIds.Add(Source.Id);
+        UsedEditions.Add(Source.EditionId);
+    }
+
+    TSet<FString> ClaimIds;
+    for (const FShiClaimData& Claim : Claims)
+    {
+        const bool bReconstruction = Claim.Kind == TEXT("reconstruction");
+        if (Claim.Id.IsEmpty() || ClaimIds.Contains(Claim.Id) || !ClaimKinds.Contains(Claim.Kind)
+            || !ReviewStatuses.Contains(Claim.ReviewStatus) || !ConfidenceLevels.Contains(Claim.Confidence)
+            || Claim.Statement.Resolve(TEXT("en")).IsEmpty() || Claim.Uncertainty.Resolve(TEXT("en")).IsEmpty()
+            || Claim.GameUse.Resolve(TEXT("en")).IsEmpty() || Claim.Reviewer.IsEmpty() || Claim.SourceRefs.IsEmpty()
+            || !HasUniqueNonEmptyValues(Claim.SourceRefs)
+            || (bReconstruction != (Claim.ReviewStatus == TEXT("authored-reconstruction")))
+            || (bReconstruction != (Claim.Confidence == TEXT("not-applicable"))))
+        {
+            OutError = FString::Printf(TEXT("Invalid claim status, confidence, review, or prose boundary at %s."), *Claim.Id);
+            return false;
+        }
+        for (const FString& SourceId : Claim.SourceRefs)
+        {
+            if (!FindSource(SourceId))
+            {
+                OutError = FString::Printf(TEXT("Claim %s references unknown source %s."), *Claim.Id, *SourceId);
+                return false;
+            }
+        }
+        ClaimIds.Add(Claim.Id);
+    }
+
+    TSet<FString> UsedSources;
+    TSet<FString> UsedClaims;
+    const auto ValidateReferenceBoundary = [&](const FString& Context, const TArray<FString>& SourceRefs, const TArray<FString>& ClaimRefs) -> bool
+    {
+        if (SourceRefs.IsEmpty() || ClaimRefs.IsEmpty() || !HasUniqueNonEmptyValues(SourceRefs) || !HasUniqueNonEmptyValues(ClaimRefs))
+        {
+            OutError = FString::Printf(TEXT("%s lacks a unique non-empty source/claim boundary."), *Context);
+            return false;
+        }
+        for (const FString& SourceId : SourceRefs)
+        {
+            if (!FindSource(SourceId))
+            {
+                OutError = FString::Printf(TEXT("%s references unknown source %s."), *Context, *SourceId);
+                return false;
+            }
+            UsedSources.Add(SourceId);
+        }
+        for (const FString& ClaimId : ClaimRefs)
+        {
+            const FShiClaimData* Claim = FindClaim(ClaimId);
+            if (!Claim)
+            {
+                OutError = FString::Printf(TEXT("%s references unknown claim %s."), *Context, *ClaimId);
+                return false;
+            }
+            for (const FString& SourceId : Claim->SourceRefs)
+            {
+                if (!SourceRefs.Contains(SourceId))
+                {
+                    OutError = FString::Printf(TEXT("%s exposes claim %s without its source %s."), *Context, *ClaimId, *SourceId);
+                    return false;
+                }
+            }
+            UsedClaims.Add(ClaimId);
+        }
+        return true;
+    };
+
+    for (const FShiNodeData& Node : Nodes)
+        if (!ValidateReferenceBoundary(FString::Printf(TEXT("Node %s"), *Node.Id), Node.SourceRefs, Node.ClaimRefs)) return false;
+    for (const FShiSiteData& Site : Sites)
+    {
+        if (!SiteStatuses.Contains(Site.Status) || Site.Summary.Resolve(TEXT("en")).IsEmpty() || Site.Uncertainty.Resolve(TEXT("en")).IsEmpty()
+            || !FMath::IsFinite(Site.X) || !FMath::IsFinite(Site.Z) || Site.X < 0.f || Site.X > 100.f || Site.Z < 0.f || Site.Z > 100.f)
+        {
+            OutError = FString::Printf(TEXT("Site %s has an invalid intelligence status, schematic position, or uncertainty statement."), *Site.Id);
+            return false;
+        }
+        if (!ValidateReferenceBoundary(FString::Printf(TEXT("Site %s"), *Site.Id), Site.SourceRefs, Site.ClaimRefs)) return false;
+    }
+    if (UsedEditions.Num() != Editions.Num() || UsedSources.Num() != Sources.Num() || UsedClaims.Num() != Claims.Num())
+    {
+        OutError = TEXT("Every public edition, source and claim must be reachable from a playable node or wartable site.");
+        return false;
+    }
+    OutError.Empty();
+    return true;
+}
 
 bool FShiCampaignModel::ValidateHorizon(FString& OutError) const
 {
+    if (!ValidateEvidence(OutError)) return false;
     if (SchemaVersion != 7 || Acts.Num() != 3 || !FindNode(StartNodeId))
     {
         OutError = TEXT("Unreal requires schema v7, exactly three authored acts and a valid start node.");

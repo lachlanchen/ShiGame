@@ -14,7 +14,7 @@ const required = [
   "Source/SHI/ShiCommandScreen.h", "Source/SHI/ShiCommandScreen.cpp",
   "Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp", "Config/DefaultEngine.ini", "Config/DefaultGame.ini",
   "Content/StreamingAssets/chapter-01-daze.json", "Content/StreamingAssets/chapter-01-audio.json",
-  "Content/StreamingAssets/chapter-01-replays.v1.json",
+  "Content/StreamingAssets/chapter-01-replays.v1.json", "Content/StreamingAssets/editions.json",
 ];
 
 for (const relative of required) {
@@ -28,6 +28,9 @@ if (!project.Modules?.some((module) => module.Name === "SHI" && module.Type === 
 const canonical = await readFile(resolve(root, "content/campaigns/chapter-01-daze.json"));
 const staged = await readFile(resolve(unreal, "Content/StreamingAssets/chapter-01-daze.json"));
 if (!canonical.equals(staged)) errors.push("Unreal staged campaign differs from canonical content");
+const canonicalEditions = await readFile(resolve(root, "content/research/editions.json"));
+const stagedEditions = await readFile(resolve(unreal, "Content/StreamingAssets/editions.json"));
+if (!canonicalEditions.equals(stagedEditions)) errors.push("Unreal staged public edition registry differs from canonical research metadata");
 const replayBytes = await readFile(resolve(unreal, "Content/StreamingAssets/chapter-01-replays.v1.json"));
 const replayFixture = JSON.parse(replayBytes.toString("utf8"));
 const campaignSha256 = createHash("sha256").update(canonical).digest("hex");
@@ -44,17 +47,17 @@ const soundscape = await readFile(resolve(unreal, "Source/SHI/ShiSoundscapeCompo
 const gameMode = await readFile(resolve(unreal, "Source/SHI/ShiGameMode.cpp"), "utf8");
 const screen = await readFile(resolve(unreal, "Source/SHI/ShiCommandScreen.cpp"), "utf8");
 const buildRules = await readFile(resolve(unreal, "Source/SHI/SHI.Build.cs"), "utf8");
-for (const token of ["schema v7", "TimeIndex <=", "NextActIndex <", "StreamingAssets/chapter-01-daze.json", "initialResources", "nextNodeId", "commitments", "countermeasures"]) if (!model.includes(token)) errors.push(`Unreal model omits contract token: ${token}`);
+for (const token of ["schema v7", "TimeIndex <=", "NextActIndex <", "StreamingAssets/chapter-01-daze.json", "StreamingAssets/editions.json", "initialResources", "nextNodeId", "commitments", "countermeasures", "ValidateEvidence", "public-link-metadata-only", "specialist-review-required"]) if (!model.includes(token)) errors.push(`Unreal model omits contract token: ${token}`);
 for (const token of ["ApplyEffects(Choice->Effects)", "CommitmentOutcome->Effects", "Choice->PressureEffects", "Opposition->Effects", "MethodRead->Effects", "Condition->Effects", "SelectFieldCondition", "CanChoose", "ReplaySaveJson", "MoveTemp(Candidate)"]) if (!session.includes(token)) errors.push(`Unreal deterministic session omits contract token: ${token}`);
 for (const token of ["project-original-procedural", "RequiredCues", "CreateRainSamples", "CreateCueSamples", "bDefaultEnabled"]) if (!audioModel.includes(token)) errors.push(`Unreal audio model omits contract token: ${token}`);
 for (const token of ["FShiSoundGenerator", "CreateSoundGenerator", "PendingCues", "GGameUserSettingsIni", "FadeSeconds", "OutAudio[Frame * 2]", "OutAudio[Frame * 2 + 1]"]) if (!soundscape.includes(token)) errors.push(`Unreal soundscape omits render/persistence token: ${token}`);
 if (!buildRules.includes('"AudioMixer"')) errors.push("Unreal runtime module does not depend on AudioMixer");
-for (const token of ["RestoreChronicle", "SaveChronicle", "ForceUTF8WithoutBOM", "Gamepad_FaceButton_Bottom", "RequestNewChronicle", "CreateSoundscape", "ToggleSound", "Gamepad_FaceButton_Top"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits persistence/input/audio token: ${token}`);
-for (const token of ["SELECTED ORDER", "ISSUE ORDER", "ACT %d/%d", "SCENE %d/%d", "NEW CHRONICLE", "GAMEPAD A", "SOUND OFF", "RAIN −", "CUES −"]) if (!screen.includes(token)) errors.push(`Unreal command screen omits interaction token: ${token}`);
+for (const token of ["RestoreChronicle", "SaveChronicle", "ForceUTF8WithoutBOM", "Gamepad_FaceButton_Bottom", "RequestNewChronicle", "CreateSoundscape", "ToggleSound", "Gamepad_FaceButton_Top", "ToggleEvidence", "Gamepad_LeftShoulder"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits persistence/input/audio/evidence token: ${token}`);
+for (const token of ["SELECTED ORDER", "ISSUE ORDER", "ACT %d/%d", "SCENE %d/%d", "NEW CHRONICLE", "GAMEPAD A", "SOUND OFF", "RAIN −", "CUES −", "HISTORICAL BASIS", "EXACT LOCATOR", "SPECIALIST REVIEW REQUIRED", "OPEN PUBLIC EDITION"]) if (!screen.includes(token)) errors.push(`Unreal command screen omits interaction/evidence token: ${token}`);
 
 if (errors.length) {
   console.error(`Unreal project validation failed with ${errors.length} error(s):`);
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/audio staging, 46 golden routes, deterministic save/replay, modern procedural soundscape, controls, command surface and automation boundary.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio staging, 46 golden routes, deterministic save/replay, source-claim ledger, procedural soundscape, controls, command surface and automation boundary.`);

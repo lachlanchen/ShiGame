@@ -6,6 +6,7 @@ const root = resolve(import.meta.dirname, "..");
 const source = resolve(root, "content/campaigns/chapter-01-daze.json");
 const audioSource = resolve(root, "content/audio/chapter-01-audio.json");
 const conformanceSource = resolve(root, "content/conformance/chapter-01-replays.v1.json");
+const editionSource = resolve(root, "content/research/editions.json");
 const outputs = [
   resolve(root, "apps/web/src/generated/chapter-01-daze.json"),
   resolve(root, "apps/unity/Assets/StreamingAssets/chapter-01-daze.json"),
@@ -33,6 +34,13 @@ for (const output of [
 ]) {
   await mkdir(dirname(output), { recursive: true });
   await copyFile(conformanceSource, output);
+}
+for (const output of [
+  resolve(root, "apps/unreal/Content/StreamingAssets/editions.json"),
+  resolve(root, "apps/unity/Assets/StreamingAssets/editions.json"),
+]) {
+  await mkdir(dirname(output), { recursive: true });
+  await copyFile(editionSource, output);
 }
 const webGameplay = {
   ...campaign,
@@ -75,4 +83,4 @@ await copyFile(
   resolve(root, "assets/3d/export/shi-daze-wartable-v1.fbx"),
   resolve(root, "apps/unity/Assets/StreamingAssets/shi-daze-wartable-v1.fbx"),
 );
-console.log(`Synced campaign ${sha256.slice(0, 12)}, procedural audio and replay conformance contracts to Unreal, Unity and web transport slices.`);
+console.log(`Synced campaign ${sha256.slice(0, 12)}, edition registry, procedural audio and replay conformance contracts to Unreal, Unity and web transport slices.`);

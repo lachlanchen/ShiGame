@@ -163,6 +163,25 @@ void AShiGameMode::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
     if (APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0))
     {
+        const bool bEvidenceToggle = Controller->WasInputKeyJustPressed(EKeys::E)
+            || Controller->WasInputKeyJustPressed(EKeys::Gamepad_LeftShoulder);
+        if (bEvidenceOpen)
+        {
+            if (CommandScreen.IsValid()
+                && (Controller->WasInputKeyJustPressed(EKeys::Up) || Controller->WasInputKeyJustPressed(EKeys::PageUp)
+                    || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Up))) CommandScreen->ScrollEvidence(-1);
+            if (CommandScreen.IsValid()
+                && (Controller->WasInputKeyJustPressed(EKeys::Down) || Controller->WasInputKeyJustPressed(EKeys::PageDown)
+                    || Controller->WasInputKeyJustPressed(EKeys::Gamepad_DPad_Down))) CommandScreen->ScrollEvidence(1);
+            if (bEvidenceToggle || Controller->WasInputKeyJustPressed(EKeys::Escape)
+                || Controller->WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Right)) ToggleEvidence();
+            return;
+        }
+        if (bEvidenceToggle)
+        {
+            ToggleEvidence();
+            return;
+        }
         if (Controller->WasInputKeyJustPressed(EKeys::One) || Controller->WasInputKeyJustPressed(EKeys::NumPadOne)) SelectChoice(0);
         if (Controller->WasInputKeyJustPressed(EKeys::Two) || Controller->WasInputKeyJustPressed(EKeys::NumPadTwo)) SelectChoice(1);
         if (Controller->WasInputKeyJustPressed(EKeys::Three) || Controller->WasInputKeyJustPressed(EKeys::NumPadThree)) SelectChoice(2);
@@ -267,6 +286,15 @@ void AShiGameMode::RequestNewChronicle()
         ? TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY")
         : FString::Printf(TEXT("NEW CHRONICLE · AUTOSAVE FAILED · %s"), *PersistenceError);
     if (AudioDirector) AudioDirector->PlayCue(FName(TEXT("close")));
+    RefreshScreen();
+}
+
+void AShiGameMode::ToggleEvidence()
+{
+    if (!LoadError.IsEmpty()) return;
+    bEvidenceOpen = !bEvidenceOpen;
+    ResumeSoundFromGesture();
+    if (AudioDirector) AudioDirector->PlayCue(bEvidenceOpen ? FName(TEXT("drawer")) : FName(TEXT("close")));
     RefreshScreen();
 }
 

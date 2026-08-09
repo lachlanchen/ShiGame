@@ -127,6 +127,59 @@ bool FShiCampaignSchemaTest::RunTest(const FString& Parameters)
     return !HasAnyErrors();
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiHistoricalEvidenceTest, "SHI.History.SourceClaimClosureV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiHistoricalEvidenceTest::RunTest(const FString& Parameters)
+{
+    FShiCampaignModel Campaign;
+    FString Error;
+    if (!Campaign.LoadCanonical(Error)) { AddError(Error); return false; }
+    TestEqual(TEXT("registered public/project editions"), Campaign.Editions.Num(), 5);
+    TestEqual(TEXT("canonical public source records"), Campaign.Sources.Num(), 7);
+    TestEqual(TEXT("canonical historical claims"), Campaign.Claims.Num(), 13);
+    TestTrue(TEXT("source, edition, claim and scene closure validates"), Campaign.ValidateEvidence(Error));
+    if (!Error.IsEmpty()) AddError(Error);
+
+    const FShiNodeData* Opening = Campaign.FindNode(Campaign.StartNodeId);
+    TestNotNull(TEXT("opening evidence boundary exists"), Opening);
+    if (Opening)
+    {
+        TestEqual(TEXT("opening exposes four source records"), Opening->SourceRefs.Num(), 4);
+        TestEqual(TEXT("opening exposes nine claim records"), Opening->ClaimRefs.Num(), 9);
+    }
+    const FShiSourceData* Sunzi = Campaign.FindSource(TEXT("sunzi-1-calculation"));
+    TestNotNull(TEXT("Sunzi design lens is registered"), Sunzi);
+    if (Sunzi) TestEqual(TEXT("Sunzi is not episode evidence"), Sunzi->ClaimStatus, FString(TEXT("strategic-text")));
+    const FShiSourceData* Reconstruction = Campaign.FindSource(TEXT("dramatic-daze-keeper"));
+    TestNotNull(TEXT("authored reconstruction is registered"), Reconstruction);
+    if (Reconstruction)
+    {
+        TestEqual(TEXT("reconstruction rights are project-original"), Reconstruction->RightsStatus, FString(TEXT("project-original")));
+        TestTrue(TEXT("reconstruction has no external URL"), Reconstruction->Url.IsEmpty());
+    }
+    const FShiClaimData* Penalty = Campaign.FindClaim(TEXT("daze-delay-penalty-account"));
+    TestNotNull(TEXT("contested penalty claim is registered"), Penalty);
+    if (Penalty)
+    {
+        TestEqual(TEXT("penalty claim remains specialist-gated"), Penalty->ReviewStatus, FString(TEXT("specialist-review-required")));
+        TestEqual(TEXT("penalty claim confidence remains low"), Penalty->Confidence, FString(TEXT("low")));
+    }
+
+    FShiCampaignModel MissingSource = Campaign;
+    MissingSource.Nodes[0].SourceRefs.Remove(TEXT("shiji-48-daze"));
+    TestFalse(TEXT("a scene cannot expose a claim without all of its sources"), MissingSource.ValidateEvidence(Error));
+    FShiCampaignModel PrivatePath = Campaign;
+    PrivatePath.Sources[0].Url = TEXT("file:///private-source.pdf");
+    TestFalse(TEXT("private/local source paths are rejected"), PrivatePath.ValidateEvidence(Error));
+    FShiCampaignModel RightsDrift = Campaign;
+    RightsDrift.Sources[0].RightsStatus = TEXT("project-original");
+    TestFalse(TEXT("source rights must match its public edition"), RightsDrift.ValidateEvidence(Error));
+    FShiCampaignModel OriginDrift = Campaign;
+    OriginDrift.Sources[0].Url = TEXT("https://example.com/not-the-registered-edition");
+    TestFalse(TEXT("public links must remain on the registered edition origin"), OriginDrift.ValidateEvidence(Error));
+    return !HasAnyErrors();
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiAudioContractTest, "SHI.Audio.ProceduralContractV1", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FShiAudioContractTest::RunTest(const FString& Parameters)

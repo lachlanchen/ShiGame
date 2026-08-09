@@ -1,5 +1,6 @@
 #include "ShiCommandScreen.h"
 
+#include "HAL/PlatformProcess.h"
 #include "ShiGameMode.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBorder.h"
@@ -10,6 +11,24 @@
 #include "Widgets/SNullWidget.h"
 #include "Widgets/Text/STextBlock.h"
 
+namespace
+{
+    FString SourceStatusLabel(const FString& Status)
+    {
+        if (Status == TEXT("received-account")) return TEXT("RECEIVED ACCOUNT");
+        if (Status == TEXT("later-compilation")) return TEXT("LATER COMPILATION · NOT AN EYEWITNESS RECORD");
+        if (Status == TEXT("strategic-text")) return TEXT("STRATEGIC TEXT · DESIGN LENS, NOT EPISODE EVIDENCE");
+        return TEXT("PROJECT-AUTHORED DRAMATIC RECONSTRUCTION");
+    }
+
+    FString ClaimReviewLabel(const FString& Status)
+    {
+        if (Status == TEXT("specialist-review-required")) return TEXT("SPECIALIST REVIEW REQUIRED");
+        if (Status == TEXT("authored-reconstruction")) return TEXT("AUTHORED RECONSTRUCTION");
+        return TEXT("EVIDENCE LOCATED · REVIEW OPEN");
+    }
+}
+
 void SShiCommandScreen::Construct(const FArguments& InArgs)
 {
     GameMode = InArgs._GameMode;
@@ -19,6 +38,13 @@ void SShiCommandScreen::Construct(const FArguments& InArgs)
 void SShiCommandScreen::Refresh()
 {
     ChildSlot.AttachWidget(BuildLayout());
+}
+
+void SShiCommandScreen::ScrollEvidence(int32 Direction)
+{
+    if (!EvidenceScroll.IsValid() || Direction == 0) return;
+    const float Target = EvidenceScroll->GetScrollOffset() + Direction * 280.f;
+    EvidenceScroll->SetScrollOffset(FMath::Clamp(Target, 0.f, EvidenceScroll->GetScrollOffsetOfEnd()));
 }
 
 TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
@@ -33,8 +59,17 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     const FShiNodeData* Node = Mode->GetCurrentNode();
     if (!Node) return SNew(STextBlock).Text(FText::FromString(TEXT("Campaign node is unavailable.")));
     const FString Locale = Mode->GetLocale();
+    if (Mode->IsEvidenceOpen()) return BuildEvidenceLayout(*Mode, *Node);
+    EvidenceScroll.Reset();
     const FShiActData* Act = Mode->GetCampaign().FindAct(Node->ActId);
     const FShiSiteData* Site = Mode->GetCampaign().FindSite(Node->SiteId);
+    TArray<FString> ActiveSourceRefs = Node->SourceRefs;
+    TArray<FString> ActiveClaimRefs = Node->ClaimRefs;
+    if (Site)
+    {
+        for (const FString& SourceRef : Site->SourceRefs) ActiveSourceRefs.AddUnique(SourceRef);
+        for (const FString& ClaimRef : Site->ClaimRefs) ActiveClaimRefs.AddUnique(ClaimRef);
+    }
     const int32 ActIndex = Mode->GetCampaign().Acts.IndexOfByPredicate([&](const FShiActData& Item) { return Act && Item.Id == Act->Id; });
     const int32 SceneIndex = Mode->GetCampaign().Nodes.IndexOfByPredicate([&](const FShiNodeData& Item) { return Item.Id == Node->Id; });
 
@@ -55,6 +90,11 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
     Root->AddSlot().AutoHeight().Padding(28, 5)[SNew(STextBlock).Text(FText::FromString(ResourceLine))];
     Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
         SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("TURN %d · %s"), Mode->GetDecisionCount() + 1, *Mode->GetSaveStatus())))
+    ];
+    Root->AddSlot().AutoHeight().Padding(28, 2, 28, 7)[
+        SNew(SButton).OnClicked(this, &SShiCommandScreen::ToggleEvidence).ContentPadding(10)[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("HISTORICAL BASIS · %d SOURCES · %d CLAIMS"), ActiveSourceRefs.Num(), ActiveClaimRefs.Num())))
+        ]
     ];
     Root->AddSlot().AutoHeight().Padding(28, 2, 28, 4)[
         SNew(SHorizontalBox)
@@ -138,7 +178,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
-            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("1–3 SELECT · ←/→ CYCLE · ENTER / GAMEPAD A ISSUE · M / GAMEPAD Y SOUND · SPACE SKIPS CAMERA BEAT")))
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("1–3 SELECT · ←/→ CYCLE · ENTER / GAMEPAD A ISSUE · E / LB EVIDENCE · M / GAMEPAD Y SOUND · SPACE SKIPS CAMERA BEAT")))
         ]
     ];
 
@@ -149,6 +189,111 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ]
         ]
         + SHorizontalBox::Slot().FillWidth(0.52f)[SNullWidget::NullWidget];
+}
+
+TSharedRef<SWidget> SShiCommandScreen::BuildEvidenceLayout(AShiGameMode& Mode, const FShiNodeData& Node)
+{
+    const FShiCampaignModel& Campaign = Mode.GetCampaign();
+    const FString Locale = Mode.GetLocale();
+    const FShiSiteData* Site = Campaign.FindSite(Node.SiteId);
+    TArray<FString> ActiveSourceRefs = Node.SourceRefs;
+    TArray<FString> ActiveClaimRefs = Node.ClaimRefs;
+    if (Site)
+    {
+        for (const FString& SourceRef : Site->SourceRefs) ActiveSourceRefs.AddUnique(SourceRef);
+        for (const FString& ClaimRef : Site->ClaimRefs) ActiveClaimRefs.AddUnique(ClaimRef);
+    }
+    TSharedRef<SVerticalBox> Root = SNew(SVerticalBox);
+
+    Root->AddSlot().AutoHeight().Padding(28, 20, 28, 8)[
+        SNew(SHorizontalBox)
+        + SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("HISTORICAL BASIS · %s"), *Node.Title.Resolve(Locale))))
+        ]
+        + SHorizontalBox::Slot().AutoWidth()[
+            SNew(SButton).OnClicked(this, &SShiCommandScreen::ToggleEvidence).ContentPadding(10)[
+                SNew(STextBlock).Text(FText::FromString(TEXT("RETURN TO COMMAND")))
+            ]
+        ]
+    ];
+    Root->AddSlot().AutoHeight().Padding(28, 4, 28, 10)[
+        SNew(SBorder).Padding(14)[
+            SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT(
+                "PUBLIC EDITION METADATA + PROJECT-AUTHORED NOTES ONLY · NO PRIVATE BOOK FILES OR INVENTED QUOTATIONS ARE PACKAGED · LOCATORS IDENTIFY THE REVIEWABLE PASSAGE")))
+        ]
+    ];
+
+    if (Site)
+    {
+        TSharedRef<SVerticalBox> SiteCard = SNew(SVerticalBox);
+        SiteCard->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("WARTABLE INTELLIGENCE · %s · %s"), *Site->Status.ToUpper(), *Site->Name.Resolve(Locale))))];
+        SiteCard->AddSlot().AutoHeight().Padding(0, 7)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Site->Summary.Resolve(Locale)))];
+        SiteCard->AddSlot().AutoHeight()[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("UNCERTAINTY · %s"), *Site->Uncertainty.Resolve(Locale))))];
+        Root->AddSlot().AutoHeight().Padding(28, 2, 28, 12)[SNew(SBorder).Padding(16)[SiteCard]];
+    }
+
+    Root->AddSlot().AutoHeight().Padding(28, 6, 28, 4)[
+        SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("SOURCE REGISTER · %d ACTIVE"), ActiveSourceRefs.Num())))
+    ];
+    for (const FString& SourceId : ActiveSourceRefs)
+    {
+        const FShiSourceData* Source = Campaign.FindSource(SourceId);
+        if (!Source) continue;
+        FString Metadata = Source->Section;
+        if (!Source->Author.IsEmpty()) Metadata += FString::Printf(TEXT("\n%s"), *Source->Author);
+        if (!Source->Date.IsEmpty()) Metadata += FString::Printf(TEXT(" · %s"), *Source->Date);
+        TSharedRef<SVerticalBox> SourceCard = SNew(SVerticalBox);
+        SourceCard->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(SourceStatusLabel(Source->ClaimStatus)))];
+        SourceCard->AddSlot().AutoHeight().Padding(0, 6, 0, 2)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Source->Work))];
+        SourceCard->AddSlot().AutoHeight()[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Metadata))];
+        SourceCard->AddSlot().AutoHeight().Padding(0, 8, 0, 2)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("EXACT LOCATOR · %s"), *Source->Locator)))];
+        SourceCard->AddSlot().AutoHeight().Padding(0, 4)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Source->Note.Resolve(Locale)))];
+        if (!Source->Url.IsEmpty())
+        {
+            SourceCard->AddSlot().AutoHeight().Padding(0, 7, 0, 0)[
+                SNew(SButton).OnClicked(this, &SShiCommandScreen::OpenPublicEdition, Source->Url).ContentPadding(8)[
+                    SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("OPEN PUBLIC EDITION · %s"), *Source->EditionId)))
+                ]
+            ];
+        }
+        else
+        {
+            SourceCard->AddSlot().AutoHeight().Padding(0, 7, 0, 0)[
+                SNew(STextBlock).Text(FText::FromString(TEXT("PROJECT-ORIGINAL REGISTER · NO EXTERNAL SOURCE")))
+            ];
+        }
+        Root->AddSlot().AutoHeight().Padding(28, 4)[SNew(SBorder).Padding(14)[SourceCard]];
+    }
+
+    Root->AddSlot().AutoHeight().Padding(28, 18, 28, 4)[
+        SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("CLAIM REGISTER · %d ACTIVE"), ActiveClaimRefs.Num())))
+    ];
+    for (const FString& ClaimId : ActiveClaimRefs)
+    {
+        const FShiClaimData* Claim = Campaign.FindClaim(ClaimId);
+        if (!Claim) continue;
+        TSharedRef<SVerticalBox> ClaimCard = SNew(SVerticalBox);
+        ClaimCard->AddSlot().AutoHeight()[
+            SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("%s · CONFIDENCE %s · %s"),
+                *ClaimReviewLabel(Claim->ReviewStatus), *Claim->Confidence.ToUpper(), *Claim->Kind.ToUpper())))
+        ];
+        ClaimCard->AddSlot().AutoHeight().Padding(0, 7, 0, 4)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(Claim->Statement.Resolve(Locale)))];
+        ClaimCard->AddSlot().AutoHeight().Padding(0, 2)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("UNCERTAINTY · %s"), *Claim->Uncertainty.Resolve(Locale))))];
+        ClaimCard->AddSlot().AutoHeight().Padding(0, 2)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("GAME USE · %s"), *Claim->GameUse.Resolve(Locale))))];
+        ClaimCard->AddSlot().AutoHeight().Padding(0, 5, 0, 0)[SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(FString::Printf(TEXT("SOURCE IDS · %s"), *FString::Join(Claim->SourceRefs, TEXT(" · ")))))];
+        Root->AddSlot().AutoHeight().Padding(28, 4)[SNew(SBorder).Padding(14)[ClaimCard]];
+    }
+    Root->AddSlot().AutoHeight().Padding(28, 14, 28, 22)[
+        SNew(STextBlock).AutoWrapText(true).Text(FText::FromString(TEXT("↑/↓ OR DPAD SCROLL · E / LEFT SHOULDER TO RETURN · ESC / GAMEPAD B ALSO CLOSES · OPENING THIS REGISTER NEVER CHANGES THE CHRONICLE")))
+    ];
+
+    return SNew(SHorizontalBox)
+        + SHorizontalBox::Slot().FillWidth(0.64f)[
+            SNew(SBorder).Padding(4).BorderBackgroundColor(FLinearColor(0.025f, 0.03f, 0.025f, 0.95f))[
+                SAssignNew(EvidenceScroll, SScrollBox) + SScrollBox::Slot()[Root]
+            ]
+        ]
+        + SHorizontalBox::Slot().FillWidth(0.36f)[SNullWidget::NullWidget];
 }
 
 FReply SShiCommandScreen::Select(int32 Index)
@@ -166,6 +311,18 @@ FReply SShiCommandScreen::Issue()
 FReply SShiCommandScreen::NewChronicle()
 {
     if (AShiGameMode* Mode = GameMode.Get()) Mode->RequestNewChronicle();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::ToggleEvidence()
+{
+    if (AShiGameMode* Mode = GameMode.Get()) Mode->ToggleEvidence();
+    return FReply::Handled();
+}
+
+FReply SShiCommandScreen::OpenPublicEdition(FString Url)
+{
+    if (Url.StartsWith(TEXT("https://"), ESearchCase::CaseSensitive)) FPlatformProcess::LaunchURL(*Url, nullptr, nullptr);
     return FReply::Handled();
 }
 

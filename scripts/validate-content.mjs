@@ -172,7 +172,11 @@ for (const source of campaign.sources ?? []) {
   assert(["public-link-metadata-only", "project-original"].includes(source.rightsStatus), `source ${source.id} has an invalid rightsStatus`);
   const edition = editionRegister.editions.find((candidate) => candidate.id === source.editionId);
   assert(source.rightsStatus === edition?.rightsStatus, `source ${source.id} rightsStatus does not match edition ${source.editionId}`);
-  if (source.rightsStatus === "public-link-metadata-only") assert(/^https:\/\//.test(source.url ?? ""), `public source ${source.id} requires an HTTPS URL`);
+  if (source.rightsStatus === "public-link-metadata-only") {
+    assert(/^https:\/\//.test(source.url ?? ""), `public source ${source.id} requires an HTTPS URL`);
+    if (/^https:\/\//.test(source.url ?? "") && /^https:\/\//.test(edition?.sourceUrl ?? ""))
+      assert(new URL(source.url).origin === new URL(edition.sourceUrl).origin, `public source ${source.id} URL must remain on registered edition origin`);
+  }
   if (source.rightsStatus === "project-original") assert(!source.url, `project source ${source.id} must not claim a public URL`);
 }
 for (const claim of campaign.claims ?? []) {
