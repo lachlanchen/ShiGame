@@ -9,6 +9,7 @@
 - `npm run sync:content` now stages byte-identical campaign/audio truth to Web, Unreal and Unity. The repository build includes a static Unreal project contract and rejects missing loader, resolver, UI or staged payload boundaries.
 - Audited the local historical corpus without copying private books. The inventory records available Shiji, Zizhi Tongjian, Sunzi, Sun Bin, Sima Fa, Wei Liaozi, Wuzi and Guiguzi chunks/editions, chronology policy and a quote-admission gate. The complete private memo remains in the game repository's ignored private reference area.
 - Official Unreal acquisition remains account-gated: the precompiled Linux build requires Epic sign-in and the active GitHub account cannot read Epic's private engine source. Static source validity is green; native compile, automation, PIE play, cinematic review and package evidence remain red and are not claimed.
+- Exact implementation `a11e173a58d9290f1368f1596e730a13ccb5e820` passes a detached fresh-clone install/build and the complete localhost visible route: 248 checks, thirty-two axe states, twenty-four target states, eleven locale/font states and three audio states. The cache-disabled traversal records 249 requests and 166 same-origin font slices with zero console errors, cross-origin requests/resources or failed requests.
 
 Next gate: publish and replay the exact schema-v7 Web evidence boundary, acquire the official Unreal 5.8 installed build through Epic sign-in, then compile and visibly play the first native Daze route before expanding content.
 
