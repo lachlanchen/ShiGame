@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Web broken-crossing command-board checkpoint
+
+- Turned the shared `broken-crossing` candidate into a complete three-pulse Web command exercise. The board binds the selected campaign plan and current seeded field condition, exposes only legal orders, applies the pure shared resolver, separates each player effect from the field's authored answer, updates six local command states and resolves to one of the four authored outcomes.
+- Preserved the authority boundary mechanically and visibly. Opening, playing and closing the exercise leaves the authoritative campaign node, resources, two-decision history and serialized save byte-identical; the outcome presents an exact campaign-effect preview only. The board repeats that it becomes authoritative only after native Unreal replay parity.
+- Added all-eleven-locale interface terms, Arabic RTL with LTR fallback for untranslated authored encounter prose, desktop and 390×844 compositions, inert/modal focus containment and exact invoker return, 24 CSS pixel target floors, forced-colors/reduced-motion contracts, screen-reader live responses and lazy CSS/JavaScript delivery.
+- Completed pointer, keyboard and standard-gamepad operation. X/Square opens or closes the board, D-pad/stick selects among the current pulse's legal orders, A/Cross issues an order, and B/Circle returns to council. The exact visible best route issues three orders, receives three separate answers, reaches **Orderly crossing**, restores focus and proves no campaign mutation.
+- Exact implementation `d872be2606918521cb91d5c0ceb9eb4ef6849a94` passes the complete production build: 57 TypeScript/UI tests, 76 engagement routes, 689 successful and 87 failure campaign routes, 46 cross-engine campaign replays, static Unreal/installer/history/audio/accessibility/font/privacy gates and budgets of 99.82 KiB initial JavaScript, 11.94 KiB initial CSS and 26.88 MiB deployed output.
+- The SHA-pinned dedicated noVNC/Chrome route passes 264 checks, thirty-five axe states, twenty-seven visible target states, eleven locale/font states and three audio-UI states. Its cache-disabled traversal records 260 same-origin requests including 170 self-hosted font slices, with zero console errors, remote requests/resources or failed requests. Reviewed frames are `web-42-command-board.png`, `web-43-mobile-command-board.png`, `web-44-mobile-command-orders.png` and `web-45-command-outcome.png`.
+- The official Unreal 5.8.1 archive continues under the outside-Git private supervisor. This checkpoint does not claim native compilation, PIE play, native command parity, final character art, film-quality presentation or a packaged build.
+
+Next gate: install and compile official Unreal 5.8.1, execute native automation on the unchanged C++ baseline, visibly prove council → order → consequence → next speaker, then implement the same broken-crossing replay in the 3D command space before migrating campaign authority.
+
 ## 2026-08-09 · Shared broken-crossing command-contract checkpoint
 
 - Authored the first strict, versioned martial-command payload for Chapter I's existing `broken-crossing` position. Three campaign plans and both seeded field conditions now open three command pulses with nine distinct orders, separate disclosed field answers, six encounter-local metrics and four best-to-fallback outcomes.
@@ -9,7 +21,7 @@
 - Exact source implementation `c4c7c1150ec287ba4f3335de2c8e7d966ba79bf6` passes the complete validation and production build: 53 TypeScript/UI tests, 76 engagement routes, 689 successful and 87 failure campaign condition routes, 46 cross-engine replays, static Unreal/installer/history/audio/accessibility/font/privacy gates and unchanged Web budgets of 99.47 KiB initial JavaScript, 11.94 KiB initial CSS and 26.84 MiB deployed output.
 - The official Unreal 5.8.1 precompiled archive is being acquired under an outside-Git private supervisor, which will validate and atomically install it, generate project files, compile the C++ target and run native automation. Active download is not represented as an installed or playable native build.
 
-Next gate: complete the official Unreal install and native baseline compile/automation first; then implement the same broken-crossing command record in the Web board and Unreal command space, prove cross-client replay equality and only then migrate campaign authority.
+Next gate at this checkpoint was to complete official Unreal installation and native baseline compile/automation, then implement the same record in Web and Unreal. The Web half is now complete at the checkpoint above; native Unreal parity and campaign migration remain open.
 
 ## 2026-08-09 · Unreal canonical council-staging checkpoint
 
