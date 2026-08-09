@@ -16,13 +16,14 @@ SHI targets WCAG 2.2 AA for the web client and input/feedback parity in both cli
 
 ## Visual and motion contract
 
-- Curated text/surface pairs must reach a 4.5:1 contrast ratio on the darkest conservative surface used by that component. `scripts/validate-accessibility.mjs` rejects regressions in the current 57-pair contract, including selected-order reading/confirmation, carried commitments, all three answer states, method/read memory, forecasts, hit states and ledger.
+- Curated text/surface pairs must reach a 4.5:1 contrast ratio on the darkest conservative surface used by that component. `scripts/validate-accessibility.mjs` rejects regressions in the current 65-pair contract, including selected-order reading/confirmation, carried commitments, all three answer states, method/read memory, forecasts, hit states and ledger.
 - Microcopy audited by the same script cannot fall below `0.6rem`; critical body and decision copy is larger.
 - Browser text resized to 200% must retain every action, narrative block and scroll path without horizontal overflow. Frames around the title/game seals scale with their text instead of clipping it.
 - A 320 CSS pixel layout viewport provides the automated WCAG reflow equivalent of a 1280 CSS pixel viewport at 400% zoom. Title, header, wartable, narrative, decisions and controls must fit horizontally and remain vertically reachable.
 - The dedicated Chrome desktop must also pass browser-level `Ctrl++` zoom from a measured DPR 1 baseline to DPR 4. The 400% title/gameplay layouts must have zero horizontal overflow, preserve compact selection, complete selected-order reading and explicit-confirmation reachability, pass semantic/target audits, produce visible overview/action evidence and reset to DPR 1 afterward. This agent-observed gate does not replace human zoom/magnifier review on release candidates.
 - Forced-colors mode removes non-informational art/texture, uses operating-system colors, preserves focus/selection outlines, and distinguishes danger, reported/reference/active sites and disabled actions by border shape as well as color.
 - The operating-system `prefers-reduced-motion` setting becomes the initial game preference and suppresses CSS animation, transitions and smooth controller scrolling. The player can also toggle the preference on the title screen.
+- Unreal source exposes a separately persisted **Reduced motion · cuts only** mode through Slate, `V` and Gamepad Menu. It converts site inspection, signal inspection and consequence travel to immediate cuts while preserving every consequence beat's reading time and semantic lens; it neither mutates the chronicle nor wakes an armed audio preference. Native OS-preference integration, visual comfort and persistence remain open until the official editor can execute the path.
 - Runtime sound is opt-in, begins only after a player gesture and never carries exclusive information. The implemented Chapter I mixer persists independent ambience/effects values; speech and music controls remain gated until those categories exist. Deterministic and actual-browser engineering captures enforce pre-consent silence, conservative peak/loudness, DC, loop-boundary and channel-parity limits. Human listening, mono perception, physical-device, native Unity and sensory-load review remain open.
 - Layered gradients, texture and key art prevent axe from computing some live color-contrast results. Those results stay visible as `incomplete`; the conservative static contrast contract and full-resolution screenshot review cover this boundary. It must not be silently reported as an axe pass.
 
@@ -34,7 +35,7 @@ The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, R
 
 | Gate | Current pre-alpha scope |
 | --- | --- |
-| `npm run validate:accessibility` | 57 contrast pairs, 70 microtype floors, 15 authored target dimensions, 28 forced-colors selectors and required system colors |
+| `npm run validate:accessibility` | 65 contrast pairs, 79 microtype floors, 15 authored target dimensions, 31 forced-colors selectors and required system colors |
 | jsdom + axe-core 4.12.1 | Title, field-guide modal, gameplay and wartable semantic scans |
 | visible Chrome + axe-core | Thirty-two interaction/locale/audio/deliberate-order/commitment/pursuit/method-read/desktop/mobile/reflow/zoom/forced-colors states, WCAG 2.0/2.1/2.2 A/AA tags |
 | visible target geometry | Twenty-four interaction, audio, deliberate-order, commitment, pursuit, method-read, resize, reflow, browser-zoom and forced-colors states at the 24 CSS pixel floor |
@@ -43,6 +44,7 @@ The shell supports English, Arabic, German, Spanish, French, Japanese, Korean, R
 | visible reflow | Title and active gameplay at 200% text; 320×800 400%-equivalent title/gameplay; actual Chrome 400% title/gameplay/selected-order/action frames; 390×844 gameplay/order reading/confirmation/wartable/guide |
 | visible forced colors | System palette, decorative-layer removal, structured meters, danger outline, selection outline and shape-distinct wartable markers |
 | visible motion | OS reduced-motion startup and computed animation/transition suppression |
+| Unreal motion source | deterministic first/far cuts, eased travel only within 100 Unreal units/6°, fixed 40°–58° lenses, persisted cuts-only control and command isolation; native execution remains open |
 | visible audio | First-launch off state, gesture-gated runtime, independent bus extremes, persistence, lazy chunks, semantic preview, focus return, 390×844 mixer fit, exact pre-consent digital silence and 16-second actual-output peak/loudness/DC/channel capture |
 | input isolation | Select-without-mutation, explicit confirmation, focus wrap/return, inert modal background and duplicate-choice rejection |
 
@@ -54,6 +56,7 @@ The browser report records the axe version, every audited state, incomplete rule
 - Human-observed 400% browser zoom, magnifier, Windows high-contrast/forced-colors and keyboard-only completion on release candidates; the agent-observed Chrome zoom, 320 CSS pixel and emulated forced-colors contracts do not replace these sessions.
 - Physical Xbox-layout, PlayStation-layout and representative adaptive/switch input, including reconnect and focus loss.
 - Photosensitivity review of lightning/rain/transition content and auditory sensory-load review of the procedural rain bed.
+- Native Unreal review of restrained and cuts-only site/signal/consequence motion, lens changes, persisted preference and operating-system reduced-motion startup behavior.
 - Human listening, mono perception, loudness appropriateness, sensory load and physical-device-matrix review for the objectively measured ambience/effects system.
 - Caption, subtitle, dialogue-history and independent speech/music volume once voiced or music content exists.
 - Licensed Unity import and runtime inspection, including semantic/accessibility plugin selection; offline C# compilation is not native accessibility evidence.

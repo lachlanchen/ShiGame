@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal bounded-motion and semantic-lens checkpoint
+
+- Replaced uniform short camera sweeps with deterministic shot authorship. The first consequence view always cuts from the player's unconstrained prior inspection; later views ease only when their exact camera targets are within 100 Unreal units and 6°, otherwise they cut while retaining the same reading time.
+- Assigned one restrained semantic lens to every consequence layer: order 44°, oath 48°, pressure 40°, Qin response 52°, method read 43°, field 54° and final position 58°. Runtime interpolates position, quaternion rotation and FOV only for accepted eased neighbors and always restores the authoritative current site at the 50° inspection lens.
+- Added a separately persisted **Reduced motion · cuts only** mode for site inspection, signal inspection and consequence presentation through Slate, `V` and standard-gamepad Menu. It preserves all beat text/timing, completes an in-flight ordinary transition immediately, is isolated during evidence/consequence modes and does not wake an armed sound preference.
+- Strengthened `SHI.Cinematic.ResolutionGrammarV1` with first-cut, bounded-ease, narrow/wide semantic-lens and hostile motion/lens-drift checks. Every turn of all 46 golden routes still constructs and validates its complete consequence plan, so shot authorship remains downstream of exact gameplay/world truth.
+- Exact implementation `0459db937e5117af388608f9d81d47e4b2e7afab` passes `npm ci` and the complete build from a detached clean checkout: 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 golden cross-engine routes, canonical history/audio/content/conformance, accessibility/font/privacy/type gates, Unreal motion preflight and Web budgets.
+- A fresh visible capture of the isolated `:121` Unreal desktop showed Epic's **Epic Account Required** page full-canvas at 1600×1000. noVNC is healthy and localhost-bound; no engine binary or completed download exists. This confirms the remaining gate is account-owned access rather than transport, storage or an inferred process failure.
+- This is source-level and reproducible clean-build evidence, not native Unreal proof. C++ compilation, automation execution, visible restrained/cuts-only PIE capture, lens/comfort/persistence review, performance capture and Linux packaging remain red.
+
+Next gate: after Epic sign-in, install the official build, compile and execute every suite, then capture natural/skip consequence playback in both restrained and persisted cuts-only modes while checking exact targets, lens changes, input/audio isolation, frame timing and authoritative return.
+
 ## 2026-08-09 · Unreal deterministic consequence-cinema checkpoint
 
 - Replaced the generic post-order camera arc with a pure, atomic consequence grammar over the command space. Every accepted resolution yields order → optional oath → pressure → pursuit → method read → field → position in stable order, with a 3.52–4.08-second authored duration and a five-second hard ceiling.
