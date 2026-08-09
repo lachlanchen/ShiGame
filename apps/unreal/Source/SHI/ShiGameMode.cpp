@@ -21,10 +21,13 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "HAL/FileManager.h"
+#include "Misc/CommandLine.h"
 #include "Misc/FileHelper.h"
 #include "Misc/ConfigCacheIni.h"
+#include "Misc/Parse.h"
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
+#include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilFigure.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
@@ -45,6 +48,11 @@ AShiGameMode::AShiGameMode()
 void AShiGameMode::BeginPlay()
 {
     Super::BeginPlay();
+#if !UE_BUILD_SHIPPING
+    bCommandWeightReviewBack = FParse::Param(FCommandLine::Get(), TEXT("ShiCommandWeightReviewBack"));
+    bCommandWeightReview = bCommandWeightReviewBack
+        || FParse::Param(FCommandLine::Get(), TEXT("ShiCommandWeightReviewFront"));
+#endif
     LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
     {
@@ -85,7 +93,7 @@ void AShiGameMode::BeginPlay()
         CreateCommandSpace();
     }
 
-    if (GEngine && GEngine->GameViewport)
+    if (!bCommandWeightReview && GEngine && GEngine->GameViewport)
     {
         SAssignNew(CommandScreen, SShiCommandScreen).GameMode(this);
         GEngine->GameViewport->AddViewportWidgetContent(CommandScreen.ToSharedRef(), 100);
@@ -919,6 +927,11 @@ void AShiGameMode::ApplyEngagementCommandSpace(bool bVisible)
     SetStandardVisibility(SiteMarkers);
     SetStandardVisibility(CommandSignalMarkers);
     SetStandardVisibility(CouncilFigures);
+    if (AStaticMeshActor* Prop = CommandWeightProp.Get())
+    {
+        Prop->SetActorHiddenInGame(bVisible);
+        Prop->SetActorEnableCollision(false);
+    }
 
     for (const TPair<FString, TWeakObjectPtr<AStaticMeshActor>>& Pair : EngagementMetricMarkers)
     {
@@ -1270,6 +1283,45 @@ void AShiGameMode::CreateCommandSpace()
         CouncilFigures.Add(Participant.SlotId, Figure);
     }
     CouncilStage = MoveTemp(OpeningCouncilStage);
+    const FShiCommandWeightPresentationData CommandWeightPresentation = FShiCommandWeightPresentationModel::Build();
+    FString CommandWeightError;
+    if (!FShiCommandWeightPresentationModel::Validate(CommandWeightPresentation, Campaign.Sites, CommandSignals,
+        CouncilStage, CommandWeightError))
+    {
+        LoadError = FString::Printf(TEXT("Command-weight presentation rejected: %s"), *CommandWeightError);
+        return;
+    }
+    UStaticMesh* CommandWeightMesh = LoadObject<UStaticMesh>(nullptr, *CommandWeightPresentation.MeshPath);
+    if (!CommandWeightMesh)
+    {
+        LoadError = TEXT("Reviewed command-weight mesh is unavailable.");
+        return;
+    }
+    const FBox CommandWeightBounds = CommandWeightMesh->GetBoundingBox();
+    if (!CommandWeightBounds.Min.Equals(CommandWeightPresentation.BoundsMinimum, .05f)
+        || !CommandWeightBounds.Max.Equals(CommandWeightPresentation.BoundsMaximum, .05f))
+    {
+        LoadError = TEXT("Reviewed command-weight runtime bounds drifted from the admitted centimeter-scale asset.");
+        return;
+    }
+    AStaticMeshActor* CommandWeight = World->SpawnActor<AStaticMeshActor>(
+        CommandWeightPresentation.Transform.GetLocation(), CommandWeightPresentation.Transform.Rotator());
+    if (!CommandWeight)
+    {
+        LoadError = TEXT("Reviewed command-weight presentation could not spawn.");
+        return;
+    }
+    UStaticMeshComponent* CommandWeightComponent = CommandWeight->GetStaticMeshComponent();
+    CommandWeightComponent->SetMobility(EComponentMobility::Movable);
+    CommandWeightComponent->SetStaticMesh(CommandWeightMesh);
+    CommandWeightComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    CommandWeightComponent->SetGenerateOverlapEvents(false);
+    CommandWeightComponent->SetCanEverAffectNavigation(false);
+    CommandWeight->SetActorScale3D(CommandWeightPresentation.Transform.GetScale3D());
+    CommandWeight->SetActorEnableCollision(false);
+    CommandWeight->Tags.Add(FName(TEXT("ShiProp:CommandWeight")));
+    CommandWeight->Tags.Add(FName(TEXT("ShiPresentation:NonAuthoritative")));
+    CommandWeightProp = CommandWeight;
     SiteMarkers.Empty();
     for (const FShiSiteData& Site : Campaign.Sites)
     {
@@ -1382,5 +1434,11 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Live council staging rejected: %s"), *CouncilError);
         return;
     }
-    if (GetCurrentNode()) FocusCouncil(true, false);
+    if (bCommandWeightReview)
+    {
+        SetCameraImmediate(FShiCommandWeightPresentationModel::ReviewCameraTransform(
+            CommandWeightPresentation, bCommandWeightReviewBack),
+            FShiCommandWeightPresentationModel::ReviewFieldOfViewDegrees());
+    }
+    else if (GetCurrentNode()) FocusCouncil(true, false);
 }

@@ -62,6 +62,12 @@ Animation must favor asymmetry and interrupted intention over looping gestures. 
 - **Performance:** scans before committing; breath is shallower than the other speakers; eye movement settles when he turns fear into a routing proposal.
 - **Reject:** sly spy stereotype, courtly messenger uniform, comedy cowardice, secret-assassin reveal or moral exposition delivered as certainty.
 
+## Implemented council-lens checkpoint
+
+The first packaged physical-decision-object pass exposed a real composition defect: the original 44° dialogue camera aimed at the proxy head alone, leaving table evidence on the lower frame boundary. The accepted camera keeps the same authored lens and speaker position but lowers focus from `Z = 118 cm` to `Z = 95 cm`. The full speaker proxy, decision plane and palm-sized command weight now coexist without occlusion. This is a camera/blocking admission, not character approval; the BasicShape table and proxy bodies remain intentionally visible red gates.
+
+The command weight is noninteractive and does not become a character prop loop. It establishes the minimum readable hand/object plane that production figures must reach. Before close framing is allowed, each replacement figure must prove wrist/finger deformation, stable contact, eye return and subtitle-safe negative space against this exact 44° composition. Front/back 28° review cameras are development-only asset inspection and cannot substitute for the council performance shot.
+
 ## Model and material contract
 
 The current `AShiCouncilFigure` proxy already establishes two persistent slots, separate body/head/mantle components, click collision, stencil identity, transform and eyeline. Production figures must replace assets without changing canonical participant data or order resolution.

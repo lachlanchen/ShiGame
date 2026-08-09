@@ -1,0 +1,194 @@
+{
+  "assetId": "shi-command-weight-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Authored Unreal 5.8.1 production-blockout materials, deterministic council placement, development-only front/back inspection, isolated Linux package, visible story progression and bounded remote performance evidence. This does not approve the surrounding proxy environment, characters, final surface treatment, historical authenticity, shipping art or human cinematic sign-off.",
+  "decision": "approved-engine-production-blockout-presented-authored-materials-not-final-art",
+  "engine": {
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "meshPath": "/Game/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.SM_SHI_CommandWeight_01",
+    "materialPaths": [
+      "/Game/SHI/Art/Props/CommandWeight/M_SHI_RiverStone.M_SHI_RiverStone",
+      "/Game/SHI/Art/Props/CommandWeight/M_SHI_WorkedBronze.M_SHI_WorkedBronze"
+    ]
+  },
+  "presentation": {
+    "transformCentimeters": {
+      "location": [90.0, 172.0, 13.885411],
+      "rotationDegrees": [0.0, 20.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "boundsCentimeters": {
+      "minimum": [-3.637946, -2.861216, 0.114589],
+      "maximum": [4.84, 2.690566, 3.54]
+    },
+    "tableSurfaceZCentimeters": 14.0,
+    "minimumTableEdgeMarginCentimeters": 5.0,
+    "minimumInspectableMarkerClearanceCentimeters": 62.0,
+    "councilFieldOfViewDegrees": 44.0,
+    "councilFocusHeightCentimeters": 95.0,
+    "interactive": false,
+    "collision": false,
+    "visibleDuringNonAuthoritativeEngagement": false,
+    "actorTags": ["ShiProp:CommandWeight", "ShiPresentation:NonAuthoritative"],
+    "developmentReview": {
+      "frontFlag": "-ShiCommandWeightReviewFront",
+      "backFlag": "-ShiCommandWeightReviewBack",
+      "fieldOfViewDegrees": 28.0,
+      "excludedFromShipping": true
+    }
+  },
+  "materials": {
+    "authoringTool": "scripts/author-command-weight-materials-unreal.py",
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "passed": true,
+      "trackedUassetHashesUnchanged": true,
+      "compileErrors": 0
+    },
+    "stone": {
+      "nodeCount": 10,
+      "surface": "opaque one-sided surface material",
+      "baseColor": "charcoal-brown two-color broad variation",
+      "roughnessRange": [0.83, 0.96],
+      "metallic": 0.0,
+      "specular": 0.24,
+      "ambientOcclusion": 0.92,
+      "noise": "one bounded two-octave Fast Gradient 3D node",
+      "normalInput": false,
+      "textures": 0
+    },
+    "bronze": {
+      "nodeCount": 14,
+      "surface": "opaque one-sided surface material",
+      "patinaAmount": 0.32,
+      "roughnessRange": [0.55, 0.82],
+      "metallicRange": [0.48, 0.88],
+      "specular": 0.38,
+      "ambientOcclusion": 0.94,
+      "noise": "one bounded two-octave Fast Gradient 3D node",
+      "normalInput": false,
+      "textures": 0
+    }
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 12,
+    "passed": 12,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.CommandWeightPresentationV1",
+    "negativeCases": [
+      "crowds a live command signal",
+      "floats above the command surface",
+      "drifts from the authored 44-degree lens"
+    ]
+  },
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-CommandWeight-Council-Review-v2/Linux",
+    "packageCount": 499,
+    "cookedCommandWeightEntries": 4,
+    "artifacts": [
+      {
+        "role": "Linux development executable",
+        "bytes": 298475696,
+        "sha256": "4fbb5257f4c4442cab843880beb6bfbdcef4937f2ad7c55c7fd31eb7d35c31a8"
+      },
+      {
+        "role": "Pak metadata and non-IoStore payload",
+        "bytes": 10423272,
+        "sha256": "0627487b84f47f778d04e0eae002f7e711dc26af08e88dd255caa402a78d21de"
+      },
+      {
+        "role": "IoStore data container",
+        "bytes": 164800976,
+        "sha256": "e7fa8d4aa9512e5c9c00ba710ca57cc5642f4a5f2f2eb46b3a8f165a01765bb5"
+      },
+      {
+        "role": "IoStore table of contents",
+        "bytes": 145388,
+        "sha256": "00baeba60ad7cc13d21888606ec17c3ebade79182d4a579b6bebc849344c6974"
+      }
+    ]
+  },
+  "smokeTest": {
+    "exitCode": 0,
+    "mountedIoStorePackages": 499,
+    "gameMode": "ShiGameMode",
+    "map": "/Engine/Maps/Entry",
+    "cleanRequestedExit": true
+  },
+  "visiblePlaytest": {
+    "desktop": "isolated Xvfb/noVNC; older accepted player left untouched",
+    "input": "Return issued the selected opening order",
+    "start": "Act 1/3, Scene 1/6, turn 1",
+    "observed": "Act 2/3, Scene 2/6, turn 2, one decision, transaction verified",
+    "storyAdvanced": true,
+    "steadyRemoteFrame": {
+      "frameMilliseconds": 48.03,
+      "gameMilliseconds": 2.10,
+      "drawMilliseconds": 47.48,
+      "rhiThreadMilliseconds": 1.34,
+      "gpuMilliseconds": 4.17,
+      "memoryGigabytes": 1.56,
+      "vramGigabytes": 1.93,
+      "renderResolutionPercent": 83.4,
+      "renderResolution": [1336, 751],
+      "drawCalls": 59,
+      "primitivesThousands": 19.0,
+      "interpretation": "The Xvfb/noVNC presentation path is draw/frame limited; game-thread and GPU values are retained separately and do not replace the accepted physical-display baseline."
+    }
+  },
+  "screenshots": [
+    {
+      "file": "docs/production/evidence/unreal-command-weight-council-v2.png",
+      "role": "canonical 44-degree council composition and contact",
+      "dimensions": [1600, 1000],
+      "bytes": 949537,
+      "sha256": "bdd3775f0507d80037953e37b3c629c79ab928f93497958aa3bf00bd987b1c17"
+    },
+    {
+      "file": "docs/production/evidence/unreal-command-weight-front-v2.jpg",
+      "role": "development-only front material, silhouette and contact inspection",
+      "dimensions": [1600, 1000],
+      "bytes": 634711,
+      "sha256": "d88e2e3333deec281e9ba21a414308c79f54c5ca4d85ad9bbf4d2d07fcee3004"
+    },
+    {
+      "file": "docs/production/evidence/unreal-command-weight-back-v2.jpg",
+      "role": "development-only back attachment and material inspection",
+      "dimensions": [1600, 1000],
+      "bytes": 495887,
+      "sha256": "0ffc150590fcaa37816149e402944f41aa1ff3388e33376d53b547e490055f0d"
+    },
+    {
+      "file": "docs/production/evidence/unreal-command-weight-gameplay-performance-v2.jpg",
+      "role": "visible Act-II progression, verified transaction and remote performance separation",
+      "dimensions": [1600, 1000],
+      "bytes": 210680,
+      "sha256": "5460274e63ab51f906d2a0ce79f3da4d6d1fa8fa188b1470c2b82dadbba221b7"
+    }
+  ],
+  "review": {
+    "rejectedFirstPass": [
+      "minus-18-degree yaw made the silhouette read end-on and pouch-like",
+      "bright smooth bronze read as polished fantasy gold"
+    ],
+    "accepted": [
+      "20-degree yaw restores the broad weighted-stone silhouette",
+      "dark rough bronze and restrained patina preserve worked-metal response",
+      "cord eye and underside attachment remain legible in opposite review views",
+      "contact shadow is visible and the prop does not occlude the speaker or live command signals",
+      "the lowered council focus holds the physical decision plane and full speaker proxy together",
+      "the normal packaged player still accepts input, commits atomically and advances the authored story"
+    ],
+    "remainingRedGates": [
+      "replace the noisy white BasicShape command surface with a historically and materially reviewed final surface",
+      "replace engineering proxy figures with reviewed production characters and deformation-tested interaction hands",
+      "replace proxy terrain, formations and lighting with a coherent final environment pass",
+      "repeat physical-display frame pacing, memory, camera and controller evidence in the final asset scene",
+      "complete historical-material, accessibility, human cinematic and art-direction sign-off before shipping or marketing use"
+    ]
+  }
+}

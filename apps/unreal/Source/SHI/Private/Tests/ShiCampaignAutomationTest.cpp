@@ -11,6 +11,7 @@
 #include "ShiCampaignSession.h"
 #include "ShiCinematicBeatModel.h"
 #include "ShiCommandSignalModel.h"
+#include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiWartableModel.h"
@@ -161,9 +162,10 @@ bool FShiCouncilStagingTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("canonical council stage validates"), FShiCouncilStagingModel::Validate(Campaign, *Opening, TEXT("en"), Stage, Error));
 
     const FTransform Camera = Stage.CameraTransform;
-    const FVector SpeakerHead = Speaker ? Speaker->Transform.GetLocation() + FVector(0.f, 0.f, 118.f) : FVector::ZeroVector;
-    const FVector SpeakerDirection = (SpeakerHead - Camera.GetLocation()).GetSafeNormal();
-    TestTrue(TEXT("dialogue camera looks at the speaking figure"), FVector::DotProduct(Camera.GetRotation().GetForwardVector(), SpeakerDirection) > .9999f);
+    const FVector SpeakerFocus = Speaker ? Speaker->Transform.GetLocation() + FVector(0.f, 0.f, 95.f) : FVector::ZeroVector;
+    const FVector SpeakerDirection = (SpeakerFocus - Camera.GetLocation()).GetSafeNormal();
+    TestTrue(TEXT("dialogue camera looks at the speaking figure and physical decision plane"),
+        FVector::DotProduct(Camera.GetRotation().GetForwardVector(), SpeakerDirection) > .9999f);
 
     FShiCampaignSession Session;
     Session.Initialize(Campaign, 0x5EED2026u);
@@ -194,6 +196,75 @@ bool FShiCouncilStagingTest::RunTest(const FString& Parameters)
     TestFalse(TEXT("missing canonical speaker cannot replace an accepted stage"),
         FShiCouncilStagingModel::Build(Campaign, MissingSpeaker, TEXT("en"), Stage, Error));
     TestEqual(TEXT("failed council rebuild is atomic"), Stage.NodeId, StableStageNode);
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCommandWeightPresentationTest, "SHI.Cinematic.CommandWeightPresentationV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCommandWeightPresentationTest::RunTest(const FString& Parameters)
+{
+    FShiCampaignModel Campaign;
+    FString Error;
+    if (!Campaign.LoadCanonical(Error)) { AddError(Error); return false; }
+    FShiCampaignSession Session;
+    Session.Initialize(Campaign, 0x5EED2026u);
+    const FShiNodeData* Node = Session.GetCurrentNode();
+    if (!Node || Node->Choices.IsEmpty()) { AddError(TEXT("Opening command-weight composition has no node or order.")); return false; }
+
+    TArray<FShiCommandSignalData> Signals;
+    TestTrue(TEXT("opening signals build for prop clearance"), FShiCommandSignalModel::Build(Session.GetResources(),
+        Session.GetCurrentFieldCondition(), Session.GetCurrentOppositionStage(), Session.GetCurrentMethodRead(),
+        Session.GetActiveCommitment(), &Node->Choices[0], TEXT("en"), Signals, Error));
+    FShiCouncilStageData Stage;
+    TestTrue(TEXT("opening council builds for prop composition"),
+        FShiCouncilStagingModel::Build(Campaign, *Node, TEXT("en"), Stage, Error));
+    const FShiCommandWeightPresentationData Presentation = FShiCommandWeightPresentationModel::Build();
+    TestTrue(TEXT("command weight preserves contact, pointer clearance and the 44-degree safe frame"),
+        FShiCommandWeightPresentationModel::Validate(Presentation, Campaign.Sites, Signals, Stage, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestFalse(TEXT("command weight is not a gameplay interaction target"), Presentation.bInteractive);
+    TestFalse(TEXT("command weight leaves the non-authoritative engagement exercise"), Presentation.bVisibleDuringEngagement);
+    TestTrue(TEXT("command weight retains exact centimeter scale"),
+        Presentation.Transform.GetScale3D().Equals(FVector::OneVector, .0001f));
+
+    FVector2D FramePoint;
+    float Depth = 0.f;
+    const FVector WorldCenter = Presentation.Transform.TransformPosition(
+        (Presentation.BoundsMinimum + Presentation.BoundsMaximum) * .5f);
+    TestTrue(TEXT("command weight projects in front of the council camera"),
+        FShiCommandWeightPresentationModel::ProjectToCouncilFrame(Stage, WorldCenter, FramePoint, Depth) && Depth > 0.f);
+    TestTrue(TEXT("command weight occupies the lower decision-object field without covering the speaker"),
+        FMath::Abs(FramePoint.X) > .05f && FMath::Abs(FramePoint.X) < .75f
+        && FramePoint.Y > -.82f && FramePoint.Y < -.45f);
+
+    const FTransform FrontReview = FShiCommandWeightPresentationModel::ReviewCameraTransform(Presentation, false);
+    const FTransform BackReview = FShiCommandWeightPresentationModel::ReviewCameraTransform(Presentation, true);
+    const FVector ReviewTarget = WorldCenter;
+    const FVector FrontDirection = (ReviewTarget - FrontReview.GetLocation()).GetSafeNormal();
+    const FVector BackDirection = (ReviewTarget - BackReview.GetLocation()).GetSafeNormal();
+    TestTrue(TEXT("development front review camera looks exactly at the admitted prop"),
+        FVector::DotProduct(FrontReview.GetRotation().GetForwardVector(), FrontDirection) > .9999f);
+    TestTrue(TEXT("development back review camera looks exactly at the admitted prop"),
+        FVector::DotProduct(BackReview.GetRotation().GetForwardVector(), BackDirection) > .9999f);
+    TestTrue(TEXT("front and back review cameras preserve opposite material/contact evidence"),
+        FVector::DotProduct(FrontDirection, BackDirection) < -.55f
+        && FVector::Dist(FrontReview.GetLocation(), ReviewTarget) > 70.f
+        && FVector::Dist(FrontReview.GetLocation(), ReviewTarget) < 90.f
+        && FMath::IsNearlyEqual(FShiCommandWeightPresentationModel::ReviewFieldOfViewDegrees(), 28.f));
+
+    FShiCommandWeightPresentationData Crowded = Presentation;
+    Crowded.Transform.SetLocation(Signals.Last().Location);
+    TestFalse(TEXT("a prop that crowds a live signal is rejected"),
+        FShiCommandWeightPresentationModel::Validate(Crowded, Campaign.Sites, Signals, Stage, Error));
+    FShiCommandWeightPresentationData Floating = Presentation;
+    Floating.Transform.AddToTranslation(FVector(0.f, 0.f, 20.f));
+    TestFalse(TEXT("a floating command weight is rejected"),
+        FShiCommandWeightPresentationModel::Validate(Floating, Campaign.Sites, Signals, Stage, Error));
+    FShiCouncilStageData LensDrift = Stage;
+    LensDrift.FieldOfViewDegrees = 58.f;
+    TestFalse(TEXT("an unauthored council lens cannot admit the prop"),
+        FShiCommandWeightPresentationModel::Validate(Presentation, Campaign.Sites, Signals, LensDrift, Error));
     return !HasAnyErrors();
 }
 

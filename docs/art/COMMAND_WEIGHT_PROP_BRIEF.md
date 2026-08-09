@@ -1,6 +1,6 @@
 # SHI command weight prop brief
 
-Status: packaged Unreal production blockout accepted · final PBR/council-lens/human review open · original fictional interface prop · not historical reconstruction.
+Status: runtime-presented Unreal production blockout accepted · authored blockout PBR/material/contact/council-lens pass · final surface/character/environment/human review open · original fictional interface prop · not historical reconstruction.
 
 ## Purpose
 
@@ -61,6 +61,17 @@ With the official UE 5.8.1 build, the default importer mode inspects the existin
 
 Only an intentional source replacement should set `SHI_COMMAND_WEIGHT_REIMPORT=1`; that mode deletes and recreates only `/Game/SHI/Art/Props/CommandWeight`. Routine inspection must omit it. The accepted read-only run exited 0 in `inspect-only` mode and left all three tracked `.uasset` hashes unchanged.
 
+The Unreal material author is also read-only by default. It inspects the two exact material assets, node counts, PBR output wiring, bounded noise, compile errors, normal-input policy and reviewed parameters without saving:
+
+```bash
+/path/to/UE_5.8.1/Engine/Binaries/Linux/UnrealEditor-Cmd \
+  "$PWD/apps/unreal/SHI.uproject" /Engine/Maps/Entry \
+  -unattended -nop4 -nosplash -nullrhi -nowrite \
+  -ExecutePythonScript="$PWD/scripts/author-command-weight-materials-unreal.py"
+```
+
+Only a deliberate edit of these two isolated graphs may set `SHI_COMMAND_WEIGHT_AUTHOR_MATERIALS=1`. The script refuses any state that is neither the exact import fallback nor the already-reviewed authored graph; it does not silently replace unfamiliar work.
+
 ## Rejection list
 
 Reject pouch, purse, tag, amulet, seal, pendant, crown, animal, weapon or magical reads; written marks; regular industrial machining; noisy generated relief; fused background; unreviewed historical claims; floating eye or band; non-watertight production geometry; and cleanup whose cost exceeds deterministic re-authoring.
@@ -75,4 +86,8 @@ The editable `.blend` retains the authored procedural lookdev materials. GLB/FBX
 
 Isolated Unreal 5.8.1 admission now passes. The imported static mesh preserves the `8.478 × 5.552 × 3.425 cm` bounds, 3,256/1,384-triangle LODs, two UV channels on both LODs, two exact material slots, one convex collision hull, 64-pixel lightmap resolution and UV1 lightmap coordinate. Nanite remains deliberately off for this 3,256-triangle palm-sized object. A clean Linux BuildCookRun produced 499 packages—exactly the accepted 496-package baseline plus the mesh and two materials—and the IoStore response names the mesh, bulk geometry and both materials. The isolated archived player mounted all 499 packages, initialized `ShiGameMode`, loaded the entry map and exited by command with code 0.
 
-This result is technical and deliberately narrow. The object is not yet placed in the council runtime, its Unreal materials are production-blockout fallbacks, and no packaged visible frame proves contact, response or readability through the canonical 44° lens. Those material, scene-performance and human cinematic gates remain red. The import/package receipts are recorded in `docs/production/evidence/unreal-command-weight-import-status.json`.
+The second Unreal gate now also passes at production-blockout scope. A ten-node charcoal river-stone graph and fourteen-node dark worked-bronze/patina graph provide opaque one-sided base-color, roughness, metallic, specular and ambient-occlusion response without pretending to have a normal map. Read-only engine inspection compiles both graphs cleanly and leaves their tracked hashes unchanged. The prop is placed at exact scale with contact at table `Z = 14 cm`, at least `5 cm` from the table edge and `62 cm` from every inspectable site or live signal. It is collision-free, noninteractive, tagged non-authoritative and hidden during the Broken Crossing exercise. The 44° council lens was lowered from a face-only focus to hold both the full speaker proxy and physical decision plane; development-only 28° front/back flags expose attachment and material response without entering Shipping builds.
+
+The first visible pass was rejected because a `-18°` yaw read end-on like a pouch and the bronze looked polished gold. The accepted `20°` placement restores the broad stone read, uses darker rougher bronze and shows contact, cord eye and underside attachment in the [council](../production/evidence/unreal-command-weight-council-v2.png), [front](../production/evidence/unreal-command-weight-front-v2.jpg) and [back](../production/evidence/unreal-command-weight-back-v2.jpg) packaged views. The normal package still accepts the selected opening order and visibly advances to Act II with `TRANSACTION VERIFIED`; all twelve native suites pass, including crowding, floating and lens-drift rejection.
+
+This approval remains deliberately narrow. The noisy white BasicShape command surface, engineering proxy figures, terrain, formations and lighting are visibly below the intended game. Final scene assets, physical-display performance/controller repetition, historical-material review, accessibility review and human cinematic/art-direction sign-off remain red. Immutable import receipts are in `docs/production/evidence/unreal-command-weight-import-status.json`; the current runtime/material/package/play evidence is in `docs/production/evidence/unreal-command-weight-presentation-status.json`.

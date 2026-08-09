@@ -5,6 +5,7 @@ namespace
     const FVector SpeakerFloor(136.f, 242.f, 0.f);
     const FVector KeeperFloor(-132.f, -238.f, 0.f);
     constexpr float CouncilFieldOfViewDegrees = 44.f;
+    constexpr float CouncilFocusHeight = 95.f;
 
     FTransform FacingTable(const FVector& Floor)
     {
@@ -14,7 +15,7 @@ namespace
 
     FTransform SpeakerCamera()
     {
-        const FVector Target = SpeakerFloor + FVector(0.f, 0.f, 118.f);
+        const FVector Target = SpeakerFloor + FVector(0.f, 0.f, CouncilFocusHeight);
         const FVector Location = Target + FVector(330.f, -390.f, 105.f);
         return FTransform((Target - Location).Rotation(), Location);
     }
@@ -103,7 +104,7 @@ bool FShiCouncilStagingModel::Validate(const FShiCampaignModel& Campaign, const 
     const FShiCouncilParticipantData* SpeakerParticipant = FindParticipant(Stage, TEXT("speaker"));
     const FShiCouncilParticipantData* KeeperParticipant = FindParticipant(Stage, TEXT("keeper"));
     const FTransform ExpectedCamera = SpeakerCamera();
-    const FVector SpeakerTarget = SpeakerFloor + FVector(0.f, 0.f, 118.f);
+    const FVector SpeakerTarget = SpeakerFloor + FVector(0.f, 0.f, CouncilFocusHeight);
     const FVector CameraDirection = (SpeakerTarget - Stage.CameraTransform.GetLocation()).GetSafeNormal();
     const bool bCameraLooksAtSpeaker = FVector::DotProduct(Stage.CameraTransform.GetRotation().GetForwardVector(), CameraDirection) > .9999f;
     if (!Speaker || !Keeper || Speaker == Keeper || Stage.NodeId != Node.Id || Stage.SpeakerId != Node.SpeakerId

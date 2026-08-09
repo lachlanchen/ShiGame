@@ -13,6 +13,7 @@ const required = [
   "Source/SHI/ShiAudioModel.h", "Source/SHI/ShiAudioModel.cpp", "Source/SHI/ShiSoundscapeComponent.h", "Source/SHI/ShiSoundscapeComponent.cpp",
   "Source/SHI/ShiWartableModel.h", "Source/SHI/ShiWartableModel.cpp",
   "Source/SHI/ShiCommandSignalModel.h", "Source/SHI/ShiCommandSignalModel.cpp",
+  "Source/SHI/ShiCommandWeightPresentationModel.h", "Source/SHI/ShiCommandWeightPresentationModel.cpp",
   "Source/SHI/ShiCouncilStagingModel.h", "Source/SHI/ShiCouncilStagingModel.cpp",
   "Source/SHI/ShiCouncilFigure.h", "Source/SHI/ShiCouncilFigure.cpp",
   "Source/SHI/ShiCinematicBeatModel.h", "Source/SHI/ShiCinematicBeatModel.cpp",
@@ -36,13 +37,18 @@ for (const relative of required) {
 }
 
 const commandWeightProvenancePath = resolve(root, "assets/provenance/shi-command-weight-v1.json");
-const commandWeightEvidencePath = resolve(root, "docs/production/evidence/unreal-command-weight-import-status.json");
+const commandWeightImportEvidencePath = resolve(root, "docs/production/evidence/unreal-command-weight-import-status.json");
+const commandWeightPresentationEvidencePath = resolve(root, "docs/production/evidence/unreal-command-weight-presentation-status.json");
 const commandWeightProvenance = JSON.parse(await readFile(commandWeightProvenancePath, "utf8"));
-const commandWeightEvidence = JSON.parse(await readFile(commandWeightEvidencePath, "utf8"));
-if (commandWeightProvenance.assetId !== "shi-command-weight-v1" || commandWeightProvenance.status !== "approved-engine-production-blockout-packaged-not-final-art")
-  errors.push("Unreal command-weight provenance does not preserve its bounded packaged-blockout decision");
-if (commandWeightEvidence.assetId !== "shi-command-weight-v1" || commandWeightEvidence.decision !== "approved-engine-production-blockout-packaged-not-final-art")
+const commandWeightImportEvidence = JSON.parse(await readFile(commandWeightImportEvidencePath, "utf8"));
+const commandWeightPresentationEvidence = JSON.parse(await readFile(commandWeightPresentationEvidencePath, "utf8"));
+const commandWeightPresentationDecision = "approved-engine-production-blockout-presented-authored-materials-not-final-art";
+if (commandWeightProvenance.assetId !== "shi-command-weight-v1" || commandWeightProvenance.status !== commandWeightPresentationDecision)
+  errors.push("Unreal command-weight provenance does not preserve its bounded runtime-presented blockout decision");
+if (commandWeightImportEvidence.assetId !== "shi-command-weight-v1" || commandWeightImportEvidence.decision !== "approved-engine-production-blockout-packaged-not-final-art")
   errors.push("Unreal command-weight admission evidence is missing or overstates its decision");
+if (commandWeightPresentationEvidence.assetId !== "shi-command-weight-v1" || commandWeightPresentationEvidence.decision !== commandWeightPresentationDecision)
+  errors.push("Unreal command-weight presentation evidence is missing or overstates its bounded decision");
 for (const output of commandWeightProvenance.outputs ?? []) {
   const file = resolve(root, "assets/provenance", output.file);
   try {
@@ -54,9 +60,9 @@ for (const output of commandWeightProvenance.outputs ?? []) {
     errors.push(`command-weight provenance output is missing: ${output.file}`);
   }
 }
-for (const tool of [commandWeightProvenance.toolchain?.generator, commandWeightProvenance.toolchain?.validator, commandWeightProvenance.toolchain?.unrealImporter]) {
+for (const tool of [commandWeightProvenance.toolchain?.generator, commandWeightProvenance.toolchain?.validator, commandWeightProvenance.toolchain?.unrealImporter, commandWeightProvenance.toolchain?.unrealMaterialAuthor]) {
   if (!tool?.file || !tool?.sha256) {
-    errors.push("command-weight provenance omits a generator, validator or Unreal importer receipt");
+    errors.push("command-weight provenance omits a generator, validator, Unreal importer or Unreal material-author receipt");
     continue;
   }
   try {
@@ -66,7 +72,8 @@ for (const tool of [commandWeightProvenance.toolchain?.generator, commandWeightP
     errors.push(`command-weight provenance tool is missing: ${tool.file}`);
   }
 }
-for (const asset of commandWeightEvidence.trackedUnrealAssets ?? []) {
+const importedMeshReceipt = (commandWeightImportEvidence.trackedUnrealAssets ?? []).find((asset) => asset.file.endsWith("/SM_SHI_CommandWeight_01.uasset"));
+for (const asset of importedMeshReceipt ? [importedMeshReceipt] : []) {
   try {
     const bytes = await readFile(resolve(root, asset.file));
     const sha256 = createHash("sha256").update(bytes).digest("hex");
@@ -75,14 +82,46 @@ for (const asset of commandWeightEvidence.trackedUnrealAssets ?? []) {
     errors.push(`tracked Unreal command-weight asset is missing: ${asset.file}`);
   }
 }
-if (!commandWeightEvidence.import?.passed || commandWeightEvidence.import?.lodTriangles?.join(",") !== "3256,1384" || commandWeightEvidence.import?.lodUvChannels?.join(",") !== "2,2" || commandWeightEvidence.import?.convexCollisionCount !== 1)
+if (!importedMeshReceipt) errors.push("Unreal command-weight import evidence omits the immutable static-mesh receipt");
+if (commandWeightImportEvidence.trackedUnrealAssets?.length !== 3) errors.push("Unreal command-weight import evidence does not retain its three original import receipts");
+if (!commandWeightImportEvidence.import?.passed || commandWeightImportEvidence.import?.lodTriangles?.join(",") !== "3256,1384" || commandWeightImportEvidence.import?.lodUvChannels?.join(",") !== "2,2" || commandWeightImportEvidence.import?.convexCollisionCount !== 1)
   errors.push("Unreal command-weight import evidence omits the accepted LOD, UV or collision boundary");
-if (commandWeightEvidence.import?.readOnlyInspection?.mode !== "inspect-only" || commandWeightEvidence.import?.readOnlyInspection?.exitCode !== 0 || !commandWeightEvidence.import?.readOnlyInspection?.trackedUassetHashesUnchanged)
+if (commandWeightImportEvidence.import?.readOnlyInspection?.mode !== "inspect-only" || commandWeightImportEvidence.import?.readOnlyInspection?.exitCode !== 0 || !commandWeightImportEvidence.import?.readOnlyInspection?.trackedUassetHashesUnchanged)
   errors.push("Unreal command-weight inspection is not proven read-only");
-if (commandWeightEvidence.package?.packageCount !== 499 || commandWeightEvidence.package?.addedPackageCount !== 3 || commandWeightEvidence.package?.cookedEntries?.length !== 4)
+if (commandWeightImportEvidence.package?.packageCount !== 499 || commandWeightImportEvidence.package?.addedPackageCount !== 3 || commandWeightImportEvidence.package?.cookedEntries?.length !== 4)
   errors.push("Unreal command-weight package evidence does not preserve the 499-package three-asset admission");
-if (commandWeightEvidence.smokeTest?.exitCode !== 0 || commandWeightEvidence.smokeTest?.gameMode !== "ShiGameMode" || commandWeightEvidence.smokeTest?.mountedIoStorePackages !== 499)
+if (commandWeightImportEvidence.smokeTest?.exitCode !== 0 || commandWeightImportEvidence.smokeTest?.gameMode !== "ShiGameMode" || commandWeightImportEvidence.smokeTest?.mountedIoStorePackages !== 499)
   errors.push("Unreal command-weight package smoke evidence is incomplete");
+for (const screenshot of commandWeightPresentationEvidence.screenshots ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, screenshot.file));
+    const sha256 = createHash("sha256").update(bytes).digest("hex");
+    if (bytes.byteLength !== screenshot.bytes || sha256 !== screenshot.sha256) errors.push(`command-weight presentation screenshot drifted: ${screenshot.file}`);
+  } catch {
+    errors.push(`command-weight presentation screenshot is missing: ${screenshot.file}`);
+  }
+}
+if (commandWeightPresentationEvidence.screenshots?.length !== 4)
+  errors.push("Unreal command-weight presentation evidence must retain council, front, back and story/performance views");
+if (commandWeightPresentationEvidence.materials?.readOnlyInspection?.mode !== "inspect-only"
+    || commandWeightPresentationEvidence.materials?.readOnlyInspection?.exitCode !== 0
+    || !commandWeightPresentationEvidence.materials?.readOnlyInspection?.passed
+    || !commandWeightPresentationEvidence.materials?.readOnlyInspection?.trackedUassetHashesUnchanged
+    || commandWeightPresentationEvidence.materials?.stone?.nodeCount !== 10
+    || commandWeightPresentationEvidence.materials?.bronze?.nodeCount !== 14)
+  errors.push("Unreal command-weight authored-material inspection is incomplete");
+if (commandWeightPresentationEvidence.presentation?.councilFieldOfViewDegrees !== 44
+    || commandWeightPresentationEvidence.presentation?.minimumInspectableMarkerClearanceCentimeters !== 62
+    || commandWeightPresentationEvidence.presentation?.interactive !== false
+    || commandWeightPresentationEvidence.presentation?.collision !== false
+    || commandWeightPresentationEvidence.presentation?.visibleDuringNonAuthoritativeEngagement !== false)
+  errors.push("Unreal command-weight presentation evidence violates its bounded non-authoritative council contract");
+if (commandWeightPresentationEvidence.automation?.discovered !== 12 || commandWeightPresentationEvidence.automation?.passed !== 12
+    || commandWeightPresentationEvidence.automation?.newSuite !== "SHI.Cinematic.CommandWeightPresentationV1")
+  errors.push("Unreal command-weight presentation automation receipt is incomplete");
+if (commandWeightPresentationEvidence.package?.packageCount !== 499 || commandWeightPresentationEvidence.package?.result !== "BUILD SUCCESSFUL"
+    || commandWeightPresentationEvidence.smokeTest?.exitCode !== 0 || !commandWeightPresentationEvidence.visiblePlaytest?.storyAdvanced)
+  errors.push("Unreal command-weight final package, smoke or visible story-progression evidence is incomplete");
 
 const project = JSON.parse(await readFile(resolve(unreal, "SHI.uproject"), "utf8"));
 if (project.EngineAssociation !== "5.8") errors.push("Unreal engine association must be 5.8");
@@ -112,6 +151,7 @@ const audioModel = await readFile(resolve(unreal, "Source/SHI/ShiAudioModel.cpp"
 const soundscape = await readFile(resolve(unreal, "Source/SHI/ShiSoundscapeComponent.cpp"), "utf8");
 const wartable = await readFile(resolve(unreal, "Source/SHI/ShiWartableModel.cpp"), "utf8");
 const commandSignals = await readFile(resolve(unreal, "Source/SHI/ShiCommandSignalModel.cpp"), "utf8");
+const commandWeightPresentation = await readFile(resolve(unreal, "Source/SHI/ShiCommandWeightPresentationModel.cpp"), "utf8");
 const councilStaging = await readFile(resolve(unreal, "Source/SHI/ShiCouncilStagingModel.cpp"), "utf8");
 const councilFigure = await readFile(resolve(unreal, "Source/SHI/ShiCouncilFigure.cpp"), "utf8");
 const cinematic = await readFile(resolve(unreal, "Source/SHI/ShiCinematicBeatModel.cpp"), "utf8");
@@ -127,12 +167,15 @@ const buildRules = await readFile(resolve(unreal, "Source/SHI/SHI.Build.cs"), "u
 const gameConfig = await readFile(resolve(unreal, "Config/DefaultGame.ini"), "utf8");
 const engineConfig = await readFile(resolve(unreal, "Config/DefaultEngine.ini"), "utf8");
 const pipeline = await readFile(resolve(root, "scripts/unreal-pipeline.sh"), "utf8");
+const commandWeightMaterialAuthor = await readFile(resolve(root, "scripts/author-command-weight-materials-unreal.py"), "utf8");
 for (const token of ["schema v7", "TimeIndex <=", "NextActIndex <", "StreamingAssets/chapter-01-daze.json", "StreamingAssets/editions.json", "initialResources", "nextNodeId", "commitments", "countermeasures", "characters", "speakerId", "FindCharacter", "ValidateEvidence", "public-link-metadata-only", "specialist-review-required"]) if (!model.includes(token)) errors.push(`Unreal model omits contract token: ${token}`);
 for (const token of ["ApplyEffects(Choice->Effects)", "CommitmentOutcome->Effects", "Choice->PressureEffects", "Opposition->Effects", "MethodRead->Effects", "Condition->Effects", "SelectFieldCondition", "CanChoose", "ReplaySaveJson", "MoveTemp(Candidate)"]) if (!session.includes(token)) errors.push(`Unreal deterministic session omits contract token: ${token}`);
 for (const token of ["project-original-procedural", "RequiredCues", "CreateRainSamples", "CreateCueSamples", "bDefaultEnabled"]) if (!audioModel.includes(token)) errors.push(`Unreal audio model omits contract token: ${token}`);
 for (const token of ["FShiSoundGenerator", "CreateSoundGenerator", "PendingCues", "GGameUserSettingsIni", "FadeSeconds", "OutAudio[Frame * 2]", "OutAudio[Frame * 2 + 1]"]) if (!soundscape.includes(token)) errors.push(`Unreal soundscape omits render/persistence token: ${token}`);
 for (const token of ["ProjectSite", "CameraTransform", "Cylinder.Cylinder", "Sphere.Sphere", "Cone.Cone", "Dist2D", "CycleSite", "TableHalfWidth", "TableHalfDepth"]) if (!wartable.includes(token)) errors.push(`Unreal wartable model omits spatial contract token: ${token}`);
 for (const token of ["resource-grain", "layer-field", "layer-pursuit", "layer-method-read", "layer-commitment", "TableSurfaceZ", "MinimumPointerSpacing", "COUNTER WOULD HIT", "PURSUIT CLOSED · CAPTURED", "EXPOSURE 100 / 100", "SelectedStyle", "CameraTransform", "CycleSignal", "ValidateAgainstSites", "overlaps wartable site", "No carried promise currently awaits an answer."]) if (!commandSignals.includes(token)) errors.push(`Unreal command-signal model omits live-world contract token: ${token}`);
+for (const token of ["SM_SHI_CommandWeight_01.SM_SHI_CommandWeight_01", "TableSurfaceZ", "TableEdgeClearance", "MinimumMarkerClearance", "CouncilAspectRatio", "bInteractive = false", "bVisibleDuringEngagement = false", "FRotator(0.f, 20.f, 0.f)", "FitsCommandSurface", "ProjectToCouncilFrame", "ReviewCameraTransform", "44.f", "too small in the council composition"]) if (!commandWeightPresentation.includes(token)) errors.push(`Unreal command-weight presentation model omits bounded placement/lens token: ${token}`);
+for (const token of ["SHI_COMMAND_WEIGHT_AUTHOR_MATERIALS", "EXPECTED_NODE_COUNTS", "REVIEWED_PARAMETER_VALUES", "NOISEFUNCTION_GRADIENT_TEX3D", "delete_all_material_expressions", "retune_authored_material", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_METALLIC", "MP_SPECULAR", "MP_AMBIENT_OCCLUSION", "MP_NORMAL", "compileClean", "inspect-only"]) if (!commandWeightMaterialAuthor.includes(token)) errors.push(`Unreal command-weight material author omits bounded graph/inspection token: ${token}`);
 for (const token of ["speaker", "keeper", "HISTORICAL FIGURE · WORDS ARE AUTHORED DRAMATIZATION, NOT TRANSCRIPT", "FICTIONAL CHARACTER · PROJECT-AUTHORED DRAMATIC RECONSTRUCTION", "SpeakerCamera", "CouncilFieldOfViewDegrees", "FindParticipant", "SameParticipant", "cannot preserve canonical cast, disclosure, blocking and camera authorship", "OutStage = MoveTemp(Candidate)"]) if (!councilStaging.includes(token)) errors.push(`Unreal council staging omits cast/blocking/disclosure token: ${token}`);
 for (const token of ["FigureRoot", "Body", "Head", "Mantle", "InitializeFigure", "ShiCharacter:", "ShiCouncilSpeaker", "SetMobility", "SetRenderCustomDepth", "SetCustomDepthStencilValue", "SetActorTransform"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits live performance-proxy token: ${token}`);
 for (const token of ["resolution-order", "resolution-commitment", "resolution-pressure", "resolution-pursuit", "resolution-method-read", "resolution-field", "resolution-position", "MaximumSequenceSeconds", "MaximumEasedTranslation", "MaximumEasedRotationDegrees", "FieldOfViewForBeat", "CameraMotionBetween", "TEXT(\"cut\")", "TEXT(\"ease\")", "DominantResourceSignal", "EffectsSummary", "POSITION LOST", "OATH ESTABLISHED", "TotalDuration", "OutBeats = MoveTemp(BuiltBeats)"]) if (!cinematic.includes(token)) errors.push(`Unreal cinematic model omits resolution/motion-grammar token: ${token}`);
@@ -146,7 +189,7 @@ if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Props/Co
 if (!engineConfig.includes("r.CustomDepth=3")) errors.push("Unreal renderer does not preserve the selected wartable marker stencil");
 for (const token of ["prepare_external_directory", "SHI_UNREAL_DERIVED_DATA", "UE-LocalDataCachePath", "SHI_UNREAL_PACKAGE_ROOT", "must be a dedicated directory outside the Git repository", "-archivedirectory=\"$SHI_PACKAGE_ROOT\""]) if (!pipeline.includes(token)) errors.push(`Unreal pipeline omits outside-Git build/cache token: ${token}`);
 if (pipeline.includes('archivedirectory="$SHI_REPO_ROOT/apps/unreal')) errors.push("Unreal Linux packaging still writes archives inside the Git worktree");
-for (const token of ["RestoreChronicle", "SaveChronicle", "ForceUTF8WithoutBOM", "Gamepad_FaceButton_Bottom", "RequestNewChronicle", "CreateSoundscape", "ToggleSound", "Gamepad_FaceButton_Top", "ToggleEvidence", "Gamepad_LeftShoulder", "GetHitResultAtScreenPosition", "Gamepad_RightShoulder", "Gamepad_LeftThumbstick", "Gamepad_RightThumbstick", "RebuildCommandSignals", "FShiOrderTransactionModel::Build", "FShiOrderTransactionModel::BuildTurnSnapshot", "CanPresentCommandSignals", "CanPresentResolutionSequence", "CanPresentCouncilStage", "ApplyCouncilStage", "FocusCouncil", "CouncilFigures", "SaveChronicle(Transaction.Session", "Session = MoveTemp(Transaction.Session)", "SaveChronicle(CandidateSession", "Session = MoveTemp(CandidateSession)", "CURRENT CHRONICLE PRESERVED", "BeginPreparedResolutionSequence", "ORDER HELD", "StartCinematicBeat", "TickCinematicSequence", "SkipCinematicSequence", "Gamepad_FaceButton_Right", "Gamepad_Special_Right", "has no live world actor", "SetCameraImmediate", "SetFieldOfView", "CinematicHoldElapsed = -Beat->TransitionSeconds", "ToggleReducedMotion", "LoadCinematicPreferences", "SaveCinematicPreferences", "GGameUserSettingsIni", "ReducedMotion", "SetActorLocationAndRotation", "CameraTransitionElapsed = CameraTransitionDuration", "bReturningFromCommandSignal", "BeginCameraTransition", "FQuat::Slerp", "SetRenderCustomDepth", "ShiSite:", "ShiSignal:", "OpenEngagement", "IssueEngagementCommand", "CampaignMatchesEngagementSnapshot", "ApplyEngagementCommandSpace", "EngagementMetricMarkers", "ShiEngagement:", "CAMPAIGN SAVE UNCHANGED", "Session.ExportSaveJson(CampaignSnapshot", "CurrentCampaign != EngagementCampaignSnapshot"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits persistence/input/audio/evidence/world-signal/cinematic-motion/transaction/engagement-authority token: ${token}`);
+for (const token of ["RestoreChronicle", "SaveChronicle", "ForceUTF8WithoutBOM", "Gamepad_FaceButton_Bottom", "RequestNewChronicle", "CreateSoundscape", "ToggleSound", "Gamepad_FaceButton_Top", "ToggleEvidence", "Gamepad_LeftShoulder", "GetHitResultAtScreenPosition", "Gamepad_RightShoulder", "Gamepad_LeftThumbstick", "Gamepad_RightThumbstick", "RebuildCommandSignals", "FShiOrderTransactionModel::Build", "FShiOrderTransactionModel::BuildTurnSnapshot", "CanPresentCommandSignals", "CanPresentResolutionSequence", "CanPresentCouncilStage", "ApplyCouncilStage", "FocusCouncil", "CouncilFigures", "SaveChronicle(Transaction.Session", "Session = MoveTemp(Transaction.Session)", "SaveChronicle(CandidateSession", "Session = MoveTemp(CandidateSession)", "CURRENT CHRONICLE PRESERVED", "BeginPreparedResolutionSequence", "ORDER HELD", "StartCinematicBeat", "TickCinematicSequence", "SkipCinematicSequence", "Gamepad_FaceButton_Right", "Gamepad_Special_Right", "has no live world actor", "SetCameraImmediate", "SetFieldOfView", "CinematicHoldElapsed = -Beat->TransitionSeconds", "ToggleReducedMotion", "LoadCinematicPreferences", "SaveCinematicPreferences", "GGameUserSettingsIni", "ReducedMotion", "SetActorLocationAndRotation", "CameraTransitionElapsed = CameraTransitionDuration", "bReturningFromCommandSignal", "BeginCameraTransition", "FQuat::Slerp", "SetRenderCustomDepth", "ShiSite:", "ShiSignal:", "OpenEngagement", "IssueEngagementCommand", "CampaignMatchesEngagementSnapshot", "ApplyEngagementCommandSpace", "EngagementMetricMarkers", "ShiEngagement:", "CAMPAIGN SAVE UNCHANGED", "Session.ExportSaveJson(CampaignSnapshot", "CurrentCampaign != EngagementCampaignSnapshot", "FShiCommandWeightPresentationModel::Build", "ShiCommandWeightReviewFront", "ShiCommandWeightReviewBack", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "ShiProp:CommandWeight", "ShiPresentation:NonAuthoritative", "Prop->SetActorHiddenInGame(bVisible)"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits persistence/input/audio/evidence/world-signal/cinematic-motion/transaction/engagement-authority/command-weight token: ${token}`);
 if (gameMode.indexOf("SaveChronicle(Transaction.Session") > gameMode.indexOf("Session = MoveTemp(Transaction.Session)")) errors.push("Unreal order commit mutates memory before the candidate save is durable");
 if (gameMode.indexOf("SaveChronicle(CandidateSession") > gameMode.indexOf("Session = MoveTemp(CandidateSession)")) errors.push("Unreal restart mutates memory before the replacement save is durable");
 for (const token of ["SELECTED ORDER", "ISSUE ORDER", "ACT %d/%d", "SCENE %d/%d", "NEW CHRONICLE", "GAMEPAD A", "SOUND OFF", "RAIN −", "CUES −", "HISTORICAL BASIS", "EXACT LOCATOR", "SPECIALIST REVIEW REQUIRED", "OPEN PUBLIC EDITION", "WARTABLE FOCUS", "INTELLIGENCE ONLY · NOT A DESTINATION", "SHIFT REVERSES", "SPACE / B SKIPS CONSEQUENCE", "COMMAND SIGNAL", "READ-ONLY 3D TALLY", "CONSEQUENCE %d / %d", "CAMERA ONLY · THE GAMEPLAY RESULT IS ALREADY RESOLVED", "SKIP CONSEQUENCE CAMERA", "REDUCED MOTION · CUTS ONLY", "CAMERA MOTION · RESTRAINED", "V / MENU MOTION", "C / L3 SIGNALS", "RETURN TO COUNCIL", "COUNCIL SPEAKER", "D / R3", "CURRENT GROUND", "WhiteBrush", "FIELD COMMAND EXERCISE", "SIX LIVE 3D TALLIES", "PLAYER EFFECT", "FIELD ANSWER", "CAMPAIGN SAVE BYTE-GUARDED", "ISSUE PULSE ORDER", "CAMPAIGN EFFECT PREVIEW", "RETURN TO CAMPAIGN UNCHANGED"]) if (!screen.includes(token)) errors.push(`Unreal command screen omits interaction/evidence/world-signal/cinematic-motion/readability/engagement token: ${token}`);
@@ -155,6 +198,7 @@ for (const token of ["SHI.Wartable.SpatialIntelligenceV1", "Daze projection is d
 for (const token of ["SHI.CommandSpace.LiveSignalsV1", "five resources and four tactical layers are visible", "selected tally remains anchored", "captured terminal state has an exact pursuit-closed signal", "nonterminal state cannot omit its pursuit band", "the carried oath becomes a live world signal", "overlapping live command signals are rejected", "cross-family pointer overlap is rejected", "missing authoritative resources reject the signal snapshot", "failed signal rebuild is atomic"]) if (!automation.includes(token)) errors.push(`Unreal automation omits live command-signal token: ${token}`);
 for (const token of ["SHI.Campaign.OrderTransactionV1", "order preflight never mutates the active chronicle", "resolution drift rejects the entire prepared transaction", "world drift rejects the entire prepared transaction", "cinematic drift rejects the entire prepared transaction", "post-order briefing drift rejects the entire prepared transaction", "extra hidden decision rejects the entire prepared transaction", "failed order transaction build is atomic", "active chronicle remains byte-identical after every attack", "preflight history is immutable", "full transaction revalidates"]) if (!automation.includes(token)) errors.push(`Unreal automation omits fail-closed order-transaction token: ${token}`);
 for (const token of ["SHI.Cinematic.CouncilStagingV1", "speaker and keeper occupy the scene", "historical dialogue is explicitly not a transcript", "Aunt Yu is never presented as a historical person", "cast identity drift is rejected", "dialogue drift is rejected", "unauthored dialogue camera drift is rejected", "failed council rebuild is atomic", "council staging drift rejects the entire prepared transaction", "prepared council follows position"]) if (!automation.includes(token)) errors.push(`Unreal automation omits canonical council-staging token: ${token}`);
+for (const token of ["SHI.Cinematic.CommandWeightPresentationV1", "preserves contact, pointer clearance and the 44-degree safe frame", "not a gameplay interaction target", "lower decision-object field without covering the speaker", "development front review camera looks exactly at the admitted prop", "development back review camera looks exactly at the admitted prop", "a prop that crowds a live signal is rejected", "a floating command weight is rejected", "an unauthored council lens cannot admit the prop"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-weight presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.ResolutionGrammarV1", "opening sequence includes order, established oath, four response layers and position", "complete consequence sequence stays below five seconds", "first consequence shot cuts from unknowable prior inspection", "near pursuit-to-method translation uses one restrained ease", "pressure close reading has the narrowest authored lens", "position resolves through the widest authored lens", "cinematic cut/ease authorship cannot drift from spatial bounds", "cinematic lens grammar rejects disorienting drift", "cinematic planning never appends campaign history", "unbound cinematic world targets are rejected", "overlong cinematic shots are rejected", "cinematic layer reordering is rejected", "captured terminal position has a bounded consequence plan", "cinematic final resources must match resolution and world snapshots", "failed cinematic rebuild is atomic", "prepared world signal count"]) if (!automation.includes(token)) errors.push(`Unreal automation omits cinematic resolution/motion token: ${token}`);
 for (const token of ["SHI.Engagement.BrokenCrossingParityV1", "native exhaustive traversal matches Web route count", "native exhaustive traversal matches Web viable count", "every authored outcome is reachable", "every authored command is reachable", "each field condition preserves at least two viable plans", "same command from the same state is deterministic", "copy resolution never mutates the source position", "engagement replay rejects an invented authored response", "failed replay cannot mutate the accepted engagement", "native model rejects premature campaign authority", "native model rejects campaign condition drift", "six bounded 3D tallies follow every native position", "engagement signal height encodes its exact metric", "overlapping engagement pointers are rejected", "missing engagement metric rejects signal rebuild", "failed engagement signal rebuild is atomic"]) if (!engagementAutomation.includes(token)) errors.push(`Unreal engagement automation omits parity/hostile/spatial token: ${token}`);
 
@@ -163,4 +207,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, command surface, and a hash-bound packaged command-weight production-blockout boundary.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, command surface, and a hash-bound runtime-presented command-weight production blockout with authored materials and explicit final-art red gates.`);

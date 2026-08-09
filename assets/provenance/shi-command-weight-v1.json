@@ -1,11 +1,12 @@
 {
   "assetId": "shi-command-weight-v1",
   "createdAt": "2026-08-10",
-  "status": "approved-engine-production-blockout-packaged-not-final-art",
+  "status": "approved-engine-production-blockout-presented-authored-materials-not-final-art",
   "rightsStatus": "original SHI project-authored geometry, materials, renders and source scripts",
   "historicalStatus": "original fictional command signal; not a claimed late-Qin artifact or reconstruction",
   "designSource": "../../docs/art/COMMAND_WEIGHT_PROP_BRIEF.md",
-  "engineEvidence": "../../docs/production/evidence/unreal-command-weight-import-status.json",
+  "engineImportEvidence": "../../docs/production/evidence/unreal-command-weight-import-status.json",
+  "engineEvidence": "../../docs/production/evidence/unreal-command-weight-presentation-status.json",
   "toolchain": {
     "authoring": "AgenticApp portable Blender 4.0.2",
     "generation": "deterministic Blender Python; no neural mesh or private source material",
@@ -22,6 +23,11 @@
       "file": "../../scripts/import-command-weight-unreal.py",
       "sha256": "f4171e30076eaf2a62f64e80bdfa8e6ad86d47b9cbd7396874b11ef491b0977d",
       "method": "isolated FBX LOD0/LOD1 import or non-mutating inspection with exact UE 5.8 static-mesh assertions"
+    },
+    "unrealMaterialAuthor": {
+      "file": "../../scripts/author-command-weight-materials-unreal.py",
+      "sha256": "7341d2a3912d7b8faa84c5b89bfd99679e3d3fd6d524a62f91217e1a53540c0d",
+      "method": "read-only by default; exact two-material graph authoring or reviewed-parameter retune only behind SHI_COMMAND_WEIGHT_AUTHOR_MATERIALS=1, followed by node, output, compile and unchanged-hash inspection"
     },
     "rejectedNeuralPredecessor": "shi-command-weight-v1-triposr-trial"
   },
@@ -88,21 +94,45 @@
     },
     {
       "file": "../../apps/unreal/Content/SHI/Art/Props/CommandWeight/M_SHI_RiverStone.uasset",
-      "role": "Unreal production-blockout stone material",
-      "bytes": 5019,
-      "sha256": "f7d3a79474edf0e785be7908610e00f3b74d7c8b9afc3b74d29ce5c4d458e3cc"
+      "role": "Unreal authored production-blockout river-stone PBR graph",
+      "bytes": 11669,
+      "sha256": "3416085c6d3032048d16b583a578457e773c2b3d0c8584288f6e52e35259afbd"
     },
     {
       "file": "../../apps/unreal/Content/SHI/Art/Props/CommandWeight/M_SHI_WorkedBronze.uasset",
-      "role": "Unreal production-blockout bronze material",
-      "bytes": 5031,
-      "sha256": "85dbdedb13bd828b7f7c785c7efe24c8b147e3596d2e620d0fbcd0a4238db36d"
+      "role": "Unreal authored production-blockout worked-bronze PBR graph",
+      "bytes": 14218,
+      "sha256": "d0f98c4ace2ecbaef473cd95bd7321802aaae3cbdc3d5a5e833ac22dd161e64c"
     },
     {
       "file": "../../apps/unreal/Content/SHI/Art/Props/CommandWeight/SM_SHI_CommandWeight_01.uasset",
       "role": "Unreal static mesh with LOD0, LOD1, lightmap UV and convex collision",
       "bytes": 426809,
       "sha256": "0e2881d5a2de5f1e9063ca67528dd4f4e795e85b3659a9a815f28b3c41f19ecb"
+    },
+    {
+      "file": "../../docs/production/evidence/unreal-command-weight-council-v2.png",
+      "role": "packaged canonical 44-degree council composition and surface-contact evidence",
+      "bytes": 949537,
+      "sha256": "bdd3775f0507d80037953e37b3c629c79ab928f93497958aa3bf00bd987b1c17"
+    },
+    {
+      "file": "../../docs/production/evidence/unreal-command-weight-front-v2.jpg",
+      "role": "packaged development-only front material and silhouette evidence",
+      "bytes": 634711,
+      "sha256": "d88e2e3333deec281e9ba21a414308c79f54c5ca4d85ad9bbf4d2d07fcee3004"
+    },
+    {
+      "file": "../../docs/production/evidence/unreal-command-weight-back-v2.jpg",
+      "role": "packaged development-only back attachment and material evidence",
+      "bytes": 495887,
+      "sha256": "0ffc150590fcaa37816149e402944f41aa1ff3388e33376d53b547e490055f0d"
+    },
+    {
+      "file": "../../docs/production/evidence/unreal-command-weight-gameplay-performance-v2.jpg",
+      "role": "visible Act-II story progression, verified transaction and remote performance separation",
+      "bytes": 210680,
+      "sha256": "5460274e63ab51f906d2a0ce79f3da4d6d1fa8fa188b1470c2b82dadbba221b7"
     }
   ],
   "technicalReview": {
@@ -120,33 +150,43 @@
     "unrealImport": "pass",
     "unrealPackage": "pass",
     "unrealHeadlessLaunch": "pass",
+    "unrealMaterialInspection": "pass: 10-node stone and 14-node bronze graphs, five PBR outputs, compile clean, no unsupported normal input",
+    "unrealRuntimePresentation": "pass: exact scale/contact, five-centimeter table edge margin, 62-centimeter site/signal clearance and 44-degree council safe frame",
+    "unrealNativeAutomation": "12 of 12 SHI suites pass, including CommandWeightPresentationV1 negative crowding, floating and lens-drift cases",
+    "unrealVisibleStoryProgression": "pass: selected opening order advances from Act I Scene 1 to Act II Scene 2 with transaction verified",
     "allComponentsClosed": true,
     "allComponentsConsistentlyOutwardWound": true,
     "interchangeFallbackColors": "pass after a white-export failure was found and corrected",
     "lodReduction": "57.5 percent fewer triangles from LOD0 to LOD1"
   },
   "visualReview": {
-    "decision": "accept as packaged engine production blockout only",
+    "decision": "accept as runtime-presented engine production blockout with authored materials only; not final art",
     "passes": [
       "squat river-stone silhouette rather than pouch, seal, weapon or jewelry",
       "forged bronze ribbon wraps beneath the stone without the earlier floating arc",
       "small readable cord eye and restrained asymmetry",
       "front, back and clean-import views expose the attachment and geometry",
       "Unreal preserves scale, LODs, two UV channels, two material slots and convex collision",
-      "isolated Linux package cooks the mesh, bulk geometry and both materials and launches cleanly"
+      "isolated Linux package cooks the mesh, bulk geometry and both authored materials and launches cleanly",
+      "a rejected end-on first placement was corrected to a broad 20-degree weighted-stone read",
+      "dark rough bronze and restrained patina replace the rejected polished-gold response",
+      "visible packaged front/back/contact frames preserve the cord eye, underside attachment and table contact",
+      "the canonical 44-degree council frame holds the physical decision object and full speaker proxy without crowding interaction targets",
+      "the normal packaged player accepts the opening order and advances the authored story atomically"
     ],
     "remaining": [
-      "authored final Unreal PBR stone and worked-bronze materials",
-      "visible packaged-runtime council-lens/contact/material review",
-      "scene-level draw-call, memory and performance measurement after placement",
-      "human cinematic and final art-direction sign-off"
+      "historically and materially reviewed final command surface in place of the noisy white BasicShape surface",
+      "production characters, deformation-tested interaction hands, terrain, formations and final scene lighting",
+      "physical-display frame pacing, memory, camera and controller evidence repeated after final scene assets",
+      "historical-material, accessibility, human cinematic and final art-direction sign-off"
     ]
   },
   "constraints": [
     "Do not describe the object as historically attested",
     "Do not use the rejected TripoSR raw mesh as source geometry",
-    "Do not describe packaging admission as runtime scene placement or final-art approval",
-    "Do not promote this blockout to shipping or marketing status before final-material, visible-lens and human review",
-    "Keep authored procedural materials in the blend and explicit dark fallback materials in interchange files"
+    "Do not describe runtime presentation as final-art, historical-authenticity or human-cinematic approval",
+    "Do not promote this blockout to shipping or marketing status before final surface, character, environment, physical-performance and human review",
+    "Keep authored procedural materials in the blend, explicit dark fallback materials in interchange files and exact reviewed material graphs in Unreal",
+    "Keep the prop noninteractive, collision-free and hidden during the non-authoritative Broken Crossing engagement"
   ]
 }

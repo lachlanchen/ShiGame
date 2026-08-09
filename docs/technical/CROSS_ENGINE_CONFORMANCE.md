@@ -30,7 +30,7 @@ The separate Broken Crossing contract remains non-authoritative but now has exac
 | Fixture generation and byte/hash validation | Green |
 | Unreal fixture staging and static contract | Green |
 | Unreal C++ automation source for all 46 routes | Green |
-| Unreal native compilation and exact `SHI.` automation execution | Green on official UE 5.8.1; all eleven suites pass |
+| Unreal native compilation and exact `SHI.` automation execution | Green on official UE 5.8.1; all twelve suites pass, including command-weight presentation |
 | Unreal Broken Crossing TypeScript/native route parity | Green; exact 76/47 matrix, replay/tamper and six-piece spatial states pass |
 | Unreal visible campaign/engagement/save observation | Green in archived normal-thread package; engagement preview preserves bytes and the four-decision chapter seals/cold-replays |
 | Unreal Linux package and performance | Green for the fixed-window development player; BuildCookRun exits 0 and real-display chart records 195.18 FPS average with zero hitches |
