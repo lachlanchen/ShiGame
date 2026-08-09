@@ -34,7 +34,14 @@ npm run sync:content
 ./scripts/unreal-pipeline.sh preflight
 ```
 
-Obtain Unreal only through Epic’s official Linux installed-build ZIP or linked private source repository. Then point `SHI_UNREAL_ROOT` at the extracted/built root:
+Obtain Unreal only through Epic’s official Linux installed-build ZIP or linked private source repository. Verify and stage the official archive into an explicit outside-Git destination; the installer refuses unsafe ZIP paths, non-5.8 metadata, incomplete engine roots, an existing destination and any path inside this repository:
+
+```bash
+./scripts/install-official-unreal-linux.sh verify /path/to/Linux_Unreal_Engine_5.8.x.zip
+./scripts/install-official-unreal-linux.sh install /path/to/Linux_Unreal_Engine_5.8.x.zip /outside/git/UE_5.8.x
+```
+
+Then point `SHI_UNREAL_ROOT` at the installed root:
 
 ```bash
 SHI_UNREAL_ROOT=/path/to/UnrealEngine ./scripts/unreal-pipeline.sh projectfiles

@@ -23,7 +23,7 @@ find_engine() {
     fi
   done
   printf '%s\n' "Official Unreal Engine 5.8 Linux installed build was not found." >&2
-  printf '%s\n' "Download the official Linux ZIP after Epic sign-in, extract outside Git, and set SHI_UNREAL_ROOT." >&2
+  printf '%s\n' "Download the official Linux ZIP after Epic sign-in, verify/install it outside Git with scripts/install-official-unreal-linux.sh, and set SHI_UNREAL_ROOT." >&2
   printf '%s\n' "https://www.unrealengine.com/en-US/linux" >&2
   return 1
 }
