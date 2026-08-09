@@ -24,7 +24,7 @@ The first native gate is one high-quality Daze order, not a vast empty map:
 6. Act, scene, site and date advance from the register into organization.
 7. A short authored camera transition that preserves control and can be skipped.
 8. Opt-in rain and semantic order/consequence sound with independent persistent controls and no exclusive information.
-9. Save/reload and source/evidence access.
+9. Save/reload and source/evidence access. The source slice is authored; native interaction proof remains open.
 10. Linux Development and packaged builds, automation tests and visible noVNC play evidence.
 
 ## Film-feel principles
@@ -55,6 +55,7 @@ Official references:
 | Project truth | `.uproject`, targets/modules/config and canonical-content sync validate in Git |
 | Engine truth | official UnrealEditor version recorded; project files generate; C++ editor target compiles |
 | Rule truth | Unreal automation tests parse schema v7 and prove act/time/choice/effect closure |
+| Historical truth | edition rights, source/claim closure, exact locators, reconstruction labels and active scene/site evidence pass native automation and visible interaction |
 | Replay truth | all 46 golden routes, six intermediate layer states, save round-trip and tamper rejection pass natively |
 | Interaction truth | visible PIE route performs inspect → select → issue → response → progression |
 | Audio truth | pre-consent silence, native output capture, mixer persistence, rapid-input fatigue and human listening review pass |

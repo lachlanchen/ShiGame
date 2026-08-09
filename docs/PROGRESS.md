@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal historical-intelligence checkpoint
+
+- Implemented the canonical edition, source and claim registers directly in Unreal C++. Runtime loading now includes five registered editions, seven source records, thirteen claims and the scene/site evidence boundaries instead of treating historical review as a Web-only layer.
+- Added fail-closed evidence validation for unique/reachable records, claim-to-source closure, site intelligence bounds, rights agreement, private-path rejection, reconstruction classification and HTTPS public links constrained to the registered edition origin.
+- Added a non-mutating Slate historical-basis mode. The active scene and wartable site are merged without duplicates; players can inspect source classification, exact locator, note, claim review/confidence/uncertainty/game use and approved public-edition links. `E`/Gamepad LB opens it, arrows/D-pad scroll it, and gameplay commands are blocked until it closes.
+- Added native automation source that checks the canonical counts and classifications and deliberately attacks missing claim support, local-file leakage, rights drift and edition-origin drift. Static preflight also requires byte-identical edition staging and the evidence UI/control boundary.
+- Exact implementation `04b6d6e7314d3c74505449b8708294f2e7f74418` passes `npm ci` and the complete build from a detached clean checkout: 47 TypeScript/UI tests, 689 successful and 87 failure condition-routes, 46 golden cross-engine routes, canonical history/audio/content/conformance, accessibility/font/privacy/type gates, Unreal static preflight and Web budgets.
+- The follow-up documentation gate rejected one intermittent Web field-guide reverse-Tab: autofocus could become observable before the passive focus-trap effect was installed. Fix `1aad507` installs the trap in the layout phase and the focused regression passes twelve consecutive isolated runs; the failure was not rerun away.
+- This is source-level and clean-build evidence, not a native Unreal claim. The official Unreal 5.8 installation is still waiting at Epic sign-in, so C++ compilation, historical automation execution, PIE panel/link interaction, cinematic review, audio capture/listening and packaging remain red.
+
+Next gate: after Epic sign-in, install the official build, compile, execute the historical/replay/audio suites, then visibly play a complete route while opening scene/site evidence before the first order and after progression.
+
 ## 2026-08-09 · Unreal procedural-soundscape checkpoint
 
 - Implemented the shared Chapter I audio contract directly in Unreal C++ rather than leaving sound as a future asset task. The loader fail-closes on schema, identity, opt-in, cap, ambience, envelope, wave, range and exact seven-cue drift.

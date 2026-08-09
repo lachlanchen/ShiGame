@@ -24,7 +24,9 @@ Schema v4 requires each claim record to contain:
 - the exact gameplay use affected by the claim;
 - completed reviewer identity or an explicit pending review role.
 
-Every playable node must cite the sources required by its exposed claim IDs. Every campaign claim must be reachable from at least one playable node. The web and Unity ledgers render the same claim subset for the active scene.
+Every playable node and wartable site must cite the sources required by its exposed claim IDs. Every campaign claim must be reachable from at least one playable boundary. Web, Unity and Unreal read the same register; Unreal merges the active node and site subsets so its displayed wartable intelligence cannot lose the supporting source records.
+
+The Unreal historical-basis mode is authored as a non-mutating Slate surface. It labels evidence-located, specialist-gated, strategic-lens and project-reconstruction records separately; shows exact locators, confidence, uncertainty and game use; and launches public links only when their HTTPS authority matches the registered edition. C++ automation source rejects private file paths, rights mismatch, origin drift and a scene that exposes a claim without all of its sources. Native execution and visible interaction remain open until the official Unreal 5.8 build is installed.
 
 ## Chapter I review queue
 
