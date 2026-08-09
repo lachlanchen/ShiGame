@@ -1,6 +1,6 @@
 # Unreal command-space signal contract
 
-Status: source-authored at implementation `ed4dcc6d3e4955f0115f6d98b7ccb83d4fe977c3`; native compilation, PIE interaction and visual review remain open.
+Status: official UE 5.8.1 compilation and `SHI.CommandSpace.LiveSignalsV1` automation pass; PIE interaction and visual review remain open.
 
 ## Purpose
 
@@ -54,4 +54,4 @@ Exposure 100 is a deliberate terminal exception: pursuit has ended because the p
 
 ## Acceptance
 
-Source validation and `SHI.CommandSpace.LiveSignalsV1` automation are authored for count/order, exact values, base anchoring, camera aim, selection, cycling, post-order refresh, active oath, captured terminal state, pointer spacing, missing inputs and atomic failure. Consequence cinema additionally validates every planned focus against this live snapshot. This is not native proof. Acceptance still requires official Unreal C++ compilation, automation execution, visible PIE mouse/keyboard/gamepad traversal, selected-state and text review, camera-motion review, Linux packaging and an observed complete route.
+Official native `SHI.CommandSpace.LiveSignalsV1` automation passes count/order, exact values, base anchoring, camera aim, selection, cycling, post-order refresh, active oath, captured terminal state, pointer spacing, missing inputs and atomic failure. Consequence cinema additionally validates every planned focus against this live snapshot. Acceptance still requires visible PIE mouse/keyboard/gamepad traversal, selected-state and text review, camera-motion review, Linux packaging and an observed complete route.

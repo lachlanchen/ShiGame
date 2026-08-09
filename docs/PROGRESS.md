@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Official Unreal 5.8.1 native-baseline checkpoint
+
+- Acquired Epic's official `Linux_Unreal_Engine_5.8.1.zip` through the authenticated Linux-download route, completed its interrupted transfer through the preserved range state, enumerated and integrity-tested the ZIP, recorded its SHA-256 privately, staged extraction, and installed it atomically outside Git. The installed build reports Unreal `5.8.1`, changelist `56057345`; engine binaries, derived data and package output remain outside Git.
+- Generated project files with Epic's official Linux script and compiled/linked `SHIEditor` with the installed build's bundled Clang 20.1.8. The targets now opt into Unreal 5.8's `BuildSettingsVersion.V7`; nested automation includes and current 5.8 JSON, light-component and array APIs compile without compatibility overrides.
+- Ran the exact `SHI.` automation namespace with configuration writes disabled. Unreal discovered exactly ten project suites—audio, cross-engine replay, order transaction, save integrity, schema horizon, council staging, consequence cinema, live command signals, historical closure and wartable spatial intelligence—and all ten passed with native exit code 0. The project-file/build/test wrapper now fails closed on a missing official Linux generator and avoids accidentally matching unrelated engine tests.
+- Native execution found a real authored staging defect that static validation did not: `broken-crossing` assigned the Keeper/player as speaker for second-person narration. The node now gives Chen Sheng a concise explicitly dramatized line, preserves the evidence boundary, and rejects Keeper self-speech. All 46 campaign fixtures and staged client copies were deliberately regenerated; the canonical campaign SHA-256 is now `a82ab2f28809b46fb780074cce8acb96a7eb0b7cd608868f03b1888b64acf1f0`.
+- Prevented Unreal commandlets from polluting tracked configuration. Generated workspace files are ignored and native tests run with `-nowrite`; a byte comparison confirmed both tracked default configuration files stayed unchanged. The complete repository production build passes with 57 TypeScript/UI tests, 689 successful and 87 failure campaign routes, 76 engagement routes, 46 campaign replays, synchronized clients and Web budgets.
+- This closes official acquisition, native project generation, native compilation and the ten-suite automation baseline. It does **not** prove visible PIE interaction, Vulkan presentation on the isolated desktop, real save/actor/figure failure injection, controller feel, camera comfort, native audio-device output, final assets, film quality, Linux packaging or human playability; those remain explicit acceptance gates.
+
+Next gate: implement the shared three-pulse Broken Crossing engagement as an independent native C++ model with exhaustive 76-route parity and tamper rejection, then bind it to the bounded 3D command space and visibly play council → command pulses → consequence → next speaker in localhost-only noVNC PIE.
+
 ## 2026-08-09 · Sunzi `軍爭第七` transcription-audit checkpoint
 
 - Resolved the registered Sunzi public link from the `孫子` redirect to the canonical Chinese Wikisource `孫子兵法` transcription in the edition register, campaign source ledger, martial-source queue and human documentation.

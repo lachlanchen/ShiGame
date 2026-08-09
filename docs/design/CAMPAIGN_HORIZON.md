@@ -43,7 +43,7 @@ These act labels are project-authored interpretation, not headings preserved in 
 - JSON Schema, JavaScript validation, Unreal preflight/automation source and Unity preflight reject unknown/duplicate/unused acts, missing text, invalid time indices, backwards time, backwards act order and unreachable final acts.
 - TypeScript UI tests prove the initial horizon and its transition to Act II without altering save-v6 decision outcomes.
 - Unity tests prove schema-v7 parsing and canonical act/time closure; runtime/editor/test sources must still compile warning-clean offline.
-- Unreal static validation proves the project/parser boundary and byte-identical staging; native automation remains red until the official editor is installed.
+- Unreal static validation proves byte-identical staging, and official UE 5.8.1 native automation passes schema-v7 act/time/site closure; visible progression remains open.
 - Visible Chrome acceptance covers desktop, mobile, all eleven UI locales, 320-pixel reflow, actual 400% zoom and forced colors.
 
 Human review must still decide whether first-time players understand the elapsed-time jump and whether the rail clarifies rather than overexplains the campaign.

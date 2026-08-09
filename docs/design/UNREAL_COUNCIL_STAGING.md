@@ -54,7 +54,7 @@ Cast, dialogue, disclosure, transform, color, stencil, lens or camera drift reje
 
 `SHI.Cinematic.CouncilStagingV1` authors native automation for the opening Chen Sheng scene, exact speaker/Keeper occupancy, lens/eyeline, historical non-transcript disclosure, Aunt Yu's fictional classification, cast/dialogue/camera attacks and atomic failure. Order-transaction automation attacks stage drift, and all 46 golden-route turns require the prepared council node to match the authoritative post-order position.
 
-Static validation proves source closure only. Before this can be called native-playable or cinematic-quality, an official Unreal 5.8 build must compile and execute the suites, and visible PIE review must prove:
+Official UE 5.8.1 compilation and `SHI.Cinematic.CouncilStagingV1` automation now pass. Before this can be called native-playable or cinematic-quality, visible PIE review must prove:
 
 - body/head/mantle components, collision and stencil render correctly;
 - mouse, `D`, R3 and Slate focus agree;

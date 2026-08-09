@@ -27,9 +27,9 @@ The Unreal automation suite is authored to run every golden route and compare ev
 | --- | --- |
 | Fixture generation and byte/hash validation | Green |
 | Unreal fixture staging and static contract | Green |
-| Unreal C++ automation source for all 46 routes | Green (authored) |
-| Unreal native compilation and automation execution | Red until official Unreal 5.8 is installed |
-| Unreal PIE save/resume/controller observation | Red until native execution |
+| Unreal C++ automation source for all 46 routes | Green |
+| Unreal native compilation and exact `SHI.` automation execution | Green on official UE 5.8.1; all ten suites pass |
+| Unreal PIE save/resume/controller observation | Red; headless native proof is not visible play proof |
 | Unity consumption of the fixture | Staged; native parity test remains open |
 
-Static validation never substitutes for native compiler and runtime evidence. A golden fixture proves what must happen; only the official native automation run proves the C++ client does it.
+Static validation never substitutes for native compiler and runtime evidence. The official native run now proves the C++ campaign client replays the golden corpus, but it does not prove the separate Broken Crossing engagement candidate, visible interaction or player experience.

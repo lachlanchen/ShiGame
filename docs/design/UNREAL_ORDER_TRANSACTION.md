@@ -1,6 +1,6 @@
 # Unreal fail-closed order transaction
 
-Status: source-authored pre-alpha contract; native compilation, automation execution and deliberate failure injection in PIE remain open.
+Status: official UE 5.8.1 compilation and native automation pass; deliberate failure injection and restart/resume observation in PIE remain open.
 
 ## Player guarantee
 
@@ -43,4 +43,4 @@ The two-step **New chronicle** path uses the same turn-snapshot and live-actor p
 
 `SHI.Campaign.CrossEngineReplayV1` now runs every turn of all 46 fixed-seed terminal routes through the same transaction, asserts the source history and position remain unchanged during preflight, independently revalidates the complete transaction, then commits the candidate for golden comparison. The repository validator also rejects source orderings that swap active memory before the candidate order or restart save is durable.
 
-The detached clean build proves source closure and static contract coverage only. Native acceptance still requires the official Unreal compiler, both suites executing, PIE file-write failure injection, live-actor removal injection, successful restart/resume observation and a packaged-build crash/relaunch exercise.
+The official Unreal compiler and exact native suites now pass. Full acceptance still requires PIE file-write failure injection, live-actor removal injection, successful restart/resume observation and a packaged-build crash/relaunch exercise.

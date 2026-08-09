@@ -1,6 +1,6 @@
 # Unreal consequence-cinema contract
 
-Status: bounded motion/lens grammar source-authored at `0459db937e5117af388608f9d81d47e4b2e7afab`, integrated into the fail-closed order transaction at `f866d32f45d14afb7241de7e70c781f93b79a09f`, and handed into canonical council staging at `5764a2dc7071ea2355214ae1aec6f9922e1a2a65`; native compilation, automation execution, PIE motion/input/handoff/failure review and packaged-build review remain open.
+Status: bounded motion/lens grammar is integrated into the fail-closed transaction and canonical council staging; official UE 5.8.1 compilation and native automation pass. PIE motion/input/handoff/failure review and packaged-build review remain open.
 
 ## Purpose
 
@@ -41,4 +41,4 @@ All other pointer, keyboard, controller, evidence, order, restart and mixer comm
 
 `SHI.Cinematic.ResolutionGrammarV1` authors native tests for canonical order, oath establishment, neutral method read, exact final position, the five-second ceiling, non-mutation, focus closure, first-shot cut, bounded near-target ease, fixed semantic lenses, hostile motion/lens drift, timing/order/layer attacks, terminal capture, resource drift and atomic failure. `SHI.Cinematic.CouncilStagingV1` separately proves the post-sequence named speaker, disclosure, blocking and lens. `SHI.Campaign.OrderTransactionV1` attacks cinematic and council drift inside the complete rule/world/save boundary. `SHI.Campaign.CrossEngineReplayV1` prepares, independently revalidates and commits the complete transaction after every turn of all 46 fixed-seed golden routes, including six terminal failure routes.
 
-The repository preflight and the exact detached clean build pass at the implementation above. This is source evidence, not native proof. Acceptance still requires the official Unreal 5.8 compiler, both native suites executing, visible PIE mouse/keyboard/gamepad traversal, natural completion and mid-beat skip capture, camera/Slate legibility and motion review, complete-route observation, performance capture and a clean packaged Linux launch.
+Repository preflight, the detached clean build, the official Unreal 5.8.1 compiler and the exact native consequence/campaign suites pass. Acceptance still requires visible PIE mouse/keyboard/gamepad traversal, natural completion and mid-beat skip capture, camera/Slate legibility and motion review, complete-route observation, performance capture and a clean packaged Linux launch.
