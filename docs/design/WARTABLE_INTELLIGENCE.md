@@ -36,6 +36,12 @@ These are authored epistemic states, not dynamic fog-of-war simulation. A later 
 
 Selection wraps across the authored site order. Closing site evidence returns to the same inspected place. Moving through sites does not move the campaign's active marker.
 
+### Unreal priority slice
+
+The Unreal source keeps the wartable continuously present in the Daze command space. The five canonical schematic coordinates project into one bounded table; `known`, `reported` and `reference` use cylinder, sphere and cone geometry so status survives color loss. Pointer marker clicks, `Tab`/Gamepad RB, `Shift+Tab` and `Home` all call the same focus state. A remote site opens only its own source/claim boundary and is labeled **intelligence only · not a destination**; returning to current ground restores the playable site's evidence scope. Inspection never resolves an order or mutates campaign state.
+
+Site focus uses a short eased camera move. Order feedback starts from the exact focused transform and returns to that transform rather than accepting cumulative drift. Runtime validation rejects unsupported statuses, duplicate identities, non-finite or out-of-table positions and marker spacing below the pointer-target floor.
+
 ## Presentation rules
 
 - Status is written in text and reinforced by marker shape/opacity; color is never the only carrier.
@@ -47,6 +53,6 @@ Selection wraps across the authored site order. Closing site evidence returns to
 
 ## Verification and open gates
 
-Schema, JavaScript and Unity preflight validation cover status values, coordinate bounds, baseline text, references and claim/source closure. Web unit/integration tests cover pointer, keyboard and standard-gamepad navigation. The dedicated visible gate covers known/reported/reference rendering, no state mutation, hindsight-boundary copy, filtered site evidence, return behavior, mobile containment and console errors.
+Schema, JavaScript, Unreal and Unity preflight validation cover status values, coordinate bounds, baseline text, references and claim/source closure. Unreal automation source additionally covers deterministic spatial projection, camera targeting, status geometry/stencil identity, wrap behavior, selected scale, overlap rejection and invalid-status rejection. Web unit/integration tests cover pointer, keyboard and standard-gamepad navigation. The dedicated visible Web gate covers known/reported/reference rendering, no state mutation, hindsight-boundary copy, filtered site evidence, return behavior, mobile containment and console errors.
 
-Unity runtime/editor/EditMode-test sources pass the offline reference-assembly compile, but marker raycasting and native panel rendering are not claimed as executed until the Unity account license gate permits official import, tests and player builds. Historical-GIS review remains P0; this implementation does not close it.
+Unreal native compilation, automation, marker picking, panel rendering and camera review remain unclaimed until the official Epic build is installed and those gates execute. Unity runtime/editor/EditMode-test sources pass the offline reference-assembly compile, but marker raycasting and native panel rendering are likewise not claimed as executed until the Unity account license gate permits official import, tests and player builds. Historical-GIS review remains P0; this implementation does not close it.

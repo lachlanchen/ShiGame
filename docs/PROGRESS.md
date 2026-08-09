@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-09 · Unreal spatial-wartable checkpoint
+
+- Replaced the decorative seven-cube line with five canonical Daze/Chen/Pei/Kuaiji/Xianyang 3D intelligence markers projected from the shared schematic coordinates. Known, reported and reference states use distinct cylinder, sphere and cone geometry plus text, selected scaling/color and a configured custom-depth stencil.
+- Added pointer marker picking, `Tab`/Gamepad RB forward cycling, `Shift+Tab` reverse cycling and `Home` return to current ground. The Slate focus card exposes status, summary and uncertainty; remote inspection is explicitly intelligence-only and filters the historical basis to that site's records instead of leaking the active scene or promising a destination.
+- Added bounded eased site-camera transitions and repaired the order beat contract so every beat is evaluated from, and returns exactly to, its focus transform rather than accumulating drift. Engine-native basic-shape assets are forced into cooking.
+- Added the presentation-independent `SHI.Wartable.SpatialIntelligenceV1` automation source for projection, camera aim, non-color-only status identity, selection scale, wrap behavior, pointer spacing and invalid-status rejection. Static preflight now requires the model, controls, renderer/cook configuration, UI boundary and suite.
+- Exact implementation `36933242b9fe451d285ade26e18bc968969f455f` passes `npm ci` and the complete build from a detached clean checkout: 47 TypeScript/UI tests, 689 successful and 87 failure condition routes, 46 golden cross-engine routes, canonical history/audio/content/conformance, accessibility/font/privacy/type gates, Unreal spatial preflight and Web budgets.
+- This is source-level and clean-build evidence, not a native Unreal claim. Official Unreal 5.8 acquisition still waits at Epic sign-in, so C++ compilation, automation execution, PIE marker/evidence interaction, cinematic capture, audio capture/listening and Linux packaging remain red.
+
+Next gate: after Epic sign-in, install the official build, compile and execute the spatial/history/replay/audio suites, then visibly click and cycle all five markers, open remote evidence, return to current ground and finish a complete PIE route while checking camera return and input/UI coexistence.
+
 ## 2026-08-09 · Unreal historical-intelligence checkpoint
 
 - Implemented the canonical edition, source and claim registers directly in Unreal C++. Runtime loading now includes five registered editions, seven source records, thirteen claims and the scene/site evidence boundaries instead of treating historical review as a Web-only layer.
