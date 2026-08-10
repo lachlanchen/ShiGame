@@ -145,6 +145,8 @@ for (const relative of [
   "docs/art/FIELD_ENVIRONMENT_BRIEF.md",
   "docs/art/COUNCIL_FIGURINE_DIRECTION.md",
   "docs/art/DAZE_COUNCIL_FACIAL_PERFORMANCE_BRIEF.md",
+  "docs/art/DAZE_COUNCIL_SKIN_LOOKDEV_BRIEF.md",
+  "docs/production/THREE_YEAR_FILM_LEVEL_PLAN.md",
   "docs/technical/AI_ASSET_TOOLCHAIN.md",
   "docs/production/OPEN_SOURCE_3D_TOOLING_DECISION.md",
   "scripts/build-command-weight.py",

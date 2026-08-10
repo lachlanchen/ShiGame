@@ -1,5 +1,16 @@
 # SHI progress log
 
+## 2026-08-10 · Three-year film-level charter and skin look-development gate
+
+- Established an active August 2026–July 2029 production charter with staged Year 1 vertical slices, Year 2 campaign/cinematic scale and Year 3 content lock, alpha/beta, optimization and release-candidate gates. “Film level” is now an evidence state requiring final assets in playable cameras, performance, accessibility and named human review—not a label for an attractive render.
+- Bound Codex image generation, Blender/AgenticApp, AgInTiFlow, Musia and LALACHAN/Xiaoyunque to named production jobs, provenance and acceptance evidence. Generated assets cannot approve themselves, alter canonical history/rules, trigger paid work or substitute for captured gameplay.
+- Audited the accepted five-character skin lane. All five GLBs share one usable body UV0 and the cast uses one flat `SkinClay` material; no skin PBR maps exist, the GLBs export no tangent attribute, garments/hair/props are not UV-ready, and the inherited face allocation is suitable only for medium-close development rather than film-close hero framing.
+- Generated one private skin-response look board and two private anatomy-free micro-color trials. None entered Git or the game: the look board introduced an orange/beautified bias, v1 had strong orange macro-mottling and poor edge continuity, and v2 remained too pale/gray, non-power-of-two and measurably non-seamless. No generated normal, roughness, AO, specular or subsurface map was fabricated.
+- Defined a reversible Chen Sheng-only PBR slice with a fixed UV hash, independently authored/baked channels, isolated Unreal Subsurface Profile material, explicit import mutation, clean package/runtime receipts, all six admitted facial-state seam checks, four-lighting watched review and named art/historical/cultural/accessibility approval. The accepted facial meshes and `SkinClay` baseline remain untouched.
+- Full repository validation passes with 26 deterministic core tests and 31 Web tests. No Unreal cook, Blender job, paid generation, music/video generation or additional GUI stack was started for this planning/lookdev checkpoint.
+
+Next gate: implement the isolated Chen Sheng material candidate in a resource-safe heavy-job window, while interaction hands, mouth anatomy, voice/lip sync, close framing, final identity/acting and human review remain release-blocking parallel priorities.
+
 ## 2026-08-10 · Unreal council facial-performance engineering checkpoint
 
 - Added an isolated five-identity facial-performance lane on the admitted 53-bone shared skeleton: five morph-bearing skeletal meshes, fifteen materials and one CC0 brown-eye texture. Every mesh carries the exact 21-control deterministic silent-intent contract; it is language-neutral and has no audio, transcript, phoneme, gameplay, save, interaction or replication authority.

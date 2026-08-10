@@ -2,10 +2,12 @@
 
 This roadmap is a sequence of quality gates, not permission for uncontrolled content generation. Dates are planning ranges beginning August 2026 and will change as evidence arrives.
 
+Long-range continuation, film-level acceptance and release gates are defined in the active [three-year production charter](THREE_YEAR_FILM_LEVEL_PLAN.md). This roadmap is its synchronized detailed Year 1 schedule; if scope changes, both documents must change in the same reviewed commit.
+
 ## Year-one outcomes
 
-- A complete, replayable late-Qin-to-Chu–Han campaign slice with a coherent authored ending and a shared-rules historical martial-command encounter.
-- Shippable web release and stable Unreal cinematic desktop vertical slice; Unity remains a maintained shared-schema baseline.
+- A complete, replayable Daze-to-next-late-Qin vertical slice with a coherent authored ending and a shared-rules historical martial-command encounter. Chu–Han campaign scale belongs to Years 2–3 rather than this gate.
+- A complete playable Web reference and stable Unreal cinematic desktop vertical-slice candidate; Unity remains a maintained shared-schema baseline. Public alpha is not a Year 1 completion claim.
 - Source, localization, asset, audio, build, accessibility, performance and playtest pipelines capable of supporting a full game.
 - A small reviewed corpus and character/system bible that makes adding content safer rather than faster at any cost.
 
@@ -17,14 +19,14 @@ This roadmap is a sequence of quality gates, not permission for uncontrolled con
 | Month 2 | Unreal interaction proof | Official editor compile; six-layer Daze route in PIE; inspect/select/issue/progress; keyboard/mouse/controller; first observed playtests |
 | Month 3 | Historical production and martial-command prototype | Qin law/geography/material P0 review; claim database; source edition register; shared deterministic broken-crossing command contract and Web reference |
 | Month 4 | Cinematic 3D command slice | Unreal terrain/formations/signals, wartable interaction, camera/audio language, complete broken-crossing route, Linux build and performance capture; Unity baseline revalidated |
-| Month 5 | Chapter II: Chen | County politics, recruitment, restitution, opponent model; complete research/localization pass |
-| Month 6 | Pei/Kuaiji dual view | Liu Bang/Xiang clan networks introduced without hindsight; Unreal cinematic language applied without predetermining either path |
-| Month 7 | Campaign battle integration | Scale the proven indirect-control grammar to the first multi-force engagement with officers, opponent reserves and campaign aftermath; reject if it becomes detached combat |
-| Month 8 | Art/audio production | Final environment kit, reviewed character approach, adaptive music/ambience pipeline, LOD and memory budgets |
-| Month 9 | Campaign integration | Multi-chapter state, relationship memory, accessibility audit, narrative continuity review |
-| Month 10 | Closed alpha | External players, telemetry only with consent, crash reporting/privacy review, all 11 UI locales and 3 full narrative locales |
-| Month 11 | Content-complete slice | No placeholder assets, full source matrix, all supported narrative locales translated/reviewed, platform builds |
-| Month 12 | Public alpha | Signed builds, web deployment, store readiness decision, critical defects zero, post-alpha plan |
+| Month 5 | Interaction and identity components | Reviewed skin/eyes/hair identity target, both-hand object contacts and deformation-tested material/rig components without opening final close framing |
+| Month 6 | Mouth, voice and close-dialogue candidate | Inner-mouth anatomy, bounded viseme/expressive rig, one rights-cleared audition performance, subtitles and restrained standard/reduced-motion camera study |
+| Month 7 | Council performance integration | Council decision beat integrated in Web/Unreal state parity with character performance, lighting, audio and accessible input handoff ready for final-context review |
+| Month 8 | First final-camera Daze slice | One bounded council close-dialogue sequence passes packaged standard/reduced-motion candidate review and named discipline gates |
+| Month 9 | Contrasting field-command slice | Formation, terrain, weather, supply and aftermath language applied to the proven command loop with measured LOD, material and frame-time budgets |
+| Month 10 | Next late-Qin chapter unit | One authored next-chapter unit with closed claim matrix, decisions, consequences, localization authority and save/replay continuity |
+| Month 11 | Pipeline repeatability | A second character/scene passes the same source-to-package gates without narrative forks, private paths, hidden manual fixes or unreviewed placeholders |
+| Month 12 | Observed playtest and Year 1 evidence gate | First-time player cohort, defect triage, clean internal vertical-slice candidate, Web/Unreal parity, named reviews and green/red continuation report; no automatic public release or analytics |
 
 Month 2 status on 2026-08-09: authored countermoves, three opening-established player commitments with nine disclosed later answers, persistent disclosed Qin pursuit, deterministic repeated-method reads with visible hit/miss counterplay, disclosed seed-selected field conditions, save-v6 migration with v1–v5 rule preservation, localized first-run teaching, keyboard/touch layouts, web and Unity controller code, synthetic standard-gamepad browser coverage and exhaustive condition-route validation are implemented. Both clients now share a deliberate select → complete focused reading → explicit issue-order contract; pointer/keyboard selection is proven not to mutate campaign state. The web path also has modal/decision isolation, focus containment/return, mobile reading/confirmation evidence, 200% text, 320 CSS pixel 400%-equivalent reflow, actual Chrome 400% page-zoom/reset evidence, forced-colors structure/non-color cues and reduced-motion evidence. Physical Xbox/PlayStation-layout controller sessions, human assistive-technology and human-observed zoom/high-contrast sessions, and observed external playtests remain open, so the milestone is in progress rather than complete.
 
