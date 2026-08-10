@@ -31,7 +31,7 @@ SHI 是正式制作中的游戏，而非一次性演示。第一段可玩章节�
 | [`apps/web`](../apps/web/) | 可玩的 React/Vite/Three.js 网页端、存档、史料簿、决策记录、移动端与 RTL |
 | [`apps/unity`](../apps/unity/) | 读取同一战役的 Unity 6 工程与 3D 军议图；Linux/WebGL 编辑器已安装，授权登录仍是公开阻塞项 |
 | [`content`](../content/) | 6 场景、15 选择、5 资源、1 次整顿与 3 个结局 |
-| [`docs`](../docs/) | 设计、史料、架构、本地化、美术、测试、发布与一年路线图 |
+| [`docs`](../docs/) | 设计、史料、架构、本地化、美术、测试、发布与质量关卡路线图 |
 
 ## 快速开始
 
@@ -46,7 +46,7 @@ npm run build
 
 ## 架构与研究基线
 
-版本化战役 JSON 是唯一叙事真源，由确定性的 TypeScript 核心和 Unity 6 客户端共同读取。私人书籍、OCR、聊天记录、下载文件与完整工作备忘录不进入 Git。详见[游戏设计文档](../docs/design/GAME_DESIGN_DOCUMENT.md)、[史料政策](../docs/history/SOURCE_POLICY.md)和[一年路线图](../docs/production/ROADMAP.md)。
+版本化战役 JSON 是唯一叙事真源，由确定性的 TypeScript 核心和 Unity 6 客户端共同读取。私人书籍、OCR、聊天记录、下载文件与完整工作备忘录不进入 Git。详见[游戏设计文档](../docs/design/GAME_DESIGN_DOCUMENT.md)、[史料政策](../docs/history/SOURCE_POLICY.md)和[质量关卡路线图](../docs/production/ROADMAP.md)。
 
 ## 构建与验证
 
@@ -67,4 +67,4 @@ npm run build
 
 ## 状态与范围
 
-2026-08-09 前期系统版本。网页章节现有确定性的压力应手、存档迁移、键盘操作、全路线验证与 50 项可见测试；真正的 Linux/WebGL Unity 编辑器已安装并由 Hub 识别。原生导入与编译仍需账户持有人登录并激活 Unity 许可证；Unity 6 生产版本锁定不变。项目将在一年内按质量关卡继续，不会在双端构建、史料、本地化、资产、试玩与发布检查真正通过前宣称完成。
+2026-08-09 前期系统版本。网页章节现有确定性的压力应手、存档迁移、键盘操作、全路线验证与 50 项可见测试；真正的 Linux/WebGL Unity 编辑器已安装并由 Hub 识别。原生导入与编译仍需账户持有人登录并激活 Unity 许可证；Unity 6 生产版本锁定不变。项目不设固定完工期限，将按质量关卡逐日稳步推进；双端构建、史料、本地化、资产、试玩与发布检查真正通过前，不会宣称完成。

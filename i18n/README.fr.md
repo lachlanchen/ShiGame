@@ -44,7 +44,7 @@ npm run build
 
 ## Architecture et recherche
 
-Le JSON versionné est l'unique source narrative, partagée par le cœur déterministe TypeScript et Unity 6. Livres privés, OCR, discussions et mémo complet n'entrent pas dans Git. Lire le [design](../docs/design/GAME_DESIGN_DOCUMENT.md), la [politique des sources](../docs/history/SOURCE_POLICY.md) et la [feuille de route annuelle](../docs/production/ROADMAP.md).
+Le JSON versionné est l'unique source narrative, partagée par le cœur déterministe TypeScript et Unity 6. Livres privés, OCR, discussions et mémo complet n'entrent pas dans Git. Lire le [design](../docs/design/GAME_DESIGN_DOCUMENT.md), la [politique des sources](../docs/history/SOURCE_POLICY.md) et la [feuille de route par jalons qualité](../docs/production/ROADMAP.md).
 
 ## Build et validation
 

@@ -1,0 +1,1033 @@
+{
+  "assetId": "shi-daze-council-skin-lookdev-v1",
+  "status": "isolated Chen Sheng skin material lookdev; source-review candidate, not final skin or close-camera authority",
+  "disclosure": "CHEN SHENG SKIN MATERIAL LOOKDEV \u00b7 GENERIC DRAMATIC CASTING \u00b7 NOT A HISTORICAL LIKENESS OR COMPLEXION CLAIM \u00b7 NOT FINAL CHARACTER ART",
+  "mode": "import-replace",
+  "mutationEnvironment": "SHI_DAZE_COUNCIL_SKIN_LOOKDEV_REIMPORT",
+  "mutationAuthorized": true,
+  "engineVersion": "5.8.1-56057345+++UE5+Release-5.8",
+  "destination": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1",
+  "sourceContract": {
+    "metrics": {
+      "manifest": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1.metrics.json",
+        "bytes": 8012,
+        "sha256": "16fb41a389f36b9758d68c41f72052a99a1d18957c7548f8ba6510e98ac906dd"
+      },
+      "fileReceipts": {
+        "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb",
+          "bytes": 2987252,
+          "sha256": "378511d47964df5a3a6e198a737a3b2f5ea024a2c4f494c3d7052c83e6d88a03"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+          "bytes": 1466973,
+          "sha256": "df82f7574b2376d1b67157b84a1540f2b4d2f3d33d487cc51aefa2fdbed09c41"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+          "bytes": 1273488,
+          "sha256": "086baf25c8a03e24ad1ab535fc814b5a4bb00d3ca3eaab6c2ccdd89dc712ad11"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+          "bytes": 1966314,
+          "sha256": "ab66885692f70714584e5196379f6e6309c1ba6c204e3305f7927107f66044c5"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+          "bytes": 1264337,
+          "sha256": "c1208afde5bc13b94c3fb8418f6d9e8ad41f0a4bee2ca6f190f74a54fc6f1094"
+        },
+        "scripts/build-daze-council-skin-lookdev.py": {
+          "file": "scripts/build-daze-council-skin-lookdev.py",
+          "bytes": 23938,
+          "sha256": "965f8fd0b09cc40226e60a92a05bc0eb442054483240abaa1d887fd4f38db722"
+        },
+        "scripts/validate-daze-council-skin-lookdev.py": {
+          "file": "scripts/validate-daze-council-skin-lookdev.py",
+          "bytes": 19571,
+          "sha256": "c7bcfe3c688499619a882176cf1c264103cc99a4e7a8d269569284a9170e3470"
+        }
+      }
+    },
+    "validation": {
+      "manifest": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1.validation.json",
+        "bytes": 9279,
+        "sha256": "dde3612273ebd563e160129f4c398e18a63839df28d02e8e726f1274afcf7d41"
+      },
+      "fileReceipts": {
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+          "bytes": 1466973,
+          "sha256": "df82f7574b2376d1b67157b84a1540f2b4d2f3d33d487cc51aefa2fdbed09c41"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+          "bytes": 1273488,
+          "sha256": "086baf25c8a03e24ad1ab535fc814b5a4bb00d3ca3eaab6c2ccdd89dc712ad11"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+          "bytes": 1966314,
+          "sha256": "ab66885692f70714584e5196379f6e6309c1ba6c204e3305f7927107f66044c5"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+          "bytes": 1264337,
+          "sha256": "c1208afde5bc13b94c3fb8418f6d9e8ad41f0a4bee2ca6f190f74a54fc6f1094"
+        }
+      }
+    },
+    "provenance": {
+      "importTimeSnapshot": true,
+      "currentCrossReceipts": false,
+      "snapshotBoundary": "The manifest and file receipts in this object were captured by the authorized import run. They preserve that causal input snapshot and must not be verified as current mutable-path cross-receipts after later privacy, importer, provenance or presentation updates.",
+      "manifest": {
+        "file": "assets/provenance/shi-daze-council-skin-lookdev-v1.json",
+        "bytes": 12470,
+        "sha256": "ad5cce90f3f839ec0e8092b120cfc79a82924648f0bcd875795e7d00cc115bcd"
+      },
+      "fileReceipts": {
+        "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb",
+          "bytes": 2987252,
+          "sha256": "378511d47964df5a3a6e198a737a3b2f5ea024a2c4f494c3d7052c83e6d88a03"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+          "bytes": 1466973,
+          "sha256": "df82f7574b2376d1b67157b84a1540f2b4d2f3d33d487cc51aefa2fdbed09c41"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+          "bytes": 1273488,
+          "sha256": "086baf25c8a03e24ad1ab535fc814b5a4bb00d3ca3eaab6c2ccdd89dc712ad11"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+          "bytes": 1966314,
+          "sha256": "ab66885692f70714584e5196379f6e6309c1ba6c204e3305f7927107f66044c5"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+          "bytes": 1264337,
+          "sha256": "c1208afde5bc13b94c3fb8418f6d9e8ad41f0a4bee2ca6f190f74a54fc6f1094"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1.metrics.json": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1.metrics.json",
+          "bytes": 8012,
+          "sha256": "16fb41a389f36b9758d68c41f72052a99a1d18957c7548f8ba6510e98ac906dd"
+        },
+        "assets/3d/source/shi-daze-council-skin-lookdev-v1.validation.json": {
+          "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1.validation.json",
+          "bytes": 9279,
+          "sha256": "dde3612273ebd563e160129f4c398e18a63839df28d02e8e726f1274afcf7d41"
+        },
+        "scripts/build-daze-council-skin-lookdev.py": {
+          "file": "scripts/build-daze-council-skin-lookdev.py",
+          "bytes": 23938,
+          "sha256": "965f8fd0b09cc40226e60a92a05bc0eb442054483240abaa1d887fd4f38db722"
+        },
+        "scripts/validate-daze-council-skin-lookdev.py": {
+          "file": "scripts/validate-daze-council-skin-lookdev.py",
+          "bytes": 19571,
+          "sha256": "c7bcfe3c688499619a882176cf1c264103cc99a4e7a8d269569284a9170e3470"
+        },
+        "scripts/import-daze-council-skin-lookdev-unreal.py": {
+          "file": "scripts/import-daze-council-skin-lookdev-unreal.py",
+          "bytes": 70130,
+          "sha256": "d4ab301eb8da751a791d6905533ac2fa1847905efd8f97639192f2664a98c82a"
+        },
+        "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json": {
+          "file": "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json",
+          "bytes": 23915,
+          "sha256": "11b9b06f848e8e5d199c9273b702beac075f6883d7cd76991273e94de96f0812"
+        }
+      }
+    },
+    "sourceCharacter": {
+      "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb",
+      "bytes": 2987252,
+      "sha256": "378511d47964df5a3a6e198a737a3b2f5ea024a2c4f494c3d7052c83e6d88a03"
+    },
+    "sourceTextures": {
+      "baseColor": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+        "bytes": 1466973,
+        "sha256": "df82f7574b2376d1b67157b84a1540f2b4d2f3d33d487cc51aefa2fdbed09c41"
+      },
+      "materialMasks": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+        "bytes": 1273488,
+        "sha256": "086baf25c8a03e24ad1ab535fc814b5a4bb00d3ca3eaab6c2ccdd89dc712ad11"
+      },
+      "detailNormal": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+        "bytes": 1264337,
+        "sha256": "c1208afde5bc13b94c3fb8418f6d9e8ad41f0a4bee2ca6f190f74a54fc6f1094"
+      },
+      "canonicalHeight": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+        "bytes": 1966314,
+        "sha256": "ab66885692f70714584e5196379f6e6309c1ba6c204e3305f7927107f66044c5"
+      }
+    },
+    "pngHeaders": {
+      "baseColor": {
+        "width": 2048,
+        "height": 2048,
+        "bitDepth": 8,
+        "colorType": 2,
+        "compressionMethod": 0,
+        "filterMethod": 0,
+        "interlaceMethod": 0
+      },
+      "materialMasks": {
+        "width": 2048,
+        "height": 2048,
+        "bitDepth": 8,
+        "colorType": 6,
+        "compressionMethod": 0,
+        "filterMethod": 0,
+        "interlaceMethod": 0
+      },
+      "detailNormal": {
+        "width": 1024,
+        "height": 1024,
+        "bitDepth": 8,
+        "colorType": 2,
+        "compressionMethod": 0,
+        "filterMethod": 0,
+        "interlaceMethod": 0
+      },
+      "canonicalHeight": {
+        "width": 1024,
+        "height": 1024,
+        "bitDepth": 16,
+        "colorType": 0,
+        "compressionMethod": 0,
+        "filterMethod": 0,
+        "interlaceMethod": 0
+      }
+    },
+    "checks": {
+      "metricsAssetId": true,
+      "validationAssetId": true,
+      "provenanceAssetId": true,
+      "validationPassed": true,
+      "validationBindsExactlyFourSources": true,
+      "deterministicNonNeuralAuthorship": true,
+      "reviewCandidateNotEngineOrHumanApproved": true,
+      "exactSourceCharacterReceipt": true,
+      "canonicalHeightDeclaredSourceOnly": true,
+      "normalDerivedOnlyFromCanonicalHeight": true,
+      "specularContract": true,
+      "metallicContract": true,
+      "subsurfaceProfileOpacitySourceContract": true,
+      "baseColor:exactMetricsReceipt": true,
+      "baseColor:exactValidationReceipt": true,
+      "baseColor:exactProvenanceReceipt": true,
+      "baseColor:exactPngEncoding": true,
+      "baseColor:exactValidationEncoding": true,
+      "baseColor:exactUnrealImportContract": true,
+      "materialMasks:exactMetricsReceipt": true,
+      "materialMasks:exactValidationReceipt": true,
+      "materialMasks:exactProvenanceReceipt": true,
+      "materialMasks:exactPngEncoding": true,
+      "materialMasks:exactValidationEncoding": true,
+      "materialMasks:exactUnrealImportContract": true,
+      "detailNormal:exactMetricsReceipt": true,
+      "detailNormal:exactValidationReceipt": true,
+      "detailNormal:exactProvenanceReceipt": true,
+      "detailNormal:exactPngEncoding": true,
+      "detailNormal:exactValidationEncoding": true,
+      "detailNormal:exactUnrealImportContract": true,
+      "canonicalHeight:exactMetricsReceipt": true,
+      "canonicalHeight:exactValidationReceipt": true,
+      "canonicalHeight:exactProvenanceReceipt": true,
+      "canonicalHeight:exactPngEncoding": true,
+      "canonicalHeight:exactValidationEncoding": true,
+      "canonicalHeight:exactSourceOnlyImportContract": true
+    },
+    "passed": true
+  },
+  "canonicalHeightSource": {
+    "receipt": {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+      "bytes": 1966314,
+      "sha256": "ab66885692f70714584e5196379f6e6309c1ba6c204e3305f7927107f66044c5"
+    },
+    "pngHeader": {
+      "width": 1024,
+      "height": 1024,
+      "bitDepth": 16,
+      "colorType": 0,
+      "compressionMethod": 0,
+      "filterMethod": 0,
+      "interlaceMethod": 0
+    },
+    "importedIntoEngine": false,
+    "derivedNormalAsset": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.T_SHI_ChenSheng_Skin_DetailNormal_1K",
+    "checks": {
+      "exact16BitSource": true,
+      "sourceOnlyNoEngineAsset": true
+    },
+    "passed": true
+  },
+  "textureImports": {
+    "baseColor": {
+      "role": "baseColor",
+      "assetPath": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_BaseColor_2K.T_SHI_ChenSheng_Skin_BaseColor_2K",
+      "source": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+        "bytes": 1466973,
+        "sha256": "df82f7574b2376d1b67157b84a1540f2b4d2f3d33d487cc51aefa2fdbed09c41"
+      },
+      "importFilename": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+      "serializedImportMetadata": {
+        "class": "/Script/Engine.AssetImportData",
+        "sourceFilenameCount": 1,
+        "interchangeGraphRetained": false
+      },
+      "importedObjectPaths": [
+        "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_BaseColor_2K.T_SHI_ChenSheng_Skin_BaseColor_2K"
+      ],
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "srgb": true,
+      "compression": "TC_BC7",
+      "addressX": "TA_CLAMP",
+      "addressY": "TA_CLAMP",
+      "textureGroup": "TEXTUREGROUP_CHARACTER",
+      "checks": {
+        "exactClass": true,
+        "exactAssetPath": true,
+        "exactImportedObjectPath": true,
+        "exactSourceFilename": true,
+        "exactBaseAssetImportDataClass": true,
+        "noInterchangeAssetImportData": true,
+        "exactOneResolvedSourceFilename": true,
+        "exactDimensions": true,
+        "exactSrgb": true,
+        "exactCompression": true,
+        "exactAddressing": true,
+        "exactTextureGroup": true,
+        "directxGreenNotFlipped": true,
+        "notVirtualTexture": true
+      },
+      "passed": true
+    },
+    "materialMasks": {
+      "role": "materialMasks",
+      "assetPath": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_Masks_2K.T_SHI_ChenSheng_Skin_Masks_2K",
+      "source": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+        "bytes": 1273488,
+        "sha256": "086baf25c8a03e24ad1ab535fc814b5a4bb00d3ca3eaab6c2ccdd89dc712ad11"
+      },
+      "importFilename": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+      "serializedImportMetadata": {
+        "class": "/Script/Engine.AssetImportData",
+        "sourceFilenameCount": 1,
+        "interchangeGraphRetained": false
+      },
+      "importedObjectPaths": [
+        "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_Masks_2K.T_SHI_ChenSheng_Skin_Masks_2K"
+      ],
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "srgb": false,
+      "compression": "TC_MASKS",
+      "addressX": "TA_CLAMP",
+      "addressY": "TA_CLAMP",
+      "textureGroup": "TEXTUREGROUP_CHARACTER",
+      "checks": {
+        "exactClass": true,
+        "exactAssetPath": true,
+        "exactImportedObjectPath": true,
+        "exactSourceFilename": true,
+        "exactBaseAssetImportDataClass": true,
+        "noInterchangeAssetImportData": true,
+        "exactOneResolvedSourceFilename": true,
+        "exactDimensions": true,
+        "exactSrgb": true,
+        "exactCompression": true,
+        "exactAddressing": true,
+        "exactTextureGroup": true,
+        "directxGreenNotFlipped": true,
+        "notVirtualTexture": true
+      },
+      "passed": true
+    },
+    "detailNormal": {
+      "role": "detailNormal",
+      "assetPath": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.T_SHI_ChenSheng_Skin_DetailNormal_1K",
+      "source": {
+        "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+        "bytes": 1264337,
+        "sha256": "c1208afde5bc13b94c3fb8418f6d9e8ad41f0a4bee2ca6f190f74a54fc6f1094"
+      },
+      "importFilename": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+      "serializedImportMetadata": {
+        "class": "/Script/Engine.AssetImportData",
+        "sourceFilenameCount": 1,
+        "interchangeGraphRetained": false
+      },
+      "importedObjectPaths": [
+        "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.T_SHI_ChenSheng_Skin_DetailNormal_1K"
+      ],
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "srgb": false,
+      "compression": "TC_NORMALMAP",
+      "addressX": "TA_WRAP",
+      "addressY": "TA_WRAP",
+      "textureGroup": "TEXTUREGROUP_CHARACTER_NORMAL_MAP",
+      "checks": {
+        "exactClass": true,
+        "exactAssetPath": true,
+        "exactImportedObjectPath": true,
+        "exactSourceFilename": true,
+        "exactBaseAssetImportDataClass": true,
+        "noInterchangeAssetImportData": true,
+        "exactOneResolvedSourceFilename": true,
+        "exactDimensions": true,
+        "exactSrgb": true,
+        "exactCompression": true,
+        "exactAddressing": true,
+        "exactTextureGroup": true,
+        "directxGreenNotFlipped": true,
+        "notVirtualTexture": true
+      },
+      "passed": true
+    }
+  },
+  "subsurfaceProfile": {
+    "assetPath": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/SP_SHI_ChenSheng_SkinLookdevV1.SP_SHI_ChenSheng_SkinLookdevV1",
+    "settings": {
+      "surface_albedo": [
+        0.2529999911785126,
+        0.13300000131130219,
+        0.08399999886751175,
+        1.0
+      ],
+      "mean_free_path_color": [
+        1.0,
+        0.3700000047683716,
+        0.30000001192092896,
+        1.0
+      ],
+      "mean_free_path_distance": 2.674799919128418,
+      "world_unit_scale": 0.10000000149011612,
+      "enable_burley": true,
+      "enable_mean_free_path": true,
+      "tint": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "boundary_color_bleed": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "transmission_tint_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "extinction_scale": 1.0,
+      "normal_scale": 0.07999999821186066,
+      "distance_scale": 1.0,
+      "scattering_distribution": 0.9300000071525574,
+      "ior": 1.399999976158142,
+      "roughness0": 0.75,
+      "roughness1": 1.2999999523162842,
+      "lobe_mix": 0.8500000238418579
+    },
+    "checks": {
+      "exactClass": true,
+      "exactAssetPath": true,
+      "exactSetting:surface_albedo": true,
+      "exactSetting:mean_free_path_color": true,
+      "exactSetting:mean_free_path_distance": true,
+      "exactSetting:world_unit_scale": true,
+      "exactSetting:enable_burley": true,
+      "exactSetting:enable_mean_free_path": true,
+      "exactSetting:tint": true,
+      "exactSetting:boundary_color_bleed": true,
+      "exactSetting:transmission_tint_color": true,
+      "exactSetting:extinction_scale": true,
+      "exactSetting:normal_scale": true,
+      "exactSetting:distance_scale": true,
+      "exactSetting:scattering_distribution": true,
+      "exactSetting:ior": true,
+      "exactSetting:roughness0": true,
+      "exactSetting:roughness1": true,
+      "exactSetting:lobe_mix": true
+    },
+    "passed": true
+  },
+  "material": {
+    "assetPath": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/M_SHI_ChenSheng_SkinLookdevV1.M_SHI_ChenSheng_SkinLookdevV1",
+    "profile": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/SP_SHI_ChenSheng_SkinLookdevV1.SP_SHI_ChenSheng_SkinLookdevV1",
+    "nodeCount": 7,
+    "nodeClasses": [
+      "MaterialExpressionTextureCoordinate",
+      "MaterialExpressionTextureCoordinate",
+      "MaterialExpressionTextureSampleParameter2D",
+      "MaterialExpressionTextureSampleParameter2D",
+      "MaterialExpressionTextureSampleParameter2D",
+      "MaterialExpressionScalarParameter",
+      "MaterialExpressionScalarParameter"
+    ],
+    "fullUsedTexturePaths": [],
+    "fullUsedTextureCount": 0,
+    "admittedProjectTexturePaths": [],
+    "missingProjectTexturePaths": [
+      "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_BaseColor_2K.T_SHI_ChenSheng_Skin_BaseColor_2K",
+      "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.T_SHI_ChenSheng_Skin_DetailNormal_1K",
+      "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_Masks_2K.T_SHI_ChenSheng_Skin_Masks_2K"
+    ],
+    "usedTextureInspection": {
+      "api": "MaterialEditingLibrary.get_material_used_textures",
+      "state": "deferred-to-read-only-reload",
+      "apiAvailable": true,
+      "apiReturnedExactlyEmpty": true,
+      "apiReturnedNonempty": false,
+      "rawEntryCount": 0,
+      "observedTexturePathCount": 0,
+      "observedTextureClaimsMade": false,
+      "strictObservationPassed": false,
+      "deferredToReadOnlyReload": true,
+      "deferralAllowedForCurrentMode": true,
+      "acceptedForCurrentMode": true,
+      "observationChecks": {
+        "apiAvailable": true,
+        "apiReturnedNonempty": false,
+        "uniqueEntriesByPathObserved": false,
+        "exactThreeAdmittedProjectTexturesObserved": false,
+        "boundedOptionalEngineDefaultObserved": false,
+        "noUnapprovedTexturePathsObserved": false,
+        "strictThreeProjectTexturesPlusBoundedEngineDefaultObserved": false
+      },
+      "deferralChecks": {
+        "authorizedImportReplaceMode": true,
+        "apiReturnedExactlyEmpty": true,
+        "coreMaterialChecksPassedBeforeDeferral": true
+      }
+    },
+    "engineExtras": {
+      "observationAvailable": false,
+      "texturePaths": [],
+      "count": 0,
+      "admittedTexturePaths": [],
+      "allowedTexturePaths": [
+        "/Engine/EngineResources/DefaultTexture.DefaultTexture"
+      ],
+      "maximumCount": 1,
+      "unapprovedTexturePaths": [],
+      "passed": false
+    },
+    "unapprovedTexturePaths": [],
+    "textureParameters": {
+      "BaseColor2K": {
+        "texture": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_BaseColor_2K.T_SHI_ChenSheng_Skin_BaseColor_2K",
+        "samplerType": "SAMPLERTYPE_COLOR"
+      },
+      "MaterialMasks2K": {
+        "texture": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_Masks_2K.T_SHI_ChenSheng_Skin_Masks_2K",
+        "samplerType": "SAMPLERTYPE_MASKS"
+      },
+      "DetailNormal1K": {
+        "texture": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.T_SHI_ChenSheng_Skin_DetailNormal_1K",
+        "samplerType": "SAMPLERTYPE_NORMAL"
+      }
+    },
+    "scalarParameters": {
+      "Metallic": 0.0,
+      "Specular": 0.25
+    },
+    "uvCoordinates": [
+      {
+        "coordinateIndex": 0,
+        "uTiling": 1.0,
+        "vTiling": 1.0
+      },
+      {
+        "coordinateIndex": 0,
+        "uTiling": 24.0,
+        "vTiling": 24.0
+      }
+    ],
+    "outputs": {
+      "baseColor": {
+        "node": "MaterialExpressionTextureSampleParameter2D",
+        "output": "RGB"
+      },
+      "roughness": {
+        "node": "MaterialExpressionTextureSampleParameter2D",
+        "output": "G"
+      },
+      "ambientOcclusion": {
+        "node": "MaterialExpressionTextureSampleParameter2D",
+        "output": "R"
+      },
+      "opacity": {
+        "node": "MaterialExpressionTextureSampleParameter2D",
+        "output": "B"
+      },
+      "subsurfaceColor": {
+        "node": null,
+        "output": ""
+      },
+      "normal": {
+        "node": "MaterialExpressionTextureSampleParameter2D",
+        "output": "RGB"
+      },
+      "metallic": {
+        "node": "MaterialExpressionScalarParameter",
+        "output": ""
+      },
+      "specular": {
+        "node": "MaterialExpressionScalarParameter",
+        "output": ""
+      }
+    },
+    "subsurfaceProfileOpacity": {
+      "source": "MaterialMasks2K.B",
+      "sourceByte": 89,
+      "value": 0.34901960784313724,
+      "thresholdExclusive": 0.1,
+      "maximum": 0.34901960784313724,
+      "profileMeanFreePathDistance": 2.6748,
+      "effectiveMeanFreePath": 0.9335576470588234,
+      "maximumEffectiveMeanFreePath": 0.9335576470588234,
+      "materialInput": "MP_OPACITY",
+      "subsurfaceColorInput": "unconnected",
+      "passed": true
+    },
+    "materialUsages": {
+      "MATUSAGE_BEAM_TRAILS": false,
+      "MATUSAGE_CLOTHING": false,
+      "MATUSAGE_CURVES": false,
+      "MATUSAGE_EDITOR_COMPOSITING": false,
+      "MATUSAGE_GEOMETRY_CACHE": false,
+      "MATUSAGE_GEOMETRY_COLLECTIONS": false,
+      "MATUSAGE_HAIR_STRANDS": false,
+      "MATUSAGE_HETEROGENEOUS_VOLUMES": false,
+      "MATUSAGE_INSTANCED_SKINNED_MESH": false,
+      "MATUSAGE_INSTANCED_STATIC_MESHES": false,
+      "MATUSAGE_LIDAR_POINT_CLOUD": false,
+      "MATUSAGE_MESH_DEFORMER": false,
+      "MATUSAGE_MESH_PARTICLES": false,
+      "MATUSAGE_MORPH_TARGETS": true,
+      "MATUSAGE_NANITE": false,
+      "MATUSAGE_NEURAL_NETWORKS": false,
+      "MATUSAGE_NIAGARA_MESH_PARTICLES": false,
+      "MATUSAGE_NIAGARA_RIBBONS": false,
+      "MATUSAGE_NIAGARA_SPRITES": false,
+      "MATUSAGE_PARTICLE_SPRITES": false,
+      "MATUSAGE_SKELETAL_MESH": true,
+      "MATUSAGE_SPLINE_MESH": false,
+      "MATUSAGE_STATIC_LIGHTING": false,
+      "MATUSAGE_STATIC_MESH": false,
+      "MATUSAGE_VIRTUAL_HEIGHTFIELD_MESH": false,
+      "MATUSAGE_VOLUMETRIC_CLOUD": false,
+      "MATUSAGE_VOXELS": false,
+      "MATUSAGE_WATER": false
+    },
+    "activeMaterialUsages": [
+      "MATUSAGE_MORPH_TARGETS",
+      "MATUSAGE_SKELETAL_MESH"
+    ],
+    "compiledDuringThisRun": true,
+    "priorImportCompileReceiptAccepted": false,
+    "compileErrors": [],
+    "coreMaterialChecksPassed": true,
+    "checks": {
+      "exactClass": true,
+      "exactAssetPath": true,
+      "opaqueSubsurfaceProfileSingleSidedSurface": true,
+      "exactSubsurfaceProfile": true,
+      "tangentSpaceNormal": true,
+      "exactSevenNodeGraph": true,
+      "exactGraphClasses": true,
+      "exactParameters": true,
+      "exactTextureParameters": true,
+      "exactScalarParameters": true,
+      "exactUv0BaseAndMask": true,
+      "boundedDetailUv0Tiling": true,
+      "exactMaterialOutputs": true,
+      "exactProfileOpacityFromMaskB": true,
+      "subsurfaceColorUnconnected": true,
+      "exactSkeletalAndMorphUsages": true,
+      "compileClean": true,
+      "noSubsurfaceColorEmissiveOpacityMaskDisplacementOrWorldOffset": true,
+      "usedTextureInspectionAcceptedForCurrentMode": true
+    },
+    "passed": true
+  },
+  "destinationInventory": {
+    "assets": [
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/M_SHI_ChenSheng_SkinLookdevV1.M_SHI_ChenSheng_SkinLookdevV1",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/SP_SHI_ChenSheng_SkinLookdevV1.SP_SHI_ChenSheng_SkinLookdevV1",
+        "class": "SubsurfaceProfile"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_BaseColor_2K.T_SHI_ChenSheng_Skin_BaseColor_2K",
+        "class": "Texture2D"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.T_SHI_ChenSheng_Skin_DetailNormal_1K",
+        "class": "Texture2D"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_Masks_2K.T_SHI_ChenSheng_Skin_Masks_2K",
+        "class": "Texture2D"
+      }
+    ],
+    "expected": {
+      "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/SP_SHI_ChenSheng_SkinLookdevV1.SP_SHI_ChenSheng_SkinLookdevV1": "SubsurfaceProfile",
+      "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/M_SHI_ChenSheng_SkinLookdevV1.M_SHI_ChenSheng_SkinLookdevV1": "Material",
+      "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_BaseColor_2K.T_SHI_ChenSheng_Skin_BaseColor_2K": "Texture2D",
+      "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_Masks_2K.T_SHI_ChenSheng_Skin_Masks_2K": "Texture2D",
+      "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.T_SHI_ChenSheng_Skin_DetailNormal_1K": "Texture2D"
+    },
+    "checks": {
+      "exactFiveAssetsNoExtras": true,
+      "exactClasses": true,
+      "noMaterialInstanceMeshRigAnimationOrGameplayAssets": true,
+      "noHeightTextureAsset": true
+    },
+    "passed": true
+  },
+  "acceptedFacialPreservation": {
+    "before": {
+      "acceptedEvidence": {
+        "file": "docs/production/evidence/unreal-daze-council-facial-performance-import-status.json",
+        "bytes": 51449,
+        "sha256": "5a4a8d1136ecf3200b844313470585c8c90fb45e8e719d20ca99e58d60db0655"
+      },
+      "diskRoot": "apps/unreal/Content/SHI/Art/Characters/DazeCouncilFacial",
+      "assetCount": 21,
+      "uassetReceipts": {
+        "M_SHI_Character_BindingClay.uasset": {
+          "bytes": 5125,
+          "sha256": "63373ab35105e459b3007f8bc61a017b4e53461ac7a29343c50c1731369300fe"
+        },
+        "M_SHI_Character_EyeBrown.uasset": {
+          "bytes": 7149,
+          "sha256": "f6699c17934d8be0e7a87b75e52756f6a58b260df7c5c67359b6c5042702a0d1"
+        },
+        "M_SHI_Character_HairClay.uasset": {
+          "bytes": 5107,
+          "sha256": "80755d19e196d7e8deb203f0390a660b902dd8326732aef342cc4a11d15f246f"
+        },
+        "M_SHI_Character_RolePropClay.uasset": {
+          "bytes": 5131,
+          "sha256": "a5aab277be06b70c7e3fe15a6f7edd90e6a457ff4122589df91d18ea9a322f31"
+        },
+        "M_SHI_Character_SkinClay.uasset": {
+          "bytes": 5162,
+          "sha256": "b7ec2a89a11a9b03127e622c90c1d58d0c7ee3c338d6e2925636893e5ee9d160"
+        },
+        "M_SHI_chen-sheng_ClothBase.uasset": {
+          "bytes": 5119,
+          "sha256": "a6e71ab780a9f5a0cf8a72cbe0e50aae90cdf6558bf27e63b2de750322f1f306"
+        },
+        "M_SHI_chen-sheng_ClothOuter.uasset": {
+          "bytes": 5125,
+          "sha256": "e1e4db2622dd6569d894a0d7c60185330bae3a3832b83a2e4a374cce05bb883b"
+        },
+        "M_SHI_keeper_ClothBase.uasset": {
+          "bytes": 5095,
+          "sha256": "44b0aa11f6385cfbd31b9155844ee47967b9fd6333cb019ced8c5a0e42f1c8b3"
+        },
+        "M_SHI_keeper_ClothOuter.uasset": {
+          "bytes": 5101,
+          "sha256": "48c6c13f5ba4138d0356bf8c4a7a93efdc3c792112eb6e8b88ff7ba8ca3b1b9b"
+        },
+        "M_SHI_qin-courier_ClothBase.uasset": {
+          "bytes": 5125,
+          "sha256": "4a74aebf61d363c7f891da35e0150ec7127e04472c4e181290bbe2f436abfc53"
+        },
+        "M_SHI_qin-courier_ClothOuter.uasset": {
+          "bytes": 5131,
+          "sha256": "cef800d7c9081dbccf43599231d547a13fc7f291a16e8fec6a9bb76af8315707"
+        },
+        "M_SHI_wu-guang_ClothBase.uasset": {
+          "bytes": 5107,
+          "sha256": "37f6dc5288eb9fb5ebf2743859b2d6b8e30f374562f1619c80303cf911f15c41"
+        },
+        "M_SHI_wu-guang_ClothOuter.uasset": {
+          "bytes": 5113,
+          "sha256": "854cc2b2faffe547823d78eeb463a98c7fb3c2f7833db4aaa984e568f054ab08"
+        },
+        "M_SHI_yu-mu_ClothBase.uasset": {
+          "bytes": 5089,
+          "sha256": "0eabbc611f146ae8b84d0bc2a7c8e86768e06c6a9c9f1854bf35c8d280ec007c"
+        },
+        "M_SHI_yu-mu_ClothOuter.uasset": {
+          "bytes": 5095,
+          "sha256": "1d92bae542501a15827094e3d46d527226ea2c2b7e71b901a9574152cdf6b854"
+        },
+        "SKM_SHI_DazeCouncil_ChenSheng_Facial_01.uasset": {
+          "bytes": 4430335,
+          "sha256": "fc07683b48b1b43f5f189396cbc229449b66c5607a3772d3e8933103a88cbcd1"
+        },
+        "SKM_SHI_DazeCouncil_Keeper_Facial_01.uasset": {
+          "bytes": 4427428,
+          "sha256": "f2749c90f1979efb0b0ea2980fbe62eebaa48fb66d80df82e813d758ab2182fb"
+        },
+        "SKM_SHI_DazeCouncil_QinCourier_Facial_01.uasset": {
+          "bytes": 4423621,
+          "sha256": "7b57b08613fe3485fb36fddfdba55b4b1cd35530e15ab6785f5f91950a898265"
+        },
+        "SKM_SHI_DazeCouncil_WuGuang_Facial_01.uasset": {
+          "bytes": 4434399,
+          "sha256": "9c31ba9a9d1f695e465df3b8f50599eafd8953437913a015a6aeb84a887d0c6d"
+        },
+        "SKM_SHI_DazeCouncil_YuMu_Facial_01.uasset": {
+          "bytes": 4430192,
+          "sha256": "ca58def2157d3b352ac92ddd551d5ca6e9e3886cf229f72488da23084dbca727"
+        },
+        "T_SHI_Character_EyeBrown_CC0.uasset": {
+          "bytes": 702150,
+          "sha256": "8d98242c721f1d91d47c4c8bf1f884b7abfb726532967db704fbb8f6a95a68c8"
+        }
+      },
+      "sharedSkeleton": {
+        "file": "apps/unreal/Content/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.uasset",
+        "bytes": 12278,
+        "sha256": "b0fd0004826603eb3af8f8f8bb261ce87c5ef46da0347b5003fc04e89cd807f1"
+      },
+      "checks": {
+        "exactAcceptedEvidence": true,
+        "acceptedEvidencePassed": true,
+        "exactTwentyOneAcceptedUassets": true,
+        "exactTwentyOneAcceptedRegistryAssets": true,
+        "exactAcceptedUassetReceipts": true,
+        "chenMeshReceipt": true,
+        "skinClayReceipt": true,
+        "sharedSkeletonReceipt": true,
+        "isolatedDestination": true
+      },
+      "passed": true
+    },
+    "assetCountAfter": 21,
+    "uassetReceiptCountAfter": 21,
+    "checks": {
+      "exactAcceptedFacialUassetHashesUnchanged": true,
+      "exactAcceptedFacialAssetInventoryUnchanged": true,
+      "sharedSkeletonHashUnchanged": true,
+      "destinationRemainsIsolated": true,
+      "acceptedHashesUnchangedAfterDestinationSave": true
+    },
+    "passed": true
+  },
+  "authorityBoundary": {
+    "reviewOnly": true,
+    "chenShengOnly": true,
+    "historicalPortrait": false,
+    "historicallyAttestedComplexion": false,
+    "humanHistoricalCulturalReviewApproved": false,
+    "closeCameraApproved": false,
+    "finalCharacterArt": false,
+    "interaction": false,
+    "gameplay": false,
+    "saveOrCampaign": false,
+    "replication": false,
+    "runtimeRandomness": false,
+    "dynamicNetworkDependency": false
+  },
+  "limitations": [
+    "Review-only deterministic material candidate; no historical likeness or complexion claim.",
+    "Inherited whole-body UV supports material QA, not film-close final framing.",
+    "Mouth interior, interaction hands, brows, lashes, hair, costume, voice, lip sync and acting remain red gates.",
+    "Human character/anatomy, historical/cultural, cinematic color and accessibility review remain required."
+  ],
+  "passed": true,
+  "saved": true,
+  "trackedUnrealAssets": {
+    "root": "apps/unreal/Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1",
+    "receipts": {
+      "M_SHI_ChenSheng_SkinLookdevV1.uasset": {
+        "bytes": 11579,
+        "sha256": "13d8dde823611bfd15ef8aae330cb109304a1621da0511518220bedcd51eb1f3"
+      },
+      "SP_SHI_ChenSheng_SkinLookdevV1.uasset": {
+        "bytes": 1913,
+        "sha256": "c730da3eddda2a67fe60a39ea8cf3d6b32b792afbc7a2318536cdd3af3c6512b"
+      },
+      "T_SHI_ChenSheng_Skin_BaseColor_2K.uasset": {
+        "bytes": 2113116,
+        "sha256": "54122ea3a81132a263c0a7d3541a8a534bc472313133359d85d3982716393c87"
+      },
+      "T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset": {
+        "bytes": 1532856,
+        "sha256": "6378f416c33ca89161479c3cde2584a7958a623fa5a9c348f344873a2934e7bc"
+      },
+      "T_SHI_ChenSheng_Skin_Masks_2K.uasset": {
+        "bytes": 1472351,
+        "sha256": "392ddda8ce0af8b8821116682081234ce680e04899e78722b39331e87a216ee8"
+      }
+    },
+    "checks": {
+      "exactFiveUassetsNoDiskExtras": true,
+      "allHashesNonEmpty": true,
+      "canonicalHeightNotImported": true
+    },
+    "passed": true
+  },
+  "embeddedMetadataPrivacy": {
+    "assets": {
+      "M_SHI_ChenSheng_SkinLookdevV1.uasset": {
+        "sourceIdentity": null,
+        "checks": {
+          "repositoryAbsolutePathAbsent": true,
+          "unixHomePathAbsent": true,
+          "macUsersPathAbsent": true,
+          "windowsForwardUsersPathAbsent": true,
+          "windowsBackslashUsersPathAbsent": true,
+          "absoluteInterchangeFactoryPathAbsent": true,
+          "interchangeAssetImportDataAbsent": true
+        },
+        "passed": true
+      },
+      "SP_SHI_ChenSheng_SkinLookdevV1.uasset": {
+        "sourceIdentity": null,
+        "checks": {
+          "repositoryAbsolutePathAbsent": true,
+          "unixHomePathAbsent": true,
+          "macUsersPathAbsent": true,
+          "windowsForwardUsersPathAbsent": true,
+          "windowsBackslashUsersPathAbsent": true,
+          "absoluteInterchangeFactoryPathAbsent": true,
+          "interchangeAssetImportDataAbsent": true
+        },
+        "passed": true
+      },
+      "T_SHI_ChenSheng_Skin_BaseColor_2K.uasset": {
+        "sourceIdentity": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+        "checks": {
+          "repositoryAbsolutePathAbsent": true,
+          "unixHomePathAbsent": true,
+          "macUsersPathAbsent": true,
+          "windowsForwardUsersPathAbsent": true,
+          "windowsBackslashUsersPathAbsent": true,
+          "absoluteInterchangeFactoryPathAbsent": true,
+          "interchangeAssetImportDataAbsent": true,
+          "exactSourceAbsolutePathAbsent": true,
+          "baseAssetImportDataPresent": true,
+          "relativeFilenamePropertyPresent": true,
+          "sourceBasenamePresent": true
+        },
+        "passed": true
+      },
+      "T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset": {
+        "sourceIdentity": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+        "checks": {
+          "repositoryAbsolutePathAbsent": true,
+          "unixHomePathAbsent": true,
+          "macUsersPathAbsent": true,
+          "windowsForwardUsersPathAbsent": true,
+          "windowsBackslashUsersPathAbsent": true,
+          "absoluteInterchangeFactoryPathAbsent": true,
+          "interchangeAssetImportDataAbsent": true,
+          "exactSourceAbsolutePathAbsent": true,
+          "baseAssetImportDataPresent": true,
+          "relativeFilenamePropertyPresent": true,
+          "sourceBasenamePresent": true
+        },
+        "passed": true
+      },
+      "T_SHI_ChenSheng_Skin_Masks_2K.uasset": {
+        "sourceIdentity": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+        "checks": {
+          "repositoryAbsolutePathAbsent": true,
+          "unixHomePathAbsent": true,
+          "macUsersPathAbsent": true,
+          "windowsForwardUsersPathAbsent": true,
+          "windowsBackslashUsersPathAbsent": true,
+          "absoluteInterchangeFactoryPathAbsent": true,
+          "interchangeAssetImportDataAbsent": true,
+          "exactSourceAbsolutePathAbsent": true,
+          "baseAssetImportDataPresent": true,
+          "relativeFilenamePropertyPresent": true,
+          "sourceBasenamePresent": true
+        },
+        "passed": true
+      }
+    },
+    "checks": {
+      "exactFiveAssetsScanned": true,
+      "allTrackedBinariesPrivatePathsAbsent": true
+    },
+    "passed": true
+  },
+  "readOnlyInspection": {
+    "mode": "inspect-only",
+    "mutationAuthorized": false,
+    "exitCode": 0,
+    "sourceContractPassed": true,
+    "allThreeTexturesPassed": true,
+    "subsurfaceProfilePassed": true,
+    "materialGraphAndCompilePassed": true,
+    "materialAdmissionPassed": true,
+    "usedTextureInspectionStrictPassed": true,
+    "usedTextureInspection": {
+      "api": "MaterialEditingLibrary.get_material_used_textures",
+      "state": "observed-strict-pass",
+      "apiAvailable": true,
+      "apiReturnedExactlyEmpty": false,
+      "apiReturnedNonempty": true,
+      "rawEntryCount": 3,
+      "observedTexturePathCount": 3,
+      "observedTextureClaimsMade": true,
+      "strictObservationPassed": true,
+      "deferredToReadOnlyReload": false,
+      "deferralAllowedForCurrentMode": false,
+      "acceptedForCurrentMode": true,
+      "observationChecks": {
+        "apiAvailable": true,
+        "apiReturnedNonempty": true,
+        "uniqueEntriesByPathObserved": true,
+        "exactThreeAdmittedProjectTexturesObserved": true,
+        "boundedOptionalEngineDefaultObserved": true,
+        "noUnapprovedTexturePathsObserved": true,
+        "strictThreeProjectTexturesPlusBoundedEngineDefaultObserved": true
+      },
+      "deferralChecks": {
+        "authorizedImportReplaceMode": false,
+        "apiReturnedExactlyEmpty": false,
+        "coreMaterialChecksPassedBeforeDeferral": true
+      }
+    },
+    "destinationInventoryPassed": true,
+    "canonicalHeightRemainedSourceOnly": true,
+    "acceptedFacialHashesUnchanged": true,
+    "trackedUassetHashesUnchanged": true,
+    "embeddedMetadataPrivacyPassed": true,
+    "overallPassed": true,
+    "passed": true,
+    "immutableImportReceiptRootSha256": "2a5b64796c446d1328c1c10cf17aa98e4ea5d12b1ff1c931277a4bc0eedd65f1",
+    "canonicalImportReceiptRootPreserved": true
+  }
+}

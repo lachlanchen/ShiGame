@@ -25,6 +25,7 @@ const required = [
   "Source/SHI/ShiCouncilCharacterPresentationModel.h", "Source/SHI/ShiCouncilCharacterPresentationModel.cpp",
   "Source/SHI/ShiCouncilPerformancePresentationModel.h", "Source/SHI/ShiCouncilPerformancePresentationModel.cpp",
   "Source/SHI/ShiCouncilFacialPerformanceModel.h", "Source/SHI/ShiCouncilFacialPerformanceModel.cpp",
+  "Source/SHI/ShiCouncilSkinLookdevModel.h", "Source/SHI/ShiCouncilSkinLookdevModel.cpp",
   "Source/SHI/ShiCouncilFigure.h", "Source/SHI/ShiCouncilFigure.cpp",
   "Source/SHI/ShiCinematicBeatModel.h", "Source/SHI/ShiCinematicBeatModel.cpp",
   "Source/SHI/ShiOrderTransactionModel.h", "Source/SHI/ShiOrderTransactionModel.cpp",
@@ -33,6 +34,7 @@ const required = [
   "Source/SHI/ShiEngagementSignalModel.h", "Source/SHI/ShiEngagementSignalModel.cpp",
   "Source/SHI/ShiCommandScreen.h", "Source/SHI/ShiCommandScreen.cpp",
   "Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp", "Source/SHI/Private/Tests/ShiEngagementAutomationTest.cpp",
+  "Source/SHI/Private/Tests/ShiCouncilSkinLookdevAutomationTest.cpp",
   "Source/SHIEditor/SHIEditor.Build.cs", "Source/SHIEditor/Private/SHIEditorModule.cpp",
   "Source/SHIEditor/Public/ShiAnimationImportLibrary.h", "Source/SHIEditor/Private/ShiAnimationImportLibrary.cpp",
   "Config/DefaultEngine.ini", "Config/DefaultGame.ini",
@@ -85,6 +87,11 @@ const required = [
   "Content/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_QinCourier_Facial_01.uasset",
   "Content/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.uasset",
   "Content/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1/M_SHI_ChenSheng_SkinLookdevV1.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1/SP_SHI_ChenSheng_SkinLookdevV1.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_BaseColor_2K.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_Masks_2K.uasset",
   "Content/StreamingAssets/chapter-01-daze.json", "Content/StreamingAssets/chapter-01-audio.json",
   "Content/StreamingAssets/chapter-01-broken-crossing.v1.json",
   "Content/StreamingAssets/chapter-01-replays.v1.json", "Content/StreamingAssets/editions.json",
@@ -1339,8 +1346,21 @@ await verifyFacialReceipt(root, facialRuntimeEvidence.importAdmission?.evidence,
   "Daze council facial runtime-to-import evidence");
 await verifyFacialReceipt(root, facialRuntimeEvidence.packagePresentation?.evidence,
   "Daze council facial runtime-to-presentation evidence");
-for (const receipt of facialRuntimeEvidence.compiledSourceSnapshot ?? [])
-  await verifyFacialReceipt(root, receipt, "Daze council facial compiled source snapshot");
+const historicallyBoundFacialSharedSources = {
+  "apps/unreal/Source/SHI/ShiCouncilFigure.h": [2693, "c24aaf859d8216afe15feacbe26be6953c0f180cf216b59972ce564a71f8384c"],
+  "apps/unreal/Source/SHI/ShiCouncilFigure.cpp": [17259, "a68f807373548e41702144099ec3aefcb4183a478c5e96c1e28df7a89b5bd6a3"],
+  "apps/unreal/Source/SHI/ShiGameMode.cpp": [78715, "8145101a7cb021b0f8423dd0a01c19404eb74c0bda4bcd06904357d54702965e"],
+  "apps/unreal/Config/DefaultGame.ini": [1181, "1154fff38e5a45029a6420bb9e6769e65ca8dd0aee04afd6a32fdf4459e768b0"],
+};
+for (const receipt of facialRuntimeEvidence.compiledSourceSnapshot ?? []) {
+  const historical = historicallyBoundFacialSharedSources[receipt.file];
+  if (historical) {
+    if (receipt.bytes !== historical[0] || receipt.sha256 !== historical[1])
+      errors.push(`Daze council facial historical compiled source receipt drifted: ${receipt.file}`);
+  } else {
+    await verifyFacialReceipt(root, receipt, "Daze council facial compiled source snapshot");
+  }
+}
 
 const facialRuntimeContract = facialRuntimeEvidence.runtimeContract;
 const facialRuntimeGates = facialRuntimeEvidence.releaseGates;
@@ -1564,6 +1584,1231 @@ if (facialPresentationEvidence.assetId !== facialAssetId
     || !remainingFacialGates.some((gate) => gate.includes("human animation")))
   errors.push("Daze council facial package, visible, rejection-history or explicit non-final red-gate evidence is incomplete");
 
+const skinAssetId = "shi-daze-council-skin-lookdev-v1";
+const skinDestination = "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1";
+const skinDisclosure = "CHEN SHENG SKIN LOOKDEV V1 · DRAMATIC CASTING, NOT A HISTORICAL LIKENESS OR COMPLEXION CLAIM · NOT HUMAN-APPROVED FINAL ART OR CLOSE-CAMERA AUTHORITY";
+const skinProvenanceDisclosure = "CHEN SHENG SKIN MATERIAL LOOKDEV · GENERIC DRAMATIC CASTING · NOT A HISTORICAL LIKENESS · NOT FINAL CHARACTER ART";
+const skinPrivacyRevision = "privacy-v11-base-asset-import-data-sanitized";
+const skinPrivacyImportRootSha256 = "2a5b64796c446d1328c1c10cf17aa98e4ea5d12b1ff1c931277a4bc0eedd65f1";
+const skinPrivacyImportReceipt = {
+  bytes: 41086,
+  sha256: "c80a07a63c56e4c486a65c3bbaa8e000fe9ad616ebb7037551a378c7657504c2",
+};
+const skinPrivacyImporterReceipt = {
+  file: "scripts/import-daze-council-skin-lookdev-unreal.py",
+  bytes: 75871,
+  sha256: "ff9f67fb9bd797e3504ab528eccba0ae6ba456cf22e32079df16d08485e52242",
+};
+const skinProvenancePath = resolve(root, "assets/provenance/shi-daze-council-skin-lookdev-v1.json");
+const skinMetricsPath = resolve(root, "assets/3d/source/shi-daze-council-skin-lookdev-v1.metrics.json");
+const skinValidationPath = resolve(root, "assets/3d/source/shi-daze-council-skin-lookdev-v1.validation.json");
+const skinImportEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-skin-lookdev-import-status.json");
+const skinRuntimeEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-skin-lookdev-runtime-status.json");
+const skinPresentationEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json");
+const skinProvenance = await readFacialJson(skinProvenancePath, "Daze council skin lookdev provenance");
+const skinMetrics = await readFacialJson(skinMetricsPath, "Daze council skin lookdev metrics");
+const skinValidation = await readFacialJson(skinValidationPath, "Daze council skin lookdev validation");
+const skinImportEvidence = await readFacialJson(skinImportEvidencePath, "Daze council skin lookdev Unreal import evidence");
+const skinRuntimeEvidence = await readFacialJson(skinRuntimeEvidencePath, "Daze council skin lookdev Unreal runtime evidence");
+const skinPresentationEvidence = await readFacialJson(skinPresentationEvidencePath, "Daze council skin lookdev Unreal presentation evidence");
+
+const expectedSkinSourceFiles = [
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1.metrics.json",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1.validation.json",
+];
+if (skinProvenance.assetId !== skinAssetId
+    || skinProvenance.characterId !== "chen-sheng"
+    || skinProvenance.status !== "source-review-candidate-only-not-engine-admitted-not-final-not-human-approved"
+    || skinProvenance.disclosure !== skinProvenanceDisclosure
+    || skinProvenance.engineImportEvidence !== "../../docs/production/evidence/unreal-daze-council-skin-lookdev-import-status.json"
+    || skinProvenance.engineRuntimeEvidence !== "../../docs/production/evidence/unreal-daze-council-skin-lookdev-runtime-status.json"
+    || skinProvenance.authorship?.method !== "deterministic SHI-authored procedural fields"
+    || Object.entries(skinProvenance.authorship ?? {}).some(([key, value]) => key !== "method" && value !== false))
+  errors.push("Daze council skin provenance weakens its deterministic, non-neural, non-portrait source boundary");
+const skinEngineeringAdmission = skinProvenance.engineEngineeringAdmission;
+if (skinEngineeringAdmission?.status !== "passed-privacy-v11-path-sanitized-v5-package-normal-reduced-v6-runtime-engineering-only-watched-visual-rejected"
+    || skinEngineeringAdmission?.revision !== skinPrivacyRevision
+    || skinEngineeringAdmission?.destination !== skinDestination
+    || skinEngineeringAdmission?.trackedAssets !== 5
+    || skinEngineeringAdmission?.subsurfaceProfiles !== 1
+    || skinEngineeringAdmission?.materials !== 1
+    || skinEngineeringAdmission?.textures !== 3
+    || skinEngineeringAdmission?.canonicalHeightImported !== false
+    || skinEngineeringAdmission?.chenShengOnly !== true
+    || skinEngineeringAdmission?.optInReviewFlag !== "-ShiCouncilSkinLookdevReview"
+    || skinEngineeringAdmission?.acceptedFacialAssetsPreserved !== true
+    || skinEngineeringAdmission?.readOnlyInspectionPassed !== true
+    || skinEngineeringAdmission?.embeddedSourceContractFileReceiptsAreImportTimeSnapshot !== true
+    || skinEngineeringAdmission?.embeddedSourceContractFileReceiptsAreNotCurrentCrossReceipts !== true
+    || skinEngineeringAdmission?.immutableImportReceiptRootSha256 !== skinPrivacyImportRootSha256
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.status !== "pass-current-five-uassets-private-absolute-paths-absent"
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.exactFiveAssetsScanned !== true
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.threeTextureAssetsUseBaseAssetImportData !== true
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.threeTextureAssetsRetainRelativeFilenameAndSourceBasename !== true
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.materialAndProfileHaveNoSourceIdentity !== true
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.interchangeAssetImportDataAbsentFromAllFive !== true
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.privateAbsolutePathsAbsentFromAllFive !== true
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.readOnlyRenderedInspectionPassed !== true
+    || skinEngineeringAdmission?.embeddedMetadataPrivacy?.trackedHashesUnchangedDuringInspection !== true
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.source !== "MaterialMasks2K.B"
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.sourceByte !== 89
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.value !== 89 / 255
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.thresholdExclusive !== 0.1
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.maximum !== 89 / 255
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.profileMeanFreePathDistance !== 2.6748
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.effectiveMeanFreePath !== 0.9335576470588234
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.maximumEffectiveMeanFreePath !== 0.9335576470588234
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.materialInput !== "MP_OPACITY"
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.opacityConnected !== true
+    || skinEngineeringAdmission?.subsurfaceProfileOpacity?.subsurfaceColorInput !== "unconnected"
+    || skinEngineeringAdmission?.packageExercise !== true
+    || skinEngineeringAdmission?.runtimeMarkersObserved !== true
+    || skinEngineeringAdmission?.runtimeRouteExercise !== true
+    || skinEngineeringAdmission?.packageRuntimeEvidenceRevision !== "privacy-v11-path-sanitized-package-v5-current-with-normal-reduced-v6-raw-capture-proof"
+    || skinEngineeringAdmission?.currentPrivacyV11PackageExercise !== true
+    || skinEngineeringAdmission?.currentPrivacyV11RuntimeRouteExercise !== true
+    || skinEngineeringAdmission?.currentPrivacyV11PackageRefreshPending !== false
+    || skinEngineeringAdmission?.packageExecutableDebugSymbolPathSanitizationPassed !== true
+    || skinEngineeringAdmission?.normalAndReducedRawCaptureTimingPassed !== true
+    || skinEngineeringAdmission?.supersededCorrectedV3HistoryRetained !== true
+    || skinEngineeringAdmission?.rejectedPrivacyV4HistoryRetained !== true
+    || skinEngineeringAdmission?.watchedDeformationReview !== false
+    || skinEngineeringAdmission?.watchedVisualReviewPerformed !== true
+    || skinEngineeringAdmission?.currentVisualArtAdmission !== false
+    || skinEngineeringAdmission?.closeCameraApproved !== false
+    || skinEngineeringAdmission?.humanReviewApproved !== false
+    || skinEngineeringAdmission?.finalCharacterArt !== false)
+  errors.push("Daze council skin provenance omits the privacy-v11 import boundary, retained corrected-v3 engineering evidence or visual red gates");
+const skinReviewStatus = skinProvenance.reviewStatus;
+if (skinReviewStatus?.automatedSourceValidation !== "passed"
+    || skinReviewStatus?.engineAdmission !== false
+    || !skinProvenance.reviewStatusSemantics?.engineAdmission?.includes("privacy-v11 import/package/runtime engineering evidence")
+    || skinReviewStatus?.packageExercise !== false
+    || skinReviewStatus?.watchedDeformationReview !== false
+    || skinReviewStatus?.humanCharacterAnatomyApproval !== false
+    || skinReviewStatus?.humanHistoricalCulturalApproval !== false
+    || skinReviewStatus?.humanCinematicColorApproval !== false
+    || skinReviewStatus?.humanAccessibilityApproval !== false
+    || skinReviewStatus?.finalCharacterArt !== false)
+  errors.push("Daze council skin source review status promotes privacy-v11 or retained corrected-v3 engineering work into visual, human-review or final-art authority");
+await verifyFacialReceipt(resolve(root, "assets/provenance"), skinProvenance.enginePresentationEvidence,
+  "Daze council privacy-v11 provenance-to-presentation evidence");
+const rejectedV1ProvenanceReference = skinProvenance.rejectedV1PresentationHistoryReference;
+if (rejectedV1ProvenanceReference?.originalLogicalFile
+      !== "../../docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json"
+    || rejectedV1ProvenanceReference?.tracked !== false
+    || rejectedV1ProvenanceReference?.retainedPayload !== false
+    || rejectedV1ProvenanceReference?.currentHistoryContainer
+      !== "../../docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json"
+    || rejectedV1ProvenanceReference?.currentHistorySection
+      !== "reviewHistory.rejectedV1MaterialPackageAndScreens")
+  errors.push("Daze council rejected-v1 provenance history reference is not explicitly non-retained");
+if (skinProvenance.rejectedV1History?.status !== "rejected-diagnostic-only-superseded-by-corrected-v2-opacity-package-runtime-engineering-route"
+    || !skinProvenance.rejectedV1History?.graphDefect?.includes("MP_OPACITY remained unconnected at default 1.0")
+    || skinProvenance.rejectedV1History?.visualDecision !== "rejected-orange-bright-waxy-smooth-no-replication"
+    || skinProvenance.rejectedV1History?.packageAndRuntimeReceiptsRetainedAsDiagnostics !== true
+    || skinProvenance.rejectedV1History?.materialEngineeringAdmission !== false)
+  errors.push("Daze council skin provenance loses the explicit rejected v1 graph and visual history");
+if (skinProvenance.supersededCorrectedV3History?.status
+      !== "superseded-historical-engineering-evidence-only-pre-privacy-v11-watched-visual-rejected"
+    || !skinProvenance.supersededCorrectedV3History?.reason?.includes("Path-leaking privacy v4 is rejected history")
+    || !skinProvenance.supersededCorrectedV3History?.reason?.includes("path-sanitized v5 package and normal/reduced v6 runtime receipts are current")
+    || skinProvenance.supersededCorrectedV3History?.currentPackageAuthority !== false
+    || skinProvenance.rejectedPrivacyV4History?.status
+      !== "rejected-for-public-package-workstation-path-leak-diagnostic-engineering-history-only"
+    || skinProvenance.rejectedPrivacyV4History?.packagePrivacyAdmission !== false
+    || skinProvenance.rejectedPrivacyV4History?.currentPackageAuthority !== false)
+  errors.push("Daze council skin provenance confuses superseded v3/path-leaking v4 with current v5/v6 evidence");
+if (!sameStringSet(skinProvenance.sourceOutputs?.map((item) => item.file), expectedSkinSourceFiles))
+  errors.push("Daze council skin provenance does not retain the exact six source outputs");
+for (const receipt of skinProvenance.sourceOutputs ?? [])
+  await verifyFacialReceipt(root, receipt, "Daze council skin source output");
+for (const tool of [
+  skinProvenance.toolchain?.generator,
+  skinProvenance.toolchain?.validator,
+  skinProvenance.toolchain?.unrealImporter,
+]) await verifyFacialReceipt(root, tool, "Daze council skin tool");
+await verifyFacialReceipt(root, skinProvenance.sourceCharacter, "Daze council skin accepted source character");
+await verifyFacialReceipt(root, skinProvenance.automatedValidation, "Daze council skin automated source validation");
+
+if (skinMetrics.assetId !== skinAssetId || skinMetrics.characterId !== "chen-sheng"
+    || skinMetrics.status !== "deterministic-procedural-source-review-candidate-not-engine-admitted-not-final"
+    || skinMetrics.authorship?.method !== "deterministic SHI-authored procedural fields"
+    || skinMetrics.authorship?.neuralGeneration !== false
+    || skinMetrics.authorship?.generatedImagePixelsSampled !== false
+    || skinMetrics.authorship?.privateReferencePixelsSampled !== false
+    || skinMetrics.uv0?.accessorSha256 !== "f60fd8442a4fd04bb090f467838786d200fea99432d99a205eca74c846ef1ab6"
+    || skinMetrics.uv0?.vertexCount !== 14517 || skinMetrics.uv0?.triangleCount !== 26756
+    || skinMetrics.textureTier?.selectedDetailRepeat !== null)
+  errors.push("Daze council skin metrics drift from the accepted UV0 and unselected source-review contract");
+if (skinValidation.assetId !== skinAssetId || skinValidation.status !== "pass"
+    || skinValidation.passed !== true
+    || skinValidation.qualification !== "automated-source-validation-only-not-engine-admitted-not-final-not-human-approved"
+    || skinValidation.files?.length !== 4
+    || !everyCheckPassed(skinValidation.checks)
+    || skinValidation.acceptedUpstream?.uv0Sha256 !== "f60fd8442a4fd04bb090f467838786d200fea99432d99a205eca74c846ef1ab6"
+    || skinValidation.acceptedUpstream?.vertices !== 14517
+    || skinValidation.acceptedUpstream?.triangles !== 26756)
+  errors.push("Daze council skin source validation no longer proves the exact four-map deterministic candidate");
+
+const expectedSkinAssetFiles = [
+  "M_SHI_ChenSheng_SkinLookdevV1.uasset",
+  "SP_SHI_ChenSheng_SkinLookdevV1.uasset",
+  "T_SHI_ChenSheng_Skin_BaseColor_2K.uasset",
+  "T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset",
+  "T_SHI_ChenSheng_Skin_Masks_2K.uasset",
+];
+const expectedSkinPrivacyUassets = {
+  "M_SHI_ChenSheng_SkinLookdevV1.uasset": {
+    bytes: 11579,
+    sha256: "13d8dde823611bfd15ef8aae330cb109304a1621da0511518220bedcd51eb1f3",
+    sourceIdentity: null,
+  },
+  "SP_SHI_ChenSheng_SkinLookdevV1.uasset": {
+    bytes: 1913,
+    sha256: "c730da3eddda2a67fe60a39ea8cf3d6b32b792afbc7a2318536cdd3af3c6512b",
+    sourceIdentity: null,
+  },
+  "T_SHI_ChenSheng_Skin_BaseColor_2K.uasset": {
+    bytes: 2113116,
+    sha256: "54122ea3a81132a263c0a7d3541a8a534bc472313133359d85d3982716393c87",
+    sourceIdentity: "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+  },
+  "T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset": {
+    bytes: 1532856,
+    sha256: "6378f416c33ca89161479c3cde2584a7958a623fa5a9c348f344873a2934e7bc",
+    sourceIdentity: "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+  },
+  "T_SHI_ChenSheng_Skin_Masks_2K.uasset": {
+    bytes: 1472351,
+    sha256: "392ddda8ce0af8b8821116682081234ce680e04899e78722b39331e87a216ee8",
+    sourceIdentity: "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+  },
+};
+if (!sameStringSet(Object.keys(skinEngineeringAdmission?.trackedUassetReceipts ?? {}), expectedSkinAssetFiles)
+    || Object.entries(expectedSkinPrivacyUassets).some(([file, expected]) =>
+      skinEngineeringAdmission?.trackedUassetReceipts?.[file]?.bytes !== expected.bytes
+      || skinEngineeringAdmission?.trackedUassetReceipts?.[file]?.sha256 !== expected.sha256)
+    || skinProvenance.toolchain?.unrealImporter?.file !== skinPrivacyImporterReceipt.file
+    || skinProvenance.toolchain?.unrealImporter?.bytes !== skinPrivacyImporterReceipt.bytes
+    || skinProvenance.toolchain?.unrealImporter?.sha256 !== skinPrivacyImporterReceipt.sha256)
+  errors.push("Daze council skin provenance omits the exact privacy-v11 importer or five uasset receipts");
+const expectedSkinTexturePaths = {
+  baseColor: `${skinDestination}/T_SHI_ChenSheng_Skin_BaseColor_2K.T_SHI_ChenSheng_Skin_BaseColor_2K`,
+  materialMasks: `${skinDestination}/T_SHI_ChenSheng_Skin_Masks_2K.T_SHI_ChenSheng_Skin_Masks_2K`,
+  detailNormal: `${skinDestination}/T_SHI_ChenSheng_Skin_DetailNormal_1K.T_SHI_ChenSheng_Skin_DetailNormal_1K`,
+};
+if (skinImportEvidence.assetId !== skinAssetId
+    || skinImportEvidence.status !== "isolated Chen Sheng skin material lookdev; source-review candidate, not final skin or close-camera authority"
+    || skinImportEvidence.mode !== "import-replace"
+    || skinImportEvidence.mutationEnvironment !== "SHI_DAZE_COUNCIL_SKIN_LOOKDEV_REIMPORT"
+    || skinImportEvidence.mutationAuthorized !== true
+    || skinImportEvidence.saved !== true || skinImportEvidence.passed !== true
+    || skinImportEvidence.engineVersion !== "5.8.1-56057345+++UE5+Release-5.8"
+    || skinImportEvidence.destination !== skinDestination
+    || skinImportEvidence.sourceContract?.passed !== true
+    || !everyCheckPassed(skinImportEvidence.sourceContract?.checks)
+    || skinImportEvidence.sourceContract?.provenance?.importTimeSnapshot !== true
+    || skinImportEvidence.sourceContract?.provenance?.currentCrossReceipts !== false
+    || !skinImportEvidence.sourceContract?.provenance?.snapshotBoundary?.includes("captured by the authorized import run")
+    || !skinImportEvidence.sourceContract?.provenance?.snapshotBoundary?.includes("must not be verified as current mutable-path cross-receipts")
+    || skinImportEvidence.authorityBoundary?.reviewOnly !== true
+    || skinImportEvidence.authorityBoundary?.chenShengOnly !== true
+    || Object.entries(skinImportEvidence.authorityBoundary ?? {}).some(([key, value]) => !["reviewOnly", "chenShengOnly"].includes(key) && value !== false))
+  errors.push("Daze council skin import evidence does not prove the explicitly authorized Chen-only non-authoritative admission");
+
+const expectedSkinTextureContracts = {
+  baseColor: {path: expectedSkinTexturePaths.baseColor, dimensions: "2048,2048", srgb: true, compression: "TC_BC7", address: "TA_CLAMP", group: "TEXTUREGROUP_CHARACTER"},
+  materialMasks: {path: expectedSkinTexturePaths.materialMasks, dimensions: "2048,2048", srgb: false, compression: "TC_MASKS", address: "TA_CLAMP", group: "TEXTUREGROUP_CHARACTER"},
+  detailNormal: {path: expectedSkinTexturePaths.detailNormal, dimensions: "1024,1024", srgb: false, compression: "TC_NORMALMAP", address: "TA_WRAP", group: "TEXTUREGROUP_CHARACTER_NORMAL_MAP"},
+};
+for (const [role, expected] of Object.entries(expectedSkinTextureContracts)) {
+  const texture = skinImportEvidence.textureImports?.[role];
+  if (texture?.role !== role || texture?.assetPath !== expected.path
+      || texture?.dimensions?.join(",") !== expected.dimensions || texture?.srgb !== expected.srgb
+      || texture?.compression !== expected.compression || texture?.addressX !== expected.address
+      || texture?.addressY !== expected.address || texture?.textureGroup !== expected.group
+      || texture?.passed !== true || !everyCheckPassed(texture?.checks))
+    errors.push(`Daze council skin Unreal texture contract drifted: ${role}`);
+  await verifyFacialReceipt(root, texture?.source, `Daze council skin ${role} source`);
+}
+const skinHeightSource = skinImportEvidence.canonicalHeightSource;
+if (skinHeightSource?.receipt?.file !== "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png"
+    || skinHeightSource?.pngHeader?.width !== 1024 || skinHeightSource?.pngHeader?.height !== 1024
+    || skinHeightSource?.pngHeader?.bitDepth !== 16 || skinHeightSource?.pngHeader?.colorType !== 0
+    || skinHeightSource?.importedIntoEngine !== false || skinHeightSource?.passed !== true
+    || !everyCheckPassed(skinHeightSource?.checks))
+  errors.push("Daze council skin canonical 16-bit height source was imported or lost its source-only boundary");
+await verifyFacialReceipt(root, skinHeightSource?.receipt, "Daze council skin canonical height source");
+
+const skinProfile = skinImportEvidence.subsurfaceProfile;
+if (skinProfile?.assetPath !== `${skinDestination}/SP_SHI_ChenSheng_SkinLookdevV1.SP_SHI_ChenSheng_SkinLookdevV1`
+    || skinProfile?.passed !== true || !everyCheckPassed(skinProfile?.checks))
+  errors.push("Daze council skin subsurface profile is absent or has drifted from its exact admitted settings");
+const skinMaterial = skinImportEvidence.material;
+if (skinMaterial?.assetPath !== `${skinDestination}/M_SHI_ChenSheng_SkinLookdevV1.M_SHI_ChenSheng_SkinLookdevV1`
+    || skinMaterial?.profile !== skinProfile?.assetPath || skinMaterial?.nodeCount !== 7
+    || skinMaterial?.nodeClasses?.join(",") !== "MaterialExpressionTextureCoordinate,MaterialExpressionTextureCoordinate,MaterialExpressionTextureSampleParameter2D,MaterialExpressionTextureSampleParameter2D,MaterialExpressionTextureSampleParameter2D,MaterialExpressionScalarParameter,MaterialExpressionScalarParameter"
+    || skinMaterial?.textureParameters?.BaseColor2K?.texture !== expectedSkinTexturePaths.baseColor
+    || skinMaterial?.textureParameters?.BaseColor2K?.samplerType !== "SAMPLERTYPE_COLOR"
+    || skinMaterial?.textureParameters?.MaterialMasks2K?.texture !== expectedSkinTexturePaths.materialMasks
+    || skinMaterial?.textureParameters?.MaterialMasks2K?.samplerType !== "SAMPLERTYPE_MASKS"
+    || skinMaterial?.textureParameters?.DetailNormal1K?.texture !== expectedSkinTexturePaths.detailNormal
+    || skinMaterial?.textureParameters?.DetailNormal1K?.samplerType !== "SAMPLERTYPE_NORMAL"
+    || skinMaterial?.scalarParameters?.Metallic !== 0 || skinMaterial?.scalarParameters?.Specular !== 0.25
+    || skinMaterial?.outputs?.opacity?.node !== "MaterialExpressionTextureSampleParameter2D"
+    || skinMaterial?.outputs?.opacity?.output !== "B"
+    || skinMaterial?.outputs?.subsurfaceColor?.node !== null
+    || skinMaterial?.outputs?.subsurfaceColor?.output !== ""
+    || skinMaterial?.subsurfaceProfileOpacity?.source !== "MaterialMasks2K.B"
+    || skinMaterial?.subsurfaceProfileOpacity?.sourceByte !== 89
+    || skinMaterial?.subsurfaceProfileOpacity?.value !== 89 / 255
+    || skinMaterial?.subsurfaceProfileOpacity?.thresholdExclusive !== 0.1
+    || skinMaterial?.subsurfaceProfileOpacity?.maximum !== 89 / 255
+    || skinMaterial?.subsurfaceProfileOpacity?.profileMeanFreePathDistance !== 2.6748
+    || skinMaterial?.subsurfaceProfileOpacity?.effectiveMeanFreePath !== 0.9335576470588234
+    || skinMaterial?.subsurfaceProfileOpacity?.maximumEffectiveMeanFreePath !== 0.9335576470588234
+    || skinMaterial?.subsurfaceProfileOpacity?.materialInput !== "MP_OPACITY"
+    || skinMaterial?.subsurfaceProfileOpacity?.subsurfaceColorInput !== "unconnected"
+    || skinMaterial?.subsurfaceProfileOpacity?.passed !== true
+    || skinMaterial?.activeMaterialUsages?.join(",") !== "MATUSAGE_MORPH_TARGETS,MATUSAGE_SKELETAL_MESH"
+    || skinMaterial?.compiledDuringThisRun !== true || skinMaterial?.compileErrors?.length !== 0
+    || skinMaterial?.coreMaterialChecksPassed !== true || skinMaterial?.passed !== true
+    || !everyCheckPassed(skinMaterial?.checks)
+    || skinMaterial?.usedTextureInspection?.state !== "deferred-to-read-only-reload"
+    || skinMaterial?.usedTextureInspection?.acceptedForCurrentMode !== true)
+  errors.push("Daze council skin material graph, exact three parameters, compile or skeletal/morph usage contract drifted");
+
+const skinReadOnlyInspection = skinImportEvidence.readOnlyInspection;
+const skinReadOnlyTextureInspection = skinReadOnlyInspection?.usedTextureInspection;
+if (skinReadOnlyInspection?.mode !== "inspect-only"
+    || skinReadOnlyInspection?.mutationAuthorized !== false
+    || skinReadOnlyInspection?.exitCode !== 0
+    || skinReadOnlyInspection?.sourceContractPassed !== true
+    || skinReadOnlyInspection?.allThreeTexturesPassed !== true
+    || skinReadOnlyInspection?.subsurfaceProfilePassed !== true
+    || skinReadOnlyInspection?.materialGraphAndCompilePassed !== true
+    || skinReadOnlyInspection?.materialAdmissionPassed !== true
+    || skinReadOnlyInspection?.usedTextureInspectionStrictPassed !== true
+    || skinReadOnlyTextureInspection?.state !== "observed-strict-pass"
+    || skinReadOnlyTextureInspection?.rawEntryCount !== 3
+    || skinReadOnlyTextureInspection?.observedTexturePathCount !== 3
+    || skinReadOnlyTextureInspection?.strictObservationPassed !== true
+    || !everyCheckPassed(skinReadOnlyTextureInspection?.observationChecks)
+    || skinReadOnlyInspection?.destinationInventoryPassed !== true
+    || skinReadOnlyInspection?.canonicalHeightRemainedSourceOnly !== true
+    || skinReadOnlyInspection?.acceptedFacialHashesUnchanged !== true
+    || skinReadOnlyInspection?.trackedUassetHashesUnchanged !== true
+    || skinReadOnlyInspection?.embeddedMetadataPrivacyPassed !== true
+    || skinReadOnlyInspection?.overallPassed !== true || skinReadOnlyInspection?.passed !== true
+    || skinReadOnlyInspection?.immutableImportReceiptRootSha256 !== skinPrivacyImportRootSha256
+    || skinReadOnlyInspection?.canonicalImportReceiptRootPreserved !== true)
+  errors.push("Daze council skin default read-only reload does not strictly prove three admitted textures, privacy-safe metadata and five unchanged uassets");
+
+const skinDestinationInventory = skinImportEvidence.destinationInventory;
+const expectedSkinInventory = {
+  [`${skinDestination}/M_SHI_ChenSheng_SkinLookdevV1.M_SHI_ChenSheng_SkinLookdevV1`]: "Material",
+  [`${skinDestination}/SP_SHI_ChenSheng_SkinLookdevV1.SP_SHI_ChenSheng_SkinLookdevV1`]: "SubsurfaceProfile",
+  [expectedSkinTexturePaths.baseColor]: "Texture2D",
+  [expectedSkinTexturePaths.detailNormal]: "Texture2D",
+  [expectedSkinTexturePaths.materialMasks]: "Texture2D",
+};
+if (skinDestinationInventory?.passed !== true || !everyCheckPassed(skinDestinationInventory?.checks)
+    || skinDestinationInventory?.assets?.length !== 5
+    || !sameStringSet(Object.keys(skinDestinationInventory?.expected ?? {}), Object.keys(expectedSkinInventory))
+    || Object.entries(expectedSkinInventory).some(([path, assetClass]) => skinDestinationInventory?.expected?.[path] !== assetClass))
+  errors.push("Daze council skin registry inventory is not the exact isolated profile/material/three-texture set");
+const trackedSkinAssets = skinImportEvidence.trackedUnrealAssets;
+if (trackedSkinAssets?.root !== "apps/unreal/Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1"
+    || trackedSkinAssets?.passed !== true || !everyCheckPassed(trackedSkinAssets?.checks)
+    || !sameStringSet(Object.keys(trackedSkinAssets?.receipts ?? {}), expectedSkinAssetFiles))
+  errors.push("Daze council skin evidence does not retain exact receipts for five and only five isolated uassets");
+const skinEmbeddedPrivacy = skinImportEvidence.embeddedMetadataPrivacy;
+const commonSkinPrivacyChecks = [
+  "repositoryAbsolutePathAbsent", "unixHomePathAbsent", "macUsersPathAbsent",
+  "windowsForwardUsersPathAbsent", "windowsBackslashUsersPathAbsent",
+  "absoluteInterchangeFactoryPathAbsent", "interchangeAssetImportDataAbsent",
+];
+const textureSkinPrivacyChecks = [
+  "exactSourceAbsolutePathAbsent", "baseAssetImportDataPresent",
+  "relativeFilenamePropertyPresent", "sourceBasenamePresent",
+];
+if (skinEmbeddedPrivacy?.passed !== true
+    || skinEmbeddedPrivacy?.checks?.exactFiveAssetsScanned !== true
+    || skinEmbeddedPrivacy?.checks?.allTrackedBinariesPrivatePathsAbsent !== true
+    || !sameStringSet(Object.keys(skinEmbeddedPrivacy?.assets ?? {}), expectedSkinAssetFiles))
+  errors.push("Daze council skin import evidence omits the exact top-level five-uasset embedded-metadata privacy pass");
+for (const [file, expected] of Object.entries(expectedSkinPrivacyUassets)) {
+  const receipt = trackedSkinAssets?.receipts?.[file];
+  if (receipt?.bytes !== expected.bytes || receipt?.sha256 !== expected.sha256)
+    errors.push(`Daze council skin privacy-v11 uasset receipt drifted: ${file}`);
+  await verifyFacialReceipt(resolve(root, trackedSkinAssets?.root ?? ""), {file, ...receipt},
+    "Tracked Unreal Daze council skin privacy-v11 asset");
+
+  const privacy = skinEmbeddedPrivacy?.assets?.[file];
+  const expectedCheckKeys = expected.sourceIdentity === null
+    ? commonSkinPrivacyChecks
+    : [...commonSkinPrivacyChecks, ...textureSkinPrivacyChecks];
+  if (privacy?.sourceIdentity !== expected.sourceIdentity
+      || privacy?.passed !== true
+      || !sameStringSet(Object.keys(privacy?.checks ?? {}), expectedCheckKeys)
+      || expectedCheckKeys.some((key) => privacy?.checks?.[key] !== true))
+    errors.push(`Daze council skin embedded-metadata privacy contract drifted: ${file}`);
+
+  const binaryPath = resolve(root, trackedSkinAssets?.root ?? "", file);
+  try {
+    const binary = await readFile(binaryPath);
+    const text = binary.toString("latin1");
+    const forbidden = ["/home/", "/Users/", "C:/Users/", "C:\\Users\\", "Factory_/", "InterchangeAssetImportData"];
+    if (forbidden.some((token) => text.includes(token)))
+      errors.push(`Daze council skin uasset embeds a forbidden private-path or Interchange token: ${file}`);
+    if (expected.sourceIdentity === null) {
+      if (text.includes("AssetImportData") || text.includes("RelativeFilename"))
+        errors.push(`Daze council skin material/profile unexpectedly retains source identity metadata: ${file}`);
+    } else if (!text.includes("AssetImportData")
+        || !text.includes("RelativeFilename")
+        || !text.includes(expected.sourceIdentity.split("/").at(-1))) {
+      errors.push(`Daze council skin texture omits exact Base AssetImportData, relative filename or source basename: ${file}`);
+    }
+  } catch {
+    errors.push(`Daze council skin privacy-v11 uasset could not be read: ${file}`);
+  }
+}
+
+const acceptedFacialPreservation = skinImportEvidence.acceptedFacialPreservation;
+const acceptedFacialReceipts = acceptedFacialPreservation?.before?.uassetReceipts ?? {};
+const canonicalFacialReceipts = facialImportEvidence.trackedUnrealAssets?.receipts ?? {};
+if (acceptedFacialPreservation?.before?.assetCount !== 21
+    || acceptedFacialPreservation?.before?.passed !== true
+    || !everyCheckPassed(acceptedFacialPreservation?.before?.checks)
+    || acceptedFacialPreservation?.assetCountAfter !== 21
+    || acceptedFacialPreservation?.uassetReceiptCountAfter !== 21
+    || acceptedFacialPreservation?.passed !== true
+    || !everyCheckPassed(acceptedFacialPreservation?.checks)
+    || !sameStringSet(Object.keys(acceptedFacialReceipts), Object.keys(canonicalFacialReceipts))
+    || Object.keys(canonicalFacialReceipts).some((file) => acceptedFacialReceipts[file]?.bytes !== canonicalFacialReceipts[file]?.bytes
+      || acceptedFacialReceipts[file]?.sha256 !== canonicalFacialReceipts[file]?.sha256))
+  errors.push("Daze council skin admission does not exactly preserve all 21 accepted facial uassets");
+
+await verifyFacialReceipt(root, skinRuntimeEvidence.importAdmission?.evidence,
+  "Daze council skin runtime-to-import evidence");
+await verifyFacialReceipt(root, skinRuntimeEvidence.correctedPackageRuntimePresentation?.evidence,
+  "Daze council skin runtime-to-corrected-presentation evidence");
+const skinRuntimePrivacyRepair = skinRuntimeEvidence.privacyRepair;
+if (skinRuntimePrivacyRepair?.status !== "pass-current-five-uassets-private-absolute-paths-absent"
+    || skinRuntimePrivacyRepair?.revision !== skinPrivacyRevision
+    || skinRuntimePrivacyRepair?.importer?.file !== skinPrivacyImporterReceipt.file
+    || skinRuntimePrivacyRepair?.importer?.bytes !== skinPrivacyImporterReceipt.bytes
+    || skinRuntimePrivacyRepair?.importer?.sha256 !== skinPrivacyImporterReceipt.sha256
+    || skinRuntimePrivacyRepair?.immutableImportReceiptRootSha256 !== skinPrivacyImportRootSha256
+    || skinRuntimePrivacyRepair?.exactFiveAssetsScanned !== true
+    || skinRuntimePrivacyRepair?.threeTextureAssetsUseBaseAssetImportData !== true
+    || skinRuntimePrivacyRepair?.threeTextureAssetsRetainRelativeFilenameAndSourceBasename !== true
+    || skinRuntimePrivacyRepair?.materialAndProfileHaveNoSourceIdentity !== true
+    || skinRuntimePrivacyRepair?.interchangeAssetImportDataAbsentFromAllFive !== true
+    || skinRuntimePrivacyRepair?.privateAbsolutePathsAbsentFromAllFive !== true
+    || skinRuntimePrivacyRepair?.readOnlyRenderedInspectionPassed !== true
+    || skinRuntimePrivacyRepair?.trackedHashesUnchangedDuringInspection !== true
+    || skinRuntimePrivacyRepair?.freshPackagePending !== false
+    || skinRuntimePrivacyRepair?.currentPrivacyV11PackageAndRuntimePassed !== true
+    || !sameStringSet(Object.keys(skinRuntimePrivacyRepair?.trackedUassetReceipts ?? {}), expectedSkinAssetFiles)
+    || Object.entries(expectedSkinPrivacyUassets).some(([file, expected]) =>
+      skinRuntimePrivacyRepair?.trackedUassetReceipts?.[file]?.bytes !== expected.bytes
+      || skinRuntimePrivacyRepair?.trackedUassetReceipts?.[file]?.sha256 !== expected.sha256))
+  errors.push("Daze council skin runtime evidence omits the exact privacy-v11 repair, importer and five binary receipts");
+const expectedSkinCompiledFiles = [
+  "apps/unreal/Source/SHI/ShiCouncilSkinLookdevModel.h",
+  "apps/unreal/Source/SHI/ShiCouncilSkinLookdevModel.cpp",
+  "apps/unreal/Source/SHI/ShiCouncilFigure.h",
+  "apps/unreal/Source/SHI/ShiCouncilFigure.cpp",
+  "apps/unreal/Source/SHI/ShiGameMode.h",
+  "apps/unreal/Source/SHI/ShiGameMode.cpp",
+  "apps/unreal/Source/SHI/Private/Tests/ShiCouncilSkinLookdevAutomationTest.cpp",
+  "apps/unreal/Config/DefaultGame.ini",
+];
+if (!sameStringSet(skinRuntimeEvidence.compiledSourceSnapshot?.map((item) => item.file), expectedSkinCompiledFiles))
+  errors.push("Daze council skin runtime evidence omits one or more compiled/configured source receipts");
+for (const receipt of skinRuntimeEvidence.compiledSourceSnapshot ?? [])
+  await verifyFacialReceipt(root, receipt, "Daze council skin compiled source snapshot");
+const skinNativeBuild = skinRuntimeEvidence.nativeBuild;
+const selectedSkinSuite = skinRuntimeEvidence.automation?.selectedSkinLookdevSuite;
+const fullSkinSuite = skinRuntimeEvidence.automation?.fullShiNamespace;
+const expectedSkinTests = [
+  "SHI.Audio.ProceduralContractV1", "SHI.Campaign.CrossEngineReplayV1",
+  "SHI.Campaign.OrderTransactionV1", "SHI.Campaign.SaveReplayIntegrityV6",
+  "SHI.Campaign.SchemaV7Horizon", "SHI.Cinematic.CommandSurfacePresentationV1",
+  "SHI.Cinematic.CommandWeightPresentationV1", "SHI.Cinematic.CouncilCharacterPresentationV1",
+  "SHI.Cinematic.CouncilFacialPerformanceV1", "SHI.Cinematic.CouncilPerformancePresentationV1",
+  "SHI.Cinematic.CouncilSkinLookdevV1", "SHI.Cinematic.CouncilStagingV1",
+  "SHI.Cinematic.DazeFieldShelterPresentationV1", "SHI.Cinematic.DazeRainPresentationV1",
+  "SHI.Cinematic.ResolutionGrammarV1", "SHI.Cinematic.WetFieldEnvironmentPresentationV1",
+  "SHI.Cinematic.WetFieldVegetationPresentationV1", "SHI.CommandSpace.LiveSignalsV1",
+  "SHI.Engagement.BrokenCrossingParityV1", "SHI.History.SourceClaimClosureV1",
+  "SHI.Wartable.SpatialIntelligenceV1",
+];
+if (skinRuntimeEvidence.assetId !== skinAssetId
+    || skinRuntimeEvidence.status !== "privacy-v11-import-path-sanitized-v5-package-normal-reduced-v6-runtime-engineering-pass; watched-visual-art-material-quality-rejected; v1-v4-history-retained; final-close-human-gates-red"
+    || skinRuntimeEvidence.disclosure !== skinDisclosure
+    || skinRuntimeEvidence.engine?.association !== "5.8"
+    || skinRuntimeEvidence.engine?.version !== "5.8.1-56057345+++UE5+Release-5.8"
+    || skinRuntimeEvidence.importAdmission?.status !== "pass-privacy-v11-import-read-only-rendered-inspect-engineering-only"
+    || skinRuntimeEvidence.importAdmission?.revision !== skinPrivacyRevision
+    || skinRuntimeEvidence.importAdmission?.trackedAssets !== 5
+    || skinRuntimeEvidence.importAdmission?.subsurfaceProfiles !== 1
+    || skinRuntimeEvidence.importAdmission?.materials !== 1
+    || skinRuntimeEvidence.importAdmission?.textures !== 3
+    || skinRuntimeEvidence.importAdmission?.canonicalHeightImported !== false
+    || skinRuntimeEvidence.importAdmission?.defaultReadOnlyInspectionPassed !== true
+    || skinRuntimeEvidence.importAdmission?.readOnlyInspectionTrackedHashesUnchanged !== true
+    || skinRuntimeEvidence.importAdmission?.embeddedMetadataPrivacyPassed !== true
+    || skinRuntimeEvidence.importAdmission?.readOnlyInspectionEmbeddedMetadataPrivacyPassed !== true
+    || skinRuntimeEvidence.importAdmission?.embeddedSourceContractFileReceiptsAreImportTimeSnapshot !== true
+    || skinRuntimeEvidence.importAdmission?.embeddedSourceContractFileReceiptsAreNotCurrentCrossReceipts !== true
+    || skinRuntimeEvidence.importAdmission?.acceptedFacialAssetsPreserved !== true
+    || skinRuntimeEvidence.importAdmission?.readOnlyInspectionImmutableImportReceiptRootSha256 !== skinPrivacyImportRootSha256
+    || skinRuntimeEvidence.importAdmission?.subsurfaceProfileOpacity?.source !== "MaterialMasks2K.B"
+    || skinRuntimeEvidence.importAdmission?.subsurfaceProfileOpacity?.value !== 89 / 255
+    || skinRuntimeEvidence.importAdmission?.subsurfaceProfileOpacity?.materialInput !== "MP_OPACITY"
+    || skinRuntimeEvidence.importAdmission?.subsurfaceProfileOpacity?.opacityConnected !== true
+    || skinRuntimeEvidence.importAdmission?.subsurfaceProfileOpacity?.subsurfaceColorInput !== "unconnected"
+    || skinRuntimeEvidence.importAdmission?.currentEngineeringAdmission !== true
+    || skinRuntimeEvidence.importAdmission?.correctedV3PackageEngineeringEvidenceRetained !== true
+    || skinRuntimeEvidence.importAdmission?.correctedV3RuntimeRouteExerciseRetained !== true
+    || skinRuntimeEvidence.importAdmission?.currentPrivacyV11PackageEngineeringAdmission !== true
+    || skinRuntimeEvidence.importAdmission?.currentPrivacyV11RuntimeRouteExercise !== true
+    || skinRuntimeEvidence.importAdmission?.packageAdmission !== false
+    || skinRuntimeEvidence.importAdmission?.visualArtAdmission !== false
+    || skinNativeBuild?.status !== "pass" || skinNativeBuild?.target !== "SHIEditor"
+    || skinNativeBuild?.result !== "Succeeded" || skinNativeBuild?.actionCount !== 5
+    || skinNativeBuild?.actions?.join(",") !== "Compile ShiCouncilSkinLookdevModel.cpp,Compile ShiCouncilSkinLookdevAutomationTest.cpp,Compile ShiCouncilFigure.cpp,Compile ShiGameMode.cpp,Link libUnrealEditor-SHI.so"
+    || skinNativeBuild?.transientLog?.tracked !== false || skinNativeBuild?.transientLog?.bytes !== 8533
+    || skinNativeBuild?.transientLog?.sha256 !== "1778cdad92e9b914a51ba76ce6f167e2f26fa891d12f1a44647059978d1d931d"
+    || selectedSkinSuite?.status !== "pass" || selectedSkinSuite?.filter !== "SHI.Cinematic.CouncilSkinLookdevV1"
+    || selectedSkinSuite?.discovered !== 1 || selectedSkinSuite?.started !== 1
+    || selectedSkinSuite?.passed !== 1 || selectedSkinSuite?.failed !== 0 || selectedSkinSuite?.exitCode !== 0
+    || selectedSkinSuite?.tests?.join(",") !== "SHI.Cinematic.CouncilSkinLookdevV1"
+    || selectedSkinSuite?.transientLog?.tracked !== false || selectedSkinSuite?.transientLog?.bytes !== 247202
+    || selectedSkinSuite?.transientLog?.sha256 !== "6f429f38b2bdaaf05fb9c6116b5bfb692bac6ec070ffcdea170d0aaebeb73158"
+    || fullSkinSuite?.status !== "pass" || fullSkinSuite?.filter !== "SHI."
+    || fullSkinSuite?.discovered !== 21 || fullSkinSuite?.started !== 21
+    || fullSkinSuite?.passed !== 21 || fullSkinSuite?.failed !== 0 || fullSkinSuite?.exitCode !== 0
+    || fullSkinSuite?.tests?.join(",") !== expectedSkinTests.join(",")
+    || fullSkinSuite?.transientLog?.tracked !== false || fullSkinSuite?.transientLog?.bytes !== 265777
+    || fullSkinSuite?.transientLog?.sha256 !== "ee8161f10f16f89fb1272c76736b6257bb21021f38c73014daa2eeb1c6e64a11")
+  errors.push("Daze council skin runtime evidence does not prove privacy-v11 import plus retained build, focused 1/1 and full 21/21 receipts");
+
+const skinCorrectedPresentation = skinRuntimeEvidence.correctedPackageRuntimePresentation;
+if (skinCorrectedPresentation?.status !== "pass-privacy-v11-path-sanitized-v5-package-normal-reduced-v6-runtime-engineering-only-watched-visual-art-rejected"
+    || skinCorrectedPresentation?.evidence?.file !== "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json"
+    || skinCorrectedPresentation?.package?.cookedPackages !== 564
+    || skinCorrectedPresentation?.package?.incrementallySkippedPackages !== 0
+    || skinCorrectedPresentation?.package?.platformSkippedPackages !== 7
+    || skinCorrectedPresentation?.package?.totalCookCandidates !== 571
+    || skinCorrectedPresentation?.package?.isolatedSkinAssets !== 5
+    || skinCorrectedPresentation?.package?.result !== "BUILD SUCCESSFUL"
+    || skinCorrectedPresentation?.package?.buildCookRunSeconds !== 110.37
+    || skinCorrectedPresentation?.package?.builtFromPrivacyV11SourceUassets !== true
+    || skinCorrectedPresentation?.package?.sourceSnapshotMatchesFiveCurrentReceipts !== true
+    || skinCorrectedPresentation?.package?.pathSanitizedExecutableDebugAndSymbols !== true
+    || skinCorrectedPresentation?.package?.postRpathExecutableSha256 !== "03b4a0680060fd8b7c02a0be7de2bbd29ee6bd9488d0ed2ac0fb97d00465fb02"
+    || skinCorrectedPresentation?.runtimeRoutes?.normal?.gpu !== "NVIDIA GeForce RTX 4090 D"
+    || skinCorrectedPresentation?.runtimeRoutes?.normal?.exerciseAlpha !== 0.1474
+    || skinCorrectedPresentation?.runtimeRoutes?.normal?.controlledExitCode !== 143
+    || skinCorrectedPresentation?.runtimeRoutes?.normal?.targetedMaterialFallbackOrFatalSignatures !== 0
+    || skinCorrectedPresentation?.runtimeRoutes?.normal?.documentedWarningSeverityMarkers !== 4
+    || skinCorrectedPresentation?.runtimeRoutes?.normal?.displaySwapchainDiagnosticMarkers !== 1
+    || skinCorrectedPresentation?.runtimeRoutes?.reduced?.gpu !== "NVIDIA GeForce RTX 4090 D"
+    || skinCorrectedPresentation?.runtimeRoutes?.reduced?.exerciseAlpha !== 1
+    || skinCorrectedPresentation?.runtimeRoutes?.reduced?.controlledExitCode !== 143
+    || skinCorrectedPresentation?.runtimeRoutes?.reduced?.targetedMaterialFallbackOrFatalSignatures !== 0
+    || skinCorrectedPresentation?.runtimeRoutes?.reduced?.documentedWarningSeverityMarkers !== 4
+    || skinCorrectedPresentation?.runtimeRoutes?.reduced?.displaySwapchainDiagnosticMarkers !== 1
+    || skinCorrectedPresentation?.trackedScreenshots !== 3
+    || skinCorrectedPresentation?.normalObjectGlanceCaptureStartSecondsAfterAdmission !== 1.460644246
+    || skinCorrectedPresentation?.normalObjectGlanceCaptureCompleteSecondsAfterAdmission !== 1.470167318
+    || skinCorrectedPresentation?.normalObjectGlanceCaptureWithinDefinedSection !== true
+    || skinCorrectedPresentation?.reducedObjectGlanceCaptureStartSecondsAfterMarker !== 0.035183811
+    || skinCorrectedPresentation?.reducedObjectGlanceCaptureStartSecondsAfterAdmission !== 1.155183811
+    || skinCorrectedPresentation?.reducedObjectGlanceCaptureCompleteSecondsAfterAdmission !== 1.166618803
+    || skinCorrectedPresentation?.reducedObjectGlanceCaptureWithinDefinedSection !== true
+    || skinCorrectedPresentation?.captureTimingReceipts?.normal?.bytes !== 148
+    || skinCorrectedPresentation?.captureTimingReceipts?.normal?.sha256 !== "206a71da5a95ceb4d017dec93618e0426b8f8dab530b08a3f3987110c195c3aa"
+    || skinCorrectedPresentation?.captureTimingReceipts?.reduced?.bytes !== 249
+    || skinCorrectedPresentation?.captureTimingReceipts?.reduced?.sha256 !== "758bf8c2d8a6c524e4589836479733840260a3c6c1531f31116bcf8aa9e958c4"
+    || skinCorrectedPresentation?.oneReusedNoVncStack !== true
+    || skinCorrectedPresentation?.storyAndSaveRouteInert !== true
+    || skinCorrectedPresentation?.freshCampaignSaveAbsentBeforeAndAfter !== true
+    || skinCorrectedPresentation?.packageEngineeringAdmission !== true
+    || skinCorrectedPresentation?.runtimeRouteEngineeringAdmission !== true
+    || skinCorrectedPresentation?.predatesPrivacyV11UassetSerialization !== false
+    || skinCorrectedPresentation?.currentPrivacyV11PackageRefreshPending !== false
+    || skinCorrectedPresentation?.visualArtMaterialQualityAdmission !== false
+    || skinCorrectedPresentation?.closeCameraApproved !== false
+    || skinCorrectedPresentation?.humanReviewApproved !== false
+    || skinCorrectedPresentation?.finalCharacterArt !== false)
+  errors.push("Daze council skin runtime evidence does not bind the corrected package/runtime receipts and rejected visual-art boundary");
+
+const skinRuntimeContract = skinRuntimeEvidence.runtimeContract;
+if (skinRuntimeContract?.targetCharacterId !== "chen-sheng"
+    || skinRuntimeContract?.reviewModeId !== "-ShiCouncilSkinLookdevReview"
+    || skinRuntimeContract?.isolatedRoot !== skinDestination
+    || skinRuntimeContract?.materialSlot !== "M_SHI_Character_SkinClay"
+    || skinRuntimeContract?.assetInventoryCount !== 5 || skinRuntimeContract?.textureInventoryCount !== 3
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.source !== "MaterialMasks2K.B"
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.sourceByte !== 89
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.value !== 89 / 255
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.thresholdExclusive !== 0.1
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.maximum !== 89 / 255
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.profileMeanFreePathDistance !== 2.6748
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.effectiveMeanFreePath !== 0.9335576470588234
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.maximumEffectiveMeanFreePath !== 0.9335576470588234
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.materialInput !== "MP_OPACITY"
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.opacityConnected !== true
+    || skinRuntimeContract?.subsurfaceProfileOpacity?.subsurfaceColorInput !== "unconnected"
+    || skinRuntimeContract?.reviewOnly !== true || skinRuntimeContract?.chenShengOnly !== true
+    || skinRuntimeContract?.explicitDevelopmentAuthorizationRequired !== true
+    || skinRuntimeContract?.baselineFallbackRequired !== true
+    || skinRuntimeContract?.canonicalHeightSourceOutsideEngine !== true
+    || skinRuntimeContract?.deterministic !== true
+    || skinRuntimeContract?.standardMotionCompatible !== true
+    || skinRuntimeContract?.reducedMotionCompatible !== true
+    || skinRuntimeContract?.motionIndependent !== true
+    || Object.entries(skinRuntimeContract ?? {}).some(([key, value]) => [
+      "runtimeRandomness", "dynamicNetworkDependency", "runtimeParameterMutation",
+      "interactionAuthority", "gameplayAuthority", "saveAuthority", "replicated",
+      "identityAuthority", "historicalPortrait", "historicallyAttestedComplexion",
+      "humanHistoricalCulturalReviewApproved", "closeCameraApproved", "finalCharacterArt", "finalSkin",
+    ].includes(key) && value !== false))
+  errors.push("Daze council skin runtime contract overstates motion, authority, history, human review, close-camera or final-art scope");
+const skinReleaseGates = skinRuntimeEvidence.releaseGates;
+if (skinReleaseGates?.isolatedImport !== "pass-privacy-v11-five-uassets-opacity-semantics-and-sanitized-metadata"
+    || skinReleaseGates?.defaultReadOnlyInspection !== "pass-privacy-v11-five-hashes-unchanged-and-embedded-metadata-private-paths-absent"
+    || skinReleaseGates?.nativeEditorBuild !== "pass"
+    || skinReleaseGates?.selectedSkinLookdevAutomation !== "pass-1-of-1"
+    || skinReleaseGates?.fullProjectAutomation !== "pass-21-of-21"
+    || skinReleaseGates?.embeddedMetadataPrivacy !== "pass-privacy-v11-base-asset-import-data-no-interchange-no-private-absolute-paths"
+    || skinReleaseGates?.packagedBuildWithSkinAssets !== "pass-privacy-v11-path-sanitized-v5-564-cooked-packages-engineering-only"
+    || skinReleaseGates?.packageExecutableDebugSymbolPathPrivacy !== "pass-prefix-mapped-build-plus-audited-relative-rpath-mutation-and-immutable-inspection"
+    || skinReleaseGates?.runtimeAdmissionMarkers !== "pass-path-sanitized-package-normal-v6-reduced-v6-two-expanded-markers"
+    || skinReleaseGates?.runtimeMorphSectionExercise !== "pass-normal-0.1474-reduced-1.0000-engineering-route"
+    || skinReleaseGates?.storyAndSaveInertReviewRoute !== "pass-two-exact-inert-markers-save-absent"
+    || skinReleaseGates?.packagedHeadlessSmoke !== "not-run-for-this-corrected-material-qa-package"
+    || skinReleaseGates?.visibleNoVncReview !== "performed-path-sanitized-v5-one-reused-stack-engineering-route-pass-visual-art-rejected"
+    || skinReleaseGates?.standardMotionWatchedDeformationReview !== "performed-normal-v6-raw-timing-bound-live-glance-engineering-only-visual-art-rejected"
+    || skinReleaseGates?.reducedMotionWatchedDeformationReview !== "performed-reduced-v6-raw-timing-bound-live-glance-engineering-only-visual-art-rejected"
+    || skinReleaseGates?.visualSkinArtReview !== "rejected-generic-low-detail-nonportrait-uniform-smooth-plastic-waxy-blockout"
+    || skinReleaseGates?.correctedV2ImportPackageAndRuntimeReview !== "privacy-v11-path-sanitized-package-runtime-engineering-pass-v1-v3-v4-history-retained-visual-art-rejected"
+    || skinReleaseGates?.currentPrivacyV11PackageRefresh !== "pass-path-sanitized-v5-package-normal-reduced-v6-runtime"
+    || skinReleaseGates?.visibleBaselineFallbackReview !== "pending-not-run"
+    || skinReleaseGates?.physicalDisplayReview !== "pending-not-run"
+    || skinReleaseGates?.interactionHandsAndContact !== "required"
+    || skinReleaseGates?.mouthInteriorTeethAndTongue !== "required"
+    || skinReleaseGates?.voiceAndMultilingualLipSync !== "required"
+    || skinReleaseGates?.humanCharacterAnatomyReview !== "required"
+    || skinReleaseGates?.humanHistoricalCulturalReview !== "required"
+    || skinReleaseGates?.humanCinematicLightingColorReview !== "required"
+    || skinReleaseGates?.humanAccessibilityReview !== "required"
+    || skinReleaseGates?.identitySpecificTopologyAndHeadUvDecision !== "required"
+    || skinReleaseGates?.renderedUnrealTangentBasisProof !== "insufficient-full-body-framing-close-detail-proof-required"
+    || skinReleaseGates?.finalCloseDialogue !== "rejected"
+    || skinReleaseGates?.historicalLikenessOrComplexionClaim !== "rejected"
+    || skinReleaseGates?.finalCharacterArt !== "not-admitted")
+  errors.push("Daze council skin runtime evidence does not preserve the exact package/runtime QA, visual rejection and remaining red gates");
+
+const skinPresentationDecision = "privacy-v11-import-package-runtime-engineering-pass-watched-visual-art-rejected-not-final-not-close-camera-not-human-reviewed";
+const skinRejectedV1History = skinRuntimeEvidence.rejectedV1PackageAndPresentationHistory;
+if (skinRejectedV1History?.status !== "rejected-diagnostic-only-superseded-by-corrected-v2-opacity-package-runtime-engineering-route"
+    || skinRejectedV1History?.historicalPresentationReference?.originalLogicalFile !== "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json"
+    || skinRejectedV1History?.historicalPresentationReference?.tracked !== false
+    || skinRejectedV1History?.historicalPresentationReference?.retainedPayload !== false
+    || skinRejectedV1History?.historicalPresentationReference?.currentHistoryContainer !== "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json"
+    || skinRejectedV1History?.historicalPresentationReference?.currentHistorySection !== "reviewHistory.rejectedV1MaterialPackageAndScreens"
+    || skinRejectedV1History?.package?.cookedPackages !== 564
+    || skinRejectedV1History?.package?.incrementallySkippedPackages !== 0
+    || skinRejectedV1History?.package?.platformSkippedPackages !== 7
+    || skinRejectedV1History?.package?.totalCookCandidates !== 571
+    || skinRejectedV1History?.package?.isolatedSkinAssets !== 5
+    || skinRejectedV1History?.package?.result !== "BUILD SUCCESSFUL"
+    || skinRejectedV1History?.diagnosticRuntimeRoutes?.normal?.gpu !== "NVIDIA GeForce RTX 4090 D"
+    || skinRejectedV1History?.diagnosticRuntimeRoutes?.normal?.exerciseAlpha !== 0.0346
+    || skinRejectedV1History?.diagnosticRuntimeRoutes?.normal?.controlledExitCode !== 143
+    || skinRejectedV1History?.diagnosticRuntimeRoutes?.reduced?.gpu !== "NVIDIA GeForce RTX 4090 D"
+    || skinRejectedV1History?.diagnosticRuntimeRoutes?.reduced?.exerciseAlpha !== 1
+    || skinRejectedV1History?.diagnosticRuntimeRoutes?.reduced?.controlledExitCode !== 143
+    || skinRejectedV1History?.oneReusedNoVncStack !== true
+    || skinRejectedV1History?.storyAndSaveRouteInert !== true
+    || skinRejectedV1History?.freshCampaignSaveAbsentBeforeAndAfter !== true
+    || skinRejectedV1History?.historicalDiagnosticReceiptsRetained !== true
+    || skinRejectedV1History?.v1MaterialEngineeringAdmission !== false
+    || !skinRejectedV1History?.knownSemanticDefect?.includes("Opacity/custom-data alpha")
+    || skinRejectedV1History?.visualArtDecision !== "reject-then-current-v1-orange-bright-waxy-smooth-appearance-for-replication-final-close-camera-and-film-quality-use"
+    || skinRejectedV1History?.finalSkin !== false
+    || skinRejectedV1History?.closeCameraApproved !== false
+    || skinRejectedV1History?.humanReviewApproved !== false)
+  errors.push("Daze council skin runtime evidence loses the rejected v1 graph/visual history or overstates its diagnostic receipts");
+
+const runtimeCorrectedV3History = skinRuntimeEvidence.supersededCorrectedV3PackageAndRuntimeHistory;
+const runtimeRejectedV4History = skinRuntimeEvidence.rejectedPrivacyV4PackageAndRuntimeHistory;
+if (runtimeCorrectedV3History?.status !== "superseded-historical-engineering-evidence-only-pre-privacy-v11-watched-visual-rejected"
+    || runtimeCorrectedV3History?.historicalImportReceipt?.bytes !== 35830
+    || runtimeCorrectedV3History?.historicalImportReceipt?.sha256 !== "e65269ea71bee3d95d5cb7c1078e3f63578ba3f13eb510fb9436f213c275e6f8"
+    || runtimeCorrectedV3History?.package?.buildLogSha256 !== "fa8859cb712b3b13a353b8a1453c1b062f3b27b2bfbd852420ad7adf41252eb9"
+    || runtimeCorrectedV3History?.runtimeRoutes?.normal?.sha256 !== "3919f3606ee6adddbd97b785d705e4b24c9b75f1014183ba37f4bbe5d9609d03"
+    || runtimeCorrectedV3History?.runtimeRoutes?.reduced?.sha256 !== "9aac883e892d4890c16d54b0630109784e9c02889d18ea14dfbff92c2aafc575"
+    || runtimeCorrectedV3History?.historicalScreenshotPayloadsOverwrittenByCurrentV5V6Evidence !== true
+    || runtimeCorrectedV3History?.currentPackageAuthority !== false
+    || runtimeCorrectedV3History?.visualArtMaterialQualityAdmission !== false
+    || runtimeRejectedV4History?.status !== "rejected-for-public-package-workstation-path-leak-diagnostic-engineering-history-only"
+    || runtimeRejectedV4History?.package?.buildLogSha256 !== "09dc4a60725d8eee4011ed9f5f5947a35378fdc6dc3f91ff24378adeb7308aa5"
+    || runtimeRejectedV4History?.package?.executableCurrentWorkstationPathMatches !== 6
+    || runtimeRejectedV4History?.package?.debugCurrentWorkstationPathMatches !== 93
+    || runtimeRejectedV4History?.package?.symbolCurrentWorkstationPathMatches !== 192
+    || runtimeRejectedV4History?.runtimeRoutes?.normalV4?.sha256 !== "eb41b352636adbfc9e1ae5c57e9c5f9a2ec36dc5ca9b6d51aa4c17d3460af78a"
+    || runtimeRejectedV4History?.runtimeRoutes?.reducedV5?.sha256 !== "b4532e1aeb634bf4a3aa48dda2cd3f2688a632ba93887f1e679b7b6cf31f1cb3"
+    || runtimeRejectedV4History?.currentPackageAuthority !== false
+    || runtimeRejectedV4History?.visualArtMaterialQualityAdmission !== false)
+  errors.push("Daze council skin runtime evidence loses superseded v3 or rejected path-leaking-v4 history");
+
+const skinPresentationContract = skinPresentationEvidence.runtimeContract;
+const skinPresentationAuthority = skinPresentationContract?.authority;
+if (skinPresentationEvidence.schemaVersion !== 1
+    || skinPresentationEvidence.assetId !== skinAssetId
+    || skinPresentationEvidence.decision !== skinPresentationDecision
+    || skinPresentationEvidence.requiredDisclosure !== skinDisclosure
+    || !skinPresentationEvidence.scope?.includes("Watched visual art and material quality remain rejected")
+    || !skinPresentationEvidence.historicalBoundary?.includes("not evidence for Chen Sheng's likeness")
+    || skinPresentationContract?.assetId !== skinAssetId
+    || skinPresentationContract?.targetCharacterId !== "chen-sheng"
+    || skinPresentationContract?.visibleRole !== "speaker"
+    || skinPresentationContract?.reviewFlag !== "-ShiCouncilSkinLookdevReview"
+    || skinPresentationContract?.isolatedRoot !== skinDestination
+    || skinPresentationContract?.meshPath !== skinRuntimeContract?.acceptedFacialMesh
+    || skinPresentationContract?.materialSlot !== "M_SHI_Character_SkinClay"
+    || skinPresentationContract?.materialPath !== skinRuntimeContract?.lookdevMaterial
+    || skinPresentationContract?.subsurfaceProfilePath !== `${skinDestination}/SP_SHI_ChenSheng_SkinLookdevV1.SP_SHI_ChenSheng_SkinLookdevV1`
+    || skinPresentationContract?.routeId !== "chen-sheng-skin-lookdev-v1"
+    || skinPresentationContract?.textureCount !== 3
+    || skinPresentationContract?.metallic !== 0 || skinPresentationContract?.specular !== 0.25
+    || skinPresentationContract?.framing !== "material-qa-only"
+    || skinPresentationContract?.subsurfaceAmount?.source !== "MaterialMasks2K.B"
+    || skinPresentationContract?.subsurfaceAmount?.sourceTextureParameter !== "MaterialMasks2K"
+    || skinPresentationContract?.subsurfaceAmount?.sourceChannel !== "B"
+    || skinPresentationContract?.subsurfaceAmount?.sourceUnorm8 !== 89
+    || skinPresentationContract?.subsurfaceAmount?.sourceNormalized !== 89 / 255
+    || skinPresentationContract?.subsurfaceAmount?.maximumSourceNormalized !== 89 / 255
+    || skinPresentationContract?.subsurfaceAmount?.opacityThresholdExclusive !== 0.1
+    || skinPresentationContract?.subsurfaceAmount?.materialInput !== "MP_OPACITY"
+    || skinPresentationContract?.subsurfaceAmount?.opacityConnected !== true
+    || skinPresentationContract?.subsurfaceAmount?.subsurfaceColorConnected !== false
+    || skinPresentationContract?.subsurfaceAmount?.profileMeanFreePathDistance !== 2.6748
+    || skinPresentationContract?.subsurfaceAmount?.effectiveMeanFreePathDistance !== 0.9335576470588234
+    || skinPresentationContract?.subsurfaceAmount?.maximumAllowedEffectiveMeanFreePathDistance !== 0.9335576470588234
+    || skinPresentationContract?.subsurfaceAmount?.effectiveMeanFreePathWithinThreshold !== true
+    || skinPresentationAuthority?.reviewOnly !== true
+    || skinPresentationAuthority?.developmentOnly !== true
+    || skinPresentationAuthority?.chenShengOnly !== true
+    || skinPresentationAuthority?.deterministic !== true
+    || skinPresentationAuthority?.standardMotionSupported !== true
+    || skinPresentationAuthority?.reducedMotionSupported !== true
+    || Object.entries(skinPresentationAuthority ?? {}).some(([key, value]) => [
+      "interactionAuthority", "gameplayAuthority", "storyAuthority", "saveAuthority",
+      "replicationAuthority", "identityAuthority", "historicalPortrait",
+      "historicallyAttestedComplexion", "humanHistoricalCulturalReviewApproved",
+      "closeCameraApproved", "finalCharacterArt", "finalSkin",
+    ].includes(key) && value !== false))
+  errors.push("Daze council skin presentation contract overstates character, story, history, close-camera, human-review or final-art authority");
+const expectedSkinPresentationTextures = [
+  {textureId: "base-color-2k", parameter: "BaseColor2K", assetPath: expectedSkinTexturePaths.baseColor, dimensions: "2048,2048", srgb: true},
+  {textureId: "material-masks-2k", parameter: "MaterialMasks2K", assetPath: expectedSkinTexturePaths.materialMasks, dimensions: "2048,2048", srgb: false},
+  {textureId: "detail-normal-1k", parameter: "DetailNormal1K", assetPath: expectedSkinTexturePaths.detailNormal, dimensions: "1024,1024", srgb: false},
+];
+if (skinPresentationContract?.textureInventory?.length !== 3
+    || expectedSkinPresentationTextures.some((expected, index) => {
+      const actual = skinPresentationContract.textureInventory[index];
+      return actual?.textureId !== expected.textureId || actual?.parameter !== expected.parameter
+        || actual?.assetPath !== expected.assetPath || actual?.dimensions?.join(",") !== expected.dimensions
+        || actual?.srgb !== expected.srgb;
+    }))
+  errors.push("Daze council skin presentation no longer binds the exact three named runtime textures");
+
+const skinPresentationImport = skinPresentationEvidence.importAdmission;
+if (skinPresentationImport?.status !== "pass"
+    || skinPresentationImport?.revision !== skinPrivacyRevision
+    || skinPresentationImport?.file !== "docs/production/evidence/unreal-daze-council-skin-lookdev-import-status.json"
+    || skinPresentationImport?.tracked !== true
+    || skinPresentationImport?.bytes !== skinPrivacyImportReceipt.bytes
+    || skinPresentationImport?.sha256 !== skinPrivacyImportReceipt.sha256
+    || skinPresentationImport?.immutableImportReceiptRootSha256 !== skinPrivacyImportRootSha256
+    || skinPresentationImport?.canonicalImportReceiptRootPreserved !== true
+    || skinPresentationImport?.readOnlyInspectionPassed !== true
+    || skinPresentationImport?.embeddedMetadataPrivacyPassed !== true
+    || skinPresentationImport?.readOnlyInspectionEmbeddedMetadataPrivacyPassed !== true
+    || skinPresentationImport?.embeddedSourceContractFileReceiptsAreImportTimeSnapshot !== true
+    || skinPresentationImport?.embeddedSourceContractFileReceiptsAreNotCurrentCrossReceipts !== true
+    || skinPresentationImport?.engineeringOnly !== true
+    || skinPresentationImport?.visualArtAdmission !== false)
+  errors.push("Daze council skin presentation does not bind the exact privacy-v11 import/read-only embedded-metadata receipt");
+const skinPresentationPrivacyRepair = skinPresentationEvidence.privacyRepair;
+const expectedSkinPresentationPrivacyKeys = [
+  "exactFiveAssetsScanned", "threeTextureAssetsUseBaseAssetImportData",
+  "threeTextureAssetsRetainRelativeFilenameAndSourceBasename",
+  "materialAndProfileHaveNoSourceIdentity", "interchangeAssetImportDataAbsentFromAllFive",
+  "repositoryAbsolutePathAbsentFromAllFive", "unixHomePathAbsentFromAllFive",
+  "macUsersPathAbsentFromAllFive", "windowsUsersPathsAbsentFromAllFive",
+  "absoluteInterchangeFactoryPathAbsentFromAllFive",
+];
+if (skinPresentationPrivacyRepair?.status !== "pass-current-five-uassets-private-absolute-paths-absent"
+    || skinPresentationPrivacyRepair?.revision !== skinPrivacyRevision
+    || skinPresentationPrivacyRepair?.importer?.file !== skinPrivacyImporterReceipt.file
+    || skinPresentationPrivacyRepair?.importer?.bytes !== skinPrivacyImporterReceipt.bytes
+    || skinPresentationPrivacyRepair?.importer?.sha256 !== skinPrivacyImporterReceipt.sha256
+    || !sameStringSet(Object.keys(skinPresentationPrivacyRepair?.trackedUassets ?? {}), expectedSkinAssetFiles)
+    || Object.entries(expectedSkinPrivacyUassets).some(([file, expected]) =>
+      skinPresentationPrivacyRepair?.trackedUassets?.[file]?.bytes !== expected.bytes
+      || skinPresentationPrivacyRepair?.trackedUassets?.[file]?.sha256 !== expected.sha256)
+    || !sameStringSet(Object.keys(skinPresentationPrivacyRepair?.metadataContract ?? {}), expectedSkinPresentationPrivacyKeys)
+    || expectedSkinPresentationPrivacyKeys.some((key) => skinPresentationPrivacyRepair?.metadataContract?.[key] !== true)
+    || skinPresentationPrivacyRepair?.readOnlyRenderedInspectionPassed !== true
+    || skinPresentationPrivacyRepair?.trackedHashesUnchangedDuringInspection !== true
+    || skinPresentationPrivacyRepair?.correctedV3PackageRuntimeEvidenceRetained !== true
+    || skinPresentationPrivacyRepair?.correctedV3PackagePredatesPrivacyRepair !== true
+    || skinPresentationPrivacyRepair?.currentPrivacyV11SourceUassetsFreshlyPackaged !== true
+    || skinPresentationPrivacyRepair?.currentPrivacyV11PackageAndRuntimePassed !== true
+    || skinPresentationPrivacyRepair?.freshPackagePending !== false)
+  errors.push("Daze council skin presentation omits the exact privacy-v11 repair and retained-v3 package boundary");
+const rejectedV1PresentationHistory = skinPresentationEvidence.reviewHistory?.rejectedV1MaterialPackageAndScreens;
+const rejectedV1ImportReceipt = rejectedV1PresentationHistory?.historicalImportReceipt;
+if (rejectedV1PresentationHistory?.status !== "rejected-diagnostic-only-superseded-by-corrected-opacity-route"
+    || !rejectedV1PresentationHistory?.graphDefect?.includes("MP_OPACITY remained unconnected at default 1.0")
+    || rejectedV1ImportReceipt?.status !== "rejected-v1-historical-receipt-passed-incomplete-then-checks"
+    || rejectedV1ImportReceipt?.originalLogicalFile !== "docs/production/evidence/unreal-daze-council-skin-lookdev-import-status.json"
+    || rejectedV1ImportReceipt?.tracked !== false
+    || rejectedV1ImportReceipt?.retainedPayload !== false
+    || rejectedV1ImportReceipt?.supersededInPlaceByCorrectedV2 !== true
+    || rejectedV1ImportReceipt?.bytes !== 35236
+    || rejectedV1ImportReceipt?.sha256 !== "f5ebe66d914a7750c0fa5ddac360aca1f3de8198f30853beb79ac127db6ecb7e"
+    || rejectedV1ImportReceipt?.immutableImportReceiptRootSha256 !== "a8ce1e5d2522c115ddda1e820af10c7bc090be6c82a734964f326cbcabbd16f9"
+    || rejectedV1ImportReceipt?.canonicalImportReceiptRootPreserved !== true
+    || rejectedV1ImportReceipt?.readOnlyInspectionPassed !== true
+    || rejectedV1ImportReceipt?.currentMaterialAdmission !== false)
+  errors.push("Daze council skin presentation no longer preserves the superseded v1 import receipt and graph-defect boundary");
+
+const expectedSkinPackageArtifacts = {
+  "SHI.sh": ["Linux packaged-player launcher", 218, "7eeb214781ca5113696ae2be6c5124b5404cd4abcd1fff39aa383ba15ff1cf1e"],
+  "SHI/Binaries/Linux/SHI": ["Linux development executable", 298779248, "03b4a0680060fd8b7c02a0be7de2bbd29ee6bd9488d0ed2ac0fb97d00465fb02"],
+  "SHI/Content/Paks/SHI-Linux.pak": ["Pak metadata and non-IoStore payload", 10428046, "1f15ef443e196e79f26e2c9f88450b4b1ff2b21efe65f6d66ec71f01368a1cbd"],
+  "SHI/Content/Paks/SHI-Linux.ucas": ["IoStore data container", 176534544, "2543c7c1fc8c3f38d25dc6cadf91b8410e9771336bd639fb226654b92ee51ff2"],
+  "SHI/Content/Paks/SHI-Linux.utoc": ["IoStore table of contents", 158699, "c73d443cc10e6dac4ee314e94a68446d495fcd968264de9cc189b1b02acf1e25"],
+};
+const skinPresentationPackage = skinPresentationEvidence.package;
+const skinPackageLog = skinPresentationPackage?.buildLog;
+if (skinPresentationPackage?.result !== "BUILD SUCCESSFUL" || skinPresentationPackage?.exitCode !== 0
+    || skinPresentationPackage?.outsideGitRoot !== "$SHI_UNREAL_PACKAGE_ROOT/Linux"
+    || skinPresentationPackage?.alwaysCookPath !== skinDestination
+    || skinPresentationPackage?.priorAcceptedPackageCount !== 559
+    || skinPresentationPackage?.addedPackageCount !== 5
+    || skinPresentationPackage?.isolatedAssetCount !== 5
+    || skinPresentationPackage?.cookedPackageCount !== 564
+    || skinPresentationPackage?.incrementallySkippedPackageCount !== 0
+    || skinPresentationPackage?.platformSkippedPackageCount !== 7
+    || skinPresentationPackage?.totalCookCandidates !== 571
+    || skinPresentationPackage?.cookErrors !== 0 || skinPresentationPackage?.cookWarnings !== 0
+    || skinPresentationPackage?.executionSeconds !== 110.37
+    || skinPresentationPackage?.buildActionCount !== 75
+    || skinPresentationPackage?.engineeringAdmission !== true
+    || skinPresentationPackage?.visualArtAdmission !== false
+    || skinPresentationPackage?.disposition !== "corrected-opacity-route-package-engineering-pass-visual-art-review-rejected"
+    || skinPresentationPackage?.receiptRevision !== "privacy-v11-path-sanitized-package-v5-current"
+    || skinPresentationPackage?.predatesPrivacyV11UassetSerialization !== false
+    || skinPresentationPackage?.builtFromCurrentPrivacyV11SourceUassets !== true
+    || skinPresentationPackage?.cookedContainersTransformEditorSerialization !== true
+    || skinPresentationPackage?.freshPrivacyV11PackagePending !== false
+    || skinPresentationPackage?.preservedMaterialRouteEvidence !== true
+    || skinPackageLog?.file !== "$SHI_UNREAL_PACKAGE_LOG_ROOT/Log.txt"
+    || skinPackageLog?.tracked !== false || skinPackageLog?.bytes !== 281372
+    || skinPackageLog?.sha256 !== "f4fadef9ec9ca88f2a283a8206f34427987ac0737411e162f23be8286480e5ac"
+    || skinPackageLog?.scan?.buildSuccessfulMarkers !== 1
+    || skinPackageLog?.scan?.automationExitCodeZeroMarkers !== 1
+    || skinPackageLog?.scan?.cookSummaryMarkers !== 1
+    || skinPackageLog?.scan?.cookedPackageCount !== 564
+    || skinPackageLog?.scan?.cookErrorMarkers !== 0
+    || skinPackageLog?.scan?.cookWarningMarkers !== 0
+    || skinPackageLog?.scan?.materialWarningMarkers !== 0
+    || skinPackageLog?.scan?.targetedFallbackMarkers !== 0
+    || skinPackageLog?.scan?.fatalErrors !== 0
+    || skinPackageLog?.scan?.warningSeverityMarkers !== 0
+    || skinPackageLog?.scan?.errorSeverityMarkers !== 0
+    || skinPackageLog?.scan?.nonfatalDisplayFailedDiagnostics !== 4
+    || skinPackageLog?.scan?.nonfatalDisplayDiagnosticKinds?.join("|") !== [
+      "missing engine game directory",
+      "Android SDK setup unavailable during Linux-only package",
+      "stale shader-autogen delete failure before regeneration",
+      "storage-server connection unavailable before local fallback",
+    ].join("|")
+    || skinPackageLog?.scan?.passed !== true
+    || skinPresentationPackage?.headlessSmoke?.status !== "not-run-for-this-material-qa-package"
+    || skinPresentationPackage?.headlessSmoke?.claim !== false)
+  errors.push("Daze council skin presentation package/log receipt is incomplete or overstates the unrun headless smoke");
+
+if (skinPresentationPackage?.phaseSeconds?.build !== 46.78
+    || skinPresentationPackage?.phaseSeconds?.cook !== 26.15
+    || skinPresentationPackage?.phaseSeconds?.stage !== 36
+    || skinPresentationPackage?.phaseSeconds?.archive !== 0.61
+    || skinPresentationPackage?.cookResourceSummary?.cookByTheBookTickSeconds !== 2.466689
+    || skinPresentationPackage?.cookResourceSummary?.cookByTheBookTotalSeconds !== 4.836254
+    || skinPresentationPackage?.cookResourceSummary?.peakPhysicalMiB !== 2805
+    || skinPresentationPackage?.cookResourceSummary?.peakVirtualMiB !== 13616
+    || skinPresentationPackage?.transcript?.file !== "$SHI_UNREAL_PACKAGE_LOG_ROOT/../SHI-DazeCouncilSkinLookdev-PathSanitized-Package-v5.transcript.log"
+    || skinPresentationPackage?.transcript?.tracked !== false
+    || skinPresentationPackage?.transcript?.bytes !== 131078
+    || skinPresentationPackage?.transcript?.sha256 !== "7f7656988c666f6e1b649562fcd24cf9fb29e4c4293626988fff8104e6ed0e4e"
+    || skinPresentationPackage?.ufsManifest?.file !== "$SHI_UNREAL_PACKAGE_LOG_ROOT/FinalCopyLinux_UFSFiles.txt"
+    || skinPresentationPackage?.ufsManifest?.tracked !== false
+    || skinPresentationPackage?.ufsManifest?.entries !== 2428
+    || skinPresentationPackage?.ufsManifest?.isolatedSkinLookdevEntries !== 8
+    || skinPresentationPackage?.ufsManifest?.bytes !== 431878
+    || skinPresentationPackage?.ufsManifest?.sha256 !== "060da31560d94eb546fa63acaab93e9541455fde38c541316609ae4ee554daac")
+  errors.push("Daze council skin presentation omits exact v5 phase, resource, transcript or UFS receipts");
+
+const skinSourceSnapshot = skinPresentationPackage?.sourceSnapshot;
+if (skinSourceSnapshot?.root !== "$SHI_UNREAL_ANONYMIZED_PACKAGE_SOURCE/apps/unreal"
+    || skinSourceSnapshot?.privacyRevision !== skinPrivacyRevision
+    || skinSourceSnapshot?.matchesCurrentRepositoryReceipts !== true
+    || skinSourceSnapshot?.embeddedMetadataPrivacyPassed !== true
+    || !sameStringSet(Object.keys(skinSourceSnapshot?.trackedUassets ?? {}), expectedSkinAssetFiles)
+    || Object.entries(expectedSkinPrivacyUassets).some(([file, expected]) =>
+      skinSourceSnapshot?.trackedUassets?.[file]?.bytes !== expected.bytes
+      || skinSourceSnapshot?.trackedUassets?.[file]?.sha256 !== expected.sha256))
+  errors.push("Daze council skin v5 package source snapshot does not bind the exact five privacy-v11 uassets");
+
+const skinPathSanitization = skinPresentationPackage?.pathSanitization;
+const expectedSkinSafeRpath = [
+  "$ORIGIN", "$ORIGIN/..", "$ORIGIN/NotForLicensees",
+  "$ORIGIN/../../../Engine/Binaries/ThirdParty/Qualcomm/Linux",
+  "$ORIGIN/../../../Engine/Binaries/ThirdParty/PhysX3/Unix/x86_64-unknown-linux-gnu",
+  "$ORIGIN/../../../Engine/Plugins/Interchange/Runtime/Source/ThirdParty/Draco/lib/Linux",
+  "$ORIGIN/../../../Engine/Binaries/ThirdParty/MsQuic/v220/linux",
+  "$ORIGIN/../../../Engine/Plugins/Compression/OodleNetwork/Sdks/2.9.16/lib/Linux",
+  "$ORIGIN/../../../Engine/Plugins/Media/WebMMedia/Source/ThirdParty/webm/1.0.0.27/lib/Linux/x86_64-unknown-linux-gnu/Release",
+];
+if (skinPathSanitization?.status !== "pass-authorized-rpath-mutation-then-immutable-inspection"
+    || skinPathSanitization?.script?.file !== "scripts/sanitize-unreal-linux-development-package.mjs"
+    || skinPathSanitization?.script?.tracked !== true
+    || skinPathSanitization?.script?.bytes !== 6989
+    || skinPathSanitization?.script?.sha256 !== "f0dc86ac46f8649bab64ff8137bf2c11dc8ebe5b047e6eda4ba32d6ea693c8f5"
+    || skinPathSanitization?.tool?.name !== "patchelf"
+    || skinPathSanitization?.tool?.version !== "patchelf 0.18.0"
+    || skinPathSanitization?.tool?.executableBytes !== 252256
+    || skinPathSanitization?.tool?.executableSha256 !== "35fc95654387035338a74bb8cf62fde3712ec83dd8ca30a768deb714d07f063a"
+    || skinPathSanitization?.tool?.ubuntuPackageSha256 !== "962a43e33cd56061522554898557a038ccbb8aa4e1e0f421b2d6f6adf1f80c60"
+    || skinPathSanitization?.mutationReport?.tracked !== false
+    || skinPathSanitization?.mutationReport?.bytes !== 2870
+    || skinPathSanitization?.mutationReport?.sha256 !== "9e1b15afdc19bd7f5dfc89f4043a8e569fcd8cb3ff9bb89aff8e9b1607f6076c"
+    || skinPathSanitization?.inspectReport?.tracked !== false
+    || skinPathSanitization?.inspectReport?.bytes !== 2861
+    || skinPathSanitization?.inspectReport?.sha256 !== "9340d0636ed9840321099c62eb6230779cc5eae0be397ecc2c33dfe8af1f19c2"
+    || skinPathSanitization?.executable?.preRpathBytes !== 298779248
+    || skinPathSanitization?.executable?.preRpathSha256 !== "36c5e0a317b1230da21e5e9bd2f16b76a12b787e243c79ba617f69ae677a02a6"
+    || skinPathSanitization?.executable?.postRpathBytes !== 298779248
+    || skinPathSanitization?.executable?.postRpathSha256 !== "03b4a0680060fd8b7c02a0be7de2bbd29ee6bd9488d0ed2ac0fb97d00465fb02"
+    || skinPathSanitization?.additionalArtifacts?.[0]?.file !== "SHI/Binaries/Linux/SHI.debug"
+    || skinPathSanitization?.additionalArtifacts?.[0]?.bytes !== 164328112
+    || skinPathSanitization?.additionalArtifacts?.[0]?.sha256 !== "0d60e1f0ff432d8af470587d4ac2e9cb32307d486230321ebbddba8aa531e248"
+    || skinPathSanitization?.additionalArtifacts?.[1]?.file !== "SHI/Binaries/Linux/SHI.sym"
+    || skinPathSanitization?.additionalArtifacts?.[1]?.bytes !== 124176922
+    || skinPathSanitization?.additionalArtifacts?.[1]?.sha256 !== "f6f24b4f07e828f4d30703cedc0b4ee9a79cba95caf38f49047d8f0a9881dc73"
+    || skinPathSanitization?.exactSafeRpathEntries?.join("\0") !== expectedSkinSafeRpath.join("\0")
+    || skinPathSanitization?.exactSafeRpathObserved !== true
+    || skinPathSanitization?.currentWorkstationPathMarkerCount !== 0
+    || skinPathSanitization?.securityTokenMarkerCount !== 0
+    || skinPathSanitization?.lddObservedLineCount !== 8
+    || skinPathSanitization?.unresolvedDependencyCount !== 0
+    || skinPathSanitization?.changesGameplayCode !== false
+    || skinPathSanitization?.changesCookedContent !== false
+    || skinPathSanitization?.changesPakOrIoStore !== false
+    || skinPathSanitization?.changesOnlyExecutableRpath !== true
+    || skinPathSanitization?.finalReleaseApproval !== false)
+  errors.push("Daze council skin path-sanitized v5 package contract or exact receipts drifted");
+await verifyFacialReceipt(root, skinPathSanitization?.script,
+  "Daze council skin package path-sanitizer script");
+if (!sameStringSet(skinPresentationPackage?.artifacts?.map((item) => item.relativePath), Object.keys(expectedSkinPackageArtifacts))
+    || (skinPresentationPackage?.artifacts ?? []).some((item) => {
+      const expected = expectedSkinPackageArtifacts[item.relativePath];
+      return !expected || item.role !== expected[0] || item.bytes !== expected[1] || item.sha256 !== expected[2];
+    }))
+  errors.push("Daze council skin presentation no longer retains the exact five outside-Git package artifact receipts");
+
+const skinVisibleReview = skinPresentationEvidence.visiblePlaytest;
+const skinVisibleRuns = skinVisibleReview?.runtimeLogs ?? [];
+const expectedSkinVisibleRuns = {
+  "skin-normal": {
+    reducedMotion: false, motion: "normal", override: "ReducedMotion=False", alpha: 0.1474,
+    file: "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilSkinLookdev-PathSanitized-Review-normal-v6.log",
+    bytes: 124555, sha256: "c97c1227f5f7c0d20f82c6b84e12348928e74489397bceb01a5e13faba8f4f76",
+  },
+  "skin-reduced": {
+    reducedMotion: true, motion: "reduced", override: "ReducedMotion=True", alpha: 1,
+    file: "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilSkinLookdev-PathSanitized-Review-reduced-v6.log",
+    bytes: 124561, sha256: "ea9283ee4c6cbd5554a9a8384fdb316d7d07a96e016330328f8a659ceed3f9e6",
+  },
+};
+if (skinVisibleReview?.stackCount !== 1 || skinVisibleReview?.stackReusedAcrossCorrectedRuns !== true
+    || !skinVisibleReview?.desktop?.includes("Xvfb :129")
+    || skinVisibleReview?.package !== "$SHI_UNREAL_PACKAGE_ROOT/Linux"
+    || skinVisibleReview?.resolution?.join(",") !== "1600,1000"
+    || skinVisibleReview?.renderer !== "Vulkan"
+    || skinVisibleReview?.selectedGpu !== "NVIDIA GeForce RTX 4090 D"
+    || skinVisibleReview?.developmentReviewOnly !== true
+    || skinVisibleReview?.receiptRevision !== "privacy-v11-path-sanitized-package-v5-current-with-normal-reduced-v6-raw-capture-proof"
+    || skinVisibleReview?.predatesPrivacyV11UassetSerialization !== false
+    || skinVisibleReview?.postPrivacyV11RuntimeRerun !== true
+    || skinVisibleReview?.preservedWatchDecision !== true
+    || skinVisibleReview?.materialImplementationAcceptedForEngineering !== true
+    || skinVisibleReview?.visualMaterialQualityAccepted !== false
+    || skinVisibleReview?.normalReviewed !== true || skinVisibleReview?.reducedMotionReviewed !== true
+    || skinVisibleReview?.normalObjectGlanceCaptureAnchoredToMarker !== true
+    || skinVisibleReview?.reducedObjectGlanceCaptureAnchoredToMarker !== true
+    || skinVisibleReview?.storyProgressionReview !== "not-run-for-this-material-qa-review"
+    || skinVisibleReview?.closeCameraReview !== "rejected-not-close-camera-evidence"
+    || skinVisibleReview?.humanHistoricalCulturalReview !== "not-run"
+    || skinVisibleReview?.finalCharacterArtReview !== "rejected-generic-low-detail-blockout"
+    || !sameStringSet(skinVisibleRuns.map((item) => item.reviewId), Object.keys(expectedSkinVisibleRuns)))
+  errors.push("Daze council skin visible review does not preserve the single-stack, NVIDIA, development-only review boundary");
+for (const run of skinVisibleRuns) {
+  const expected = expectedSkinVisibleRuns[run.reviewId];
+  const scan = run.scan;
+  const inert = run.inertEvidence;
+  const shutdown = run.shutdown;
+  if (!expected || run.reviewFlag !== "-ShiCouncilSkinLookdevReview"
+      || run.reducedMotion !== expected.reducedMotion || run.motion !== expected.motion
+      || run.commandLineReducedMotionOverride !== expected.override || run.commandLineOverrideObserved !== true
+      || run.visibleCharacterId !== "chen-sheng" || run.visibleRole !== "speaker"
+      || run.gpu !== "NVIDIA GeForce RTX 4090 D" || run.file !== expected.file
+      || run.tracked !== false || run.bytes !== expected.bytes || run.sha256 !== expected.sha256
+      || scan?.runtimeAdmissionMarkers !== 1 || scan?.objectGlanceMarkers !== 1
+      || scan?.runtimeTextureInventoryCount !== 3 || scan?.visibleRoleExerciseAlpha !== expected.alpha
+      || scan?.skinClayFallbackWarnings !== 0 || scan?.defaultMaterialFallbackWarnings !== 0
+      || scan?.facialFallbackWarnings !== 0 || scan?.storyMutationMarkers !== 0
+      || scan?.fatalErrors !== 0 || scan?.unhandledExceptions !== 0
+      || scan?.assertionFailures !== 0 || scan?.documentedWarningSeverityMarkers !== 4
+      || scan?.displaySwapchainDiagnosticMarkers !== 1
+      || run.documentedWarnings?.length !== 4 || scan?.passed !== true
+      || inert?.exactInertMarkerObserved !== true || inert?.storyProgressionObserved !== false
+      || inert?.campaignSaveMutationObserved !== false || inert?.campaignSaveBefore?.exists !== false
+      || inert?.campaignSaveAfter?.exists !== false || inert?.campaignSaveUnchanged !== true
+      || shutdown?.method !== "controlled SIGTERM after evidence capture"
+      || shutdown?.processReturnCode !== 143 || shutdown?.unrealPreparingToExit !== true
+      || shutdown?.unrealGameEngineShutDown !== true || shutdown?.unrealObjectSubsystemClosed !== true
+      || shutdown?.unrealExiting !== true || shutdown?.cleanUnrealShutdown !== true)
+    errors.push(`Daze council skin visible runtime receipt drifted: ${run.reviewId ?? "unknown"}`);
+}
+
+const skinRawCapture = skinVisibleReview?.rawCaptureEvidence;
+if (skinRawCapture?.clock !== "UTC nanoseconds recorded immediately around raw X11 capture; PNG filesystem times are not capture-start evidence"
+    || skinRawCapture?.normal?.timingReceipt?.file !== "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilSkinLookdev-PathSanitized-Review-normal-v6-capture-times.txt"
+    || skinRawCapture?.normal?.timingReceipt?.tracked !== false
+    || skinRawCapture?.normal?.timingReceipt?.bytes !== 148
+    || skinRawCapture?.normal?.timingReceipt?.sha256 !== "206a71da5a95ceb4d017dec93618e0426b8f8dab530b08a3f3987110c195c3aa"
+    || skinRawCapture?.normal?.rawXwd?.file !== "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilSkinLookdev-PathSanitized-Review-normal-v6-material.xwd"
+    || skinRawCapture?.normal?.rawXwd?.tracked !== false
+    || skinRawCapture?.normal?.rawXwd?.bytes !== 6403179
+    || skinRawCapture?.normal?.rawXwd?.sha256 !== "e315e29517fc0d14f9a5f15da455c98c2d36dfe21609aa70fc44e07af338dd41"
+    || skinRawCapture?.normal?.runtimeAdmissionAtUtc !== "2026-08-10T17:59:36.004Z"
+    || skinRawCapture?.normal?.runtimeMorphMarkerAtUtc !== "2026-08-10T17:59:37.112Z"
+    || skinRawCapture?.normal?.captureStartSecondsAfterAdmission !== 1.460644246
+    || skinRawCapture?.normal?.captureCompleteSecondsAfterAdmission !== 1.470167318
+    || skinRawCapture?.normal?.withinNormalObjectGlanceSection !== true
+    || skinRawCapture?.normal?.rawToPngPixelDifferenceCount !== 0
+    || skinRawCapture?.reduced?.timingReceipt?.file !== "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilSkinLookdev-PathSanitized-Review-reduced-v6-capture-times.txt"
+    || skinRawCapture?.reduced?.timingReceipt?.tracked !== false
+    || skinRawCapture?.reduced?.timingReceipt?.bytes !== 249
+    || skinRawCapture?.reduced?.timingReceipt?.sha256 !== "758bf8c2d8a6c524e4589836479733840260a3c6c1531f31116bcf8aa9e958c4"
+    || skinRawCapture?.reduced?.glanceRawXwd?.bytes !== 6403179
+    || skinRawCapture?.reduced?.glanceRawXwd?.sha256 !== "5dd2d955722255317cfbeafebce9a77c8e65706ae6ffb26bcbd70d66f71658f4"
+    || skinRawCapture?.reduced?.terminalRawXwd?.bytes !== 6403179
+    || skinRawCapture?.reduced?.terminalRawXwd?.sha256 !== "e6d04745dc7a0214949b0a5aa75e65afb25b643900625728d1b904feb659135a"
+    || skinRawCapture?.reduced?.runtimeAdmissionAtUtc !== "2026-08-10T18:01:24.576Z"
+    || skinRawCapture?.reduced?.runtimeMorphMarkerAtUtc !== "2026-08-10T18:01:25.696Z"
+    || skinRawCapture?.reduced?.glanceCaptureStartSecondsAfterAdmission !== 1.155183811
+    || skinRawCapture?.reduced?.glanceCaptureCompleteSecondsAfterAdmission !== 1.166618803
+    || skinRawCapture?.reduced?.withinReducedObjectGlanceSection !== true
+    || skinRawCapture?.reduced?.terminalCaptureStartSecondsAfterAdmission !== 4.518843532
+    || skinRawCapture?.reduced?.terminalAfterFourSecondNeutralClamp !== true
+    || skinRawCapture?.reduced?.glanceRawToPngPixelDifferenceCount !== 0
+    || skinRawCapture?.reduced?.terminalRawToPngPixelDifferenceCount !== 0)
+  errors.push("Daze council skin presentation omits exact v6 raw-XWD timing and lossless PNG evidence");
+
+const expectedSkinScreenshots = {
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-opacity-normal-material-qa-v2.png": ["skin-normal", 881210, "63b9ae8484e874631f45fdb8b8f134c076986d00066ea19e2787218de8e22877"],
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-opacity-reduced-object-glance-v2.png": ["skin-reduced", 880469, "ef6829e1cb4e93dad0d9f17babfcdb2252c7caf79e632d08eb1ec3166d84624d"],
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-opacity-reduced-terminal-neutral-v2.png": ["skin-reduced", 877768, "251a94346962af8dcca7c6df57ea3cae0282dde924cef9679524c03d1041a5e7"],
+};
+if (!sameStringSet(skinPresentationEvidence.screenshots?.map((item) => item.file), Object.keys(expectedSkinScreenshots)))
+  errors.push("Daze council skin presentation must retain exactly three corrected-opacity engineering-QA screenshots");
+for (const screenshot of skinPresentationEvidence.screenshots ?? []) {
+  const expected = expectedSkinScreenshots[screenshot.file];
+  if (!expected || screenshot.reviewId !== expected[0] || screenshot.dimensions?.join(",") !== "1600,1000"
+      || screenshot.bitDepth !== 8 || screenshot.channels !== 3 || screenshot.colorSpace !== "sRGB"
+      || screenshot.alpha !== false || screenshot.bytes !== expected[1] || screenshot.sha256 !== expected[2]
+      || !screenshot.role?.includes("rejected")
+      || screenshot.rawToPngPixelDifferenceCount !== 0
+      || (screenshot.file.includes("opacity-reduced-object-glance-v2")
+        && (!screenshot.captureQualification?.includes("strict reduced speaker interval (1.02, 1.48)")
+          || screenshot.runtimeMarkerAtUtc !== "2026-08-10T18:01:25.696Z"
+          || screenshot.rawCaptureStartAtUtc !== "2026-08-10T18:01:25.731183811Z"
+          || screenshot.captureStartSecondsAfterMarker !== 0.035183811
+          || screenshot.captureStartSecondsAfterAdmission !== 1.155183811
+          || screenshot.captureCompleteSecondsAfterAdmission !== 1.166618803
+          || screenshot.rawCaptureWithinReducedObjectGlanceSection !== true))
+      || (screenshot.file.includes("opacity-reduced-terminal-neutral-v2")
+        && (screenshot.rawCaptureStartAtUtc !== "2026-08-10T18:01:29.094843532Z"
+          || screenshot.captureStartSecondsAfterAdmission !== 4.518843532)))
+    errors.push(`Daze council skin screenshot metadata drifted: ${screenshot.file ?? "unknown"}`);
+  await verifyFacialReceipt(root, screenshot, "Daze council skin material-QA screenshot");
+}
+
+const rejectedSkinAdapterRun = skinPresentationEvidence.reviewHistory?.rejectedGraphicsAdapterZeroRun;
+const skinArtReview = skinPresentationEvidence.review;
+const remainingSkinRedGates = skinArtReview?.remainingRedGates ?? [];
+if (rejectedSkinAdapterRun?.reviewId !== "skin-normal-v1"
+    || rejectedSkinAdapterRun?.disposition !== "rejected-diagnostic-only-not-an-accepted-runtime-or-visual-receipt"
+    || rejectedSkinAdapterRun?.selectedDevice !== "Intel(R) Graphics (RPL-S)"
+    || rejectedSkinAdapterRun?.requestedAdapter !== 0
+    || rejectedSkinAdapterRun?.runtimeAdmissionMarkers !== 0
+    || rejectedSkinAdapterRun?.screenshotsAdmitted !== 0
+    || rejectedSkinAdapterRun?.processReturnCode !== 1
+    || rejectedSkinAdapterRun?.forcedExit !== true
+    || rejectedSkinAdapterRun?.log?.file !== "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilSkinLookdev-Review-normal-v1.log"
+    || rejectedSkinAdapterRun?.log?.tracked !== false || rejectedSkinAdapterRun?.log?.bytes !== 92634
+    || rejectedSkinAdapterRun?.log?.sha256 !== "42399c40d43592a862ed2fc0176afb2c5affcccd993fa123629db5335d1147c1"
+    || skinArtReview?.technicalMaterialRouteDecision !== "pass-corrected-opacity-route-package-runtime-engineering-only"
+    || skinArtReview?.visualArtDecision !== "reject-generic-low-detail-nonportrait-blockout-for-material-quality-replication-final-close-camera-or-film-quality-use"
+    || skinArtReview?.correctedRouteSemantics?.source !== "MaterialMasks2K.B"
+    || skinArtReview?.correctedRouteSemantics?.sourceUnorm8 !== 89
+    || skinArtReview?.correctedRouteSemantics?.sourceNormalized !== 89 / 255
+    || skinArtReview?.correctedRouteSemantics?.opacityThresholdExclusive !== 0.1
+    || skinArtReview?.correctedRouteSemantics?.materialInput !== "MP_OPACITY"
+    || skinArtReview?.correctedRouteSemantics?.opacityConnected !== true
+    || skinArtReview?.correctedRouteSemantics?.subsurfaceColorConnected !== false
+    || skinArtReview?.correctedRouteSemantics?.profileMeanFreePathDistance !== 2.6748
+    || skinArtReview?.correctedRouteSemantics?.effectiveMeanFreePathDistance !== 0.9335576470588234
+    || skinArtReview?.retainedEngineeringFactsOnly?.length !== 4
+    || skinArtReview?.acceptedOnly !== undefined
+    || !skinArtReview?.visualObservations?.some((item) => item.includes("generic low-detail non-portrait blockout"))
+    || !skinArtReview?.visualObservations?.some((item) => item.includes("smooth, plastic and waxy"))
+    || !skinArtReview?.prohibitedConclusions?.some((item) => item.includes("do not treat technical graph"))
+    || !remainingSkinRedGates.some((item) => item.includes("interaction hands"))
+    || !remainingSkinRedGates.some((item) => item.includes("mouth interior"))
+    || !remainingSkinRedGates.some((item) => item.includes("voice, multilingual pronunciation and lip sync"))
+    || !remainingSkinRedGates.some((item) => item.includes("close framing"))
+    || !remainingSkinRedGates.some((item) => item.includes("identity-specific topology"))
+    || !remainingSkinRedGates.some((item) => item.includes("human historical and cultural review"))
+    || !remainingSkinRedGates.some((item) => item.includes("human character/anatomy review"))
+    || !remainingSkinRedGates.some((item) => item.includes("human cinematic lighting/color review"))
+    || !remainingSkinRedGates.some((item) => item.includes("human accessibility review")))
+  errors.push("Daze council skin presentation loses the rejected adapter/graph/visual history or mandatory downstream red gates");
+
+const rejectedV1Package = rejectedV1PresentationHistory?.package;
+const expectedRejectedV1Artifacts = {
+  "SHI.sh": [218, "7eeb214781ca5113696ae2be6c5124b5404cd4abcd1fff39aa383ba15ff1cf1e"],
+  "SHI/Binaries/Linux/SHI": [298771056, "51062427f73e188c1c973e5c5084eff149080cde4c6489edacea8bfe686877b9"],
+  "SHI/Content/Paks/SHI-Linux.pak": [10428044, "8c70154355e6968c1e9a2a645bc6c9c3d52e926ce73d9592b409dd3ec97e1dd9"],
+  "SHI/Content/Paks/SHI-Linux.ucas": [176534544, "3e751425398011a9fb9eb6c4ea53dcfcae93103fc3587efcf6aaefea28a13662"],
+  "SHI/Content/Paks/SHI-Linux.utoc": [158699, "1d1308f43de89141d1e2ab6eb2b4e1841f0ee701499b02baf413471aea20081a"],
+};
+const expectedRejectedV1Screenshots = {
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-normal-material-qa-v1.png": [886722, "8b1bfd728127c45fa5e70255b92ab092dfaa136aedc9fa7a4a62b2d6f3f1387d"],
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-reduced-object-glance-v1.png": [877456, "58ff4422393a7938edf3de2750ddadc2a9fe0aab0b62d143951f9ff209807c1a"],
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-reduced-terminal-neutral-v1.png": [882116, "accc35b614fdb004b6cdd3a41232f5fecfeff624abcb2c7259d20c5b10ab7a02"],
+};
+const rejectedV1RuntimeLogs = rejectedV1PresentationHistory?.runtimeLogs ?? [];
+const rejectedV1Screenshots = rejectedV1PresentationHistory?.screenshots ?? [];
+if (rejectedV1Package?.result !== "BUILD SUCCESSFUL"
+    || rejectedV1Package?.cookedPackageCount !== 564
+    || rejectedV1Package?.incrementallySkippedPackageCount !== 0
+    || rejectedV1Package?.platformSkippedPackageCount !== 7
+    || rejectedV1Package?.totalCookCandidates !== 571
+    || rejectedV1Package?.isolatedAssetCount !== 5
+    || rejectedV1Package?.executionSeconds !== 69.07
+    || rejectedV1Package?.buildLog?.bytes !== 267356
+    || rejectedV1Package?.buildLog?.sha256 !== "78c0056f72c1c48f9bf1469e8f1e9a4bbd70b6204ba4669c5964955482fe4c82"
+    || !sameStringSet(rejectedV1Package?.artifacts?.map((item) => item.relativePath), Object.keys(expectedRejectedV1Artifacts))
+    || (rejectedV1Package?.artifacts ?? []).some((item) => {
+      const expected = expectedRejectedV1Artifacts[item.relativePath];
+      return !expected || item.bytes !== expected[0] || item.sha256 !== expected[1];
+    })
+    || rejectedV1RuntimeLogs.length !== 2
+    || rejectedV1RuntimeLogs[0]?.bytes !== 124345
+    || rejectedV1RuntimeLogs[0]?.sha256 !== "544815f075cdbb4b16eb1014562d427683c00e6ab4ef04c85fb668bbbafb2667"
+    || rejectedV1RuntimeLogs[0]?.exerciseAlpha !== 0.0346
+    || rejectedV1RuntimeLogs[0]?.controlledExitCode !== 143
+    || rejectedV1RuntimeLogs[1]?.bytes !== 124351
+    || rejectedV1RuntimeLogs[1]?.sha256 !== "f9df9b0b160f3b0a66cd76c3c7622fbb36c7a8568eb80fae4d82a0c649d8e847"
+    || rejectedV1RuntimeLogs[1]?.exerciseAlpha !== 1
+    || rejectedV1RuntimeLogs[1]?.controlledExitCode !== 143
+    || !sameStringSet(rejectedV1Screenshots.map((item) => item.file), Object.keys(expectedRejectedV1Screenshots))
+    || rejectedV1Screenshots.some((item) => {
+      const expected = expectedRejectedV1Screenshots[item.file];
+      return !expected || item.bytes !== expected[0] || item.sha256 !== expected[1];
+    })
+    || !rejectedV1Screenshots.find((item) => item.file.includes("reduced-object-glance-v1"))?.captureQualification?.includes("Legacy filename only")
+    || rejectedV1PresentationHistory?.visualDecision !== "rejected-orange-bright-waxy-smooth-no-replication"
+    || rejectedV1PresentationHistory?.materialEngineeringAdmission !== false
+    || rejectedV1PresentationHistory?.finalSkin !== false)
+  errors.push("Daze council skin presentation does not retain the exact rejected-v1 package, runtime and screenshot diagnostic history");
+
+const correctedV3History = skinPresentationEvidence.reviewHistory?.supersededCorrectedV3PrePrivacyPackageAndRuntime;
+if (correctedV3History?.status !== "superseded-historical-engineering-evidence-only-watched-visual-rejected"
+    || correctedV3History?.historicalImportReceipt?.bytes !== 35830
+    || correctedV3History?.historicalImportReceipt?.sha256 !== "e65269ea71bee3d95d5cb7c1078e3f63578ba3f13eb510fb9436f213c275e6f8"
+    || correctedV3History?.historicalImportReceipt?.immutableImportReceiptRootSha256 !== "57ea5e3c55a340ae4cf19e8b3506ec62e0fb0a2e1d55206a833a0b19052286f6"
+    || correctedV3History?.historicalImportReceipt?.currentPrivacyAdmission !== false
+    || correctedV3History?.currentPackageAuthority !== false
+    || correctedV3History?.package?.executionSeconds !== 67.92
+    || correctedV3History?.package?.buildLog?.bytes !== 269498
+    || correctedV3History?.package?.buildLog?.sha256 !== "fa8859cb712b3b13a353b8a1453c1b062f3b27b2bfbd852420ad7adf41252eb9"
+    || correctedV3History?.runtimeLogs?.[0]?.bytes !== 124516
+    || correctedV3History?.runtimeLogs?.[0]?.sha256 !== "3919f3606ee6adddbd97b785d705e4b24c9b75f1014183ba37f4bbe5d9609d03"
+    || correctedV3History?.runtimeLogs?.[0]?.exerciseAlpha !== 0.0108
+    || correctedV3History?.runtimeLogs?.[1]?.bytes !== 124522
+    || correctedV3History?.runtimeLogs?.[1]?.sha256 !== "9aac883e892d4890c16d54b0630109784e9c02889d18ea14dfbff92c2aafc575"
+    || correctedV3History?.runtimeLogs?.[1]?.exerciseAlpha !== 1
+    || correctedV3History?.supersededScreenshotReceipts?.some((item) => item.currentTrackedPayloadRetained !== false)
+    || correctedV3History?.visualArtMaterialQualityAdmission !== false
+    || correctedV3History?.finalSkin !== false
+    || correctedV3History?.closeCameraApproved !== false
+    || correctedV3History?.humanReviewApproved !== false)
+  errors.push("Daze council skin presentation loses exact superseded corrected-v3 diagnostic history");
+
+const rejectedPrivacyV4History = skinPresentationEvidence.reviewHistory?.rejectedPrivacyV4PackageAndRuntime;
+if (rejectedPrivacyV4History?.status !== "rejected-for-public-package-workstation-path-leak-diagnostic-engineering-history-only"
+    || rejectedPrivacyV4History?.packagePrivacyAdmission !== false
+    || rejectedPrivacyV4History?.currentPackageAuthority !== false
+    || rejectedPrivacyV4History?.package?.executionSeconds !== 91.02
+    || rejectedPrivacyV4History?.package?.buildLog?.bytes !== 283497
+    || rejectedPrivacyV4History?.package?.buildLog?.sha256 !== "09dc4a60725d8eee4011ed9f5f5947a35378fdc6dc3f91ff24378adeb7308aa5"
+    || rejectedPrivacyV4History?.package?.artifacts?.find((item) => item.relativePath === "SHI/Binaries/Linux/SHI")?.currentWorkstationPathMatches !== 6
+    || rejectedPrivacyV4History?.package?.additionalPathLeakCounts?.["SHI.debug"] !== 93
+    || rejectedPrivacyV4History?.package?.additionalPathLeakCounts?.["SHI.sym"] !== 192
+    || rejectedPrivacyV4History?.runtimeLogs?.[0]?.bytes !== 124513
+    || rejectedPrivacyV4History?.runtimeLogs?.[0]?.sha256 !== "eb41b352636adbfc9e1ae5c57e9c5f9a2ec36dc5ca9b6d51aa4c17d3460af78a"
+    || rejectedPrivacyV4History?.runtimeLogs?.[0]?.exerciseAlpha !== 0.002
+    || rejectedPrivacyV4History?.runtimeLogs?.[1]?.bytes !== 124519
+    || rejectedPrivacyV4History?.runtimeLogs?.[1]?.sha256 !== "b4532e1aeb634bf4a3aa48dda2cd3f2688a632ba93887f1e679b7b6cf31f1cb3"
+    || rejectedPrivacyV4History?.runtimeLogs?.[1]?.exerciseAlpha !== 1
+    || rejectedPrivacyV4History?.captureEvidence?.timingReceipt?.sha256 !== "43b6b5dd03cc7195ca818703db71bd1372ff469cae66fdcaf65ca04db2aa768b"
+    || rejectedPrivacyV4History?.captureEvidence?.glanceRawXwd?.sha256 !== "27e42e63b20d2db579165909380a65bb854bf1319fe2ad4c34a1f77a404b7222"
+    || rejectedPrivacyV4History?.captureEvidence?.terminalRawXwd?.sha256 !== "142cde618b562091536215edd91ee758d51a107524f6e5979fd882362f823947"
+    || rejectedPrivacyV4History?.visualArtMaterialQualityAdmission !== false
+    || rejectedPrivacyV4History?.finalSkin !== false
+    || rejectedPrivacyV4History?.closeCameraApproved !== false
+    || rejectedPrivacyV4History?.humanReviewApproved !== false)
+  errors.push("Daze council skin presentation loses exact rejected privacy-v4 package/runtime history");
+
 const project = JSON.parse(await readFile(resolve(unreal, "SHI.uproject"), "utf8"));
 if (project.EngineAssociation !== "5.8") errors.push("Unreal engine association must be 5.8");
 if (!project.Modules?.some((module) => module.Name === "SHI" && module.Type === "Runtime")) errors.push("SHI runtime module is not registered");
@@ -1605,6 +2850,7 @@ const councilStaging = await readFile(resolve(unreal, "Source/SHI/ShiCouncilStag
 const councilCharacterPresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiCouncilCharacterPresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiCouncilCharacterPresentationModel.cpp"), "utf8")}`;
 const councilPerformancePresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiCouncilPerformancePresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiCouncilPerformancePresentationModel.cpp"), "utf8")}`;
 const councilFacialPerformance = `${await readFile(resolve(unreal, "Source/SHI/ShiCouncilFacialPerformanceModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiCouncilFacialPerformanceModel.cpp"), "utf8")}`;
+const councilSkinLookdev = `${await readFile(resolve(unreal, "Source/SHI/ShiCouncilSkinLookdevModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiCouncilSkinLookdevModel.cpp"), "utf8")}`;
 const councilFigure = await readFile(resolve(unreal, "Source/SHI/ShiCouncilFigure.cpp"), "utf8");
 const cinematic = await readFile(resolve(unreal, "Source/SHI/ShiCinematicBeatModel.cpp"), "utf8");
 const orderTransaction = await readFile(resolve(unreal, "Source/SHI/ShiOrderTransactionModel.cpp"), "utf8");
@@ -1615,6 +2861,7 @@ const gameMode = await readFile(resolve(unreal, "Source/SHI/ShiGameMode.cpp"), "
 const screen = await readFile(resolve(unreal, "Source/SHI/ShiCommandScreen.cpp"), "utf8");
 const automation = await readFile(resolve(unreal, "Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp"), "utf8");
 const engagementAutomation = await readFile(resolve(unreal, "Source/SHI/Private/Tests/ShiEngagementAutomationTest.cpp"), "utf8");
+const councilSkinLookdevAutomation = await readFile(resolve(unreal, "Source/SHI/Private/Tests/ShiCouncilSkinLookdevAutomationTest.cpp"), "utf8");
 const buildRules = await readFile(resolve(unreal, "Source/SHI/SHI.Build.cs"), "utf8");
 const gameConfig = await readFile(resolve(unreal, "Config/DefaultGame.ini"), "utf8");
 const engineConfig = await readFile(resolve(unreal, "Config/DefaultEngine.ini"), "utf8");
@@ -1637,6 +2884,7 @@ const councilFacialGenerator = await readFile(resolve(root, "scripts/build-daze-
 const councilFacialValidator = await readFile(resolve(root, "scripts/validate-daze-council-facial-performance.py"), "utf8");
 const councilFacialPackageValidator = await readFile(resolve(root, "scripts/validate-daze-council-facial-performance-package.mjs"), "utf8");
 const councilFacialImporter = await readFile(resolve(root, "scripts/import-daze-council-facial-performance-unreal.py"), "utf8");
+const councilSkinLookdevImporter = await readFile(resolve(root, "scripts/import-daze-council-skin-lookdev-unreal.py"), "utf8");
 const councilFacialBrief = await readFile(resolve(root, "docs/art/DAZE_COUNCIL_FACIAL_PERFORMANCE_BRIEF.md"), "utf8");
 for (const token of ["schema v7", "TimeIndex <=", "NextActIndex <", "StreamingAssets/chapter-01-daze.json", "StreamingAssets/editions.json", "initialResources", "nextNodeId", "commitments", "countermeasures", "characters", "speakerId", "FindCharacter", "ValidateEvidence", "public-link-metadata-only", "specialist-review-required"]) if (!model.includes(token)) errors.push(`Unreal model omits contract token: ${token}`);
 for (const token of ["ApplyEffects(Choice->Effects)", "CommitmentOutcome->Effects", "Choice->PressureEffects", "Opposition->Effects", "MethodRead->Effects", "Condition->Effects", "SelectFieldCondition", "CanChoose", "ReplaySaveJson", "MoveTemp(Candidate)"]) if (!session.includes(token)) errors.push(`Unreal deterministic session omits contract token: ${token}`);
@@ -1716,6 +2964,12 @@ for (const token of ["dedicated speaker review camera is admitted", "speaker rev
 for (const token of ["SHI.Cinematic.CouncilCharacterPresentationV1", "five exact council character identities are admitted", "council character order remains canonical", "uses the exact x100 component scale", "remains a disclosed non-final neutral blockout", "engine asset passes bones, materials, bounds and topology", "all five figures use one exact engine Skeleton", "unknown generated identity is rejected", "failed identity build is atomic", "metre-valued asset cannot silently shrink to centimetres", "generic layers cannot be promoted to exact 209 BCE costume", "skeletal blockout cannot replace primitive interaction authority", "wrong or generated character asset is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits council-character live-asset/hostile-drift token: ${token}`);
 for (const token of ["SHI.Cinematic.CouncilPerformancePresentationV1", "two exact council body-performance roles remain canonical", "keeps 121 target samples", "retains exactly 52 child-body tracks", "cannot override the admitted reference Root", "child positions/scales remain the exact shared reference pose", "both body performances use one exact engine Skeleton", "non-speaker maps to attentive performance", "speaker maps to measured performance", "unknown generated performance role is rejected", "sample-count drift is rejected", "frame-rate drift is rejected", "root-motion authority is rejected", "generic gesture cannot become reconstructed 209 BCE etiquette", "body blockout cannot become final acting without review", "visual performance cannot acquire gameplay authority"]) if (!automation.includes(token)) errors.push(`Unreal automation omits council-performance live-asset/hostile-drift token: ${token}`);
 for (const token of ["SHI.Cinematic.CouncilFacialPerformanceV1", "five exact facial identities remain canonical and ordered", "the facial rig exposes exactly the admitted 21 morphs in canonical order", "uses the exact accepted shared Skeleton", "live mesh passes exact bones, materials, bounds, topology and morph admission", "all five live facial meshes use one exact Skeleton object", "unknown facial identity is rejected", "facial material order drift is rejected", "extra facial morph control is rejected", "silent intent cadence cannot become audio driven", "deterministic facial presentation cannot acquire randomness", "engineering face cannot acquire close-framing approval", "facial evaluator is exactly deterministic for repeated input", "all listener and speaker timeline samples preserve exact morph order and bounds", "reduced-motion cadence is a single clamped pass and cannot loop after four seconds", "facial frame morph reordering is rejected", "facial frame extra morph control is rejected", "facial frame gameplay authority is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits council-facial live-asset/determinism/reduced-motion/hostile-drift token: ${token}`);
+for (const token of ["shi-daze-council-skin-lookdev-v1", "-ShiCouncilSkinLookdevReview", "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1", "M_SHI_Character_SkinClay", "SubsurfaceProfile", "BaseColor2K", "MaterialMasks2K", "DetailNormal1K", "bCanonicalHeightSourceKeptOutsideEngine", "bBaselineFallbackRequired", "bStandardMotionSupported", "bReducedMotionSupported", "bHistoricallyAttestedComplexion", "bHumanHistoricalCulturalReviewApproved", "bCloseCameraApproved", "bFinalCharacterArt", "bFinalSkin"]) if (!councilSkinLookdev.includes(token)) errors.push(`Unreal council-skin model omits exact isolated/fail-closed token: ${token}`);
+for (const token of ["SHI.Cinematic.CouncilSkinLookdevV1", "skin lookdev has exactly five isolated engine assets", "lookdev engine inventory excludes the canonical height source", "skin material is an opaque skeletal morph-compatible Subsurface Profile material", "skin fallback binds exact accepted Chen mesh, SkinClay, rig, source and UV receipts", "legacy-root overwrite is rejected", "imported canonical height source is rejected", "Unreal Default Material substitution is rejected", "native contract cannot manufacture human approval", "missing lookdev inventory fails closed to accepted SkinClay", "unknown skin review token is rejected", "skin frame cannot acquire motion behavior", "skin frame gameplay authority is rejected", "skin frame historical complexion claim is rejected", "skin frame close-camera approval is rejected", "skin frame final-skin claim is rejected"]) if (!councilSkinLookdevAutomation.includes(token)) errors.push(`Unreal council-skin automation omits hostile-drift/fallback token: ${token}`);
+for (const token of ["SHI_COUNCIL_SKIN_LOOKDEV_RUNTIME_ADMITTED", "SHI_COUNCIL_SKIN_LOOKDEV_MORPH_SECTIONS_EXERCISED", "RestoreSkinLookdevBaseline", "UseSkinLookdevPrimitiveFallback", "SetMaterial(SkinMaterialIndex, SkinLookdevMaterial)"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits skin-lookdev runtime/fallback token: ${token}`);
+for (const token of ["ShiCouncilSkinLookdevReview", "-ShiCouncilSkinLookdevReview is Chen-only", "SHI_COUNCIL_SKIN_LOOKDEV_REVIEW_INERT", "SetSkinLookdevReviewEnabled", "CanonicalTargetCharacterId"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits Chen-only inert skin-review token: ${token}`);
+for (const token of ["SHI_DAZE_COUNCIL_SKIN_LOOKDEV_REIMPORT", "inspect-only", "canonicalHeightRemainedSourceOnly", "trackedUassetHashesUnchanged", "immutableImportReceiptRootSha256"]) if (!councilSkinLookdevImporter.includes(token)) errors.push(`Unreal council-skin importer omits mutation/read-only receipt token: ${token}`);
+if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1")')) errors.push("Unreal packaging config omits the isolated skin-lookdev always-cook path");
 for (const token of ["SHI.Cinematic.CommandWeightPresentationV1", "preserves contact, pointer clearance and the 44-degree safe frame", "not a gameplay interaction target", "lower decision-object field without covering the speaker", "development front review camera looks exactly at the admitted prop", "development back review camera looks exactly at the admitted prop", "a prop that crowds a live signal is rejected", "a floating command weight is rejected", "an unauthored council lens cannot admit the prop"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-weight presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandSurfacePresentationV1", "reviewed command ground contains every site and live signal", "command ground is not an interaction target", "command ground has no runtime collision", "command ground remains beneath the non-authoritative engagement exercise", "surface review camera sees the whole authored command field", "unreviewed surface scaling is rejected", "runtime surface collision is rejected", "a disappearing engagement ground is rejected", "a signal outside the safe command field is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-surface presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.WetFieldEnvironmentPresentationV1", "reviewed wet-field environment passes its presentation contract", "wet field is a bounded identity-root environment below the command surface", "wet field is not an interaction target", "wet field collision is disabled", "wet field does not affect navigation", "wet field persists beneath Broken Crossing", "environment review camera sees the whole bounded field", "unreviewed field scaling is rejected", "runtime field collision is rejected", "runtime field navigation authority is rejected", "a disappearing engagement environment is rejected", "terrain that violates command-surface clearance is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits wet-field presentation token: ${token}`);
@@ -1730,4 +2984,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain, wet-field-vegetation, five identity-Root shared-skeleton council characters, two body-performance clips and exact 21-control silent facial-intent cadence with explicit historical/final-art/voice/close-framing red gates.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain, wet-field-vegetation, five identity-Root shared-skeleton council characters, two body-performance clips, exact 21-control silent facial-intent cadence and an isolated five-asset Chen Sheng skin engineering lookdev with package/visible/human/final-art red gates.`);

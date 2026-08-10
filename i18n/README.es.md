@@ -31,7 +31,7 @@ SHI es un juego real en producción, no una demo desechable. El primer capítulo
 | [`apps/web`](../apps/web/) | Web jugable, guardado, registros de fuentes y decisiones, móvil y RTL |
 | [`apps/unity`](../apps/unity/) | Unity 6 y mesa 3D; editor Linux/WebGL instalado, inicio de sesión de licencia aún bloqueante |
 | [`content`](../content/) | 6 escenas, 15 decisiones, 5 recursos, recuperación y 3 finales |
-| [`docs`](../docs/) | Diseño, historia, arquitectura, localización, arte, QA, publicación y plan anual |
+| [`docs`](../docs/) | Diseño, historia, arquitectura, localización, arte, QA, publicación y hoja de ruta por etapas de calidad |
 
 ## Inicio rápido
 
@@ -44,7 +44,7 @@ npm run build
 
 ## Arquitectura e investigación
 
-El JSON versionado es la única fuente narrativa y lo comparten el núcleo determinista de TypeScript y Unity 6. Libros privados, OCR, chats y el memorando completo no entran en Git. Consulte el [diseño](../docs/design/GAME_DESIGN_DOCUMENT.md), la [política de fuentes](../docs/history/SOURCE_POLICY.md) y el [plan anual](../docs/production/ROADMAP.md).
+El JSON versionado es la única fuente narrativa y lo comparten el núcleo determinista de TypeScript y Unity 6. Libros privados, OCR, chats y el memorando completo no entran en Git. Consulte el [diseño](../docs/design/GAME_DESIGN_DOCUMENT.md), la [política de fuentes](../docs/history/SOURCE_POLICY.md) y la [hoja de ruta por etapas de calidad](../docs/production/ROADMAP.md).
 
 ## Compilación y validación
 

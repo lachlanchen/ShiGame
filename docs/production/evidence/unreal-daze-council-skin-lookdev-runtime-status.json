@@ -1,0 +1,480 @@
+{
+  "assetId": "shi-daze-council-skin-lookdev-v1",
+  "createdAt": "2026-08-11T00:29:00+08:00",
+  "updatedAt": "2026-08-11T02:36:48+08:00",
+  "status": "privacy-v11-import-path-sanitized-v5-package-normal-reduced-v6-runtime-engineering-pass; watched-visual-art-material-quality-rejected; v1-v4-history-retained; final-close-human-gates-red",
+  "disclosure": "CHEN SHENG SKIN LOOKDEV V1 · DRAMATIC CASTING, NOT A HISTORICAL LIKENESS OR COMPLEXION CLAIM · NOT HUMAN-APPROVED FINAL ART OR CLOSE-CAMERA AUTHORITY",
+  "engine": {
+    "name": "Unreal Engine",
+    "association": "5.8",
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "platform": "Linux",
+    "configuration": "Development Editor"
+  },
+  "importAdmission": {
+    "status": "pass-privacy-v11-import-read-only-rendered-inspect-engineering-only",
+    "revision": "privacy-v11-base-asset-import-data-sanitized",
+    "evidence": {
+      "file": "docs/production/evidence/unreal-daze-council-skin-lookdev-import-status.json",
+      "bytes": 41086,
+      "sha256": "c80a07a63c56e4c486a65c3bbaa8e000fe9ad616ebb7037551a378c7657504c2"
+    },
+    "destination": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1",
+    "trackedAssets": 5,
+    "subsurfaceProfiles": 1,
+    "materials": 1,
+    "textures": 3,
+    "canonicalHeightImported": false,
+    "defaultReadOnlyInspectionPassed": true,
+    "readOnlyInspectionTrackedHashesUnchanged": true,
+    "readOnlyInspectionImmutableImportReceiptRootSha256": "2a5b64796c446d1328c1c10cf17aa98e4ea5d12b1ff1c931277a4bc0eedd65f1",
+    "acceptedFacialAssetsPreserved": true,
+    "embeddedMetadataPrivacyPassed": true,
+    "readOnlyInspectionEmbeddedMetadataPrivacyPassed": true,
+    "embeddedSourceContractFileReceiptsAreImportTimeSnapshot": true,
+    "embeddedSourceContractFileReceiptsAreNotCurrentCrossReceipts": true,
+    "subsurfaceProfileOpacity": {
+      "source": "MaterialMasks2K.B",
+      "sourceByte": 89,
+      "value": 0.34901960784313724,
+      "thresholdExclusive": 0.1,
+      "maximum": 0.34901960784313724,
+      "profileMeanFreePathDistance": 2.6748,
+      "effectiveMeanFreePath": 0.9335576470588234,
+      "maximumEffectiveMeanFreePath": 0.9335576470588234,
+      "materialInput": "MP_OPACITY",
+      "opacityConnected": true,
+      "subsurfaceColorInput": "unconnected"
+    },
+    "currentEngineeringAdmission": true,
+    "correctedV3PackageEngineeringEvidenceRetained": true,
+    "correctedV3RuntimeRouteExerciseRetained": true,
+    "currentPrivacyV11PackageEngineeringAdmission": true,
+    "currentPrivacyV11RuntimeRouteExercise": true,
+    "packageAdmission": false,
+    "visualArtAdmission": false
+  },
+  "privacyRepair": {
+    "status": "pass-current-five-uassets-private-absolute-paths-absent",
+    "revision": "privacy-v11-base-asset-import-data-sanitized",
+    "importer": {
+      "file": "scripts/import-daze-council-skin-lookdev-unreal.py",
+      "bytes": 75871,
+      "sha256": "ff9f67fb9bd797e3504ab528eccba0ae6ba456cf22e32079df16d08485e52242"
+    },
+    "immutableImportReceiptRootSha256": "2a5b64796c446d1328c1c10cf17aa98e4ea5d12b1ff1c931277a4bc0eedd65f1",
+    "exactFiveAssetsScanned": true,
+    "threeTextureAssetsUseBaseAssetImportData": true,
+    "threeTextureAssetsRetainRelativeFilenameAndSourceBasename": true,
+    "materialAndProfileHaveNoSourceIdentity": true,
+    "interchangeAssetImportDataAbsentFromAllFive": true,
+    "privateAbsolutePathsAbsentFromAllFive": true,
+    "readOnlyRenderedInspectionPassed": true,
+    "trackedHashesUnchangedDuringInspection": true,
+    "trackedUassetReceipts": {
+      "M_SHI_ChenSheng_SkinLookdevV1.uasset": {"bytes": 11579, "sha256": "13d8dde823611bfd15ef8aae330cb109304a1621da0511518220bedcd51eb1f3"},
+      "SP_SHI_ChenSheng_SkinLookdevV1.uasset": {"bytes": 1913, "sha256": "c730da3eddda2a67fe60a39ea8cf3d6b32b792afbc7a2318536cdd3af3c6512b"},
+      "T_SHI_ChenSheng_Skin_BaseColor_2K.uasset": {"bytes": 2113116, "sha256": "54122ea3a81132a263c0a7d3541a8a534bc472313133359d85d3982716393c87"},
+      "T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset": {"bytes": 1532856, "sha256": "6378f416c33ca89161479c3cde2584a7958a623fa5a9c348f344873a2934e7bc"},
+      "T_SHI_ChenSheng_Skin_Masks_2K.uasset": {"bytes": 1472351, "sha256": "392ddda8ce0af8b8821116682081234ce680e04899e78722b39331e87a216ee8"}
+    },
+    "freshPackagePending": false,
+    "currentPrivacyV11PackageAndRuntimePassed": true
+  },
+  "correctedPackageRuntimePresentation": {
+    "status": "pass-privacy-v11-path-sanitized-v5-package-normal-reduced-v6-runtime-engineering-only-watched-visual-art-rejected",
+    "evidence": {
+      "file": "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json",
+      "bytes": 45420,
+      "sha256": "750b03ec8a09d147bddcc08c175140fb942d9339fa93306a695d3efef7ccc54f"
+    },
+    "package": {
+      "cookedPackages": 564,
+      "incrementallySkippedPackages": 0,
+      "platformSkippedPackages": 7,
+      "totalCookCandidates": 571,
+      "isolatedSkinAssets": 5,
+      "result": "BUILD SUCCESSFUL",
+      "buildCookRunSeconds": 110.37,
+      "builtFromPrivacyV11SourceUassets": true,
+      "sourceSnapshotMatchesFiveCurrentReceipts": true,
+      "pathSanitizedExecutableDebugAndSymbols": true,
+      "postRpathExecutableSha256": "03b4a0680060fd8b7c02a0be7de2bbd29ee6bd9488d0ed2ac0fb97d00465fb02"
+    },
+    "runtimeRoutes": {
+      "normal": {
+        "gpu": "NVIDIA GeForce RTX 4090 D",
+        "exerciseAlpha": 0.1474,
+        "controlledExitCode": 143,
+        "targetedMaterialFallbackOrFatalSignatures": 0,
+        "documentedWarningSeverityMarkers": 4,
+        "displaySwapchainDiagnosticMarkers": 1
+      },
+      "reduced": {
+        "gpu": "NVIDIA GeForce RTX 4090 D",
+        "exerciseAlpha": 1.0,
+        "controlledExitCode": 143,
+        "targetedMaterialFallbackOrFatalSignatures": 0,
+        "documentedWarningSeverityMarkers": 4,
+        "displaySwapchainDiagnosticMarkers": 1
+      }
+    },
+    "trackedScreenshots": 3,
+    "normalObjectGlanceCaptureStartSecondsAfterAdmission": 1.460644246,
+    "normalObjectGlanceCaptureCompleteSecondsAfterAdmission": 1.470167318,
+    "normalObjectGlanceCaptureWithinDefinedSection": true,
+    "reducedObjectGlanceCaptureStartSecondsAfterMarker": 0.035183811,
+    "reducedObjectGlanceCaptureStartSecondsAfterAdmission": 1.155183811,
+    "reducedObjectGlanceCaptureCompleteSecondsAfterAdmission": 1.166618803,
+    "reducedObjectGlanceCaptureWithinDefinedSection": true,
+    "captureTimingReceipts": {
+      "normal": {"file": "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilSkinLookdev-PathSanitized-Review-normal-v6-capture-times.txt", "bytes": 148, "sha256": "206a71da5a95ceb4d017dec93618e0426b8f8dab530b08a3f3987110c195c3aa"},
+      "reduced": {"file": "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilSkinLookdev-PathSanitized-Review-reduced-v6-capture-times.txt", "bytes": 249, "sha256": "758bf8c2d8a6c524e4589836479733840260a3c6c1531f31116bcf8aa9e958c4"}
+    },
+    "oneReusedNoVncStack": true,
+    "storyAndSaveRouteInert": true,
+    "freshCampaignSaveAbsentBeforeAndAfter": true,
+    "packageEngineeringAdmission": true,
+    "runtimeRouteEngineeringAdmission": true,
+    "predatesPrivacyV11UassetSerialization": false,
+    "currentPrivacyV11PackageRefreshPending": false,
+    "visualArtMaterialQualityAdmission": false,
+    "closeCameraApproved": false,
+    "humanReviewApproved": false,
+    "finalCharacterArt": false
+  },
+  "supersededCorrectedV3PackageAndRuntimeHistory": {
+    "status": "superseded-historical-engineering-evidence-only-pre-privacy-v11-watched-visual-rejected",
+    "historicalImportReceipt": {"bytes": 35830, "sha256": "e65269ea71bee3d95d5cb7c1078e3f63578ba3f13eb510fb9436f213c275e6f8", "immutableImportReceiptRootSha256": "57ea5e3c55a340ae4cf19e8b3506ec62e0fb0a2e1d55206a833a0b19052286f6", "currentPrivacyAdmission": false},
+    "package": {
+      "cookedPackages": 564,
+      "incrementallySkippedPackages": 0,
+      "platformSkippedPackages": 7,
+      "totalCookCandidates": 571,
+      "isolatedSkinAssets": 5,
+      "result": "BUILD SUCCESSFUL",
+      "buildCookRunSeconds": 67.92,
+      "buildLogBytes": 269498,
+      "buildLogSha256": "fa8859cb712b3b13a353b8a1453c1b062f3b27b2bfbd852420ad7adf41252eb9"
+    },
+    "runtimeRoutes": {
+      "normal": {"exerciseAlpha": 0.0108, "bytes": 124516, "sha256": "3919f3606ee6adddbd97b785d705e4b24c9b75f1014183ba37f4bbe5d9609d03", "inertAdmissionExerciseMarkers": [1, 1, 1], "documentedWarningSeverityMarkers": 4, "targetedFallbackErrorFatalStoryMutationMarkers": 0, "saveAbsentBeforeAndAfter": true, "controlledExitCode": 143},
+      "reduced": {"exerciseAlpha": 1.0, "bytes": 124522, "sha256": "9aac883e892d4890c16d54b0630109784e9c02889d18ea14dfbff92c2aafc575", "inertAdmissionExerciseMarkers": [1, 1, 1], "documentedWarningSeverityMarkers": 4, "targetedFallbackErrorFatalStoryMutationMarkers": 0, "saveAbsentBeforeAndAfter": true, "controlledExitCode": 143}
+    },
+    "historicalScreenshotPayloadsOverwrittenByCurrentV5V6Evidence": true,
+    "currentPackageAuthority": false,
+    "materialEngineeringAdmissionAtTheTime": true,
+    "visualArtMaterialQualityAdmission": false,
+    "finalCharacterArt": false
+  },
+  "rejectedPrivacyV4PackageAndRuntimeHistory": {
+    "status": "rejected-for-public-package-workstation-path-leak-diagnostic-engineering-history-only",
+    "package": {
+      "cookedPackages": 564,
+      "incrementallySkippedPackages": 0,
+      "platformSkippedPackages": 7,
+      "totalCookCandidates": 571,
+      "result": "BUILD SUCCESSFUL",
+      "buildCookRunSeconds": 91.02,
+      "buildLogBytes": 283497,
+      "buildLogSha256": "09dc4a60725d8eee4011ed9f5f5947a35378fdc6dc3f91ff24378adeb7308aa5",
+      "executableCurrentWorkstationPathMatches": 6,
+      "debugCurrentWorkstationPathMatches": 93,
+      "symbolCurrentWorkstationPathMatches": 192
+    },
+    "runtimeRoutes": {
+      "normalV4": {"exerciseAlpha": 0.002, "bytes": 124513, "sha256": "eb41b352636adbfc9e1ae5c57e9c5f9a2ec36dc5ca9b6d51aa4c17d3460af78a", "controlledExitCode": 143},
+      "reducedV5": {"exerciseAlpha": 1.0, "bytes": 124519, "sha256": "b4532e1aeb634bf4a3aa48dda2cd3f2688a632ba93887f1e679b7b6cf31f1cb3", "controlledExitCode": 143}
+    },
+    "currentPackageAuthority": false,
+    "materialEngineeringAdmissionAtTheTime": true,
+    "visualArtMaterialQualityAdmission": false,
+    "finalCharacterArt": false
+  },
+  "rejectedV1PackageAndPresentationHistory": {
+    "status": "rejected-diagnostic-only-superseded-by-corrected-v2-opacity-package-runtime-engineering-route",
+    "historicalPresentationReference": {
+      "originalLogicalFile": "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json",
+      "tracked": false,
+      "retainedPayload": false,
+      "currentHistoryContainer": "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json",
+      "currentHistorySection": "reviewHistory.rejectedV1MaterialPackageAndScreens"
+    },
+    "package": {
+      "cookedPackages": 564,
+      "incrementallySkippedPackages": 0,
+      "platformSkippedPackages": 7,
+      "totalCookCandidates": 571,
+      "isolatedSkinAssets": 5,
+      "result": "BUILD SUCCESSFUL"
+    },
+    "diagnosticRuntimeRoutes": {
+      "normal": {
+        "gpu": "NVIDIA GeForce RTX 4090 D",
+        "exerciseAlpha": 0.0346,
+        "controlledExitCode": 143
+      },
+      "reduced": {
+        "gpu": "NVIDIA GeForce RTX 4090 D",
+        "exerciseAlpha": 1.0,
+        "controlledExitCode": 143
+      }
+    },
+    "oneReusedNoVncStack": true,
+    "storyAndSaveRouteInert": true,
+    "freshCampaignSaveAbsentBeforeAndAfter": true,
+    "historicalDiagnosticReceiptsRetained": true,
+    "v1MaterialEngineeringAdmission": false,
+    "knownSemanticDefect": "MaterialMasks2K.B was routed to Subsurface Color while the Unreal Subsurface Profile amount input, Opacity/custom-data alpha, remained unconnected at default 1.0.",
+    "visualArtDecision": "reject-then-current-v1-orange-bright-waxy-smooth-appearance-for-replication-final-close-camera-and-film-quality-use",
+    "finalSkin": false,
+    "closeCameraApproved": false,
+    "humanReviewApproved": false
+  },
+  "compiledSourceSnapshot": [
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilSkinLookdevModel.h",
+      "bytes": 7044,
+      "sha256": "0d6a7021cdb918fca9c05cbb86d6a49f52c207205980f8aa8b387eeea7b87b05"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilSkinLookdevModel.cpp",
+      "bytes": 26251,
+      "sha256": "45244625450e70e7e9ed7a4682cfb8ec4efe266bb97bda322e919e4df7c739bd"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilFigure.h",
+      "bytes": 3419,
+      "sha256": "f6437f3f0ff4c146e1b1990efdf5f9e216969c66b089eecb1c07068c425fb8b9"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilFigure.cpp",
+      "bytes": 33663,
+      "sha256": "5788a5035be8e9c894a679b59c36b5267e3bb34dbbcfdc454995de7ced596709"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiGameMode.h",
+      "bytes": 9190,
+      "sha256": "41ff0cec08927aebaf0c2169e9dc1e3c303f4d79bdde00454210cb8ce88d1de4"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiGameMode.cpp",
+      "bytes": 80973,
+      "sha256": "112f987eab93790f67db59410c4f3ba2330e725c77a7fcd75d6d495d04376577"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/Private/Tests/ShiCouncilSkinLookdevAutomationTest.cpp",
+      "bytes": 26417,
+      "sha256": "42e1143b3aab94ad696d21bb104343a5005d41f9e7fbf0d0b6d4a12200722a2b"
+    },
+    {
+      "file": "apps/unreal/Config/DefaultGame.ini",
+      "bytes": 1265,
+      "sha256": "3942e8beeab24b0b059a535b8755c1519f2dfb3026eac79b894cbeb11534e1a5"
+    }
+  ],
+  "nativeBuild": {
+    "status": "pass",
+    "command": "UnrealBuildTool SHIEditor Linux Development -Project=apps/unreal/SHI.uproject -WaitMutex",
+    "startedAtLocal": "2026-08-11T00:10:36+08:00",
+    "startedAtUtc": "2026-08-10T16:10:36Z",
+    "target": "SHIEditor",
+    "toolchain": "Epic bundled Clang 20.1.8, Linux SDK v26_clang-20.1.8-rockylinux8, bundled libc++",
+    "generatedCodeUpToDate": true,
+    "actionCount": 5,
+    "actions": [
+      "Compile ShiCouncilSkinLookdevModel.cpp",
+      "Compile ShiCouncilSkinLookdevAutomationTest.cpp",
+      "Compile ShiCouncilFigure.cpp",
+      "Compile ShiGameMode.cpp",
+      "Link libUnrealEditor-SHI.so"
+    ],
+    "result": "Succeeded",
+    "executionSeconds": 6.01,
+    "transientLog": {
+      "location": "review log outside the repository",
+      "tracked": false,
+      "bytes": 8533,
+      "sha256": "1778cdad92e9b914a51ba76ce6f167e2f26fa891d12f1a44647059978d1d931d",
+      "durableBoundary": "this JSON preserves the reviewed command, five actions and result; the mutable external build log is intentionally not committed"
+    }
+  },
+  "automation": {
+    "commonInvocation": {
+      "executable": "UnrealEditor-Cmd",
+      "map": "/Engine/Maps/Entry",
+      "flags": [
+        "-unattended",
+        "-nop4",
+        "-nosplash",
+        "-nullrhi",
+        "-nosound",
+        "-nowrite",
+        "-TestExit=Automation Test Queue Empty"
+      ],
+      "writeBoundary": "-nowrite; native automation did not mutate tracked assets"
+    },
+    "selectedSkinLookdevSuite": {
+      "status": "pass",
+      "filter": "SHI.Cinematic.CouncilSkinLookdevV1",
+      "command": "Automation RunTests SHI.Cinematic.CouncilSkinLookdevV1; Quit",
+      "startedAtUtc": "2026-08-10T16:11:52.977Z",
+      "completedAtUtc": "2026-08-10T16:11:52.995Z",
+      "discovered": 1,
+      "started": 1,
+      "passed": 1,
+      "failed": 0,
+      "exitCode": 0,
+      "tests": [
+        "SHI.Cinematic.CouncilSkinLookdevV1"
+      ],
+      "transientLog": {
+        "location": "review log outside the repository",
+        "tracked": false,
+        "bytes": 247202,
+        "sha256": "6f429f38b2bdaaf05fb9c6116b5bfb692bac6ec070ffcdea170d0aaebeb73158",
+        "durableBoundary": "the external automation log is intentionally not committed; this manifest retains the exact reviewed result"
+      }
+    },
+    "fullShiNamespace": {
+      "status": "pass",
+      "filter": "SHI.",
+      "command": "Automation RunTests SHI.; Quit",
+      "startedAtUtc": "2026-08-10T16:12:27.111Z",
+      "completedAtUtc": "2026-08-10T16:12:27.972Z",
+      "discovered": 21,
+      "started": 21,
+      "passed": 21,
+      "failed": 0,
+      "exitCode": 0,
+      "tests": [
+        "SHI.Audio.ProceduralContractV1",
+        "SHI.Campaign.CrossEngineReplayV1",
+        "SHI.Campaign.OrderTransactionV1",
+        "SHI.Campaign.SaveReplayIntegrityV6",
+        "SHI.Campaign.SchemaV7Horizon",
+        "SHI.Cinematic.CommandSurfacePresentationV1",
+        "SHI.Cinematic.CommandWeightPresentationV1",
+        "SHI.Cinematic.CouncilCharacterPresentationV1",
+        "SHI.Cinematic.CouncilFacialPerformanceV1",
+        "SHI.Cinematic.CouncilPerformancePresentationV1",
+        "SHI.Cinematic.CouncilSkinLookdevV1",
+        "SHI.Cinematic.CouncilStagingV1",
+        "SHI.Cinematic.DazeFieldShelterPresentationV1",
+        "SHI.Cinematic.DazeRainPresentationV1",
+        "SHI.Cinematic.ResolutionGrammarV1",
+        "SHI.Cinematic.WetFieldEnvironmentPresentationV1",
+        "SHI.Cinematic.WetFieldVegetationPresentationV1",
+        "SHI.CommandSpace.LiveSignalsV1",
+        "SHI.Engagement.BrokenCrossingParityV1",
+        "SHI.History.SourceClaimClosureV1",
+        "SHI.Wartable.SpatialIntelligenceV1"
+      ],
+      "transientLog": {
+        "location": "review log outside the repository",
+        "tracked": false,
+        "bytes": 265777,
+        "sha256": "ee8161f10f16f89fb1272c76736b6257bb21021f38c73014daa2eeb1c6e64a11",
+        "durableBoundary": "the external automation log is intentionally not committed; this manifest retains the exact reviewed result"
+      }
+    }
+  },
+  "runtimeContract": {
+    "targetCharacterId": "chen-sheng",
+    "reviewModeId": "-ShiCouncilSkinLookdevReview",
+    "isolatedRoot": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1",
+    "acceptedFacialMesh": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_ChenSheng_Facial_01.SKM_SHI_DazeCouncil_ChenSheng_Facial_01",
+    "materialSlot": "M_SHI_Character_SkinClay",
+    "lookdevMaterial": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1/M_SHI_ChenSheng_SkinLookdevV1.M_SHI_ChenSheng_SkinLookdevV1",
+    "baselineFallbackMaterial": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay",
+    "assetInventoryCount": 5,
+    "textureInventoryCount": 3,
+    "subsurfaceProfileOpacity": {
+      "source": "MaterialMasks2K.B",
+      "sourceByte": 89,
+      "value": 0.34901960784313724,
+      "thresholdExclusive": 0.1,
+      "maximum": 0.34901960784313724,
+      "profileMeanFreePathDistance": 2.6748,
+      "effectiveMeanFreePath": 0.9335576470588234,
+      "maximumEffectiveMeanFreePath": 0.9335576470588234,
+      "materialInput": "MP_OPACITY",
+      "opacityConnected": true,
+      "subsurfaceColorInput": "unconnected"
+    },
+    "reviewOnly": true,
+    "chenShengOnly": true,
+    "explicitDevelopmentAuthorizationRequired": true,
+    "baselineFallbackRequired": true,
+    "canonicalHeightSourceOutsideEngine": true,
+    "deterministic": true,
+    "standardMotionCompatible": true,
+    "reducedMotionCompatible": true,
+    "motionIndependent": true,
+    "runtimeRandomness": false,
+    "dynamicNetworkDependency": false,
+    "runtimeParameterMutation": false,
+    "interactionAuthority": false,
+    "gameplayAuthority": false,
+    "saveAuthority": false,
+    "replicated": false,
+    "identityAuthority": false,
+    "historicalPortrait": false,
+    "historicallyAttestedComplexion": false,
+    "humanHistoricalCulturalReviewApproved": false,
+    "closeCameraApproved": false,
+    "finalCharacterArt": false,
+    "finalSkin": false
+  },
+  "releaseGates": {
+    "isolatedImport": "pass-privacy-v11-five-uassets-opacity-semantics-and-sanitized-metadata",
+    "defaultReadOnlyInspection": "pass-privacy-v11-five-hashes-unchanged-and-embedded-metadata-private-paths-absent",
+    "nativeEditorBuild": "pass",
+    "selectedSkinLookdevAutomation": "pass-1-of-1",
+    "fullProjectAutomation": "pass-21-of-21",
+    "embeddedMetadataPrivacy": "pass-privacy-v11-base-asset-import-data-no-interchange-no-private-absolute-paths",
+    "packagedBuildWithSkinAssets": "pass-privacy-v11-path-sanitized-v5-564-cooked-packages-engineering-only",
+    "packageExecutableDebugSymbolPathPrivacy": "pass-prefix-mapped-build-plus-audited-relative-rpath-mutation-and-immutable-inspection",
+    "runtimeAdmissionMarkers": "pass-path-sanitized-package-normal-v6-reduced-v6-two-expanded-markers",
+    "runtimeMorphSectionExercise": "pass-normal-0.1474-reduced-1.0000-engineering-route",
+    "storyAndSaveInertReviewRoute": "pass-two-exact-inert-markers-save-absent",
+    "packagedHeadlessSmoke": "not-run-for-this-corrected-material-qa-package",
+    "visibleNoVncReview": "performed-path-sanitized-v5-one-reused-stack-engineering-route-pass-visual-art-rejected",
+    "standardMotionWatchedDeformationReview": "performed-normal-v6-raw-timing-bound-live-glance-engineering-only-visual-art-rejected",
+    "reducedMotionWatchedDeformationReview": "performed-reduced-v6-raw-timing-bound-live-glance-engineering-only-visual-art-rejected",
+    "visualSkinArtReview": "rejected-generic-low-detail-nonportrait-uniform-smooth-plastic-waxy-blockout",
+    "correctedV2ImportPackageAndRuntimeReview": "privacy-v11-path-sanitized-package-runtime-engineering-pass-v1-v3-v4-history-retained-visual-art-rejected",
+    "currentPrivacyV11PackageRefresh": "pass-path-sanitized-v5-package-normal-reduced-v6-runtime",
+    "visibleBaselineFallbackReview": "pending-not-run",
+    "physicalDisplayReview": "pending-not-run",
+    "interactionHandsAndContact": "required",
+    "mouthInteriorTeethAndTongue": "required",
+    "voiceAndMultilingualLipSync": "required",
+    "humanCharacterAnatomyReview": "required",
+    "humanHistoricalCulturalReview": "required",
+    "humanCinematicLightingColorReview": "required",
+    "humanAccessibilityReview": "required",
+    "identitySpecificTopologyAndHeadUvDecision": "required",
+    "renderedUnrealTangentBasisProof": "insufficient-full-body-framing-close-detail-proof-required",
+    "finalCloseDialogue": "rejected",
+    "historicalLikenessOrComplexionClaim": "rejected",
+    "finalCharacterArt": "not-admitted"
+  },
+  "limitations": [
+    "Privacy v11 passes the five-uasset import and immutable read-only rendered inspection with Base AssetImportData on the three textures, no Interchange AssetImportData, and no embedded private absolute paths across all five tracked binaries.",
+    "The path-sanitized v5 Linux package is built from the exact five privacy-v11 source-uasset receipts and completes a 564/0/7/571 cook with BUILD SUCCESSFUL and AutomationTool ExitCode 0. Cooked containers transform editor serialization, so this is source-lineage evidence rather than a byte-identity claim inside IoStore.",
+    "Compiler prefix maps and an audited patchelf RPATH mutation remove current-workstation paths from executable/debug/symbol artifacts while retaining nine exact packaged-relative search entries; immutable inspection preserves the post-mutation executable hash and ldd resolves all eight observed lines.",
+    "Normal-v6 and reduced-v6 NVIDIA Vulkan routes each have one inert marker, one expanded admission marker, one object-glance marker, absent save state and a controlled return code 143. Each also has four documented Warning-severity lines and one separate pre-admission outdated-swapchain Display diagnostic, so this evidence does not claim a warning- or diagnostic-free release.",
+    "Normal-v6 and reduced-v6 raw X11 captures complete inside their defined object-glance intervals and match their tracked PNGs with zero differing pixels; the small full-body eyes remain insufficient for visual deformation approval.",
+    "Corrected v3 remains superseded historical engineering evidence because it predates privacy-v11 metadata reserialization; its watched visual-art decision was rejected.",
+    "Privacy v4 remains rejected package history because its executable/debug/symbol artifacts exposed current-workstation build paths even though its material route ran successfully.",
+    "The superseded v1 clean 564-package cook and two NVIDIA Vulkan runs are retained only as rejected diagnostic history: they prove former package inclusion and exercise, not the corrected v2 implementation.",
+    "V1 routes the documented MaterialMasks2K.B provisional SSS amount to Subsurface Color while leaving Unreal's Subsurface Profile amount input, Opacity/custom-data alpha, unconnected at default 1.0. The then-current import and automation checks did not catch this semantic defect.",
+    "Watched review rejects the corrected figure as a generic low-detail non-portrait blockout with a uniform peach/terracotta, smooth plastic/waxy response, small face, crude hands, hair, mouth and costume. It must not be replicated or promoted to final, close-camera or film-quality use.",
+    "Both corrected and rejected-v1 review routes are deliberately story/save inert; they make no input-driven story-progression or campaign playability claim.",
+    "No separate package headless smoke, visible baseline-fallback exercise, physical-display, close-detail tangent-basis or close-camera review was performed for this slice.",
+    "Interaction hands, mouth interior, teeth, tongue, voice, multilingual pronunciation/lip sync, identity-specific topology/head UVs and final character acting remain red.",
+    "Human character/anatomy, late-Qin historical-cultural, cinematic lighting/color and accessibility reviews remain required.",
+    "The generic procedural casting is not a portrait, likeness, complexion or ethnicity reconstruction and cannot become final character art through automated evidence."
+  ]
+}

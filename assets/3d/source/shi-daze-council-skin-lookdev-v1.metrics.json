@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "assetId": "shi-daze-council-skin-lookdev-v1",
+  "createdAt": "2026-08-10",
+  "status": "deterministic-procedural-source-review-candidate-not-engine-admitted-not-final",
+  "characterId": "chen-sheng",
+  "scope": "isolated source/interchange texture proof; accepted mesh, skeleton, morphs, materials, gameplay and evidence remain unchanged",
+  "disclosure": "CHEN SHENG SKIN MATERIAL LOOKDEV · GENERIC DRAMATIC CASTING · NOT A HISTORICAL LIKENESS · NOT FINAL CHARACTER ART",
+  "authorship": {
+    "method": "deterministic SHI-authored procedural fields",
+    "neuralGeneration": false,
+    "generatedImagePixelsSampled": false,
+    "privateReferencePixelsSampled": false,
+    "portraitOrAnatomyInput": false,
+    "normalFromImageLuminance": false,
+    "roughnessFromBaseColor": false,
+    "aoFromBaseColor": false,
+    "sssFromBaseColor": false
+  },
+  "sourceCharacter": {
+    "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb",
+    "bytes": 2987252,
+    "sha256": "378511d47964df5a3a6e198a737a3b2f5ea024a2c4f494c3d7052c83e6d88a03"
+  },
+  "uv0": {
+    "sourceMesh": "base.001",
+    "material": "M_SHI_Character_SkinClay",
+    "vertexCount": 14517,
+    "triangleCount": 26756,
+    "accessorFloat32Bytes": 116136,
+    "accessorSha256": "f60fd8442a4fd04bb090f467838786d200fea99432d99a205eca74c846ef1ab6",
+    "minimum": [
+      0.009208000265061855,
+      0.026144027709960938
+    ],
+    "maximum": [
+      0.9935150146484375,
+      0.9903929829597473
+    ],
+    "coverage": {
+      "resolution": [
+        2048,
+        2048
+      ],
+      "occupiedPixels": 2624016,
+      "occupiedFraction": 0.6256141662597656,
+      "gutterPixels": 24,
+      "dilatedPixels": 3076098,
+      "dilatedFraction": 0.7333989143371582,
+      "opaquePadding": "procedural field covers the full RGB/RGBA canvas; no transparent or black island exterior"
+    }
+  },
+  "textureTier": {
+    "baseColor": "2048x2048 RGB8 sRGB, non-tiling UV0, opaque full-canvas padding",
+    "materialMask": "2048x2048 RGBA8 linear; R=neutral AO 1.0, G=authored roughness, B=Subsurface Profile opacity/radius scale 89/255 via MP_OPACITY only, A=unused 1.0",
+    "canonicalHeight": "1024x1024 16-bit linear seamless source; 0..65535 maps -0.060..+0.060 mm",
+    "directxNormal": "1024x1024 RGB8 linear DirectX/Unreal tangent normal source; BC5 consumes R/G and reconstructs Z",
+    "metallic": "exact scalar zero; no metallic texture",
+    "specular": "bounded engine scalar must begin at 0.25; no specular texture in this source slice",
+    "detailRepeatCandidates": [
+      16,
+      24,
+      32
+    ],
+    "selectedDetailRepeat": null
+  },
+  "proceduralParameters": {
+    "baseColorSeed": 209071,
+    "maskSeed": 209072,
+    "heightSeed": 209073,
+    "baseColorSrgbCenter": [
+      0.54,
+      0.4,
+      0.32
+    ],
+    "roughnessCenter": 0.62,
+    "roughnessAuthoredRange": [
+      0.54,
+      0.7
+    ],
+    "neutralAo": 1.0,
+    "subsurfaceProfileOpacityByte": 89,
+    "subsurfaceProfileOpacity": 0.34901960784313724,
+    "subsurfaceProfileOpacityThresholdExclusive": 0.1,
+    "profileMeanFreePathDistance": 2.6748,
+    "maximumEffectiveMeanFreePath": 0.9335576470588234,
+    "subsurfaceProfileInput": "MP_OPACITY",
+    "subsurfaceColorInput": "unconnected",
+    "heightHalfRangeMillimetres": 0.06,
+    "normalStrength": 0.35,
+    "normalConvention": "R=-dH/du, G=+dH/d(image-v), DirectX/Unreal green convention, B=positive reconstructed Z"
+  },
+  "statistics": {
+    "baseColor": {
+      "R": {
+        "minimum": 122,
+        "maximum": 155,
+        "mean": 137.7000572681427,
+        "standardDeviation": 3.7824795748204143,
+        "uniqueValues": 34
+      },
+      "G": {
+        "minimum": 90,
+        "maximum": 116,
+        "mean": 102.00029015541077,
+        "standardDeviation": 2.941964779976913,
+        "uniqueValues": 27
+      },
+      "B": {
+        "minimum": 72,
+        "maximum": 92,
+        "mean": 81.59968638420105,
+        "standardDeviation": 2.407986775970939,
+        "uniqueValues": 21
+      }
+    },
+    "materialMask": {
+      "AO": {
+        "minimum": 255,
+        "maximum": 255,
+        "mean": 255.0,
+        "standardDeviation": 0.0,
+        "uniqueValues": 1
+      },
+      "Roughness": {
+        "minimum": 138,
+        "maximum": 178,
+        "mean": 158.0999813079834,
+        "standardDeviation": 5.139308694560778,
+        "uniqueValues": 41
+      },
+      "SubsurfaceProfileOpacity": {
+        "minimum": 89,
+        "maximum": 89,
+        "mean": 89.0,
+        "standardDeviation": 0.0,
+        "uniqueValues": 1
+      },
+      "Unused": {
+        "minimum": 255,
+        "maximum": 255,
+        "mean": 255.0,
+        "standardDeviation": 0.0,
+        "uniqueValues": 1
+      }
+    },
+    "canonicalHeight": {
+      "Height": {
+        "minimum": 1311,
+        "maximum": 63977,
+        "mean": 32769.81244850159,
+        "standardDeviation": 11893.897681310356,
+        "uniqueValues": 56562
+      }
+    },
+    "directxNormal": {
+      "X": {
+        "minimum": 97,
+        "maximum": 158,
+        "mean": 127.49992561340332,
+        "standardDeviation": 7.609565121146386,
+        "uniqueValues": 62
+      },
+      "YDirectX": {
+        "minimum": 98,
+        "maximum": 158,
+        "mean": 127.5003719329834,
+        "standardDeviation": 7.586897649529057,
+        "uniqueValues": 61
+      },
+      "Z": {
+        "minimum": 250,
+        "maximum": 255,
+        "mean": 254.62430381774902,
+        "standardDeviation": 0.5653546202691008,
+        "uniqueValues": 6
+      }
+    },
+    "heightPeriodicity": {
+      "horizontalSeamRmseU16": 6049.107585669792,
+      "verticalSeamRmseU16": 5835.388487479192,
+      "horizontalInteriorNeighborRmseU16": 6070.296028088738,
+      "verticalInteriorNeighborRmseU16": 6049.62804495329,
+      "horizontalSeamToInteriorRatio": 0.9965094877875967,
+      "verticalSeamToInteriorRatio": 0.9645863256580179
+    },
+    "normalSubtlety": {
+      "encodedZMinimum": 250,
+      "encodedZMean": 254.62430381774902,
+      "encodedZFirstPercentile": 253.0,
+      "encodedXYAbsoluteDeltaP95": 15.0,
+      "encodedXYAbsoluteDeltaP99": 19.0,
+      "decodedXYLengthP95": 0.14557420543741634,
+      "decodedXYLengthP99": 0.1775565713360278
+    }
+  },
+  "outputs": {
+    "baseColor": {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+      "bytes": 1466973,
+      "sha256": "df82f7574b2376d1b67157b84a1540f2b4d2f3d33d487cc51aefa2fdbed09c41"
+    },
+    "materialMask": {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+      "bytes": 1273488,
+      "sha256": "086baf25c8a03e24ad1ab535fc814b5a4bb00d3ca3eaab6c2ccdd89dc712ad11"
+    },
+    "canonicalHeight": {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+      "bytes": 1966314,
+      "sha256": "ab66885692f70714584e5196379f6e6309c1ba6c204e3305f7927107f66044c5"
+    },
+    "directxNormal": {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+      "bytes": 1264337,
+      "sha256": "c1208afde5bc13b94c3fb8418f6d9e8ad41f0a4bee2ca6f190f74a54fc6f1094"
+    }
+  },
+  "toolchain": {
+    "python": "3.10.13",
+    "numpy": "2.2.6",
+    "Pillow": "10.4.0",
+    "opencv": "4.11.0",
+    "generator": {
+      "file": "scripts/build-daze-council-skin-lookdev.py",
+      "bytes": 23938,
+      "sha256": "965f8fd0b09cc40226e60a92a05bc0eb442054483240abaa1d887fd4f38db722"
+    },
+    "validator": {
+      "file": "scripts/validate-daze-council-skin-lookdev.py",
+      "bytes": 19571,
+      "sha256": "c7bcfe3c688499619a882176cf1c264103cc99a4e7a8d269569284a9170e3470"
+    }
+  },
+  "openHumanGates": [
+    "character/anatomy review",
+    "late-Qin material-culture review",
+    "Chinese cultural-performance review",
+    "cinematic lighting/color review",
+    "accessibility review",
+    "identity-specific topology and head-UV decision",
+    "Unreal tangent-basis proof",
+    "Unreal isolated import/package/watched deformation review"
+  ]
+}

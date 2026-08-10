@@ -1,0 +1,340 @@
+{
+  "assetId": "shi-daze-council-skin-lookdev-v1",
+  "createdAt": "2026-08-10",
+  "status": "source-review-candidate-only-not-engine-admitted-not-final-not-human-approved",
+  "characterId": "chen-sheng",
+  "rightsStatus": "Original SHI procedural texture authorship. The accepted upstream MakeHuman/MPFB facial engineering mesh remains under its recorded CC0/tooling provenance; no mesh or third-party pixels are redistributed by this slice.",
+  "historicalStatus": "Generic dramatic material casting only; not a portrait, likeness, complexion claim, ethnicity reconstruction or evidence about Chen Sheng or any late-Qin person.",
+  "designSource": "../../docs/art/DAZE_COUNCIL_SKIN_LOOKDEV_BRIEF.md",
+  "sourceCharacterAsset": "shi-daze-council-facial-performance-v1",
+  "sourceCharacter": {
+    "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb",
+    "bytes": 2987252,
+    "sha256": "378511d47964df5a3a6e198a737a3b2f5ea024a2c4f494c3d7052c83e6d88a03"
+  },
+  "acceptedUv0AccessorSha256": "f60fd8442a4fd04bb090f467838786d200fea99432d99a205eca74c846ef1ab6",
+  "intendedUse": "isolated Chen Sheng source/interchange PBR material trial after technical review; never a baseline overwrite",
+  "prohibitedUse": "historical likeness claim, direct final/shipping admission, palette cloning to other roles, or derivation of non-color channels from generated/private imagery",
+  "authorship": {
+    "method": "deterministic SHI-authored procedural fields",
+    "neuralGeneration": false,
+    "generatedImagePixelsSampled": false,
+    "privateReferencePixelsSampled": false,
+    "portraitOrAnatomyInput": false,
+    "normalFromImageLuminance": false,
+    "roughnessFromBaseColor": false,
+    "aoFromBaseColor": false,
+    "sssFromBaseColor": false
+  },
+  "channelAuthority": {
+    "baseColor": "SHI-authored low-amplitude procedural chroma only; no baked illumination, AO, specular, weather, dirt, anatomy or identity motif",
+    "AO": "neutral 1.0 placeholder; intentionally does not pretend to be a geometry bake",
+    "roughness": "independent deterministic procedural authoring, not inferred from color",
+    "SubsurfaceProfileOpacity": "constant 89/255 radius scale; binds only to UE 5.8 MP_OPACITY, strictly above the 0.10 profile cutoff and no greater than 89/255; not measured anatomical thickness or a complexion claim",
+    "canonicalHeight": "independently authored 16-bit periodic procedural micro-height",
+    "directxNormal": "deterministically derived only from canonical height using the recorded DirectX convention",
+    "metallic": "exact zero scalar",
+    "specular": "bounded 0.25 starting scalar for later engine review"
+  },
+  "sourceOutputs": [
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+      "bytes": 1466973,
+      "sha256": "df82f7574b2376d1b67157b84a1540f2b4d2f3d33d487cc51aefa2fdbed09c41"
+    },
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+      "bytes": 1273488,
+      "sha256": "086baf25c8a03e24ad1ab535fc814b5a4bb00d3ca3eaab6c2ccdd89dc712ad11"
+    },
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+      "bytes": 1966314,
+      "sha256": "ab66885692f70714584e5196379f6e6309c1ba6c204e3305f7927107f66044c5"
+    },
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+      "bytes": 1264337,
+      "sha256": "c1208afde5bc13b94c3fb8418f6d9e8ad41f0a4bee2ca6f190f74a54fc6f1094"
+    },
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1.metrics.json",
+      "bytes": 8012,
+      "sha256": "16fb41a389f36b9758d68c41f72052a99a1d18957c7548f8ba6510e98ac906dd"
+    },
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1.validation.json",
+      "bytes": 9279,
+      "sha256": "dde3612273ebd563e160129f4c398e18a63839df28d02e8e726f1274afcf7d41"
+    }
+  ],
+  "toolchain": {
+    "python": "3.10.13",
+    "numpy": "2.2.6",
+    "Pillow": "10.4.0",
+    "opencv": "4.11.0",
+    "generator": {
+      "file": "scripts/build-daze-council-skin-lookdev.py",
+      "bytes": 23938,
+      "sha256": "965f8fd0b09cc40226e60a92a05bc0eb442054483240abaa1d887fd4f38db722"
+    },
+    "validator": {
+      "file": "scripts/validate-daze-council-skin-lookdev.py",
+      "bytes": 19571,
+      "sha256": "c7bcfe3c688499619a882176cf1c264103cc99a4e7a8d269569284a9170e3470"
+    },
+    "unrealImporter": {
+      "file": "scripts/import-daze-council-skin-lookdev-unreal.py",
+      "bytes": 75871,
+      "sha256": "ff9f67fb9bd797e3504ab528eccba0ae6ba456cf22e32079df16d08485e52242"
+    }
+  },
+  "engineImportEvidence": "../../docs/production/evidence/unreal-daze-council-skin-lookdev-import-status.json",
+  "engineRuntimeEvidence": "../../docs/production/evidence/unreal-daze-council-skin-lookdev-runtime-status.json",
+  "enginePresentationEvidence": {
+    "file": "../../docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json",
+    "bytes": 45420,
+    "sha256": "750b03ec8a09d147bddcc08c175140fb942d9339fa93306a695d3efef7ccc54f"
+  },
+  "rejectedV1PresentationHistoryReference": {
+    "originalLogicalFile": "../../docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json",
+    "tracked": false,
+    "retainedPayload": false,
+    "currentHistoryContainer": "../../docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json",
+    "currentHistorySection": "reviewHistory.rejectedV1MaterialPackageAndScreens"
+  },
+  "engineEngineeringAdmission": {
+    "status": "passed-privacy-v11-path-sanitized-v5-package-normal-reduced-v6-runtime-engineering-only-watched-visual-rejected",
+    "revision": "privacy-v11-base-asset-import-data-sanitized",
+    "destination": "/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1",
+    "trackedAssets": 5,
+    "subsurfaceProfiles": 1,
+    "materials": 1,
+    "textures": 3,
+    "canonicalHeightImported": false,
+    "chenShengOnly": true,
+    "optInReviewFlag": "-ShiCouncilSkinLookdevReview",
+    "acceptedFacialAssetsPreserved": true,
+    "readOnlyInspectionPassed": true,
+    "embeddedSourceContractFileReceiptsAreImportTimeSnapshot": true,
+    "embeddedSourceContractFileReceiptsAreNotCurrentCrossReceipts": true,
+    "immutableImportReceiptRootSha256": "2a5b64796c446d1328c1c10cf17aa98e4ea5d12b1ff1c931277a4bc0eedd65f1",
+    "embeddedMetadataPrivacy": {
+      "status": "pass-current-five-uassets-private-absolute-paths-absent",
+      "exactFiveAssetsScanned": true,
+      "threeTextureAssetsUseBaseAssetImportData": true,
+      "threeTextureAssetsRetainRelativeFilenameAndSourceBasename": true,
+      "materialAndProfileHaveNoSourceIdentity": true,
+      "interchangeAssetImportDataAbsentFromAllFive": true,
+      "privateAbsolutePathsAbsentFromAllFive": true,
+      "readOnlyRenderedInspectionPassed": true,
+      "trackedHashesUnchangedDuringInspection": true
+    },
+    "trackedUassetReceipts": {
+      "M_SHI_ChenSheng_SkinLookdevV1.uasset": {
+        "bytes": 11579,
+        "sha256": "13d8dde823611bfd15ef8aae330cb109304a1621da0511518220bedcd51eb1f3"
+      },
+      "SP_SHI_ChenSheng_SkinLookdevV1.uasset": {
+        "bytes": 1913,
+        "sha256": "c730da3eddda2a67fe60a39ea8cf3d6b32b792afbc7a2318536cdd3af3c6512b"
+      },
+      "T_SHI_ChenSheng_Skin_BaseColor_2K.uasset": {
+        "bytes": 2113116,
+        "sha256": "54122ea3a81132a263c0a7d3541a8a534bc472313133359d85d3982716393c87"
+      },
+      "T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset": {
+        "bytes": 1532856,
+        "sha256": "6378f416c33ca89161479c3cde2584a7958a623fa5a9c348f344873a2934e7bc"
+      },
+      "T_SHI_ChenSheng_Skin_Masks_2K.uasset": {
+        "bytes": 1472351,
+        "sha256": "392ddda8ce0af8b8821116682081234ce680e04899e78722b39331e87a216ee8"
+      }
+    },
+    "subsurfaceProfileOpacity": {
+      "source": "MaterialMasks2K.B",
+      "sourceByte": 89,
+      "value": 0.34901960784313724,
+      "thresholdExclusive": 0.1,
+      "maximum": 0.34901960784313724,
+      "profileMeanFreePathDistance": 2.6748,
+      "effectiveMeanFreePath": 0.9335576470588234,
+      "maximumEffectiveMeanFreePath": 0.9335576470588234,
+      "materialInput": "MP_OPACITY",
+      "opacityConnected": true,
+      "subsurfaceColorInput": "unconnected"
+    },
+    "packageExercise": true,
+    "runtimeMarkersObserved": true,
+    "runtimeRouteExercise": true,
+    "packageRuntimeEvidenceRevision": "privacy-v11-path-sanitized-package-v5-current-with-normal-reduced-v6-raw-capture-proof",
+    "currentPrivacyV11PackageExercise": true,
+    "currentPrivacyV11RuntimeRouteExercise": true,
+    "currentPrivacyV11PackageRefreshPending": false,
+    "packageExecutableDebugSymbolPathSanitizationPassed": true,
+    "normalAndReducedRawCaptureTimingPassed": true,
+    "supersededCorrectedV3HistoryRetained": true,
+    "rejectedPrivacyV4HistoryRetained": true,
+    "watchedDeformationReview": false,
+    "watchedVisualReviewPerformed": true,
+    "currentVisualArtAdmission": false,
+    "closeCameraApproved": false,
+    "humanReviewApproved": false,
+    "finalCharacterArt": false
+  },
+  "rejectedV1History": {
+    "status": "rejected-diagnostic-only-superseded-by-corrected-v2-opacity-package-runtime-engineering-route",
+    "graphDefect": "MaterialMasks2K.B was wired to Subsurface Color while MP_OPACITY remained unconnected at default 1.0.",
+    "visualDecision": "rejected-orange-bright-waxy-smooth-no-replication",
+    "packageAndRuntimeReceiptsRetainedAsDiagnostics": true,
+    "materialEngineeringAdmission": false,
+    "presentationEvidence": "../../docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json"
+  },
+  "supersededCorrectedV3History": {
+    "status": "superseded-historical-engineering-evidence-only-pre-privacy-v11-watched-visual-rejected",
+    "reason": "Corrected v3 proved the MP_OPACITY route but predated privacy-v11 editor import-metadata reserialization. Path-leaking privacy v4 is rejected history; the path-sanitized v5 package and normal/reduced v6 runtime receipts are current engineering evidence.",
+    "packageAndRuntimeReceiptsRetainedAsHistory": true,
+    "materialEngineeringAdmissionAtTheTime": true,
+    "currentPackageAuthority": false,
+    "visualArtMaterialQualityAdmission": false,
+    "presentationEvidence": "../../docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json"
+  },
+  "rejectedPrivacyV4History": {
+    "status": "rejected-for-public-package-workstation-path-leak-diagnostic-engineering-history-only",
+    "reason": "Privacy v4 used the correct privacy-v11 source uassets and passed material-route runtime QA, but its executable/debug/symbol artifacts exposed current-workstation paths; path-sanitized v5 supersedes it.",
+    "packageAndRuntimeReceiptsRetainedAsHistory": true,
+    "materialEngineeringAdmissionAtTheTime": true,
+    "packagePrivacyAdmission": false,
+    "currentPackageAuthority": false,
+    "visualArtMaterialQualityAdmission": false,
+    "presentationEvidence": "../../docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json"
+  },
+  "reviewStatus": {
+    "automatedSourceValidation": "passed",
+    "engineAdmission": false,
+    "packageExercise": false,
+    "watchedDeformationReview": false,
+    "humanCharacterAnatomyApproval": false,
+    "humanHistoricalCulturalApproval": false,
+    "humanCinematicColorApproval": false,
+    "humanAccessibilityApproval": false,
+    "finalCharacterArt": false
+  },
+  "reviewStatusSemantics": {
+    "engineAdmission": "package-backed visual character-material admission; privacy-v11 import/package/runtime engineering evidence does not satisfy this art/final gate",
+    "packageExercise": "source review status remains false because this source-only gate cannot confer engine authority; fresh privacy-v11 package/runtime engineering exercise is recorded separately in engineEngineeringAdmission",
+    "watchedDeformationReview": "false means no watched visual-art/deformation approval; path-sanitized package normal-v6/reduced-v6 review was performed and rejected for material/art quality"
+  },
+  "openGates": [
+    "re-author and re-review corrected skin material/art quality under named lighting and close framing",
+    "interaction hands and contact deformation",
+    "mouth interior, teeth and tongue anatomy",
+    "voice, multilingual pronunciation and lip sync",
+    "close framing and final camera/lens behavior",
+    "identity-specific topology and head-UV decision",
+    "character/anatomy review",
+    "late-Qin material-culture review",
+    "Chinese cultural-performance review",
+    "cinematic lighting/color review",
+    "accessibility review",
+    "close-detail Unreal tangent-basis proof",
+    "visible fail-closed baseline-fallback exercise and physical-display review",
+    "final character art and acting"
+  ],
+  "disclosure": "CHEN SHENG SKIN MATERIAL LOOKDEV · GENERIC DRAMATIC CASTING · NOT A HISTORICAL LIKENESS · NOT FINAL CHARACTER ART",
+  "automatedValidation": {
+    "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1.validation.json",
+    "bytes": 9279,
+    "sha256": "dde3612273ebd563e160129f4c398e18a63839df28d02e8e726f1274afcf7d41"
+  },
+  "sourceTextures": [
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+      "bytes": 1466973,
+      "sha256": "df82f7574b2376d1b67157b84a1540f2b4d2f3d33d487cc51aefa2fdbed09c41",
+      "basename": "shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+      "width": 2048,
+      "height": 2048,
+      "role": "baseColor",
+      "bitDepth": 8,
+      "channels": 3,
+      "colorSpace": "sRGB",
+      "unrealImport": {
+        "importToUnreal": true,
+        "sRGB": true,
+        "compression": "BC7",
+        "compressionSetting": "TC_BC7",
+        "textureGroup": "Character",
+        "addressX": "Clamp",
+        "addressY": "Clamp",
+        "usage": "non-tiling inherited UV0 atlas"
+      }
+    },
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+      "bytes": 1273488,
+      "sha256": "086baf25c8a03e24ad1ab535fc814b5a4bb00d3ca3eaab6c2ccdd89dc712ad11",
+      "basename": "shi-daze-council-skin-lookdev-v1-masks-2k.png",
+      "width": 2048,
+      "height": 2048,
+      "role": "packedMaterialMask",
+      "bitDepth": 8,
+      "channels": 4,
+      "colorSpace": "linear",
+      "unrealImport": {
+        "importToUnreal": true,
+        "sRGB": false,
+        "compression": "Masks",
+        "compressionSetting": "TC_MASKS",
+        "textureGroup": "Character",
+        "addressX": "Clamp",
+        "addressY": "Clamp",
+        "channels": "R=neutral AO; G=roughness; B=Subsurface Profile opacity/radius scale 89/255 via MP_OPACITY only; A=unused opaque"
+      }
+    },
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+      "bytes": 1966314,
+      "sha256": "ab66885692f70714584e5196379f6e6309c1ba6c204e3305f7927107f66044c5",
+      "basename": "shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+      "width": 1024,
+      "height": 1024,
+      "role": "canonicalDetailHeight",
+      "bitDepth": 16,
+      "channels": 1,
+      "colorSpace": "linear",
+      "unrealImport": {
+        "importToUnreal": false,
+        "sRGB": false,
+        "compression": "SourceOnly",
+        "addressX": "Wrap",
+        "addressY": "Wrap",
+        "usage": "canonical seamless derivation source"
+      }
+    },
+    {
+      "file": "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+      "bytes": 1264337,
+      "sha256": "c1208afde5bc13b94c3fb8418f6d9e8ad41f0a4bee2ca6f190f74a54fc6f1094",
+      "basename": "shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+      "width": 1024,
+      "height": 1024,
+      "role": "detailNormalDirectX",
+      "bitDepth": 8,
+      "channels": 3,
+      "colorSpace": "linear",
+      "unrealImport": {
+        "importToUnreal": true,
+        "sRGB": false,
+        "compression": "BC5",
+        "compressionSetting": "TC_NORMALMAP",
+        "textureGroup": "CharacterNormalMap",
+        "addressX": "Wrap",
+        "addressY": "Wrap",
+        "flipGreenChannel": false,
+        "usage": "DirectX/Unreal tangent-space detail normal; R/G authoritative, Z reconstructable"
+      }
+    }
+  ]
+}

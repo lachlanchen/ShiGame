@@ -31,7 +31,7 @@ SHI는 일회성 데모가 아니라 실제 제작 중인 게임입니다. 첫 �
 | [`apps/web`](../apps/web/) | 플레이 가능한 웹, 저장, 사료·결정 장부, 모바일, RTL |
 | [`apps/unity`](../apps/unity/) | Unity 6과 3D 작전 탁자. Linux/WebGL 에디터는 설치됐으며 라이선스 로그인이 공개 차단 항목 |
 | [`content`](../content/) | 6개 장면, 15개 선택, 5개 자원, 회복 국면, 3개 결말 |
-| [`docs`](../docs/) | 설계·역사·기술·현지화·미술·QA·출시·1년 로드맵 |
+| [`docs`](../docs/) | 설계·역사·기술·현지화·미술·QA·출시·품질 게이트 로드맵 |
 
 ## 빠른 시작
 
@@ -44,7 +44,7 @@ npm run build
 
 ## 아키텍처와 연구 기준
 
-버전 관리 캠페인 JSON이 유일한 서사 원본이며 결정론적 TypeScript 코어와 Unity 6이 공유합니다. 개인 서적, OCR, 채팅, 전체 메모는 Git에 넣지 않습니다. [게임 설계](../docs/design/GAME_DESIGN_DOCUMENT.md), [사료 정책](../docs/history/SOURCE_POLICY.md), [1년 로드맵](../docs/production/ROADMAP.md)을 참고하세요.
+버전 관리 캠페인 JSON이 유일한 서사 원본이며 결정론적 TypeScript 코어와 Unity 6이 공유합니다. 개인 서적, OCR, 채팅, 전체 메모는 Git에 넣지 않습니다. [게임 설계](../docs/design/GAME_DESIGN_DOCUMENT.md), [사료 정책](../docs/history/SOURCE_POLICY.md), [품질 게이트 로드맵](../docs/production/ROADMAP.md)을 참고하세요.
 
 ## 빌드와 검증
 

@@ -24,6 +24,7 @@ public:
     virtual void Tick(float DeltaSeconds) override;
     bool InitializeFigure(UStaticMesh* Cylinder, UStaticMesh* Sphere, UStaticMesh* Cube,
         UMaterialInterface* BasicMaterial, FString& OutError);
+    void SetSkinLookdevReviewEnabled(bool bEnabled);
     void ApplyParticipant(const FShiCouncilParticipantData& Participant);
     void SetReducedMotion(bool bValue);
     void SetReviewVisible(bool bVisible);
@@ -32,6 +33,7 @@ public:
     bool IsUsingSkeletalPresentation() const { return bUsingSkeletalPresentation; }
     bool IsUsingPerformance() const { return bUsingPerformance; }
     bool IsUsingFacialPerformance() const { return bUsingFacialPerformance; }
+    bool IsUsingSkinLookdev() const { return bUsingSkinLookdev; }
     bool IsReducedMotion() const { return bReducedMotion; }
     const FString& GetPerformanceRoleId() const { return PerformanceRoleId; }
 
@@ -58,19 +60,33 @@ private:
     TMap<FString, TObjectPtr<USkeletalMesh>> FacialCharacterMeshes;
     UPROPERTY(Transient)
     TMap<FString, TObjectPtr<UAnimSequence>> PerformanceClips;
+    UPROPERTY(Transient)
+    TObjectPtr<UMaterialInterface> SkinLookdevMaterial;
+    UPROPERTY(Transient)
+    TObjectPtr<UMaterialInterface> SkinLookdevBaselineMaterial;
     FString SlotId;
     FString CharacterId;
     FString PerformanceRoleId;
     bool bUsingSkeletalPresentation = false;
     bool bUsingPerformance = false;
     bool bUsingFacialPerformance = false;
+    bool bSkinLookdevReviewEnabled = false;
+    bool bSkinLookdevInventoryReady = false;
+    bool bUsingSkinLookdev = false;
     bool bParticipantSpeaker = false;
     bool bReducedMotion = false;
     bool bReviewVisible = true;
     bool bLoggedMorphSectionExercise = false;
+    bool bLoggedSkinLookdevAdmission = false;
+    int32 SkinLookdevMaterialIndex = INDEX_NONE;
     float FacialElapsedSeconds = 0.f;
 
     void ApplyFacialFrame();
+    bool LoadSkinLookdevInventory(FString& OutError);
+    void ApplySkinLookdevFrame();
+    bool RestoreSkinLookdevBaseline();
+    void UseSkinLookdevPrimitiveFallback();
+    void ClearSkinLookdevPresentationState();
     void ClearFacialFrame();
     void RefreshActorTick();
 };

@@ -23,6 +23,8 @@
     "validate:audio": "node scripts/validate-audio.mjs",
     "validate:unreal": "node scripts/validate-unreal-project.mjs",
     "validate:unreal-facial-package": "node scripts/validate-daze-council-facial-performance-package.mjs",
+    "validate:unreal-skin-lookdev-package": "node scripts/validate-daze-council-skin-lookdev-package.mjs",
+    "sanitize:unreal-linux-development-package": "node scripts/sanitize-unreal-linux-development-package.mjs",
     "validate:unreal-installer": "scripts/test-unreal-installer.sh",
     "validate:conformance": "vite-node scripts/validate-conformance-fixtures.ts",
     "conformance:write": "vite-node scripts/generate-conformance-fixtures.ts --write",

@@ -31,7 +31,7 @@ SHI 是正式製作中的遊戲，而非一次性展示。第一段可玩章節�
 | [`apps/web`](../apps/web/) | 可玩網頁端、存檔、史料簿、決策記錄、移動端與 RTL |
 | [`apps/unity`](../apps/unity/) | Unity 6 與 3D 軍議圖；Linux/WebGL 編輯器已安裝，授權登入仍是公開阻塞項 |
 | [`content`](../content/) | 6 場景、15 選擇、5 資源、整頓與 3 個結局 |
-| [`docs`](../docs/) | 設計、史料、架構、本地化、美術、測試、發布與一年路線圖 |
+| [`docs`](../docs/) | 設計、史料、架構、本地化、美術、測試、發布與品質關卡路線圖 |
 
 ## 快速開始
 
@@ -44,7 +44,7 @@ npm run build
 
 ## 架構與研究基線
 
-戰役 JSON 是唯一敘事真源，由確定性 TypeScript 核心與 Unity 6 共用。私人書籍、OCR、聊天與完整備忘錄不進入 Git。詳見[遊戲設計](../docs/design/GAME_DESIGN_DOCUMENT.md)、[史料政策](../docs/history/SOURCE_POLICY.md)與[一年路線圖](../docs/production/ROADMAP.md)。
+戰役 JSON 是唯一敘事真源，由確定性 TypeScript 核心與 Unity 6 共用。私人書籍、OCR、聊天與完整備忘錄不進入 Git。詳見[遊戲設計](../docs/design/GAME_DESIGN_DOCUMENT.md)、[史料政策](../docs/history/SOURCE_POLICY.md)與[品質關卡路線圖](../docs/production/ROADMAP.md)。
 
 ## 構建與驗證
 

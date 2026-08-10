@@ -31,7 +31,7 @@ SHI là một trò chơi thật đang được sản xuất, không phải bản
 | [`apps/web`](../apps/web/) | Web chơi được, lưu, sổ nguồn/quyết định, di động và RTL |
 | [`apps/unity`](../apps/unity/) | Unity 6 và bàn chiến lược 3D; trình biên tập Linux/WebGL đã cài, đăng nhập giấy phép vẫn là chặn công khai |
 | [`content`](../content/) | 6 cảnh, 15 lựa chọn, 5 tài nguyên, hồi phục và 3 kết thúc |
-| [`docs`](../docs/) | Thiết kế, lịch sử, kiến trúc, bản địa hóa, mỹ thuật, QA, phát hành, kế hoạch năm |
+| [`docs`](../docs/) | Thiết kế, lịch sử, kiến trúc, bản địa hóa, mỹ thuật, QA, phát hành và lộ trình theo cổng chất lượng |
 
 ## Bắt đầu nhanh
 
@@ -44,7 +44,7 @@ npm run build
 
 ## Kiến trúc và nghiên cứu
 
-JSON chiến dịch có phiên bản là nguồn tự sự duy nhất cho lõi TypeScript tất định và Unity 6. Sách riêng, OCR, trò chuyện và bản ghi nhớ đầy đủ không vào Git. Xem [thiết kế](../docs/design/GAME_DESIGN_DOCUMENT.md), [chính sách nguồn](../docs/history/SOURCE_POLICY.md), [lộ trình một năm](../docs/production/ROADMAP.md).
+JSON chiến dịch có phiên bản là nguồn tự sự duy nhất cho lõi TypeScript tất định và Unity 6. Sách riêng, OCR, trò chuyện và bản ghi nhớ đầy đủ không vào Git. Xem [thiết kế](../docs/design/GAME_DESIGN_DOCUMENT.md), [chính sách nguồn](../docs/history/SOURCE_POLICY.md), [lộ trình theo cổng chất lượng](../docs/production/ROADMAP.md).
 
 ## Build và xác nhận
 

@@ -31,7 +31,7 @@ SHI ist ein echtes Spiel in Produktion, keine Wegwerf-Demo. Das erste spielbare 
 | [`apps/web`](../apps/web/) | Spielbares Web, Speicherung, Quellen-/Entscheidungsregister, Mobil und RTL |
 | [`apps/unity`](../apps/unity/) | Unity 6 und 3D-Kartentisch; Linux/WebGL-Editor installiert, Lizenzanmeldung bleibt offen dokumentiert |
 | [`content`](../content/) | 6 Szenen, 15 Entscheidungen, 5 Ressourcen, Erholung und 3 Enden |
-| [`docs`](../docs/) | Design, Geschichte, Architektur, Lokalisierung, Kunst, QA, Veröffentlichung, Jahresplan |
+| [`docs`](../docs/) | Design, Geschichte, Architektur, Lokalisierung, Kunst, QA, Veröffentlichung und qualitätsstufenbasierter Fahrplan |
 
 ## Schnellstart
 
@@ -44,7 +44,7 @@ npm run build
 
 ## Architektur und Forschung
 
-Das versionierte Kampagnen-JSON ist die einzige Erzählquelle für den deterministischen TypeScript-Kern und Unity 6. Private Bücher, OCR, Chats und das vollständige Memo bleiben außerhalb von Git. Siehe [Gamedesign](../docs/design/GAME_DESIGN_DOCUMENT.md), [Quellenrichtlinie](../docs/history/SOURCE_POLICY.md) und [Jahresplan](../docs/production/ROADMAP.md).
+Das versionierte Kampagnen-JSON ist die einzige Erzählquelle für den deterministischen TypeScript-Kern und Unity 6. Private Bücher, OCR, Chats und das vollständige Memo bleiben außerhalb von Git. Siehe [Gamedesign](../docs/design/GAME_DESIGN_DOCUMENT.md), [Quellenrichtlinie](../docs/history/SOURCE_POLICY.md) und [qualitätsstufenbasierten Fahrplan](../docs/production/ROADMAP.md).
 
 ## Build und Prüfung
 

@@ -32,6 +32,7 @@
 #include "ShiCommandSurfacePresentationModel.h"
 #include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilFigure.h"
+#include "ShiCouncilSkinLookdevModel.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiDazeFieldShelterPresentationModel.h"
 #include "ShiWetFieldEnvironmentPresentationModel.h"
@@ -70,8 +71,22 @@ void AShiGameMode::BeginPlay()
     bRainVfxReview = FParse::Param(FCommandLine::Get(), TEXT("ShiRainVfxReview"));
     bWetFieldVegetationReview = FParse::Param(FCommandLine::Get(), TEXT("ShiWetFieldVegetationReview"));
     bCouncilCharacterReviewKeeper = FParse::Param(FCommandLine::Get(), TEXT("ShiCouncilCharacterReviewKeeper"));
+    const bool bCouncilCharacterReviewSpeaker =
+        FParse::Param(FCommandLine::Get(), TEXT("ShiCouncilCharacterReviewSpeaker"));
+    bCouncilSkinLookdevReview = FParse::Param(
+        FCommandLine::Get(), TEXT("ShiCouncilSkinLookdevReview"));
     bCouncilCharacterReview = bCouncilCharacterReviewKeeper
-        || FParse::Param(FCommandLine::Get(), TEXT("ShiCouncilCharacterReviewSpeaker"));
+        || bCouncilCharacterReviewSpeaker || bCouncilSkinLookdevReview;
+    if (bCouncilSkinLookdevReview
+        && (bCouncilCharacterReviewSpeaker || bCouncilCharacterReviewKeeper
+            || bCommandWeightReview || bCommandSurfaceReview
+            || bWetFieldEnvironmentReview || bDazeFieldShelterReview || bRainVfxReview
+            || bWetFieldVegetationReview))
+    {
+        LoadError = TEXT("-ShiCouncilSkinLookdevReview is Chen-only and cannot be combined with another presentation review route.");
+        UE_LOG(LogTemp, Error, TEXT("SHI skin lookdev review rejected: %s"), *LoadError);
+        return;
+    }
 #endif
     LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
@@ -85,27 +100,38 @@ void AShiGameMode::BeginPlay()
     }
     else
     {
-        const bool bSaveExists = FPaths::FileExists(GetSavePath());
-        FString PersistenceError;
-        if (bSaveExists && RestoreChronicle(PersistenceError))
+        if (bCouncilSkinLookdevReview)
         {
-            SaveStatus = FString::Printf(TEXT("RESUMED · TURN %d · AUTOSAVE READY"), Session.GetHistory().Num() + 1);
+            bPersistenceEnabled = false;
+            Session.Initialize(Campaign, CampaignSeed);
+            SaveStatus = TEXT("SKIN LOOKDEV REVIEW · STORY AND SAVE STATE ARE INERT");
+            UE_LOG(LogTemp, Display,
+                TEXT("SHI_COUNCIL_SKIN_LOOKDEV_REVIEW_INERT story_input=false save_read=false save_write=false campaign_advance=false"));
         }
         else
         {
-            Session.Initialize(Campaign, CampaignSeed);
-            if (bSaveExists)
+            const bool bSaveExists = FPaths::FileExists(GetSavePath());
+            FString PersistenceError;
+            if (bSaveExists && RestoreChronicle(PersistenceError))
             {
-                bPersistenceEnabled = false;
-                SaveStatus = FString::Printf(TEXT("SAVE REJECTED · %s · FRESH PREVIEW IS NOT WRITING OVER IT"), *PersistenceError);
-            }
-            else if (SaveChronicle(PersistenceError))
-            {
-                SaveStatus = TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY");
+                SaveStatus = FString::Printf(TEXT("RESUMED · TURN %d · AUTOSAVE READY"), Session.GetHistory().Num() + 1);
             }
             else
             {
-                SaveStatus = FString::Printf(TEXT("AUTOSAVE UNAVAILABLE · %s"), *PersistenceError);
+                Session.Initialize(Campaign, CampaignSeed);
+                if (bSaveExists)
+                {
+                    bPersistenceEnabled = false;
+                    SaveStatus = FString::Printf(TEXT("SAVE REJECTED · %s · FRESH PREVIEW IS NOT WRITING OVER IT"), *PersistenceError);
+                }
+                else if (SaveChronicle(PersistenceError))
+                {
+                    SaveStatus = TEXT("NEW CHRONICLE · AUTOSAVED LOCALLY");
+                }
+                else
+                {
+                    SaveStatus = FString::Printf(TEXT("AUTOSAVE UNAVAILABLE · %s"), *PersistenceError);
+                }
             }
         }
         SelectFirstAvailableChoice();
@@ -448,6 +474,11 @@ void AShiGameMode::IssueSelectedOrder()
 void AShiGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    if (bCouncilSkinLookdevReview)
+    {
+        TickCamera(DeltaSeconds);
+        return;
+    }
     APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
     if (IsCinematicSequenceActive())
     {
@@ -1235,6 +1266,19 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Council staging rejected: %s"), *CouncilError);
         return;
     }
+    if (bCouncilSkinLookdevReview)
+    {
+        const FShiCouncilParticipantData* ReviewSpeaker = OpeningCouncilStage.Participants.FindByPredicate(
+            [](const FShiCouncilParticipantData& Participant) { return Participant.bSpeaker; });
+        if (!ReviewSpeaker || ReviewSpeaker->SlotId != TEXT("speaker")
+            || ReviewSpeaker->CharacterId
+                != FShiCouncilSkinLookdevModel::CanonicalTargetCharacterId())
+        {
+            LoadError = TEXT("Chen Sheng skin lookdev review requires a fresh council state with Chen Sheng in the speaker slot.");
+            UE_LOG(LogTemp, Error, TEXT("SHI skin lookdev review rejected: %s"), *LoadError);
+            return;
+        }
+    }
     ACameraActor* Camera = World->SpawnActor<ACameraActor>(FVector(720, -760, 520), FRotator(-24, 133, 0));
     if (!Camera)
     {
@@ -1503,6 +1547,7 @@ void AShiGameMode::CreateCommandSpace()
     {
         AShiCouncilFigure* Figure = World->SpawnActor<AShiCouncilFigure>();
         FString FigureError;
+        if (Figure) Figure->SetSkinLookdevReviewEnabled(bCouncilSkinLookdevReview);
         if (!Figure || !Figure->InitializeFigure(Cylinder, Sphere, Cube, BasicMaterial, FigureError))
         {
             LoadError = FString::Printf(TEXT("Council figure %s could not initialize: %s"), *Participant.SlotId, *FigureError);

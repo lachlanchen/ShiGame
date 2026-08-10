@@ -103,6 +103,7 @@ for (const relative of [
   "assets/provenance/shi-command-surface-v1.json",
   "assets/provenance/shi-wet-field-environment-v1.json",
   "assets/provenance/shi-daze-council-facial-performance-v1.json",
+  "assets/provenance/shi-daze-council-skin-lookdev-v1.json",
   "assets/3d/source/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
   "assets/3d/source/shi-daze-council-facial-performance-v1.metrics.json",
   "assets/3d/source/shi-daze-council-facial-performance-v1.validation.json",
@@ -129,6 +130,12 @@ for (const relative of [
   "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.glb",
   "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.fbx",
   "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.glb",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1-basecolor-2k.png",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1-masks-2k.png",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-height-1k.png",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1.metrics.json",
+  "assets/3d/source/shi-daze-council-skin-lookdev-v1.validation.json",
   "assets/3d/source/shi-wet-field-environment-v1.metrics.json",
   "assets/3d/source/shi-wet-field-environment-v1.validation.json",
   "assets/3d/rendered/shi-wet-field-environment-v1.png",
@@ -164,6 +171,11 @@ for (const relative of [
   "scripts/validate-daze-council-facial-performance.py",
   "scripts/validate-daze-council-facial-performance-package.mjs",
   "scripts/import-daze-council-facial-performance-unreal.py",
+  "scripts/build-daze-council-skin-lookdev.py",
+  "scripts/validate-daze-council-skin-lookdev.py",
+  "scripts/validate-daze-council-skin-lookdev-package.mjs",
+  "scripts/sanitize-unreal-linux-development-package.mjs",
+  "scripts/import-daze-council-skin-lookdev-unreal.py",
   "docs/production/evidence/unreal-command-surface-import-status.json",
   "docs/production/evidence/unreal-command-surface-presentation-status.json",
   "docs/production/evidence/unreal-wet-field-environment-import-status.json",
@@ -171,6 +183,12 @@ for (const relative of [
   "docs/production/evidence/unreal-daze-council-facial-performance-import-status.json",
   "docs/production/evidence/unreal-daze-council-facial-performance-runtime-status.json",
   "docs/production/evidence/unreal-daze-council-facial-performance-presentation-status.json",
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-import-status.json",
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-runtime-status.json",
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json",
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-opacity-normal-material-qa-v2.png",
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-opacity-reduced-object-glance-v2.png",
+  "docs/production/evidence/unreal-daze-council-skin-lookdev-opacity-reduced-terminal-neutral-v2.png",
   "docs/production/evidence/unreal-daze-council-facial-performance-v2-speaker-silent-speech.png",
   "docs/production/evidence/unreal-daze-council-facial-performance-v2-speaker-blink.png",
   "docs/production/evidence/unreal-daze-council-facial-performance-v2-reduced-object-glance.png",
@@ -178,6 +196,36 @@ for (const relative of [
   "docs/production/evidence/unreal-daze-council-facial-performance-v2-keeper-listener.png",
   "docs/production/evidence/unreal-daze-council-facial-performance-v2-keeper-blink.png",
 ]) if (!await exists(resolve(root, relative))) errors.push(`asset pipeline output missing: ${relative}`);
+
+// Fail closed on editor import metadata because Unreal texture assets can leak
+// workstation source paths even when every public text file is clean.
+const skinPrivacyUassets = {
+  "M_SHI_ChenSheng_SkinLookdevV1.uasset": [11579, "13d8dde823611bfd15ef8aae330cb109304a1621da0511518220bedcd51eb1f3", null],
+  "SP_SHI_ChenSheng_SkinLookdevV1.uasset": [1913, "c730da3eddda2a67fe60a39ea8cf3d6b32b792afbc7a2318536cdd3af3c6512b", null],
+  "T_SHI_ChenSheng_Skin_BaseColor_2K.uasset": [2113116, "54122ea3a81132a263c0a7d3541a8a534bc472313133359d85d3982716393c87", "shi-daze-council-skin-lookdev-v1-basecolor-2k.png"],
+  "T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset": [1532856, "6378f416c33ca89161479c3cde2584a7958a623fa5a9c348f344873a2934e7bc", "shi-daze-council-skin-lookdev-v1-detail-normal-dx-1k.png"],
+  "T_SHI_ChenSheng_Skin_Masks_2K.uasset": [1472351, "392ddda8ce0af8b8821116682081234ce680e04899e78722b39331e87a216ee8", "shi-daze-council-skin-lookdev-v1-masks-2k.png"],
+};
+const skinPrivacyRoot = resolve(root, "apps/unreal/Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1");
+for (const [file, [expectedBytes, expectedSha256, sourceBasename]] of Object.entries(skinPrivacyUassets)) {
+  try {
+    const binary = await readFile(resolve(skinPrivacyRoot, file));
+    const sha256 = createHash("sha256").update(binary).digest("hex");
+    const text = binary.toString("latin1");
+    if (binary.byteLength !== expectedBytes || sha256 !== expectedSha256)
+      errors.push(`skin privacy-v11 uasset receipt drifted: ${file}`);
+    for (const token of ["/home/", "/Users/", "C:/Users/", "C:\\Users\\", "Factory_/", "InterchangeAssetImportData"])
+      if (text.includes(token)) errors.push(`skin uasset embeds forbidden private-path or Interchange metadata: ${file}`);
+    if (sourceBasename === null) {
+      if (text.includes("AssetImportData") || text.includes("RelativeFilename"))
+        errors.push(`skin material/profile unexpectedly embeds source import metadata: ${file}`);
+    } else if (!text.includes("AssetImportData") || !text.includes("RelativeFilename") || !text.includes(sourceBasename)) {
+      errors.push(`skin texture omits Base AssetImportData, relative filename or source basename: ${file}`);
+    }
+  } catch {
+    errors.push(`skin privacy-v11 uasset is missing or unreadable: ${file}`);
+  }
+}
 
 async function verifyHash(file, expected, label) {
   try {

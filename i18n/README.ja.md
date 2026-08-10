@@ -31,7 +31,7 @@ SHI は使い捨てのデモではなく、本制作中のゲームです。最�
 | [`apps/web`](../apps/web/) | 遊べるWeb版、保存、史料・決断台帳、モバイル、RTL |
 | [`apps/unity`](../apps/unity/) | Unity 6 と3D軍議卓。Linux/WebGLエディタは導入済みで、ライセンスログインが公開ゲート |
 | [`content`](../content/) | 6場面、15選択、5資源、回復局面、3結末 |
-| [`docs`](../docs/) | 設計、史料、技術、多言語、アート、QA、公開、一年計画 |
+| [`docs`](../docs/) | 設計、史料、技術、多言語、アート、QA、公開、品質ゲート計画 |
 
 ## クイックスタート
 
@@ -44,7 +44,7 @@ npm run build
 
 ## アーキテクチャと研究基準
 
-版管理された戦役JSONが唯一の物語ソースで、決定論的TypeScriptコアとUnity 6が共有します。私蔵書、OCR、チャット、完全メモはGitに含めません。[ゲーム設計](../docs/design/GAME_DESIGN_DOCUMENT.md)、[史料方針](../docs/history/SOURCE_POLICY.md)、[一年計画](../docs/production/ROADMAP.md)を参照してください。
+版管理された戦役JSONが唯一の物語ソースで、決定論的TypeScriptコアとUnity 6が共有します。私蔵書、OCR、チャット、完全メモはGitに含めません。[ゲーム設計](../docs/design/GAME_DESIGN_DOCUMENT.md)、[史料方針](../docs/history/SOURCE_POLICY.md)、[品質ゲート計画](../docs/production/ROADMAP.md)を参照してください。
 
 ## ビルドと検証
 
