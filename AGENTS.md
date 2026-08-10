@@ -9,6 +9,7 @@ SHI (《势》) is a production game repository. Treat every change as shipping 
 - Before launching a heavy GUI or build, check `free -h`, SHI-owned processes, SHI tmux windows, and the recorded noVNC ports.
 - If available RAM is below 24 GiB or swap use exceeds 75%, stop only obsolete SHI-owned runtimes before starting heavy work. Never stop another project's service based only on size.
 - Stop a superseded SHI review build after its successor is accepted. Preserve evidence in screenshots, logs, manifests, and commits rather than resident processes.
+- When no review is actively waiting for the user, stop the SHI player and its dedicated GUI stack after capturing evidence. Relaunch one stack on demand; an idle desktop is not milestone evidence.
 - Keep source assets, saves, evidence, and the current verified build. Retain at most the current and immediately previous reproducible package per milestone unless the user asks otherwise.
 - Do not duplicate SDKs, model weights, browser profiles, or source archives when a verified shared installation exists.
 - The session that launches a SHI runtime owns its exact cleanup and must update the private runtime handoff after replacement or shutdown.

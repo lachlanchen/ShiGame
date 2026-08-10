@@ -2,9 +2,9 @@
 
 SHI browser QA uses a dedicated localhost-only Xvfb/noVNC/Chrome profile so tests can be watched and reproduced without touching the user's normal browser.
 
-## Current Unreal performance review desktop
+## Most recent Unreal performance review
 
-The current UE 5.8.1 Linux package remains visibly playable on the single SHI-owned desktop at `http://127.0.0.1:6140/vnc.html?host=127.0.0.1&port=6140&autoconnect=1&resize=scale` (`Xvfb :129`, loopback x11vnc `5940`, loopback noVNC `6140`). The source-matched package is `$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeCouncilPerformance-Review-v5/Linux`; its isolated user directory is outside Git. The reusable stack and live process ownership are recorded in the ignored `references/private/runtime-handoff.md`.
+The most recently accepted UE 5.8.1 Linux package is `$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeCouncilPerformance-Review-v5/Linux`; its isolated user directory is outside Git. The review used one SHI-owned desktop at `Xvfb :129`, loopback x11vnc `5940` and loopback noVNC `6140`. That stack is not kept resident after evidence capture. The ignored `references/private/runtime-handoff.md` is the authority for whether a review desktop is currently live; relaunch exactly one stack on demand and publish its then-current localhost URL there.
 
 Fresh keyboard input selected **Read every name aloud**, issued the Act-I order and skipped the transition with the documented controls. The campaign advanced from Act I Scene 1 to Act II Scene 2, changed resources, recorded one decision and autosaved. The corrected council animation keeps the shared skeleton root at identity scale and preserves the complete head, hands, feet, garments and silhouette through motion. Reviewed 1600×1000 opening, performance and advanced-story frames live under `docs/production/evidence/`. This is a watched engineering playthrough and body-performance blockout—not observed-player, physical-controller, facial-performance, cloth-simulation or final-scene approval.
 
