@@ -1,5 +1,19 @@
 # SHI progress log
 
+## 2026-08-10 · Source-matched Unreal rain and complete visible replay checkpoint
+
+- Authored the first bounded Daze rain layer as a deterministic production VFX blockout: 384 crossed-ribbon streaks, a fixed 72-ring ripple pool, exact `24 × 24 m` wet-field bounds, `1,900 cm/s` descent, a `0.70 s` ripple life and seed `0x5EED209`. This is dramatic reconstruction, not evidence of exact weather at Daze in 209 BCE.
+- Built texture-free streak/ripple LOD0/LOD1 meshes in the pinned Blender 4.0.2 pipeline. All eight GLB/FBX imports pass exact triangle, dual-UV, vertex-alpha, bounds, material, identity-transform, collision and nondegenerate checks; clean-import and source renders were visually reviewed.
+- Imported two meshes and authored two exact six-node translucent/unlit Unreal materials. The first package exposed a default-material fallback because the instanced-static-mesh permutation was absent; the fixed graphs explicitly enable and compile that usage. A mutating graph-deletion helper and an inspect-only importer that resaved assets were also caught and corrected; final inspect-only runs preserve all four hashes.
+- Added a native `AShiRainField` with exactly two `UInstancedStaticMeshComponent` pools, deterministic `FRandomStream`, clamped delta time, batched transforms, zero collision/overlap/navigation/shadow/decal/replication authority and no gameplay/save/audio coupling. The exact shelter footprint intercepts streaks at roof level and suppresses ground ripples beneath it.
+- The official UE 5.8.1 editor target compiles and all **16 / 16** native `SHI.` suites pass. The new hostile suite attacks scale, pool overrun, collision, navigation, hidden gameplay/save authority, audio coupling, unsupported historical certainty, final-art status, engagement visibility and roof leakage.
+- A clean source-matched outside-Git BuildCookRun succeeds with **513 packages**, exactly the accepted 509 shelter baseline plus two meshes and two materials. Headless smoke mounts all 513, loads `ShiGameMode`/Entry, reports no material/load warning and exits cleanly; four package artifacts retain exact hashes.
+- Fresh visible pointer play on isolated localhost noVNC advances Act I → Act II → Act III, completes all three Broken Crossing pulses with deterministic **SUCCESS · Orderly crossing**, and returns to the exact Act-III state. The 3,060-byte campaign save keeps SHA-256 `75a231c943cbce90fd2fddc2b67790508aa30cb33fde1ce2f2cb44e99c0db9ee` and its timestamp unchanged.
+- Four final-package 1600×1000 frames prove rain on exposed ground, a dry shelter interior, story progression, engagement completion and unchanged return. The accepted stack remains available at localhost-only noVNC port 6138; the earlier shelter review stack was not disturbed.
+- This remains a **production VFX blockout, not final cinematic weather**. Vegetation, splashes/cloth/hair response, final sky/lighting, period-reviewed figures/formations, interaction hands, final-scene physical performance/accessibility and human historical/cinematic/art approval remain red.
+
+Next gate: admit restrained wet-field vegetation, then replace primitive figures, floating light and BasicShape signals with period-reviewed character and formation language while preserving the accepted campaign, shelter-interception and non-authoritative engagement contracts.
+
 ## 2026-08-10 · Wet-field Unreal environment and complete engagement checkpoint
 
 - Replaced the surrounding engine-native white plane with an original `24 × 24 m` Daze wet-field production blockout. The bounded relief, route masks and five shallow-water components are project-authored environment design, not a surveyed or attested late-Qin landscape reconstruction.
@@ -11,7 +25,7 @@
 - Visible input-driven review on isolated localhost noVNC accepted the wet-field blockout, advanced two canonical campaign decisions from Act I to Act III, completed all three Broken Crossing pulses with deterministic **COSTLY-SUCCESS**, and returned to the same Act III scene, turn, decision count and five campaign resource values. Seven hash-bound 1600×1000 frames retain field, opening, story, pulse and return evidence.
 - This remains a **production blockout, not final cinematic environment**. Shelter architecture, rain VFX, vegetation, sky/final lighting, historically reviewed figures/formations, interaction hands, physical-display performance/accessibility and human historical/cinematic/art approval remain red.
 
-Next gate: build the Daze shelter and bounded rain/vegetation layer, then replace primitive figures, floating light and BasicShape signals with period-reviewed character and formation language while preserving the accepted campaign and engagement contracts.
+Next gate completed in part by the accepted shelter and rain checkpoints above; vegetation and the five reviewed late-Qin character blockouts with deformation-tested hands remain open.
 
 ## 2026-08-10 · Runtime command-ground and engagement continuity checkpoint
 
@@ -25,7 +39,7 @@ Next gate: build the Daze shelter and bounded rain/vegetation layer, then replac
 - Exact implementation `d2d3ca8ebd073f3d57767a5a6172554d3b3bcd05` is pushed to `main`. Hosted validation `31334321489` and playable Pages deployment `31334321496` both pass at that SHA; the remote branch matched before this receipt was added.
 - This was accepted as a **runtime-presented production blockout, not final environment art**. Its then-open surrounding-white-ground defect is closed by the wet-field checkpoint above; primitive figures, floating proxy, signals, hands, shelter/vegetation, formations, weather/VFX, final lighting, physical-display performance and human historical/cinematic/accessibility/art approval remain red.
 
-Next gate completed in part by the wet-field checkpoint above; shelter/rain/vegetation and the five reviewed late-Qin character blockouts with deformation-tested hands remain open.
+Next gate completed in part by the wet-field, shelter and rain checkpoints above; vegetation and the five reviewed late-Qin character blockouts with deformation-tested hands remain open.
 
 ## 2026-08-10 · Reviewed lookdev, toolchain and runtime-presented prop checkpoint
 

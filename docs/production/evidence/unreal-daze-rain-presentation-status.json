@@ -1,0 +1,184 @@
+{
+  "assetId": "shi-daze-rain-vfx-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Packaged Unreal 5.8.1 rain review, fresh normal story progression and complete three-pulse Broken Crossing exercise/return through an isolated localhost noVNC desktop. This accepts the rain as a deterministic production VFX blockout only.",
+  "decision": "approved-runtime-daze-rain-production-vfx-blockout-council-engagement-story-reviewed-not-final-environment",
+  "historicalBoundary": "Dramatic weather reconstruction for the playable Daze opening. It is not evidence that this exact storm, intensity or timing occurred at Daze in 209 BCE.",
+  "requiredDisclosure": "DRAMATIC RAIN RECONSTRUCTION · NOT EVIDENCE OF EXACT DAZE WEATHER IN 209 BCE · PRODUCTION VFX BLOCKOUT",
+  "presentation": {
+    "streakInstances": 384,
+    "ripplePoolInstances": 72,
+    "fieldHalfExtentCentimeters": 1200.0,
+    "spawnCeilingCentimeters": 1050.0,
+    "groundInterceptCentimeters": -5.0,
+    "shelterHalfExtentCentimeters": [420.0, 336.7437],
+    "shelterRoofInterceptCentimeters": 340.0,
+    "velocityCentimetersPerSecond": [130.0, 45.0, -1900.0],
+    "rippleLifetimeSeconds": 0.7,
+    "deterministicSeed": 99537417,
+    "historicallyExactWeather": false,
+    "finalArt": false,
+    "interactive": false,
+    "runtimeCollision": false,
+    "navigationInfluence": false,
+    "gameplayAuthority": false,
+    "saveAuthority": false,
+    "audioIndependent": true,
+    "visibleDuringNonAuthoritativeEngagement": true,
+    "groundRipplesUnderShelter": false,
+    "actorTags": [
+      "ShiEnvironment:DazeRain",
+      "ShiPresentation:NonAuthoritative",
+      "ShiArtStatus:ProductionVfxBlockout"
+    ],
+    "developmentReview": {
+      "flag": "-ShiRainVfxReview",
+      "fieldOfViewDegrees": 50.0,
+      "excludedFromShipping": true
+    }
+  },
+  "materials": {
+    "authoringTool": "scripts/author-daze-rain-vfx-materials-unreal.py",
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "passed": true,
+      "trackedUassetHashesUnchanged": true,
+      "compileErrors": 0
+    },
+    "streak": {
+      "nodeCount": 6,
+      "blendMode": "translucent",
+      "shadingModel": "unlit",
+      "twoSided": true,
+      "depthTestPreserved": true,
+      "usedWithInstancedStaticMeshes": true,
+      "rainOpacity": 0.34,
+      "rainColor": [0.055, 0.105, 0.145, 1.0],
+      "rainEmissiveStrength": 0.72,
+      "vertexAlphaSignal": true,
+      "textures": 0,
+      "normalInput": false
+    },
+    "ripple": {
+      "nodeCount": 6,
+      "blendMode": "translucent",
+      "shadingModel": "unlit",
+      "twoSided": true,
+      "depthTestPreserved": true,
+      "usedWithInstancedStaticMeshes": true,
+      "rainOpacity": 0.19,
+      "rainColor": [0.03, 0.065, 0.09, 1.0],
+      "rainEmissiveStrength": 0.48,
+      "vertexAlphaSignal": true,
+      "textures": 0,
+      "normalInput": false
+    }
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 16,
+    "passed": 16,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.DazeRainPresentationV1",
+    "negativeCases": [
+      "unreviewed field extent and oversized instance pools",
+      "runtime collision or navigation authority",
+      "gameplay or save authority",
+      "rain audio coupled to visual activation",
+      "unsupported exact-weather claim",
+      "premature final-art status",
+      "rain hidden during engagement",
+      "ground ripples leaking under the shelter roof"
+    ]
+  },
+  "visiblePlaytest": {
+    "desktop": "isolated Xvfb :127, localhost-only x11vnc 5938 and noVNC 6138",
+    "package": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeRain-Review-v3/Linux",
+    "inputs": [
+      "Pointer selected Seize the relay beacon and issued the Act-I order",
+      "Pointer selected Extinguish the tower; move in silence and issued the Act-II order",
+      "Pointer opened Broken Crossing from Act III",
+      "Pointer selected and issued Screen through the reeds, Repair the landing and Release the reserve across the open lane",
+      "Pointer returned from the completed exercise to the campaign"
+    ],
+    "campaignStart": "Act I, Scene 1, turn 1, resources grain 42, trust 38, momentum 22, people 58 and danger 46",
+    "campaignObserved": "Act III, Scene 5 Broken Crossing, turn 3, two decisions, resources grain 32, trust 36, momentum 33, people 56 and danger 62",
+    "engagementObserved": "Broken Crossing pulse 1 through pulse 3 and deterministic SUCCESS / Orderly crossing completion; all six field metrics changed after player and field responses",
+    "engagementFinalMetrics": {
+      "crossing": 58,
+      "rear": 59,
+      "reserve": 41,
+      "supplies": 57,
+      "pursuit": 45,
+      "signals": 63
+    },
+    "campaignSave": {
+      "bytes": 3060,
+      "sha256BeforeEngagement": "75a231c943cbce90fd2fddc2b67790508aa30cb33fde1ce2f2cb44e99c0db9ee",
+      "sha256AfterReturn": "75a231c943cbce90fd2fddc2b67790508aa30cb33fde1ce2f2cb44e99c0db9ee",
+      "modifiedTimeUnchanged": true
+    },
+    "campaignReturn": "same Act III scene, grain 32, trust 36, momentum 33, people 56, danger 62, turn 3 and two decisions after leaving the byte-guarded non-authoritative exercise",
+    "storyAdvanced": true,
+    "engagementAdvanced": true,
+    "engagementCompleted": true,
+    "campaignUnchangedByEngagement": true,
+    "rainVisibleDuringEngagement": true,
+    "rainVisibleOnExposedGround": true,
+    "shelterInteriorDry": true,
+    "materialOrLoadWarnings": 0
+  },
+  "screenshots": [
+    {
+      "file": "docs/production/evidence/unreal-daze-rain-review-v1.png",
+      "role": "development-only rain-streak, exposed-ground ripple and shelter-interception review",
+      "dimensions": [1600, 1000],
+      "bytes": 775030,
+      "sha256": "5af8fa385d13558acc8ec428afce781dc2ebf8851aa0c113e6fae86ae2bd6c9c"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-rain-story-act-3-v1.png",
+      "role": "fresh packaged Act-III story progression after two verified campaign transactions",
+      "dimensions": [1600, 1000],
+      "bytes": 652479,
+      "sha256": "374be5ec78ffcf27549abfdcff3666015a2f921e5582603193c3cc032cb78d61"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-rain-engagement-complete-v1.png",
+      "role": "completed three-pulse deterministic SUCCESS exercise with rain remaining presentation-only",
+      "dimensions": [1600, 1000],
+      "bytes": 374013,
+      "sha256": "d7fd66fa4aeae4107410588938982fd85dd34f7678628c11a5f0545646a56835"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-rain-campaign-return-v1.png",
+      "role": "campaign return proving the exercise and VFX did not mutate canonical campaign state",
+      "dimensions": [1600, 1000],
+      "bytes": 487277,
+      "sha256": "e7fd1d396b0dbd76567f05e953c6ef3bc50ad72bf6a2b9835a268acafd386827"
+    }
+  ],
+  "review": {
+    "rejectedFirstPass": [
+      "the first packaged material pass lacked Unreal's instanced-static-mesh usage permutation and visibly fell back to the engine default material",
+      "the first material rewrite used a mutating delete helper that skipped alternating expressions; the author now deletes an explicit snapshot and verifies the exact six-node graph",
+      "a nominally inspect-only importer initially resaved existing assets; saving is now restricted to explicit replacement or first creation and before/after hashes prove no-op inspection",
+      "the earlier package was superseded so the accepted screenshots, smoke and archive receipts exactly match the final tracked source assets"
+    ],
+    "accepted": [
+      "384 restrained blue-grey streaks make the storm legible without hiding the council or command surface",
+      "72 pooled rings remain sparse on exposed wet ground and do not spawn beneath the reviewed shelter footprint",
+      "two texture-free compile-clean translucent materials support instanced static meshes and preserve depth testing",
+      "the two fixed-size instanced pools remain collision-free, non-navigable, noninteractive and independent from gameplay, save and audio authority",
+      "fresh packaged input advances two campaign transactions, completes Broken Crossing and returns without campaign mutation",
+      "the accepted judgment is explicitly a dramatic production VFX blockout, not exact historical weather or final cinematic environment"
+    ],
+    "remainingRedGates": [
+      "vegetation, final sky, ground response, splashes on figures and final lighting are incomplete",
+      "primitive proxy figures, floating light proxy and BasicShape signals are not final characters, props or formation language",
+      "historically reviewed period figures, formations, interaction hands, cloth/hair response and final weather/audio integration remain open",
+      "physical-display final-scene performance/accessibility and human historical/cinematic/art review must be repeated"
+    ]
+  }
+}

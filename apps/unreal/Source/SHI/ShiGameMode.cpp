@@ -34,6 +34,8 @@
 #include "ShiDazeFieldShelterPresentationModel.h"
 #include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiOrderTransactionModel.h"
+#include "ShiRainField.h"
+#include "ShiRainPresentationModel.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiWartableModel.h"
 
@@ -58,6 +60,7 @@ void AShiGameMode::BeginPlay()
     bCommandSurfaceReview = FParse::Param(FCommandLine::Get(), TEXT("ShiCommandSurfaceReview"));
     bWetFieldEnvironmentReview = FParse::Param(FCommandLine::Get(), TEXT("ShiWetFieldEnvironmentReview"));
     bDazeFieldShelterReview = FParse::Param(FCommandLine::Get(), TEXT("ShiDazeFieldShelterReview"));
+    bRainVfxReview = FParse::Param(FCommandLine::Get(), TEXT("ShiRainVfxReview"));
 #endif
     LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
@@ -100,7 +103,7 @@ void AShiGameMode::BeginPlay()
     }
 
     if (!bCommandWeightReview && !bCommandSurfaceReview && !bWetFieldEnvironmentReview
-        && !bDazeFieldShelterReview
+        && !bDazeFieldShelterReview && !bRainVfxReview
         && GEngine && GEngine->GameViewport)
     {
         SAssignNew(CommandScreen, SShiCommandScreen).GameMode(this);
@@ -1353,6 +1356,27 @@ void AShiGameMode::CreateCommandSpace()
     Shelter->Tags.Add(FName(TEXT("ShiPresentation:FictionalPracticalConstruction")));
     Shelter->Tags.Add(FName(TEXT("ShiArtStatus:ProductionBlockout")));
     DazeFieldShelterProp = Shelter;
+    const FShiRainPresentationData RainPresentation = FShiRainPresentationModel::Build();
+    FString RainError;
+    if (!FShiRainPresentationModel::Validate(RainPresentation, RainError))
+    {
+        LoadError = FString::Printf(TEXT("Daze rain presentation rejected: %s"), *RainError);
+        return;
+    }
+    AShiRainField* Rain = World->SpawnActor<AShiRainField>(
+        RainPresentation.Transform.GetLocation(), RainPresentation.Transform.Rotator());
+    if (!Rain || !Rain->Initialize(RainPresentation, RainError))
+    {
+        if (Rain) Rain->Destroy();
+        LoadError = FString::Printf(TEXT("Daze rain field could not initialize: %s"), *RainError);
+        return;
+    }
+    Rain->SetActorScale3D(RainPresentation.Transform.GetScale3D());
+    Rain->SetActorEnableCollision(false);
+    Rain->Tags.Add(FName(TEXT("ShiEnvironment:DazeRain")));
+    Rain->Tags.Add(FName(TEXT("ShiPresentation:NonAuthoritative")));
+    Rain->Tags.Add(FName(TEXT("ShiArtStatus:ProductionVfxBlockout")));
+    RainField = Rain;
     const FShiCommandSurfacePresentationData CommandSurfacePresentation = FShiCommandSurfacePresentationModel::Build();
     FString CommandSurfaceError;
     if (!FShiCommandSurfacePresentationModel::Validate(CommandSurfacePresentation, Campaign.Sites,
@@ -1571,7 +1595,12 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Live council staging rejected: %s"), *CouncilError);
         return;
     }
-    if (bDazeFieldShelterReview)
+    if (bRainVfxReview)
+    {
+        SetCameraImmediate(FShiRainPresentationModel::ReviewCameraTransform(),
+            FShiRainPresentationModel::ReviewFieldOfViewDegrees());
+    }
+    else if (bDazeFieldShelterReview)
     {
         SetCameraImmediate(FShiDazeFieldShelterPresentationModel::ReviewCameraTransform(),
             FShiDazeFieldShelterPresentationModel::ReviewFieldOfViewDegrees());

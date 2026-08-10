@@ -1,0 +1,431 @@
+{
+  "assetId": "shi-daze-rain-vfx-v1",
+  "validator": "clean Blender GLB/FBX import plus topology, dual-UV, vertex-alpha, material and bounds inspection",
+  "blender": "4.0.2",
+  "exports": [
+    {
+      "path": "export/shi-daze-rain-vfx-v1-streak-lod0.glb",
+      "label": "streak-lod0",
+      "object": "SM_SHI_RainStreak_01_LOD0",
+      "triangles": 12,
+      "vertices": 24,
+      "boundsMeters": {
+        "minimum": [
+          -0.006000000052154064,
+          -0.006000000052154064,
+          0.0
+        ],
+        "maximum": [
+          0.006000000052154064,
+          0.006000000052154064,
+          1.0
+        ],
+        "dimensions": [
+          0.012000000104308128,
+          0.012000000104308128,
+          1.0
+        ]
+      },
+      "materials": [
+        "M_SHI_RainStreak"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001"
+      ],
+      "colorAttributes": [
+        "Col"
+      ],
+      "alphaRange": [
+        0.0,
+        0.9019608497619629
+      ],
+      "minimumTriangleArea": 0.000720000029786533,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "vertexAlphaPresent": true,
+        "softAlphaTaper": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-rain-vfx-v1-streak-lod0.fbx",
+      "label": "streak-lod0",
+      "object": "SM_SHI_RainStreak_01_LOD0",
+      "triangles": 12,
+      "vertices": 16,
+      "boundsMeters": {
+        "minimum": [
+          -0.006000000052154064,
+          -0.006000000052154064,
+          -2.622683181741081e-10
+        ],
+        "maximum": [
+          0.006000000052154064,
+          0.006000043824315071,
+          1.0
+        ],
+        "dimensions": [
+          0.012000000104308128,
+          0.012000043876469135,
+          1.0000000002622684
+        ]
+      },
+      "materials": [
+        "M_SHI_RainStreak"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "LightmapUV"
+      ],
+      "colorAttributes": [
+        "ShiRainAlpha"
+      ],
+      "alphaRange": [
+        0.0,
+        0.9019608497619629
+      ],
+      "minimumTriangleArea": 0.000720000029786533,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "vertexAlphaPresent": true,
+        "softAlphaTaper": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-rain-vfx-v1-streak-lod1.glb",
+      "label": "streak-lod1",
+      "object": "SM_SHI_RainStreak_01_LOD1",
+      "triangles": 6,
+      "vertices": 12,
+      "boundsMeters": {
+        "minimum": [
+          -0.006000000052154064,
+          0.0,
+          0.0
+        ],
+        "maximum": [
+          0.006000000052154064,
+          0.0,
+          1.0
+        ],
+        "dimensions": [
+          0.012000000104308128,
+          0.0,
+          1.0
+        ]
+      },
+      "materials": [
+        "M_SHI_RainStreak"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001"
+      ],
+      "colorAttributes": [
+        "Col"
+      ],
+      "alphaRange": [
+        0.0,
+        0.9019608497619629
+      ],
+      "minimumTriangleArea": 0.000720000029786533,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "vertexAlphaPresent": true,
+        "softAlphaTaper": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-rain-vfx-v1-streak-lod1.fbx",
+      "label": "streak-lod1",
+      "object": "SM_SHI_RainStreak_01_LOD1",
+      "triangles": 6,
+      "vertices": 8,
+      "boundsMeters": {
+        "minimum": [
+          -0.006000000052154064,
+          0.0,
+          0.0
+        ],
+        "maximum": [
+          0.006000000052154064,
+          4.371138828673793e-08,
+          1.0
+        ],
+        "dimensions": [
+          0.012000000104308128,
+          4.371138828673793e-08,
+          1.0
+        ]
+      },
+      "materials": [
+        "M_SHI_RainStreak"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "LightmapUV"
+      ],
+      "colorAttributes": [
+        "ShiRainAlpha"
+      ],
+      "alphaRange": [
+        0.0,
+        0.9019608497619629
+      ],
+      "minimumTriangleArea": 0.000720000029786533,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "vertexAlphaPresent": true,
+        "softAlphaTaper": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-rain-vfx-v1-ripple-lod0.glb",
+      "label": "ripple-lod0",
+      "object": "SM_SHI_RainRipple_01_LOD0",
+      "triangles": 288,
+      "vertices": 576,
+      "boundsMeters": {
+        "minimum": [
+          -0.5,
+          -0.5,
+          0.0
+        ],
+        "maximum": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "dimensions": [
+          1.0,
+          1.0,
+          0.0
+        ]
+      },
+      "materials": [
+        "M_SHI_RainRipple"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001"
+      ],
+      "colorAttributes": [
+        "Col"
+      ],
+      "alphaRange": [
+        0.0,
+        0.9215686917304993
+      ],
+      "minimumTriangleArea": 0.0008875775826222053,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "vertexAlphaPresent": true,
+        "softAlphaTaper": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-rain-vfx-v1-ripple-lod0.fbx",
+      "label": "ripple-lod0",
+      "object": "SM_SHI_RainRipple_01_LOD0",
+      "triangles": 288,
+      "vertices": 192,
+      "boundsMeters": {
+        "minimum": [
+          -0.5,
+          -0.5,
+          -2.1855694143368964e-08
+        ],
+        "maximum": [
+          0.5,
+          0.5,
+          2.1855694143368964e-08
+        ],
+        "dimensions": [
+          1.0,
+          1.0,
+          4.371138828673793e-08
+        ]
+      },
+      "materials": [
+        "M_SHI_RainRipple"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "LightmapUV"
+      ],
+      "colorAttributes": [
+        "ShiRainAlpha"
+      ],
+      "alphaRange": [
+        0.0,
+        0.9215686917304993
+      ],
+      "minimumTriangleArea": 0.0008875775826222053,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "vertexAlphaPresent": true,
+        "softAlphaTaper": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-rain-vfx-v1-ripple-lod1.glb",
+      "label": "ripple-lod1",
+      "object": "SM_SHI_RainRipple_01_LOD1",
+      "triangles": 64,
+      "vertices": 128,
+      "boundsMeters": {
+        "minimum": [
+          -0.5,
+          -0.5,
+          0.0
+        ],
+        "maximum": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "dimensions": [
+          1.0,
+          1.0,
+          0.0
+        ]
+      },
+      "materials": [
+        "M_SHI_RainRipple"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001"
+      ],
+      "colorAttributes": [
+        "Col"
+      ],
+      "alphaRange": [
+        0.0,
+        0.9019608497619629
+      ],
+      "minimumTriangleArea": 0.005759383454200344,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "vertexAlphaPresent": true,
+        "softAlphaTaper": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-rain-vfx-v1-ripple-lod1.fbx",
+      "label": "ripple-lod1",
+      "object": "SM_SHI_RainRipple_01_LOD1",
+      "triangles": 64,
+      "vertices": 48,
+      "boundsMeters": {
+        "minimum": [
+          -0.5,
+          -0.5,
+          -2.1855694143368964e-08
+        ],
+        "maximum": [
+          0.5,
+          0.5,
+          2.1855694143368964e-08
+        ],
+        "dimensions": [
+          1.0,
+          1.0,
+          4.371138828673793e-08
+        ]
+      },
+      "materials": [
+        "M_SHI_RainRipple"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "LightmapUV"
+      ],
+      "colorAttributes": [
+        "ShiRainAlpha"
+      ],
+      "alphaRange": [
+        0.0,
+        0.9019608497619629
+      ],
+      "minimumTriangleArea": 0.005759383454200344,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "vertexAlphaPresent": true,
+        "softAlphaTaper": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true
+      },
+      "passed": true
+    }
+  ],
+  "checks": {
+    "allEightExportsPass": true,
+    "exactAuthoredTriangles": true,
+    "lodReduction": true,
+    "boundedRuntimePools": true,
+    "explicitDramaticReconstruction": true
+  },
+  "passed": true
+}

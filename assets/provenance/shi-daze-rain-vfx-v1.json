@@ -1,0 +1,78 @@
+{
+  "assetId": "shi-daze-rain-vfx-v1",
+  "createdAt": "2026-08-10",
+  "status": "approved-runtime-daze-rain-production-vfx-blockout-council-engagement-story-reviewed-not-final-environment",
+  "rightsStatus": "original SHI project-authored geometry, vertex alpha, materials, deterministic runtime presentation, renders and source scripts",
+  "historicalStatus": "dramatic rain reconstruction; not evidence of exact Daze weather in 209 BCE",
+  "designSource": "../../docs/art/DAZE_RAIN_VFX_BRIEF.md",
+  "engineImportEvidence": "../../docs/production/evidence/unreal-daze-rain-import-status.json",
+  "engineEvidence": "../../docs/production/evidence/unreal-daze-rain-presentation-status.json",
+  "toolchain": {
+    "authoring": "AgenticApp portable Blender 4.0.2 and official Unreal Engine 5.8.1",
+    "generation": "deterministic Blender Python plus bounded engine-authored translucent materials and native instanced presentation; no neural mesh, generated texture, model weights or private source material",
+    "generator": {
+      "file": "../../scripts/build-daze-rain-vfx.py",
+      "sha256": "cbb377df5c3d50a4e48ee5690060e32c78f9ce37ecf1ff2da8dcafbdc9723bdc"
+    },
+    "validator": {
+      "file": "../../scripts/validate-daze-rain-vfx.py",
+      "sha256": "8a3ed6a3a33ed51188eaeeb8ecd5341f7f662d6100f4a83a4dc964a1503b976c",
+      "method": "clean GLB and FBX import for streak/ripple LOD0/LOD1 with exact topology, material, dual-UV, vertex-alpha, bounds, identity-transform, collision and nondegenerate inspection plus clean-import render"
+    },
+    "unrealImporter": {
+      "file": "../../scripts/import-daze-rain-vfx-unreal.py",
+      "sha256": "347f7d53ae9814fb9f9ab35c3b211a3c818f79acb06ea32e1b0e91b98c2433b3",
+      "method": "explicit replacement behind SHI_DAZE_RAIN_VFX_REIMPORT=1 or hash-stable read-only inspection with exact UE 5.8 bounds, LOD, UV, slot, collision, lightmap, Nanite and screen-size assertions"
+    },
+    "unrealMaterialAuthor": {
+      "file": "../../scripts/author-daze-rain-vfx-materials-unreal.py",
+      "sha256": "4471d6edbabc2c87b760ac69ab4572425c60e778f51a388fc6c49916d69fc9a4",
+      "method": "read-only by default; exact texture-free six-node translucent unlit graph authoring behind SHI_DAZE_RAIN_VFX_AUTHOR_MATERIALS=1, including instanced-static-mesh permutation compilation and structural inspection"
+    }
+  },
+  "outputs": [
+    {"file": "../3d/rendered/shi-daze-rain-vfx-v1.blend", "role": "editable source and lookdev", "bytes": 751508, "sha256": "196382cad6895313363173a620b337e2987d5a5f784768b8cd6bb7120f76673f"},
+    {"file": "../3d/export/shi-daze-rain-vfx-v1-streak-lod0.fbx", "role": "Unreal streak LOD0 import", "bytes": 18092, "sha256": "d73343fd2454af5275f200bf13dbb212151e032401b194f2c1267a0cf4b639c7"},
+    {"file": "../3d/export/shi-daze-rain-vfx-v1-streak-lod0.glb", "role": "streak LOD0 interchange", "bytes": 2760, "sha256": "e51c1944431640acdb533042d09f9e3a1053abc92ea6fba6c2db78f40f6b7fff"},
+    {"file": "../3d/export/shi-daze-rain-vfx-v1-streak-lod1.fbx", "role": "Unreal streak LOD1 import", "bytes": 17788, "sha256": "7137edda06fda3d68e1fd32211a7d743e00abcda85574370955ff913bb79130e"},
+    {"file": "../3d/export/shi-daze-rain-vfx-v1-streak-lod1.glb", "role": "streak LOD1 interchange", "bytes": 2100, "sha256": "d9fea2675cd0416f1104a9571480889ee19a9e794bc8e69b336b593eb6c5f496"},
+    {"file": "../3d/export/shi-daze-rain-vfx-v1-ripple-lod0.fbx", "role": "Unreal ripple LOD0 import", "bytes": 33836, "sha256": "c961eae9f6e7122829379feab63b1b9f445dddfa1f143ad1f75cb92b4d2e7511"},
+    {"file": "../3d/export/shi-daze-rain-vfx-v1-ripple-lod0.glb", "role": "ripple LOD0 interchange", "bytes": 30864, "sha256": "e88007855281e9fe34a5ba24d1c09dc4aec1ff3c13c613c3d50edbe9113603b4"},
+    {"file": "../3d/export/shi-daze-rain-vfx-v1-ripple-lod1.fbx", "role": "Unreal ripple LOD1 import", "bytes": 21020, "sha256": "3bdaa4b79695927c4964423590ed60f56c3ea8da553849a0ac447b2672ab2356"},
+    {"file": "../3d/export/shi-daze-rain-vfx-v1-ripple-lod1.glb", "role": "ripple LOD1 interchange", "bytes": 8008, "sha256": "81451bea4a81e3edfba5be16e538182d64469fa5c7e4a91165944ff09d77d8d7"},
+    {"file": "../3d/rendered/shi-daze-rain-vfx-v1.png", "role": "source mesh and vertex-alpha lookdev inspection", "bytes": 898789, "sha256": "e4edce7e988436ebe70274db26e7abe8e5d6e3f5cb46d706fc7b93be0e809a8e"},
+    {"file": "../3d/rendered/shi-daze-rain-vfx-v1-glb-import.png", "role": "clean GLB interchange inspection", "bytes": 1000119, "sha256": "10167ba46a2d4d3bcc925453f27918c021fe871c49287edb360edbb274a128a3"},
+    {"file": "../3d/source/shi-daze-rain-vfx-v1.metrics.json", "role": "deterministic generation metrics", "bytes": 2623, "sha256": "1c56c42bf3823c484196596ea9b9156ccb2ef32027e0a0139dbd1edfcaa4c9da"},
+    {"file": "../3d/source/shi-daze-rain-vfx-v1.validation.json", "role": "clean interchange machine validation", "bytes": 10193, "sha256": "c624123deaefa9e6bfe183df14d4abbe4f1df1faecd7578cc3e8aff904bfea9b"},
+    {"file": "../../apps/unreal/Content/SHI/Art/VFX/DazeRain/M_SHI_RainRipple.uasset", "role": "Unreal texture-free translucent ripple material", "bytes": 9058, "sha256": "d37827be20bae56ce397ca08184fb5b387f36fc193f9486c7da51ecf87f4ebe3"},
+    {"file": "../../apps/unreal/Content/SHI/Art/VFX/DazeRain/M_SHI_RainStreak.uasset", "role": "Unreal texture-free translucent streak material", "bytes": 9058, "sha256": "fc5485eca35c106b9642f41efec6e5d3ed2479ecbd174b16c7e4ab219010e254"},
+    {"file": "../../apps/unreal/Content/SHI/Art/VFX/DazeRain/SM_SHI_RainRipple_01.uasset", "role": "Unreal ripple mesh with exact LOD0/LOD1, dual UVs and zero collision", "bytes": 130634, "sha256": "f2e9aef476def84147736c43f109ea0ec16f4fe783c6d3f7983a60687aa50b16"},
+    {"file": "../../apps/unreal/Content/SHI/Art/VFX/DazeRain/SM_SHI_RainStreak_01.uasset", "role": "Unreal streak mesh with exact LOD0/LOD1, dual UVs and zero collision", "bytes": 117434, "sha256": "a648262075c634a694b63f6e45da0788455d9fe339b77f21fb29adbad3198416"},
+    {"file": "../../docs/production/evidence/unreal-daze-rain-review-v1.png", "role": "packaged rain and shelter-interception review", "bytes": 775030, "sha256": "5af8fa385d13558acc8ec428afce781dc2ebf8851aa0c113e6fae86ae2bd6c9c"},
+    {"file": "../../docs/production/evidence/unreal-daze-rain-story-act-3-v1.png", "role": "packaged Act-III story-progression review", "bytes": 652479, "sha256": "374be5ec78ffcf27549abfdcff3666015a2f921e5582603193c3cc032cb78d61"},
+    {"file": "../../docs/production/evidence/unreal-daze-rain-engagement-complete-v1.png", "role": "packaged completed Broken Crossing review in rain", "bytes": 374013, "sha256": "d7fd66fa4aeae4107410588938982fd85dd34f7678628c11a5f0545646a56835"},
+    {"file": "../../docs/production/evidence/unreal-daze-rain-campaign-return-v1.png", "role": "packaged unchanged-campaign return review", "bytes": 487277, "sha256": "e7fd1d396b0dbd76567f05e953c6ef3bc50ad72bf6a2b9835a268acafd386827"}
+  ],
+  "technicalReview": {
+    "streakLodTriangles": [12, 6],
+    "rippleLodTriangles": [288, 64],
+    "uvChannelsPerLod": [2, 2],
+    "collisionTriangles": 0,
+    "streakInstances": 384,
+    "ripplePoolInstances": 72,
+    "cleanGlbImport": "pass",
+    "cleanFbxImport": "pass",
+    "unrealImport": "pass",
+    "unrealMaterials": "pass: two compile-clean six-node translucent unlit graphs with vertex alpha, instanced-static-mesh usage, no textures and no normal pretence",
+    "unrealNativeAutomation": "16 of 16 SHI suites pass, including DazeRainPresentationV1 hostile pool, scale, collision, navigation, authority, disclosure, final-art, visibility, shelter-interception and audio-independence cases",
+    "unrealVisibleCampaign": "pass: fresh Act I to Act III with two verified transactions",
+    "unrealVisibleEngagement": "pass: Broken Crossing completes three pulses with Orderly crossing and the exact campaign save returns unchanged"
+  },
+  "constraints": [
+    "Do not describe the rain as evidence of exact Daze weather in 209 BCE",
+    "Keep the fixed 384-streak and 72-ripple pools inside the reviewed 24-metre field and preserve exact shelter-roof interception",
+    "Keep rain noninteractive, collision-free, non-navigable and independent from gameplay, campaign save and audio authority",
+    "Do not promote this production VFX blockout to final environment, shipping art or marketing status",
+    "Complete vegetation, period-reviewed figures and formations, final sky/lighting/weather response, final-scene performance/accessibility and human historical/cinematic/art review before final scene acceptance"
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "assetId": "shi-daze-rain-vfx-v1",
+  "blender": "4.0.2",
+  "generator": "build-daze-rain-vfx.py",
+  "rootIntent": "deterministic texture-free rain streak/ripple production VFX blockout",
+  "historicalStatus": "dramatic rain reconstruction; not evidence of exact Daze weather in 209 BCE",
+  "materials": [
+    "M_SHI_RainStreak",
+    "M_SHI_RainRipple"
+  ],
+  "runtime": {
+    "streakInstances": 384,
+    "ripplePoolInstances": 72,
+    "fieldHalfExtentCentimeters": 1200.0,
+    "spawnCeilingCentimeters": 1050.0,
+    "groundInterceptCentimeters": -5.0,
+    "shelterHalfExtentCentimeters": [
+      420.0,
+      336.7437
+    ],
+    "shelterRoofInterceptCentimeters": 340.0,
+    "velocityCentimetersPerSecond": [
+      130.0,
+      45.0,
+      -1900.0
+    ],
+    "rippleLifetimeSeconds": 0.7
+  },
+  "meshes": {
+    "streak": {
+      "lod0Triangles": 12,
+      "lod1Triangles": 6,
+      "lod0BoundsMeters": {
+        "minimum": [
+          -0.006000000052154064,
+          -0.006000000052154064,
+          0.0
+        ],
+        "maximum": [
+          0.006000000052154064,
+          0.006000000052154064,
+          1.0
+        ],
+        "dimensions": [
+          0.012000000104308128,
+          0.012000000104308128,
+          1.0
+        ]
+      },
+      "lod1BoundsMeters": {
+        "minimum": [
+          -0.006000000052154064,
+          0.0,
+          0.0
+        ],
+        "maximum": [
+          0.006000000052154064,
+          0.0,
+          1.0
+        ],
+        "dimensions": [
+          0.012000000104308128,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "ripple": {
+      "lod0Triangles": 288,
+      "lod1Triangles": 64,
+      "lod0BoundsMeters": {
+        "minimum": [
+          -0.5,
+          -0.5,
+          0.0
+        ],
+        "maximum": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "dimensions": [
+          1.0,
+          1.0,
+          0.0
+        ]
+      },
+      "lod1BoundsMeters": {
+        "minimum": [
+          -0.5,
+          -0.5,
+          0.0
+        ],
+        "maximum": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "dimensions": [
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "exports": [
+    "export/shi-daze-rain-vfx-v1-streak-lod0.glb",
+    "export/shi-daze-rain-vfx-v1-streak-lod0.fbx",
+    "export/shi-daze-rain-vfx-v1-streak-lod1.glb",
+    "export/shi-daze-rain-vfx-v1-streak-lod1.fbx",
+    "export/shi-daze-rain-vfx-v1-ripple-lod0.glb",
+    "export/shi-daze-rain-vfx-v1-ripple-lod0.fbx",
+    "export/shi-daze-rain-vfx-v1-ripple-lod1.glb",
+    "export/shi-daze-rain-vfx-v1-ripple-lod1.fbx"
+  ]
+}

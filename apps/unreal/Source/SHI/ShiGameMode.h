@@ -16,6 +16,7 @@ class SShiCommandScreen;
 class ACameraActor;
 class APlayerController;
 class AShiCouncilFigure;
+class AShiRainField;
 class AStaticMeshActor;
 class UShiSoundscapeComponent;
 
@@ -117,6 +118,7 @@ private:
     bool bCommandSurfaceReview = false;
     bool bWetFieldEnvironmentReview = false;
     bool bDazeFieldShelterReview = false;
+    bool bRainVfxReview = false;
     int32 SelectedEngagementCommandIndex = 0;
     FString EngagementCampaignSnapshot;
     TArray<FShiEngagementSignalData> EngagementSignals;
@@ -136,6 +138,7 @@ private:
     TWeakObjectPtr<AStaticMeshActor> CommandSurfaceProp;
     TWeakObjectPtr<AStaticMeshActor> WetFieldEnvironmentProp;
     TWeakObjectPtr<AStaticMeshActor> DazeFieldShelterProp;
+    TWeakObjectPtr<AShiRainField> RainField;
     FShiCouncilStageData CouncilStage;
     TArray<FShiCinematicBeatData> CinematicBeats;
     int32 CinematicBeatIndex = INDEX_NONE;

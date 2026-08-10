@@ -1,0 +1,130 @@
+{
+  "assetId": "shi-daze-rain-vfx-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Isolated Unreal 5.8.1 admission of deterministic rain-streak and ground-ripple meshes, exact translucent material inspection, full cook/package, cooked-container inspection and packaged launch smoke. This accepts a dramatic production VFX blockout, not evidence of exact Daze weather in 209 BCE or final environment art.",
+  "engine": {
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "assetRoot": "/Game/SHI/Art/VFX/DazeRain"
+  },
+  "import": {
+    "passed": true,
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "trackedUassetHashesUnchanged": true
+    },
+    "streak": {
+      "assetPath": "/Game/SHI/Art/VFX/DazeRain/SM_SHI_RainStreak_01.SM_SHI_RainStreak_01",
+      "boundsCentimeters": {
+        "minimum": [-0.6000000238418579, -0.6000043749809265, -2.62268358142137e-8],
+        "maximum": [0.6000000238418579, 0.6000000238418579, 100.0]
+      },
+      "lodTriangles": [12, 6],
+      "lodUvChannels": [2, 2],
+      "lodScreenSizes": [1.0, 0.10000000149011612],
+      "materialSlot": "M_SHI_RainStreak",
+      "simpleCollisionCount": 0,
+      "convexCollisionCount": 0,
+      "lightMapResolution": 64,
+      "lightMapCoordinateIndex": 1,
+      "naniteEnabled": false
+    },
+    "ripple": {
+      "assetPath": "/Game/SHI/Art/VFX/DazeRain/SM_SHI_RainRipple_01.SM_SHI_RainRipple_01",
+      "boundsCentimeters": {
+        "minimum": [-50.0, -50.0, -2.185569428547751e-6],
+        "maximum": [50.0, 50.0, 2.185569428547751e-6]
+      },
+      "lodTriangles": [288, 64],
+      "lodUvChannels": [2, 2],
+      "lodScreenSizes": [1.0, 0.15000000596046448],
+      "materialSlot": "M_SHI_RainRipple",
+      "simpleCollisionCount": 0,
+      "convexCollisionCount": 0,
+      "lightMapResolution": 64,
+      "lightMapCoordinateIndex": 1,
+      "naniteEnabled": false
+    }
+  },
+  "trackedUnrealAssets": [
+    {
+      "file": "apps/unreal/Content/SHI/Art/VFX/DazeRain/M_SHI_RainRipple.uasset",
+      "bytes": 9058,
+      "sha256": "d37827be20bae56ce397ca08184fb5b387f36fc193f9486c7da51ecf87f4ebe3"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/VFX/DazeRain/M_SHI_RainStreak.uasset",
+      "bytes": 9058,
+      "sha256": "fc5485eca35c106b9642f41efec6e5d3ed2479ecbd174b16c7e4ab219010e254"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/VFX/DazeRain/SM_SHI_RainRipple_01.uasset",
+      "bytes": 130634,
+      "sha256": "f2e9aef476def84147736c43f109ea0ec16f4fe783c6d3f7983a60687aa50b16"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/VFX/DazeRain/SM_SHI_RainStreak_01.uasset",
+      "bytes": 117434,
+      "sha256": "a648262075c634a694b63f6e45da0788455d9fe339b77f21fb29adbad3198416"
+    }
+  ],
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeRain-Review-v3/Linux",
+    "packageCount": 513,
+    "priorAcceptedPackageCount": 509,
+    "addedPackageCount": 4,
+    "alwaysCookPath": "/Game/SHI/Art/VFX/DazeRain",
+    "cookedEntries": [
+      "M_SHI_RainRipple.uasset",
+      "M_SHI_RainStreak.uasset",
+      "SM_SHI_RainRipple_01.uasset",
+      "SM_SHI_RainStreak_01.uasset"
+    ],
+    "artifacts": [
+      {
+        "role": "Linux development executable",
+        "bytes": 298541232,
+        "sha256": "82ae605efded2d64f5f2307c9f59216fd0270ff7b69ff2960a69464d06e55fb3"
+      },
+      {
+        "role": "Pak metadata and non-IoStore payload",
+        "bytes": 10425543,
+        "sha256": "c2bf99a7258ecdd39c1646681b205a2b117e5f363864da6a91506c16b88dbf7d"
+      },
+      {
+        "role": "IoStore data container",
+        "bytes": 165732576,
+        "sha256": "c2331f433099c076f0a233d561c0ec12e6a4c0fdd467919c7f3da0835bf89d13"
+      },
+      {
+        "role": "IoStore table of contents",
+        "bytes": 148677,
+        "sha256": "ca7cacc411d34cbc34d37c22ada451890e13e288958a714813f4cd4e8b154de8"
+      }
+    ]
+  },
+  "smokeTest": {
+    "command": "./SHI -nullrhi -unattended -NoSound -NoSplash -ExecCmds=quit -log",
+    "exitCode": 0,
+    "containerPackageCount": 513,
+    "gameMode": "ShiGameMode",
+    "map": "/Engine/Maps/Entry",
+    "materialOrLoadWarnings": 0,
+    "cleanRequestedExit": true,
+    "observed": [
+      "IoStore container mounted with 513 packages",
+      "premade AssetRegistry loaded",
+      "entry map loaded for play under ShiGameMode",
+      "clean command-requested shutdown"
+    ]
+  },
+  "decision": "approved-engine-daze-rain-production-vfx-blockout-packaged-not-final-environment",
+  "remainingGates": [
+    "author restrained vegetation and complete final sky/lighting around the wet field and shelter",
+    "replace primitive council figures, floating light proxy and BasicShape signals with historically reviewed figures, props and formation language",
+    "profile the complete final scene on a physical display and repeat camera, controller and accessibility evidence",
+    "complete human historical, weather, cinematic and art-direction review before shipping or marketing use"
+  ]
+}

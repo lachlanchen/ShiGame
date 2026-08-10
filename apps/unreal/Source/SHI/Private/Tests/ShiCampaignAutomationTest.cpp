@@ -17,6 +17,7 @@
 #include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
+#include "ShiRainPresentationModel.h"
 #include "ShiWartableModel.h"
 
 namespace
@@ -398,6 +399,106 @@ bool FShiDazeFieldShelterPresentationTest::RunTest(const FString& Parameters)
     TooTall.BoundsMaximum.Z = FShiDazeFieldShelterPresentationModel::MaximumAllowedHeight() + 1.f;
     TestFalse(TEXT("a shelter outside the reviewed vertical envelope is rejected"),
         FShiDazeFieldShelterPresentationModel::Validate(TooTall, Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiDazeRainPresentationTest,
+    "SHI.Cinematic.DazeRainPresentationV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiDazeRainPresentationTest::RunTest(const FString& Parameters)
+{
+    const FShiRainPresentationData Presentation = FShiRainPresentationModel::Build();
+    FString Error;
+    TestTrue(TEXT("reviewed Daze rain passes its disclosed presentation contract"),
+        FShiRainPresentationModel::Validate(Presentation, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestTrue(TEXT("rain uses exactly two bounded instanced pools"),
+        Presentation.StreakInstanceCount == FShiRainPresentationModel::StreakInstanceCount()
+        && Presentation.RipplePoolInstanceCount == FShiRainPresentationModel::RipplePoolInstanceCount()
+        && Presentation.StreakInstanceCount == 384
+        && Presentation.RipplePoolInstanceCount == 72);
+    TestTrue(TEXT("rain is deterministic and bounded to the admitted wet field"),
+        Presentation.Seed == FShiRainPresentationModel::Seed()
+        && Presentation.Transform.Equals(FTransform::Identity, .0001f)
+        && Presentation.FieldHalfExtent.Equals(FVector2D(1200.f), .001f)
+        && Presentation.Velocity.Equals(FVector(130.f, 45.f, -1900.f), .001f)
+        && FMath::IsNearlyEqual(Presentation.MaximumDeltaSeconds, .05f, .001f));
+    TestFalse(TEXT("rain is not presented as attested Daze weather"),
+        Presentation.bHistoricallyAttestedWeather);
+    TestFalse(TEXT("rain remains explicitly below final-art status"), Presentation.bFinalArt);
+    TestFalse(TEXT("rain is not an interaction target"), Presentation.bInteractive);
+    TestFalse(TEXT("rain collision is disabled"), Presentation.bCollisionEnabled);
+    TestFalse(TEXT("rain does not affect navigation"), Presentation.bAffectsNavigation);
+    TestFalse(TEXT("rain does not affect campaign or engagement rules"), Presentation.bAffectsGameplay);
+    TestFalse(TEXT("rain visual state is never serialized"), Presentation.bSerialized);
+    TestFalse(TEXT("visible rain is independent of the opt-in audio control"), Presentation.bTiedToRainAudio);
+    TestTrue(TEXT("rain persists through the Broken Crossing exercise"), Presentation.bVisibleDuringEngagement);
+
+    TestTrue(TEXT("the exact shelter footprint intercepts rain at the roof"),
+        FShiRainPresentationModel::IsInsideShelterFootprint(FVector2D::ZeroVector)
+        && FShiRainPresentationModel::IsInsideShelterFootprint(FVector2D(420.f, 336.7437f))
+        && FMath::IsNearlyEqual(FShiRainPresentationModel::ImpactHeightAt(FVector2D::ZeroVector), 340.f));
+    TestTrue(TEXT("exposed field rain reaches the admitted wet ground"),
+        !FShiRainPresentationModel::IsInsideShelterFootprint(FVector2D(421.f, 0.f))
+        && FMath::IsNearlyEqual(FShiRainPresentationModel::ImpactHeightAt(FVector2D(421.f, 0.f)), -5.f));
+    TestFalse(TEXT("no ground ripple can spawn beneath the shelter"),
+        FShiRainPresentationModel::CanSpawnGroundRipple(FVector2D(0.f, 0.f)));
+    TestTrue(TEXT("an exposed ground impact may use the bounded ripple pool"),
+        FShiRainPresentationModel::CanSpawnGroundRipple(FVector2D(600.f, 0.f)));
+
+    const FTransform ReviewCamera = FShiRainPresentationModel::ReviewCameraTransform();
+    const FVector ReviewTarget(0.f, 0.f, 175.f);
+    TestTrue(TEXT("rain review camera holds exposed field, roof edge and command shelter"),
+        FVector::DotProduct(ReviewCamera.GetRotation().GetForwardVector(),
+            (ReviewTarget - ReviewCamera.GetLocation()).GetSafeNormal()) > .9999f
+        && FVector::Dist(ReviewCamera.GetLocation(), ReviewTarget) > 1500.f
+        && FMath::IsNearlyEqual(FShiRainPresentationModel::ReviewFieldOfViewDegrees(), 50.f));
+
+    FShiRainPresentationData Scaled = Presentation;
+    Scaled.Transform.SetScale3D(FVector(1.01f));
+    TestFalse(TEXT("unreviewed rain-field scaling is rejected"),
+        FShiRainPresentationModel::Validate(Scaled, Error));
+    FShiRainPresentationData Oversubscribed = Presentation;
+    Oversubscribed.StreakInstanceCount += 1;
+    TestFalse(TEXT("a per-drop or oversized rain pool is rejected"),
+        FShiRainPresentationModel::Validate(Oversubscribed, Error));
+    FShiRainPresentationData Colliding = Presentation;
+    Colliding.bCollisionEnabled = true;
+    TestFalse(TEXT("runtime rain collision is rejected"),
+        FShiRainPresentationModel::Validate(Colliding, Error));
+    FShiRainPresentationData Navigable = Presentation;
+    Navigable.bAffectsNavigation = true;
+    TestFalse(TEXT("runtime rain navigation authority is rejected"),
+        FShiRainPresentationModel::Validate(Navigable, Error));
+    FShiRainPresentationData Authoritative = Presentation;
+    Authoritative.bAffectsGameplay = true;
+    TestFalse(TEXT("hidden gameplay weather authority is rejected"),
+        FShiRainPresentationModel::Validate(Authoritative, Error));
+    FShiRainPresentationData Serialized = Presentation;
+    Serialized.bSerialized = true;
+    TestFalse(TEXT("serialized cosmetic rain state is rejected"),
+        FShiRainPresentationModel::Validate(Serialized, Error));
+    FShiRainPresentationData AudioCoupled = Presentation;
+    AudioCoupled.bTiedToRainAudio = true;
+    TestFalse(TEXT("audio-coupled rain visibility is rejected"),
+        FShiRainPresentationModel::Validate(AudioCoupled, Error));
+    FShiRainPresentationData FalseHistory = Presentation;
+    FalseHistory.bHistoricallyAttestedWeather = true;
+    TestFalse(TEXT("an unsupported exact-weather claim is rejected"),
+        FShiRainPresentationModel::Validate(FalseHistory, Error));
+    FShiRainPresentationData PrematureFinal = Presentation;
+    PrematureFinal.bFinalArt = true;
+    TestFalse(TEXT("premature final-weather status is rejected"),
+        FShiRainPresentationModel::Validate(PrematureFinal, Error));
+    FShiRainPresentationData HiddenExercise = Presentation;
+    HiddenExercise.bVisibleDuringEngagement = false;
+    TestFalse(TEXT("rain disappearing from the engagement is rejected"),
+        FShiRainPresentationModel::Validate(HiddenExercise, Error));
+    FShiRainPresentationData RoofLeak = Presentation;
+    RoofLeak.ShelterRoofIntercept = Presentation.GroundIntercept;
+    TestFalse(TEXT("a rain field that leaks through the shelter is rejected"),
+        FShiRainPresentationModel::Validate(RoofLeak, Error));
     return !HasAnyErrors();
 }
 
