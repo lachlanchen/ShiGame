@@ -662,7 +662,11 @@ void AShiGameMode::ApplyCouncilStage()
     for (const FShiCouncilParticipantData& Participant : CouncilStage.Participants)
     {
         if (TWeakObjectPtr<AShiCouncilFigure>* Figure = CouncilFigures.Find(Participant.SlotId))
-            if (Figure->IsValid()) Figure->Get()->ApplyParticipant(Participant);
+            if (Figure->IsValid())
+            {
+                Figure->Get()->SetReducedMotion(bReducedMotion);
+                Figure->Get()->ApplyParticipant(Participant);
+            }
     }
 }
 
@@ -1154,6 +1158,10 @@ void AShiGameMode::ToggleReducedMotion()
 {
     if (!LoadError.IsEmpty() || bEvidenceOpen || bEngagementOpen || IsCinematicSequenceActive()) return;
     bReducedMotion = !bReducedMotion;
+    for (const TPair<FString, TWeakObjectPtr<AShiCouncilFigure>>& Pair : CouncilFigures)
+    {
+        if (AShiCouncilFigure* Figure = Pair.Value.Get()) Figure->SetReducedMotion(bReducedMotion);
+    }
     if (bReducedMotion && CameraTransitionDuration > 0.f)
         SetCameraImmediate(FTransform(CameraTransitionTargetRotation, CameraTransitionTargetLocation), CameraTransitionTargetFieldOfView);
     SaveCinematicPreferences();
@@ -1500,6 +1508,7 @@ void AShiGameMode::CreateCommandSpace()
             LoadError = FString::Printf(TEXT("Council figure %s could not initialize: %s"), *Participant.SlotId, *FigureError);
             return;
         }
+        Figure->SetReducedMotion(bReducedMotion);
         Figure->ApplyParticipant(Participant);
         CouncilFigures.Add(Participant.SlotId, Figure);
     }

@@ -1,0 +1,354 @@
+{
+  "assetId": "shi-daze-council-facial-performance-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Packaged Unreal 5.8.1 development-only speaker and keeper camera review of normal and reduced-motion silent facial intent on the single SHI-owned localhost noVNC desktop. This accepts a runtime engineering blockout only; it is not a story-progression, visible-fallback, final-acting, voice, close-framing or human art/historical review.",
+  "decision": "approved-runtime-five-identity-facial-performance-engineering-blockout-packaged-visible-reviewed-not-final-acting",
+  "historicalBoundary": "The five identities use one generic shared non-portrait face. Chen Sheng and Wu Guang are historical identities represented by an engineering blockout, while the Keeper, Aunt Yu and Courier Han retain their project-authored dramatic-reconstruction boundary. No likeness, late-Qin acting, etiquette, anatomy, ethnicity or cultural-performance claim is made.",
+  "requiredDisclosure": "FACIAL PERFORMANCE ENGINEERING BLOCKOUT · SILENT INTENT CADENCE · GENERIC NON-PORTRAIT FACE · NOT FINAL ACTING, LIP SYNC OR VOICE",
+  "presentation": {
+    "characterIds": [
+      "keeper",
+      "chen-sheng",
+      "wu-guang",
+      "yu-mu",
+      "qin-courier"
+    ],
+    "roles": [
+      "listener",
+      "speaker"
+    ],
+    "states": [
+      "neutral",
+      "blink",
+      "object-glance",
+      "interrupted-return",
+      "silent-speech",
+      "held-breath"
+    ],
+    "sharedSkeletonBones": 53,
+    "morphTargetsPerMesh": 21,
+    "morphSectionMaterials": [
+      "M_SHI_Character_EyeBrown",
+      "M_SHI_Character_SkinClay"
+    ],
+    "allFifteenMaterialsSavedForSkeletalMeshUsage": true,
+    "exactTwoMaterialsSavedForMorphTargetUsage": true,
+    "deterministic": true,
+    "languageNeutral": true,
+    "silentIntentCadence": true,
+    "audioDriven": false,
+    "transcriptDriven": false,
+    "phonemeDriven": false,
+    "randomized": false,
+    "gameplayAuthority": false,
+    "saveAuthority": false,
+    "interactionAuthority": false,
+    "replicated": false,
+    "reducedMotionSupported": true,
+    "wideAndMediumFramingOnly": true,
+    "closeFramingApproved": false,
+    "visibleFallbackReviewed": false,
+    "finalFace": false,
+    "finalActing": false,
+    "finalVoice": false,
+    "developmentReview": {
+      "flags": [
+        "-ShiCouncilCharacterReviewSpeaker",
+        "-ShiCouncilCharacterReviewKeeper"
+      ],
+      "excludedFromShipping": true
+    }
+  },
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/Linux",
+    "alwaysCookPath": "/Game/SHI/Art/Characters/DazeCouncilFacial",
+    "priorAcceptedPackageCount": 538,
+    "addedPackageCount": 21,
+    "cookedPackageCount": 559,
+    "platformSkippedPackageCount": 7,
+    "totalCookCandidates": 566,
+    "translatedMaterials": 15,
+    "cookErrors": 0,
+    "cookWarnings": 0,
+    "executionSeconds": 73.86,
+    "artifacts": [
+      {
+        "relativePath": "SHI.sh",
+        "role": "Linux packaged-player launcher",
+        "bytes": 218,
+        "sha256": "7eeb214781ca5113696ae2be6c5124b5404cd4abcd1fff39aa383ba15ff1cf1e"
+      },
+      {
+        "relativePath": "SHI/Binaries/Linux/SHI",
+        "role": "Linux development executable",
+        "bytes": 298709552,
+        "sha256": "5e08896235d3e4aed403295abd7c27aefd6ec41fd8f928e5bd3ac60887308316"
+      },
+      {
+        "relativePath": "SHI/Content/Paks/SHI-Linux.pak",
+        "role": "Pak metadata and non-IoStore payload",
+        "bytes": 10428583,
+        "sha256": "6f2adad6fa4b76624a2cb44ce48cde04cc01b8aded453583627cabfc86f828e4"
+      },
+      {
+        "relativePath": "SHI/Content/Paks/SHI-Linux.ucas",
+        "role": "IoStore data container",
+        "bytes": 170413024,
+        "sha256": "939764152cbaffd87c4a488febe9a42221fcac13a49e924eda87db77bd1fd378"
+      },
+      {
+        "relativePath": "SHI/Content/Paks/SHI-Linux.utoc",
+        "role": "IoStore table of contents",
+        "bytes": 155892,
+        "sha256": "5d36d466a17b763d3ad34a8ec3af161e61937eb808d3f11752483763259ef7b1"
+      }
+    ],
+    "headlessSmoke": {
+      "status": "not-run-after-v2",
+      "claim": false,
+      "reason": "Three rendered packaged-player runs mount and execute v2, but no separate v2 -nullrhi headless smoke was recorded."
+    }
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 20,
+    "started": 20,
+    "passed": 20,
+    "failed": 0,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.CouncilFacialPerformanceV1",
+    "transientLog": {
+      "file": "apps/unreal/Saved/Logs/SHI.log",
+      "tracked": false,
+      "bytes": 264740,
+      "sha256": "59ef74c18438bcc6bce1917b917537d15f4ecb5473e1c6c3ebadc19c312e5ea6",
+      "durableBoundary": "Saved logs are ignored runtime output; this manifest preserves the exact final 20/20 result."
+    }
+  },
+  "visiblePlaytest": {
+    "desktop": "single isolated Xvfb :129, localhost-only x11vnc 5940 and noVNC 6140",
+    "url": "http://127.0.0.1:6140/vnc.html?host=127.0.0.1&port=6140&autoconnect=1&resize=scale",
+    "package": "$SHI_UNREAL_PACKAGE_ROOT/Linux",
+    "resolution": [
+      1600,
+      1000
+    ],
+    "developmentReviewOnly": true,
+    "inputDrivenStoryPlaytest": "not-run-for-this-facial-package-review",
+    "visibleFallbackReview": "not-run",
+    "speakerNormalReviewed": true,
+    "speakerReducedMotionReviewed": true,
+    "keeperNormalReviewed": true,
+    "normalBlinkObserved": true,
+    "normalSilentSpeechObserved": true,
+    "normalListenerIntentObserved": true,
+    "reducedObjectGlanceObserved": true,
+    "reducedTerminalNeutralObservedAfterClampedPass": true,
+    "brownEyeAndSkinMaterialsRenderedWithoutDefaultMaterialFallback": true,
+    "materialOrLoadWarnings": 0,
+    "runtimeLogs": [
+      {
+        "reviewId": "speaker-normal",
+        "reviewFlag": "-ShiCouncilCharacterReviewSpeaker",
+        "reducedMotion": false,
+        "commandLineReducedMotionOverride": "ReducedMotion=False",
+        "commandLineOverrideObserved": true,
+        "visibleCharacterId": "chen-sheng",
+        "visibleRole": "speaker",
+        "file": "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilFacialPerformance-Review-speaker-normal-v2.log",
+        "tracked": false,
+        "bytes": 123520,
+        "sha256": "0862e56cb4763ee9e1ce6d947498d78b57985064853060d4d721c2f4456de34c",
+        "scan": {
+          "runtimeAdmissionMarkers": 2,
+          "morphSectionExerciseMarkers": 1,
+          "visibleRoleExerciseMarker": true,
+          "visibleRoleExerciseAlpha": 0.0624,
+          "neutralFallbackWarnings": 0,
+          "cadenceFailClosedErrors": 0,
+          "morphUsageRepairWarnings": 0,
+          "defaultMaterialFallbackWarnings": 0,
+          "fatalErrors": 0,
+          "unhandledExceptions": 0,
+          "assertionFailures": 0,
+          "passed": true
+        },
+        "shutdown": {
+          "method": "controlled SIGTERM after evidence capture",
+          "processReturnCode": 143,
+          "unrealPreparingToExit": true,
+          "unrealGameEngineShutDown": true,
+          "unrealObjectSubsystemClosed": true,
+          "unrealExiting": true,
+          "cleanUnrealShutdown": true
+        }
+      },
+      {
+        "reviewId": "speaker-reduced",
+        "reviewFlag": "-ShiCouncilCharacterReviewSpeaker",
+        "reducedMotion": true,
+        "commandLineReducedMotionOverride": "ReducedMotion=True",
+        "commandLineOverrideObserved": true,
+        "visibleCharacterId": "chen-sheng",
+        "visibleRole": "speaker",
+        "file": "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilFacialPerformance-Review-speaker-reduced-v2.log",
+        "tracked": false,
+        "bytes": 123524,
+        "sha256": "3ebd6978b0ccf7dc5f005360a4c4240d1a3c4c9838c266d20f75359269f4868c",
+        "scan": {
+          "runtimeAdmissionMarkers": 2,
+          "morphSectionExerciseMarkers": 1,
+          "visibleRoleExerciseMarker": true,
+          "visibleRoleExerciseAlpha": 1.0,
+          "neutralFallbackWarnings": 0,
+          "cadenceFailClosedErrors": 0,
+          "morphUsageRepairWarnings": 0,
+          "defaultMaterialFallbackWarnings": 0,
+          "fatalErrors": 0,
+          "unhandledExceptions": 0,
+          "assertionFailures": 0,
+          "passed": true
+        },
+        "shutdown": {
+          "method": "controlled SIGTERM after evidence capture",
+          "processReturnCode": 143,
+          "unrealPreparingToExit": true,
+          "unrealGameEngineShutDown": true,
+          "unrealObjectSubsystemClosed": true,
+          "unrealExiting": true,
+          "cleanUnrealShutdown": true
+        }
+      },
+      {
+        "reviewId": "keeper-normal",
+        "reviewFlag": "-ShiCouncilCharacterReviewKeeper",
+        "reducedMotion": false,
+        "commandLineReducedMotionOverride": "ReducedMotion=False",
+        "commandLineOverrideObserved": true,
+        "visibleCharacterId": "keeper",
+        "visibleRole": "listener",
+        "file": "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilFacialPerformance-Review-keeper-normal-final-v2.log",
+        "tracked": false,
+        "bytes": 123545,
+        "sha256": "ccf6ebb5df49fbd4c5b04b63ff97ccd64fb1348e8fd95c3ae705c6b060d420a4",
+        "scan": {
+          "runtimeAdmissionMarkers": 2,
+          "morphSectionExerciseMarkers": 1,
+          "visibleRoleExerciseMarker": true,
+          "visibleRoleExerciseAlpha": 0.1218,
+          "neutralFallbackWarnings": 0,
+          "cadenceFailClosedErrors": 0,
+          "morphUsageRepairWarnings": 0,
+          "defaultMaterialFallbackWarnings": 0,
+          "fatalErrors": 0,
+          "unhandledExceptions": 0,
+          "assertionFailures": 0,
+          "passed": true
+        },
+        "shutdown": {
+          "method": "controlled SIGTERM after evidence capture",
+          "processReturnCode": 143,
+          "unrealPreparingToExit": true,
+          "unrealGameEngineShutDown": true,
+          "unrealObjectSubsystemClosed": true,
+          "unrealExiting": true,
+          "cleanUnrealShutdown": true
+        }
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "file": "docs/production/evidence/unreal-daze-council-facial-performance-v2-speaker-silent-speech.png",
+      "role": "packaged Chen Sheng speaker silent-speech deformation window in normal motion",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "bytes": 883691,
+      "sha256": "41b8914cc5a29d72a538cc9b88b65f738a26288f30b940e91e548452d85fe76f"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-council-facial-performance-v2-speaker-blink.png",
+      "role": "packaged Chen Sheng speaker blink window in normal motion",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "bytes": 884663,
+      "sha256": "29778ee6a9836b89e7be8facd3a79156047119715b98e4f49ba2fd8357f966d0"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-council-facial-performance-v2-reduced-object-glance.png",
+      "role": "packaged Chen Sheng reduced-motion object-glance step with exact eye and skin morph sections active",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "bytes": 881586,
+      "sha256": "2171ec1bcc539a9e4d41eb4a7f1c3164a3941ef678a9a5d2768989327740eb44"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-council-facial-performance-v2-reduced-terminal-neutral.png",
+      "role": "packaged Chen Sheng reduced-motion terminal neutral after the single clamped pass",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "bytes": 884533,
+      "sha256": "b720fead8509d9b4de4296ae83e246ada7fdfb06ed80f28d6ecd9488a5f35fd5"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-council-facial-performance-v2-keeper-listener.png",
+      "role": "packaged Keeper normal listener-intent review frame",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "bytes": 850893,
+      "sha256": "2747b00c31ee1b139e18e99e702d9ee87ee260582eed9dfedf6aec0e6ea2e3c3"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-council-facial-performance-v2-keeper-blink.png",
+      "role": "packaged Keeper listener blink window in normal motion",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "bytes": 849506,
+      "sha256": "64b0fe6f83b7e5ffad603cf3b6b7df87b04765a83dd708bb7582f15402cad4ab"
+    }
+  ],
+  "review": {
+    "rejectedFirstPass": {
+      "package": "SHI-Builds-DazeCouncilFacialPerformance-Review-v1/Linux",
+      "reason": "SkinClay and EyeBrown lacked the packaged MorphTargets material permutation, causing runtime repair requests and engine Default Material fallback.",
+      "log": {
+        "file": "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilFacialPerformance-Review-speaker-v1.log",
+        "tracked": false,
+        "bytes": 123977,
+        "sha256": "a0bd14d1589ec4958eab87350bc4c59e0e5dd6c2df342a5a393ad87909188946",
+        "morphUsageRepairWarnings": 2,
+        "defaultMaterialFallbackWarnings": 2
+      }
+    },
+    "acceptedCorrection": "All fifteen facial materials are saved for SkeletalMesh usage; MorphTargets usage is saved on exactly SkinClay and EyeBrown and nowhere else. A fresh v2 cook then renders normal speaker, reduced speaker and normal keeper roles with positive admission/exercise markers and zero repair/default-material warnings.",
+    "accepted": [
+      "the v2 package contains all twenty-one newly forced-cooked facial assets and launches the real packaged player under ShiGameMode",
+      "normal speaker review visibly separates silent-speech and blink windows without granting dialogue or voice synchronization",
+      "reduced motion visibly reaches the object-glance step and terminal neutral of one clamped pass",
+      "keeper review visibly exercises the listener eye/skin sections and blink window",
+      "all three accepted logs admit both council figures, exercise the visible role's SkinClay and EyeBrown morph sections, contain no facial fallback/material repair/default-material warning and close Unreal subsystems cleanly after controlled SIGTERM"
+    ],
+    "remainingRedGates": [
+      "the shared generic face is not a portrait, anatomical reconstruction, final face or culturally reviewed performance",
+      "gray inner mouth, teeth, tongue, brows, lashes and final skin, eye, hair, cloth and wet-material response remain incomplete",
+      "voice, lip sync, pronunciation, intelligibility, loudness and subtitle coexistence remain separate opt-in human-review gates for every supported language",
+      "close dialogue framing, final acting and marketing use remain prohibited",
+      "a separate v2 headless smoke, real-input story progression, deliberate visible fallback, physical-display and observed-player/controller review remain open",
+      "human animation, historical, cultural, cinematic, character-art and accessibility review remain mandatory"
+    ]
+  }
+}

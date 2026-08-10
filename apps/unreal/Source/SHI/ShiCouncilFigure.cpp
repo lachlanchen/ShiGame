@@ -1,6 +1,7 @@
 #include "ShiCouncilFigure.h"
 
 #include "ShiCouncilCharacterPresentationModel.h"
+#include "ShiCouncilFacialPerformanceModel.h"
 #include "ShiCouncilPerformancePresentationModel.h"
 
 #include "Animation/AnimSequence.h"
@@ -33,7 +34,8 @@ namespace
 
 AShiCouncilFigure::AShiCouncilFigure()
 {
-    PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bStartWithTickEnabled = false;
     FigureRoot = CreateDefaultSubobject<USceneComponent>(TEXT("FigureRoot"));
     SetRootComponent(FigureRoot);
     Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
@@ -69,6 +71,25 @@ AShiCouncilFigure::AShiCouncilFigure()
     ConfigureCollision(*Mantle);
 }
 
+void AShiCouncilFigure::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    if (!bUsingFacialPerformance || !bReviewVisible
+        || !FMath::IsFinite(DeltaSeconds) || DeltaSeconds <= 0.f)
+    {
+        return;
+    }
+    FacialElapsedSeconds = bReducedMotion
+        ? FMath::Min(
+            FacialElapsedSeconds + DeltaSeconds,
+            FShiCouncilFacialPerformanceModel::CycleDurationSeconds() - KINDA_SMALL_NUMBER)
+        : FMath::Fmod(
+            FacialElapsedSeconds + DeltaSeconds,
+            FShiCouncilFacialPerformanceModel::CycleDurationSeconds());
+    ApplyFacialFrame();
+    RefreshActorTick();
+}
+
 bool AShiCouncilFigure::InitializeFigure(UStaticMesh* Cylinder, UStaticMesh* Sphere, UStaticMesh* Cube,
     UMaterialInterface* BasicMaterial, FString& OutError)
 {
@@ -87,6 +108,27 @@ bool AShiCouncilFigure::InitializeFigure(UStaticMesh* Cylinder, UStaticMesh* Sph
     {
         OutError = TEXT("Council figure materials could not initialize.");
         return false;
+    }
+    FacialCharacterMeshes.Empty();
+    for (const FString& CouncilCharacterId : FShiCouncilFacialPerformanceModel::CanonicalCharacterIds())
+    {
+        FShiCouncilFacialMeshData Presentation;
+        FString FacialError;
+        if (!FShiCouncilFacialPerformanceModel::Build(CouncilCharacterId, Presentation, FacialError))
+        {
+            UE_LOG(LogShiCouncilFigure, Warning, TEXT("Council facial contract rejected for %s: %s"),
+                *CouncilCharacterId, *FacialError);
+            continue;
+        }
+        USkeletalMesh* Mesh = LoadObject<USkeletalMesh>(nullptr, *Presentation.MeshPath);
+        if (!Mesh || !FShiCouncilFacialPerformanceModel::ValidateMesh(Presentation, *Mesh, FacialError))
+        {
+            UE_LOG(LogShiCouncilFigure, Warning,
+                TEXT("Council facial performance %s remains on the accepted neutral-face fallback: %s"),
+                *CouncilCharacterId, Mesh ? *FacialError : TEXT("facial skeletal asset is unavailable"));
+            continue;
+        }
+        FacialCharacterMeshes.Add(CouncilCharacterId, Mesh);
     }
     CharacterMeshes.Empty();
     for (const FString& CouncilCharacterId : FShiCouncilCharacterPresentationModel::CanonicalCharacterIds())
@@ -141,6 +183,9 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
 {
     SlotId = Participant.SlotId;
     CharacterId = Participant.CharacterId;
+    bParticipantSpeaker = Participant.bSpeaker;
+    bLoggedMorphSectionExercise = false;
+    FacialElapsedSeconds = 0.f;
     SetActorTransform(Participant.Transform);
     Tags.Empty();
     Tags.Add(FName(*FString::Printf(TEXT("ShiCharacter:%s"), *Participant.CharacterId)));
@@ -149,16 +194,24 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
 
     CharacterMesh->Stop();
     CharacterMesh->SetAnimation(nullptr);
+    ClearFacialFrame();
     CharacterMesh->SetForceRefPose(true);
     CharacterMesh->bPauseAnims = false;
     CharacterMesh->SetComponentTickEnabled(false);
     bUsingPerformance = false;
+    bUsingFacialPerformance = false;
     PerformanceRoleId.Empty();
 
-    const TObjectPtr<USkeletalMesh>* AdmittedMesh = CharacterMeshes.Find(Participant.CharacterId);
+    const TObjectPtr<USkeletalMesh>* FacialMesh = FacialCharacterMeshes.Find(Participant.CharacterId);
+    const TObjectPtr<USkeletalMesh>* NeutralMesh = CharacterMeshes.Find(Participant.CharacterId);
+    const TObjectPtr<USkeletalMesh>* AdmittedMesh = FacialMesh && FacialMesh->Get()
+        ? FacialMesh : NeutralMesh;
+    bUsingFacialPerformance = FacialMesh && FacialMesh->Get();
     bUsingSkeletalPresentation = AdmittedMesh && AdmittedMesh->Get();
     CharacterMesh->SetSkeletalMeshAsset(bUsingSkeletalPresentation ? AdmittedMesh->Get() : nullptr);
-    CharacterMesh->SetRelativeScale3D(FVector(FShiCouncilCharacterPresentationModel::PresentationScale()));
+    CharacterMesh->SetRelativeScale3D(FVector(bUsingFacialPerformance
+        ? FShiCouncilFacialPerformanceModel::PresentationScale()
+        : FShiCouncilCharacterPresentationModel::PresentationScale()));
     CharacterMesh->SetVisibility(bUsingSkeletalPresentation, true);
     CharacterMesh->SetHiddenInGame(!bUsingSkeletalPresentation, true);
     Body->SetVisibility(!bUsingSkeletalPresentation, true);
@@ -167,9 +220,24 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
     Body->SetHiddenInGame(bUsingSkeletalPresentation, true);
     Head->SetHiddenInGame(bUsingSkeletalPresentation, true);
     Mantle->SetHiddenInGame(bUsingSkeletalPresentation, true);
-    Tags.Add(FName(bUsingSkeletalPresentation
-        ? TEXT("ShiArtStatus:SkeletalProductionBlockout")
-        : TEXT("ShiArtFallback:EnginePrimitive")));
+    if (bUsingFacialPerformance)
+    {
+        Tags.Add(FName(TEXT("ShiArtStatus:FacialPerformanceEngineeringBlockout")));
+        Tags.Add(FName(TEXT("ShiFacialPerformance:SilentIntentCadence")));
+        Tags.Add(FName(TEXT("ShiFraming:WideMediumOnly")));
+        UE_LOG(LogShiCouncilFigure, Display,
+            TEXT("SHI_COUNCIL_FACIAL_RUNTIME_ADMITTED character=%s role=%s mesh=%s morph_controls=%d"),
+            *Participant.CharacterId,
+            Participant.bSpeaker ? TEXT("speaker") : TEXT("listener"),
+            *AdmittedMesh->Get()->GetPathName(),
+            FShiCouncilFacialPerformanceModel::MorphTargetCount());
+    }
+    else
+    {
+        Tags.Add(FName(bUsingSkeletalPresentation
+            ? TEXT("ShiArtStatus:SkeletalProductionBlockout")
+            : TEXT("ShiArtFallback:EnginePrimitive")));
+    }
 
     if (bUsingSkeletalPresentation)
     {
@@ -212,6 +280,11 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
         }
     }
 
+    if (bUsingFacialPerformance)
+    {
+        ApplyFacialFrame();
+    }
+
     const FLinearColor HeadColor = FLinearColor::LerpUsingHSV(Participant.Color, FLinearColor(.60f, .46f, .32f), .18f);
     const FLinearColor MantleColor = FLinearColor::LerpUsingHSV(Participant.Color, FLinearColor(.04f, .05f, .05f), .34f);
     if (BodyMaterial) BodyMaterial->SetVectorParameterValue(FName(TEXT("Color")), Participant.Color);
@@ -221,10 +294,21 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
     ApplyStencil(*Head, Participant.StencilValue, Participant.bSpeaker);
     ApplyStencil(*Mantle, Participant.StencilValue, Participant.bSpeaker);
     ApplyStencil(*CharacterMesh, Participant.StencilValue, Participant.bSpeaker);
+    RefreshActorTick();
+}
+
+void AShiCouncilFigure::SetReducedMotion(bool bValue)
+{
+    if (bReducedMotion == bValue) return;
+    bReducedMotion = bValue;
+    FacialElapsedSeconds = 0.f;
+    if (bUsingFacialPerformance) ApplyFacialFrame();
+    RefreshActorTick();
 }
 
 void AShiCouncilFigure::SetReviewVisible(bool bVisible)
 {
+    bReviewVisible = bVisible;
     SetActorHiddenInGame(!bVisible);
     SetActorEnableCollision(false);
     CharacterMesh->SetVisibility(bVisible && bUsingSkeletalPresentation, true);
@@ -237,4 +321,56 @@ void AShiCouncilFigure::SetReviewVisible(bool bVisible)
     Mantle->SetHiddenInGame(!bVisible || bUsingSkeletalPresentation, true);
     CharacterMesh->bPauseAnims = !bVisible;
     CharacterMesh->SetComponentTickEnabled(bVisible && bUsingSkeletalPresentation && bUsingPerformance);
+    RefreshActorTick();
+}
+
+void AShiCouncilFigure::ApplyFacialFrame()
+{
+    if (!bUsingFacialPerformance || !CharacterMesh->GetSkeletalMeshAsset()) return;
+    FShiCouncilFacialFrameData Frame;
+    FString Error;
+    if (!FShiCouncilFacialPerformanceModel::Evaluate(
+            bParticipantSpeaker, FacialElapsedSeconds, bReducedMotion, Frame, Error))
+    {
+        ClearFacialFrame();
+        bUsingFacialPerformance = false;
+        RefreshActorTick();
+        UE_LOG(LogShiCouncilFigure, Error,
+            TEXT("Council facial cadence failed closed for %s: %s"), *CharacterId, *Error);
+        return;
+    }
+    for (const FShiCouncilFacialMorphWeight& Weight : Frame.MorphWeights)
+    {
+        CharacterMesh->SetMorphTarget(Weight.MorphTarget, Weight.Weight, false);
+    }
+    float EyeOutLeft = 0.f;
+    float EyeInRight = 0.f;
+    if (!bLoggedMorphSectionExercise
+        && Frame.StateId == TEXT("object-glance")
+        && FShiCouncilFacialPerformanceModel::TryGetWeight(
+            Frame, FName(TEXT("eyeLookOutLeft")), EyeOutLeft)
+        && FShiCouncilFacialPerformanceModel::TryGetWeight(
+            Frame, FName(TEXT("eyeLookInRight")), EyeInRight)
+        && EyeOutLeft > KINDA_SMALL_NUMBER && EyeInRight > KINDA_SMALL_NUMBER)
+    {
+        bLoggedMorphSectionExercise = true;
+        UE_LOG(LogShiCouncilFigure, Display,
+            TEXT("SHI_COUNCIL_FACIAL_MORPH_SECTIONS_EXERCISED character=%s role=%s state=object-glance skin=SkinClay eye=EyeBrown alpha=%.4f"),
+            *CharacterId,
+            bParticipantSpeaker ? TEXT("speaker") : TEXT("listener"),
+            Frame.TargetAlpha);
+    }
+}
+
+void AShiCouncilFigure::ClearFacialFrame()
+{
+    CharacterMesh->ClearMorphTargets();
+}
+
+void AShiCouncilFigure::RefreshActorTick()
+{
+    const bool bReducedPassComplete = bReducedMotion
+        && FacialElapsedSeconds >= FShiCouncilFacialPerformanceModel::CycleDurationSeconds()
+            - 2.f * KINDA_SMALL_NUMBER;
+    SetActorTickEnabled(bUsingFacialPerformance && bReviewVisible && !bReducedPassComplete);
 }

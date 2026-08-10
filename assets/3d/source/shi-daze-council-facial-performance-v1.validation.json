@@ -1,0 +1,3657 @@
+{
+  "assetId": "shi-daze-council-facial-performance-v1",
+  "validator": "clean Blender FBX/GLB import, exact skeleton/morph/material/texture/weight/bounds checks and clean FBX face-state renders",
+  "blenderVersion": "4.5.12 LTS",
+  "status": "pass",
+  "boneCount": 53,
+  "morphTargetCount": 21,
+  "morphTargets": [
+    "browDownLeft",
+    "browDownRight",
+    "browInnerUp",
+    "cheekSquintLeft",
+    "cheekSquintRight",
+    "eyeBlinkLeft",
+    "eyeBlinkRight",
+    "eyeLookDownLeft",
+    "eyeLookDownRight",
+    "eyeLookInLeft",
+    "eyeLookInRight",
+    "eyeLookOutLeft",
+    "eyeLookOutRight",
+    "eyeLookUpLeft",
+    "eyeLookUpRight",
+    "jawOpen",
+    "mouthFunnel",
+    "mouthPressLeft",
+    "mouthPressRight",
+    "mouthUpperUpLeft",
+    "mouthUpperUpRight"
+  ],
+  "eyeGazeTargets": [
+    "eyeLookDownLeft",
+    "eyeLookDownRight",
+    "eyeLookInLeft",
+    "eyeLookInRight",
+    "eyeLookOutLeft",
+    "eyeLookOutRight",
+    "eyeLookUpLeft",
+    "eyeLookUpRight"
+  ],
+  "sharedRestPose": true,
+  "canonicalCharacterIds": [
+    "keeper",
+    "chen-sheng",
+    "wu-guang",
+    "yu-mu",
+    "qin-courier"
+  ],
+  "trackedEyeTextureSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+  "formats": {
+    "fbx": [
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-keeper.fbx",
+        "bytes": 2675132,
+        "sha256": "61f34f5b3959c1ded2d86a3a7e0eca1e7429ad1971cecea4331cc13a0e71ec0e",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 19,
+        "triangles": 27840,
+        "boundsMetres": {
+          "minimum": [
+            -0.4962700653076172,
+            -0.3214700698852539,
+            0.0009824852645397186
+          ],
+          "maximum": [
+            0.4962700653076172,
+            0.19000001907348632,
+            1.6975003051757813
+          ],
+          "dimensions": [
+            0.9925401306152344,
+            0.5114700889587402,
+            1.6965178199112416
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -49.62700653076172,
+            -32.14700698852539,
+            0.09824852645397186
+          ],
+          "maximum": [
+            49.62700653076172,
+            19.000001907348633,
+            169.75003051757812
+          ],
+          "dimensions": [
+            99.25401306152344,
+            51.14700889587402,
+            169.65178199112415
+          ]
+        },
+        "payloadUnit": "centimetre",
+        "physicalHeightMetres": 1.6965178199112416,
+        "maximumVertexInfluences": 6,
+        "weightSumRange": [
+          0.999899979273323,
+          1.000000175088644
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_RolePropClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_keeper_ClothBase",
+          "M_SHI_keeper_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "T_SHI_Character_EyeBrown_CC0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": "shi-daze-council-facial-performance-v1-brown-eye-cc0.png"
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 708,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 707,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2239,
+            "maximumDisplacementMetres": 0.038738342036593244
+          },
+          "mouthFunnel": {
+            "movedVertices": 1699,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [],
+        "payloadManifest": null,
+        "characterId": "keeper"
+      },
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.fbx",
+        "bytes": 2621036,
+        "sha256": "febf45db1a7e2d1dfeea4c845b22207237e4a38c73b05733449585f768739688",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 18,
+        "triangles": 27836,
+        "boundsMetres": {
+          "minimum": [
+            -0.4962700653076172,
+            -0.3214700698852539,
+            0.0009824852645397186
+          ],
+          "maximum": [
+            0.4962700653076172,
+            0.2000001335144043,
+            1.725000457763672
+          ],
+          "dimensions": [
+            0.9925401306152344,
+            0.5214702033996582,
+            1.7240179724991322
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -49.62700653076172,
+            -32.14700698852539,
+            0.09824852645397186
+          ],
+          "maximum": [
+            49.62700653076172,
+            20.00001335144043,
+            172.5000457763672
+          ],
+          "dimensions": [
+            99.25401306152344,
+            52.14702033996582,
+            172.40179724991322
+          ]
+        },
+        "payloadUnit": "centimetre",
+        "physicalHeightMetres": 1.7240179724991322,
+        "maximumVertexInfluences": 6,
+        "weightSumRange": [
+          0.999899979273323,
+          1.000000175088644
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_chen-sheng_ClothBase",
+          "M_SHI_chen-sheng_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "T_SHI_Character_EyeBrown_CC0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": "shi-daze-council-facial-performance-v1-brown-eye-cc0.png"
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 708,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 707,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2239,
+            "maximumDisplacementMetres": 0.038738342036593244
+          },
+          "mouthFunnel": {
+            "movedVertices": 1699,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [],
+        "payloadManifest": null,
+        "characterId": "chen-sheng"
+      },
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-wu-guang.fbx",
+        "bytes": 2565436,
+        "sha256": "abcd72068348b9d860456b780c250f05380802021df90c10fa340ee08406f0e3",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 17,
+        "triangles": 27680,
+        "boundsMetres": {
+          "minimum": [
+            -0.4962700653076172,
+            -0.3214700698852539,
+            0.0009824852645397186
+          ],
+          "maximum": [
+            0.4962700653076172,
+            0.19000001907348632,
+            1.6975003051757813
+          ],
+          "dimensions": [
+            0.9925401306152344,
+            0.5114700889587402,
+            1.6965178199112416
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -49.62700653076172,
+            -32.14700698852539,
+            0.09824852645397186
+          ],
+          "maximum": [
+            49.62700653076172,
+            19.000001907348633,
+            169.75003051757812
+          ],
+          "dimensions": [
+            99.25401306152344,
+            51.14700889587402,
+            169.65178199112415
+          ]
+        },
+        "payloadUnit": "centimetre",
+        "physicalHeightMetres": 1.6965178199112416,
+        "maximumVertexInfluences": 6,
+        "weightSumRange": [
+          0.999899979273323,
+          1.000000175088644
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_wu-guang_ClothBase",
+          "M_SHI_wu-guang_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "T_SHI_Character_EyeBrown_CC0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": "shi-daze-council-facial-performance-v1-brown-eye-cc0.png"
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 708,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 707,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2239,
+            "maximumDisplacementMetres": 0.038738342036593244
+          },
+          "mouthFunnel": {
+            "movedVertices": 1699,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [],
+        "payloadManifest": null,
+        "characterId": "wu-guang"
+      },
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.fbx",
+        "bytes": 2620604,
+        "sha256": "ca0dd69bd48cb797cbbeafd739439b44da37d09559409e1dce0df27807cc90cb",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 18,
+        "triangles": 27828,
+        "boundsMetres": {
+          "minimum": [
+            -0.4962700653076172,
+            -0.3214700698852539,
+            0.0009824852645397186
+          ],
+          "maximum": [
+            0.4962700653076172,
+            0.19000001907348632,
+            1.6975003051757813
+          ],
+          "dimensions": [
+            0.9925401306152344,
+            0.5114700889587402,
+            1.6965178199112416
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -49.62700653076172,
+            -32.14700698852539,
+            0.09824852645397186
+          ],
+          "maximum": [
+            49.62700653076172,
+            19.000001907348633,
+            169.75003051757812
+          ],
+          "dimensions": [
+            99.25401306152344,
+            51.14700889587402,
+            169.65178199112415
+          ]
+        },
+        "payloadUnit": "centimetre",
+        "physicalHeightMetres": 1.6965178199112416,
+        "maximumVertexInfluences": 6,
+        "weightSumRange": [
+          0.999899979273323,
+          1.000000175088644
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_yu-mu_ClothBase",
+          "M_SHI_yu-mu_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "T_SHI_Character_EyeBrown_CC0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": "shi-daze-council-facial-performance-v1-brown-eye-cc0.png"
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 708,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 707,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2239,
+            "maximumDisplacementMetres": 0.038738342036593244
+          },
+          "mouthFunnel": {
+            "movedVertices": 1699,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [],
+        "payloadManifest": null,
+        "characterId": "yu-mu"
+      },
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.fbx",
+        "bytes": 2675420,
+        "sha256": "dfd9b71921e3ada115a40ff4493029e5c84dfc40c70861a9e1d2f546db0aac91",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 19,
+        "triangles": 27840,
+        "boundsMetres": {
+          "minimum": [
+            -0.4962700653076172,
+            -0.3214700698852539,
+            0.0009824852645397186
+          ],
+          "maximum": [
+            0.4962700653076172,
+            0.19000001907348632,
+            1.7470004272460937
+          ],
+          "dimensions": [
+            0.9925401306152344,
+            0.5114700889587402,
+            1.746017941981554
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -49.62700653076172,
+            -32.14700698852539,
+            0.09824852645397186
+          ],
+          "maximum": [
+            49.62700653076172,
+            19.000001907348633,
+            174.70004272460938
+          ],
+          "dimensions": [
+            99.25401306152344,
+            51.14700889587402,
+            174.6017941981554
+          ]
+        },
+        "payloadUnit": "centimetre",
+        "physicalHeightMetres": 1.746017941981554,
+        "maximumVertexInfluences": 6,
+        "weightSumRange": [
+          0.999899979273323,
+          1.000000175088644
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_RolePropClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_qin-courier_ClothBase",
+          "M_SHI_qin-courier_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "T_SHI_Character_EyeBrown_CC0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": "shi-daze-council-facial-performance-v1-brown-eye-cc0.png"
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 499,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 642,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 718,
+            "maximumDisplacementMetres": 0.012613429752137051
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 360,
+            "maximumDisplacementMetres": 0.0037336478402108858
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 323,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 708,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 707,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2239,
+            "maximumDisplacementMetres": 0.038738342036593244
+          },
+          "mouthFunnel": {
+            "movedVertices": 1699,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1105,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 861,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755022849646256
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [],
+        "payloadManifest": null,
+        "characterId": "qin-courier"
+      }
+    ],
+    "glb": [
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-keeper.glb",
+        "bytes": 2988448,
+        "sha256": "7b3a74dc7a7b7b12fb8eacd14b758a1fa514903954d00a015032111f81cbd47a",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 19,
+        "triangles": 27840,
+        "boundsMetres": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.1899999976158142,
+            1.6974998712539673
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5114702880382538,
+            1.6965175851946697
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.1899999976158142,
+            1.6974998712539673
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5114702880382538,
+            1.6965175851946697
+          ]
+        },
+        "payloadUnit": "metre",
+        "physicalHeightMetres": 1.6965175851946697,
+        "maximumVertexInfluences": 4,
+        "weightSumRange": [
+          0.999999875202775,
+          1.000000111060217
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_RolePropClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_keeper_ClothBase",
+          "M_SHI_keeper_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "shi-daze-council-facial-performance-v1-brown-eye-cc0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": ""
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 739,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 738,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2329,
+            "maximumDisplacementMetres": 0.038738349549518714
+          },
+          "mouthFunnel": {
+            "movedVertices": 1760,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [
+          "Icosphere"
+        ],
+        "payloadManifest": {
+          "meshNames": [
+            "base.001",
+            "SKM_SHI_keeper_CrossBinding_L_Mesh",
+            "SKM_SHI_keeper_CrossBinding_R_Mesh",
+            "SKM_SHI_keeper_DocumentSatchel_Mesh",
+            "low-poly",
+            "SKM_SHI_keeper_HairMass_Mesh",
+            "SKM_SHI_keeper_HairTie_Mesh",
+            "SKM_SHI_keeper_LegBinding_L_Mesh",
+            "SKM_SHI_keeper_LegBinding_R_Mesh",
+            "SKM_SHI_keeper_LowerLayer_Mesh",
+            "SKM_SHI_keeper_LowerSleeve_L_Mesh",
+            "SKM_SHI_keeper_LowerSleeve_R_Mesh",
+            "SKM_SHI_keeper_SatchelBinding_Mesh",
+            "SKM_SHI_keeper_Trouser_L_Mesh",
+            "SKM_SHI_keeper_Trouser_R_Mesh",
+            "SKM_SHI_keeper_UpperLayer_Mesh",
+            "SKM_SHI_keeper_UpperSleeve_L_Mesh",
+            "SKM_SHI_keeper_UpperSleeve_R_Mesh",
+            "SKM_SHI_keeper_WaistBinding_Mesh"
+          ],
+          "targetNames": [
+            [
+              "browDownLeft",
+              "browDownRight",
+              "browInnerUp",
+              "cheekSquintLeft",
+              "cheekSquintRight",
+              "eyeBlinkLeft",
+              "eyeBlinkRight",
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight",
+              "jawOpen",
+              "mouthFunnel",
+              "mouthPressLeft",
+              "mouthPressRight",
+              "mouthUpperUpLeft",
+              "mouthUpperUpRight"
+            ],
+            [],
+            [],
+            [],
+            [
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight"
+            ],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "skinJointCounts": [
+            53
+          ],
+          "imageCount": 1,
+          "textureCount": 1,
+          "animationCount": 0
+        },
+        "characterId": "keeper"
+      },
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb",
+        "bytes": 2987252,
+        "sha256": "378511d47964df5a3a6e198a737a3b2f5ea024a2c4f494c3d7052c83e6d88a03",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 18,
+        "triangles": 27836,
+        "boundsMetres": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.19999998807907104,
+            1.7249999046325684
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5214702785015106,
+            1.7240176185732707
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.19999998807907104,
+            1.7249999046325684
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5214702785015106,
+            1.7240176185732707
+          ]
+        },
+        "payloadUnit": "metre",
+        "physicalHeightMetres": 1.7240176185732707,
+        "maximumVertexInfluences": 4,
+        "weightSumRange": [
+          0.999999875202775,
+          1.000000111060217
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_chen-sheng_ClothBase",
+          "M_SHI_chen-sheng_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "shi-daze-council-facial-performance-v1-brown-eye-cc0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": ""
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 739,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 738,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2329,
+            "maximumDisplacementMetres": 0.038738349549518714
+          },
+          "mouthFunnel": {
+            "movedVertices": 1760,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [
+          "Icosphere"
+        ],
+        "payloadManifest": {
+          "meshNames": [
+            "base.001",
+            "SKM_SHI_chen-sheng_CrossBinding_L_Mesh",
+            "SKM_SHI_chen-sheng_CrossBinding_R_Mesh",
+            "low-poly",
+            "SKM_SHI_chen-sheng_HairMass_Mesh",
+            "SKM_SHI_chen-sheng_HairTie_Mesh",
+            "SKM_SHI_chen-sheng_LegBinding_L_Mesh",
+            "SKM_SHI_chen-sheng_LegBinding_R_Mesh",
+            "SKM_SHI_chen-sheng_LowerLayer_Mesh",
+            "SKM_SHI_chen-sheng_LowerSleeve_L_Mesh",
+            "SKM_SHI_chen-sheng_LowerSleeve_R_Mesh",
+            "SKM_SHI_chen-sheng_Trouser_L_Mesh",
+            "SKM_SHI_chen-sheng_Trouser_R_Mesh",
+            "SKM_SHI_chen-sheng_UpperLayer_Mesh",
+            "SKM_SHI_chen-sheng_UpperSleeve_L_Mesh",
+            "SKM_SHI_chen-sheng_UpperSleeve_R_Mesh",
+            "SKM_SHI_chen-sheng_WaistBinding_Mesh",
+            "SKM_SHI_chen-sheng_WeatherLayer_Mesh"
+          ],
+          "targetNames": [
+            [
+              "browDownLeft",
+              "browDownRight",
+              "browInnerUp",
+              "cheekSquintLeft",
+              "cheekSquintRight",
+              "eyeBlinkLeft",
+              "eyeBlinkRight",
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight",
+              "jawOpen",
+              "mouthFunnel",
+              "mouthPressLeft",
+              "mouthPressRight",
+              "mouthUpperUpLeft",
+              "mouthUpperUpRight"
+            ],
+            [],
+            [],
+            [
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight"
+            ],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "skinJointCounts": [
+            53
+          ],
+          "imageCount": 1,
+          "textureCount": 1,
+          "animationCount": 0
+        },
+        "characterId": "chen-sheng"
+      },
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-wu-guang.glb",
+        "bytes": 2970436,
+        "sha256": "cb80eb61d45340e9a2c77ea06c6816a92cc2105b9cd6462cce3991e19f29d6e0",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 17,
+        "triangles": 27680,
+        "boundsMetres": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.1899999976158142,
+            1.6974998712539673
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5114702880382538,
+            1.6965175851946697
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.1899999976158142,
+            1.6974998712539673
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5114702880382538,
+            1.6965175851946697
+          ]
+        },
+        "payloadUnit": "metre",
+        "physicalHeightMetres": 1.6965175851946697,
+        "maximumVertexInfluences": 4,
+        "weightSumRange": [
+          0.999999875202775,
+          1.000000111060217
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_wu-guang_ClothBase",
+          "M_SHI_wu-guang_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "shi-daze-council-facial-performance-v1-brown-eye-cc0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": ""
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 739,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 738,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2329,
+            "maximumDisplacementMetres": 0.038738349549518714
+          },
+          "mouthFunnel": {
+            "movedVertices": 1760,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [
+          "Icosphere"
+        ],
+        "payloadManifest": {
+          "meshNames": [
+            "base.001",
+            "SKM_SHI_wu-guang_CrossBinding_L_Mesh",
+            "SKM_SHI_wu-guang_CrossBinding_R_Mesh",
+            "low-poly",
+            "SKM_SHI_wu-guang_HairMass_Mesh",
+            "SKM_SHI_wu-guang_LegBinding_L_Mesh",
+            "SKM_SHI_wu-guang_LegBinding_R_Mesh",
+            "SKM_SHI_wu-guang_LowerLayer_Mesh",
+            "SKM_SHI_wu-guang_LowerSleeve_L_Mesh",
+            "SKM_SHI_wu-guang_LowerSleeve_R_Mesh",
+            "SKM_SHI_wu-guang_ShoulderWrap_Mesh",
+            "SKM_SHI_wu-guang_Trouser_L_Mesh",
+            "SKM_SHI_wu-guang_Trouser_R_Mesh",
+            "SKM_SHI_wu-guang_UpperLayer_Mesh",
+            "SKM_SHI_wu-guang_UpperSleeve_L_Mesh",
+            "SKM_SHI_wu-guang_UpperSleeve_R_Mesh",
+            "SKM_SHI_wu-guang_WaistBinding_Mesh"
+          ],
+          "targetNames": [
+            [
+              "browDownLeft",
+              "browDownRight",
+              "browInnerUp",
+              "cheekSquintLeft",
+              "cheekSquintRight",
+              "eyeBlinkLeft",
+              "eyeBlinkRight",
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight",
+              "jawOpen",
+              "mouthFunnel",
+              "mouthPressLeft",
+              "mouthPressRight",
+              "mouthUpperUpLeft",
+              "mouthUpperUpRight"
+            ],
+            [],
+            [],
+            [
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight"
+            ],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "skinJointCounts": [
+            53
+          ],
+          "imageCount": 1,
+          "textureCount": 1,
+          "animationCount": 0
+        },
+        "characterId": "wu-guang"
+      },
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.glb",
+        "bytes": 2986324,
+        "sha256": "8e2feec71b161326b1deb9b8a9e1c046896b1ed674d10b4764b2c73761eff347",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 18,
+        "triangles": 27828,
+        "boundsMetres": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.1899999976158142,
+            1.6974998712539673
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5114702880382538,
+            1.6965175851946697
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.1899999976158142,
+            1.6974998712539673
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5114702880382538,
+            1.6965175851946697
+          ]
+        },
+        "payloadUnit": "metre",
+        "physicalHeightMetres": 1.6965175851946697,
+        "maximumVertexInfluences": 4,
+        "weightSumRange": [
+          0.999999875202775,
+          1.000000111060217
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_yu-mu_ClothBase",
+          "M_SHI_yu-mu_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "shi-daze-council-facial-performance-v1-brown-eye-cc0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": ""
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 739,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 738,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2329,
+            "maximumDisplacementMetres": 0.038738349549518714
+          },
+          "mouthFunnel": {
+            "movedVertices": 1760,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [
+          "Icosphere"
+        ],
+        "payloadManifest": {
+          "meshNames": [
+            "base.001",
+            "SKM_SHI_yu-mu_CrossBinding_L_Mesh",
+            "SKM_SHI_yu-mu_CrossBinding_R_Mesh",
+            "low-poly",
+            "SKM_SHI_yu-mu_HairMass_Mesh",
+            "SKM_SHI_yu-mu_HairTie_Mesh",
+            "SKM_SHI_yu-mu_LegBinding_L_Mesh",
+            "SKM_SHI_yu-mu_LegBinding_R_Mesh",
+            "SKM_SHI_yu-mu_LowerLayer_Mesh",
+            "SKM_SHI_yu-mu_LowerSleeve_L_Mesh",
+            "SKM_SHI_yu-mu_LowerSleeve_R_Mesh",
+            "SKM_SHI_yu-mu_Trouser_L_Mesh",
+            "SKM_SHI_yu-mu_Trouser_R_Mesh",
+            "SKM_SHI_yu-mu_UpperLayer_Mesh",
+            "SKM_SHI_yu-mu_UpperSleeve_L_Mesh",
+            "SKM_SHI_yu-mu_UpperSleeve_R_Mesh",
+            "SKM_SHI_yu-mu_WaistBinding_Mesh",
+            "SKM_SHI_yu-mu_WorkApron_Mesh"
+          ],
+          "targetNames": [
+            [
+              "browDownLeft",
+              "browDownRight",
+              "browInnerUp",
+              "cheekSquintLeft",
+              "cheekSquintRight",
+              "eyeBlinkLeft",
+              "eyeBlinkRight",
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight",
+              "jawOpen",
+              "mouthFunnel",
+              "mouthPressLeft",
+              "mouthPressRight",
+              "mouthUpperUpLeft",
+              "mouthUpperUpRight"
+            ],
+            [],
+            [],
+            [
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight"
+            ],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "skinJointCounts": [
+            53
+          ],
+          "imageCount": 1,
+          "textureCount": 1,
+          "animationCount": 0
+        },
+        "characterId": "yu-mu"
+      },
+      {
+        "file": "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.glb",
+        "bytes": 2988184,
+        "sha256": "91b28f0d2450469cca3e6bafc1816af0001ac7ef5b57bdc1c1ea51fc935b59d6",
+        "armature": "Armature",
+        "boneCount": 53,
+        "rootBone": "Root",
+        "meshCount": 19,
+        "triangles": 27840,
+        "boundsMetres": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.1899999976158142,
+            1.7469998598098755
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5114702880382538,
+            1.7460175737505779
+          ]
+        },
+        "payloadBounds": {
+          "minimum": [
+            -0.49627000093460083,
+            -0.3214702904224396,
+            0.0009822860592976213
+          ],
+          "maximum": [
+            0.4962700307369232,
+            0.1899999976158142,
+            1.7469998598098755
+          ],
+          "dimensions": [
+            0.992540031671524,
+            0.5114702880382538,
+            1.7460175737505779
+          ]
+        },
+        "payloadUnit": "metre",
+        "physicalHeightMetres": 1.7460175737505779,
+        "maximumVertexInfluences": 4,
+        "weightSumRange": [
+          0.999999875202775,
+          1.000000111060217
+        ],
+        "materials": [
+          "M_SHI_Character_BindingClay",
+          "M_SHI_Character_EyeBrown",
+          "M_SHI_Character_HairClay",
+          "M_SHI_Character_RolePropClay",
+          "M_SHI_Character_SkinClay",
+          "M_SHI_qin-courier_ClothBase",
+          "M_SHI_qin-courier_ClothOuter"
+        ],
+        "images": [
+          {
+            "name": "shi-daze-council-facial-performance-v1-brown-eye-cc0",
+            "source": "FILE",
+            "size": [
+              1024,
+              1024
+            ],
+            "packedBytes": 610817,
+            "packedSha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+            "filepath": ""
+          }
+        ],
+        "bodyMorphTargets": {
+          "browDownLeft": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browDownRight": {
+            "movedVertices": 516,
+            "maximumDisplacementMetres": 0.006952015226565901
+          },
+          "browInnerUp": {
+            "movedVertices": 577,
+            "maximumDisplacementMetres": 0.005200028472785043
+          },
+          "cheekSquintLeft": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "cheekSquintRight": {
+            "movedVertices": 665,
+            "maximumDisplacementMetres": 0.008954374675713198
+          },
+          "eyeBlinkLeft": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeBlinkRight": {
+            "movedVertices": 747,
+            "maximumDisplacementMetres": 0.0126134303424989
+          },
+          "eyeLookDownLeft": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 388,
+            "maximumDisplacementMetres": 0.003733649834637302
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookInRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 350,
+            "maximumDisplacementMetres": 0.0010049878988679212
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 739,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 738,
+            "maximumDisplacementMetres": 0.002578813692373326
+          },
+          "jawOpen": {
+            "movedVertices": 2329,
+            "maximumDisplacementMetres": 0.038738349549518714
+          },
+          "mouthFunnel": {
+            "movedVertices": 1760,
+            "maximumDisplacementMetres": 0.010933001234905345
+          },
+          "mouthPressLeft": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthPressRight": {
+            "movedVertices": 1149,
+            "maximumDisplacementMetres": 0.00809009538096067
+          },
+          "mouthUpperUpLeft": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          },
+          "mouthUpperUpRight": {
+            "movedVertices": 898,
+            "maximumDisplacementMetres": 0.0059623445207205835
+          }
+        },
+        "eyeMorphTargets": {
+          "eyeLookDownLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookDownRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.004755011564684485
+          },
+          "eyeLookInLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookInRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005825805689479947
+          },
+          "eyeLookOutLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookOutRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.005725381476272839
+          },
+          "eyeLookUpLeft": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          },
+          "eyeLookUpRight": {
+            "movedVertices": 48,
+            "maximumDisplacementMetres": 0.002912031846809803
+          }
+        },
+        "importerOnlyHelperMeshes": [
+          "Icosphere"
+        ],
+        "payloadManifest": {
+          "meshNames": [
+            "base.001",
+            "SKM_SHI_qin-courier_CrossBinding_L_Mesh",
+            "SKM_SHI_qin-courier_CrossBinding_R_Mesh",
+            "low-poly",
+            "SKM_SHI_qin-courier_HairMass_Mesh",
+            "SKM_SHI_qin-courier_HairTie_Mesh",
+            "SKM_SHI_qin-courier_LegBinding_L_Mesh",
+            "SKM_SHI_qin-courier_LegBinding_R_Mesh",
+            "SKM_SHI_qin-courier_LowerLayer_Mesh",
+            "SKM_SHI_qin-courier_LowerSleeve_L_Mesh",
+            "SKM_SHI_qin-courier_LowerSleeve_R_Mesh",
+            "SKM_SHI_qin-courier_RelayBinding_Mesh",
+            "SKM_SHI_qin-courier_RelaySatchel_Mesh",
+            "SKM_SHI_qin-courier_Trouser_L_Mesh",
+            "SKM_SHI_qin-courier_Trouser_R_Mesh",
+            "SKM_SHI_qin-courier_UpperLayer_Mesh",
+            "SKM_SHI_qin-courier_UpperSleeve_L_Mesh",
+            "SKM_SHI_qin-courier_UpperSleeve_R_Mesh",
+            "SKM_SHI_qin-courier_WaistBinding_Mesh"
+          ],
+          "targetNames": [
+            [
+              "browDownLeft",
+              "browDownRight",
+              "browInnerUp",
+              "cheekSquintLeft",
+              "cheekSquintRight",
+              "eyeBlinkLeft",
+              "eyeBlinkRight",
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight",
+              "jawOpen",
+              "mouthFunnel",
+              "mouthPressLeft",
+              "mouthPressRight",
+              "mouthUpperUpLeft",
+              "mouthUpperUpRight"
+            ],
+            [],
+            [],
+            [
+              "eyeLookDownLeft",
+              "eyeLookDownRight",
+              "eyeLookInLeft",
+              "eyeLookInRight",
+              "eyeLookOutLeft",
+              "eyeLookOutRight",
+              "eyeLookUpLeft",
+              "eyeLookUpRight"
+            ],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "skinJointCounts": [
+            53
+          ],
+          "imageCount": 1,
+          "textureCount": 1,
+          "animationCount": 0
+        },
+        "characterId": "qin-courier"
+      }
+    ]
+  },
+  "crossFormatMorphEquivalence": {
+    "status": "pass",
+    "coordinateInterpretation": {
+      "fbxWorldBounds": "centimetre payload converted to metres",
+      "fbxMorphCoordinates": "metres after Blender armature compensation; no second scale conversion",
+      "glbWorldBoundsAndMorphCoordinates": "metres"
+    },
+    "toleranceMetres": 5e-06,
+    "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+    "movedVertexCountPolicy": "recorded only; GLB body vertex splitting makes cross-format count equality invalid",
+    "characters": [
+      {
+        "characterId": "keeper",
+        "meshes": {
+          "body": {
+            "browDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browDownRight": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browInnerUp": {
+              "sourceMaximumDisplacementMetres": 0.005200028472785043,
+              "fbxMaximumDisplacementMetres": 0.005200028472785043,
+              "glbMaximumDisplacementMetres": 0.005200028472785043,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 577,
+              "glbMovedVertices": 577
+            },
+            "cheekSquintLeft": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "cheekSquintRight": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "eyeBlinkLeft": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeBlinkRight": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 708,
+              "glbMovedVertices": 739
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 707,
+              "glbMovedVertices": 738
+            },
+            "jawOpen": {
+              "sourceMaximumDisplacementMetres": 0.038738342036593244,
+              "fbxMaximumDisplacementMetres": 0.038738342036593244,
+              "glbMaximumDisplacementMetres": 0.038738349549518714,
+              "maximumAbsoluteErrorMetres": 7.512925469244092e-09,
+              "fbxMovedVertices": 2239,
+              "glbMovedVertices": 2329
+            },
+            "mouthFunnel": {
+              "sourceMaximumDisplacementMetres": 0.010933001234905345,
+              "fbxMaximumDisplacementMetres": 0.010933001234905345,
+              "glbMaximumDisplacementMetres": 0.010933001234905345,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1699,
+              "glbMovedVertices": 1760
+            },
+            "mouthPressLeft": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthPressRight": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthUpperUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            },
+            "mouthUpperUpRight": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            }
+          },
+          "eye": {
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            }
+          }
+        }
+      },
+      {
+        "characterId": "chen-sheng",
+        "meshes": {
+          "body": {
+            "browDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browDownRight": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browInnerUp": {
+              "sourceMaximumDisplacementMetres": 0.005200028472785043,
+              "fbxMaximumDisplacementMetres": 0.005200028472785043,
+              "glbMaximumDisplacementMetres": 0.005200028472785043,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 577,
+              "glbMovedVertices": 577
+            },
+            "cheekSquintLeft": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "cheekSquintRight": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "eyeBlinkLeft": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeBlinkRight": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 708,
+              "glbMovedVertices": 739
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 707,
+              "glbMovedVertices": 738
+            },
+            "jawOpen": {
+              "sourceMaximumDisplacementMetres": 0.038738342036593244,
+              "fbxMaximumDisplacementMetres": 0.038738342036593244,
+              "glbMaximumDisplacementMetres": 0.038738349549518714,
+              "maximumAbsoluteErrorMetres": 7.512925469244092e-09,
+              "fbxMovedVertices": 2239,
+              "glbMovedVertices": 2329
+            },
+            "mouthFunnel": {
+              "sourceMaximumDisplacementMetres": 0.010933001234905345,
+              "fbxMaximumDisplacementMetres": 0.010933001234905345,
+              "glbMaximumDisplacementMetres": 0.010933001234905345,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1699,
+              "glbMovedVertices": 1760
+            },
+            "mouthPressLeft": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthPressRight": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthUpperUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            },
+            "mouthUpperUpRight": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            }
+          },
+          "eye": {
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            }
+          }
+        }
+      },
+      {
+        "characterId": "wu-guang",
+        "meshes": {
+          "body": {
+            "browDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browDownRight": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browInnerUp": {
+              "sourceMaximumDisplacementMetres": 0.005200028472785043,
+              "fbxMaximumDisplacementMetres": 0.005200028472785043,
+              "glbMaximumDisplacementMetres": 0.005200028472785043,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 577,
+              "glbMovedVertices": 577
+            },
+            "cheekSquintLeft": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "cheekSquintRight": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "eyeBlinkLeft": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeBlinkRight": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 708,
+              "glbMovedVertices": 739
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 707,
+              "glbMovedVertices": 738
+            },
+            "jawOpen": {
+              "sourceMaximumDisplacementMetres": 0.038738342036593244,
+              "fbxMaximumDisplacementMetres": 0.038738342036593244,
+              "glbMaximumDisplacementMetres": 0.038738349549518714,
+              "maximumAbsoluteErrorMetres": 7.512925469244092e-09,
+              "fbxMovedVertices": 2239,
+              "glbMovedVertices": 2329
+            },
+            "mouthFunnel": {
+              "sourceMaximumDisplacementMetres": 0.010933001234905345,
+              "fbxMaximumDisplacementMetres": 0.010933001234905345,
+              "glbMaximumDisplacementMetres": 0.010933001234905345,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1699,
+              "glbMovedVertices": 1760
+            },
+            "mouthPressLeft": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthPressRight": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthUpperUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            },
+            "mouthUpperUpRight": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            }
+          },
+          "eye": {
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            }
+          }
+        }
+      },
+      {
+        "characterId": "yu-mu",
+        "meshes": {
+          "body": {
+            "browDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browDownRight": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browInnerUp": {
+              "sourceMaximumDisplacementMetres": 0.005200028472785043,
+              "fbxMaximumDisplacementMetres": 0.005200028472785043,
+              "glbMaximumDisplacementMetres": 0.005200028472785043,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 577,
+              "glbMovedVertices": 577
+            },
+            "cheekSquintLeft": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "cheekSquintRight": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "eyeBlinkLeft": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeBlinkRight": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 708,
+              "glbMovedVertices": 739
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 707,
+              "glbMovedVertices": 738
+            },
+            "jawOpen": {
+              "sourceMaximumDisplacementMetres": 0.038738342036593244,
+              "fbxMaximumDisplacementMetres": 0.038738342036593244,
+              "glbMaximumDisplacementMetres": 0.038738349549518714,
+              "maximumAbsoluteErrorMetres": 7.512925469244092e-09,
+              "fbxMovedVertices": 2239,
+              "glbMovedVertices": 2329
+            },
+            "mouthFunnel": {
+              "sourceMaximumDisplacementMetres": 0.010933001234905345,
+              "fbxMaximumDisplacementMetres": 0.010933001234905345,
+              "glbMaximumDisplacementMetres": 0.010933001234905345,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1699,
+              "glbMovedVertices": 1760
+            },
+            "mouthPressLeft": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthPressRight": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthUpperUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            },
+            "mouthUpperUpRight": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            }
+          },
+          "eye": {
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            }
+          }
+        }
+      },
+      {
+        "characterId": "qin-courier",
+        "meshes": {
+          "body": {
+            "browDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browDownRight": {
+              "sourceMaximumDisplacementMetres": 0.006952015226565901,
+              "fbxMaximumDisplacementMetres": 0.006952015226565901,
+              "glbMaximumDisplacementMetres": 0.006952015226565901,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 499,
+              "glbMovedVertices": 516
+            },
+            "browInnerUp": {
+              "sourceMaximumDisplacementMetres": 0.005200028472785043,
+              "fbxMaximumDisplacementMetres": 0.005200028472785043,
+              "glbMaximumDisplacementMetres": 0.005200028472785043,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 577,
+              "glbMovedVertices": 577
+            },
+            "cheekSquintLeft": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "cheekSquintRight": {
+              "sourceMaximumDisplacementMetres": 0.008954374675713198,
+              "fbxMaximumDisplacementMetres": 0.008954374675713198,
+              "glbMaximumDisplacementMetres": 0.008954374675713198,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 642,
+              "glbMovedVertices": 665
+            },
+            "eyeBlinkLeft": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeBlinkRight": {
+              "sourceMaximumDisplacementMetres": 0.012613429752137051,
+              "fbxMaximumDisplacementMetres": 0.012613429752137051,
+              "glbMaximumDisplacementMetres": 0.0126134303424989,
+              "maximumAbsoluteErrorMetres": 5.90361847949139e-10,
+              "fbxMovedVertices": 718,
+              "glbMovedVertices": 747
+            },
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.0037336478402108858,
+              "fbxMaximumDisplacementMetres": 0.0037336478402108858,
+              "glbMaximumDisplacementMetres": 0.003733649834637302,
+              "maximumAbsoluteErrorMetres": 1.9944264161193825e-09,
+              "fbxMovedVertices": 360,
+              "glbMovedVertices": 388
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.0010049878988679212,
+              "fbxMaximumDisplacementMetres": 0.0010049878988679212,
+              "glbMaximumDisplacementMetres": 0.0010049878988679212,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 323,
+              "glbMovedVertices": 350
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 708,
+              "glbMovedVertices": 739
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002578813692373326,
+              "fbxMaximumDisplacementMetres": 0.002578813692373326,
+              "glbMaximumDisplacementMetres": 0.002578813692373326,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 707,
+              "glbMovedVertices": 738
+            },
+            "jawOpen": {
+              "sourceMaximumDisplacementMetres": 0.038738342036593244,
+              "fbxMaximumDisplacementMetres": 0.038738342036593244,
+              "glbMaximumDisplacementMetres": 0.038738349549518714,
+              "maximumAbsoluteErrorMetres": 7.512925469244092e-09,
+              "fbxMovedVertices": 2239,
+              "glbMovedVertices": 2329
+            },
+            "mouthFunnel": {
+              "sourceMaximumDisplacementMetres": 0.010933001234905345,
+              "fbxMaximumDisplacementMetres": 0.010933001234905345,
+              "glbMaximumDisplacementMetres": 0.010933001234905345,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1699,
+              "glbMovedVertices": 1760
+            },
+            "mouthPressLeft": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthPressRight": {
+              "sourceMaximumDisplacementMetres": 0.00809009538096067,
+              "fbxMaximumDisplacementMetres": 0.00809009538096067,
+              "glbMaximumDisplacementMetres": 0.00809009538096067,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 1105,
+              "glbMovedVertices": 1149
+            },
+            "mouthUpperUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            },
+            "mouthUpperUpRight": {
+              "sourceMaximumDisplacementMetres": 0.0059623445207205835,
+              "fbxMaximumDisplacementMetres": 0.0059623445207205835,
+              "glbMaximumDisplacementMetres": 0.0059623445207205835,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 861,
+              "glbMovedVertices": 898
+            }
+          },
+          "eye": {
+            "eyeLookDownLeft": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookDownRight": {
+              "sourceMaximumDisplacementMetres": 0.004755022849646256,
+              "fbxMaximumDisplacementMetres": 0.004755022849646256,
+              "glbMaximumDisplacementMetres": 0.004755011564684485,
+              "maximumAbsoluteErrorMetres": 1.1284961771475255e-08,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInLeft": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookInRight": {
+              "sourceMaximumDisplacementMetres": 0.005825805689479947,
+              "fbxMaximumDisplacementMetres": 0.005825805689479947,
+              "glbMaximumDisplacementMetres": 0.005825805689479947,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutLeft": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookOutRight": {
+              "sourceMaximumDisplacementMetres": 0.005725381476272839,
+              "fbxMaximumDisplacementMetres": 0.005725381476272839,
+              "glbMaximumDisplacementMetres": 0.005725381476272839,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpLeft": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            },
+            "eyeLookUpRight": {
+              "sourceMaximumDisplacementMetres": 0.002912031846809803,
+              "fbxMaximumDisplacementMetres": 0.002912031846809803,
+              "glbMaximumDisplacementMetres": 0.002912031846809803,
+              "maximumAbsoluteErrorMetres": 0.0,
+              "fbxMovedVertices": 48,
+              "glbMovedVertices": 48
+            }
+          }
+        }
+      }
+    ]
+  },
+  "cleanFbxStateRenders": {
+    "neutral": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-fbx-import-neutral.png",
+      "bytes": 942975,
+      "sha256": "ce3aa7a0f4e153e50491216f2e8e716fa648109a069d088c937e65d07a43050e"
+    },
+    "blink": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-fbx-import-blink.png",
+      "bytes": 938383,
+      "sha256": "4d5a9e7ea3844f95193950f7228ec705dc8b2123902e739370ecbba93bcf1f67"
+    },
+    "gaze": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-fbx-import-gaze.png",
+      "bytes": 943195,
+      "sha256": "02502b9433cb20bc316d56cd0fc3142181d69dc2eaeba83a96fcf8a0d9b53117"
+    },
+    "silent-speech": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-fbx-import-silent-speech.png",
+      "bytes": 946015,
+      "sha256": "251d99328c8838d7007f90aa4257e70affc20c14f2c8c4f22d644d5cc21b8e5f"
+    }
+  },
+  "limitations": [
+    "engineering blockout only; no final acting, close-dialogue, voice or lip-sync approval",
+    "generic shared non-portrait face and CC0 eye baseline",
+    "mouth interior, teeth, tongue, brows, lashes, skin, hair and cloth remain final-art red gates"
+  ]
+}

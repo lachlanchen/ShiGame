@@ -1,0 +1,633 @@
+{
+  "assetId": "shi-daze-council-facial-performance-v1",
+  "sourceCharacterAsset": "shi-daze-council-characters-v1",
+  "status": "five-identity facial-performance engineering blockout; not final acting",
+  "disclosure": "FACIAL PERFORMANCE ENGINEERING BLOCKOUT · SILENT INTENT CADENCE · GENERIC NON-PORTRAIT FACE · NOT FINAL ACTING, LIP SYNC OR VOICE",
+  "generator": "deterministic SHI Blender Python with pinned MPFB CC0 body/rig, Faceunits 01 and low-poly brown eyes",
+  "blenderVersion": "4.5.12 LTS",
+  "mpfbVersion": "2.0.17",
+  "mpfbCommit": "80919fa4682335c41847f761a4d79dcad4124732",
+  "sharedSkeleton": "SK_SHI_DazeCouncil_Skeleton",
+  "boneCount": 53,
+  "boneNames": [
+    "Root",
+    "pelvis",
+    "spine_01",
+    "spine_02",
+    "spine_03",
+    "clavicle_l",
+    "upperarm_l",
+    "lowerarm_l",
+    "hand_l",
+    "index_01_l",
+    "index_02_l",
+    "index_03_l",
+    "middle_01_l",
+    "middle_02_l",
+    "middle_03_l",
+    "pinky_01_l",
+    "pinky_02_l",
+    "pinky_03_l",
+    "ring_01_l",
+    "ring_02_l",
+    "ring_03_l",
+    "thumb_01_l",
+    "thumb_02_l",
+    "thumb_03_l",
+    "clavicle_r",
+    "upperarm_r",
+    "lowerarm_r",
+    "hand_r",
+    "index_01_r",
+    "index_02_r",
+    "index_03_r",
+    "middle_01_r",
+    "middle_02_r",
+    "middle_03_r",
+    "pinky_01_r",
+    "pinky_02_r",
+    "pinky_03_r",
+    "ring_01_r",
+    "ring_02_r",
+    "ring_03_r",
+    "thumb_01_r",
+    "thumb_02_r",
+    "thumb_03_r",
+    "neck_01",
+    "head",
+    "thigh_l",
+    "calf_l",
+    "foot_l",
+    "ball_l",
+    "thigh_r",
+    "calf_r",
+    "foot_r",
+    "ball_r"
+  ],
+  "morphTargetCount": 21,
+  "morphTargets": [
+    "eyeBlinkLeft",
+    "eyeBlinkRight",
+    "eyeLookDownLeft",
+    "eyeLookDownRight",
+    "eyeLookInLeft",
+    "eyeLookInRight",
+    "eyeLookOutLeft",
+    "eyeLookOutRight",
+    "eyeLookUpLeft",
+    "eyeLookUpRight",
+    "browInnerUp",
+    "browDownLeft",
+    "browDownRight",
+    "cheekSquintLeft",
+    "cheekSquintRight",
+    "jawOpen",
+    "mouthFunnel",
+    "mouthPressLeft",
+    "mouthPressRight",
+    "mouthUpperUpLeft",
+    "mouthUpperUpRight"
+  ],
+  "eyeGazeTargets": [
+    "eyeLookDownLeft",
+    "eyeLookDownRight",
+    "eyeLookInLeft",
+    "eyeLookInRight",
+    "eyeLookOutLeft",
+    "eyeLookOutRight",
+    "eyeLookUpLeft",
+    "eyeLookUpRight"
+  ],
+  "bodyMorphReceipts": {
+    "browDownLeft": {
+      "movedVertices": 499,
+      "maximumDisplacementMetres": 0.006952015226565901,
+      "meanMovedDisplacementMetres": 0.0010637018785571687
+    },
+    "browDownRight": {
+      "movedVertices": 499,
+      "maximumDisplacementMetres": 0.006952015226565901,
+      "meanMovedDisplacementMetres": 0.0010637018785571689
+    },
+    "browInnerUp": {
+      "movedVertices": 577,
+      "maximumDisplacementMetres": 0.005200028472785043,
+      "meanMovedDisplacementMetres": 0.0006816195416750082
+    },
+    "cheekSquintLeft": {
+      "movedVertices": 642,
+      "maximumDisplacementMetres": 0.008954374675713198,
+      "meanMovedDisplacementMetres": 0.00156302009666114
+    },
+    "cheekSquintRight": {
+      "movedVertices": 642,
+      "maximumDisplacementMetres": 0.008954374675713198,
+      "meanMovedDisplacementMetres": 0.0015633219279979785
+    },
+    "eyeBlinkLeft": {
+      "movedVertices": 718,
+      "maximumDisplacementMetres": 0.012613429752137051,
+      "meanMovedDisplacementMetres": 0.002887380237738654
+    },
+    "eyeBlinkRight": {
+      "movedVertices": 718,
+      "maximumDisplacementMetres": 0.012613429752137051,
+      "meanMovedDisplacementMetres": 0.002887380237738652
+    },
+    "eyeLookDownLeft": {
+      "movedVertices": 360,
+      "maximumDisplacementMetres": 0.0037336478402108858,
+      "meanMovedDisplacementMetres": 0.0010453423022969276
+    },
+    "eyeLookDownRight": {
+      "movedVertices": 360,
+      "maximumDisplacementMetres": 0.0037336478402108858,
+      "meanMovedDisplacementMetres": 0.0010453423022969276
+    },
+    "eyeLookInLeft": {
+      "movedVertices": 323,
+      "maximumDisplacementMetres": 0.0010049878988679212,
+      "meanMovedDisplacementMetres": 0.0004183956546896031
+    },
+    "eyeLookInRight": {
+      "movedVertices": 323,
+      "maximumDisplacementMetres": 0.0010049878988679212,
+      "meanMovedDisplacementMetres": 0.00041851092170275614
+    },
+    "eyeLookOutLeft": {
+      "movedVertices": 323,
+      "maximumDisplacementMetres": 0.0010049878988679212,
+      "meanMovedDisplacementMetres": 0.0004103558616973907
+    },
+    "eyeLookOutRight": {
+      "movedVertices": 323,
+      "maximumDisplacementMetres": 0.0010049878988679212,
+      "meanMovedDisplacementMetres": 0.0004104219573997531
+    },
+    "eyeLookUpLeft": {
+      "movedVertices": 708,
+      "maximumDisplacementMetres": 0.002578813692373326,
+      "meanMovedDisplacementMetres": 0.0006165917208577235
+    },
+    "eyeLookUpRight": {
+      "movedVertices": 707,
+      "maximumDisplacementMetres": 0.002578813692373326,
+      "meanMovedDisplacementMetres": 0.0006142765118808438
+    },
+    "jawOpen": {
+      "movedVertices": 2239,
+      "maximumDisplacementMetres": 0.038738342036593244,
+      "meanMovedDisplacementMetres": 0.006841435497810216
+    },
+    "mouthFunnel": {
+      "movedVertices": 1699,
+      "maximumDisplacementMetres": 0.010933001234905345,
+      "meanMovedDisplacementMetres": 0.0021179823559656884
+    },
+    "mouthPressLeft": {
+      "movedVertices": 1105,
+      "maximumDisplacementMetres": 0.00809009538096067,
+      "meanMovedDisplacementMetres": 0.001823810878841719
+    },
+    "mouthPressRight": {
+      "movedVertices": 1105,
+      "maximumDisplacementMetres": 0.00809009538096067,
+      "meanMovedDisplacementMetres": 0.0018244080673041748
+    },
+    "mouthUpperUpLeft": {
+      "movedVertices": 861,
+      "maximumDisplacementMetres": 0.0059623445207205835,
+      "meanMovedDisplacementMetres": 0.0011496297202265673
+    },
+    "mouthUpperUpRight": {
+      "movedVertices": 861,
+      "maximumDisplacementMetres": 0.0059623445207205835,
+      "meanMovedDisplacementMetres": 0.001149629720226568
+    }
+  },
+  "eyeMorphReceipts": {
+    "eyeLookDownLeft": {
+      "movedVertices": 48,
+      "maximumDisplacementMetres": 0.004755022849646256,
+      "meanMovedDisplacementMetres": 0.0034177873797479018
+    },
+    "eyeLookDownRight": {
+      "movedVertices": 48,
+      "maximumDisplacementMetres": 0.004755022849646256,
+      "meanMovedDisplacementMetres": 0.0034177873797479018
+    },
+    "eyeLookInLeft": {
+      "movedVertices": 48,
+      "maximumDisplacementMetres": 0.005825805689479947,
+      "meanMovedDisplacementMetres": 0.0043765177272088816
+    },
+    "eyeLookInRight": {
+      "movedVertices": 48,
+      "maximumDisplacementMetres": 0.005825805689479947,
+      "meanMovedDisplacementMetres": 0.0043765177272088816
+    },
+    "eyeLookOutLeft": {
+      "movedVertices": 48,
+      "maximumDisplacementMetres": 0.005725381476272839,
+      "meanMovedDisplacementMetres": 0.004273266565679713
+    },
+    "eyeLookOutRight": {
+      "movedVertices": 48,
+      "maximumDisplacementMetres": 0.005725381476272839,
+      "meanMovedDisplacementMetres": 0.004273266565679713
+    },
+    "eyeLookUpLeft": {
+      "movedVertices": 48,
+      "maximumDisplacementMetres": 0.002912031846809803,
+      "meanMovedDisplacementMetres": 0.0022317619659150364
+    },
+    "eyeLookUpRight": {
+      "movedVertices": 48,
+      "maximumDisplacementMetres": 0.002912031846809803,
+      "meanMovedDisplacementMetres": 0.0022317619659150364
+    }
+  },
+  "reviewStates": {
+    "neutral": {},
+    "blink": {
+      "eyeBlinkLeft": 0.82,
+      "eyeBlinkRight": 0.82
+    },
+    "object-glance": {
+      "eyeLookOutLeft": 0.18,
+      "eyeLookInRight": 0.18
+    },
+    "interrupted-return": {
+      "browInnerUp": 0.12,
+      "mouthPressLeft": 0.06,
+      "mouthPressRight": 0.06,
+      "cheekSquintLeft": 0.04,
+      "cheekSquintRight": 0.04
+    },
+    "silent-speech": {
+      "jawOpen": 0.28,
+      "mouthFunnel": 0.1,
+      "mouthUpperUpLeft": 0.06,
+      "mouthUpperUpRight": 0.06
+    },
+    "held-breath": {
+      "browDownLeft": 0.05,
+      "browDownRight": 0.05,
+      "cheekSquintLeft": 0.08,
+      "cheekSquintRight": 0.08,
+      "mouthPressLeft": 0.16,
+      "mouthPressRight": 0.16
+    }
+  },
+  "neuralGeneration": false,
+  "voiceOrTranscriptInput": false,
+  "sourceHashes": {
+    "faceunitsArchive": "d113107bd7eb59f3af4df6fc0ec29bfcc593f496d0b336aec14f086a80ce7146",
+    "eyeMhclo": "68582e28e9176cba7cfcf35208f671b6201b8d1bc95c32decff61a3160ec34d8",
+    "eyeObj": "783fe1e6331162c876520b4c2bed7a8ca06354ca15497e8ebd68bb1b59f4d3de",
+    "eyeMaterial": "4abad93ce50541c08127721e77bce035640c9f16bed16cd0f5524b1cd5908465",
+    "eyeTexture": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+  },
+  "sourceUrls": {
+    "faceunits": "https://static.makehumancommunity.org/assets/assetpacks/faceunits01.html",
+    "systemAssets": "https://static.makehumancommunity.org/asset_packs/makehuman_system_assets.html",
+    "license": "https://static.makehumancommunity.org/about/license.html"
+  },
+  "trackedEyeTexture": {
+    "file": "assets/3d/source/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+    "role": "CC0 MakeHuman brown-eye texture used by the facial blockout",
+    "bytes": 610817,
+    "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+  },
+  "characters": [
+    {
+      "id": "keeper",
+      "label": "Keeper",
+      "roleShape": "document-satchel",
+      "hairShape": "low-knot",
+      "triangles": 27840,
+      "meshCount": 19,
+      "boundsMetres": {
+        "minimum": [
+          -0.4962701201438904,
+          -0.3214700520038605,
+          0.000982522964477539
+        ],
+        "maximum": [
+          0.4962701201438904,
+          0.1899999976158142,
+          1.6974999904632568
+        ],
+        "dimensions": [
+          0.9925402402877808,
+          0.5114700496196747,
+          1.6965174674987793
+        ]
+      },
+      "materials": [
+        "M_SHI_Character_BindingClay",
+        "M_SHI_Character_EyeBrown",
+        "M_SHI_Character_HairClay",
+        "M_SHI_Character_RolePropClay",
+        "M_SHI_Character_SkinClay",
+        "M_SHI_keeper_ClothBase",
+        "M_SHI_keeper_ClothOuter"
+      ],
+      "exports": {
+        "fbx": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-keeper.fbx",
+          "role": "keeper facial FBX",
+          "bytes": 2675132,
+          "sha256": "61f34f5b3959c1ded2d86a3a7e0eca1e7429ad1971cecea4331cc13a0e71ec0e"
+        },
+        "glb": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-keeper.glb",
+          "role": "keeper facial GLB",
+          "bytes": 2988448,
+          "sha256": "7b3a74dc7a7b7b12fb8eacd14b758a1fa514903954d00a015032111f81cbd47a"
+        }
+      }
+    },
+    {
+      "id": "chen-sheng",
+      "label": "Chen Sheng",
+      "roleShape": "long-weather-layer",
+      "hairShape": "tied-knot",
+      "triangles": 27836,
+      "meshCount": 18,
+      "boundsMetres": {
+        "minimum": [
+          -0.496270090341568,
+          -0.32147011160850525,
+          0.0009825207525864244
+        ],
+        "maximum": [
+          0.496270090341568,
+          0.20000000298023224,
+          1.7250001430511475
+        ],
+        "dimensions": [
+          0.992540180683136,
+          0.5214701145887375,
+          1.724017622298561
+        ]
+      },
+      "materials": [
+        "M_SHI_Character_BindingClay",
+        "M_SHI_Character_EyeBrown",
+        "M_SHI_Character_HairClay",
+        "M_SHI_Character_SkinClay",
+        "M_SHI_chen-sheng_ClothBase",
+        "M_SHI_chen-sheng_ClothOuter"
+      ],
+      "exports": {
+        "fbx": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.fbx",
+          "role": "chen-sheng facial FBX",
+          "bytes": 2621036,
+          "sha256": "febf45db1a7e2d1dfeea4c845b22207237e4a38c73b05733449585f768739688"
+        },
+        "glb": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb",
+          "role": "chen-sheng facial GLB",
+          "bytes": 2987252,
+          "sha256": "378511d47964df5a3a6e198a737a3b2f5ea024a2c4f494c3d7052c83e6d88a03"
+        }
+      }
+    },
+    {
+      "id": "wu-guang",
+      "label": "Wu Guang",
+      "roleShape": "asymmetric-wrap",
+      "hairShape": "cropped-cap",
+      "triangles": 27680,
+      "meshCount": 17,
+      "boundsMetres": {
+        "minimum": [
+          -0.496270090341568,
+          -0.32147011160850525,
+          0.0009825207525864244
+        ],
+        "maximum": [
+          0.496270090341568,
+          0.1899999976158142,
+          1.6975001096725464
+        ],
+        "dimensions": [
+          0.992540180683136,
+          0.5114701092243195,
+          1.69651758891996
+        ]
+      },
+      "materials": [
+        "M_SHI_Character_BindingClay",
+        "M_SHI_Character_EyeBrown",
+        "M_SHI_Character_HairClay",
+        "M_SHI_Character_SkinClay",
+        "M_SHI_wu-guang_ClothBase",
+        "M_SHI_wu-guang_ClothOuter"
+      ],
+      "exports": {
+        "fbx": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-wu-guang.fbx",
+          "role": "wu-guang facial FBX",
+          "bytes": 2565436,
+          "sha256": "abcd72068348b9d860456b780c250f05380802021df90c10fa340ee08406f0e3"
+        },
+        "glb": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-wu-guang.glb",
+          "role": "wu-guang facial GLB",
+          "bytes": 2970436,
+          "sha256": "cb80eb61d45340e9a2c77ea06c6816a92cc2105b9cd6462cce3991e19f29d6e0"
+        }
+      }
+    },
+    {
+      "id": "yu-mu",
+      "label": "Aunt Yu",
+      "roleShape": "work-apron",
+      "hairShape": "broad-low-knot",
+      "triangles": 27828,
+      "meshCount": 18,
+      "boundsMetres": {
+        "minimum": [
+          -0.496270090341568,
+          -0.32147011160850525,
+          0.0009825207525864244
+        ],
+        "maximum": [
+          0.496270090341568,
+          0.1899999976158142,
+          1.6975001096725464
+        ],
+        "dimensions": [
+          0.992540180683136,
+          0.5114701092243195,
+          1.69651758891996
+        ]
+      },
+      "materials": [
+        "M_SHI_Character_BindingClay",
+        "M_SHI_Character_EyeBrown",
+        "M_SHI_Character_HairClay",
+        "M_SHI_Character_SkinClay",
+        "M_SHI_yu-mu_ClothBase",
+        "M_SHI_yu-mu_ClothOuter"
+      ],
+      "exports": {
+        "fbx": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.fbx",
+          "role": "yu-mu facial FBX",
+          "bytes": 2620604,
+          "sha256": "ca0dd69bd48cb797cbbeafd739439b44da37d09559409e1dce0df27807cc90cb"
+        },
+        "glb": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.glb",
+          "role": "yu-mu facial GLB",
+          "bytes": 2986324,
+          "sha256": "8e2feec71b161326b1deb9b8a9e1c046896b1ed674d10b4764b2c73761eff347"
+        }
+      }
+    },
+    {
+      "id": "qin-courier",
+      "label": "Courier Han",
+      "roleShape": "relay-satchel",
+      "hairShape": "small-high-tie",
+      "triangles": 27840,
+      "meshCount": 19,
+      "boundsMetres": {
+        "minimum": [
+          -0.496270090341568,
+          -0.32147011160850525,
+          0.0009825207525864244
+        ],
+        "maximum": [
+          0.496270090341568,
+          0.1899999976158142,
+          1.7470000982284546
+        ],
+        "dimensions": [
+          0.992540180683136,
+          0.5114701092243195,
+          1.7460175774758682
+        ]
+      },
+      "materials": [
+        "M_SHI_Character_BindingClay",
+        "M_SHI_Character_EyeBrown",
+        "M_SHI_Character_HairClay",
+        "M_SHI_Character_RolePropClay",
+        "M_SHI_Character_SkinClay",
+        "M_SHI_qin-courier_ClothBase",
+        "M_SHI_qin-courier_ClothOuter"
+      ],
+      "exports": {
+        "fbx": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.fbx",
+          "role": "qin-courier facial FBX",
+          "bytes": 2675420,
+          "sha256": "dfd9b71921e3ada115a40ff4493029e5c84dfc40c70861a9e1d2f546db0aac91"
+        },
+        "glb": {
+          "file": "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.glb",
+          "role": "qin-courier facial GLB",
+          "bytes": 2988184,
+          "sha256": "91b28f0d2450469cca3e6bafc1816af0001ac7ef5b57bdc1c1ea51fc935b59d6"
+        }
+      }
+    }
+  ],
+  "source": {
+    "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1.blend",
+    "role": "editable facial-performance engineering source",
+    "bytes": 7616511,
+    "sha256": "6e72c762162a10df001fddef877571bbbcb8d25f696203008d98ac234eabeecc"
+  },
+  "renders": {
+    "lineup-front": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-lineup-front.png",
+      "role": "lineup-front neutral review",
+      "bytes": 1942578,
+      "sha256": "bc44211ad2433ac1180e7ef6fcf4895c00468f3839340e3d12a3ca68d22c8fe1"
+    },
+    "lineup-oblique": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-lineup-oblique.png",
+      "role": "lineup-oblique neutral review",
+      "bytes": 1997710,
+      "sha256": "b27d9afcbb040fb7329fce5eba3d130c44205aa9ae1348583b525c46b68abd2c"
+    },
+    "neutral": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-neutral.png",
+      "role": "Keeper neutral engineering review",
+      "bytes": 802829,
+      "sha256": "723fbfa991cee4e47fe4bf1929d02582f8bfaf9689f1bd8829c9ccdb257f1dec",
+      "weights": {}
+    },
+    "blink": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-blink.png",
+      "role": "Keeper blink engineering review",
+      "bytes": 798549,
+      "sha256": "21de4bdb57d9b07484da8078b9a56405af4dc575b93858c49c5b2fcc187f3205",
+      "weights": {
+        "eyeBlinkLeft": 0.82,
+        "eyeBlinkRight": 0.82
+      }
+    },
+    "object-glance": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-object-glance.png",
+      "role": "Keeper object-glance engineering review",
+      "bytes": 803259,
+      "sha256": "6b629e9d89670d040ebb381515495b1ae34ba2cb4cb376b0e3ef807e6216408d",
+      "weights": {
+        "eyeLookOutLeft": 0.18,
+        "eyeLookInRight": 0.18
+      }
+    },
+    "interrupted-return": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-interrupted-return.png",
+      "role": "Keeper interrupted-return engineering review",
+      "bytes": 802351,
+      "sha256": "76c34f54e774ce3e3546ac859219012cc2ad6c489d2f6d5276d1ce6f1b0c8325",
+      "weights": {
+        "browInnerUp": 0.12,
+        "mouthPressLeft": 0.06,
+        "mouthPressRight": 0.06,
+        "cheekSquintLeft": 0.04,
+        "cheekSquintRight": 0.04
+      }
+    },
+    "silent-speech": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-silent-speech.png",
+      "role": "Keeper silent-speech engineering review",
+      "bytes": 804769,
+      "sha256": "8654e1ae6df9bbd0c2043cc528a4127089f1d81b738358722c09ff802ebae937",
+      "weights": {
+        "jawOpen": 0.28,
+        "mouthFunnel": 0.1,
+        "mouthUpperUpLeft": 0.06,
+        "mouthUpperUpRight": 0.06
+      }
+    },
+    "held-breath": {
+      "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1-held-breath.png",
+      "role": "Keeper held-breath engineering review",
+      "bytes": 802583,
+      "sha256": "a4509bfc7f6e52e1fb6d4bbb048a8b5fa38a3f91fff7af82becea2bfbff4a950",
+      "weights": {
+        "browDownLeft": 0.05,
+        "browDownRight": 0.05,
+        "cheekSquintLeft": 0.08,
+        "cheekSquintRight": 0.08,
+        "mouthPressLeft": 0.16,
+        "mouthPressRight": 0.16
+      }
+    }
+  },
+  "limitations": [
+    "silent intent cadence only; no lip sync, phoneme timing, transcript or voice authority",
+    "generic shared non-portrait face; no historical likeness claim",
+    "medium development framing only; no final close dialogue or marketing approval",
+    "no teeth, tongue, final inner-mouth, eyebrow, lash, skin, cloth, hair or wet-material approval"
+  ]
+}

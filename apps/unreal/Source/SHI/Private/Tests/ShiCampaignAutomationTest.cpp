@@ -17,6 +17,7 @@
 #include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiCouncilCharacterPresentationModel.h"
+#include "ShiCouncilFacialPerformanceModel.h"
 #include "ShiCouncilPerformancePresentationModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiRainPresentationModel.h"
@@ -25,6 +26,7 @@
 #include "Engine/SkeletalMesh.h"
 #include "Animation/AnimSequence.h"
 #include "Animation/Skeleton.h"
+#include <limits>
 #if WITH_EDITOR
 #include "Animation/AnimData/IAnimationDataModel.h"
 #endif
@@ -506,6 +508,477 @@ bool FShiCouncilPerformancePresentationTest::RunTest(const FString& Parameters)
     AuthorityDrift.bGameplayAuthority = true;
     TestFalse(TEXT("visual performance cannot acquire gameplay authority"),
         FShiCouncilPerformancePresentationModel::Validate(AuthorityDrift, Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCouncilFacialPerformanceTest,
+    "SHI.Cinematic.CouncilFacialPerformanceV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCouncilFacialPerformanceTest::RunTest(const FString& Parameters)
+{
+    const TArray<FString> ExpectedCharacterIds = {
+        TEXT("keeper"), TEXT("chen-sheng"), TEXT("wu-guang"), TEXT("yu-mu"), TEXT("qin-courier")
+    };
+    const TArray<FString> ExpectedRoleIds = {TEXT("listener"), TEXT("speaker")};
+    const TArray<FString> ExpectedStateIds = {
+        TEXT("neutral"), TEXT("blink"), TEXT("object-glance"),
+        TEXT("interrupted-return"), TEXT("silent-speech"), TEXT("held-breath")
+    };
+    const TArray<FName> ExpectedMorphTargets = {
+        TEXT("eyeBlinkLeft"), TEXT("eyeBlinkRight"),
+        TEXT("eyeLookDownLeft"), TEXT("eyeLookDownRight"),
+        TEXT("eyeLookInLeft"), TEXT("eyeLookInRight"),
+        TEXT("eyeLookOutLeft"), TEXT("eyeLookOutRight"),
+        TEXT("eyeLookUpLeft"), TEXT("eyeLookUpRight"),
+        TEXT("browInnerUp"), TEXT("browDownLeft"), TEXT("browDownRight"),
+        TEXT("cheekSquintLeft"), TEXT("cheekSquintRight"),
+        TEXT("jawOpen"), TEXT("mouthFunnel"),
+        TEXT("mouthPressLeft"), TEXT("mouthPressRight"),
+        TEXT("mouthUpperUpLeft"), TEXT("mouthUpperUpRight")
+    };
+    const TArray<FString> ExpectedMeshPaths = {
+        TEXT("/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_Keeper_Facial_01.SKM_SHI_DazeCouncil_Keeper_Facial_01"),
+        TEXT("/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_ChenSheng_Facial_01.SKM_SHI_DazeCouncil_ChenSheng_Facial_01"),
+        TEXT("/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_WuGuang_Facial_01.SKM_SHI_DazeCouncil_WuGuang_Facial_01"),
+        TEXT("/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_YuMu_Facial_01.SKM_SHI_DazeCouncil_YuMu_Facial_01"),
+        TEXT("/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_QinCourier_Facial_01.SKM_SHI_DazeCouncil_QinCourier_Facial_01")
+    };
+    const TArray<int32> ExpectedTriangles = {27840, 27836, 27680, 27828, 27840};
+    const TArray<int32> ExpectedMaterialCounts = {7, 6, 6, 6, 7};
+    const FString ExpectedSkeletonPath =
+        TEXT("/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton");
+
+    TestTrue(TEXT("five exact facial identities remain canonical and ordered"),
+        FShiCouncilFacialPerformanceModel::CanonicalCharacterIds() == ExpectedCharacterIds);
+    TestTrue(TEXT("listener and speaker roles remain exact and ordered"),
+        FShiCouncilFacialPerformanceModel::CanonicalRoleIds() == ExpectedRoleIds);
+    TestTrue(TEXT("six reviewed silent-intent states remain exact and ordered"),
+        FShiCouncilFacialPerformanceModel::CanonicalStateIds() == ExpectedStateIds);
+    TestTrue(TEXT("the facial rig exposes exactly the admitted 21 morphs in canonical order"),
+        FShiCouncilFacialPerformanceModel::CanonicalMorphTargets() == ExpectedMorphTargets);
+    TestEqual(TEXT("the morph contract admits no extra controls"),
+        FShiCouncilFacialPerformanceModel::CanonicalMorphTargets().Num(), 21);
+    TestEqual(TEXT("the facial meshes retain the exact shared bone count"),
+        FShiCouncilFacialPerformanceModel::BoneCount(), 53);
+    TestEqual(TEXT("metre-valued facial assets retain the x100 presentation scale"),
+        FShiCouncilFacialPerformanceModel::PresentationScale(), 100.f);
+
+    FString Error;
+    TSet<const USkeleton*> Skeletons;
+    FShiCouncilFacialMeshData Stable;
+    for (int32 IdentityIndex = 0; IdentityIndex < ExpectedCharacterIds.Num(); ++IdentityIndex)
+    {
+        const FString& CharacterId = ExpectedCharacterIds[IdentityIndex];
+        FShiCouncilFacialMeshData Presentation;
+        TestTrue(*FString::Printf(TEXT("%s facial presentation builds"), *CharacterId),
+            FShiCouncilFacialPerformanceModel::Build(CharacterId, Presentation, Error));
+        if (!Error.IsEmpty()) AddError(Error);
+        TestTrue(*FString::Printf(TEXT("%s facial presentation validates"), *CharacterId),
+            FShiCouncilFacialPerformanceModel::Validate(Presentation, Error));
+        if (!Error.IsEmpty()) AddError(Error);
+        TestEqual(*FString::Printf(TEXT("%s uses its exact isolated facial mesh path"), *CharacterId),
+            Presentation.MeshPath, ExpectedMeshPaths[IdentityIndex]);
+        TestEqual(*FString::Printf(TEXT("%s uses the exact accepted shared Skeleton"), *CharacterId),
+            Presentation.SkeletonPath, ExpectedSkeletonPath);
+        TestTrue(*FString::Printf(TEXT("%s retains the exact 21-control order with no extras"), *CharacterId),
+            Presentation.MorphTargets == ExpectedMorphTargets);
+        TestTrue(*FString::Printf(TEXT("%s remains a disclosed generic engineering blockout"), *CharacterId),
+            Presentation.bEngineeringBlockout && Presentation.bGenericNonPortraitFace
+            && Presentation.bDeterministic && Presentation.bLanguageNeutral
+            && Presentation.bSilentIntentCadence && Presentation.bReducedMotionSupported
+            && Presentation.bWideAndMediumFramingOnly
+            && Presentation.HistoricalDisclosure.Contains(TEXT("GENERIC NON-PORTRAIT FACE"))
+            && Presentation.HistoricalDisclosure.Contains(TEXT("NOT FINAL ACTING")));
+        TestTrue(*FString::Printf(TEXT("%s cannot claim voice, transcript, randomness or authority"), *CharacterId),
+            !Presentation.bAudioDriven && !Presentation.bTranscriptDriven
+            && !Presentation.bPhonemeDriven && !Presentation.bRandomized
+            && !Presentation.bInteractionAuthority && !Presentation.bGameplayAuthority
+            && !Presentation.bSaveAuthority && !Presentation.bReplicated);
+        TestTrue(*FString::Printf(TEXT("%s cannot claim close framing or final face/acting/voice"), *CharacterId),
+            !Presentation.bCloseFramingApproved && !Presentation.bFinalFace
+            && !Presentation.bFinalActing && !Presentation.bFinalVoice);
+        TestTrue(*FString::Printf(TEXT("%s stays inside topology, material and physical-height admission"), *CharacterId),
+            Presentation.SourceTriangles > 0
+            && Presentation.SourceTriangles <= FShiCouncilFacialPerformanceModel::MaximumTriangles()
+            && Presentation.BoneCount == FShiCouncilFacialPerformanceModel::BoneCount()
+            && Presentation.MaterialSlots.Num() >= 6
+            && Presentation.MaterialSlots.Num() <= FShiCouncilFacialPerformanceModel::MaximumMaterialSlots()
+            && Presentation.MaterialSlots.Contains(FName(TEXT("M_SHI_Character_EyeBrown")))
+            && Presentation.AssetLocalDimensions.Z * Presentation.ComponentScale.Z
+                >= FShiCouncilFacialPerformanceModel::MinimumPresentedHeight()
+            && Presentation.AssetLocalDimensions.Z * Presentation.ComponentScale.Z
+                <= FShiCouncilFacialPerformanceModel::MaximumPresentedHeight());
+        TestEqual(*FString::Printf(TEXT("%s preserves its exact reviewed triangle receipt"), *CharacterId),
+            Presentation.SourceTriangles, ExpectedTriangles[IdentityIndex]);
+        TestEqual(*FString::Printf(TEXT("%s preserves its exact reviewed material count"), *CharacterId),
+            Presentation.MaterialSlots.Num(), ExpectedMaterialCounts[IdentityIndex]);
+
+        USkeletalMesh* Mesh = LoadObject<USkeletalMesh>(nullptr, *Presentation.MeshPath);
+        TestNotNull(*FString::Printf(TEXT("%s exact facial SkeletalMesh loads"), *CharacterId), Mesh);
+        if (Mesh)
+        {
+            TestTrue(*FString::Printf(
+                TEXT("%s live mesh passes exact bones, materials, bounds, topology and morph admission"),
+                *CharacterId),
+                FShiCouncilFacialPerformanceModel::ValidateMesh(Presentation, *Mesh, Error));
+            if (!Error.IsEmpty()) AddError(Error);
+            TestNotNull(*FString::Printf(TEXT("%s live mesh retains the shared Skeleton"), *CharacterId),
+                Mesh->GetSkeleton());
+            if (Mesh->GetSkeleton()) Skeletons.Add(Mesh->GetSkeleton());
+        }
+        if (IdentityIndex == 0) Stable = Presentation;
+    }
+    TestEqual(TEXT("all five live facial meshes use one exact Skeleton object"), Skeletons.Num(), 1);
+    if (Stable.MaterialSlots.Num() < 2 || Stable.MorphTargets.Num() != ExpectedMorphTargets.Num())
+    {
+        AddError(TEXT("Canonical keeper facial admission did not build; drift attacks cannot run safely."));
+        return false;
+    }
+
+    const FString StablePath = Stable.MeshPath;
+    const TArray<FName> StableMorphTargets = Stable.MorphTargets;
+    TestFalse(TEXT("unknown facial identity is rejected"),
+        FShiCouncilFacialPerformanceModel::Build(TEXT("invented-general"), Stable, Error));
+    TestTrue(TEXT("failed facial identity build is atomic"),
+        Stable.CharacterId == TEXT("keeper") && Stable.MeshPath == StablePath
+        && Stable.MorphTargets == StableMorphTargets);
+
+    FShiCouncilFacialMeshData PathDrift = Stable;
+    PathDrift.MeshPath = TEXT("/Game/Generated/Unreviewed.Unreviewed");
+    TestFalse(TEXT("facial mesh path drift is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(PathDrift, Error));
+    FShiCouncilFacialMeshData SkeletonDrift = Stable;
+    SkeletonDrift.SkeletonPath = TEXT("/Game/Generated/WrongSkeleton.WrongSkeleton");
+    TestFalse(TEXT("facial shared-Skeleton path drift is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(SkeletonDrift, Error));
+    FShiCouncilFacialMeshData ScaleDrift = Stable;
+    ScaleDrift.ComponentScale = FVector::OneVector;
+    TestFalse(TEXT("facial metre-to-centimetre scale drift is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(ScaleDrift, Error));
+    FShiCouncilFacialMeshData MaterialOrderDrift = Stable;
+    MaterialOrderDrift.MaterialSlots.Swap(0, 1);
+    TestFalse(TEXT("facial material order drift is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(MaterialOrderDrift, Error));
+    FShiCouncilFacialMeshData ExtraMaterial = Stable;
+    ExtraMaterial.MaterialSlots.Add(FName(TEXT("M_SHI_UnreviewedExtra")));
+    TestFalse(TEXT("extra facial material binding is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(ExtraMaterial, Error));
+    FShiCouncilFacialMeshData MorphOrderDrift = Stable;
+    MorphOrderDrift.MorphTargets.Swap(0, 1);
+    TestFalse(TEXT("facial morph order drift is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(MorphOrderDrift, Error));
+    FShiCouncilFacialMeshData ExtraMorph = Stable;
+    ExtraMorph.MorphTargets.Add(FName(TEXT("generatedSmile")));
+    TestFalse(TEXT("extra facial morph control is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(ExtraMorph, Error));
+    FShiCouncilFacialMeshData TriangleDrift = Stable;
+    ++TriangleDrift.SourceTriangles;
+    TestFalse(TEXT("facial triangle receipt drift is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(TriangleDrift, Error));
+    FShiCouncilFacialMeshData BoneDrift = Stable;
+    --BoneDrift.BoneCount;
+    TestFalse(TEXT("facial bone-count drift is rejected"),
+        FShiCouncilFacialPerformanceModel::Validate(BoneDrift, Error));
+    FShiCouncilFacialMeshData AuthorityDrift = Stable;
+    AuthorityDrift.bInteractionAuthority = true;
+    TestFalse(TEXT("facial presentation cannot acquire interaction authority"),
+        FShiCouncilFacialPerformanceModel::Validate(AuthorityDrift, Error));
+    AuthorityDrift = Stable;
+    AuthorityDrift.bGameplayAuthority = true;
+    TestFalse(TEXT("facial presentation cannot acquire gameplay authority"),
+        FShiCouncilFacialPerformanceModel::Validate(AuthorityDrift, Error));
+    AuthorityDrift = Stable;
+    AuthorityDrift.bSaveAuthority = true;
+    TestFalse(TEXT("facial presentation cannot acquire save authority"),
+        FShiCouncilFacialPerformanceModel::Validate(AuthorityDrift, Error));
+    AuthorityDrift = Stable;
+    AuthorityDrift.bReplicated = true;
+    TestFalse(TEXT("facial presentation cannot acquire replication authority"),
+        FShiCouncilFacialPerformanceModel::Validate(AuthorityDrift, Error));
+    FShiCouncilFacialMeshData AdmissionFlagDrift = Stable;
+    AdmissionFlagDrift.bEngineeringBlockout = false;
+    TestFalse(TEXT("facial presentation cannot discard its engineering-blockout disclosure"),
+        FShiCouncilFacialPerformanceModel::Validate(AdmissionFlagDrift, Error));
+    FShiCouncilFacialMeshData AudioDrift = Stable;
+    AudioDrift.bAudioDriven = true;
+    TestFalse(TEXT("silent intent cadence cannot become audio driven"),
+        FShiCouncilFacialPerformanceModel::Validate(AudioDrift, Error));
+    FShiCouncilFacialMeshData TranscriptDrift = Stable;
+    TranscriptDrift.bTranscriptDriven = true;
+    TestFalse(TEXT("silent intent cadence cannot become transcript driven"),
+        FShiCouncilFacialPerformanceModel::Validate(TranscriptDrift, Error));
+    FShiCouncilFacialMeshData PhonemeDrift = Stable;
+    PhonemeDrift.bPhonemeDriven = true;
+    TestFalse(TEXT("silent intent cadence cannot become phoneme driven"),
+        FShiCouncilFacialPerformanceModel::Validate(PhonemeDrift, Error));
+    FShiCouncilFacialMeshData RandomDrift = Stable;
+    RandomDrift.bRandomized = true;
+    TestFalse(TEXT("deterministic facial presentation cannot acquire randomness"),
+        FShiCouncilFacialPerformanceModel::Validate(RandomDrift, Error));
+    FShiCouncilFacialMeshData CloseFramingDrift = Stable;
+    CloseFramingDrift.bCloseFramingApproved = true;
+    TestFalse(TEXT("engineering face cannot acquire close-framing approval"),
+        FShiCouncilFacialPerformanceModel::Validate(CloseFramingDrift, Error));
+    FShiCouncilFacialMeshData FinalFaceDrift = Stable;
+    FinalFaceDrift.bFinalFace = true;
+    TestFalse(TEXT("generic facial blockout cannot become final face art"),
+        FShiCouncilFacialPerformanceModel::Validate(FinalFaceDrift, Error));
+    FShiCouncilFacialMeshData FinalActingDrift = Stable;
+    FinalActingDrift.bFinalActing = true;
+    TestFalse(TEXT("silent intent cadence cannot become final acting"),
+        FShiCouncilFacialPerformanceModel::Validate(FinalActingDrift, Error));
+    FShiCouncilFacialMeshData VoiceDrift = Stable;
+    VoiceDrift.bFinalVoice = true;
+    TestFalse(TEXT("silent facial blockout cannot claim final voice"),
+        FShiCouncilFacialPerformanceModel::Validate(VoiceDrift, Error));
+    FShiCouncilFacialMeshData FramingDrift = Stable;
+    FramingDrift.bWideAndMediumFramingOnly = false;
+    TestFalse(TEXT("engineering face cannot silently remove its framing restriction"),
+        FShiCouncilFacialPerformanceModel::Validate(FramingDrift, Error));
+
+    auto FramesEqual = [](const FShiCouncilFacialFrameData& Left,
+                          const FShiCouncilFacialFrameData& Right)
+    {
+        if (Left.RoleId != Right.RoleId || Left.StateId != Right.StateId
+            || Left.CycleSeconds != Right.CycleSeconds || Left.TargetAlpha != Right.TargetAlpha
+            || Left.bSpeaker != Right.bSpeaker || Left.bReducedMotion != Right.bReducedMotion
+            || Left.bMotionSuppressed != Right.bMotionSuppressed
+            || Left.bDeterministic != Right.bDeterministic
+            || Left.bLanguageNeutral != Right.bLanguageNeutral
+            || Left.bSilentIntentCadence != Right.bSilentIntentCadence
+            || Left.bAudioDriven != Right.bAudioDriven
+            || Left.bTranscriptDriven != Right.bTranscriptDriven
+            || Left.bPhonemeDriven != Right.bPhonemeDriven
+            || Left.bRandomized != Right.bRandomized
+            || Left.bInteractionAuthority != Right.bInteractionAuthority
+            || Left.bGameplayAuthority != Right.bGameplayAuthority
+            || Left.bSaveAuthority != Right.bSaveAuthority
+            || Left.bReplicated != Right.bReplicated
+            || Left.MorphWeights.Num() != Right.MorphWeights.Num())
+        {
+            return false;
+        }
+        for (int32 Index = 0; Index < Left.MorphWeights.Num(); ++Index)
+        {
+            if (Left.MorphWeights[Index].MorphTarget != Right.MorphWeights[Index].MorphTarget
+                || Left.MorphWeights[Index].Weight != Right.MorphWeights[Index].Weight)
+            {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    FShiCouncilFacialFrameData SpeakerFrame;
+    FShiCouncilFacialFrameData RepeatedSpeakerFrame;
+    TestTrue(TEXT("speaker silent-speech state evaluates"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true, .48f, false, SpeakerFrame, Error));
+    TestTrue(TEXT("identical speaker input evaluates repeatedly"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true, .48f, false, RepeatedSpeakerFrame, Error));
+    TestTrue(TEXT("facial evaluator is exactly deterministic for repeated input"),
+        FramesEqual(SpeakerFrame, RepeatedSpeakerFrame));
+    TestTrue(TEXT("speaker state has exact silent, language-neutral role flags"),
+        SpeakerFrame.RoleId == TEXT("speaker") && SpeakerFrame.bSpeaker
+        && SpeakerFrame.StateId == TEXT("silent-speech")
+        && SpeakerFrame.bDeterministic && SpeakerFrame.bLanguageNeutral
+        && SpeakerFrame.bSilentIntentCadence && !SpeakerFrame.bAudioDriven
+        && !SpeakerFrame.bTranscriptDriven && !SpeakerFrame.bPhonemeDriven
+        && !SpeakerFrame.bRandomized && !SpeakerFrame.bInteractionAuthority
+        && !SpeakerFrame.bGameplayAuthority && !SpeakerFrame.bSaveAuthority
+        && !SpeakerFrame.bReplicated);
+    float Weight = -1.f;
+    TestTrue(TEXT("speaker silent speech reaches its exact jaw-open peak"),
+        FShiCouncilFacialPerformanceModel::TryGetWeight(
+            SpeakerFrame, FName(TEXT("jawOpen")), Weight)
+        && Weight == .28f);
+    TestTrue(TEXT("speaker silent speech reaches its exact mouth-funnel peak"),
+        FShiCouncilFacialPerformanceModel::TryGetWeight(
+            SpeakerFrame, FName(TEXT("mouthFunnel")), Weight)
+        && Weight == .10f);
+
+    FShiCouncilFacialFrameData SpeakerGlance;
+    FShiCouncilFacialFrameData SpeakerReturn;
+    FShiCouncilFacialFrameData SpeakerBlink;
+    TestTrue(TEXT("speaker object glance evaluates at its exact peak"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true, 1.24f, false, SpeakerGlance, Error)
+        && SpeakerGlance.StateId == TEXT("object-glance") && SpeakerGlance.TargetAlpha == 1.f);
+    TestTrue(TEXT("speaker interrupted return evaluates at its exact peak"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true, 1.96f, false, SpeakerReturn, Error)
+        && SpeakerReturn.StateId == TEXT("interrupted-return") && SpeakerReturn.TargetAlpha == 1.f);
+    TestTrue(TEXT("speaker blink evaluates at its exact peak"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true, 2.68f, false, SpeakerBlink, Error)
+        && SpeakerBlink.StateId == TEXT("blink") && SpeakerBlink.TargetAlpha == 1.f);
+    TestTrue(TEXT("speaker blink uses the reviewed bilateral peak"),
+        FShiCouncilFacialPerformanceModel::TryGetWeight(
+            SpeakerBlink, FName(TEXT("eyeBlinkLeft")), Weight)
+        && Weight == .82f
+        && FShiCouncilFacialPerformanceModel::TryGetWeight(
+            SpeakerBlink, FName(TEXT("eyeBlinkRight")), Weight)
+        && Weight == .82f);
+
+    FShiCouncilFacialFrameData ListenerGlance;
+    FShiCouncilFacialFrameData ListenerBlink;
+    FShiCouncilFacialFrameData ListenerBreath;
+    TestTrue(TEXT("listener object glance evaluates at its exact peak"),
+        FShiCouncilFacialPerformanceModel::Evaluate(false, .78f, false, ListenerGlance, Error)
+        && ListenerGlance.RoleId == TEXT("listener") && !ListenerGlance.bSpeaker
+        && ListenerGlance.StateId == TEXT("object-glance") && ListenerGlance.TargetAlpha == 1.f);
+    TestTrue(TEXT("listener blink evaluates at its exact peak"),
+        FShiCouncilFacialPerformanceModel::Evaluate(false, 1.64f, false, ListenerBlink, Error)
+        && ListenerBlink.StateId == TEXT("blink") && ListenerBlink.TargetAlpha == 1.f);
+    TestTrue(TEXT("listener held breath evaluates at its exact peak"),
+        FShiCouncilFacialPerformanceModel::Evaluate(false, 2.76f, false, ListenerBreath, Error)
+        && ListenerBreath.StateId == TEXT("held-breath") && ListenerBreath.TargetAlpha == 1.f);
+    TestTrue(TEXT("listener held breath reaches the exact bilateral mouth-press peak"),
+        FShiCouncilFacialPerformanceModel::TryGetWeight(
+            ListenerBreath, FName(TEXT("mouthPressLeft")), Weight)
+        && Weight == .16f
+        && FShiCouncilFacialPerformanceModel::TryGetWeight(
+            ListenerBreath, FName(TEXT("mouthPressRight")), Weight)
+        && Weight == .16f);
+
+    bool bAllSampledFramesRemainBounded = true;
+    for (int32 Sample = 0; Sample <= 400 && bAllSampledFramesRemainBounded; Sample += 5)
+    {
+        for (int32 SpeakerIndex = 0; SpeakerIndex < 2 && bAllSampledFramesRemainBounded; ++SpeakerIndex)
+        {
+            FShiCouncilFacialFrameData SampledFrame;
+            bAllSampledFramesRemainBounded = FShiCouncilFacialPerformanceModel::Evaluate(
+                SpeakerIndex == 1, static_cast<float>(Sample) / 100.f, false, SampledFrame, Error)
+                && SampledFrame.MorphWeights.Num() == ExpectedMorphTargets.Num();
+            for (int32 MorphIndex = 0;
+                bAllSampledFramesRemainBounded && MorphIndex < SampledFrame.MorphWeights.Num();
+                ++MorphIndex)
+            {
+                const FShiCouncilFacialMorphWeight& SampledWeight = SampledFrame.MorphWeights[MorphIndex];
+                bAllSampledFramesRemainBounded =
+                    SampledWeight.MorphTarget == ExpectedMorphTargets[MorphIndex]
+                    && FMath::IsFinite(SampledWeight.Weight) && SampledWeight.Weight >= 0.f
+                    && SampledWeight.Weight <= FShiCouncilFacialPerformanceModel::MaximumWeightForMorphTarget(
+                        SampledWeight.MorphTarget) + KINDA_SMALL_NUMBER;
+            }
+        }
+    }
+    TestTrue(TEXT("all listener and speaker timeline samples preserve exact morph order and bounds"),
+        bAllSampledFramesRemainBounded);
+
+    FShiCouncilFacialFrameData ReducedCut;
+    FShiCouncilFacialFrameData ReducedNeutral;
+    TestTrue(TEXT("reduced-motion speaker state uses one exact held cut without smoothing"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true, .19f, true, ReducedCut, Error)
+        && ReducedCut.StateId == TEXT("silent-speech") && ReducedCut.TargetAlpha == 1.f
+        && ReducedCut.bReducedMotion && ReducedCut.bMotionSuppressed);
+    TestTrue(TEXT("reduced-motion held cut preserves the reviewed complete named-state weights"),
+        FShiCouncilFacialPerformanceModel::TryGetWeight(ReducedCut, FName(TEXT("jawOpen")), Weight)
+        && Weight == .28f
+        && FShiCouncilFacialPerformanceModel::TryGetWeight(
+            ReducedCut, FName(TEXT("mouthFunnel")), Weight)
+        && Weight == .10f);
+    TestTrue(TEXT("reduced-motion pass settles to an exact neutral frame"),
+        FShiCouncilFacialPerformanceModel::Evaluate(false, 10.f, true, ReducedNeutral, Error)
+        && ReducedNeutral.StateId == TEXT("neutral") && ReducedNeutral.TargetAlpha == 0.f
+        && ReducedNeutral.bReducedMotion && ReducedNeutral.bMotionSuppressed
+        && ReducedNeutral.CycleSeconds < FShiCouncilFacialPerformanceModel::CycleDurationSeconds()
+        && ReducedNeutral.CycleSeconds
+            > FShiCouncilFacialPerformanceModel::CycleDurationSeconds() - .001f);
+    bool bReducedNeutralIsExact = ReducedNeutral.MorphWeights.Num() == ExpectedMorphTargets.Num();
+    for (int32 Index = 0; bReducedNeutralIsExact && Index < ReducedNeutral.MorphWeights.Num(); ++Index)
+    {
+        bReducedNeutralIsExact = ReducedNeutral.MorphWeights[Index].MorphTarget == ExpectedMorphTargets[Index]
+            && ReducedNeutral.MorphWeights[Index].Weight == 0.f;
+    }
+    TestTrue(TEXT("reduced-motion neutral contains all 21 canonical controls at exact zero"),
+        bReducedNeutralIsExact);
+    FShiCouncilFacialFrameData WouldHaveLooped;
+    TestTrue(TEXT("reduced-motion cadence is a single clamped pass and cannot loop after four seconds"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true, 4.48f, true, WouldHaveLooped, Error)
+        && WouldHaveLooped.StateId == TEXT("neutral") && WouldHaveLooped.TargetAlpha == 0.f
+        && WouldHaveLooped.CycleSeconds
+            > FShiCouncilFacialPerformanceModel::CycleDurationSeconds() - .001f);
+
+    const FShiCouncilFacialFrameData StableFrame = SpeakerFrame;
+    if (StableFrame.MorphWeights.Num() != ExpectedMorphTargets.Num())
+    {
+        AddError(TEXT("Canonical speaker facial frame did not evaluate; frame drift attacks cannot run safely."));
+        return false;
+    }
+    TestFalse(TEXT("negative facial evaluation time is rejected"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true, -KINDA_SMALL_NUMBER, false, SpeakerFrame, Error));
+    TestTrue(TEXT("failed negative-time evaluation is atomic"), FramesEqual(SpeakerFrame, StableFrame));
+    TestFalse(TEXT("NaN facial evaluation time is rejected"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true,
+            std::numeric_limits<float>::quiet_NaN(), false, SpeakerFrame, Error));
+    TestTrue(TEXT("failed NaN-time evaluation is atomic"), FramesEqual(SpeakerFrame, StableFrame));
+    TestFalse(TEXT("infinite facial evaluation time is rejected"),
+        FShiCouncilFacialPerformanceModel::Evaluate(true,
+            std::numeric_limits<float>::infinity(), false, SpeakerFrame, Error));
+    TestTrue(TEXT("failed infinite-time evaluation is atomic"), FramesEqual(SpeakerFrame, StableFrame));
+
+    FShiCouncilFacialFrameData FrameOrderDrift = StableFrame;
+    FrameOrderDrift.MorphWeights.Swap(0, 1);
+    TestFalse(TEXT("facial frame morph reordering is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(FrameOrderDrift, Error));
+    FShiCouncilFacialFrameData ExtraFrameMorph = StableFrame;
+    FShiCouncilFacialMorphWeight GeneratedExtraMorph;
+    GeneratedExtraMorph.MorphTarget = FName(TEXT("generatedSmile"));
+    ExtraFrameMorph.MorphWeights.Add(GeneratedExtraMorph);
+    TestFalse(TEXT("facial frame extra morph control is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(ExtraFrameMorph, Error));
+    FShiCouncilFacialFrameData OverweightFrame = StableFrame;
+    OverweightFrame.MorphWeights[0].Weight =
+        FShiCouncilFacialPerformanceModel::MaximumWeightForMorphTarget(
+            OverweightFrame.MorphWeights[0].MorphTarget) + .01f;
+    TestFalse(TEXT("facial frame overweight control is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(OverweightFrame, Error));
+    FShiCouncilFacialFrameData ValueDriftFrame = StableFrame;
+    ValueDriftFrame.MorphWeights[0].Weight = .01f;
+    TestFalse(TEXT("facial frame rejects an in-range control outside its complete named state"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(ValueDriftFrame, Error));
+    FShiCouncilFacialFrameData RandomFrame = StableFrame;
+    RandomFrame.bRandomized = true;
+    TestFalse(TEXT("facial frame randomness is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(RandomFrame, Error));
+    FShiCouncilFacialFrameData AudioFrame = StableFrame;
+    AudioFrame.bAudioDriven = true;
+    TestFalse(TEXT("facial frame audio authority is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(AudioFrame, Error));
+    FShiCouncilFacialFrameData TranscriptFrame = StableFrame;
+    TranscriptFrame.bTranscriptDriven = true;
+    TestFalse(TEXT("facial frame transcript input is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(TranscriptFrame, Error));
+    FShiCouncilFacialFrameData PhonemeFrame = StableFrame;
+    PhonemeFrame.bPhonemeDriven = true;
+    TestFalse(TEXT("facial frame phoneme input is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(PhonemeFrame, Error));
+    FShiCouncilFacialFrameData SaveFrame = StableFrame;
+    SaveFrame.bSaveAuthority = true;
+    TestFalse(TEXT("facial frame save authority is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(SaveFrame, Error));
+    FShiCouncilFacialFrameData GameplayFrame = StableFrame;
+    GameplayFrame.bGameplayAuthority = true;
+    TestFalse(TEXT("facial frame gameplay authority is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(GameplayFrame, Error));
+    FShiCouncilFacialFrameData InteractionFrame = StableFrame;
+    InteractionFrame.bInteractionAuthority = true;
+    TestFalse(TEXT("facial frame interaction authority is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(InteractionFrame, Error));
+    FShiCouncilFacialFrameData ReplicatedFrame = StableFrame;
+    ReplicatedFrame.bReplicated = true;
+    TestFalse(TEXT("facial frame replication authority is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(ReplicatedFrame, Error));
+    FShiCouncilFacialFrameData RoleFrame = StableFrame;
+    RoleFrame.RoleId = TEXT("narrator");
+    TestFalse(TEXT("facial frame role drift is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(RoleFrame, Error));
+    FShiCouncilFacialFrameData StateFrame = StableFrame;
+    StateFrame.StateId = TEXT("generated-smile");
+    TestFalse(TEXT("facial frame state drift is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(StateFrame, Error));
+    FShiCouncilFacialFrameData CycleFrame = StableFrame;
+    CycleFrame.CycleSeconds = FShiCouncilFacialPerformanceModel::CycleDurationSeconds();
+    TestFalse(TEXT("facial frame cycle overflow is rejected"),
+        FShiCouncilFacialPerformanceModel::ValidateFrame(CycleFrame, Error));
     return !HasAnyErrors();
 }
 

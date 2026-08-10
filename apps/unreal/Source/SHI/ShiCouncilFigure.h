@@ -21,14 +21,18 @@ class SHI_API AShiCouncilFigure : public AActor
 
 public:
     AShiCouncilFigure();
+    virtual void Tick(float DeltaSeconds) override;
     bool InitializeFigure(UStaticMesh* Cylinder, UStaticMesh* Sphere, UStaticMesh* Cube,
         UMaterialInterface* BasicMaterial, FString& OutError);
     void ApplyParticipant(const FShiCouncilParticipantData& Participant);
+    void SetReducedMotion(bool bValue);
     void SetReviewVisible(bool bVisible);
     const FString& GetSlotId() const { return SlotId; }
     const FString& GetCharacterId() const { return CharacterId; }
     bool IsUsingSkeletalPresentation() const { return bUsingSkeletalPresentation; }
     bool IsUsingPerformance() const { return bUsingPerformance; }
+    bool IsUsingFacialPerformance() const { return bUsingFacialPerformance; }
+    bool IsReducedMotion() const { return bReducedMotion; }
     const FString& GetPerformanceRoleId() const { return PerformanceRoleId; }
 
 private:
@@ -51,10 +55,22 @@ private:
     UPROPERTY(Transient)
     TMap<FString, TObjectPtr<USkeletalMesh>> CharacterMeshes;
     UPROPERTY(Transient)
+    TMap<FString, TObjectPtr<USkeletalMesh>> FacialCharacterMeshes;
+    UPROPERTY(Transient)
     TMap<FString, TObjectPtr<UAnimSequence>> PerformanceClips;
     FString SlotId;
     FString CharacterId;
     FString PerformanceRoleId;
     bool bUsingSkeletalPresentation = false;
     bool bUsingPerformance = false;
+    bool bUsingFacialPerformance = false;
+    bool bParticipantSpeaker = false;
+    bool bReducedMotion = false;
+    bool bReviewVisible = true;
+    bool bLoggedMorphSectionExercise = false;
+    float FacialElapsedSeconds = 0.f;
+
+    void ApplyFacialFrame();
+    void ClearFacialFrame();
+    void RefreshActorTick();
 };

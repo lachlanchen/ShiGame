@@ -1,0 +1,1445 @@
+{
+  "assetId": "shi-daze-council-facial-performance-v1",
+  "status": "five-identity facial-performance engineering blockout; not final acting",
+  "disclosure": "FACIAL PERFORMANCE ENGINEERING BLOCKOUT \u00b7 SILENT INTENT CADENCE \u00b7 GENERIC NON-PORTRAIT FACE \u00b7 NOT FINAL ACTING, LIP SYNC OR VOICE",
+  "mode": "import-replace",
+  "mutationEnvironment": "SHI_DAZE_COUNCIL_FACIAL_REIMPORT",
+  "mutationAuthorized": true,
+  "engineVersion": "5.8.1-56057345+++UE5+Release-5.8",
+  "destination": "/Game/SHI/Art/Characters/DazeCouncilFacial",
+  "coordinateTransform": {
+    "sourceSpace": "Blender right-handed Z-up metres",
+    "unrealAssetLocalSpace": "Unreal left-handed Z-up asset-local values retaining metre magnitudes",
+    "sourceToAssetLocalScale": [
+      1,
+      -1,
+      1
+    ],
+    "runtimePresentationScale": 100,
+    "presentedUnit": "centimetres",
+    "passed": true
+  },
+  "sourceContract": {
+    "metrics": {
+      "file": "assets/3d/source/shi-daze-council-facial-performance-v1.metrics.json",
+      "bytes": 20053,
+      "sha256": "d2212c8da6663e27ce253cd4dfc8036b065a5f29d8dad44a0277b108acee060d"
+    },
+    "validation": {
+      "file": "assets/3d/source/shi-daze-council-facial-performance-v1.validation.json",
+      "bytes": 134722,
+      "sha256": "a03433a5ec9728b89eb5b6f4a3df9c4a1bed9afe417a8abcfe9b3c956e4481b6"
+    },
+    "trackedEyeTexture": {
+      "file": "assets/3d/source/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+      "bytes": 610817,
+      "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+    },
+    "checks": {
+      "metricsAssetId": true,
+      "validationAssetId": true,
+      "cleanValidationPassed": true,
+      "crossFormatMorphEquivalencePassed": true,
+      "exactTrackedEyeTexture": true,
+      "exactMetricsBones": true,
+      "exactValidationBoneCount": true,
+      "exactMetricsMorphs": true,
+      "exactValidationMorphs": true,
+      "exactMetricsEyeGazeMorphs": true,
+      "exactValidationEyeGazeMorphs": true,
+      "exactMetricsBodyMorphReceipts": true,
+      "exactMetricsEyeMorphReceipts": true,
+      "exactCharacterIds": true,
+      "keeper:sourceReceipt": true,
+      "keeper:exactTopology": true,
+      "keeper:exactMaterials": true,
+      "keeper:exactBounds": true,
+      "keeper:exactPerMeshMorphSources": true,
+      "chen-sheng:sourceReceipt": true,
+      "chen-sheng:exactTopology": true,
+      "chen-sheng:exactMaterials": true,
+      "chen-sheng:exactBounds": true,
+      "chen-sheng:exactPerMeshMorphSources": true,
+      "wu-guang:sourceReceipt": true,
+      "wu-guang:exactTopology": true,
+      "wu-guang:exactMaterials": true,
+      "wu-guang:exactBounds": true,
+      "wu-guang:exactPerMeshMorphSources": true,
+      "yu-mu:sourceReceipt": true,
+      "yu-mu:exactTopology": true,
+      "yu-mu:exactMaterials": true,
+      "yu-mu:exactBounds": true,
+      "yu-mu:exactPerMeshMorphSources": true,
+      "qin-courier:sourceReceipt": true,
+      "qin-courier:exactTopology": true,
+      "qin-courier:exactMaterials": true,
+      "qin-courier:exactBounds": true,
+      "qin-courier:exactPerMeshMorphSources": true
+    },
+    "passed": true
+  },
+  "sourceFbxReceipts": {
+    "keeper": {
+      "file": "assets/3d/export/shi-daze-council-facial-performance-v1-keeper.fbx",
+      "bytes": 2675132,
+      "sha256": "61f34f5b3959c1ded2d86a3a7e0eca1e7429ad1971cecea4331cc13a0e71ec0e"
+    },
+    "chen-sheng": {
+      "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.fbx",
+      "bytes": 2621036,
+      "sha256": "febf45db1a7e2d1dfeea4c845b22207237e4a38c73b05733449585f768739688"
+    },
+    "wu-guang": {
+      "file": "assets/3d/export/shi-daze-council-facial-performance-v1-wu-guang.fbx",
+      "bytes": 2565436,
+      "sha256": "abcd72068348b9d860456b780c250f05380802021df90c10fa340ee08406f0e3"
+    },
+    "yu-mu": {
+      "file": "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.fbx",
+      "bytes": 2620604,
+      "sha256": "ca0dd69bd48cb797cbbeafd739439b44da37d09559409e1dce0df27807cc90cb"
+    },
+    "qin-courier": {
+      "file": "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.fbx",
+      "bytes": 2675420,
+      "sha256": "dfd9b71921e3ada115a40ff4493029e5c84dfc40c70861a9e1d2f546db0aac91"
+    }
+  },
+  "extractedTextureCacheCleanup": {
+    "characters": {
+      "keeper": {
+        "beforeImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-keeper.fbm",
+          "existed": false,
+          "removed": false
+        },
+        "afterImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-keeper.fbm",
+          "existed": true,
+          "removed": true,
+          "bitmap": {
+            "file": "assets/3d/export/shi-daze-council-facial-performance-v1-keeper.fbm/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+            "bytes": 610817,
+            "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+          },
+          "checks": {
+            "directoryIsExactSibling": true,
+            "oneExpectedBitmapOnly": true,
+            "exactTrackedBitmapHash": true,
+            "noNestedDirectories": true
+          },
+          "passed": true
+        },
+        "passed": true
+      },
+      "chen-sheng": {
+        "beforeImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.fbm",
+          "existed": false,
+          "removed": false
+        },
+        "afterImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.fbm",
+          "existed": true,
+          "removed": true,
+          "bitmap": {
+            "file": "assets/3d/export/shi-daze-council-facial-performance-v1-chen-sheng.fbm/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+            "bytes": 610817,
+            "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+          },
+          "checks": {
+            "directoryIsExactSibling": true,
+            "oneExpectedBitmapOnly": true,
+            "exactTrackedBitmapHash": true,
+            "noNestedDirectories": true
+          },
+          "passed": true
+        },
+        "passed": true
+      },
+      "wu-guang": {
+        "beforeImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-wu-guang.fbm",
+          "existed": false,
+          "removed": false
+        },
+        "afterImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-wu-guang.fbm",
+          "existed": true,
+          "removed": true,
+          "bitmap": {
+            "file": "assets/3d/export/shi-daze-council-facial-performance-v1-wu-guang.fbm/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+            "bytes": 610817,
+            "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+          },
+          "checks": {
+            "directoryIsExactSibling": true,
+            "oneExpectedBitmapOnly": true,
+            "exactTrackedBitmapHash": true,
+            "noNestedDirectories": true
+          },
+          "passed": true
+        },
+        "passed": true
+      },
+      "yu-mu": {
+        "beforeImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.fbm",
+          "existed": false,
+          "removed": false
+        },
+        "afterImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.fbm",
+          "existed": true,
+          "removed": true,
+          "bitmap": {
+            "file": "assets/3d/export/shi-daze-council-facial-performance-v1-yu-mu.fbm/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+            "bytes": 610817,
+            "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+          },
+          "checks": {
+            "directoryIsExactSibling": true,
+            "oneExpectedBitmapOnly": true,
+            "exactTrackedBitmapHash": true,
+            "noNestedDirectories": true
+          },
+          "passed": true
+        },
+        "passed": true
+      },
+      "qin-courier": {
+        "beforeImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.fbm",
+          "existed": false,
+          "removed": false
+        },
+        "afterImport": {
+          "directory": "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.fbm",
+          "existed": true,
+          "removed": true,
+          "bitmap": {
+            "file": "assets/3d/export/shi-daze-council-facial-performance-v1-qin-courier.fbm/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+            "bytes": 610817,
+            "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+          },
+          "checks": {
+            "directoryIsExactSibling": true,
+            "oneExpectedBitmapOnly": true,
+            "exactTrackedBitmapHash": true,
+            "noNestedDirectories": true
+          },
+          "passed": true
+        },
+        "passed": true
+      }
+    },
+    "passed": true
+  },
+  "sharedSkeleton": {
+    "assetPath": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton",
+    "boneCount": 53,
+    "boneNames": [
+      "Root",
+      "pelvis",
+      "spine_01",
+      "spine_02",
+      "spine_03",
+      "clavicle_l",
+      "upperarm_l",
+      "lowerarm_l",
+      "hand_l",
+      "index_01_l",
+      "index_02_l",
+      "index_03_l",
+      "middle_01_l",
+      "middle_02_l",
+      "middle_03_l",
+      "pinky_01_l",
+      "pinky_02_l",
+      "pinky_03_l",
+      "ring_01_l",
+      "ring_02_l",
+      "ring_03_l",
+      "thumb_01_l",
+      "thumb_02_l",
+      "thumb_03_l",
+      "clavicle_r",
+      "upperarm_r",
+      "lowerarm_r",
+      "hand_r",
+      "index_01_r",
+      "index_02_r",
+      "index_03_r",
+      "middle_01_r",
+      "middle_02_r",
+      "middle_03_r",
+      "pinky_01_r",
+      "pinky_02_r",
+      "pinky_03_r",
+      "ring_01_r",
+      "ring_02_r",
+      "ring_03_r",
+      "thumb_01_r",
+      "thumb_02_r",
+      "thumb_03_r",
+      "neck_01",
+      "head",
+      "thigh_l",
+      "calf_l",
+      "foot_l",
+      "ball_l",
+      "thigh_r",
+      "calf_r",
+      "foot_r",
+      "ball_r"
+    ],
+    "referencePose": {
+      "boneCount": 53,
+      "sha256": "339840849171114b7a814163acde2c0c5331043c477e7e4171e1bd5f2b2c704d"
+    },
+    "referenceRoot": {
+      "translation": [
+        0.0,
+        6.100162863731384e-08,
+        -0.000562518835067749
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "checks": {
+      "exactAssetPath": true,
+      "exactBoneNamesAndOrder": true,
+      "exactBoneCount": true,
+      "identityRootScale": true,
+      "identityRootRotation": true,
+      "exactAdmittedRootTranslation": true
+    },
+    "passed": true,
+    "morphMetadataExtension": {
+      "beforeNames": [],
+      "afterNames": [
+        "browDownLeft",
+        "browDownRight",
+        "browInnerUp",
+        "cheekSquintLeft",
+        "cheekSquintRight",
+        "eyeBlinkLeft",
+        "eyeBlinkRight",
+        "eyeLookDownLeft",
+        "eyeLookDownRight",
+        "eyeLookInLeft",
+        "eyeLookInRight",
+        "eyeLookOutLeft",
+        "eyeLookOutRight",
+        "eyeLookUpLeft",
+        "eyeLookUpRight",
+        "jawOpen",
+        "mouthFunnel",
+        "mouthPressLeft",
+        "mouthPressRight",
+        "mouthUpperUpLeft",
+        "mouthUpperUpRight"
+      ],
+      "addedNames": [
+        "browDownLeft",
+        "browDownRight",
+        "browInnerUp",
+        "cheekSquintLeft",
+        "cheekSquintRight",
+        "eyeBlinkLeft",
+        "eyeBlinkRight",
+        "eyeLookDownLeft",
+        "eyeLookDownRight",
+        "eyeLookInLeft",
+        "eyeLookInRight",
+        "eyeLookOutLeft",
+        "eyeLookOutRight",
+        "eyeLookUpLeft",
+        "eyeLookUpRight",
+        "jawOpen",
+        "mouthFunnel",
+        "mouthPressLeft",
+        "mouthPressRight",
+        "mouthUpperUpLeft",
+        "mouthUpperUpRight"
+      ],
+      "removedNames": [],
+      "exactTwentyOneAddedNoExtras": true,
+      "existingMetadataPreserved": true,
+      "passed": true
+    }
+  },
+  "characters": {
+    "keeper": {
+      "characterId": "keeper",
+      "assetPath": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_Keeper_Facial_01.SKM_SHI_DazeCouncil_Keeper_Facial_01",
+      "importedObjectPaths": [
+        "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_Keeper_Facial_01.SKM_SHI_DazeCouncil_Keeper_Facial_01"
+      ],
+      "sourceTriangles": 27840,
+      "renderTopology": {
+        "triangles": 27840,
+        "vertices": 16295,
+        "assetRegistryVertices": 16295,
+        "lods": 1,
+        "assetRegistryLods": 1,
+        "sections": 7
+      },
+      "boundsMetres": {
+        "minimum": [
+          -0.4962701201438904,
+          -0.1899999976158142,
+          0.000982522964477539
+        ],
+        "maximum": [
+          0.4962701201438904,
+          0.3214700520038605,
+          1.6974999904632568
+        ],
+        "dimensions": [
+          0.9925402402877808,
+          0.5114700496196747,
+          1.6965174674987793
+        ]
+      },
+      "expectedUnrealAssetLocalBoundsMetres": {
+        "minimum": [
+          -0.4962701201438904,
+          -0.1899999976158142,
+          0.000982522964477539
+        ],
+        "maximum": [
+          0.4962701201438904,
+          0.3214700520038605,
+          1.6974999904632568
+        ]
+      },
+      "presentedHeightCentimeters": 169.65174674987793,
+      "materials": [
+        {
+          "slot": "M_SHI_Character_SkinClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay"
+        },
+        {
+          "slot": "M_SHI_Character_BindingClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_BindingClay.M_SHI_Character_BindingClay"
+        },
+        {
+          "slot": "M_SHI_Character_RolePropClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_RolePropClay.M_SHI_Character_RolePropClay"
+        },
+        {
+          "slot": "M_SHI_Character_EyeBrown",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown"
+        },
+        {
+          "slot": "M_SHI_Character_HairClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_HairClay.M_SHI_Character_HairClay"
+        },
+        {
+          "slot": "M_SHI_keeper_ClothOuter",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_keeper_ClothOuter.M_SHI_keeper_ClothOuter"
+        },
+        {
+          "slot": "M_SHI_keeper_ClothBase",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_keeper_ClothBase.M_SHI_keeper_ClothBase"
+        }
+      ],
+      "skeleton": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton",
+      "boneCount": 53,
+      "morphTargets": [
+        "browDownLeft",
+        "browDownRight",
+        "browInnerUp",
+        "cheekSquintLeft",
+        "cheekSquintRight",
+        "eyeBlinkLeft",
+        "eyeBlinkRight",
+        "eyeLookDownLeft",
+        "eyeLookDownRight",
+        "eyeLookInLeft",
+        "eyeLookInRight",
+        "eyeLookOutLeft",
+        "eyeLookOutRight",
+        "eyeLookUpLeft",
+        "eyeLookUpRight",
+        "jawOpen",
+        "mouthFunnel",
+        "mouthPressLeft",
+        "mouthPressRight",
+        "mouthUpperUpLeft",
+        "mouthUpperUpRight"
+      ],
+      "physicsAsset": null,
+      "checks": {
+        "exactAssetIdentity": true,
+        "exactSharedSkeleton": true,
+        "exactSkeletonBones": true,
+        "rootIsSoleTopLevelBone": true,
+        "pelvisParentIsRoot": true,
+        "singleSourceLod": true,
+        "assetRegistrySingleSourceLod": true,
+        "exactTriangleTopology": true,
+        "consistentNonEmptyVertexTopology": true,
+        "exactBoneRegistryCount": true,
+        "oneSectionPerExactMaterial": true,
+        "exactMaterialSlotsNoExtras": true,
+        "allMaterialsResolved": true,
+        "materialsRemainIsolated": true,
+        "exactTwentyOneMorphTargetsNoExtras": true,
+        "exactMorphRegistryCount": true,
+        "exactRestBounds": true,
+        "boundedPresentedHeight": true,
+        "noPhysicsAsset": true
+      },
+      "passed": true
+    },
+    "chen-sheng": {
+      "characterId": "chen-sheng",
+      "assetPath": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_ChenSheng_Facial_01.SKM_SHI_DazeCouncil_ChenSheng_Facial_01",
+      "importedObjectPaths": [
+        "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_ChenSheng_Facial_01.SKM_SHI_DazeCouncil_ChenSheng_Facial_01"
+      ],
+      "sourceTriangles": 27836,
+      "renderTopology": {
+        "triangles": 27836,
+        "vertices": 16301,
+        "assetRegistryVertices": 16301,
+        "lods": 1,
+        "assetRegistryLods": 1,
+        "sections": 6
+      },
+      "boundsMetres": {
+        "minimum": [
+          -0.4962701201438904,
+          -0.20000000298023224,
+          0.000982522964477539
+        ],
+        "maximum": [
+          0.4962701201438904,
+          0.3214700520038605,
+          1.725000023841858
+        ],
+        "dimensions": [
+          0.9925402402877808,
+          0.5214700549840927,
+          1.7240175008773804
+        ]
+      },
+      "expectedUnrealAssetLocalBoundsMetres": {
+        "minimum": [
+          -0.496270090341568,
+          -0.20000000298023224,
+          0.0009825207525864244
+        ],
+        "maximum": [
+          0.496270090341568,
+          0.32147011160850525,
+          1.7250001430511475
+        ]
+      },
+      "presentedHeightCentimeters": 172.40175008773804,
+      "materials": [
+        {
+          "slot": "M_SHI_Character_SkinClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay"
+        },
+        {
+          "slot": "M_SHI_Character_BindingClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_BindingClay.M_SHI_Character_BindingClay"
+        },
+        {
+          "slot": "M_SHI_Character_EyeBrown",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown"
+        },
+        {
+          "slot": "M_SHI_Character_HairClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_HairClay.M_SHI_Character_HairClay"
+        },
+        {
+          "slot": "M_SHI_chen-sheng_ClothOuter",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_chen-sheng_ClothOuter.M_SHI_chen-sheng_ClothOuter"
+        },
+        {
+          "slot": "M_SHI_chen-sheng_ClothBase",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_chen-sheng_ClothBase.M_SHI_chen-sheng_ClothBase"
+        }
+      ],
+      "skeleton": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton",
+      "boneCount": 53,
+      "morphTargets": [
+        "browDownLeft",
+        "browDownRight",
+        "browInnerUp",
+        "cheekSquintLeft",
+        "cheekSquintRight",
+        "eyeBlinkLeft",
+        "eyeBlinkRight",
+        "eyeLookDownLeft",
+        "eyeLookDownRight",
+        "eyeLookInLeft",
+        "eyeLookInRight",
+        "eyeLookOutLeft",
+        "eyeLookOutRight",
+        "eyeLookUpLeft",
+        "eyeLookUpRight",
+        "jawOpen",
+        "mouthFunnel",
+        "mouthPressLeft",
+        "mouthPressRight",
+        "mouthUpperUpLeft",
+        "mouthUpperUpRight"
+      ],
+      "physicsAsset": null,
+      "checks": {
+        "exactAssetIdentity": true,
+        "exactSharedSkeleton": true,
+        "exactSkeletonBones": true,
+        "rootIsSoleTopLevelBone": true,
+        "pelvisParentIsRoot": true,
+        "singleSourceLod": true,
+        "assetRegistrySingleSourceLod": true,
+        "exactTriangleTopology": true,
+        "consistentNonEmptyVertexTopology": true,
+        "exactBoneRegistryCount": true,
+        "oneSectionPerExactMaterial": true,
+        "exactMaterialSlotsNoExtras": true,
+        "allMaterialsResolved": true,
+        "materialsRemainIsolated": true,
+        "exactTwentyOneMorphTargetsNoExtras": true,
+        "exactMorphRegistryCount": true,
+        "exactRestBounds": true,
+        "boundedPresentedHeight": true,
+        "noPhysicsAsset": true
+      },
+      "passed": true
+    },
+    "wu-guang": {
+      "characterId": "wu-guang",
+      "assetPath": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_WuGuang_Facial_01.SKM_SHI_DazeCouncil_WuGuang_Facial_01",
+      "importedObjectPaths": [
+        "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_WuGuang_Facial_01.SKM_SHI_DazeCouncil_WuGuang_Facial_01"
+      ],
+      "sourceTriangles": 27680,
+      "renderTopology": {
+        "triangles": 27680,
+        "vertices": 15965,
+        "assetRegistryVertices": 15965,
+        "lods": 1,
+        "assetRegistryLods": 1,
+        "sections": 6
+      },
+      "boundsMetres": {
+        "minimum": [
+          -0.4962701201438904,
+          -0.1899999976158142,
+          0.000982522964477539
+        ],
+        "maximum": [
+          0.4962701201438904,
+          0.3214700520038605,
+          1.6974999904632568
+        ],
+        "dimensions": [
+          0.9925402402877808,
+          0.5114700496196747,
+          1.6965174674987793
+        ]
+      },
+      "expectedUnrealAssetLocalBoundsMetres": {
+        "minimum": [
+          -0.496270090341568,
+          -0.1899999976158142,
+          0.0009825207525864244
+        ],
+        "maximum": [
+          0.496270090341568,
+          0.32147011160850525,
+          1.6975001096725464
+        ]
+      },
+      "presentedHeightCentimeters": 169.65174674987793,
+      "materials": [
+        {
+          "slot": "M_SHI_Character_SkinClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay"
+        },
+        {
+          "slot": "M_SHI_Character_BindingClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_BindingClay.M_SHI_Character_BindingClay"
+        },
+        {
+          "slot": "M_SHI_Character_EyeBrown",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown"
+        },
+        {
+          "slot": "M_SHI_Character_HairClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_HairClay.M_SHI_Character_HairClay"
+        },
+        {
+          "slot": "M_SHI_wu-guang_ClothOuter",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_wu-guang_ClothOuter.M_SHI_wu-guang_ClothOuter"
+        },
+        {
+          "slot": "M_SHI_wu-guang_ClothBase",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_wu-guang_ClothBase.M_SHI_wu-guang_ClothBase"
+        }
+      ],
+      "skeleton": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton",
+      "boneCount": 53,
+      "morphTargets": [
+        "browDownLeft",
+        "browDownRight",
+        "browInnerUp",
+        "cheekSquintLeft",
+        "cheekSquintRight",
+        "eyeBlinkLeft",
+        "eyeBlinkRight",
+        "eyeLookDownLeft",
+        "eyeLookDownRight",
+        "eyeLookInLeft",
+        "eyeLookInRight",
+        "eyeLookOutLeft",
+        "eyeLookOutRight",
+        "eyeLookUpLeft",
+        "eyeLookUpRight",
+        "jawOpen",
+        "mouthFunnel",
+        "mouthPressLeft",
+        "mouthPressRight",
+        "mouthUpperUpLeft",
+        "mouthUpperUpRight"
+      ],
+      "physicsAsset": null,
+      "checks": {
+        "exactAssetIdentity": true,
+        "exactSharedSkeleton": true,
+        "exactSkeletonBones": true,
+        "rootIsSoleTopLevelBone": true,
+        "pelvisParentIsRoot": true,
+        "singleSourceLod": true,
+        "assetRegistrySingleSourceLod": true,
+        "exactTriangleTopology": true,
+        "consistentNonEmptyVertexTopology": true,
+        "exactBoneRegistryCount": true,
+        "oneSectionPerExactMaterial": true,
+        "exactMaterialSlotsNoExtras": true,
+        "allMaterialsResolved": true,
+        "materialsRemainIsolated": true,
+        "exactTwentyOneMorphTargetsNoExtras": true,
+        "exactMorphRegistryCount": true,
+        "exactRestBounds": true,
+        "boundedPresentedHeight": true,
+        "noPhysicsAsset": true
+      },
+      "passed": true
+    },
+    "yu-mu": {
+      "characterId": "yu-mu",
+      "assetPath": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_YuMu_Facial_01.SKM_SHI_DazeCouncil_YuMu_Facial_01",
+      "importedObjectPaths": [
+        "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_YuMu_Facial_01.SKM_SHI_DazeCouncil_YuMu_Facial_01"
+      ],
+      "sourceTriangles": 27828,
+      "renderTopology": {
+        "triangles": 27828,
+        "vertices": 16285,
+        "assetRegistryVertices": 16285,
+        "lods": 1,
+        "assetRegistryLods": 1,
+        "sections": 6
+      },
+      "boundsMetres": {
+        "minimum": [
+          -0.4962701201438904,
+          -0.1899999976158142,
+          0.000982522964477539
+        ],
+        "maximum": [
+          0.4962701201438904,
+          0.3214700520038605,
+          1.6974999904632568
+        ],
+        "dimensions": [
+          0.9925402402877808,
+          0.5114700496196747,
+          1.6965174674987793
+        ]
+      },
+      "expectedUnrealAssetLocalBoundsMetres": {
+        "minimum": [
+          -0.496270090341568,
+          -0.1899999976158142,
+          0.0009825207525864244
+        ],
+        "maximum": [
+          0.496270090341568,
+          0.32147011160850525,
+          1.6975001096725464
+        ]
+      },
+      "presentedHeightCentimeters": 169.65174674987793,
+      "materials": [
+        {
+          "slot": "M_SHI_Character_SkinClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay"
+        },
+        {
+          "slot": "M_SHI_Character_BindingClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_BindingClay.M_SHI_Character_BindingClay"
+        },
+        {
+          "slot": "M_SHI_Character_EyeBrown",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown"
+        },
+        {
+          "slot": "M_SHI_Character_HairClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_HairClay.M_SHI_Character_HairClay"
+        },
+        {
+          "slot": "M_SHI_yu-mu_ClothOuter",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_yu-mu_ClothOuter.M_SHI_yu-mu_ClothOuter"
+        },
+        {
+          "slot": "M_SHI_yu-mu_ClothBase",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_yu-mu_ClothBase.M_SHI_yu-mu_ClothBase"
+        }
+      ],
+      "skeleton": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton",
+      "boneCount": 53,
+      "morphTargets": [
+        "browDownLeft",
+        "browDownRight",
+        "browInnerUp",
+        "cheekSquintLeft",
+        "cheekSquintRight",
+        "eyeBlinkLeft",
+        "eyeBlinkRight",
+        "eyeLookDownLeft",
+        "eyeLookDownRight",
+        "eyeLookInLeft",
+        "eyeLookInRight",
+        "eyeLookOutLeft",
+        "eyeLookOutRight",
+        "eyeLookUpLeft",
+        "eyeLookUpRight",
+        "jawOpen",
+        "mouthFunnel",
+        "mouthPressLeft",
+        "mouthPressRight",
+        "mouthUpperUpLeft",
+        "mouthUpperUpRight"
+      ],
+      "physicsAsset": null,
+      "checks": {
+        "exactAssetIdentity": true,
+        "exactSharedSkeleton": true,
+        "exactSkeletonBones": true,
+        "rootIsSoleTopLevelBone": true,
+        "pelvisParentIsRoot": true,
+        "singleSourceLod": true,
+        "assetRegistrySingleSourceLod": true,
+        "exactTriangleTopology": true,
+        "consistentNonEmptyVertexTopology": true,
+        "exactBoneRegistryCount": true,
+        "oneSectionPerExactMaterial": true,
+        "exactMaterialSlotsNoExtras": true,
+        "allMaterialsResolved": true,
+        "materialsRemainIsolated": true,
+        "exactTwentyOneMorphTargetsNoExtras": true,
+        "exactMorphRegistryCount": true,
+        "exactRestBounds": true,
+        "boundedPresentedHeight": true,
+        "noPhysicsAsset": true
+      },
+      "passed": true
+    },
+    "qin-courier": {
+      "characterId": "qin-courier",
+      "assetPath": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_QinCourier_Facial_01.SKM_SHI_DazeCouncil_QinCourier_Facial_01",
+      "importedObjectPaths": [
+        "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_QinCourier_Facial_01.SKM_SHI_DazeCouncil_QinCourier_Facial_01"
+      ],
+      "sourceTriangles": 27840,
+      "renderTopology": {
+        "triangles": 27840,
+        "vertices": 16295,
+        "assetRegistryVertices": 16295,
+        "lods": 1,
+        "assetRegistryLods": 1,
+        "sections": 7
+      },
+      "boundsMetres": {
+        "minimum": [
+          -0.4962701201438904,
+          -0.1899999976158142,
+          0.000982522964477539
+        ],
+        "maximum": [
+          0.4962701201438904,
+          0.3214700520038605,
+          1.746999979019165
+        ],
+        "dimensions": [
+          0.9925402402877808,
+          0.5114700496196747,
+          1.7460174560546875
+        ]
+      },
+      "expectedUnrealAssetLocalBoundsMetres": {
+        "minimum": [
+          -0.496270090341568,
+          -0.1899999976158142,
+          0.0009825207525864244
+        ],
+        "maximum": [
+          0.496270090341568,
+          0.32147011160850525,
+          1.7470000982284546
+        ]
+      },
+      "presentedHeightCentimeters": 174.60174560546875,
+      "materials": [
+        {
+          "slot": "M_SHI_Character_SkinClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay"
+        },
+        {
+          "slot": "M_SHI_Character_BindingClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_BindingClay.M_SHI_Character_BindingClay"
+        },
+        {
+          "slot": "M_SHI_Character_EyeBrown",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown"
+        },
+        {
+          "slot": "M_SHI_Character_HairClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_HairClay.M_SHI_Character_HairClay"
+        },
+        {
+          "slot": "M_SHI_qin-courier_ClothOuter",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_qin-courier_ClothOuter.M_SHI_qin-courier_ClothOuter"
+        },
+        {
+          "slot": "M_SHI_qin-courier_ClothBase",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_qin-courier_ClothBase.M_SHI_qin-courier_ClothBase"
+        },
+        {
+          "slot": "M_SHI_Character_RolePropClay",
+          "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_RolePropClay.M_SHI_Character_RolePropClay"
+        }
+      ],
+      "skeleton": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton",
+      "boneCount": 53,
+      "morphTargets": [
+        "browDownLeft",
+        "browDownRight",
+        "browInnerUp",
+        "cheekSquintLeft",
+        "cheekSquintRight",
+        "eyeBlinkLeft",
+        "eyeBlinkRight",
+        "eyeLookDownLeft",
+        "eyeLookDownRight",
+        "eyeLookInLeft",
+        "eyeLookInRight",
+        "eyeLookOutLeft",
+        "eyeLookOutRight",
+        "eyeLookUpLeft",
+        "eyeLookUpRight",
+        "jawOpen",
+        "mouthFunnel",
+        "mouthPressLeft",
+        "mouthPressRight",
+        "mouthUpperUpLeft",
+        "mouthUpperUpRight"
+      ],
+      "physicsAsset": null,
+      "checks": {
+        "exactAssetIdentity": true,
+        "exactSharedSkeleton": true,
+        "exactSkeletonBones": true,
+        "rootIsSoleTopLevelBone": true,
+        "pelvisParentIsRoot": true,
+        "singleSourceLod": true,
+        "assetRegistrySingleSourceLod": true,
+        "exactTriangleTopology": true,
+        "consistentNonEmptyVertexTopology": true,
+        "exactBoneRegistryCount": true,
+        "oneSectionPerExactMaterial": true,
+        "exactMaterialSlotsNoExtras": true,
+        "allMaterialsResolved": true,
+        "materialsRemainIsolated": true,
+        "exactTwentyOneMorphTargetsNoExtras": true,
+        "exactMorphRegistryCount": true,
+        "exactRestBounds": true,
+        "boundedPresentedHeight": true,
+        "noPhysicsAsset": true
+      },
+      "passed": true
+    }
+  },
+  "eyeTextureImport": {
+    "source": {
+      "file": "assets/3d/source/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+      "bytes": 610817,
+      "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+    },
+    "assetPath": "/Game/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.T_SHI_Character_EyeBrown_CC0",
+    "importedObjectPaths": [
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.T_SHI_Character_EyeBrown_CC0"
+    ],
+    "passed": true
+  },
+  "eyeMaterial": {
+    "material": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown",
+    "texture": "/Game/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.T_SHI_Character_EyeBrown_CC0",
+    "nodeClasses": [
+      "MaterialExpressionTextureSampleParameter2D",
+      "MaterialExpressionScalarParameter",
+      "MaterialExpressionScalarParameter"
+    ],
+    "usedTextures": [],
+    "compileErrors": [],
+    "checks": {
+      "exactMaterialPath": true,
+      "exactTexturePath": true,
+      "exactThreeNodeGraph": true,
+      "exactTrackedTextureOnly": true,
+      "textureDrivesBaseColor": true,
+      "boundedRoughness": true,
+      "boundedSpecular": true,
+      "opaqueDefaultLitSingleSided": true,
+      "skeletalMeshUsage": true,
+      "morphTargetUsage": true,
+      "compileClean": true
+    },
+    "passed": true
+  },
+  "materialUsage": {
+    "compiledDuringThisRun": true,
+    "materials": [
+      {
+        "name": "M_SHI_Character_BindingClay",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_BindingClay.M_SHI_Character_BindingClay",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_Character_EyeBrown",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown",
+        "requiresMorphTargetUsage": true,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": true,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_Character_HairClay",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_HairClay.M_SHI_Character_HairClay",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_Character_RolePropClay",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_RolePropClay.M_SHI_Character_RolePropClay",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_Character_SkinClay",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay",
+        "requiresMorphTargetUsage": true,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": true,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_chen-sheng_ClothBase",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_chen-sheng_ClothBase.M_SHI_chen-sheng_ClothBase",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_chen-sheng_ClothOuter",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_chen-sheng_ClothOuter.M_SHI_chen-sheng_ClothOuter",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_keeper_ClothBase",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_keeper_ClothBase.M_SHI_keeper_ClothBase",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_keeper_ClothOuter",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_keeper_ClothOuter.M_SHI_keeper_ClothOuter",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_qin-courier_ClothBase",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_qin-courier_ClothBase.M_SHI_qin-courier_ClothBase",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_qin-courier_ClothOuter",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_qin-courier_ClothOuter.M_SHI_qin-courier_ClothOuter",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_wu-guang_ClothBase",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_wu-guang_ClothBase.M_SHI_wu-guang_ClothBase",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_wu-guang_ClothOuter",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_wu-guang_ClothOuter.M_SHI_wu-guang_ClothOuter",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_yu-mu_ClothBase",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_yu-mu_ClothBase.M_SHI_yu-mu_ClothBase",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      },
+      {
+        "name": "M_SHI_yu-mu_ClothOuter",
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_yu-mu_ClothOuter.M_SHI_yu-mu_ClothOuter",
+        "requiresMorphTargetUsage": false,
+        "skeletalMeshUsage": true,
+        "morphTargetUsage": false,
+        "compileErrors": []
+      }
+    ],
+    "checks": {
+      "exactFifteenMaterialsNoExtras": true,
+      "allSavedForSkeletalMeshUsage": true,
+      "exactTwoMorphSectionMaterials": true,
+      "exactMorphTargetUsageNoShaderPermutationExtras": true,
+      "allCompileClean": true
+    },
+    "passed": true
+  },
+  "destinationInventory": {
+    "assets": [
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_BindingClay.M_SHI_Character_BindingClay",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_HairClay.M_SHI_Character_HairClay",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_RolePropClay.M_SHI_Character_RolePropClay",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_chen-sheng_ClothBase.M_SHI_chen-sheng_ClothBase",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_chen-sheng_ClothOuter.M_SHI_chen-sheng_ClothOuter",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_keeper_ClothBase.M_SHI_keeper_ClothBase",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_keeper_ClothOuter.M_SHI_keeper_ClothOuter",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_qin-courier_ClothBase.M_SHI_qin-courier_ClothBase",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_qin-courier_ClothOuter.M_SHI_qin-courier_ClothOuter",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_wu-guang_ClothBase.M_SHI_wu-guang_ClothBase",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_wu-guang_ClothOuter.M_SHI_wu-guang_ClothOuter",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_yu-mu_ClothBase.M_SHI_yu-mu_ClothBase",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_yu-mu_ClothOuter.M_SHI_yu-mu_ClothOuter",
+        "class": "Material"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_ChenSheng_Facial_01.SKM_SHI_DazeCouncil_ChenSheng_Facial_01",
+        "class": "SkeletalMesh"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_Keeper_Facial_01.SKM_SHI_DazeCouncil_Keeper_Facial_01",
+        "class": "SkeletalMesh"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_QinCourier_Facial_01.SKM_SHI_DazeCouncil_QinCourier_Facial_01",
+        "class": "SkeletalMesh"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_WuGuang_Facial_01.SKM_SHI_DazeCouncil_WuGuang_Facial_01",
+        "class": "SkeletalMesh"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_YuMu_Facial_01.SKM_SHI_DazeCouncil_YuMu_Facial_01",
+        "class": "SkeletalMesh"
+      },
+      {
+        "path": "/Game/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.T_SHI_Character_EyeBrown_CC0",
+        "class": "Texture2D"
+      }
+    ],
+    "expectedPaths": [
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_BindingClay.M_SHI_Character_BindingClay",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_HairClay.M_SHI_Character_HairClay",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_RolePropClay.M_SHI_Character_RolePropClay",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_SkinClay.M_SHI_Character_SkinClay",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_chen-sheng_ClothBase.M_SHI_chen-sheng_ClothBase",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_chen-sheng_ClothOuter.M_SHI_chen-sheng_ClothOuter",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_keeper_ClothBase.M_SHI_keeper_ClothBase",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_keeper_ClothOuter.M_SHI_keeper_ClothOuter",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_qin-courier_ClothBase.M_SHI_qin-courier_ClothBase",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_qin-courier_ClothOuter.M_SHI_qin-courier_ClothOuter",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_wu-guang_ClothBase.M_SHI_wu-guang_ClothBase",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_wu-guang_ClothOuter.M_SHI_wu-guang_ClothOuter",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_yu-mu_ClothBase.M_SHI_yu-mu_ClothBase",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_yu-mu_ClothOuter.M_SHI_yu-mu_ClothOuter",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_ChenSheng_Facial_01.SKM_SHI_DazeCouncil_ChenSheng_Facial_01",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_Keeper_Facial_01.SKM_SHI_DazeCouncil_Keeper_Facial_01",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_QinCourier_Facial_01.SKM_SHI_DazeCouncil_QinCourier_Facial_01",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_WuGuang_Facial_01.SKM_SHI_DazeCouncil_WuGuang_Facial_01",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_YuMu_Facial_01.SKM_SHI_DazeCouncil_YuMu_Facial_01",
+      "/Game/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.T_SHI_Character_EyeBrown_CC0"
+    ],
+    "checks": {
+      "exactExpectedAssetsNoExtras": true,
+      "onlyFiveSkeletalMeshesMaterialsAndOneTexture": true,
+      "exactAssetCount": true,
+      "noSkeletonPhysicsAnimationOrGameplayAssets": true
+    },
+    "passed": true
+  },
+  "acceptedV1Preservation": {
+    "assetCountBefore": 22,
+    "assetCountAfter": 22,
+    "diskReceiptCountBefore": 22,
+    "diskReceiptCountAfter": 22,
+    "checks": {
+      "sharedSkeletonObjectUnchanged": true,
+      "sharedSkeletonReferencePoseUnchanged": true,
+      "sharedSkeletonMorphMetadataExtensionBounded": true,
+      "acceptedV1AssetInventoryUnchanged": true,
+      "acceptedV1DiskReceiptsUnchanged": true,
+      "isolatedDestinationIsNotLegacyDestination": true,
+      "acceptedV1DiskReceiptsUnchangedAfterSave": true
+    },
+    "passed": true
+  },
+  "morphContract": {
+    "count": 21,
+    "names": [
+      "eyeBlinkLeft",
+      "eyeBlinkRight",
+      "eyeLookDownLeft",
+      "eyeLookDownRight",
+      "eyeLookInLeft",
+      "eyeLookInRight",
+      "eyeLookOutLeft",
+      "eyeLookOutRight",
+      "eyeLookUpLeft",
+      "eyeLookUpRight",
+      "browInnerUp",
+      "browDownLeft",
+      "browDownRight",
+      "cheekSquintLeft",
+      "cheekSquintRight",
+      "jawOpen",
+      "mouthFunnel",
+      "mouthPressLeft",
+      "mouthPressRight",
+      "mouthUpperUpLeft",
+      "mouthUpperUpRight"
+    ]
+  },
+  "authorityBoundary": {
+    "physics": false,
+    "animation": false,
+    "rigidMesh": false,
+    "gameplay": false,
+    "saveOrCampaign": false,
+    "voiceOrTranscript": false
+  },
+  "limitations": [
+    "Silent intent cadence only; no lip sync, phoneme timing, transcript or voice authority.",
+    "Generic shared non-portrait face; no historical likeness claim.",
+    "Medium development framing only; no final close dialogue or marketing approval.",
+    "No final inner-mouth, eyebrow, lash, skin, cloth, hair or wet-material approval."
+  ],
+  "passed": true,
+  "saved": true,
+  "trackedUnrealAssets": {
+    "root": "apps/unreal/Content/SHI/Art/Characters/DazeCouncilFacial",
+    "receipts": {
+      "M_SHI_Character_BindingClay.uasset": {
+        "bytes": 5125,
+        "sha256": "63373ab35105e459b3007f8bc61a017b4e53461ac7a29343c50c1731369300fe"
+      },
+      "M_SHI_Character_EyeBrown.uasset": {
+        "bytes": 7149,
+        "sha256": "f6699c17934d8be0e7a87b75e52756f6a58b260df7c5c67359b6c5042702a0d1"
+      },
+      "M_SHI_Character_HairClay.uasset": {
+        "bytes": 5107,
+        "sha256": "80755d19e196d7e8deb203f0390a660b902dd8326732aef342cc4a11d15f246f"
+      },
+      "M_SHI_Character_RolePropClay.uasset": {
+        "bytes": 5131,
+        "sha256": "a5aab277be06b70c7e3fe15a6f7edd90e6a457ff4122589df91d18ea9a322f31"
+      },
+      "M_SHI_Character_SkinClay.uasset": {
+        "bytes": 5162,
+        "sha256": "b7ec2a89a11a9b03127e622c90c1d58d0c7ee3c338d6e2925636893e5ee9d160"
+      },
+      "M_SHI_chen-sheng_ClothBase.uasset": {
+        "bytes": 5119,
+        "sha256": "a6e71ab780a9f5a0cf8a72cbe0e50aae90cdf6558bf27e63b2de750322f1f306"
+      },
+      "M_SHI_chen-sheng_ClothOuter.uasset": {
+        "bytes": 5125,
+        "sha256": "e1e4db2622dd6569d894a0d7c60185330bae3a3832b83a2e4a374cce05bb883b"
+      },
+      "M_SHI_keeper_ClothBase.uasset": {
+        "bytes": 5095,
+        "sha256": "44b0aa11f6385cfbd31b9155844ee47967b9fd6333cb019ced8c5a0e42f1c8b3"
+      },
+      "M_SHI_keeper_ClothOuter.uasset": {
+        "bytes": 5101,
+        "sha256": "48c6c13f5ba4138d0356bf8c4a7a93efdc3c792112eb6e8b88ff7ba8ca3b1b9b"
+      },
+      "M_SHI_qin-courier_ClothBase.uasset": {
+        "bytes": 5125,
+        "sha256": "4a74aebf61d363c7f891da35e0150ec7127e04472c4e181290bbe2f436abfc53"
+      },
+      "M_SHI_qin-courier_ClothOuter.uasset": {
+        "bytes": 5131,
+        "sha256": "cef800d7c9081dbccf43599231d547a13fc7f291a16e8fec6a9bb76af8315707"
+      },
+      "M_SHI_wu-guang_ClothBase.uasset": {
+        "bytes": 5107,
+        "sha256": "37f6dc5288eb9fb5ebf2743859b2d6b8e30f374562f1619c80303cf911f15c41"
+      },
+      "M_SHI_wu-guang_ClothOuter.uasset": {
+        "bytes": 5113,
+        "sha256": "854cc2b2faffe547823d78eeb463a98c7fb3c2f7833db4aaa984e568f054ab08"
+      },
+      "M_SHI_yu-mu_ClothBase.uasset": {
+        "bytes": 5089,
+        "sha256": "0eabbc611f146ae8b84d0bc2a7c8e86768e06c6a9c9f1854bf35c8d280ec007c"
+      },
+      "M_SHI_yu-mu_ClothOuter.uasset": {
+        "bytes": 5095,
+        "sha256": "1d92bae542501a15827094e3d46d527226ea2c2b7e71b901a9574152cdf6b854"
+      },
+      "SKM_SHI_DazeCouncil_ChenSheng_Facial_01.uasset": {
+        "bytes": 4430335,
+        "sha256": "fc07683b48b1b43f5f189396cbc229449b66c5607a3772d3e8933103a88cbcd1"
+      },
+      "SKM_SHI_DazeCouncil_Keeper_Facial_01.uasset": {
+        "bytes": 4427428,
+        "sha256": "f2749c90f1979efb0b0ea2980fbe62eebaa48fb66d80df82e813d758ab2182fb"
+      },
+      "SKM_SHI_DazeCouncil_QinCourier_Facial_01.uasset": {
+        "bytes": 4423621,
+        "sha256": "7b57b08613fe3485fb36fddfdba55b4b1cd35530e15ab6785f5f91950a898265"
+      },
+      "SKM_SHI_DazeCouncil_WuGuang_Facial_01.uasset": {
+        "bytes": 4434399,
+        "sha256": "9c31ba9a9d1f695e465df3b8f50599eafd8953437913a015a6aeb84a887d0c6d"
+      },
+      "SKM_SHI_DazeCouncil_YuMu_Facial_01.uasset": {
+        "bytes": 4430192,
+        "sha256": "ca58def2157d3b352ac92ddd551d5ca6e9e3886cf229f72488da23084dbca727"
+      },
+      "T_SHI_Character_EyeBrown_CC0.uasset": {
+        "bytes": 702150,
+        "sha256": "8d98242c721f1d91d47c4c8bf1f884b7abfb726532967db704fbb8f6a95a68c8"
+      }
+    },
+    "checks": {
+      "exactTwentyOneUassetsNoExtras": true,
+      "allReceiptsNonEmpty": true
+    },
+    "passed": true
+  },
+  "readOnlyInspection": {
+    "mode": "inspect-only",
+    "mutationAuthorized": false,
+    "exitCode": 0,
+    "trackedUassetHashesUnchanged": true,
+    "sourceContractPassed": true,
+    "sharedSkeletonPassed": true,
+    "allFiveCharactersPassed": true,
+    "eyeMaterialPassed": true,
+    "materialUsagePassed": true,
+    "destinationInventoryPassed": true,
+    "acceptedV1Preserved": true,
+    "passed": true
+  }
+}

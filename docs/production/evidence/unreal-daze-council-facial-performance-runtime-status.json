@@ -1,0 +1,261 @@
+{
+  "assetId": "shi-daze-council-facial-performance-v1",
+  "createdAt": "2026-08-10T20:18:35+08:00",
+  "status": "native-engine-runtime-contract-automation-package-and-visible-engineering-review-pass; not-final-acting",
+  "disclosure": "FACIAL PERFORMANCE ENGINEERING BLOCKOUT · SILENT INTENT CADENCE · GENERIC NON-PORTRAIT FACE · NOT FINAL ACTING, LIP SYNC OR VOICE",
+  "engine": {
+    "name": "Unreal Engine",
+    "association": "5.8",
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "platform": "Linux",
+    "configuration": "Development Editor and Linux Development packaged player"
+  },
+  "importAdmission": {
+    "status": "pass",
+    "evidence": {
+      "file": "docs/production/evidence/unreal-daze-council-facial-performance-import-status.json",
+      "bytes": 51449,
+      "sha256": "5a4a8d1136ecf3200b844313470585c8c90fb45e8e719d20ca99e58d60db0655"
+    },
+    "destination": "/Game/SHI/Art/Characters/DazeCouncilFacial",
+    "trackedAssets": 21,
+    "skeletalMeshes": 5,
+    "sharedSkeletons": 1,
+    "materials": 15,
+    "textures": 1,
+    "exactMorphTargetsPerMesh": 21,
+    "defaultReadOnlyInspectionPassed": true,
+    "acceptedV1FallbackPreserved": true
+  },
+  "packagePresentation": {
+    "status": "pass-engineering-blockout-only",
+    "evidence": {
+      "file": "docs/production/evidence/unreal-daze-council-facial-performance-presentation-status.json",
+      "bytes": 14785,
+      "sha256": "874554bf33ae9eefc9a66b5c8afb39aea45089b9071b38e5e99f1a9c101e36b6"
+    },
+    "package": "$SHI_UNREAL_PACKAGE_ROOT/Linux",
+    "cookedPackages": 559,
+    "renderedPackagedRuns": 3,
+    "trackedScreenshots": 6,
+    "normalSpeakerReviewed": true,
+    "reducedSpeakerReviewed": true,
+    "normalKeeperReviewed": true,
+    "visibleFallbackReviewed": false,
+    "inputDrivenStoryReviewed": false,
+    "headlessSmokeRunAfterV2": false,
+    "finalArt": false,
+    "finalActing": false,
+    "finalVoice": false
+  },
+  "compiledSourceSnapshot": [
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilFacialPerformanceModel.h",
+      "bytes": 3503,
+      "sha256": "248c41e84a8d9ba5861330423295132149af0370e626ee9c163aa93c9c3f1db4"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilFacialPerformanceModel.cpp",
+      "bytes": 23780,
+      "sha256": "6508971d880cfc6da2a90598fe703db913a0aa458e12aae529a06101f79feae8"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilFigure.h",
+      "bytes": 2693,
+      "sha256": "c24aaf859d8216afe15feacbe26be6953c0f180cf216b59972ce564a71f8384c"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilFigure.cpp",
+      "bytes": 17259,
+      "sha256": "a68f807373548e41702144099ec3aefcb4183a478c5e96c1e28df7a89b5bd6a3"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiGameMode.cpp",
+      "bytes": 78715,
+      "sha256": "8145101a7cb021b0f8423dd0a01c19404eb74c0bda4bcd06904357d54702965e"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp",
+      "bytes": 133212,
+      "sha256": "58a350a9437ad6609e41849e14fc85ed152686010d552d00dd3f794c69a315f6"
+    },
+    {
+      "file": "apps/unreal/Config/DefaultGame.ini",
+      "bytes": 1181,
+      "sha256": "1154fff38e5a45029a6420bb9e6769e65ca8dd0aee04afd6a32fdf4459e768b0"
+    }
+  ],
+  "nativeBuild": {
+    "status": "pass",
+    "command": "UnrealBuildTool SHIEditor Linux Development -Project=apps/unreal/SHI.uproject -WaitMutex",
+    "startedAtLocal": "2026-08-10T19:12:28+08:00",
+    "startedAtUtc": "2026-08-10T11:12:28Z",
+    "target": "SHIEditor",
+    "toolchain": "Epic bundled Clang 20.1.8, Linux SDK v26_clang-20.1.8-rockylinux8, bundled libc++",
+    "headerTool": "pass with warnings treated as errors; 2 generated files written",
+    "actions": [
+      "Compile ShiCouncilFacialPerformanceModel.cpp",
+      "Compile ShiCouncilFigure.cpp",
+      "Compile Module.SHI.cpp",
+      "Compile ShiGameMode.cpp",
+      "Compile ShiCampaignAutomationTest.cpp",
+      "Link libUnrealEditor-SHI.so"
+    ],
+    "actionCount": 6,
+    "result": "Succeeded",
+    "executionSeconds": 10.09,
+    "transientLog": {
+      "location": "user UnrealBuildTool configuration log outside the repository",
+      "tracked": false,
+      "bytes": 11307,
+      "sha256": "7a1222694e7e4fa1ba6dfc0d7d5746ea565a66d96307637ace5dc82c63b4f711",
+      "durableBoundary": "this JSON preserves the reviewed command, actions and result; the mutable external build log is intentionally not committed"
+    }
+  },
+  "automation": {
+    "commonInvocation": {
+      "executable": "UnrealEditor-Cmd",
+      "map": "/Engine/Maps/Entry",
+      "flags": [
+        "-unattended",
+        "-nop4",
+        "-nosplash",
+        "-nullrhi",
+        "-nosound",
+        "-nowrite",
+        "-TestExit=Automation Test Queue Empty"
+      ],
+      "writeBoundary": "-nowrite; native automation did not mutate tracked assets"
+    },
+    "selectedFacialSuite": {
+      "status": "pass",
+      "filter": "SHI.Cinematic.CouncilFacialPerformanceV1",
+      "command": "Automation RunTests SHI.; Quit (selected suite observed inside the final full namespace run)",
+      "startedAtUtc": "2026-08-10T12:13:27.533Z",
+      "completedAtUtc": "2026-08-10T12:13:27.684Z",
+      "discovered": 1,
+      "started": 1,
+      "passed": 1,
+      "failed": 0,
+      "exitCode": 0,
+      "tests": [
+        "SHI.Cinematic.CouncilFacialPerformanceV1"
+      ],
+      "transientLog": {
+        "file": "apps/unreal/Saved/Logs/SHI.log",
+        "tracked": false,
+        "bytes": 264740,
+        "sha256": "59ef74c18438bcc6bce1917b917537d15f4ecb5473e1c6c3ebadc19c312e5ea6",
+        "durableBoundary": "Saved/ logs are ignored runtime output; this manifest preserves the exact reviewed result"
+      }
+    },
+    "fullShiNamespace": {
+      "status": "pass",
+      "filter": "SHI.",
+      "command": "Automation RunTests SHI.; Quit",
+      "startedAtUtc": "2026-08-10T12:13:27.175Z",
+      "completedAtUtc": "2026-08-10T12:13:27.964Z",
+      "discovered": 20,
+      "started": 20,
+      "passed": 20,
+      "failed": 0,
+      "exitCode": 0,
+      "tests": [
+        "SHI.Audio.ProceduralContractV1",
+        "SHI.Campaign.CrossEngineReplayV1",
+        "SHI.Campaign.OrderTransactionV1",
+        "SHI.Campaign.SaveReplayIntegrityV6",
+        "SHI.Campaign.SchemaV7Horizon",
+        "SHI.Cinematic.CommandSurfacePresentationV1",
+        "SHI.Cinematic.CommandWeightPresentationV1",
+        "SHI.Cinematic.CouncilCharacterPresentationV1",
+        "SHI.Cinematic.CouncilFacialPerformanceV1",
+        "SHI.Cinematic.CouncilPerformancePresentationV1",
+        "SHI.Cinematic.CouncilStagingV1",
+        "SHI.Cinematic.DazeFieldShelterPresentationV1",
+        "SHI.Cinematic.DazeRainPresentationV1",
+        "SHI.Cinematic.ResolutionGrammarV1",
+        "SHI.Cinematic.WetFieldEnvironmentPresentationV1",
+        "SHI.Cinematic.WetFieldVegetationPresentationV1",
+        "SHI.CommandSpace.LiveSignalsV1",
+        "SHI.Engagement.BrokenCrossingParityV1",
+        "SHI.History.SourceClaimClosureV1",
+        "SHI.Wartable.SpatialIntelligenceV1"
+      ],
+      "transientLog": {
+        "file": "apps/unreal/Saved/Logs/SHI.log",
+        "tracked": false,
+        "bytes": 264740,
+        "sha256": "59ef74c18438bcc6bce1917b917537d15f4ecb5473e1c6c3ebadc19c312e5ea6",
+        "durableBoundary": "Saved/ logs are ignored runtime output; this manifest preserves the exact reviewed result"
+      }
+    }
+  },
+  "facialSuiteCoverage": [
+    "five canonical identities remain exact and ordered",
+    "each live facial skeletal mesh has the exact admitted 53-bone shared Skeleton, bounds, topology, materials and 21 morph targets",
+    "all five live meshes resolve to the same accepted Skeleton object",
+    "unknown identity, path, Skeleton, scale, material order/count, morph order/count, triangle, bone and authority drift fail closed",
+    "silent intent remains language-neutral, deterministic and independent of audio, transcripts, phonemes, randomness, gameplay, save, interaction and replication",
+    "speaker and listener evaluation is deterministic for repeated input and all sampled 4-second frames retain exact order and bounded weights",
+    "reduced motion uses one clamped pass, suppresses blink loops and stops actor ticking after four seconds",
+    "invalid elapsed time and hostile frame morph/order/value/authority/state drift are rejected"
+  ],
+  "runtimeContract": {
+    "characters": 5,
+    "roles": [
+      "listener",
+      "speaker"
+    ],
+    "states": [
+      "neutral",
+      "blink",
+      "object-glance",
+      "interrupted-return",
+      "silent-speech",
+      "held-breath"
+    ],
+    "morphTargets": 21,
+    "cycleSeconds": 4.0,
+    "deterministic": true,
+    "languageNeutral": true,
+    "silentIntentCadence": true,
+    "audioDriven": false,
+    "transcriptDriven": false,
+    "phonemeDriven": false,
+    "randomized": false,
+    "gameplayAuthority": false,
+    "saveAuthority": false,
+    "interactionAuthority": false,
+    "replicated": false,
+    "reducedMotionSupported": true,
+    "wideAndMediumFramingOnly": true,
+    "closeFramingApproved": false,
+    "finalFace": false,
+    "finalActing": false,
+    "finalVoice": false,
+    "fallback": "invalid or unavailable facial presentation clears morphs and preserves the accepted neutral skeletal/reference fallback without changing story authority"
+  },
+  "releaseGates": {
+    "nativeEditorBuild": "pass",
+    "selectedFacialAutomation": "pass-1-of-1",
+    "fullProjectAutomation": "pass-20-of-20",
+    "packagedBuildWithFacialAssets": "pass-v2-559-cooked-packages",
+    "packagedHeadlessSmoke": "not-run-after-v2",
+    "visibleNoVncReview": "pass-three-development-review-runs-six-frames",
+    "inputDrivenStoryPlaytest": "not-run-for-this-facial-build",
+    "reducedMotionVisibleReview": "pass-engineering-only",
+    "visibleFallbackReview": "not-run",
+    "physicalDisplayReview": "not-run",
+    "humanAnimationHistoricalCulturalAccessibilityReview": "required",
+    "finalCloseDialogue": "rejected",
+    "voiceOrLipSync": "not-admitted"
+  },
+  "limitations": [
+    "The package and visible receipts prove that the v2 engineering blockout renders and exercises its two morph-bearing material sections in three packaged development-review runs; they do not make it final facial art or human-reviewed acting.",
+    "No separate v2 headless smoke, real-input story progression, deliberate visible fail-closed fallback, observed-player/controller or physical-display review was run for this facial build.",
+    "The shared generic non-portrait face, gray inner mouth and unfinished teeth, tongue, brows, lashes, skin, hair, cloth and wet response remain engineering blockout red gates.",
+    "Voice, lip sync, pronunciation, loudness and subtitle coexistence remain separate opt-in human-review gates for every supported language.",
+    "Close framing, final acting, marketing use and historical-likeness claims remain prohibited."
+  ]
+}

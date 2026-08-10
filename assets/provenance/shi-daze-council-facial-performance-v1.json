@@ -1,0 +1,427 @@
+{
+  "assetId": "shi-daze-council-facial-performance-v1",
+  "createdAt": "2026-08-10",
+  "status": "source-clean-interchange-and-engine-packaged-visible-reviewed-facial-performance-engineering-blockout-not-final-acting",
+  "rightsStatus": "Inherited MakeHuman system basemesh and game_engine rig, official Faceunits 01 targets, low-poly eye geometry/material and brown-eye texture are CC0 inputs; SHI-authored deterministic selection, weights, scripts, generic clay treatment, character layers, exports, renders and review contract are original project work; MPFB GPL-3.0-or-later program code is an offline authoring dependency and is not distributed in the game runtime",
+  "historicalStatus": "generic shared non-portrait facial engineering blockout only; not a likeness of Chen Sheng or Wu Guang, not evidence for a fictional role, not reconstructed late-Qin acting or etiquette, and not anatomical, ethnic, cultural or period evidence",
+  "designSource": "../../docs/art/DAZE_COUNCIL_FACIAL_PERFORMANCE_BRIEF.md",
+  "parentDirection": "../../docs/art/COUNCIL_FIGURINE_DIRECTION.md",
+  "sourceCharacterAsset": "shi-daze-council-characters-v1",
+  "sourceCharacterProvenance": {
+    "file": "shi-daze-council-characters-v1.json",
+    "bytes": 8613,
+    "sha256": "129827e7609fbc5047ae9724ecdbcdfa5603c32cc5e61036c34fc8302afb22b2"
+  },
+  "engineImportEvidence": "../../docs/production/evidence/unreal-daze-council-facial-performance-import-status.json",
+  "engineRuntimeEvidence": "../../docs/production/evidence/unreal-daze-council-facial-performance-runtime-status.json",
+  "enginePresentationEvidence": "../../docs/production/evidence/unreal-daze-council-facial-performance-presentation-status.json",
+  "engineAdmissionStatus": "engineering blockout admitted in Unreal; not final acting/voice/close framing",
+  "enginePresentationStatus": "packaged and visibly reviewed engineering blockout; not final acting/voice/close framing or human art/historical approval",
+  "engineEvidenceReceipts": {
+    "import": {
+      "file": "../../docs/production/evidence/unreal-daze-council-facial-performance-import-status.json",
+      "bytes": 51449,
+      "sha256": "5a4a8d1136ecf3200b844313470585c8c90fb45e8e719d20ca99e58d60db0655"
+    },
+    "runtime": {
+      "file": "../../docs/production/evidence/unreal-daze-council-facial-performance-runtime-status.json",
+      "bytes": 10904,
+      "sha256": "0712ce84fed16a0d83cf3427c22df9b2ee3af61474c11c88628d141558f75191"
+    },
+    "presentation": {
+      "file": "../../docs/production/evidence/unreal-daze-council-facial-performance-presentation-status.json",
+      "bytes": 14785,
+      "sha256": "874554bf33ae9eefc9a66b5c8afb39aea45089b9071b38e5e99f1a9c101e36b6"
+    }
+  },
+  "engineOutputs": {
+    "trackedAssets": 21,
+    "skeletalMeshes": 5,
+    "sharedSkeletons": 1,
+    "materials": 15,
+    "textures": 1,
+    "hashManifest": "../../docs/production/evidence/unreal-daze-council-facial-performance-import-status.json",
+    "runtimeStatus": "../../docs/production/evidence/unreal-daze-council-facial-performance-runtime-status.json",
+    "presentationStatus": "../../docs/production/evidence/unreal-daze-council-facial-performance-presentation-status.json"
+  },
+  "disclosure": "FACIAL PERFORMANCE ENGINEERING BLOCKOUT · SILENT INTENT CADENCE · GENERIC NON-PORTRAIT FACE · NOT FINAL ACTING, LIP SYNC OR VOICE",
+  "toolchain": {
+    "authoring": "Blender 4.5.12 LTS, MPFB 2.0.17 commit 80919fa4682335c41847f761a4d79dcad4124732 and deterministic local SHI Python",
+    "generation": "offline deterministic regeneration from pinned CC0 system basemesh/53-bone game_engine rig, official Faceunits 01 and system low-poly brown eyes; no neural generation, community character, mocap, model weights, private portrait, voice, transcript or private-book payload",
+    "generator": {
+      "file": "../../scripts/build-daze-council-facial-performance.py",
+      "bytes": 21588,
+      "sha256": "77661050646acb3aaf34786e50c503222ace3ffefd15ca92c3c96ab0d3eb6789",
+      "method": "rebuilds all five admitted silhouettes, adds CC0 eyes and Faceunits, retains only the exact 21-body/8-eye contract, writes editable source, FBX/GLB exports, state renders and source metrics"
+    },
+    "characterBuilderDependency": {
+      "file": "../../scripts/build-daze-council-characters.py",
+      "bytes": 34384,
+      "sha256": "2fbaee8569c41710f34e8108fbc23900bd7a03ac66c1ae2a7d124386fc260673",
+      "method": "supplies the previously admitted five-identity skeleton, neutral silhouette, authored layer and role-shape construction"
+    },
+    "validator": {
+      "file": "../../scripts/validate-daze-council-facial-performance.py",
+      "bytes": 25571,
+      "sha256": "3b3e9ed8352ae50ed140951f47d4d210ac88d5fba1a24f22e0c7b8c61a04793a",
+      "method": "clean Blender FBX/GLB import; exact five IDs, 53-bone rest pose, body/eye topology, morph names, material, texture, skin weights, physical bounds and nonzero deformation checks; source-to-FBX-to-GLB morph-amplitude equivalence at 0.000005 m tolerance; clean-FBX neutral/blink/gaze/silent-speech renders with the exact tracked CC0 eye bitmap rebound for geometry/UV review"
+    },
+    "unrealImporter": {
+      "file": "../../scripts/import-daze-council-facial-performance-unreal.py",
+      "bytes": 51469,
+      "sha256": "ce9267b1934d3887ee5fa5c38c9a4645e69d052ddd1681b8a2ce173ab4e17aea",
+      "method": "inspect-only by default; isolated mutation behind SHI_DAZE_COUNCIL_FACIAL_REIMPORT=1; imports five exact morph-bearing skeletal meshes, fifteen bounded skeletal materials and one exact CC0 texture; pins MorphTargets usage to only SkinClay and EyeBrown, reuses the admitted shared Skeleton, preserves the accepted v1 fallback and records all twenty-one uasset receipts"
+    },
+    "packageReviewValidator": {
+      "file": "../../scripts/validate-daze-council-facial-performance-package.mjs",
+      "bytes": 18795,
+      "sha256": "da4613c3d047c4cfac8df6f4c4e1d7fde3984acd5971e9df90c6823a8bd70b8e",
+      "method": "revalidates the exact accepted v2 launcher, executable and IoStore receipts plus three external visible-review logs; requires exact participant admissions, morph-section exercise, reduced-motion overrides and controlled shutdown order while rejecting material repair, Default Material fallback, neutral-face fallback and fatal signatures"
+    }
+  },
+  "upstreamSources": {
+    "faceunits01": {
+      "sourceName": "faceunits01.zip",
+      "storageBoundary": "pinned outside Git under the isolated SHI authoring-tool download directory",
+      "bytes": 257821,
+      "sha256": "d113107bd7eb59f3af4df6fc0ec29bfcc593f496d0b336aec14f086a80ce7146",
+      "landingPage": "https://static.makehumancommunity.org/assets/assetpacks/faceunits01.html",
+      "licensePage": "https://static.makehumancommunity.org/about/license.html",
+      "license": "CC0",
+      "manifest": {
+        "member": "packs/faceunits01.json",
+        "bytes": 18636,
+        "sha256": "fd647a088691ddd9193ce9600df3377bb9ccf69c2904f0a7773a3c246d234c18",
+        "evidence": "the archive manifest records the Faceunit target entries as CC0 and credits Mika Suominen"
+      },
+      "admittedContribution": "only the 21 exact target names in morphContract.bodyControls; the remaining Faceunits 01 targets are removed before export"
+    },
+    "systemLowPolyEyes": {
+      "storageBoundary": "official MakeHuman system assets installed outside Git in the isolated MPFB profile",
+      "sourcePage": "https://static.makehumancommunity.org/asset_packs/makehuman_system_assets.html",
+      "licensePage": "https://static.makehumancommunity.org/about/license.html",
+      "license": "CC0",
+      "files": [
+        {
+          "sourceName": "eyes/low-poly/low-poly.mhclo",
+          "bytes": 1344,
+          "sha256": "68582e28e9176cba7cfcf35208f671b6201b8d1bc95c32decff61a3160ec34d8",
+          "licenseEvidence": "embedded header explicitly states CC0 release in September 2020 and names the copyright holders"
+        },
+        {
+          "sourceName": "eyes/low-poly/low-poly.obj",
+          "bytes": 6604,
+          "sha256": "783fe1e6331162c876520b4c2bed7a8ca06354ca15497e8ebd68bb1b59f4d3de",
+          "licenseEvidence": "geometry payload referenced by the explicitly CC0 low-poly.mhclo asset definition; the OBJ has no separate embedded license header"
+        },
+        {
+          "sourceName": "eyes/materials/brown.mhmat",
+          "bytes": 1247,
+          "sha256": "4abad93ce50541c08127721e77bce035640c9f16bed16cd0f5524b1cd5908465",
+          "licenseEvidence": "embedded header explicitly states CC0 release in September 2020 and names the copyright holders"
+        },
+        {
+          "sourceName": "eyes/materials/brown_eye.png",
+          "bytes": 610817,
+          "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+          "licenseEvidence": "texture payload referenced by the explicitly CC0 brown.mhmat asset definition; the PNG has no separate embedded license statement"
+        }
+      ],
+      "admittedContribution": "96-vertex low-poly eye mesh, its material relationship and exact brown-eye texture; only the eight gaze controls in morphContract.eyeControls survive export"
+    }
+  },
+  "morphContract": {
+    "bodyControlCount": 21,
+    "bodyControls": [
+      "eyeBlinkLeft",
+      "eyeBlinkRight",
+      "eyeLookDownLeft",
+      "eyeLookDownRight",
+      "eyeLookInLeft",
+      "eyeLookInRight",
+      "eyeLookOutLeft",
+      "eyeLookOutRight",
+      "eyeLookUpLeft",
+      "eyeLookUpRight",
+      "browInnerUp",
+      "browDownLeft",
+      "browDownRight",
+      "cheekSquintLeft",
+      "cheekSquintRight",
+      "jawOpen",
+      "mouthFunnel",
+      "mouthPressLeft",
+      "mouthPressRight",
+      "mouthUpperUpLeft",
+      "mouthUpperUpRight"
+    ],
+    "eyeControlCount": 8,
+    "eyeControls": [
+      "eyeLookDownLeft",
+      "eyeLookDownRight",
+      "eyeLookInLeft",
+      "eyeLookInRight",
+      "eyeLookOutLeft",
+      "eyeLookOutRight",
+      "eyeLookUpLeft",
+      "eyeLookUpRight"
+    ],
+    "otherMeshMorphTargets": 0,
+    "sharedSkeleton": "SK_SHI_DazeCouncil_Skeleton",
+    "sharedSkeletonBones": 53,
+    "canonicalCharacterIds": [
+      "keeper",
+      "chen-sheng",
+      "wu-guang",
+      "yu-mu",
+      "qin-courier"
+    ],
+    "bodyVertices": {
+      "fbx": 13380,
+      "glb": 14517,
+      "note": "GLB interchange splits vertices while preserving the admitted shape-key name sets"
+    },
+    "eyeVertices": 96,
+    "neuralGeneration": false,
+    "voiceOrTranscriptInput": false,
+    "gameplayAuthority": false
+  },
+  "silentIntentStates": {
+    "determinism": "single complete named target at a time; every omitted control is zero; runtime may interpolate neutral to the named bounded maximum and back using an authored scene/role clock, with no randomness, audio, transcript, classifier or unreviewed state layering",
+    "neutral": {},
+    "blink": {
+      "eyeBlinkLeft": 0.82,
+      "eyeBlinkRight": 0.82
+    },
+    "object-glance": {
+      "eyeLookOutLeft": 0.18,
+      "eyeLookInRight": 0.18
+    },
+    "interrupted-return": {
+      "browInnerUp": 0.12,
+      "mouthPressLeft": 0.06,
+      "mouthPressRight": 0.06,
+      "cheekSquintLeft": 0.04,
+      "cheekSquintRight": 0.04
+    },
+    "silent-speech": {
+      "jawOpen": 0.28,
+      "mouthFunnel": 0.1,
+      "mouthUpperUpLeft": 0.06,
+      "mouthUpperUpRight": 0.06
+    },
+    "held-breath": {
+      "browDownLeft": 0.05,
+      "browDownRight": 0.05,
+      "cheekSquintLeft": 0.08,
+      "cheekSquintRight": 0.08,
+      "mouthPressLeft": 0.16,
+      "mouthPressRight": 0.16
+    }
+  },
+  "sourceOutputs": [
+    {
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1.blend",
+      "role": "editable five-character facial-performance engineering source",
+      "bytes": 7616511,
+      "sha256": "6e72c762162a10df001fddef877571bbbcb8d25f696203008d98ac234eabeecc"
+    },
+    {
+      "file": "../3d/source/shi-daze-council-facial-performance-v1-brown-eye-cc0.png",
+      "role": "exact tracked copy of the CC0 MakeHuman brown-eye source texture",
+      "bytes": 610817,
+      "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+    },
+    {
+      "file": "../3d/source/shi-daze-council-facial-performance-v1.metrics.json",
+      "role": "deterministic source, upstream hash, character, target-state, export and render metrics",
+      "bytes": 20053,
+      "sha256": "d2212c8da6663e27ce253cd4dfc8036b065a5f29d8dad44a0277b108acee060d"
+    },
+    {
+      "file": "../3d/source/shi-daze-council-facial-performance-v1.validation.json",
+      "role": "clean FBX/GLB exact-contract and deformation validation",
+      "bytes": 134722,
+      "sha256": "a03433a5ec9728b89eb5b6f4a3df9c4a1bed9afe417a8abcfe9b3c956e4481b6"
+    }
+  ],
+  "characterExports": [
+    {
+      "characterId": "keeper",
+      "triangles": 27840,
+      "meshCount": 19,
+      "fbx": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-keeper.fbx",
+        "bytes": 2675132,
+        "sha256": "61f34f5b3959c1ded2d86a3a7e0eca1e7429ad1971cecea4331cc13a0e71ec0e"
+      },
+      "glb": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-keeper.glb",
+        "bytes": 2988448,
+        "sha256": "7b3a74dc7a7b7b12fb8eacd14b758a1fa514903954d00a015032111f81cbd47a"
+      }
+    },
+    {
+      "characterId": "chen-sheng",
+      "triangles": 27836,
+      "meshCount": 18,
+      "fbx": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-chen-sheng.fbx",
+        "bytes": 2621036,
+        "sha256": "febf45db1a7e2d1dfeea4c845b22207237e4a38c73b05733449585f768739688"
+      },
+      "glb": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-chen-sheng.glb",
+        "bytes": 2987252,
+        "sha256": "378511d47964df5a3a6e198a737a3b2f5ea024a2c4f494c3d7052c83e6d88a03"
+      }
+    },
+    {
+      "characterId": "wu-guang",
+      "triangles": 27680,
+      "meshCount": 17,
+      "fbx": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-wu-guang.fbx",
+        "bytes": 2565436,
+        "sha256": "abcd72068348b9d860456b780c250f05380802021df90c10fa340ee08406f0e3"
+      },
+      "glb": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-wu-guang.glb",
+        "bytes": 2970436,
+        "sha256": "cb80eb61d45340e9a2c77ea06c6816a92cc2105b9cd6462cce3991e19f29d6e0"
+      }
+    },
+    {
+      "characterId": "yu-mu",
+      "triangles": 27828,
+      "meshCount": 18,
+      "fbx": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-yu-mu.fbx",
+        "bytes": 2620604,
+        "sha256": "ca0dd69bd48cb797cbbeafd739439b44da37d09559409e1dce0df27807cc90cb"
+      },
+      "glb": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-yu-mu.glb",
+        "bytes": 2986324,
+        "sha256": "8e2feec71b161326b1deb9b8a9e1c046896b1ed674d10b4764b2c73761eff347"
+      }
+    },
+    {
+      "characterId": "qin-courier",
+      "triangles": 27840,
+      "meshCount": 19,
+      "fbx": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-qin-courier.fbx",
+        "bytes": 2675420,
+        "sha256": "dfd9b71921e3ada115a40ff4493029e5c84dfc40c70861a9e1d2f546db0aac91"
+      },
+      "glb": {
+        "file": "../3d/export/shi-daze-council-facial-performance-v1-qin-courier.glb",
+        "bytes": 2988184,
+        "sha256": "91b28f0d2450469cca3e6bafc1816af0001ac7ef5b57bdc1c1ea51fc935b59d6"
+      }
+    }
+  ],
+  "sourceReviewRenders": [
+    {
+      "state": "lineup-front",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-lineup-front.png",
+      "bytes": 1942578,
+      "sha256": "bc44211ad2433ac1180e7ef6fcf4895c00468f3839340e3d12a3ca68d22c8fe1"
+    },
+    {
+      "state": "lineup-oblique",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-lineup-oblique.png",
+      "bytes": 1997710,
+      "sha256": "b27d9afcbb040fb7329fce5eba3d130c44205aa9ae1348583b525c46b68abd2c"
+    },
+    {
+      "state": "neutral",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-neutral.png",
+      "bytes": 802829,
+      "sha256": "723fbfa991cee4e47fe4bf1929d02582f8bfaf9689f1bd8829c9ccdb257f1dec"
+    },
+    {
+      "state": "blink",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-blink.png",
+      "bytes": 798549,
+      "sha256": "21de4bdb57d9b07484da8078b9a56405af4dc575b93858c49c5b2fcc187f3205"
+    },
+    {
+      "state": "object-glance",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-object-glance.png",
+      "bytes": 803259,
+      "sha256": "6b629e9d89670d040ebb381515495b1ae34ba2cb4cb376b0e3ef807e6216408d"
+    },
+    {
+      "state": "interrupted-return",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-interrupted-return.png",
+      "bytes": 802351,
+      "sha256": "76c34f54e774ce3e3546ac859219012cc2ad6c489d2f6d5276d1ce6f1b0c8325"
+    },
+    {
+      "state": "silent-speech",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-silent-speech.png",
+      "bytes": 804769,
+      "sha256": "8654e1ae6df9bbd0c2043cc528a4127089f1d81b738358722c09ff802ebae937"
+    },
+    {
+      "state": "held-breath",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-held-breath.png",
+      "bytes": 802583,
+      "sha256": "a4509bfc7f6e52e1fb6d4bbb048a8b5fa38a3f91fff7af82becea2bfbff4a950"
+    }
+  ],
+  "cleanFbxReviewRenders": [
+    {
+      "state": "neutral",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-fbx-import-neutral.png",
+      "bytes": 942975,
+      "sha256": "ce3aa7a0f4e153e50491216f2e8e716fa648109a069d088c937e65d07a43050e"
+    },
+    {
+      "state": "blink",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-fbx-import-blink.png",
+      "bytes": 938383,
+      "sha256": "4d5a9e7ea3844f95193950f7228ec705dc8b2123902e739370ecbba93bcf1f67"
+    },
+    {
+      "state": "object-glance",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-fbx-import-gaze.png",
+      "bytes": 943195,
+      "sha256": "02502b9433cb20bc316d56cd0fc3142181d69dc2eaeba83a96fcf8a0d9b53117"
+    },
+    {
+      "state": "silent-speech",
+      "file": "../3d/rendered/shi-daze-council-facial-performance-v1-fbx-import-silent-speech.png",
+      "bytes": 946015,
+      "sha256": "251d99328c8838d7007f90aa4257e70affc20c14f2c8c4f22d644d5cc21b8e5f"
+    }
+  ],
+  "technicalReview": {
+    "deterministicSource": "pass: exact pinned upstream hashes, five canonical IDs, one 53-bone hierarchy, exact 21 body controls, exact eight eye controls and six bounded target states",
+    "cleanFbxImport": "pass: five exports, exact skeleton/rest pose, 13380-vertex body, 96-vertex eyes, exact 1024x1024 eye texture receipt, exact target sets and nonzero morph deltas; review renders deliberately rebind the separately tracked CC0 bitmap because FBX material graphs carry no runtime authority",
+    "cleanGlbImport": "pass: five exports, exact skeleton/rest pose, 14517 split-vertex body, 96-vertex eyes, exact target sets, one image, no animation and source-scale morph amplitudes",
+    "crossFormatMorphEquivalence": "pass: all admitted body and eye controls on all five characters compare source-to-FBX-to-GLB maximum displacement within 0.000005 m; observed maximum absolute error 0.000000011284961771475255 m; FBX morph coordinates are metre-valued after Blender armature compensation even though FBX world bounds require centimetre-to-metre conversion",
+    "sourceReviewStates": "pass receipts: neutral, blink, object-glance, interrupted-return, silent-speech and held-breath plus front/oblique lineups",
+    "cleanFbxReviewStates": "pass receipts: neutral, blink, object-glance and silent-speech",
+    "unrealImport": "pass: explicitly authorized isolated import plus default inspect-only rerun admit exactly five skeletal meshes, fifteen materials and one CC0 texture; all five meshes retain the exact shared 53-bone Skeleton and twenty-one morph controls; accepted v1 assets remain byte-identical",
+    "unrealRuntime": "pass at native contract/automation scope: SHIEditor Linux Development compiles and links; selected SHI.Cinematic.CouncilFacialPerformanceV1 passes 1/1 and the full exact SHI. namespace passes 20/20 with exit code 0; deterministic, reduced-motion and hostile authority/state drift checks are included",
+    "packageAndVisibleStory": "pass at bounded package/render scope: v2 cooks 559 packages and three packaged development-camera runs visibly review normal speaker, reduced speaker and normal keeper intent across six retained frames; exact runtime admission/morph-section markers are present and MorphTargets repair/default-material warnings are absent; no separate v2 headless smoke, real-input story progression or visible fallback claim",
+    "humanFinalReview": "required"
+  },
+  "provenanceUncertainties": [
+    "The exact Faceunits 01 archive hash, size, member manifest and official landing page are preserved, but the direct download response URL and retrieval timestamp were not recorded; this provenance does not invent them.",
+    "The low-poly OBJ and brown-eye PNG do not contain their own embedded license statements. Their CC0 boundary is evidenced by the explicitly CC0 companion low-poly.mhclo and brown.mhmat definitions and the official MakeHuman system-assets/license pages."
+  ],
+  "constraints": [
+    "Do not present the generic shared face as a portrait, historical likeness, anatomical reconstruction or culturally reviewed performance",
+    "Do not call the deterministic silent-intent targets lip sync, phonemes, visemes, transcript timing, emotion inference or voice acting",
+    "Do not allow randomness, audio, generated classifiers or unreviewed state layering to select or modify morph values",
+    "Keep every facial and eye value presentation-only and fail closed to neutral on path, skeleton, target, value or state drift",
+    "Keep medium development framing; do not approve final close dialogue or marketing use",
+    "Do not infer final rights or historical approval from the CC0 license boundary",
+    "Complete a separate v2 packaged headless smoke, real-input story and deliberate visible fallback review, mouth/teeth/tongue/brow/lash/skin/eye/hair/cloth/wet-material work, neck and interaction-hand performance, LOD/performance work and human animation/historical/cultural/cinematic/accessibility/physical-display review before final acceptance",
+    "Voice and lip sync remain a separate opt-in gate requiring authored dialogue fidelity and human pronunciation, intelligibility, emotional-register, loudness and subtitle-coexistence review in every supported language"
+  ]
+}

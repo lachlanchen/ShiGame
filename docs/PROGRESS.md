@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-10 · Unreal council facial-performance engineering checkpoint
+
+- Added an isolated five-identity facial-performance lane on the admitted 53-bone shared skeleton: five morph-bearing skeletal meshes, fifteen materials and one CC0 brown-eye texture. Every mesh carries the exact 21-control deterministic silent-intent contract; it is language-neutral and has no audio, transcript, phoneme, gameplay, save, interaction or replication authority.
+- Source, FBX and GLB validation proves the exact controls and cross-format deformation equivalence. Unreal admission retains exactly 21 controls per mesh and fails closed to the accepted neutral presentation on identity, skeleton, material, morph, value or state drift.
+- Rejected packaged v1 after live logs exposed missing `MorphTargets` usage on `SkinClay` and `EyeBrown`, which forced **Default Material** fallback. Corrected v2 saves all fifteen materials for `SkeletalMesh` usage and exactly those two morph-bearing-section materials for `MorphTargets`, with no extra permutation usage.
+- Epic UE 5.8.1 discovers exactly **20** native `SHI.` suites and all **20 / 20** pass. The clean v2 Linux Development build cooks and mounts **559 packages**—exactly the accepted 538-package body-performance baseline plus **21 isolated facial assets**.
+- One reused localhost-only noVNC stack visibly reviewed Chen Sheng as a normal-motion speaker, Chen Sheng as a `ReducedMotion=True` speaker and the Keeper as a normal-motion listener. Six 1600×1000 frames retain silent-speech, blink, listener-intent, reduced object-glance and reduced terminal-neutral evidence.
+- Facial v2 did **not** rerun input-driven story progression or a separate headless smoke. The prior v5 body-performance package remains the latest proof of both: real keyboard progression from Act I Scene 1 to Act II Scene 2 with a verified autosave, plus clean Entry/`ShiGameMode` headless smoke across all 538 packages.
+- This accepts a **generic non-portrait facial engineering blockout, not final or historical acting**. Interaction hands, mouth interior, voice/lip sync, close framing, visibly exercised fail-closed fallback, final character art/acting and human historical/cultural/accessibility review remain red. See the [facial presentation evidence](production/evidence/unreal-daze-council-facial-performance-presentation-status.json).
+
+Next gate: visibly inject and verify the fail-closed facial fallback, then develop reviewed interaction hands and mouth interior before any opt-in voice/lip-sync or close-framing pass; final art/acting and human historical/cultural/accessibility approval remain required.
+
 ## 2026-08-10 · Unreal shared-skeleton council body-performance checkpoint
 
 - Added two restrained, reusable four-second loops on the exact admitted 53-bone cast: `attentive-idle` for the listening participant and `speaker-measured` for the current speaker. Both are 30 fps/121-sample, body-only, zero-root-motion presentation clips with no facial, cloth, hair, interaction, campaign, save or replication authority.
@@ -10,7 +22,7 @@
 - The accepted packaged v5 review preserves the complete head, hands, feet, garments and silhouette through motion. Real keyboard input then selects `read-the-names`, commits a verified transaction, autosaves and advances `rain-order → open-council`. Four hash-bound 1600×1000 frames record the performance phases and normal story route.
 - This is a **body-performance blockout, not final acting**. It does not authorize facial performance, lip sync, interaction contact, cloth/hair response, reconstructed late-Qin etiquette, close facial cinema, final formations or marketing use. Human animation, historical, cultural, cinematic, accessibility and physical-display review remain red.
 
-Next gate: add reviewed eye/facial/speech and interaction-hand systems without weakening reference-pose fallback, deterministic story authority or the single-runtime workstation policy; then repeat final-scene physical performance and observed-player review.
+Next gate completed in part by the facial-performance checkpoint above; interaction hands, mouth interior, voice/lip sync, visible fallback and final human-reviewed acting remain open.
 
 ## 2026-08-10 · Five Unreal Daze council skeletal-character checkpoint
 
@@ -22,7 +34,7 @@ Next gate: add reviewed eye/facial/speech and interaction-hand systems without w
 - Epic UE 5.8.1 compiles the source, all **18 / 18** native `SHI.` suites pass, and a clean outside-Git BuildCookRun succeeds with exactly **536 packages**—the accepted 516 baseline plus twenty character assets. Headless smoke mounts all 536, loads Entry with `ShiGameMode` and exits cleanly.
 - This is a **skeletal production blockout, not final character art**. Neutral poses, generic faces and broad layers do not authorize close facial cinema, historical portrait/costume claims, speech/facial animation, final body performance, cloth/hair weather response, authored LODs or marketing use.
 
-Next gate completed in part by the body-performance checkpoint above; facial performance, interaction hands, cloth/hair response, formations and historically reviewed garment/role detail remain open.
+Next gate completed in part by the body- and facial-performance checkpoints above; interaction hands, mouth interior/voice/lip sync, cloth/hair response, formations and historically reviewed garment/role detail remain open.
 
 ## 2026-08-10 · Restrained Unreal wet-field vegetation and full playable-route checkpoint
 
@@ -36,7 +48,7 @@ Next gate completed in part by the body-performance checkpoint above; facial per
 - Four 1600×1000 final-package frames retain whole-field, story, engagement-completion and campaign-return evidence. The live review remains available at localhost-only noVNC port 6139.
 - This is a **production vegetation blockout, not final cinematic environment art**. The skeletal council presentation checkpoint above closes only the primitive visible-figure gate; historically reviewed character/formation language, interaction hands, animation, cloth/hair response, final sky/lighting, physical-display final-scene performance/accessibility and human historical/botanical/cinematic/art approval remain red.
 
-Next gate completed in part by the five-character skeletal checkpoint above; animation, interaction hands, formations and historically reviewed garment/role detail remain open.
+Next gate completed in part by the skeletal, body- and facial-performance checkpoints above; interaction hands, mouth interior/voice/lip sync, formations and historically reviewed garment/role detail remain open.
 
 ## 2026-08-10 · Source-matched Unreal rain and complete visible replay checkpoint
 

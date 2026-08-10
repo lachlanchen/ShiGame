@@ -24,6 +24,7 @@ const required = [
   "Source/SHI/ShiCouncilStagingModel.h", "Source/SHI/ShiCouncilStagingModel.cpp",
   "Source/SHI/ShiCouncilCharacterPresentationModel.h", "Source/SHI/ShiCouncilCharacterPresentationModel.cpp",
   "Source/SHI/ShiCouncilPerformancePresentationModel.h", "Source/SHI/ShiCouncilPerformancePresentationModel.cpp",
+  "Source/SHI/ShiCouncilFacialPerformanceModel.h", "Source/SHI/ShiCouncilFacialPerformanceModel.cpp",
   "Source/SHI/ShiCouncilFigure.h", "Source/SHI/ShiCouncilFigure.cpp",
   "Source/SHI/ShiCinematicBeatModel.h", "Source/SHI/ShiCinematicBeatModel.cpp",
   "Source/SHI/ShiOrderTransactionModel.h", "Source/SHI/ShiOrderTransactionModel.cpp",
@@ -77,6 +78,13 @@ const required = [
   "Content/SHI/Art/Characters/DazeCouncil/M_SHI_qin-courier_ClothOuter.uasset",
   "Content/SHI/Art/Characters/DazeCouncil/Performance/AN_SHI_DazeCouncil_AttentiveIdle_01.uasset",
   "Content/SHI/Art/Characters/DazeCouncil/Performance/AN_SHI_DazeCouncil_SpeakerMeasured_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_Keeper_Facial_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_ChenSheng_Facial_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_WuGuang_Facial_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_YuMu_Facial_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilFacial/SKM_SHI_DazeCouncil_QinCourier_Facial_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.uasset",
   "Content/StreamingAssets/chapter-01-daze.json", "Content/StreamingAssets/chapter-01-audio.json",
   "Content/StreamingAssets/chapter-01-broken-crossing.v1.json",
   "Content/StreamingAssets/chapter-01-replays.v1.json", "Content/StreamingAssets/editions.json",
@@ -1020,6 +1028,542 @@ if (councilPerformancePresentationEvidence.screenshots?.length !== 4
     || !performancePlaytest?.animatedCouncilCharacterVisible)
   errors.push("Unreal council-performance disclosure, runtime, automation or visible-play receipt is incomplete");
 
+const facialAssetId = "shi-daze-council-facial-performance-v1";
+const facialCharacterIds = ["keeper", "chen-sheng", "wu-guang", "yu-mu", "qin-courier"];
+const facialCharacterSuffixes = ["Keeper", "ChenSheng", "WuGuang", "YuMu", "QinCourier"];
+const facialMorphTargets = [
+  "eyeBlinkLeft", "eyeBlinkRight", "eyeLookDownLeft", "eyeLookDownRight",
+  "eyeLookInLeft", "eyeLookInRight", "eyeLookOutLeft", "eyeLookOutRight",
+  "eyeLookUpLeft", "eyeLookUpRight", "browInnerUp", "browDownLeft", "browDownRight",
+  "cheekSquintLeft", "cheekSquintRight", "jawOpen", "mouthFunnel", "mouthPressLeft",
+  "mouthPressRight", "mouthUpperUpLeft", "mouthUpperUpRight",
+];
+const facialEyeMorphTargets = [
+  "eyeLookDownLeft", "eyeLookDownRight", "eyeLookInLeft", "eyeLookInRight",
+  "eyeLookOutLeft", "eyeLookOutRight", "eyeLookUpLeft", "eyeLookUpRight",
+];
+const facialExpectedSkeleton = "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton";
+const facialEvidenceRelative = "../../docs/production/evidence/unreal-daze-council-facial-performance-import-status.json";
+const facialRuntimeEvidenceRelative = "../../docs/production/evidence/unreal-daze-council-facial-performance-runtime-status.json";
+const facialPresentationEvidenceRelative = "../../docs/production/evidence/unreal-daze-council-facial-performance-presentation-status.json";
+const facialEvidenceStatus = "five-identity facial-performance engineering blockout; not final acting";
+const facialAdmissionStatus = "engineering blockout admitted in Unreal; not final acting/voice/close framing";
+const facialPresentationStatus = "packaged and visibly reviewed engineering blockout; not final acting/voice/close framing or human art/historical approval";
+const facialPresentationDecision = "approved-runtime-five-identity-facial-performance-engineering-blockout-packaged-visible-reviewed-not-final-acting";
+const facialDisclosure = "FACIAL PERFORMANCE ENGINEERING BLOCKOUT · SILENT INTENT CADENCE · GENERIC NON-PORTRAIT FACE · NOT FINAL ACTING, LIP SYNC OR VOICE";
+const facialMaterialNames = [
+  "M_SHI_Character_BindingClay", "M_SHI_Character_EyeBrown", "M_SHI_Character_HairClay",
+  "M_SHI_Character_RolePropClay", "M_SHI_Character_SkinClay", "M_SHI_keeper_ClothBase",
+  "M_SHI_keeper_ClothOuter", "M_SHI_chen-sheng_ClothBase", "M_SHI_chen-sheng_ClothOuter",
+  "M_SHI_wu-guang_ClothBase", "M_SHI_wu-guang_ClothOuter", "M_SHI_yu-mu_ClothBase",
+  "M_SHI_yu-mu_ClothOuter", "M_SHI_qin-courier_ClothBase", "M_SHI_qin-courier_ClothOuter",
+];
+const facialMorphSectionMaterials = ["M_SHI_Character_EyeBrown", "M_SHI_Character_SkinClay"];
+const facialProvenancePath = resolve(root, "assets/provenance/shi-daze-council-facial-performance-v1.json");
+const facialMetricsPath = resolve(root, "assets/3d/source/shi-daze-council-facial-performance-v1.metrics.json");
+const facialValidationPath = resolve(root, "assets/3d/source/shi-daze-council-facial-performance-v1.validation.json");
+const facialImportEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-facial-performance-import-status.json");
+const facialRuntimeEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-facial-performance-runtime-status.json");
+const facialPresentationEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-facial-performance-presentation-status.json");
+
+async function readFacialJson(path, label) {
+  try {
+    return JSON.parse(await readFile(path, "utf8"));
+  } catch {
+    errors.push(`${label} is missing or is not valid JSON`);
+    return {};
+  }
+}
+
+async function verifyFacialReceipt(baseDirectory, receipt, label) {
+  if (!receipt?.file || !Number.isInteger(receipt.bytes) || receipt.bytes <= 0
+      || !/^[0-9a-f]{64}$/.test(receipt.sha256 ?? "")) {
+    errors.push(`${label} omits its file, byte count or SHA-256 receipt`);
+    return;
+  }
+  try {
+    const bytes = await readFile(resolve(baseDirectory, receipt.file));
+    if (bytes.byteLength !== receipt.bytes
+        || createHash("sha256").update(bytes).digest("hex") !== receipt.sha256)
+      errors.push(`${label} receipt drifted: ${receipt.file}`);
+  } catch {
+    errors.push(`${label} is missing: ${receipt.file}`);
+  }
+}
+
+const sameStringSet = (actual, expected) => Array.isArray(actual)
+  && actual.length === expected.length
+  && [...actual].sort().join("\n") === [...expected].sort().join("\n");
+const everyCheckPassed = (checks) => checks && Object.keys(checks).length > 0
+  && Object.values(checks).every((value) => value === true);
+
+const facialProvenance = await readFacialJson(facialProvenancePath, "Daze council facial provenance");
+const facialMetrics = await readFacialJson(facialMetricsPath, "Daze council facial metrics");
+const facialValidation = await readFacialJson(facialValidationPath, "Daze council facial validation");
+const facialImportEvidence = await readFacialJson(facialImportEvidencePath, "Daze council facial Unreal import evidence");
+const facialRuntimeEvidence = await readFacialJson(facialRuntimeEvidencePath, "Daze council facial Unreal runtime evidence");
+const facialPresentationEvidence = await readFacialJson(facialPresentationEvidencePath, "Daze council facial Unreal presentation evidence");
+
+if (facialProvenance.assetId !== facialAssetId
+    || typeof facialProvenance.status !== "string"
+    || !facialProvenance.status.includes("engine")
+    || !facialProvenance.status.includes("packaged-visible-reviewed")
+    || !facialProvenance.status.includes("engineering-blockout")
+    || !facialProvenance.status.includes("not-final-acting")
+    || facialProvenance.status.includes("pending")
+    || facialProvenance.engineImportEvidence !== facialEvidenceRelative
+    || facialProvenance.engineRuntimeEvidence !== facialRuntimeEvidenceRelative
+    || facialProvenance.enginePresentationEvidence !== facialPresentationEvidenceRelative
+    || facialProvenance.engineAdmissionStatus !== facialAdmissionStatus
+    || facialProvenance.enginePresentationStatus !== facialPresentationStatus)
+  errors.push("Daze council facial provenance does not preserve its admitted engineering-blockout/final-art boundary");
+if (facialProvenance.engineOutputs?.trackedAssets !== 21
+    || facialProvenance.engineOutputs?.skeletalMeshes !== 5
+    || facialProvenance.engineOutputs?.sharedSkeletons !== 1
+    || facialProvenance.engineOutputs?.materials !== 15
+    || facialProvenance.engineOutputs?.textures !== 1
+    || facialProvenance.engineOutputs?.hashManifest !== facialEvidenceRelative
+    || facialProvenance.engineOutputs?.runtimeStatus !== facialRuntimeEvidenceRelative
+    || facialProvenance.engineOutputs?.presentationStatus !== facialPresentationEvidenceRelative)
+  errors.push("Daze council facial provenance omits the exact 21-asset isolated Unreal admission boundary");
+
+for (const output of facialProvenance.sourceOutputs ?? [])
+  await verifyFacialReceipt(resolve(root, "assets/provenance"), output, "Daze council facial source output");
+for (const character of facialProvenance.characterExports ?? []) {
+  for (const output of [character.fbx, character.glb])
+    await verifyFacialReceipt(resolve(root, "assets/provenance"), output, `Daze council facial ${character.characterId} export`);
+}
+for (const render of [
+  ...(facialProvenance.sourceReviewRenders ?? []),
+  ...(facialProvenance.cleanFbxReviewRenders ?? []),
+]) await verifyFacialReceipt(resolve(root, "assets/provenance"), render, `Daze council facial ${render.state} review render`);
+for (const tool of [
+  facialProvenance.toolchain?.generator,
+  facialProvenance.toolchain?.characterBuilderDependency,
+  facialProvenance.toolchain?.validator,
+  facialProvenance.toolchain?.unrealImporter,
+  facialProvenance.toolchain?.packageReviewValidator,
+]) await verifyFacialReceipt(resolve(root, "assets/provenance"), tool, "Daze council facial tool");
+for (const [evidenceType, receipt] of Object.entries(facialProvenance.engineEvidenceReceipts ?? {}))
+  await verifyFacialReceipt(resolve(root, "assets/provenance"), receipt,
+    `Daze council facial ${evidenceType} engine evidence`);
+if (Object.keys(facialProvenance.engineEvidenceReceipts ?? {}).sort().join(",") !== "import,presentation,runtime")
+  errors.push("Daze council facial provenance must retain exact import, runtime and presentation receipts");
+
+if (facialProvenance.sourceOutputs?.length !== 4
+    || facialProvenance.characterExports?.length !== 5
+    || facialProvenance.characterExports?.map((item) => item.characterId).join(",") !== facialCharacterIds.join(",")
+    || facialProvenance.sourceReviewRenders?.map((item) => item.state).join(",")
+      !== "lineup-front,lineup-oblique,neutral,blink,object-glance,interrupted-return,silent-speech,held-breath"
+    || facialProvenance.cleanFbxReviewRenders?.map((item) => item.state).join(",")
+      !== "neutral,blink,object-glance,silent-speech"
+    || facialProvenance.morphContract?.bodyControlCount !== 21
+    || facialProvenance.morphContract?.bodyControls?.join(",") !== facialMorphTargets.join(",")
+    || facialProvenance.morphContract?.eyeControlCount !== 8
+    || facialProvenance.morphContract?.eyeControls?.join(",") !== facialEyeMorphTargets.join(",")
+    || facialProvenance.morphContract?.otherMeshMorphTargets !== 0
+    || facialProvenance.morphContract?.sharedSkeleton !== "SK_SHI_DazeCouncil_Skeleton"
+    || facialProvenance.morphContract?.sharedSkeletonBones !== 53
+    || facialProvenance.morphContract?.canonicalCharacterIds?.join(",") !== facialCharacterIds.join(",")
+    || facialProvenance.morphContract?.neuralGeneration !== false
+    || facialProvenance.morphContract?.voiceOrTranscriptInput !== false
+    || facialProvenance.morphContract?.gameplayAuthority !== false)
+  errors.push("Daze council facial provenance omits an exact source, render, identity, Skeleton or morph receipt");
+
+if (facialMetrics.assetId !== facialAssetId
+    || facialMetrics.boneCount !== 53
+    || facialMetrics.morphTargetCount !== 21
+    || facialMetrics.morphTargets?.join(",") !== facialMorphTargets.join(",")
+    || facialMetrics.eyeGazeTargets?.join(",") !== facialEyeMorphTargets.join(",")
+    || facialMetrics.characters?.map((item) => item.id).join(",") !== facialCharacterIds.join(",")
+    || facialMetrics.neuralGeneration !== false
+    || facialMetrics.voiceOrTranscriptInput !== false)
+  errors.push("Daze council facial source metrics violate the exact silent, non-neural five-identity contract");
+
+const morphEquivalence = facialValidation.crossFormatMorphEquivalence;
+if (facialValidation.assetId !== facialAssetId
+    || facialValidation.status !== "pass"
+    || facialValidation.boneCount !== 53
+    || facialValidation.morphTargetCount !== 21
+    || !sameStringSet(facialValidation.morphTargets, facialMorphTargets)
+    || !sameStringSet(facialValidation.eyeGazeTargets, facialEyeMorphTargets)
+    || facialValidation.sharedRestPose !== true
+    || facialValidation.canonicalCharacterIds?.join(",") !== facialCharacterIds.join(",")
+    || morphEquivalence?.status !== "pass"
+    || morphEquivalence?.toleranceMetres !== 0.000005
+    || !Number.isFinite(morphEquivalence?.maximumAbsoluteErrorMetres)
+    || morphEquivalence.maximumAbsoluteErrorMetres > 0.000005
+    || morphEquivalence?.characters?.map((item) => item.characterId).join(",") !== facialCharacterIds.join(","))
+  errors.push("Daze council facial clean interchange or cross-format morph equivalence is not proven within 5e-6 metres");
+
+for (const format of ["fbx", "glb"]) {
+  const rows = facialValidation.formats?.[format] ?? [];
+  if (rows.length !== 5 || rows.map((row) => row.characterId).join(",") !== facialCharacterIds.join(",")) {
+    errors.push(`Daze council facial ${format.toUpperCase()} validation omits one or more canonical identities`);
+    continue;
+  }
+  for (const row of rows) {
+    await verifyFacialReceipt(root, row, `Daze council facial clean ${format.toUpperCase()} validation`);
+    const expectedHelperMeshes = format === "fbx" ? [] : ["Icosphere"];
+    if (row.boneCount !== 53 || !sameStringSet(Object.keys(row.bodyMorphTargets ?? {}), facialMorphTargets)
+        || !sameStringSet(Object.keys(row.eyeMorphTargets ?? {}), facialEyeMorphTargets)
+        || row.importerOnlyHelperMeshes?.join(",") !== expectedHelperMeshes.join(","))
+      errors.push(`Daze council facial ${format.toUpperCase()} ${row.characterId} target, Skeleton or helper-mesh contract drifted`);
+  }
+}
+
+const expectedFacialMeshPaths = Object.fromEntries(facialCharacterIds.map((characterId, index) => {
+  const name = `SKM_SHI_DazeCouncil_${facialCharacterSuffixes[index]}_Facial_01`;
+  return [characterId, `/Game/SHI/Art/Characters/DazeCouncilFacial/${name}.${name}`];
+}));
+if (facialImportEvidence.assetId !== facialAssetId
+    || facialImportEvidence.status !== facialEvidenceStatus
+    || facialImportEvidence.mode !== "import-replace"
+    || facialImportEvidence.mutationEnvironment !== "SHI_DAZE_COUNCIL_FACIAL_REIMPORT"
+    || facialImportEvidence.mutationAuthorized !== true
+    || facialImportEvidence.saved !== true
+    || facialImportEvidence.passed !== true
+    || facialImportEvidence.destination !== "/Game/SHI/Art/Characters/DazeCouncilFacial"
+    || facialImportEvidence.coordinateTransform?.sourceSpace !== "Blender right-handed Z-up metres"
+    || facialImportEvidence.coordinateTransform?.unrealAssetLocalSpace
+      !== "Unreal left-handed Z-up asset-local values retaining metre magnitudes"
+    || facialImportEvidence.coordinateTransform?.sourceToAssetLocalScale?.join(",") !== "1,-1,1"
+    || facialImportEvidence.coordinateTransform?.runtimePresentationScale !== 100
+    || facialImportEvidence.coordinateTransform?.presentedUnit !== "centimetres"
+    || facialImportEvidence.coordinateTransform?.passed !== true
+    || facialImportEvidence.sourceContract?.passed !== true
+    || !everyCheckPassed(facialImportEvidence.sourceContract?.checks)
+    || facialImportEvidence.sharedSkeleton?.assetPath !== facialExpectedSkeleton
+    || facialImportEvidence.sharedSkeleton?.boneCount !== 53
+    || facialImportEvidence.sharedSkeleton?.passed !== true
+    || !everyCheckPassed(facialImportEvidence.sharedSkeleton?.checks)
+    || facialImportEvidence.morphContract?.count !== 21
+    || facialImportEvidence.morphContract?.names?.join(",") !== facialMorphTargets.join(",")
+    || facialImportEvidence.acceptedV1Preservation?.passed !== true
+    || !everyCheckPassed(facialImportEvidence.acceptedV1Preservation?.checks)
+    || facialImportEvidence.destinationInventory?.passed !== true
+    || !everyCheckPassed(facialImportEvidence.destinationInventory?.checks)
+    || facialImportEvidence.destinationInventory?.assets?.length !== 21
+    || Object.values(facialImportEvidence.authorityBoundary ?? {}).some((value) => value !== false))
+  errors.push("Daze council facial Unreal evidence does not prove an explicitly gated exact isolated admission, coordinate transform and accepted-v1 fallback");
+
+const morphMetadataExtension = facialImportEvidence.sharedSkeleton?.morphMetadataExtension;
+if (!sameStringSet(morphMetadataExtension?.addedNames, facialMorphTargets)
+    || morphMetadataExtension?.removedNames?.length !== 0
+    || morphMetadataExtension?.exactTwentyOneAddedNoExtras !== true
+    || morphMetadataExtension?.existingMetadataPreserved !== true
+    || morphMetadataExtension?.passed !== true
+    || !Array.isArray(morphMetadataExtension?.beforeNames)
+    || !sameStringSet(
+      morphMetadataExtension?.afterNames,
+      [...morphMetadataExtension.beforeNames, ...facialMorphTargets],
+    ))
+  errors.push("Daze council facial Unreal evidence does not bound the shared Skeleton morph-metadata extension to the exact 21 controls");
+
+const facialReadOnlyInspection = facialImportEvidence.readOnlyInspection;
+if (facialReadOnlyInspection?.mode !== "inspect-only"
+    || facialReadOnlyInspection?.mutationAuthorized !== false
+    || facialReadOnlyInspection?.exitCode !== 0
+    || facialReadOnlyInspection?.trackedUassetHashesUnchanged !== true
+    || facialReadOnlyInspection?.sourceContractPassed !== true
+    || facialReadOnlyInspection?.sharedSkeletonPassed !== true
+    || facialReadOnlyInspection?.allFiveCharactersPassed !== true
+    || facialReadOnlyInspection?.eyeMaterialPassed !== true
+    || facialReadOnlyInspection?.materialUsagePassed !== true
+    || facialReadOnlyInspection?.destinationInventoryPassed !== true
+    || facialReadOnlyInspection?.acceptedV1Preserved !== true
+    || facialReadOnlyInspection?.passed !== true)
+  errors.push("Daze council facial default inspect-only rerun is not proven read-only against all 21 admitted uasset hashes");
+
+for (const characterId of facialCharacterIds) {
+  const character = facialImportEvidence.characters?.[characterId];
+  if (character?.characterId !== characterId
+      || character?.assetPath !== expectedFacialMeshPaths[characterId]
+      || character?.skeleton !== facialExpectedSkeleton
+      || character?.boneCount !== 53
+      || character?.passed !== true
+      || !everyCheckPassed(character?.checks)
+      || !sameStringSet(character?.morphTargets, facialMorphTargets)
+      || character?.physicsAsset !== null)
+    errors.push(`Daze council facial Unreal evidence rejects or omits ${characterId}`);
+  await verifyFacialReceipt(root, facialImportEvidence.sourceFbxReceipts?.[characterId],
+    `Daze council facial ${characterId} source FBX evidence`);
+}
+
+const expectedFacialAssetFiles = [
+  ...facialCharacterSuffixes.map((suffix) => `SKM_SHI_DazeCouncil_${suffix}_Facial_01.uasset`),
+  ...facialMaterialNames.map((name) => `${name}.uasset`),
+  "T_SHI_Character_EyeBrown_CC0.uasset",
+];
+const trackedFacialAssets = facialImportEvidence.trackedUnrealAssets;
+if (trackedFacialAssets?.root !== "apps/unreal/Content/SHI/Art/Characters/DazeCouncilFacial"
+    || trackedFacialAssets?.passed !== true
+    || !everyCheckPassed(trackedFacialAssets?.checks)
+    || !sameStringSet(Object.keys(trackedFacialAssets?.receipts ?? {}), expectedFacialAssetFiles))
+  errors.push("Daze council facial Unreal evidence does not retain exact receipts for its 21 isolated uassets");
+for (const [file, receipt] of Object.entries(trackedFacialAssets?.receipts ?? {}))
+  await verifyFacialReceipt(resolve(root, trackedFacialAssets.root), {file, ...receipt},
+    "Tracked Unreal Daze council facial asset");
+
+const facialMaterialUsage = facialImportEvidence.materialUsage;
+if (facialMaterialUsage?.compiledDuringThisRun !== true
+    || facialMaterialUsage?.passed !== true
+    || !everyCheckPassed(facialMaterialUsage?.checks)
+    || facialMaterialUsage?.materials?.length !== facialMaterialNames.length
+    || !sameStringSet(facialMaterialUsage.materials.map((item) => item.name), facialMaterialNames))
+  errors.push("Daze council facial Unreal evidence does not prove the exact 15-material skeletal/morph usage boundary");
+for (const material of facialMaterialUsage?.materials ?? []) {
+  const expectsMorph = facialMorphSectionMaterials.includes(material.name);
+  if (material.path !== `/Game/SHI/Art/Characters/DazeCouncilFacial/${material.name}.${material.name}`
+      || material.skeletalMeshUsage !== true
+      || material.requiresMorphTargetUsage !== expectsMorph
+      || material.morphTargetUsage !== expectsMorph
+      || material.compileErrors?.length !== 0)
+    errors.push(`Daze council facial material usage or compile receipt drifted for ${material.name}`);
+}
+
+await verifyFacialReceipt(root, facialImportEvidence.eyeTextureImport?.source,
+  "Tracked CC0 Daze council facial eye texture source");
+if (facialImportEvidence.eyeTextureImport?.assetPath
+      !== "/Game/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.T_SHI_Character_EyeBrown_CC0"
+    || facialImportEvidence.eyeTextureImport?.passed !== true
+    || facialImportEvidence.eyeMaterial?.material
+      !== "/Game/SHI/Art/Characters/DazeCouncilFacial/M_SHI_Character_EyeBrown.M_SHI_Character_EyeBrown"
+    || facialImportEvidence.eyeMaterial?.texture
+      !== "/Game/SHI/Art/Characters/DazeCouncilFacial/T_SHI_Character_EyeBrown_CC0.T_SHI_Character_EyeBrown_CC0"
+    || facialImportEvidence.eyeMaterial?.passed !== true
+    || !everyCheckPassed(facialImportEvidence.eyeMaterial?.checks))
+  errors.push("Daze council facial Unreal evidence does not preserve the exact tracked CC0 eye texture/material binding");
+
+await verifyFacialReceipt(root, facialRuntimeEvidence.importAdmission?.evidence,
+  "Daze council facial runtime-to-import evidence");
+await verifyFacialReceipt(root, facialRuntimeEvidence.packagePresentation?.evidence,
+  "Daze council facial runtime-to-presentation evidence");
+for (const receipt of facialRuntimeEvidence.compiledSourceSnapshot ?? [])
+  await verifyFacialReceipt(root, receipt, "Daze council facial compiled source snapshot");
+
+const facialRuntimeContract = facialRuntimeEvidence.runtimeContract;
+const facialRuntimeGates = facialRuntimeEvidence.releaseGates;
+const finalFullSuite = facialRuntimeEvidence.automation?.fullShiNamespace;
+const finalSelectedFacialSuite = facialRuntimeEvidence.automation?.selectedFacialSuite;
+if (facialRuntimeEvidence.assetId !== facialAssetId
+    || facialRuntimeEvidence.status
+      !== "native-engine-runtime-contract-automation-package-and-visible-engineering-review-pass; not-final-acting"
+    || facialRuntimeEvidence.disclosure !== facialDisclosure
+    || facialRuntimeEvidence.engine?.association !== "5.8"
+    || facialRuntimeEvidence.engine?.version !== "5.8.1-56057345+++UE5+Release-5.8"
+    || facialRuntimeEvidence.importAdmission?.trackedAssets !== 21
+    || facialRuntimeEvidence.importAdmission?.exactMorphTargetsPerMesh !== 21
+    || facialRuntimeEvidence.importAdmission?.defaultReadOnlyInspectionPassed !== true
+    || facialRuntimeEvidence.packagePresentation?.status !== "pass-engineering-blockout-only"
+    || facialRuntimeEvidence.packagePresentation?.package !== "$SHI_UNREAL_PACKAGE_ROOT/Linux"
+    || facialRuntimeEvidence.packagePresentation?.cookedPackages !== 559
+    || facialRuntimeEvidence.packagePresentation?.renderedPackagedRuns !== 3
+    || facialRuntimeEvidence.packagePresentation?.trackedScreenshots !== 6
+    || facialRuntimeEvidence.packagePresentation?.normalSpeakerReviewed !== true
+    || facialRuntimeEvidence.packagePresentation?.reducedSpeakerReviewed !== true
+    || facialRuntimeEvidence.packagePresentation?.normalKeeperReviewed !== true
+    || facialRuntimeEvidence.packagePresentation?.visibleFallbackReviewed !== false
+    || facialRuntimeEvidence.packagePresentation?.inputDrivenStoryReviewed !== false
+    || facialRuntimeEvidence.packagePresentation?.headlessSmokeRunAfterV2 !== false
+    || facialRuntimeEvidence.packagePresentation?.finalArt !== false
+    || facialRuntimeEvidence.packagePresentation?.finalActing !== false
+    || facialRuntimeEvidence.packagePresentation?.finalVoice !== false
+    || facialRuntimeEvidence.compiledSourceSnapshot?.length !== 7
+    || finalSelectedFacialSuite?.status !== "pass"
+    || finalSelectedFacialSuite?.filter !== "SHI.Cinematic.CouncilFacialPerformanceV1"
+    || finalSelectedFacialSuite?.discovered !== 1
+    || finalSelectedFacialSuite?.passed !== 1
+    || finalSelectedFacialSuite?.failed !== 0
+    || finalSelectedFacialSuite?.exitCode !== 0
+    || finalFullSuite?.status !== "pass"
+    || finalFullSuite?.filter !== "SHI."
+    || finalFullSuite?.discovered !== 20
+    || finalFullSuite?.started !== 20
+    || finalFullSuite?.passed !== 20
+    || finalFullSuite?.failed !== 0
+    || finalFullSuite?.exitCode !== 0
+    || finalFullSuite?.tests?.length !== 20
+    || finalFullSuite?.transientLog?.tracked !== false
+    || finalFullSuite?.transientLog?.bytes !== 264740
+    || finalFullSuite?.transientLog?.sha256
+      !== "59ef74c18438bcc6bce1917b917537d15f4ecb5473e1c6c3ebadc19c312e5ea6")
+  errors.push("Daze council facial runtime evidence does not prove the final 20/20 native and bounded packaged-visible engineering review");
+if (facialRuntimeContract?.characters !== 5
+    || facialRuntimeContract?.roles?.join(",") !== "listener,speaker"
+    || facialRuntimeContract?.states?.join(",")
+      !== "neutral,blink,object-glance,interrupted-return,silent-speech,held-breath"
+    || facialRuntimeContract?.morphTargets !== 21
+    || facialRuntimeContract?.cycleSeconds !== 4
+    || facialRuntimeContract?.deterministic !== true
+    || facialRuntimeContract?.languageNeutral !== true
+    || facialRuntimeContract?.silentIntentCadence !== true
+    || facialRuntimeContract?.audioDriven !== false
+    || facialRuntimeContract?.transcriptDriven !== false
+    || facialRuntimeContract?.phonemeDriven !== false
+    || facialRuntimeContract?.randomized !== false
+    || facialRuntimeContract?.gameplayAuthority !== false
+    || facialRuntimeContract?.saveAuthority !== false
+    || facialRuntimeContract?.interactionAuthority !== false
+    || facialRuntimeContract?.replicated !== false
+    || facialRuntimeContract?.reducedMotionSupported !== true
+    || facialRuntimeContract?.wideAndMediumFramingOnly !== true
+    || facialRuntimeContract?.closeFramingApproved !== false
+    || facialRuntimeContract?.finalFace !== false
+    || facialRuntimeContract?.finalActing !== false
+    || facialRuntimeContract?.finalVoice !== false)
+  errors.push("Daze council facial runtime evidence overstates or drifts from its deterministic non-authoritative non-final contract");
+if (facialRuntimeGates?.nativeEditorBuild !== "pass"
+    || facialRuntimeGates?.selectedFacialAutomation !== "pass-1-of-1"
+    || facialRuntimeGates?.fullProjectAutomation !== "pass-20-of-20"
+    || facialRuntimeGates?.packagedBuildWithFacialAssets !== "pass-v2-559-cooked-packages"
+    || facialRuntimeGates?.packagedHeadlessSmoke !== "not-run-after-v2"
+    || facialRuntimeGates?.visibleNoVncReview !== "pass-three-development-review-runs-six-frames"
+    || facialRuntimeGates?.inputDrivenStoryPlaytest !== "not-run-for-this-facial-build"
+    || facialRuntimeGates?.reducedMotionVisibleReview !== "pass-engineering-only"
+    || facialRuntimeGates?.visibleFallbackReview !== "not-run"
+    || facialRuntimeGates?.physicalDisplayReview !== "not-run"
+    || facialRuntimeGates?.humanAnimationHistoricalCulturalAccessibilityReview !== "required"
+    || facialRuntimeGates?.finalCloseDialogue !== "rejected"
+    || facialRuntimeGates?.voiceOrLipSync !== "not-admitted")
+  errors.push("Daze council facial runtime release gates do not preserve the open smoke/story/fallback/human/final-art boundary");
+
+const expectedFacialPackageArtifacts = [
+  ["SHI.sh", 218, "7eeb214781ca5113696ae2be6c5124b5404cd4abcd1fff39aa383ba15ff1cf1e"],
+  ["SHI/Binaries/Linux/SHI", 298709552, "5e08896235d3e4aed403295abd7c27aefd6ec41fd8f928e5bd3ac60887308316"],
+  ["SHI/Content/Paks/SHI-Linux.pak", 10428583, "6f2adad6fa4b76624a2cb44ce48cde04cc01b8aded453583627cabfc86f828e4"],
+  ["SHI/Content/Paks/SHI-Linux.ucas", 170413024, "939764152cbaffd87c4a488febe9a42221fcac13a49e924eda87db77bd1fd378"],
+  ["SHI/Content/Paks/SHI-Linux.utoc", 155892, "5d36d466a17b763d3ad34a8ec3af161e61937eb808d3f11752483763259ef7b1"],
+];
+const facialPackage = facialPresentationEvidence.package;
+if (facialPackage?.artifacts?.length !== expectedFacialPackageArtifacts.length) {
+  errors.push("Daze council facial package receipt must retain the launcher, executable, Pak, Ucas and Utoc artifacts");
+} else {
+  for (let index = 0; index < expectedFacialPackageArtifacts.length; index += 1) {
+    const [relativePath, bytes, sha256] = expectedFacialPackageArtifacts[index];
+    const artifact = facialPackage.artifacts[index];
+    if (artifact.relativePath !== relativePath || artifact.bytes !== bytes || artifact.sha256 !== sha256)
+      errors.push(`Daze council facial v2 package artifact receipt drifted: ${relativePath}`);
+  }
+}
+
+const expectedFacialVisibleLogs = [
+  {
+    reviewId: "speaker-normal", reviewFlag: "-ShiCouncilCharacterReviewSpeaker", reducedMotion: false,
+    override: "ReducedMotion=False", alpha: 0.0624,
+    visibleCharacterId: "chen-sheng", visibleRole: "speaker", bytes: 123520,
+    sha256: "0862e56cb4763ee9e1ce6d947498d78b57985064853060d4d721c2f4456de34c",
+  },
+  {
+    reviewId: "speaker-reduced", reviewFlag: "-ShiCouncilCharacterReviewSpeaker", reducedMotion: true,
+    override: "ReducedMotion=True", alpha: 1.0,
+    visibleCharacterId: "chen-sheng", visibleRole: "speaker", bytes: 123524,
+    sha256: "3ebd6978b0ccf7dc5f005360a4c4240d1a3c4c9838c266d20f75359269f4868c",
+  },
+  {
+    reviewId: "keeper-normal", reviewFlag: "-ShiCouncilCharacterReviewKeeper", reducedMotion: false,
+    override: "ReducedMotion=False", alpha: 0.1218,
+    visibleCharacterId: "keeper", visibleRole: "listener", bytes: 123545,
+    sha256: "ccf6ebb5df49fbd4c5b04b63ff97ccd64fb1348e8fd95c3ae705c6b060d420a4",
+  },
+];
+const facialVisiblePlaytest = facialPresentationEvidence.visiblePlaytest;
+if (facialVisiblePlaytest?.runtimeLogs?.length !== expectedFacialVisibleLogs.length) {
+  errors.push("Daze council facial visible evidence must retain normal speaker, reduced speaker and normal keeper log receipts");
+} else {
+  for (let index = 0; index < expectedFacialVisibleLogs.length; index += 1) {
+    const expected = expectedFacialVisibleLogs[index];
+    const log = facialVisiblePlaytest.runtimeLogs[index];
+    const scan = log.scan;
+    const shutdown = log.shutdown;
+    if (log.reviewId !== expected.reviewId || log.reviewFlag !== expected.reviewFlag
+        || log.reducedMotion !== expected.reducedMotion
+        || log.commandLineReducedMotionOverride !== expected.override
+        || log.commandLineOverrideObserved !== true
+        || log.visibleCharacterId !== expected.visibleCharacterId || log.visibleRole !== expected.visibleRole
+        || log.tracked !== false || log.bytes !== expected.bytes || log.sha256 !== expected.sha256
+        || scan?.runtimeAdmissionMarkers !== 2 || scan?.morphSectionExerciseMarkers !== 1
+        || scan?.visibleRoleExerciseMarker !== true || scan?.neutralFallbackWarnings !== 0
+        || scan?.visibleRoleExerciseAlpha !== expected.alpha
+        || scan?.cadenceFailClosedErrors !== 0 || scan?.morphUsageRepairWarnings !== 0
+        || scan?.defaultMaterialFallbackWarnings !== 0 || scan?.fatalErrors !== 0
+        || scan?.unhandledExceptions !== 0 || scan?.assertionFailures !== 0 || scan?.passed !== true
+        || shutdown?.method !== "controlled SIGTERM after evidence capture"
+        || shutdown?.processReturnCode !== 143 || shutdown?.unrealPreparingToExit !== true
+        || shutdown?.unrealGameEngineShutDown !== true || shutdown?.unrealObjectSubsystemClosed !== true
+        || shutdown?.unrealExiting !== true || shutdown?.cleanUnrealShutdown !== true)
+      errors.push(`Daze council facial visible runtime log or controlled-shutdown receipt drifted: ${expected.reviewId}`);
+  }
+}
+
+for (const screenshot of facialPresentationEvidence.screenshots ?? []) {
+  await verifyFacialReceipt(root, screenshot, "Daze council facial packaged screenshot");
+  if (screenshot.dimensions?.join(",") !== "1600,1000")
+    errors.push(`Daze council facial packaged screenshot dimensions drifted: ${screenshot.file}`);
+}
+const facialPresentation = facialPresentationEvidence.presentation;
+const rejectedFacialPass = facialPresentationEvidence.review?.rejectedFirstPass;
+const remainingFacialGates = facialPresentationEvidence.review?.remainingRedGates ?? [];
+if (facialPresentationEvidence.assetId !== facialAssetId
+    || facialPresentationEvidence.decision !== facialPresentationDecision
+    || facialPresentationEvidence.requiredDisclosure !== facialDisclosure
+    || facialPresentation?.characterIds?.join(",") !== facialCharacterIds.join(",")
+    || facialPresentation?.roles?.join(",") !== "listener,speaker"
+    || facialPresentation?.states?.join(",")
+      !== "neutral,blink,object-glance,interrupted-return,silent-speech,held-breath"
+    || facialPresentation?.sharedSkeletonBones !== 53
+    || facialPresentation?.morphTargetsPerMesh !== 21
+    || facialPresentation?.morphSectionMaterials?.join(",") !== facialMorphSectionMaterials.join(",")
+    || facialPresentation?.allFifteenMaterialsSavedForSkeletalMeshUsage !== true
+    || facialPresentation?.exactTwoMaterialsSavedForMorphTargetUsage !== true
+    || facialPresentation?.deterministic !== true || facialPresentation?.languageNeutral !== true
+    || facialPresentation?.silentIntentCadence !== true || facialPresentation?.audioDriven !== false
+    || facialPresentation?.transcriptDriven !== false || facialPresentation?.phonemeDriven !== false
+    || facialPresentation?.randomized !== false || facialPresentation?.gameplayAuthority !== false
+    || facialPresentation?.saveAuthority !== false || facialPresentation?.interactionAuthority !== false
+    || facialPresentation?.replicated !== false || facialPresentation?.reducedMotionSupported !== true
+    || facialPresentation?.wideAndMediumFramingOnly !== true || facialPresentation?.closeFramingApproved !== false
+    || facialPresentation?.visibleFallbackReviewed !== false || facialPresentation?.finalFace !== false
+    || facialPresentation?.finalActing !== false || facialPresentation?.finalVoice !== false
+    || facialPresentation?.developmentReview?.excludedFromShipping !== true
+    || facialPackage?.result !== "BUILD SUCCESSFUL" || facialPackage?.exitCode !== 0
+    || facialPackage?.outsideGitRoot !== "$SHI_UNREAL_PACKAGE_ROOT/Linux"
+    || facialPackage?.alwaysCookPath !== "/Game/SHI/Art/Characters/DazeCouncilFacial"
+    || facialPackage?.priorAcceptedPackageCount !== 538 || facialPackage?.addedPackageCount !== 21
+    || facialPackage?.cookedPackageCount !== 559 || facialPackage?.platformSkippedPackageCount !== 7
+    || facialPackage?.totalCookCandidates !== 566 || facialPackage?.translatedMaterials !== 15
+    || facialPackage?.cookErrors !== 0 || facialPackage?.cookWarnings !== 0
+    || facialPackage?.headlessSmoke?.status !== "not-run-after-v2"
+    || facialPackage?.headlessSmoke?.claim !== false
+    || facialPresentationEvidence.automation?.discovered !== 20
+    || facialPresentationEvidence.automation?.started !== 20
+    || facialPresentationEvidence.automation?.passed !== 20
+    || facialPresentationEvidence.automation?.failed !== 0
+    || facialPresentationEvidence.automation?.exitCode !== 0
+    || facialPresentationEvidence.automation?.newSuite !== "SHI.Cinematic.CouncilFacialPerformanceV1"
+    || facialPresentationEvidence.screenshots?.length !== 6
+    || facialVisiblePlaytest?.resolution?.join(",") !== "1600,1000"
+    || facialVisiblePlaytest?.package !== "$SHI_UNREAL_PACKAGE_ROOT/Linux"
+    || facialVisiblePlaytest?.developmentReviewOnly !== true
+    || facialVisiblePlaytest?.inputDrivenStoryPlaytest !== "not-run-for-this-facial-package-review"
+    || facialVisiblePlaytest?.visibleFallbackReview !== "not-run"
+    || facialVisiblePlaytest?.speakerNormalReviewed !== true
+    || facialVisiblePlaytest?.speakerReducedMotionReviewed !== true
+    || facialVisiblePlaytest?.keeperNormalReviewed !== true
+    || facialVisiblePlaytest?.reducedTerminalNeutralObservedAfterClampedPass !== true
+    || facialVisiblePlaytest?.brownEyeAndSkinMaterialsRenderedWithoutDefaultMaterialFallback !== true
+    || facialVisiblePlaytest?.materialOrLoadWarnings !== 0
+    || rejectedFacialPass?.package !== "SHI-Builds-DazeCouncilFacialPerformance-Review-v1/Linux"
+    || rejectedFacialPass?.log?.tracked !== false || rejectedFacialPass?.log?.bytes !== 123977
+    || rejectedFacialPass?.log?.sha256 !== "a0bd14d1589ec4958eab87350bc4c59e0e5dd6c2df342a5a393ad87909188946"
+    || rejectedFacialPass?.log?.morphUsageRepairWarnings !== 2
+    || rejectedFacialPass?.log?.defaultMaterialFallbackWarnings !== 2
+    || !remainingFacialGates.some((gate) => gate.includes("generic face"))
+    || !remainingFacialGates.some((gate) => gate.includes("headless smoke"))
+    || !remainingFacialGates.some((gate) => gate.includes("voice, lip sync"))
+    || !remainingFacialGates.some((gate) => gate.includes("human animation")))
+  errors.push("Daze council facial package, visible, rejection-history or explicit non-final red-gate evidence is incomplete");
+
 const project = JSON.parse(await readFile(resolve(unreal, "SHI.uproject"), "utf8"));
 if (project.EngineAssociation !== "5.8") errors.push("Unreal engine association must be 5.8");
 if (!project.Modules?.some((module) => module.Name === "SHI" && module.Type === "Runtime")) errors.push("SHI runtime module is not registered");
@@ -1060,6 +1604,7 @@ const commandWeightPresentation = await readFile(resolve(unreal, "Source/SHI/Shi
 const councilStaging = await readFile(resolve(unreal, "Source/SHI/ShiCouncilStagingModel.cpp"), "utf8");
 const councilCharacterPresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiCouncilCharacterPresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiCouncilCharacterPresentationModel.cpp"), "utf8")}`;
 const councilPerformancePresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiCouncilPerformancePresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiCouncilPerformancePresentationModel.cpp"), "utf8")}`;
+const councilFacialPerformance = `${await readFile(resolve(unreal, "Source/SHI/ShiCouncilFacialPerformanceModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiCouncilFacialPerformanceModel.cpp"), "utf8")}`;
 const councilFigure = await readFile(resolve(unreal, "Source/SHI/ShiCouncilFigure.cpp"), "utf8");
 const cinematic = await readFile(resolve(unreal, "Source/SHI/ShiCinematicBeatModel.cpp"), "utf8");
 const orderTransaction = await readFile(resolve(unreal, "Source/SHI/ShiOrderTransactionModel.cpp"), "utf8");
@@ -1088,6 +1633,11 @@ const councilCharacterImporter = await readFile(resolve(root, "scripts/import-da
 const councilCharacterMaterialAuthor = await readFile(resolve(root, "scripts/author-daze-council-character-materials-unreal.py"), "utf8");
 const councilPerformanceImporter = await readFile(resolve(root, "scripts/import-daze-council-performance-unreal.py"), "utf8");
 const councilPerformanceNormalizer = await readFile(resolve(unreal, "Source/SHIEditor/Private/ShiAnimationImportLibrary.cpp"), "utf8");
+const councilFacialGenerator = await readFile(resolve(root, "scripts/build-daze-council-facial-performance.py"), "utf8");
+const councilFacialValidator = await readFile(resolve(root, "scripts/validate-daze-council-facial-performance.py"), "utf8");
+const councilFacialPackageValidator = await readFile(resolve(root, "scripts/validate-daze-council-facial-performance-package.mjs"), "utf8");
+const councilFacialImporter = await readFile(resolve(root, "scripts/import-daze-council-facial-performance-unreal.py"), "utf8");
+const councilFacialBrief = await readFile(resolve(root, "docs/art/DAZE_COUNCIL_FACIAL_PERFORMANCE_BRIEF.md"), "utf8");
 for (const token of ["schema v7", "TimeIndex <=", "NextActIndex <", "StreamingAssets/chapter-01-daze.json", "StreamingAssets/editions.json", "initialResources", "nextNodeId", "commitments", "countermeasures", "characters", "speakerId", "FindCharacter", "ValidateEvidence", "public-link-metadata-only", "specialist-review-required"]) if (!model.includes(token)) errors.push(`Unreal model omits contract token: ${token}`);
 for (const token of ["ApplyEffects(Choice->Effects)", "CommitmentOutcome->Effects", "Choice->PressureEffects", "Opposition->Effects", "MethodRead->Effects", "Condition->Effects", "SelectFieldCondition", "CanChoose", "ReplaySaveJson", "MoveTemp(Candidate)"]) if (!session.includes(token)) errors.push(`Unreal deterministic session omits contract token: ${token}`);
 for (const token of ["project-original-procedural", "RequiredCues", "CreateRainSamples", "CreateCueSamples", "bDefaultEnabled"]) if (!audioModel.includes(token)) errors.push(`Unreal audio model omits contract token: ${token}`);
@@ -1118,9 +1668,16 @@ for (const token of ["keeper", "chen-sheng", "wu-guang", "yu-mu", "qin-courier",
 for (const token of ["attentive-idle", "speaker-measured", "AN_SHI_DazeCouncil_AttentiveIdle_01", "AN_SHI_DazeCouncil_SpeakerMeasured_01", "ExpectedSamples", "ExpectedDurationSeconds", "ExpectedFramesPerSecond", "bBodyOnly", "bSharedSkeleton", "bRootMotion", "bFacialPerformance", "bInteractionAuthority", "bHistoricallyReconstructedEtiquette", "bFinalPerformance", "ValidateSequence", "GetNumberOfSampledKeys", "HasRootMotion"]) if (!councilPerformancePresentation.includes(token)) errors.push(`Unreal council-performance model omits exact clip/timing/authority token: ${token}`);
 for (const token of ["SHI_DAZE_COUNCIL_PERFORMANCE_REIMPORT", "inspect-only", "EXPECTED_SAMPLES = 121", "EXPECTED_IMPORTED_TRACKS = 52", "remove", "rootTrackRemoved", "rootReferencePosePreserved", "rotationOnlyChildChannels", "ShiAnimationImportLibrary.normalize_rotation_only_sequence", "shared-skeleton council body-performance blockout; not final acting"]) if (!councilPerformanceImporter.includes(token)) errors.push(`Unreal council-performance importer omits isolated rotation-only admission token: ${token}`);
 for (const token of ["ExpectedSampleCount", "ReferencePose", "GetBoneTrackTransforms", "Track.Rotations", "RemoveBoneTrack", "Positions.Init(Track.ReferenceTranslation", "Scales.Init(Track.ReferenceScale", "SetBoneTrackKeys", "did not isolate exactly 52 child-body tracks"]) if (!councilPerformanceNormalizer.includes(token)) errors.push(`Unreal editor-only animation normalizer omits Root-removal/reference-channel token: ${token}`);
+for (const token of ["shi-daze-council-facial-performance-v1", "FACEUNITS_ARCHIVE_SHA256", "load_arkit_faceunits=True", "retain_exact_shape_keys", "MORPH_TARGETS", "EYE_GAZE_TARGETS", "REVIEW_STATES", "brown-eye-cc0.png", "neuralGeneration", "voiceOrTranscriptInput"]) if (!councilFacialGenerator.includes(token)) errors.push(`Daze council facial generator omits pinned source/morph/review token: ${token}`);
+for (const token of ["shi-daze-council-facial-performance-v1", "cross_format_morph_equivalence", "tolerance_metres = 0.000005", "morph_scale_to_metres = 1.0", "MORPH_TARGETS", "EYE_GAZE_TARGETS", "EYE_TEXTURE_SHA256", "importerOnlyHelperMeshes", "--skip-render", "cleanFbxStateRenders"]) if (!councilFacialValidator.includes(token)) errors.push(`Daze council facial clean-interchange validator omits exact morph/equivalence token: ${token}`);
+for (const token of ["SHI_UNREAL_PACKAGE_ROOT", "SHI_FACIAL_SPEAKER_LOG", "SHI_FACIAL_REDUCED_LOG", "SHI_FACIAL_KEEPER_LOG", "$SHI_UNREAL_PACKAGE_ROOT/Linux", "SHI_COUNCIL_FACIAL_MORPH_SECTIONS_EXERCISED", "ReducedMotion=", "ReturnCode=143", "Default Material will be used in game", "sha256File"]) if (!councilFacialPackageValidator.includes(token)) errors.push(`Daze council facial package validator omits exact artifact/log gate token: ${token}`);
+for (const token of ["SHI_DAZE_COUNCIL_FACIAL_REIMPORT", "inspect-only", "/Game/SHI/Art/Characters/DazeCouncilFacial", "SKELETON_PATH = f\"{LEGACY_DESTINATION}/{SKELETON_NAME}\"", "import_morph_targets", "morph_threshold_position", "exactTwentyOneMorphTargetsNoExtras", "acceptedV1DiskReceiptsUnchanged", "options.import_animations = False", "options.create_physics_asset = False", "coordinateTransform", "sourceToAssetLocalScale", "morphMetadataExtension", "existingMetadataPreserved", "trackedUnrealAssets", "previous_import_report", "readOnlyInspection", "trackedUassetHashesUnchanged", "set_base_material_usage", "MATUSAGE_SKELETAL_MESH", "MATUSAGE_MORPH_TARGETS", "exactMorphTargetUsageNoShaderPermutationExtras", "materialUsagePassed"]) if (!councilFacialImporter.includes(token)) errors.push(`Unreal Daze council facial importer omits gated, isolated morph/Skeleton/material evidence token: ${token}`);
+for (const token of ["FACIAL PERFORMANCE ENGINEERING BLOCKOUT", "exactly these 21 case-sensitive names", "Every omitted control is exactly `0.0`", "never a random number, audio amplitude", "Reduced-motion presentation", "shared generic non-portrait blockout", "0.000005 m", "No attractive still, successful import, machine pass or source license turns this engineering blockout into final acting"]) if (!councilFacialBrief.includes(token)) errors.push(`Daze council facial brief omits exact morph/determinism/source/red-gate token: ${token}`);
+for (const token of ["keeper", "chen-sheng", "wu-guang", "yu-mu", "qin-courier", "SKM_SHI_DazeCouncil_Keeper_Facial_01", "SKM_SHI_DazeCouncil_ChenSheng_Facial_01", "SKM_SHI_DazeCouncil_WuGuang_Facial_01", "SKM_SHI_DazeCouncil_YuMu_Facial_01", "SKM_SHI_DazeCouncil_QinCourier_Facial_01", facialExpectedSkeleton, "MorphTargetCount", "eyeBlinkLeft", "eyeLookOutLeft", "jawOpen", "mouthFunnel", "held-breath", "silent-speech", "bGenericNonPortraitFace", "bLanguageNeutral", "bSilentIntentCadence", "bReducedMotionSupported", "bRandomized", "bGameplayAuthority", "bSaveAuthority", "bWideAndMediumFramingOnly", "ValidateMesh", "GetMorphTargets", "GetTotalFaces", "SmoothPulse", "FMath::Fmod", "ValidateFrame"]) if (!councilFacialPerformance.includes(token)) errors.push(`Unreal council facial model omits exact identity/Skeleton/morph/determinism/red-gate token: ${token}`);
 for (const token of ["speaker", "keeper", "HISTORICAL FIGURE · WORDS ARE AUTHORED DRAMATIZATION, NOT TRANSCRIPT", "FICTIONAL CHARACTER · PROJECT-AUTHORED DRAMATIC RECONSTRUCTION", "SpeakerCamera", "ParticipantCamera", "BuildParticipantReviewCamera", "BuildParticipantLights", "speaker-key", "speaker-fill", "keeper-key", "keeper-fill", "CouncilFieldOfViewDegrees", "FindParticipant", "SameParticipant", "cannot preserve canonical cast, disclosure, blocking and camera authorship", "OutStage = MoveTemp(Candidate)"]) if (!councilStaging.includes(token)) errors.push(`Unreal council staging omits cast/blocking/disclosure/review-camera/light token: ${token}`);
 for (const token of ["FigureRoot", "Body", "Head", "Mantle", "CharacterMesh", "InitializeFigure", "FShiCouncilCharacterPresentationModel::CanonicalCharacterIds", "FShiCouncilCharacterPresentationModel::ValidateMesh", "SetSkeletalMeshAsset", "ShiCharacter:", "ShiCouncilSpeaker", "ShiArtStatus:SkeletalProductionBlockout", "ShiArtFallback:EnginePrimitive", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "SetCanEverAffectNavigation(false)", "SetVisibility", "SetHiddenInGame", "SetRenderCustomDepth", "SetCustomDepthStencilValue", "SetActorTransform"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits fail-closed skeletal presentation/primitive interaction token: ${token}`);
 for (const token of ["FShiCouncilPerformancePresentationModel::CanonicalRoleIds", "FShiCouncilPerformancePresentationModel::ForParticipant", "PerformanceClips", "SetForceRefPose(false)", "PlayAnimation", "ShiPerformance:", "ShiPerformanceStatus:SharedSkeletonBodyBlockout", "ShiPerformanceFallback:ReferencePose", "SetComponentTickEnabled"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits admitted performance/reference-pose fallback token: ${token}`);
+for (const token of ["FShiCouncilFacialPerformanceModel::CanonicalCharacterIds", "FShiCouncilFacialPerformanceModel::ValidateMesh", "FacialCharacterMeshes", "accepted neutral-face fallback", "bUsingFacialPerformance", "FacialElapsedSeconds", "SetReducedMotion", "ApplyFacialFrame", "ClearFacialFrame", "RefreshActorTick", "SetMorphTarget", "ClearMorphTargets", "ShiArtStatus:FacialPerformanceEngineeringBlockout", "ShiFacialPerformance:SilentIntentCadence", "ShiFraming:WideMediumOnly", "SetActorTickEnabled", "SHI_COUNCIL_FACIAL_RUNTIME_ADMITTED", "SHI_COUNCIL_FACIAL_MORPH_SECTIONS_EXERCISED", "state=object-glance skin=SkinClay eye=EyeBrown"] ) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits fail-closed facial preference/fallback/cadence/runtime-exercise token: ${token}`);
 for (const token of ["resolution-order", "resolution-commitment", "resolution-pressure", "resolution-pursuit", "resolution-method-read", "resolution-field", "resolution-position", "MaximumSequenceSeconds", "MaximumEasedTranslation", "MaximumEasedRotationDegrees", "FieldOfViewForBeat", "CameraMotionBetween", "TEXT(\"cut\")", "TEXT(\"ease\")", "DominantResourceSignal", "EffectsSummary", "POSITION LOST", "OATH ESTABLISHED", "TotalDuration", "OutBeats = MoveTemp(BuiltBeats)"]) if (!cinematic.includes(token)) errors.push(`Unreal cinematic model omits resolution/motion-grammar token: ${token}`);
 for (const token of ["BuildTurnSnapshot", "Candidate.Session = CurrentSession", "ResolveChoice", "ValidateAgainstSites", "FShiCouncilStagingModel::Build", "FShiCinematicBeatModel::Build", "SelectedChoiceIndex", "CouncilStage", "ExportSaveJson", "TransactionSave != ExpectedSave", "SameResolution", "SameSignals", "SameBeats", "SameCouncilStage", "OutTransaction = MoveTemp(Candidate)"]) if (!orderTransaction.includes(token)) errors.push(`Unreal order transaction omits fail-closed preflight token: ${token}`);
 for (const token of ["StreamingAssets/chapter-01-broken-crossing.v1.json", "validated-shared-contract-not-campaign-authority", "dramatic-reconstruction", "crossingProgress", "signalIntegrity", "Every plan requires two legal options per pulse", "ordered best-to-unconditional-fallback", "Engagement claim sources are incomplete"]) if (!engagementModel.includes(token)) errors.push(`Unreal engagement model omits shared-contract token: ${token}`);
@@ -1135,6 +1692,7 @@ if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environm
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/VFX/DazeRain")')) errors.push("Unreal packaging does not force-cook the admitted Daze-rain assets");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environment/WetFieldVegetation")')) errors.push("Unreal packaging does not force-cook the admitted wet-field-vegetation assets");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Characters/DazeCouncil")')) errors.push("Unreal packaging does not force-cook the admitted Daze council-character assets");
+if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Characters/DazeCouncilFacial")')) errors.push("Unreal packaging does not force-cook the admitted Daze council facial-performance assets");
 if (!engineConfig.includes("r.CustomDepth=3")) errors.push("Unreal renderer does not preserve the selected wartable marker stencil");
 for (const token of ["prepare_external_directory", "SHI_UNREAL_DERIVED_DATA", "UE-LocalDataCachePath", "SHI_UNREAL_PACKAGE_ROOT", "must be a dedicated directory outside the Git repository", "-archivedirectory=\"$SHI_PACKAGE_ROOT\"", "-nosound", "Automation RunTests SHI.; Quit", "Automation Test Queue Empty"]) if (!pipeline.includes(token)) errors.push(`Unreal pipeline omits outside-Git build/cache/test-exit token: ${token}`);
 if (pipeline.includes('archivedirectory="$SHI_REPO_ROOT/apps/unreal')) errors.push("Unreal Linux packaging still writes archives inside the Git worktree");
@@ -1143,6 +1701,7 @@ for (const token of ["FShiDazeFieldShelterPresentationModel::Build", "ShiDazeFie
 for (const token of ["FShiRainPresentationModel::Build", "ShiRainVfxReview", "AShiRainField", "ShiEnvironment:DazeRain", "ShiPresentation:NonAuthoritative", "ShiArtStatus:ProductionVfxBlockout", "RainField", "ReviewFieldOfViewDegrees"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits Daze-rain runtime/disclosure token: ${token}`);
 for (const token of ["FShiWetFieldVegetationPresentationModel::Build", "ShiWetFieldVegetationReview", "AShiWetFieldVegetation", "ShiEnvironment:WetFieldVegetation", "ShiPresentation:NonAuthoritative", "ShiArtStatus:ProductionVegetationBlockout", "WetFieldVegetation", "ReviewFieldOfViewDegrees"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits wet-field-vegetation runtime/disclosure token: ${token}`);
 for (const token of ["ShiCouncilCharacterReviewSpeaker", "ShiCouncilCharacterReviewKeeper", "bCouncilCharacterReview", "BuildParticipantReviewCamera", "Council character review rejected", "DefaultPawnClass = nullptr"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits dedicated council-character review/default-pawn suppression token: ${token}`);
+for (const token of ["Figure->Get()->SetReducedMotion(bReducedMotion)", "Figure->SetReducedMotion(bReducedMotion)", "ApplyCouncilStage", "ToggleReducedMotion"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits council facial reduced-motion propagation token: ${token}`);
 if (gameMode.includes("/Engine/BasicShapes/Plane.Plane") || gameMode.includes("Command-space ground")) errors.push("Unreal runtime still contains the superseded white engine-plane ground");
 for (const token of ["bOverride_AutoExposureBias", "ExposureCompensation", "PostProcessBlendWeight = 1.f"]) if (!gameMode.includes(token)) errors.push(`Unreal command camera omits reviewed exposure token: ${token}`);
 if (gameMode.indexOf("SaveChronicle(Transaction.Session") > gameMode.indexOf("Session = MoveTemp(Transaction.Session)")) errors.push("Unreal order commit mutates memory before the candidate save is durable");
@@ -1156,6 +1715,7 @@ for (const token of ["SHI.Cinematic.CouncilStagingV1", "speaker and keeper occup
 for (const token of ["dedicated speaker review camera is admitted", "speaker review exactly preserves the authored dialogue camera", "dedicated keeper review camera is admitted", "keeper review cannot silently reuse the speaker position", "unknown council review slot is rejected", "failed council review camera build is atomic"]) if (!automation.includes(token)) errors.push(`Unreal automation omits fail-closed council review-camera token: ${token}`);
 for (const token of ["SHI.Cinematic.CouncilCharacterPresentationV1", "five exact council character identities are admitted", "council character order remains canonical", "uses the exact x100 component scale", "remains a disclosed non-final neutral blockout", "engine asset passes bones, materials, bounds and topology", "all five figures use one exact engine Skeleton", "unknown generated identity is rejected", "failed identity build is atomic", "metre-valued asset cannot silently shrink to centimetres", "generic layers cannot be promoted to exact 209 BCE costume", "skeletal blockout cannot replace primitive interaction authority", "wrong or generated character asset is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits council-character live-asset/hostile-drift token: ${token}`);
 for (const token of ["SHI.Cinematic.CouncilPerformancePresentationV1", "two exact council body-performance roles remain canonical", "keeps 121 target samples", "retains exactly 52 child-body tracks", "cannot override the admitted reference Root", "child positions/scales remain the exact shared reference pose", "both body performances use one exact engine Skeleton", "non-speaker maps to attentive performance", "speaker maps to measured performance", "unknown generated performance role is rejected", "sample-count drift is rejected", "frame-rate drift is rejected", "root-motion authority is rejected", "generic gesture cannot become reconstructed 209 BCE etiquette", "body blockout cannot become final acting without review", "visual performance cannot acquire gameplay authority"]) if (!automation.includes(token)) errors.push(`Unreal automation omits council-performance live-asset/hostile-drift token: ${token}`);
+for (const token of ["SHI.Cinematic.CouncilFacialPerformanceV1", "five exact facial identities remain canonical and ordered", "the facial rig exposes exactly the admitted 21 morphs in canonical order", "uses the exact accepted shared Skeleton", "live mesh passes exact bones, materials, bounds, topology and morph admission", "all five live facial meshes use one exact Skeleton object", "unknown facial identity is rejected", "facial material order drift is rejected", "extra facial morph control is rejected", "silent intent cadence cannot become audio driven", "deterministic facial presentation cannot acquire randomness", "engineering face cannot acquire close-framing approval", "facial evaluator is exactly deterministic for repeated input", "all listener and speaker timeline samples preserve exact morph order and bounds", "reduced-motion cadence is a single clamped pass and cannot loop after four seconds", "facial frame morph reordering is rejected", "facial frame extra morph control is rejected", "facial frame gameplay authority is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits council-facial live-asset/determinism/reduced-motion/hostile-drift token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandWeightPresentationV1", "preserves contact, pointer clearance and the 44-degree safe frame", "not a gameplay interaction target", "lower decision-object field without covering the speaker", "development front review camera looks exactly at the admitted prop", "development back review camera looks exactly at the admitted prop", "a prop that crowds a live signal is rejected", "a floating command weight is rejected", "an unauthored council lens cannot admit the prop"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-weight presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandSurfacePresentationV1", "reviewed command ground contains every site and live signal", "command ground is not an interaction target", "command ground has no runtime collision", "command ground remains beneath the non-authoritative engagement exercise", "surface review camera sees the whole authored command field", "unreviewed surface scaling is rejected", "runtime surface collision is rejected", "a disappearing engagement ground is rejected", "a signal outside the safe command field is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-surface presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.WetFieldEnvironmentPresentationV1", "reviewed wet-field environment passes its presentation contract", "wet field is a bounded identity-root environment below the command surface", "wet field is not an interaction target", "wet field collision is disabled", "wet field does not affect navigation", "wet field persists beneath Broken Crossing", "environment review camera sees the whole bounded field", "unreviewed field scaling is rejected", "runtime field collision is rejected", "runtime field navigation authority is rejected", "a disappearing engagement environment is rejected", "terrain that violates command-surface clearance is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits wet-field presentation token: ${token}`);
@@ -1170,4 +1730,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain, wet-field-vegetation, five identity-Root shared-skeleton council characters and two body-performance clips with explicit historical/final-art red gates.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain, wet-field-vegetation, five identity-Root shared-skeleton council characters, two body-performance clips and exact 21-control silent facial-intent cadence with explicit historical/final-art/voice/close-framing red gates.`);
