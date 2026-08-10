@@ -1,0 +1,80 @@
+{
+  "assetId": "shi-daze-council-characters-v1",
+  "createdAt": "2026-08-10",
+  "status": "approved-runtime-five-identity-skeletal-production-blockout-story-reviewed-not-final-character-art",
+  "rightsStatus": "MPFB system basemesh and game_engine rig contribution is CC0; SHI-authored garments, hair masses, role shapes, materials, deterministic scripts, renders and runtime presentation are original project work; MPFB GPL program code is an offline authoring dependency and is not distributed in the game",
+  "historicalStatus": "generic practical-layer and generic-face production blockouts only; not exact 209 BCE costumes and not portraits of Chen Sheng, Wu Guang or any fictional reconstruction",
+  "designSource": "../../docs/art/DAZE_COUNCIL_CHARACTER_BLOCKOUT_BRIEF.md",
+  "engineImportEvidence": "../../docs/production/evidence/unreal-daze-council-characters-import-status.json",
+  "engineEvidence": "../../docs/production/evidence/unreal-daze-council-characters-presentation-status.json",
+  "toolchain": {
+    "authoring": "Blender 4.5.12 LTS, MPFB 2.0.17 commit 80919fa4682335c41847f761a4d79dcad4124732 and official Unreal Engine 5.8.1",
+    "generation": "deterministic local Blender Python using the pinned CC0 system basemesh/53-bone game_engine rig plus SHI-authored texture-free layer geometry; no neural mesh, generated texture, model weights, community clothing, private portrait or private book payload",
+    "generator": {
+      "file": "../../scripts/build-daze-council-characters.py",
+      "sha256": "c7ecfb687c4f4704323ccc4a72b0875065e3c214009e81c74d74edfd38f55ce4"
+    },
+    "validator": {
+      "file": "../../scripts/validate-daze-council-characters.py",
+      "sha256": "0577de816480f4f509d92beb276d4b3e7af34625bed5d2a7761c177092df7e8d",
+      "method": "clean FBX and GLB round trips with exact five IDs, 53-bone rest pose, root/pelvis relationship, topology, material names, physical bounds, weight normalization, no textures and no animation"
+    },
+    "unrealImporter": {
+      "file": "../../scripts/import-daze-council-characters-unreal.py",
+      "sha256": "9b285daf171920969bcbcb2ce14a8a47090bd964c9e87dd94af431293a1cab8d",
+      "method": "read-only by default; isolated replacement behind SHI_DAZE_COUNCIL_CHARACTERS_REIMPORT=1; preserves authored FBX normals with FBXNIM_IMPORT_NORMALS and checks shared skeleton, exact bones, height, materials, no physics and no morph targets"
+    },
+    "unrealMaterialAuthor": {
+      "file": "../../scripts/author-daze-council-character-materials-unreal.py",
+      "sha256": "a005b2d5923f850ce8af2fd5dbca5d7e631132ef475c08a87f3f3ffb198c4cae",
+      "method": "read-only by default; exact fourteen texture-free three-node opaque default-lit single-sided materials behind SHI_DAZE_COUNCIL_AUTHOR_MATERIALS=1"
+    }
+  },
+  "sourceOutputs": [
+    {"file":"../3d/rendered/shi-daze-council-characters-v1.blend","role":"editable five-character source and lookdev","bytes":19332505,"sha256":"1360836060fde31005e02b73c8fdfc726637309cd96adf1fbabed49eb4be8458"},
+    {"file":"../3d/rendered/shi-daze-council-characters-v1-front.png","role":"neutral front silhouette review","bytes":1944082,"sha256":"a6dd8366c535288e061f36859f0da8658189d9dcd57a126ec2afa92b1ac9fec8"},
+    {"file":"../3d/rendered/shi-daze-council-characters-v1-back.png","role":"neutral back silhouette review","bytes":1954849,"sha256":"dae9c2cfba50b5b8fd5ee349ffbed2c929cec88032db4c6bf31c0620410335f4"},
+    {"file":"../3d/rendered/shi-daze-council-characters-v1-oblique.png","role":"neutral oblique silhouette review","bytes":1995589,"sha256":"4a699b6ed88000108891a8f326cd94c5d71cea7a7db7126358da7a13a6ee06b1"},
+    {"file":"../3d/rendered/shi-daze-council-characters-v1-fbx-import.png","role":"clean FBX round-trip lineup review","bytes":2281636,"sha256":"ade8bef2e89d105d320d78e011143d13873df616a1111c00676bec4c35e76379"},
+    {"file":"../3d/source/shi-daze-council-characters-v1.metrics.json","role":"deterministic source/export metrics and hashes","bytes":8933,"sha256":"442baf17a7c17feb6ecfd39b56675981b883a01de9cb75671c4ff0b7f07d0b7a"},
+    {"file":"../3d/source/shi-daze-council-characters-v1.validation.json","role":"clean interchange machine validation","bytes":24767,"sha256":"310fd8b322c6e14e1e8ab85fe24b24dfb24eab2df3bee781266600070b5252c6"}
+  ],
+  "characterExports": [
+    {"characterId":"keeper","roleShape":"document-satchel","hairShape":"low-knot","triangles":27668,"fbx":{"file":"../3d/export/shi-daze-council-characters-v1-keeper.fbx","bytes":2600268,"sha256":"576693a0fba293f5935771b0c39c510c8fb69e9343f56ebffd3c8ca4cd042e13"},"glb":{"file":"../3d/export/shi-daze-council-characters-v1-keeper.glb","bytes":3207400,"sha256":"eda4e6460ad1375681ecff32defdba4dcefaa239644808b326d90c67eeb8a5e6"}},
+    {"characterId":"chen-sheng","roleShape":"long-weather-layer","hairShape":"tied-knot","triangles":27664,"fbx":{"file":"../3d/export/shi-daze-council-characters-v1-chen-sheng.fbx","bytes":2546060,"sha256":"252f8facfb3b57b6233fa2a2c63a758fa26d0e077775ed87d607d820ac09b7d4"},"glb":{"file":"../3d/export/shi-daze-council-characters-v1-chen-sheng.glb","bytes":3206196,"sha256":"18c1ab07c94125c71f7c50aa9606a7d9bedc544c693227f56783c58897c19ace"}},
+    {"characterId":"wu-guang","roleShape":"asymmetric-wrap","hairShape":"cropped-cap","triangles":27508,"fbx":{"file":"../3d/export/shi-daze-council-characters-v1-wu-guang.fbx","bytes":2490380,"sha256":"40410e48ac8e92c6a899538bfeded5d2cc73feb8e8681d78dbf1d10c41c67c42"},"glb":{"file":"../3d/export/shi-daze-council-characters-v1-wu-guang.glb","bytes":3189388,"sha256":"3d7de6e5a9603e62f0e86577f30b4dc9dfc6bb4908ce3ac963c3a8008ccd0c89"}},
+    {"characterId":"yu-mu","roleShape":"work-apron","hairShape":"broad-low-knot","triangles":27656,"fbx":{"file":"../3d/export/shi-daze-council-characters-v1-yu-mu.fbx","bytes":2545660,"sha256":"f523433722a4b534ec5f7c4feae7a2e0894dcb1341610cb7feca80812604d0d1"},"glb":{"file":"../3d/export/shi-daze-council-characters-v1-yu-mu.glb","bytes":3205272,"sha256":"988a1bcb4732343423f9b4b6a3883482e484ba2f6491eef152627892ce580ea1"}},
+    {"characterId":"qin-courier","roleShape":"relay-satchel","hairShape":"small-high-tie","triangles":27668,"fbx":{"file":"../3d/export/shi-daze-council-characters-v1-qin-courier.fbx","bytes":2600524,"sha256":"78c8bb462efd6e4e0df201f779c9b0e3704e190b18b2b444de629ff89d61259c"},"glb":{"file":"../3d/export/shi-daze-council-characters-v1-qin-courier.glb","bytes":3207132,"sha256":"9ceef9752f55f947b75819b049d69b5a0df11e9361a0bb7d1fd3878bc9293888"}}
+  ],
+  "engineOutputs": {
+    "trackedAssets": 20,
+    "skeletalMeshes": 5,
+    "sharedSkeletons": 1,
+    "materials": 14,
+    "hashManifest": "../../docs/production/evidence/unreal-daze-council-characters-import-status.json"
+  },
+  "visibleEvidence": {
+    "screenshots": 7,
+    "hashManifest": "../../docs/production/evidence/unreal-daze-council-characters-presentation-status.json",
+    "storyRoute": "rain-order --read-the-names--> open-council",
+    "realInputAndAutosave": true
+  },
+  "technicalReview": {
+    "cleanFbxImport": "pass",
+    "cleanGlbImport": "pass",
+    "unrealImport": "pass with authored FBX normals preserved",
+    "unrealMaterial": "pass: fourteen compile-clean three-node texture-free opaque default-lit materials",
+    "unrealNativeAutomation": "18 of 18 SHI suites pass",
+    "unrealPackage": "pass: BuildCookRun success, 536 packages",
+    "unrealHeadlessSmoke": "pass: Entry map, ShiGameMode and clean requested exit",
+    "unrealVisibleCampaign": "pass: real input issued read-the-names, committed a verified transaction and advanced to open-council"
+  },
+  "constraints": [
+    "Do not present generic faces as portraits of historical people or dramatic reconstructions",
+    "Do not identify a garment, hairstyle, shoe, material, dye, rank marker or prop as exact 209 BCE evidence without item-level historical review",
+    "Keep wide or medium council framing until a facial/eye/speech system is admitted",
+    "Keep character meshes presentation-only, collision-free, non-navigable, nonreplicated and independent from campaign and engagement authority",
+    "Do not promote this neutral skeletal blockout to final character art, shipping historical reconstruction or marketing status",
+    "Complete animation, facial performance, interaction hands, cloth/hair response, LOD/performance and human historical/character/cultural/accessibility/cinematic review before final acceptance"
+  ]
+}

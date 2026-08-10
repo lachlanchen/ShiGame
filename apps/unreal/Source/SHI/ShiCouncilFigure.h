@@ -8,6 +8,8 @@
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class USceneComponent;
+class USkeletalMesh;
+class USkeletalMeshComponent;
 class UStaticMesh;
 class UStaticMeshComponent;
 
@@ -21,7 +23,10 @@ public:
     bool InitializeFigure(UStaticMesh* Cylinder, UStaticMesh* Sphere, UStaticMesh* Cube,
         UMaterialInterface* BasicMaterial, FString& OutError);
     void ApplyParticipant(const FShiCouncilParticipantData& Participant);
+    void SetReviewVisible(bool bVisible);
     const FString& GetSlotId() const { return SlotId; }
+    const FString& GetCharacterId() const { return CharacterId; }
+    bool IsUsingSkeletalPresentation() const { return bUsingSkeletalPresentation; }
 
 private:
     UPROPERTY(VisibleAnywhere)
@@ -32,11 +37,17 @@ private:
     TObjectPtr<UStaticMeshComponent> Head;
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<UStaticMeshComponent> Mantle;
+    UPROPERTY(VisibleAnywhere)
+    TObjectPtr<USkeletalMeshComponent> CharacterMesh;
     UPROPERTY(Transient)
     TObjectPtr<UMaterialInstanceDynamic> BodyMaterial;
     UPROPERTY(Transient)
     TObjectPtr<UMaterialInstanceDynamic> HeadMaterial;
     UPROPERTY(Transient)
     TObjectPtr<UMaterialInstanceDynamic> MantleMaterial;
+    UPROPERTY(Transient)
+    TMap<FString, TObjectPtr<USkeletalMesh>> CharacterMeshes;
     FString SlotId;
+    FString CharacterId;
+    bool bUsingSkeletalPresentation = false;
 };

@@ -74,7 +74,7 @@ case "$SHI_ACTION" in
     run_engine_tool "$SHI_ENGINE_ROOT/Engine/Build/BatchFiles/Linux/Build.sh" SHIEditor Linux Development -Project="$SHI_PROJECT" -WaitMutex
     ;;
   test)
-    run_engine_tool "$SHI_EDITOR_CMD" "$SHI_PROJECT" /Engine/Maps/Entry -unattended -nop4 -nosplash -nullrhi -nowrite -ExecCmds="Automation RunTests SHI.; Quit" -TestExit="Automation Test Queue Empty" -log
+    run_engine_tool "$SHI_EDITOR_CMD" "$SHI_PROJECT" /Engine/Maps/Entry -unattended -nop4 -nosplash -nullrhi -nosound -nowrite -ExecCmds="Automation RunTests SHI.; Quit" -TestExit="Automation Test Queue Empty" -log
     ;;
   editor)
     if [[ -n "$SHI_DERIVED_DATA_ROOT" ]]; then

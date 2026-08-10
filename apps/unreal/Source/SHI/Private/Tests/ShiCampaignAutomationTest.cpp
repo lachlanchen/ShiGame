@@ -16,10 +16,12 @@
 #include "ShiDazeFieldShelterPresentationModel.h"
 #include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiCouncilStagingModel.h"
+#include "ShiCouncilCharacterPresentationModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiRainPresentationModel.h"
 #include "ShiWetFieldVegetationPresentationModel.h"
 #include "ShiWartableModel.h"
+#include "Engine/SkeletalMesh.h"
 
 namespace
 {
@@ -195,12 +197,149 @@ bool FShiCouncilStagingTest::RunTest(const FString& Parameters)
     CameraDrift.CameraTransform.AddToTranslation(FVector(60.f, 0.f, 0.f));
     TestFalse(TEXT("unauthored dialogue camera drift is rejected"), FShiCouncilStagingModel::Validate(Campaign, *Opening, TEXT("en"), CameraDrift, Error));
 
+    FTransform SpeakerReviewCamera;
+    float SpeakerReviewFieldOfView = 0.f;
+    TestTrue(TEXT("dedicated speaker review camera is admitted"),
+        FShiCouncilStagingModel::BuildParticipantReviewCamera(
+            Stage, TEXT("speaker"), SpeakerReviewCamera, SpeakerReviewFieldOfView, Error));
+    TestTrue(TEXT("speaker review exactly preserves the authored dialogue camera"),
+        SpeakerReviewCamera.Equals(Stage.CameraTransform, .0001f));
+    TestEqual(TEXT("speaker review preserves the restrained 44-degree lens"),
+        SpeakerReviewFieldOfView, Stage.FieldOfViewDegrees);
+    FTransform KeeperReviewCamera;
+    float KeeperReviewFieldOfView = 0.f;
+    TestTrue(TEXT("dedicated keeper review camera is admitted"),
+        FShiCouncilStagingModel::BuildParticipantReviewCamera(
+            Stage, TEXT("keeper"), KeeperReviewCamera, KeeperReviewFieldOfView, Error));
+    TestFalse(TEXT("keeper review cannot silently reuse the speaker position"),
+        KeeperReviewCamera.Equals(SpeakerReviewCamera, .0001f));
+    TestTrue(TEXT("keeper review mirrors the speaker camera across the council table"), Keeper
+        && KeeperReviewCamera.GetLocation().Equals(
+            Keeper->Transform.GetLocation() + FVector(-330.f, 390.f, 200.f), .0001f));
+    const FTransform StableReviewCamera = KeeperReviewCamera;
+    const float StableReviewFieldOfView = KeeperReviewFieldOfView;
+    TestFalse(TEXT("unknown council review slot is rejected"),
+        FShiCouncilStagingModel::BuildParticipantReviewCamera(
+            Stage, TEXT("generated-extra"), KeeperReviewCamera, KeeperReviewFieldOfView, Error));
+    TestTrue(TEXT("failed council review camera build is atomic"),
+        KeeperReviewCamera.Equals(StableReviewCamera, .0001f)
+        && FMath::IsNearlyEqual(KeeperReviewFieldOfView, StableReviewFieldOfView));
+
+    TArray<FShiCouncilParticipantLightData> ParticipantLights;
+    TestTrue(TEXT("four authored participant key and fill lights are admitted"),
+        FShiCouncilStagingModel::BuildParticipantLights(Stage, ParticipantLights, Error));
+    TestEqual(TEXT("speaker and keeper each receive one key and one restrained fill"), ParticipantLights.Num(), 4);
+    if (ParticipantLights.Num() == 4 && Speaker && Keeper)
+    {
+        TestTrue(TEXT("speaker key and fill remain uniquely bound to the speaker slot"),
+            ParticipantLights[0].LightId == TEXT("speaker-key") && ParticipantLights[0].SlotId == TEXT("speaker")
+            && ParticipantLights[1].LightId == TEXT("speaker-fill") && ParticipantLights[1].SlotId == TEXT("speaker"));
+        TestTrue(TEXT("keeper key and fill remain uniquely bound to the keeper slot"),
+            ParticipantLights[2].LightId == TEXT("keeper-key") && ParticipantLights[2].SlotId == TEXT("keeper")
+            && ParticipantLights[3].LightId == TEXT("keeper-fill") && ParticipantLights[3].SlotId == TEXT("keeper"));
+        TestTrue(TEXT("speaker key and opposite fill preserve the reviewed face-lighting positions"),
+            ParticipantLights[0].Location.Equals(Speaker->Transform.GetLocation() + FVector(150.f, -175.f, 195.f), .0001f)
+            && ParticipantLights[1].Location.Equals(Speaker->Transform.GetLocation() + FVector(-125.f, -150.f, 165.f), .0001f));
+        TestTrue(TEXT("keeper key and opposite fill mirror the reviewed face-lighting positions"),
+            ParticipantLights[2].Location.Equals(Keeper->Transform.GetLocation() + FVector(-150.f, 175.f, 195.f), .0001f)
+            && ParticipantLights[3].Location.Equals(Keeper->Transform.GetLocation() + FVector(125.f, 150.f, 165.f), .0001f));
+        TestTrue(TEXT("participant key and fill levels remain local, restrained and non-flat"),
+            ParticipantLights[0].IntensityLumens == 2600.f && ParticipantLights[1].IntensityLumens == 1800.f
+            && ParticipantLights[2].IntensityLumens == 2300.f && ParticipantLights[3].IntensityLumens == 1700.f
+            && ParticipantLights[0].AttenuationRadiusCentimeters == 520.f
+            && ParticipantLights[1].AttenuationRadiusCentimeters == 430.f
+            && ParticipantLights[2].AttenuationRadiusCentimeters == 520.f
+            && ParticipantLights[3].AttenuationRadiusCentimeters == 430.f);
+    }
+    const TArray<FShiCouncilParticipantLightData> StableParticipantLights = ParticipantLights;
+    FShiCouncilStageData MissingKeeperLightStage = Stage;
+    MissingKeeperLightStage.Participants.RemoveAll([](const FShiCouncilParticipantData& Participant)
+    {
+        return Participant.SlotId == TEXT("keeper");
+    });
+    TestFalse(TEXT("missing keeper cannot produce partial participant lighting"),
+        FShiCouncilStagingModel::BuildParticipantLights(MissingKeeperLightStage, ParticipantLights, Error));
+    TestTrue(TEXT("failed participant lighting build is atomic"),
+        ParticipantLights.Num() == StableParticipantLights.Num()
+        && ParticipantLights[0].LightId == StableParticipantLights[0].LightId
+        && ParticipantLights[3].LightId == StableParticipantLights[3].LightId);
+
     const FString StableStageNode = Stage.NodeId;
     FShiNodeData MissingSpeaker = *Opening;
     MissingSpeaker.SpeakerId = TEXT("unknown-person");
     TestFalse(TEXT("missing canonical speaker cannot replace an accepted stage"),
         FShiCouncilStagingModel::Build(Campaign, MissingSpeaker, TEXT("en"), Stage, Error));
     TestEqual(TEXT("failed council rebuild is atomic"), Stage.NodeId, StableStageNode);
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCouncilCharacterPresentationTest,
+    "SHI.Cinematic.CouncilCharacterPresentationV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCouncilCharacterPresentationTest::RunTest(const FString& Parameters)
+{
+    const TArray<FString>& CharacterIds = FShiCouncilCharacterPresentationModel::CanonicalCharacterIds();
+    TestEqual(TEXT("five exact council character identities are admitted"), CharacterIds.Num(), 5);
+    const TArray<FString> ExpectedIds = {
+        TEXT("keeper"), TEXT("chen-sheng"), TEXT("wu-guang"), TEXT("yu-mu"), TEXT("qin-courier")
+    };
+    TestTrue(TEXT("council character order remains canonical"), CharacterIds == ExpectedIds);
+
+    FString Error;
+    TSet<const USkeleton*> Skeletons;
+    for (const FString& CharacterId : CharacterIds)
+    {
+        FShiCouncilCharacterPresentationData Presentation;
+        TestTrue(*FString::Printf(TEXT("%s presentation builds"), *CharacterId),
+            FShiCouncilCharacterPresentationModel::Build(CharacterId, Presentation, Error));
+        if (!Error.IsEmpty()) AddError(Error);
+        TestTrue(*FString::Printf(TEXT("%s presentation validates"), *CharacterId),
+            FShiCouncilCharacterPresentationModel::Validate(Presentation, Error));
+        TestEqual(*FString::Printf(TEXT("%s uses the exact x100 component scale"), *CharacterId),
+            Presentation.ComponentScale, FVector(100.f));
+        TestTrue(*FString::Printf(TEXT("%s remains a disclosed non-final neutral blockout"), *CharacterId),
+            !Presentation.bFinalArt && !Presentation.bExactCostumeReconstruction
+            && !Presentation.bHistoricalPortrait && !Presentation.bAnimated
+            && !Presentation.bCollisionEnabled && !Presentation.bSkeletalMeshIsInteractionAuthority
+            && Presentation.bPrimitiveInteractionFallback && Presentation.bWideAndMediumFramingOnly);
+
+        USkeletalMesh* Mesh = LoadObject<USkeletalMesh>(nullptr, *Presentation.MeshPath);
+        TestNotNull(*FString::Printf(TEXT("%s exact SkeletalMesh loads"), *CharacterId), Mesh);
+        if (Mesh)
+        {
+            TestTrue(*FString::Printf(TEXT("%s engine asset passes bones, materials, bounds and topology"), *CharacterId),
+                FShiCouncilCharacterPresentationModel::ValidateMesh(Presentation, *Mesh, Error));
+            if (!Error.IsEmpty()) AddError(Error);
+            Skeletons.Add(Mesh->GetSkeleton());
+        }
+    }
+    TestEqual(TEXT("all five figures use one exact engine Skeleton"), Skeletons.Num(), 1);
+
+    FShiCouncilCharacterPresentationData Stable;
+    TestTrue(TEXT("stable keeper contract builds"),
+        FShiCouncilCharacterPresentationModel::Build(TEXT("keeper"), Stable, Error));
+    const FString StablePath = Stable.MeshPath;
+    TestFalse(TEXT("unknown generated identity is rejected"),
+        FShiCouncilCharacterPresentationModel::Build(TEXT("invented-general"), Stable, Error));
+    TestEqual(TEXT("failed identity build is atomic"), Stable.MeshPath, StablePath);
+
+    FShiCouncilCharacterPresentationData ScaleDrift = Stable;
+    ScaleDrift.ComponentScale = FVector(1.f);
+    TestFalse(TEXT("metre-valued asset cannot silently shrink to centimetres"),
+        FShiCouncilCharacterPresentationModel::Validate(ScaleDrift, Error));
+    FShiCouncilCharacterPresentationData CostumeOverclaim = Stable;
+    CostumeOverclaim.bExactCostumeReconstruction = true;
+    TestFalse(TEXT("generic layers cannot be promoted to exact 209 BCE costume"),
+        FShiCouncilCharacterPresentationModel::Validate(CostumeOverclaim, Error));
+    FShiCouncilCharacterPresentationData CollisionDrift = Stable;
+    CollisionDrift.bCollisionEnabled = true;
+    TestFalse(TEXT("skeletal blockout cannot replace primitive interaction authority"),
+        FShiCouncilCharacterPresentationModel::Validate(CollisionDrift, Error));
+    FShiCouncilCharacterPresentationData AssetDrift = Stable;
+    AssetDrift.MeshPath = TEXT("/Game/Generated/WrongIdentity.WrongIdentity");
+    TestFalse(TEXT("wrong or generated character asset is rejected"),
+        FShiCouncilCharacterPresentationModel::Validate(AssetDrift, Error));
     return !HasAnyErrors();
 }
 

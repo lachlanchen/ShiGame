@@ -2,6 +2,7 @@
 
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
+#include "Components/DrawSphereComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/Engine.h"
@@ -12,6 +13,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "GameFramework/PlayerController.h"
 #include "Components/LightComponent.h"
 #include "Components/PointLightComponent.h"
@@ -50,6 +52,9 @@ namespace
 AShiGameMode::AShiGameMode()
 {
     PrimaryActorTick.bCanEverTick = true;
+    // SHI drives the command-space camera directly. The engine DefaultPawn is a
+    // visible sphere and has no navigation or interaction authority here.
+    DefaultPawnClass = nullptr;
 }
 
 void AShiGameMode::BeginPlay()
@@ -64,6 +69,9 @@ void AShiGameMode::BeginPlay()
     bDazeFieldShelterReview = FParse::Param(FCommandLine::Get(), TEXT("ShiDazeFieldShelterReview"));
     bRainVfxReview = FParse::Param(FCommandLine::Get(), TEXT("ShiRainVfxReview"));
     bWetFieldVegetationReview = FParse::Param(FCommandLine::Get(), TEXT("ShiWetFieldVegetationReview"));
+    bCouncilCharacterReviewKeeper = FParse::Param(FCommandLine::Get(), TEXT("ShiCouncilCharacterReviewKeeper"));
+    bCouncilCharacterReview = bCouncilCharacterReviewKeeper
+        || FParse::Param(FCommandLine::Get(), TEXT("ShiCouncilCharacterReviewSpeaker"));
 #endif
     LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
@@ -107,6 +115,7 @@ void AShiGameMode::BeginPlay()
 
     if (!bCommandWeightReview && !bCommandSurfaceReview && !bWetFieldEnvironmentReview
         && !bDazeFieldShelterReview && !bRainVfxReview && !bWetFieldVegetationReview
+        && !bCouncilCharacterReview
         && GEngine && GEngine->GameViewport)
     {
         SAssignNew(CommandScreen, SShiCommandScreen).GameMode(this);
@@ -1253,6 +1262,32 @@ void AShiGameMode::CreateCommandSpace()
             FireLight->SetAttenuationRadius(720.f);
         }
     }
+    TArray<FShiCouncilParticipantLightData> ParticipantLights;
+    if (!FShiCouncilStagingModel::BuildParticipantLights(OpeningCouncilStage, ParticipantLights, CouncilError))
+    {
+        LoadError = FString::Printf(TEXT("Council participant lighting rejected: %s"), *CouncilError);
+        return;
+    }
+    for (const FShiCouncilParticipantLightData& LightData : ParticipantLights)
+    {
+        const FString ReviewLightSlot = bCouncilCharacterReviewKeeper ? TEXT("keeper") : TEXT("speaker");
+        if (bCouncilCharacterReview && LightData.SlotId != ReviewLightSlot) continue;
+        APointLight* ParticipantLight = World->SpawnActor<APointLight>(LightData.Location, FRotator::ZeroRotator);
+        UPointLightComponent* LightComponent = ParticipantLight
+            ? Cast<UPointLightComponent>(ParticipantLight->GetLightComponent())
+            : nullptr;
+        if (!ParticipantLight || !LightComponent)
+        {
+            LoadError = FString::Printf(TEXT("Council participant light could not spawn for %s."), *LightData.SlotId);
+            return;
+        }
+        LightComponent->SetIntensity(LightData.IntensityLumens);
+        LightComponent->SetLightColor(LightData.Color);
+        LightComponent->SetAttenuationRadius(LightData.AttenuationRadiusCentimeters);
+        LightComponent->SetSourceRadius(LightData.SourceRadiusCentimeters);
+        LightComponent->SetCastShadows(false);
+        ParticipantLight->Tags.Add(FName(*FString::Printf(TEXT("ShiCouncilLight:%s"), *LightData.LightId)));
+    }
     AExponentialHeightFog* Fog = World->SpawnActor<AExponentialHeightFog>();
     if (Fog) Fog->GetComponent()->SetFogDensity(0.025f);
 
@@ -1620,7 +1655,62 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Live council staging rejected: %s"), *CouncilError);
         return;
     }
-    if (bWetFieldVegetationReview)
+    if (bCouncilCharacterReview)
+    {
+        FTransform ReviewCamera;
+        float ReviewFieldOfView = CouncilStage.FieldOfViewDegrees;
+        FString ReviewError;
+        const FString SlotId = bCouncilCharacterReviewKeeper ? TEXT("keeper") : TEXT("speaker");
+        if (!FShiCouncilStagingModel::BuildParticipantReviewCamera(
+            CouncilStage, SlotId, ReviewCamera, ReviewFieldOfView, ReviewError))
+        {
+            LoadError = FString::Printf(TEXT("Council character review rejected: %s"), *ReviewError);
+            return;
+        }
+        const auto HideReviewMarkers = [](const auto& Markers)
+        {
+            for (const auto& Pair : Markers)
+            {
+                if (AActor* Actor = Pair.Value.Get())
+                {
+                    Actor->SetActorHiddenInGame(true);
+                    Actor->SetActorEnableCollision(false);
+                }
+            }
+        };
+        HideReviewMarkers(SiteMarkers);
+        HideReviewMarkers(CommandSignalMarkers);
+        for (const TPair<FString, TWeakObjectPtr<AShiCouncilFigure>>& Pair : CouncilFigures)
+        {
+            if (AShiCouncilFigure* Figure = Pair.Value.Get())
+            {
+                Figure->SetReviewVisible(Pair.Key == SlotId);
+            }
+        }
+        if (AStaticMeshActor* Prop = CommandWeightProp.Get()) Prop->SetActorHiddenInGame(true);
+        if (AStaticMeshActor* Prop = CommandSurfaceProp.Get()) Prop->SetActorHiddenInGame(true);
+        if (AStaticMeshActor* Prop = DazeFieldShelterProp.Get()) Prop->SetActorHiddenInGame(true);
+        if (AShiRainField* ReviewRain = RainField.Get()) ReviewRain->SetActorHiddenInGame(true);
+        for (TActorIterator<AActor> ActorIt(World); ActorIt; ++ActorIt)
+        {
+            TInlineComponentArray<UStaticMeshComponent*> StaticMeshComponents(*ActorIt);
+            for (UStaticMeshComponent* StaticMeshComponent : StaticMeshComponents)
+            {
+                if (StaticMeshComponent && StaticMeshComponent->GetStaticMesh() == Sphere)
+                {
+                    StaticMeshComponent->SetVisibility(false, true);
+                    StaticMeshComponent->SetHiddenInGame(true, true);
+                }
+            }
+            TInlineComponentArray<UDrawSphereComponent*> DrawSphereComponents(*ActorIt);
+            for (UDrawSphereComponent* DrawSphereComponent : DrawSphereComponents)
+            {
+                if (DrawSphereComponent) DrawSphereComponent->SetVisibility(false, true);
+            }
+        }
+        SetCameraImmediate(ReviewCamera, ReviewFieldOfView);
+    }
+    else if (bWetFieldVegetationReview)
     {
         SetCameraImmediate(FShiWetFieldVegetationPresentationModel::ReviewCameraTransform(),
             FShiWetFieldVegetationPresentationModel::ReviewFieldOfViewDegrees());

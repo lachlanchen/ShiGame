@@ -22,6 +22,7 @@ const required = [
   "Source/SHI/ShiWetFieldVegetation.h", "Source/SHI/ShiWetFieldVegetation.cpp",
   "Source/SHI/ShiCommandWeightPresentationModel.h", "Source/SHI/ShiCommandWeightPresentationModel.cpp",
   "Source/SHI/ShiCouncilStagingModel.h", "Source/SHI/ShiCouncilStagingModel.cpp",
+  "Source/SHI/ShiCouncilCharacterPresentationModel.h", "Source/SHI/ShiCouncilCharacterPresentationModel.cpp",
   "Source/SHI/ShiCouncilFigure.h", "Source/SHI/ShiCouncilFigure.cpp",
   "Source/SHI/ShiCinematicBeatModel.h", "Source/SHI/ShiCinematicBeatModel.cpp",
   "Source/SHI/ShiOrderTransactionModel.h", "Source/SHI/ShiOrderTransactionModel.cpp",
@@ -51,6 +52,26 @@ const required = [
   "Content/SHI/Art/Environment/WetFieldVegetation/M_SHI_RainDarkenedFieldPlant.uasset",
   "Content/SHI/Art/Environment/WetFieldVegetation/SM_SHI_FieldStalkClump_01.uasset",
   "Content/SHI/Art/Environment/WetFieldVegetation/SM_SHI_LowBladeTuft_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_Keeper_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_ChenSheng_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_WuGuang_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_YuMu_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_QinCourier_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_Character_SkinClay.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_Character_HairClay.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_Character_BindingClay.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_Character_RolePropClay.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_keeper_ClothBase.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_keeper_ClothOuter.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_chen-sheng_ClothBase.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_chen-sheng_ClothOuter.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_wu-guang_ClothBase.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_wu-guang_ClothOuter.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_yu-mu_ClothBase.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_yu-mu_ClothOuter.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_qin-courier_ClothBase.uasset",
+  "Content/SHI/Art/Characters/DazeCouncil/M_SHI_qin-courier_ClothOuter.uasset",
   "Content/StreamingAssets/chapter-01-daze.json", "Content/StreamingAssets/chapter-01-audio.json",
   "Content/StreamingAssets/chapter-01-broken-crossing.v1.json",
   "Content/StreamingAssets/chapter-01-replays.v1.json", "Content/StreamingAssets/editions.json",
@@ -741,6 +762,139 @@ if (vegetationPresentationEvidence.screenshots?.length !== 4
     || !vegetationPresentationEvidence.visiblePlaytest?.campaignSave?.modifiedTimeUnchanged)
   errors.push("Unreal wet-field-vegetation material, disclosure, runtime, automation or visible-play receipt is incomplete");
 
+const councilCharacterProvenancePath = resolve(root, "assets/provenance/shi-daze-council-characters-v1.json");
+const councilCharacterImportEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-characters-import-status.json");
+const councilCharacterPresentationEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-characters-presentation-status.json");
+const councilCharacterProvenance = JSON.parse(await readFile(councilCharacterProvenancePath, "utf8"));
+const councilCharacterImportEvidence = JSON.parse(await readFile(councilCharacterImportEvidencePath, "utf8"));
+const councilCharacterPresentationEvidence = JSON.parse(await readFile(councilCharacterPresentationEvidencePath, "utf8"));
+const councilCharacterImportDecision = "approved-engine-five-identity-skeletal-production-blockout-presented-not-final-character-art";
+const councilCharacterPresentationDecision = "approved-runtime-five-identity-skeletal-production-blockout-story-reviewed-not-final-character-art";
+const councilCharacterIds = ["keeper", "chen-sheng", "wu-guang", "yu-mu", "qin-courier"];
+if (councilCharacterProvenance.assetId !== "shi-daze-council-characters-v1"
+    || councilCharacterProvenance.status !== councilCharacterPresentationDecision
+    || councilCharacterImportEvidence.assetId !== "shi-daze-council-characters-v1"
+    || councilCharacterImportEvidence.decision !== councilCharacterImportDecision
+    || councilCharacterPresentationEvidence.assetId !== "shi-daze-council-characters-v1"
+    || councilCharacterPresentationEvidence.decision !== councilCharacterPresentationDecision)
+  errors.push("Unreal council-character provenance or evidence overstates its bounded production-blockout decision");
+for (const output of councilCharacterProvenance.sourceOutputs ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, "assets/provenance", output.file));
+    if (bytes.byteLength !== output.bytes || createHash("sha256").update(bytes).digest("hex") !== output.sha256)
+      errors.push(`council-character source receipt drifted: ${output.file}`);
+  } catch {
+    errors.push(`council-character source output is missing: ${output.file}`);
+  }
+}
+for (const character of councilCharacterProvenance.characterExports ?? []) {
+  for (const output of [character.fbx, character.glb]) {
+    try {
+      const bytes = await readFile(resolve(root, "assets/provenance", output.file));
+      if (bytes.byteLength !== output.bytes || createHash("sha256").update(bytes).digest("hex") !== output.sha256)
+        errors.push(`council-character export receipt drifted: ${output.file}`);
+    } catch {
+      errors.push(`council-character export is missing: ${output.file}`);
+    }
+  }
+}
+for (const tool of [councilCharacterProvenance.toolchain?.generator, councilCharacterProvenance.toolchain?.validator,
+  councilCharacterProvenance.toolchain?.unrealImporter, councilCharacterProvenance.toolchain?.unrealMaterialAuthor]) {
+  if (!tool?.file || !tool?.sha256) {
+    errors.push("council-character provenance omits a bounded tool receipt");
+    continue;
+  }
+  try {
+    const bytes = await readFile(resolve(root, "assets/provenance", tool.file));
+    if (createHash("sha256").update(bytes).digest("hex") !== tool.sha256)
+      errors.push(`council-character tool hash drifted: ${tool.file}`);
+  } catch {
+    errors.push(`council-character provenance tool is missing: ${tool.file}`);
+  }
+}
+for (const asset of councilCharacterImportEvidence.trackedUnrealAssets ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, asset.file));
+    if (bytes.byteLength !== asset.bytes || createHash("sha256").update(bytes).digest("hex") !== asset.sha256)
+      errors.push(`tracked Unreal council-character receipt drifted: ${asset.file}`);
+  } catch {
+    errors.push(`tracked Unreal council-character asset is missing: ${asset.file}`);
+  }
+}
+const characterImportChecks = councilCharacterImportEvidence.import?.checks;
+if (councilCharacterProvenance.sourceOutputs?.length !== 7
+    || councilCharacterProvenance.characterExports?.length !== 5
+    || councilCharacterProvenance.characterExports?.map((character) => character.characterId).join(",") !== councilCharacterIds.join(",")
+    || councilCharacterProvenance.engineOutputs?.trackedAssets !== 20
+    || councilCharacterProvenance.engineOutputs?.skeletalMeshes !== 5
+    || councilCharacterProvenance.engineOutputs?.sharedSkeletons !== 1
+    || councilCharacterProvenance.engineOutputs?.materials !== 14
+    || councilCharacterProvenance.visibleEvidence?.screenshots !== 7
+    || councilCharacterProvenance.visibleEvidence?.realInputAndAutosave !== true
+    || councilCharacterImportEvidence.trackedUnrealAssets?.length !== 20
+    || councilCharacterImportEvidence.import?.passed !== true
+    || councilCharacterImportEvidence.import?.normalImportMethod !== "FBXNIM_IMPORT_NORMALS"
+    || councilCharacterImportEvidence.import?.referencePoseBoneCount !== 53
+    || councilCharacterImportEvidence.import?.presentationScale !== 100
+    || councilCharacterImportEvidence.import?.characterIds?.join(",") !== councilCharacterIds.join(",")
+    || !characterImportChecks?.exactReferencePoseBones || !characterImportChecks?.rootAndPelvisRelationship
+    || !characterImportChecks?.boundedMaterials || !characterImportChecks?.noPhysicsAssets
+    || !characterImportChecks?.noMorphTargets || !characterImportChecks?.noTextures
+    || !characterImportChecks?.noAnimations || !characterImportChecks?.cleanFbxRoundTrip
+    || !characterImportChecks?.cleanGlbRoundTrip
+    || councilCharacterImportEvidence.materials?.count !== 14
+    || councilCharacterImportEvidence.materials?.nodesPerMaterial !== 3
+    || councilCharacterImportEvidence.materials?.textures !== 0)
+  errors.push("Unreal council-character source, import, skeleton, material or rights-bounded receipt is incomplete");
+if (councilCharacterImportEvidence.package?.packageCount !== 536
+    || councilCharacterImportEvidence.package?.priorAcceptedPackageCount !== 516
+    || councilCharacterImportEvidence.package?.addedPackageCount !== 20
+    || councilCharacterImportEvidence.package?.result !== "BUILD SUCCESSFUL"
+    || councilCharacterImportEvidence.package?.artifacts?.length !== 4
+    || councilCharacterImportEvidence.smokeTest?.exitCode !== 0
+    || councilCharacterImportEvidence.smokeTest?.containerPackageCount !== 536
+    || councilCharacterImportEvidence.smokeTest?.gameMode !== "ShiGameMode"
+    || councilCharacterImportEvidence.smokeTest?.map !== "/Engine/Maps/Entry"
+    || !councilCharacterImportEvidence.smokeTest?.cleanRequestedExit)
+  errors.push("Unreal council-character package, cooked-container or smoke receipt is incomplete");
+for (const screenshot of councilCharacterPresentationEvidence.screenshots ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, screenshot.file));
+    if (bytes.byteLength !== screenshot.bytes || createHash("sha256").update(bytes).digest("hex") !== screenshot.sha256)
+      errors.push(`council-character presentation screenshot drifted: ${screenshot.file}`);
+  } catch {
+    errors.push(`council-character presentation screenshot is missing: ${screenshot.file}`);
+  }
+}
+const characterPresentation = councilCharacterPresentationEvidence.presentation;
+const characterPlaytest = councilCharacterPresentationEvidence.visiblePlaytest;
+if (councilCharacterPresentationEvidence.screenshots?.length !== 7
+    || characterPresentation?.characterIds?.join(",") !== councilCharacterIds.join(",")
+    || characterPresentation?.sharedSkeletonBones !== 53
+    || characterPresentation?.skeletalMeshes !== 5
+    || characterPresentation?.materials !== 14
+    || characterPresentation?.participantLights?.join(",") !== "speaker-key,speaker-fill,keeper-key,keeper-fill"
+    || characterPresentation?.defaultPawnSuppressed !== true
+    || characterPresentation?.renderMeshCollision !== false
+    || characterPresentation?.navigationInfluence !== false
+    || characterPresentation?.gameplayAuthority !== false
+    || characterPresentation?.saveAuthority !== false
+    || characterPresentation?.replication !== false
+    || characterPresentation?.finalArt !== false
+    || characterPresentation?.exactPortraitReconstruction !== false
+    || characterPresentation?.exactCostumeReconstruction !== false
+    || councilCharacterPresentationEvidence.automation?.discovered !== 18
+    || councilCharacterPresentationEvidence.automation?.passed !== 18
+    || councilCharacterPresentationEvidence.automation?.exitCode !== 0
+    || councilCharacterPresentationEvidence.automation?.newSuite !== "SHI.Cinematic.CouncilCharacterPresentationV1"
+    || !characterPlaytest?.storyAdvanced || !characterPlaytest?.transactionVerified
+    || !characterPlaytest?.normalUiVisible || !characterPlaytest?.choiceCardsVisible
+    || !characterPlaytest?.rainVisible || !characterPlaytest?.councilCharactersVisible
+    || characterPlaytest?.autosave?.currentNodeId !== "open-council"
+    || characterPlaytest?.autosave?.historyChoiceIds?.join(",") !== "read-the-names"
+    || characterPlaytest?.autosave?.completed !== false)
+  errors.push("Unreal council-character disclosure, runtime, automation or real visible-play receipt is incomplete");
+
 const project = JSON.parse(await readFile(resolve(unreal, "SHI.uproject"), "utf8"));
 if (project.EngineAssociation !== "5.8") errors.push("Unreal engine association must be 5.8");
 if (!project.Modules?.some((module) => module.Name === "SHI" && module.Type === "Runtime")) errors.push("SHI runtime module is not registered");
@@ -778,6 +932,7 @@ const vegetationPresentation = `${await readFile(resolve(unreal, "Source/SHI/Shi
 const vegetationActor = `${await readFile(resolve(unreal, "Source/SHI/ShiWetFieldVegetation.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiWetFieldVegetation.cpp"), "utf8")}`;
 const commandWeightPresentation = await readFile(resolve(unreal, "Source/SHI/ShiCommandWeightPresentationModel.cpp"), "utf8");
 const councilStaging = await readFile(resolve(unreal, "Source/SHI/ShiCouncilStagingModel.cpp"), "utf8");
+const councilCharacterPresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiCouncilCharacterPresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiCouncilCharacterPresentationModel.cpp"), "utf8")}`;
 const councilFigure = await readFile(resolve(unreal, "Source/SHI/ShiCouncilFigure.cpp"), "utf8");
 const cinematic = await readFile(resolve(unreal, "Source/SHI/ShiCinematicBeatModel.cpp"), "utf8");
 const orderTransaction = await readFile(resolve(unreal, "Source/SHI/ShiOrderTransactionModel.cpp"), "utf8");
@@ -802,6 +957,8 @@ const rainImporter = await readFile(resolve(root, "scripts/import-daze-rain-vfx-
 const rainMaterialAuthor = await readFile(resolve(root, "scripts/author-daze-rain-vfx-materials-unreal.py"), "utf8");
 const vegetationImporter = await readFile(resolve(root, "scripts/import-daze-wet-field-vegetation-unreal.py"), "utf8");
 const vegetationMaterialAuthor = await readFile(resolve(root, "scripts/author-daze-wet-field-vegetation-material-unreal.py"), "utf8");
+const councilCharacterImporter = await readFile(resolve(root, "scripts/import-daze-council-characters-unreal.py"), "utf8");
+const councilCharacterMaterialAuthor = await readFile(resolve(root, "scripts/author-daze-council-character-materials-unreal.py"), "utf8");
 for (const token of ["schema v7", "TimeIndex <=", "NextActIndex <", "StreamingAssets/chapter-01-daze.json", "StreamingAssets/editions.json", "initialResources", "nextNodeId", "commitments", "countermeasures", "characters", "speakerId", "FindCharacter", "ValidateEvidence", "public-link-metadata-only", "specialist-review-required"]) if (!model.includes(token)) errors.push(`Unreal model omits contract token: ${token}`);
 for (const token of ["ApplyEffects(Choice->Effects)", "CommitmentOutcome->Effects", "Choice->PressureEffects", "Opposition->Effects", "MethodRead->Effects", "Condition->Effects", "SelectFieldCondition", "CanChoose", "ReplaySaveJson", "MoveTemp(Candidate)"]) if (!session.includes(token)) errors.push(`Unreal deterministic session omits contract token: ${token}`);
 for (const token of ["project-original-procedural", "RequiredCues", "CreateRainSamples", "CreateCueSamples", "bDefaultEnabled"]) if (!audioModel.includes(token)) errors.push(`Unreal audio model omits contract token: ${token}`);
@@ -826,8 +983,11 @@ for (const token of ["SHI_DAZE_RAIN_VFX_REIMPORT", "inspect-only", "SM_SHI_RainS
 for (const token of ["SHI_DAZE_RAIN_VFX_AUTHOR_MATERIALS", "used_with_instanced_static_meshes", "delete_material_expression", "MP_OPACITY", "MP_EMISSIVE_COLOR", "MP_BASE_COLOR", "MP_NORMAL", "compileClean", "exactNodeCount", "noTextures", "inspect-only"]) if (!rainMaterialAuthor.includes(token)) errors.push(`Unreal Daze-rain material author omits exact translucent graph/inspection token: ${token}`);
 for (const token of ["SHI_DAZE_VEGETATION_REIMPORT", "inspect-only", "SM_SHI_FieldStalkClump_01", "SM_SHI_LowBladeTuft_01", "M_SHI_RainDarkenedFieldPlant", "triangles", "all(count >= 2 for count in lod_uv_channels)", "simple_collision_count == 0", "convex_collision_count == 0", "light_map_resolution\")) == 64", "naniteDeliberatelyOff"]) if (!vegetationImporter.includes(token)) errors.push(`Unreal wet-field-vegetation importer omits bounded reimport/inspection token: ${token}`);
 for (const token of ["SHI_DAZE_VEGETATION_AUTHOR_MATERIAL", "EXPECTED_NODE_COUNT = 15", "used_with_instanced_static_meshes", "MaterialExpressionVertexColor", "MaterialExpressionTime", "MaterialExpressionSine", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_SPECULAR", "MP_WORLD_POSITION_OFFSET", "MP_NORMAL", "MP_EMISSIVE_COLOR", "MP_OPACITY", "compileClean", "noTextureNormalEmissiveOrOpacityPretence", "inspect-only"]) if (!vegetationMaterialAuthor.includes(token)) errors.push(`Unreal wet-field-vegetation material author omits exact GPU-wind graph/inspection token: ${token}`);
-for (const token of ["speaker", "keeper", "HISTORICAL FIGURE · WORDS ARE AUTHORED DRAMATIZATION, NOT TRANSCRIPT", "FICTIONAL CHARACTER · PROJECT-AUTHORED DRAMATIC RECONSTRUCTION", "SpeakerCamera", "CouncilFieldOfViewDegrees", "FindParticipant", "SameParticipant", "cannot preserve canonical cast, disclosure, blocking and camera authorship", "OutStage = MoveTemp(Candidate)"]) if (!councilStaging.includes(token)) errors.push(`Unreal council staging omits cast/blocking/disclosure token: ${token}`);
-for (const token of ["FigureRoot", "Body", "Head", "Mantle", "InitializeFigure", "ShiCharacter:", "ShiCouncilSpeaker", "SetMobility", "SetRenderCustomDepth", "SetCustomDepthStencilValue", "SetActorTransform"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits live performance-proxy token: ${token}`);
+for (const token of ["SHI_DAZE_COUNCIL_CHARACTERS_REIMPORT", "inspect-only", "SK_SHI_DazeCouncil_Skeleton", "asset_name", "Keeper", "ChenSheng", "WuGuang", "YuMu", "QinCourier", "PRESENTATION_SCALE = 100.0", "FBXNIM_IMPORT_NORMALS", "exactReferencePoseBones", "presentedPhysicalHeight", "noPhysicsAsset", "noMorphTargets"]) if (!councilCharacterImporter.includes(token)) errors.push(`Unreal council-character importer omits exact shared-skeleton admission token: ${token}`);
+for (const token of ["SHI_DAZE_COUNCIL_AUTHOR_MATERIALS", "EXPECTED_NODE_COUNT = 3", "used_with_skeletal_mesh", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_SPECULAR", "MP_NORMAL", "MP_EMISSIVE_COLOR", "MP_OPACITY", "MP_WORLD_POSITION_OFFSET", "compileClean", "noTextureNormalEmissiveOpacityOrDisplacementPretence", "inspect-only"]) if (!councilCharacterMaterialAuthor.includes(token)) errors.push(`Unreal council-character material author omits exact texture-free skeletal graph token: ${token}`);
+for (const token of ["keeper", "chen-sheng", "wu-guang", "yu-mu", "qin-courier", "SK_SHI_DazeCouncil_Skeleton", "SKELETAL COUNCIL CHARACTER PRODUCTION BLOCKOUT", "PresentationScale", "BoneCount", "MaximumTriangles", "bPrimitiveInteractionFallback", "bWideAndMediumFramingOnly", "ValidateMesh", "GetPhysicsAsset", "GetMorphTargets", "GetTotalFaces"]) if (!councilCharacterPresentation.includes(token)) errors.push(`Unreal council-character presentation omits identity/skeleton/red-gate token: ${token}`);
+for (const token of ["speaker", "keeper", "HISTORICAL FIGURE · WORDS ARE AUTHORED DRAMATIZATION, NOT TRANSCRIPT", "FICTIONAL CHARACTER · PROJECT-AUTHORED DRAMATIC RECONSTRUCTION", "SpeakerCamera", "ParticipantCamera", "BuildParticipantReviewCamera", "BuildParticipantLights", "speaker-key", "speaker-fill", "keeper-key", "keeper-fill", "CouncilFieldOfViewDegrees", "FindParticipant", "SameParticipant", "cannot preserve canonical cast, disclosure, blocking and camera authorship", "OutStage = MoveTemp(Candidate)"]) if (!councilStaging.includes(token)) errors.push(`Unreal council staging omits cast/blocking/disclosure/review-camera/light token: ${token}`);
+for (const token of ["FigureRoot", "Body", "Head", "Mantle", "CharacterMesh", "InitializeFigure", "FShiCouncilCharacterPresentationModel::CanonicalCharacterIds", "FShiCouncilCharacterPresentationModel::ValidateMesh", "SetSkeletalMeshAsset", "ShiCharacter:", "ShiCouncilSpeaker", "ShiArtStatus:SkeletalProductionBlockout", "ShiArtFallback:EnginePrimitive", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "SetCanEverAffectNavigation(false)", "SetVisibility", "SetHiddenInGame", "SetRenderCustomDepth", "SetCustomDepthStencilValue", "SetActorTransform"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits fail-closed skeletal presentation/primitive interaction token: ${token}`);
 for (const token of ["resolution-order", "resolution-commitment", "resolution-pressure", "resolution-pursuit", "resolution-method-read", "resolution-field", "resolution-position", "MaximumSequenceSeconds", "MaximumEasedTranslation", "MaximumEasedRotationDegrees", "FieldOfViewForBeat", "CameraMotionBetween", "TEXT(\"cut\")", "TEXT(\"ease\")", "DominantResourceSignal", "EffectsSummary", "POSITION LOST", "OATH ESTABLISHED", "TotalDuration", "OutBeats = MoveTemp(BuiltBeats)"]) if (!cinematic.includes(token)) errors.push(`Unreal cinematic model omits resolution/motion-grammar token: ${token}`);
 for (const token of ["BuildTurnSnapshot", "Candidate.Session = CurrentSession", "ResolveChoice", "ValidateAgainstSites", "FShiCouncilStagingModel::Build", "FShiCinematicBeatModel::Build", "SelectedChoiceIndex", "CouncilStage", "ExportSaveJson", "TransactionSave != ExpectedSave", "SameResolution", "SameSignals", "SameBeats", "SameCouncilStage", "OutTransaction = MoveTemp(Candidate)"]) if (!orderTransaction.includes(token)) errors.push(`Unreal order transaction omits fail-closed preflight token: ${token}`);
 for (const token of ["StreamingAssets/chapter-01-broken-crossing.v1.json", "validated-shared-contract-not-campaign-authority", "dramatic-reconstruction", "crossingProgress", "signalIntegrity", "Every plan requires two legal options per pulse", "ordered best-to-unconditional-fallback", "Engagement claim sources are incomplete"]) if (!engagementModel.includes(token)) errors.push(`Unreal engagement model omits shared-contract token: ${token}`);
@@ -841,13 +1001,15 @@ if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environm
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environment/DazeShelter")')) errors.push("Unreal packaging does not force-cook the admitted Daze-shelter assets");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/VFX/DazeRain")')) errors.push("Unreal packaging does not force-cook the admitted Daze-rain assets");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environment/WetFieldVegetation")')) errors.push("Unreal packaging does not force-cook the admitted wet-field-vegetation assets");
+if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Characters/DazeCouncil")')) errors.push("Unreal packaging does not force-cook the admitted Daze council-character assets");
 if (!engineConfig.includes("r.CustomDepth=3")) errors.push("Unreal renderer does not preserve the selected wartable marker stencil");
-for (const token of ["prepare_external_directory", "SHI_UNREAL_DERIVED_DATA", "UE-LocalDataCachePath", "SHI_UNREAL_PACKAGE_ROOT", "must be a dedicated directory outside the Git repository", "-archivedirectory=\"$SHI_PACKAGE_ROOT\""]) if (!pipeline.includes(token)) errors.push(`Unreal pipeline omits outside-Git build/cache token: ${token}`);
+for (const token of ["prepare_external_directory", "SHI_UNREAL_DERIVED_DATA", "UE-LocalDataCachePath", "SHI_UNREAL_PACKAGE_ROOT", "must be a dedicated directory outside the Git repository", "-archivedirectory=\"$SHI_PACKAGE_ROOT\"", "-nosound", "Automation RunTests SHI.; Quit", "Automation Test Queue Empty"]) if (!pipeline.includes(token)) errors.push(`Unreal pipeline omits outside-Git build/cache/test-exit token: ${token}`);
 if (pipeline.includes('archivedirectory="$SHI_REPO_ROOT/apps/unreal')) errors.push("Unreal Linux packaging still writes archives inside the Git worktree");
 for (const token of ["RestoreChronicle", "SaveChronicle", "ForceUTF8WithoutBOM", "Gamepad_FaceButton_Bottom", "RequestNewChronicle", "CreateSoundscape", "ToggleSound", "Gamepad_FaceButton_Top", "ToggleEvidence", "Gamepad_LeftShoulder", "GetHitResultAtScreenPosition", "Gamepad_RightShoulder", "Gamepad_LeftThumbstick", "Gamepad_RightThumbstick", "RebuildCommandSignals", "FShiOrderTransactionModel::Build", "FShiOrderTransactionModel::BuildTurnSnapshot", "CanPresentCommandSignals", "CanPresentResolutionSequence", "CanPresentCouncilStage", "ApplyCouncilStage", "FocusCouncil", "CouncilFigures", "SaveChronicle(Transaction.Session", "Session = MoveTemp(Transaction.Session)", "SaveChronicle(CandidateSession", "Session = MoveTemp(CandidateSession)", "CURRENT CHRONICLE PRESERVED", "BeginPreparedResolutionSequence", "ORDER HELD", "StartCinematicBeat", "TickCinematicSequence", "SkipCinematicSequence", "Gamepad_FaceButton_Right", "Gamepad_Special_Right", "has no live world actor", "SetCameraImmediate", "SetFieldOfView", "CinematicHoldElapsed = -Beat->TransitionSeconds", "ToggleReducedMotion", "LoadCinematicPreferences", "SaveCinematicPreferences", "GGameUserSettingsIni", "ReducedMotion", "SetActorLocationAndRotation", "CameraTransitionElapsed = CameraTransitionDuration", "bReturningFromCommandSignal", "BeginCameraTransition", "FQuat::Slerp", "SetRenderCustomDepth", "ShiSite:", "ShiSignal:", "OpenEngagement", "IssueEngagementCommand", "CampaignMatchesEngagementSnapshot", "ApplyEngagementCommandSpace", "EngagementMetricMarkers", "ShiEngagement:", "CAMPAIGN SAVE UNCHANGED", "Session.ExportSaveJson(CampaignSnapshot", "CurrentCampaign != EngagementCampaignSnapshot", "FShiCommandSurfacePresentationModel::Build", "ShiCommandSurfaceReview", "ShiEnvironment:CommandSurface", "ShiPresentation:FictionalInterfaceStage", "FShiCommandWeightPresentationModel::Build", "ShiCommandWeightReviewFront", "ShiCommandWeightReviewBack", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "ShiProp:CommandWeight", "ShiPresentation:NonAuthoritative", "Prop->SetActorHiddenInGame(bVisible)", "FShiWetFieldEnvironmentPresentationModel::Build", "ShiWetFieldEnvironmentReview", "ShiEnvironment:WetField", "M_SHI_WetFieldGround", "M_SHI_ShallowRainwater", "SetCanEverAffectNavigation(false)"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits persistence/input/audio/evidence/world-signal/cinematic-motion/transaction/engagement-authority/surface/command-weight/wet-field token: ${token}`);
 for (const token of ["FShiDazeFieldShelterPresentationModel::Build", "ShiDazeFieldShelterReview", "ShiEnvironment:DazeShelter", "ShiPresentation:FictionalPracticalConstruction", "ShiArtStatus:ProductionBlockout", "M_SHI_RainDarkenedWood", "M_SHI_WovenReedMat", "M_SHI_CoarseFiberCord", "DazeFieldShelterProp"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits Daze-shelter runtime/disclosure token: ${token}`);
 for (const token of ["FShiRainPresentationModel::Build", "ShiRainVfxReview", "AShiRainField", "ShiEnvironment:DazeRain", "ShiPresentation:NonAuthoritative", "ShiArtStatus:ProductionVfxBlockout", "RainField", "ReviewFieldOfViewDegrees"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits Daze-rain runtime/disclosure token: ${token}`);
 for (const token of ["FShiWetFieldVegetationPresentationModel::Build", "ShiWetFieldVegetationReview", "AShiWetFieldVegetation", "ShiEnvironment:WetFieldVegetation", "ShiPresentation:NonAuthoritative", "ShiArtStatus:ProductionVegetationBlockout", "WetFieldVegetation", "ReviewFieldOfViewDegrees"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits wet-field-vegetation runtime/disclosure token: ${token}`);
+for (const token of ["ShiCouncilCharacterReviewSpeaker", "ShiCouncilCharacterReviewKeeper", "bCouncilCharacterReview", "BuildParticipantReviewCamera", "Council character review rejected", "DefaultPawnClass = nullptr"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits dedicated council-character review/default-pawn suppression token: ${token}`);
 if (gameMode.includes("/Engine/BasicShapes/Plane.Plane") || gameMode.includes("Command-space ground")) errors.push("Unreal runtime still contains the superseded white engine-plane ground");
 for (const token of ["bOverride_AutoExposureBias", "ExposureCompensation", "PostProcessBlendWeight = 1.f"]) if (!gameMode.includes(token)) errors.push(`Unreal command camera omits reviewed exposure token: ${token}`);
 if (gameMode.indexOf("SaveChronicle(Transaction.Session") > gameMode.indexOf("Session = MoveTemp(Transaction.Session)")) errors.push("Unreal order commit mutates memory before the candidate save is durable");
@@ -858,6 +1020,8 @@ for (const token of ["SHI.Wartable.SpatialIntelligenceV1", "Daze projection is d
 for (const token of ["SHI.CommandSpace.LiveSignalsV1", "five resources and four tactical layers are visible", "selected tally remains anchored", "captured terminal state has an exact pursuit-closed signal", "nonterminal state cannot omit its pursuit band", "the carried oath becomes a live world signal", "overlapping live command signals are rejected", "cross-family pointer overlap is rejected", "missing authoritative resources reject the signal snapshot", "failed signal rebuild is atomic"]) if (!automation.includes(token)) errors.push(`Unreal automation omits live command-signal token: ${token}`);
 for (const token of ["SHI.Campaign.OrderTransactionV1", "order preflight never mutates the active chronicle", "resolution drift rejects the entire prepared transaction", "world drift rejects the entire prepared transaction", "cinematic drift rejects the entire prepared transaction", "post-order briefing drift rejects the entire prepared transaction", "extra hidden decision rejects the entire prepared transaction", "failed order transaction build is atomic", "active chronicle remains byte-identical after every attack", "preflight history is immutable", "full transaction revalidates"]) if (!automation.includes(token)) errors.push(`Unreal automation omits fail-closed order-transaction token: ${token}`);
 for (const token of ["SHI.Cinematic.CouncilStagingV1", "speaker and keeper occupy the scene", "historical dialogue is explicitly not a transcript", "Aunt Yu is never presented as a historical person", "cast identity drift is rejected", "dialogue drift is rejected", "unauthored dialogue camera drift is rejected", "failed council rebuild is atomic", "council staging drift rejects the entire prepared transaction", "prepared council follows position"]) if (!automation.includes(token)) errors.push(`Unreal automation omits canonical council-staging token: ${token}`);
+for (const token of ["dedicated speaker review camera is admitted", "speaker review exactly preserves the authored dialogue camera", "dedicated keeper review camera is admitted", "keeper review cannot silently reuse the speaker position", "unknown council review slot is rejected", "failed council review camera build is atomic"]) if (!automation.includes(token)) errors.push(`Unreal automation omits fail-closed council review-camera token: ${token}`);
+for (const token of ["SHI.Cinematic.CouncilCharacterPresentationV1", "five exact council character identities are admitted", "council character order remains canonical", "uses the exact x100 component scale", "remains a disclosed non-final neutral blockout", "engine asset passes bones, materials, bounds and topology", "all five figures use one exact engine Skeleton", "unknown generated identity is rejected", "failed identity build is atomic", "metre-valued asset cannot silently shrink to centimetres", "generic layers cannot be promoted to exact 209 BCE costume", "skeletal blockout cannot replace primitive interaction authority", "wrong or generated character asset is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits council-character live-asset/hostile-drift token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandWeightPresentationV1", "preserves contact, pointer clearance and the 44-degree safe frame", "not a gameplay interaction target", "lower decision-object field without covering the speaker", "development front review camera looks exactly at the admitted prop", "development back review camera looks exactly at the admitted prop", "a prop that crowds a live signal is rejected", "a floating command weight is rejected", "an unauthored council lens cannot admit the prop"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-weight presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandSurfacePresentationV1", "reviewed command ground contains every site and live signal", "command ground is not an interaction target", "command ground has no runtime collision", "command ground remains beneath the non-authoritative engagement exercise", "surface review camera sees the whole authored command field", "unreviewed surface scaling is rejected", "runtime surface collision is rejected", "a disappearing engagement ground is rejected", "a signal outside the safe command field is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-surface presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.WetFieldEnvironmentPresentationV1", "reviewed wet-field environment passes its presentation contract", "wet field is a bounded identity-root environment below the command surface", "wet field is not an interaction target", "wet field collision is disabled", "wet field does not affect navigation", "wet field persists beneath Broken Crossing", "environment review camera sees the whole bounded field", "unreviewed field scaling is rejected", "runtime field collision is rejected", "runtime field navigation authority is rejected", "a disappearing engagement environment is rejected", "terrain that violates command-surface clearance is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits wet-field presentation token: ${token}`);
@@ -872,4 +1036,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain and wet-field-vegetation production blockouts with explicit historical/final-art red gates.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain, wet-field-vegetation and five shared-skeleton council-character production blockouts with explicit historical/final-art red gates.`);

@@ -1,0 +1,109 @@
+{
+  "assetId": "shi-daze-council-characters-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Isolated Unreal 5.8.1 admission of five deterministic skeletal council production blockouts, one shared 53-bone skeleton and fourteen exact texture-free materials. This is not final character art, a portrait reconstruction or an exact 209 BCE costume reconstruction.",
+  "engine": {
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "assetRoot": "/Game/SHI/Art/Characters/DazeCouncil"
+  },
+  "import": {
+    "passed": true,
+    "mode": "import-replace",
+    "normalImportMethod": "FBXNIM_IMPORT_NORMALS",
+    "correctiveAction": "Preserve the recalculated FBX vertex normals instead of recomputing them in the legacy skeletal importer.",
+    "sharedSkeleton": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton",
+    "referencePoseBoneCount": 53,
+    "presentationScale": 100.0,
+    "characterIds": ["keeper", "chen-sheng", "wu-guang", "yu-mu", "qin-courier"],
+    "presentedHeightsCentimeters": {
+      "keeper": 169.65174674987793,
+      "chen-sheng": 172.40175008773804,
+      "wu-guang": 169.65174674987793,
+      "yu-mu": 169.65174674987793,
+      "qin-courier": 174.60174560546875
+    },
+    "sourceTriangles": {
+      "keeper": 27668,
+      "chen-sheng": 27664,
+      "wu-guang": 27508,
+      "yu-mu": 27656,
+      "qin-courier": 27668
+    },
+    "checks": {
+      "exactReferencePoseBones": true,
+      "rootAndPelvisRelationship": true,
+      "boundedMaterials": true,
+      "noPhysicsAssets": true,
+      "noMorphTargets": true,
+      "noTextures": true,
+      "noAnimations": true,
+      "cleanFbxRoundTrip": true,
+      "cleanGlbRoundTrip": true
+    }
+  },
+  "materials": {
+    "passed": true,
+    "count": 14,
+    "nodesPerMaterial": 3,
+    "blendMode": "opaque",
+    "shadingModel": "default-lit",
+    "twoSided": false,
+    "textures": 0,
+    "normalInput": false,
+    "emissiveInput": false,
+    "opacityInput": false,
+    "historicalClaim": "blockout palette only; no exact dye, fabric, complexion or portrait reconstruction"
+  },
+  "trackedUnrealAssets": [
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_Character_BindingClay.uasset","bytes":6872,"sha256":"e6e3a19c0790708d006dc8c284bab48df1d35dde97989c49c5dec0e4cd46b5b9"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_Character_HairClay.uasset","bytes":6857,"sha256":"e8fac612540a43bda25dd94fe543ab6e5b6a64c3594178d1fda7ff3e9ee52f52"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_Character_RolePropClay.uasset","bytes":6877,"sha256":"4b946742005dcc2e7e48aded7aafb8d28c772bd71f9ef32866f37015819da9cd"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_Character_SkinClay.uasset","bytes":6857,"sha256":"6c557375231585a1927a72b757dbcec95c9de52569436db3078e6c65bb0868b3"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_chen-sheng_ClothBase.uasset","bytes":6867,"sha256":"939bdace52fa561be326ab09bd7cf806e35074c8e2dd951174e8b579c72f43aa"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_chen-sheng_ClothOuter.uasset","bytes":6872,"sha256":"8d67c5df11e32fbfd4b254c540f8bd9bbb1cc36862a8002adaa56a3c81fcbd15"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_keeper_ClothBase.uasset","bytes":6847,"sha256":"b52258b786deeddf5cb619a4e0484d18819e47394ce6b3e0a20b15752f71dbf2"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_keeper_ClothOuter.uasset","bytes":6852,"sha256":"895714781d7a3f7a04fbef3fc98adacea0c9966b0051669a8252bafd49e06ad6"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_qin-courier_ClothBase.uasset","bytes":6872,"sha256":"b39d73e4798f3879656f8ed9b41b95937e93c80321cf726e43c65be12d9da43c"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_qin-courier_ClothOuter.uasset","bytes":6877,"sha256":"c53f1308c861fd644a2edb73080a15a4eb610152e3748ccca790e7a8a7981329"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_wu-guang_ClothBase.uasset","bytes":6857,"sha256":"a568afa9a93df804b61f8b5fecc1f556f4ab48d723d3f52ac37273270f451642"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_wu-guang_ClothOuter.uasset","bytes":6862,"sha256":"9b02071c210372167009534e33d03e0c57177b9f5542bc450fbb70f4cecca947"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_yu-mu_ClothBase.uasset","bytes":6842,"sha256":"cdbb49d628037076f829ebf35f7183cb8417c218cb9adb4da4b803bcb4ef1678"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/M_SHI_yu-mu_ClothOuter.uasset","bytes":6847,"sha256":"fe1cfb7eb7de23f6052548e591e1681624108391970ed0b4998e7b36bae74054"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_ChenSheng_01.uasset","bytes":3928253,"sha256":"7534f378f5c956c87483548c7ce3d6c96a734ca2350ce542955da16d7bd0d23d"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_Keeper_01.uasset","bytes":3925692,"sha256":"dfa6f126d35706c017a38d5ac085ee4f843d9cf8333feb7cf31d7c5ed735bc69"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_QinCourier_01.uasset","bytes":3911739,"sha256":"3a99db1108cb8c467b1f2f42aec8bc1f9c2603988c48e1f3b902f50f326d82cc"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_WuGuang_01.uasset","bytes":3784014,"sha256":"e93bf62f5e16b962b13c4ece98a304ec49d4585181d70272d205f9fff08cc495"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/SKM_SHI_DazeCouncil_YuMu_01.uasset","bytes":3914014,"sha256":"4f1f862cbfa8053dcf92e63129911049a87fcd32a7306dd7551df4adeb61886c"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.uasset","bytes":12278,"sha256":"c21b795cab98f49ed2c7f39baeb8912f6cba46c71fcea8f43986b89d90894e8e"}
+  ],
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeCouncilCharacters-Review-v6/Linux",
+    "packageCount": 536,
+    "priorAcceptedPackageCount": 516,
+    "addedPackageCount": 20,
+    "alwaysCookPath": "/Game/SHI/Art/Characters/DazeCouncil",
+    "artifacts": [
+      {"role":"Linux development executable","bytes":298619312,"sha256":"ff4e06fb982cf1dbeda648be82713bc465f0d86deeaf8cdec639df7cbbc4dd44"},
+      {"role":"Pak metadata and non-IoStore payload","bytes":10425798,"sha256":"23f7d10852723b5b977ce7d9851142734576444c943944a0d751049b5ad7d037"},
+      {"role":"IoStore data container","bytes":167725008,"sha256":"55079da915e586a3b7db8bf7420232edb845d613ac8775f770dea44d6c6c2d76"},
+      {"role":"IoStore table of contents","bytes":152487,"sha256":"f3d0af4b7d003c77dc16241f3bc4f36e72669001d535f46d63a64aa0ac092c9e"}
+    ]
+  },
+  "smokeTest": {
+    "command": "./SHI -nullrhi -unattended -NoSound -NoSplash -UserDir=<isolated> -ExecCmds=quit -log",
+    "exitCode": 0,
+    "containerPackageCount": 536,
+    "gameMode": "ShiGameMode",
+    "map": "/Engine/Maps/Entry",
+    "cleanRequestedExit": true
+  },
+  "decision": "approved-engine-five-identity-skeletal-production-blockout-presented-not-final-character-art",
+  "remainingGates": [
+    "historically reviewed anatomy, identifiable garment construction, hair, footwear and role props",
+    "facial rig, eye system, speech performance, body animation, interaction hands, cloth and hair response",
+    "authored LODs, final collision/performance budgets and physical-display review",
+    "human historical, character-art, cinematic, accessibility and cultural review before shipping or marketing use"
+  ]
+}

@@ -24,7 +24,7 @@ The adoption unit is one usable SHI object or shot, not one installed repository
 - Two NVIDIA GeForce RTX 4090 D GPUs, each 24,564 MiB total VRAM; other user/game workloads currently consume part of both cards.
 - NVIDIA driver `595.84`, compute capability `8.9`.
 - System CUDA toolkit `13.0`; candidate repositories below were tested upstream primarily with CUDA `12.4`, so extension compilation needs an isolated matching toolkit rather than mutating the host default.
-- Blender `4.0.2`; priority engine Epic UE `5.8.1`.
+- Blender `4.0.2` for the established environment pipeline; isolated Blender `4.5.12 LTS` for MPFB skeletal trials; priority engine Epic UE `5.8.1`.
 - The Projects LVM volume has about 236 GiB free after the isolated CUDA environment was created. That is sufficient for the revised pinned trial; repartitioning is neither required nor justified.
 
 ## Decision matrix
@@ -37,8 +37,16 @@ The adoption unit is one usable SHI object or shot, not one installed repository
 | [Epic Blender Tools](https://github.com/EpicGames/BlenderTools) | MIT; main `4b42ee3f639393ccb377f5c896b88d1bc996b939`; latest Send to Unreal release 2.4.3 was tested on Blender 3.3/3.6 and UE 5.3 | **Compatibility trial required before adoption** | One-click static/skeletal/groom transfer and UE-to-Rigify could help, but there is no UE 5.8/Blender 4 evidence. Test only in a copied Blender profile and throwaway UE asset path. |
 | [NVIDIA Audio2Face-3D](https://github.com/NVIDIA/Audio2Face-3D) | Collection documents an MIT UE plugin for UE 5.5/5.6 plus separately licensed models | **Deferred** | Facial performance could help later cinematics, but forcing an unsupported binary/plugin into UE 5.8 would weaken the already stable package. Re-evaluate when an official 5.8 build exists and voiced dialogue is approved. |
 | [Epic MetaHuman DNA Calibration](https://github.com/EpicGames/MetaHuman-DNA-Calibration) | Upstream explicitly says it does not support MetaHumans created in UE 5.6 and directs users to a Maya plugin | **Rejected for the current pipeline** | Stale engine boundary plus Maya dependency; it does not simplify the Blender/UE 5.8 production route. |
+| [MPFB 2.0.17](https://github.com/makehumancommunity/mpfb2) + [MakeHuman system assets](https://static.makehumancommunity.org/asset_packs/makehuman_system_assets.html) | Code `80919fa4682335c41847f761a4d79dcad4124732`; Blender extension GPL-3.0-or-later; bundled assets and official system pack CC0; exact local system-pack SHA-256 `b542127a8e25547c7c29c19f2d1d2adb9a664c80396ecd694095dbc8028a0107` | **Admitted only as offline body/rig authoring baseline** | Blender 4.5.12 creates a clean 53-bone full-finger game rig and preserves armature binding through FBX. Do not use bundled modern casual clothing/hair as SHI costume, do not use community assets, and do not rely on the sample's broken absolute texture paths. SHI authors garment silhouettes and Unreal materials; all historical/facial/deformation gates remain. |
+| [CharacterGen](https://github.com/zjp-shadow/CharacterGen) | Apache-2.0 code; multi-stage image pipeline and separately bounded training/raw assets | **Rejected for the current named-character blockout** | It would infer anatomy and costume from images without solving historical evidence, retopology, rig compatibility, finger deformation or data-rights review. The deterministic MPFB baseline is the smaller controlled solution for five canonical identities. |
 
 Verified dates and compatibility statements above were checked against the official GitHub repositories, model cards and Meta license on 2026-08-10. Popularity, download count and “production-ready” marketing are not acceptance evidence.
+
+## Skeletal baseline checkpoint
+
+Blender `4.5.12 LTS` was installed alongside, not over, the accepted Blender `4.0.2` environment lane. Its official Linux archive is `377,902,364` bytes and passed the published SHA-256 `95e3a2dfedba3bd32ca54fc355eac6b15a11986954ccb02815a07535d0120a25`. MPFB `2.0.17` was built from exact commit `80919fa4682335c41847f761a4d79dcad4124732` into a dedicated extension profile; network access is disabled. The official `280,737,770`-byte CC0 system pack is isolated outside Git at SHA-256 `b542127a8e25547c7c29c19f2d1d2adb9a664c80396ecd694095dbc8028a0107`.
+
+The neutral game-engine trial exported a 53-bone skeleton with complete three-segment thumb and finger chains on both hands. A factory-clean Blender import retained one armature, one armature-bound body, 26,756 body triangles and `1.051 × 0.430 × 1.659 m` bounds. The broader upstream sample also proved why SHI must own the presentation path: it included modern casual clothing and wrote nonportable absolute texture paths. Those assets and paths are rejected. The accepted boundary is CC0 body topology/weights plus built-in rig only, followed by project-authored garments, hair mass, role props, material graphs, pose/deformation checks and Unreal fail-closed mapping under [`DAZE_COUNCIL_CHARACTER_BLOCKOUT_BRIEF.md`](../art/DAZE_COUNCIL_CHARACTER_BLOCKOUT_BRIEF.md).
 
 ## License discovery checkpoint
 

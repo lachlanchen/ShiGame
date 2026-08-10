@@ -1,6 +1,6 @@
 # Third-party notices
 
-Status: production dependency register · updated 2026-08-09
+Status: production dependency register · updated 2026-08-10
 
 SHI does not treat an npm package name as sufficient rights evidence. Runtime third-party assets are pinned, purpose-limited and listed here. Package metadata and this register are checked by `npm run validate:fonts`.
 
@@ -26,3 +26,9 @@ This notice supplements, and does not replace, the license files and metadata di
 ## Audio media boundary
 
 The Chapter I soundscape contains no third-party recording, sample pack, music file or generated media. Both clients synthesize it from the project-authored numeric contract at runtime; rights and the open human-review state are recorded in [`assets/provenance/chapter-01-audio.json`](../../assets/provenance/chapter-01-audio.json). Future recordings, instruments, voices or generated music require their own entries here before packaging.
+
+## Offline skeletal authoring boundary
+
+[MPFB 2.0.17](https://github.com/makehumancommunity/mpfb2) is used only outside Git as an offline Blender character-authoring tool. Its program code is GPL-3.0-or-later and is not linked into or distributed with the game runtime. MPFB's bundled basemesh/rig assets and the official [MakeHuman system asset pack](https://static.makehumancommunity.org/asset_packs/makehuman_system_assets.html) are CC0. SHI may distribute reviewed editable/exported output from that baseline while recording the contribution in asset provenance.
+
+The Chapter I council pipeline does not use MPFB community assets or bundled modern casual clothing/hair. SHI authors its own coarse garment silhouettes, role props and Unreal materials. CC0 availability is a rights boundary, not historical approval; every identifiable late-Qin garment, hairstyle, shoe, fastening and carried object remains a separate review gate.

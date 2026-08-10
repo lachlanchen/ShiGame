@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-10 · Five Unreal Daze council skeletal-character checkpoint
+
+- Built five deterministic skeletal production blockouts for the Keeper, Chen Sheng, Wu Guang, Aunt Yu and Courier Han from the pinned CC0 MPFB system basemesh and shared 53-bone game-engine rig, then added SHI-authored role silhouettes, generic practical layers, hair masses and carried shapes. The two historical identities use generic non-portrait faces; all clothing and fictional identities retain explicit reconstruction boundaries.
+- Exported and clean-round-tripped exact FBX and GLB files for every identity. The editable `.blend`, four source/interchange inspection renders, metrics, validation results, ten exports, deterministic scripts and their SHA-256 receipts are tracked.
+- Imported one shared skeleton and five skeletal meshes into Unreal, authored fourteen exact texture-free three-node opaque/default-lit materials and preserved the authored FBX normals. Two earlier lighting passes were rejected after black face/hand patches exposed legacy normal recomputation; only the corrected v6 package was admitted.
+- Replaced the visible council presentation proxies with the skeletal meshes while retaining fail-closed primitive interaction authority. Exact identity, skeleton, 53-bone reference pose, height, material, topology, identity transform, no physics/morphs, no collision/navigation/replication and final-art false state must pass before a mesh is shown. The inherited default pawn was suppressed because SHI's command camera owns input.
+- Added four bounded participant key/fill lights and dedicated speaker/Keeper review framing. Seven hash-bound 1600×1000 frames prove all five identities plus normal opening and Act-II play; real keyboard input selected `read-the-names`, issued it, committed a verified transaction and autosaved `rain-order → open-council`.
+- Epic UE 5.8.1 compiles the source, all **18 / 18** native `SHI.` suites pass, and a clean outside-Git BuildCookRun succeeds with exactly **536 packages**—the accepted 516 baseline plus twenty character assets. Headless smoke mounts all 536, loads Entry with `ShiGameMode` and exits cleanly.
+- This is a **skeletal production blockout, not final character art**. Neutral poses, generic faces and broad layers do not authorize close facial cinema, historical portrait/costume claims, speech/facial animation, final body performance, cloth/hair weather response, authored LODs or marketing use.
+
+Next gate: animate and deformation-test the shared cast, replace primitive interaction hands and remaining formation proxies, and admit historically reviewed garment/role detail only after human historical, character, cultural, cinematic, accessibility and physical-display review.
+
 ## 2026-08-10 · Restrained Unreal wet-field vegetation and full playable-route checkpoint
 
 - Authored the first restrained Daze field-edge layer as generic rain-flattened forms: 42 taller stalk clumps and 64 low blade tufts, deterministically placed from seed `0x5EED20A`. It is explicitly not an exact species, crop, season or surveyed 209 BCE botanical reconstruction.
@@ -10,9 +22,9 @@
 - All **17 / 17** native `SHI.` suites pass, including hostile transform, bounds, clearance, instance-budget, CPU-sway, wind-amplitude, collision, navigation, hidden authority, replication, exact-botanical-claim, final-art and engagement-visibility cases.
 - Fresh keyboard play on isolated localhost noVNC advances Act I → Act II → Act III, completes all three Broken Crossing pulses with **SUCCESS · Orderly crossing**, and returns to the exact campaign. The save keeps SHA-256 `75a231c943cbce90fd2fddc2b67790508aa30cb33fde1ce2f2cb44e99c0db9ee` and its timestamp unchanged.
 - Four 1600×1000 final-package frames retain whole-field, story, engagement-completion and campaign-return evidence. The live review remains available at localhost-only noVNC port 6139.
-- This is a **production vegetation blockout, not final cinematic environment art**. Primitive council figures, floating light proxy, BasicShape signals, historically reviewed character/formation language, interaction hands, cloth/hair response, final sky/lighting, physical-display final-scene performance/accessibility and human historical/botanical/cinematic/art approval remain red.
+- This is a **production vegetation blockout, not final cinematic environment art**. The skeletal council presentation checkpoint above closes only the primitive visible-figure gate; historically reviewed character/formation language, interaction hands, animation, cloth/hair response, final sky/lighting, physical-display final-scene performance/accessibility and human historical/botanical/cinematic/art approval remain red.
 
-Next gate: replace the primitive council figures and formation proxies with a period-reviewed five-character silhouette/garment blockout while preserving the accepted center/route clearances, playable campaign, non-authoritative engagement and deterministic package gates.
+Next gate completed in part by the five-character skeletal checkpoint above; animation, interaction hands, formations and historically reviewed garment/role detail remain open.
 
 ## 2026-08-10 · Source-matched Unreal rain and complete visible replay checkpoint
 

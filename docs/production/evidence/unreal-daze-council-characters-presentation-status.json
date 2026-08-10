@@ -1,0 +1,95 @@
+{
+  "assetId": "shi-daze-council-characters-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Packaged Unreal 5.8.1 five-identity council review and real story progression through one verified campaign transaction on a single localhost-only noVNC desktop.",
+  "decision": "approved-runtime-five-identity-skeletal-production-blockout-story-reviewed-not-final-character-art",
+  "historicalBoundary": "Generic practical layers and generic faces only. Chen Sheng and Wu Guang are historical identities represented by non-portrait blockouts; Aunt Yu, Courier Han and the Keeper retain their explicit dramatic-reconstruction status. No exact 209 BCE costume, hairstyle, body or portrait claim is made.",
+  "requiredDisclosure": "SKELETAL COUNCIL CHARACTER PRODUCTION BLOCKOUT · GENERIC PRACTICAL LAYERS · NOT AN EXACT 209 BCE COSTUME OR PORTRAIT RECONSTRUCTION",
+  "presentation": {
+    "characterIds": ["keeper", "chen-sheng", "wu-guang", "yu-mu", "qin-courier"],
+    "sharedSkeletonBones": 53,
+    "skeletalMeshes": 5,
+    "materials": 14,
+    "participantSlots": ["speaker", "keeper"],
+    "reviewFieldOfViewDegrees": 44.0,
+    "participantLights": ["speaker-key", "speaker-fill", "keeper-key", "keeper-fill"],
+    "defaultPawnSuppressed": true,
+    "renderMeshCollision": false,
+    "navigationInfluence": false,
+    "gameplayAuthority": false,
+    "saveAuthority": false,
+    "replication": false,
+    "finalArt": false,
+    "exactPortraitReconstruction": false,
+    "exactCostumeReconstruction": false
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 18,
+    "passed": 18,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.CouncilCharacterPresentationV1",
+    "coveredContracts": [
+      "exact five-character paths, shared 53-bone skeleton and participant identity mapping",
+      "bounded physical height, materials, transform, collision and final-art false state",
+      "four unique separated participant key/fill lights and exact review cameras",
+      "fail-closed primitive fallback for missing or drifting skeletal assets",
+      "unchanged campaign, engagement, save, input and replication authority"
+    ]
+  },
+  "visiblePlaytest": {
+    "desktop": "single isolated Xvfb :129, localhost-only x11vnc 5940 and noVNC 6140",
+    "url": "http://127.0.0.1:6140/vnc.html?host=127.0.0.1&port=6140&autoconnect=1&resize=scale",
+    "package": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeCouncilCharacters-Review-v6/Linux",
+    "resolution": [1600, 1000],
+    "inputs": [
+      "Keyboard 1 selected Read every name aloud",
+      "Keyboard Enter issued the selected order",
+      "Keyboard Space skipped the prepared consequence cinema after it began"
+    ],
+    "campaignStart": "Act I, Scene 1, rain-order, turn 1, Chen Sheng speaker",
+    "campaignObserved": "Act II, Scene 2, open-council, turn 2, Aunt Yu speaker",
+    "autosave": {
+      "currentNodeId": "open-council",
+      "historyChoiceIds": ["read-the-names"],
+      "completed": false
+    },
+    "storyAdvanced": true,
+    "transactionVerified": true,
+    "normalUiVisible": true,
+    "choiceCardsVisible": true,
+    "rainVisible": true,
+    "councilCharactersVisible": true
+  },
+  "screenshots": [
+    {"file":"docs/production/evidence/unreal-daze-council-character-review-keeper-v1.png","role":"packaged Keeper mirrored council review","dimensions":[1600,1000],"bytes":820076,"sha256":"dcced8d4d48a11a05920594079207d01bd390a1ebb2b984fae42e7cab7c2f9c0"},
+    {"file":"docs/production/evidence/unreal-daze-council-character-review-chen-sheng-v1.png","role":"packaged Chen Sheng historical-speaker review","dimensions":[1600,1000],"bytes":851730,"sha256":"5eba3d100a5343ec511ba7c1fc0b965fa0eb39efb5e7e65dfbc989fd013a852f"},
+    {"file":"docs/production/evidence/unreal-daze-council-character-review-wu-guang-v1.png","role":"packaged Wu Guang historical-speaker review from a real saved route","dimensions":[1600,1000],"bytes":855170,"sha256":"0219188cc4fcc4ec1801de252184bed613d36127344255962b44249fee43ef4e"},
+    {"file":"docs/production/evidence/unreal-daze-council-character-review-yu-mu-v1.png","role":"packaged Aunt Yu dramatic-reconstruction review after real story progression","dimensions":[1600,1000],"bytes":852733,"sha256":"a72798e43080823e17014eb46cb479f356f6a32f33641484b01349c44eea0cc4"},
+    {"file":"docs/production/evidence/unreal-daze-council-character-review-qin-courier-v1.png","role":"packaged Courier Han dramatic-reconstruction review from a real saved route","dimensions":[1600,1000],"bytes":859950,"sha256":"616ccc7b9fab4e7cafdeaeeb0410ab5fbefe0342fa3ef8aad28862e8e9e6a39b"},
+    {"file":"docs/production/evidence/unreal-daze-council-character-playable-opening-v1.png","role":"fresh packaged playable Act-I council with visible UI and selectable orders","dimensions":[1600,1000],"bytes":691457,"sha256":"4aa32bfa96697242b93ce09f8093ab86c040b533f4b790eb64e6e404520549bd"},
+    {"file":"docs/production/evidence/unreal-daze-council-character-playable-scene-2-v1.png","role":"packaged Act-II council after one real verified autosaved transaction","dimensions":[1600,1000],"bytes":709730,"sha256":"d6f61868888e6bb4ee17e8c20e6c3bf34a8a1e616e7c65cc604ec07ac96affdb"}
+  ],
+  "review": {
+    "rejectedPasses": [
+      "A visible inherited DefaultPawn sphere contaminated the first character frame; SHI now suppresses the pawn because the command camera owns navigation and input.",
+      "The first keeper lighting revisions brightened clothing but left black face and hand patches; the unlit diagnostic proved geometry/material identity was correct.",
+      "Unreal legacy skeletal normal recomputation was the root cause; all five assets were reimported with FBXNIM_IMPORT_NORMALS and the exact fourteen materials were reauthored.",
+      "Only the final packaged v6 frames with readable face and hand response were admitted to evidence."
+    ],
+    "accepted": [
+      "all five identities retain different silhouette/role shapes beyond color",
+      "faces and hands remain readable in both mirrored participant cameras without emissive or texture masking",
+      "historical and fictional provenance labels remain campaign-authored and visible in normal play",
+      "real keyboard input advances and autosaves the story while character rendering remains presentation-only",
+      "the package mounts exactly 536 packages and exits cleanly in headless smoke"
+    ],
+    "remainingRedGates": [
+      "neutral reference pose has no admitted body or facial animation",
+      "generic faces are not portraits and current wide framing must remain; close facial cinema is prohibited",
+      "garments, hair, footwear and carried shapes are blockout form language, not historically accepted reconstruction",
+      "cloth/hair wet-weather response, authored LODs and interaction hands remain open",
+      "human historical, character-art, cultural, accessibility, cinematic and physical-display review remain mandatory"
+    ]
+  }
+}

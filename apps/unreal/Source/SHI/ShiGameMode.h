@@ -121,6 +121,8 @@ private:
     bool bDazeFieldShelterReview = false;
     bool bRainVfxReview = false;
     bool bWetFieldVegetationReview = false;
+    bool bCouncilCharacterReview = false;
+    bool bCouncilCharacterReviewKeeper = false;
     int32 SelectedEngagementCommandIndex = 0;
     FString EngagementCampaignSnapshot;
     TArray<FShiEngagementSignalData> EngagementSignals;

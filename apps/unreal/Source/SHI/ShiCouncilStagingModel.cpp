@@ -6,6 +6,11 @@ namespace
     const FVector KeeperFloor(-132.f, -238.f, 0.f);
     constexpr float CouncilFieldOfViewDegrees = 44.f;
     constexpr float CouncilFocusHeight = 95.f;
+    const FVector SpeakerKeyOffset(150.f, -175.f, 195.f);
+    const FVector SpeakerFillOffset(-125.f, -150.f, 165.f);
+    const FVector KeeperKeyOffset(-150.f, 175.f, 195.f);
+    const FVector KeeperFillOffset(125.f, 150.f, 165.f);
+    constexpr float ParticipantLightSourceRadiusCentimeters = 0.f;
 
     FTransform FacingTable(const FVector& Floor)
     {
@@ -13,11 +18,18 @@ namespace
         return FTransform(Rotation, Floor);
     }
 
+    FTransform ParticipantCamera(const FVector& ParticipantFloor, bool bSpeaker)
+    {
+        const FVector Target = ParticipantFloor + FVector(0.f, 0.f, CouncilFocusHeight);
+        const FVector Location = Target + (bSpeaker
+            ? FVector(330.f, -390.f, 105.f)
+            : FVector(-330.f, 390.f, 105.f));
+        return FTransform((Target - Location).Rotation(), Location);
+    }
+
     FTransform SpeakerCamera()
     {
-        const FVector Target = SpeakerFloor + FVector(0.f, 0.f, CouncilFocusHeight);
-        const FVector Location = Target + FVector(330.f, -390.f, 105.f);
-        return FTransform((Target - Location).Rotation(), Location);
+        return ParticipantCamera(SpeakerFloor, true);
     }
 
     bool SameParticipant(const FShiCouncilParticipantData& Actual, const FString& SlotId,
@@ -43,6 +55,89 @@ const FShiCouncilParticipantData* FShiCouncilStagingModel::FindParticipant(
     {
         return Participant.SlotId == SlotId;
     });
+}
+
+bool FShiCouncilStagingModel::BuildParticipantReviewCamera(const FShiCouncilStageData& Stage,
+    const FString& SlotId, FTransform& OutCamera, float& OutFieldOfViewDegrees, FString& OutError)
+{
+    if (SlotId != TEXT("speaker") && SlotId != TEXT("keeper"))
+    {
+        OutError = FString::Printf(TEXT("Council character review rejects unknown slot: %s."), *SlotId);
+        return false;
+    }
+    const FShiCouncilParticipantData* Participant = FindParticipant(Stage, SlotId);
+    if (!Participant || Participant->SlotId != SlotId)
+    {
+        OutError = FString::Printf(TEXT("Council character review cannot find exact slot: %s."), *SlotId);
+        return false;
+    }
+    const FTransform Candidate = ParticipantCamera(Participant->Transform.GetLocation(), SlotId == TEXT("speaker"));
+    const FVector Target = Participant->Transform.GetLocation() + FVector(0.f, 0.f, CouncilFocusHeight);
+    const FVector Direction = (Target - Candidate.GetLocation()).GetSafeNormal();
+    if (FVector::DotProduct(Candidate.GetRotation().GetForwardVector(), Direction) < .9999f)
+    {
+        OutError = TEXT("Council character review camera does not preserve the exact participant focus.");
+        return false;
+    }
+    OutCamera = Candidate;
+    OutFieldOfViewDegrees = CouncilFieldOfViewDegrees;
+    OutError.Empty();
+    return true;
+}
+
+bool FShiCouncilStagingModel::BuildParticipantLights(const FShiCouncilStageData& Stage,
+    TArray<FShiCouncilParticipantLightData>& OutLights, FString& OutError)
+{
+    TArray<FShiCouncilParticipantLightData> Candidate;
+    Candidate.Reserve(4);
+    for (const FString& SlotId : { FString(TEXT("speaker")), FString(TEXT("keeper")) })
+    {
+        const FShiCouncilParticipantData* Participant = FindParticipant(Stage, SlotId);
+        if (!Participant || Participant->SlotId != SlotId)
+        {
+            OutError = FString::Printf(TEXT("Council participant lighting cannot find exact slot: %s."), *SlotId);
+            return false;
+        }
+        const auto AddLight = [&](const FString& LightId, const FVector& Offset,
+            const FLinearColor& Color, float IntensityLumens, float RadiusCentimeters)
+        {
+            FShiCouncilParticipantLightData& Light = Candidate.AddDefaulted_GetRef();
+            Light.LightId = LightId;
+            Light.SlotId = SlotId;
+            Light.Location = Participant->Transform.GetLocation() + Offset;
+            Light.Color = Color;
+            Light.IntensityLumens = IntensityLumens;
+            Light.AttenuationRadiusCentimeters = RadiusCentimeters;
+            Light.SourceRadiusCentimeters = ParticipantLightSourceRadiusCentimeters;
+        };
+        if (SlotId == TEXT("speaker"))
+        {
+            AddLight(TEXT("speaker-key"), SpeakerKeyOffset, FLinearColor(1.f, .76f, .54f), 2600.f, 520.f);
+            AddLight(TEXT("speaker-fill"), SpeakerFillOffset, FLinearColor(.42f, .50f, .62f), 1800.f, 430.f);
+        }
+        else
+        {
+            AddLight(TEXT("keeper-key"), KeeperKeyOffset, FLinearColor(.36f, .52f, .72f), 2300.f, 520.f);
+            AddLight(TEXT("keeper-fill"), KeeperFillOffset, FLinearColor(.90f, .66f, .46f), 1700.f, 430.f);
+        }
+    }
+    TSet<FString> LightIds;
+    for (const FShiCouncilParticipantLightData& Light : Candidate)
+    {
+        LightIds.Add(Light.LightId);
+    }
+    if (Candidate.Num() != 4 || LightIds.Num() != Candidate.Num()
+        || Candidate[0].SlotId != TEXT("speaker") || Candidate[1].SlotId != TEXT("speaker")
+        || Candidate[2].SlotId != TEXT("keeper") || Candidate[3].SlotId != TEXT("keeper")
+        || FVector::Dist(Candidate[0].Location, Candidate[1].Location) < 250.f
+        || FVector::Dist(Candidate[2].Location, Candidate[3].Location) < 250.f)
+    {
+        OutError = TEXT("Council participant lighting does not preserve four unique, separated key/fill sources.");
+        return false;
+    }
+    OutLights = MoveTemp(Candidate);
+    OutError.Empty();
+    return true;
 }
 
 bool FShiCouncilStagingModel::Build(const FShiCampaignModel& Campaign, const FShiNodeData& Node,
