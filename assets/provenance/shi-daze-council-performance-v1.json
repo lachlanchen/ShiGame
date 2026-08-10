@@ -1,0 +1,62 @@
+{
+  "assetId": "shi-daze-council-performance-v1",
+  "createdAt": "2026-08-10",
+  "status": "approved-runtime-shared-skeleton-body-performance-blockout-story-reviewed-not-final-acting",
+  "rightsStatus": "SHI-authored deterministic body-motion curves, scripts, renders and runtime integration are original project work; the carrier uses the admitted MPFB CC0 system basemesh/game_engine rig; no neural animation, mocap, model weights, private portrait or private-book payload was used",
+  "historicalStatus": "generic measured body language only; not reconstructed late-Qin etiquette, martial drill, portrait acting or a transcript",
+  "designSource": "../../docs/art/DAZE_COUNCIL_PERFORMANCE_BLOCKOUT_BRIEF.md",
+  "sourceCharacterAsset": "shi-daze-council-characters-v1",
+  "engineImportEvidence": "../../docs/production/evidence/unreal-daze-council-performance-import-status.json",
+  "engineEvidence": "../../docs/production/evidence/unreal-daze-council-performance-presentation-status.json",
+  "toolchain": {
+    "authoring": "Blender 4.5.12 LTS and official Unreal Engine 5.8.1",
+    "generator": {"file":"../../scripts/build-daze-council-performance.py","sha256":"8720b2eba2381432d2d8f850ebff32375c0ba9b7eab578d27eba942f086e7be6"},
+    "validator": {"file":"../../scripts/validate-daze-council-performance.py","sha256":"cf41c987a19a9689afb2c1d9eb7046c33d42fe9c1f1e6bfa878438debd0b94e3","method":"editable source plus clean FBX/GLB exact-skeleton, samples, duration, zero-root-motion, loop closure, bounded hand motion and finite deformation inspection"},
+    "unrealImporter": {"file":"../../scripts/import-daze-council-performance-unreal.py","sha256":"35810fcb6b840ff96e56c42cf5aca360c68515be2e6cb089d09ad6da66c4e8c4","method":"read-only by default; isolated replacement behind SHI_DAZE_COUNCIL_PERFORMANCE_REIMPORT=1; binds two animation-only assets to the admitted Skeleton, removes Root track and normalizes child translation/scale to reference pose"},
+    "unrealNormalizer": [
+      {"file":"../../apps/unreal/Source/SHIEditor/Public/ShiAnimationImportLibrary.h","sha256":"9445a686942bdc8c5947eaa948217ee31a66ff6a5deb291284411fe848c6a4d8"},
+      {"file":"../../apps/unreal/Source/SHIEditor/Private/ShiAnimationImportLibrary.cpp","sha256":"441f4ea17f3844be3c34af1328981f1f356e2fd33c6084d95ca598e1a77eeddf"}
+    ]
+  },
+  "outputs": [
+    {"file":"../3d/rendered/shi-daze-council-performance-v1.blend","role":"editable exact-skeleton performance source","bytes":19927841,"sha256":"feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743"},
+    {"file":"../3d/rendered/shi-daze-council-performance-v1-attentive-frame-031.png","role":"source attentive deformation review","bytes":1944363,"sha256":"b4f6c13c08b8f2cd6bb1143436391276310ab70bd9d96a94542b31766ae91bce"},
+    {"file":"../3d/rendered/shi-daze-council-performance-v1-speaker-frame-046.png","role":"source measured-emphasis deformation review","bytes":1944448,"sha256":"7f7bae0b544e4b8b0ddb30426721d976e7a80e89fa50a944c7a7381d86cf2a17"},
+    {"file":"../3d/rendered/shi-daze-council-performance-v1-speaker-frame-076.png","role":"source settle deformation review","bytes":1945119,"sha256":"f412a4d03040e20002fb5236a7ad1b812e4164b32b8ebcdf07c4b14aac03d4d6"},
+    {"file":"../3d/source/shi-daze-council-performance-v1.metrics.json","role":"deterministic source/export metrics and hashes","bytes":3028,"sha256":"e108bbe1acb390170987f2b5abe9ef2d13d78c43fdb1648f4dbad1bc578df723"},
+    {"file":"../3d/source/shi-daze-council-performance-v1.validation.json","role":"clean interchange and deformation validation","bytes":8853,"sha256":"f033dd6988234dc608f8d32b5b3994a22296b64c118a92a70f599a67cddfab43"},
+    {"file":"../3d/export/shi-daze-council-performance-v1-attentive-idle.fbx","role":"Unreal animation carrier with bind-space calibration meshes","bytes":3282476,"sha256":"e923d0d6caf82fd8b453b918f92e1055b544a0b3cb87c0e77c2b906e907a0046"},
+    {"file":"../3d/export/shi-daze-council-performance-v1-attentive-idle.glb","role":"clean portable attentive round trip","bytes":1137980,"sha256":"0ab837b0c225f26cba6dcd744709eac21a0016dd1698f33cf215a230ea12568b"},
+    {"file":"../3d/export/shi-daze-council-performance-v1-speaker-measured.fbx","role":"Unreal animation carrier with bind-space calibration meshes","bytes":3286748,"sha256":"d9f9f836d06d6ad0ca99b36db65b5758f742e1d34b153b6e7df72278787f5acb"},
+    {"file":"../3d/export/shi-daze-council-performance-v1-speaker-measured.glb","role":"clean portable speaker round trip","bytes":1145068,"sha256":"5c0016152d09976e6013529b41416d4081eaff0f5597c3eec09145271ec57ac0"}
+  ],
+  "clipContract": {
+    "roles": ["attentive-idle", "speaker-measured"],
+    "sharedSkeletonBones": 53,
+    "sourceSamples": 121,
+    "durationSeconds": 4.0,
+    "framesPerSecond": 30.0,
+    "unrealChildTracks": 52,
+    "rootTrackRemoved": true,
+    "rootMotion": false,
+    "facialAnimation": false,
+    "clothOrHairSimulation": false,
+    "gameplayAuthority": false
+  },
+  "technicalReview": {
+    "cleanFbxImport": "pass: 53 bones, 18 bind-space carrier meshes, 121 samples and zero Root/pelvis displacement",
+    "cleanGlbImport": "pass: one 53-joint skin, 121 changing samples, zero images/textures and finite deformation",
+    "unrealImport": "pass: two exact AnimSequences, identity reference Root, 52 rotation-only child tracks",
+    "unrealNativeAutomation": "19 of 19 SHI suites pass",
+    "unrealPackage": "pass: BuildCookRun success, 538 packages",
+    "unrealHeadlessSmoke": "pass: Entry map, ShiGameMode and clean requested exit",
+    "unrealVisibleCampaign": "pass: packaged review preserves complete animated body and real input advances rain-order to open-council"
+  },
+  "constraints": [
+    "Do not present these generic loops as reconstructed late-Qin etiquette, martial drill, portrait acting or dialogue synchronization",
+    "Keep wide or medium council framing until facial, eye and speech systems pass review",
+    "Animation remains presentation-only with no collision, navigation, interaction, campaign, save or replication authority",
+    "Do not promote this blockout to final acting, final character art or marketing status",
+    "Complete facial performance, interaction hands, cloth/hair response, authored LOD/performance and human animation, historical, cultural, cinematic, accessibility and physical-display review before final acceptance"
+  ]
+}

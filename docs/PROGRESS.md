@@ -1,5 +1,17 @@
 # SHI progress log
 
+## 2026-08-10 · Unreal shared-skeleton council body-performance checkpoint
+
+- Added two restrained, reusable four-second loops on the exact admitted 53-bone cast: `attentive-idle` for the listening participant and `speaker-measured` for the current speaker. Both are 30 fps/121-sample, body-only, zero-root-motion presentation clips with no facial, cloth, hair, interaction, campaign, save or replication authority.
+- Rejected the first four Unreal import/package passes. The first clips were invisible; later clips stretched the upper body despite plausible rotation curves. Controlled FBX variants isolated the actual defect: the original character export multiplied the armature object by 100 and produced a `10000 ×` Skeleton Root scale. Neutral bind pose hid that error, but bounded local rotations amplified skinned deformation.
+- Corrected the five-character exporter to keep armatures at identity object scale and use FBX `global_scale=100`/`FBX_SCALE_ALL`. All five assets now share an identity-scale reference Root. The animation importer binds only to that Skeleton, removes the FBX Root track and rewrites all 52 child position/scale channels to exact reference-pose values while preserving imported rotations.
+- Editable Blender source, FBX and GLB round trips pass exact skeleton, duration, loop closure, root/pelvis stability, bounded hand displacement and finite deformation checks. Read-only Unreal inspection proves both exact paths, 52 rotation-only child tracks, identity reference Root, 121 samples, four seconds, 30 fps and no additive/root-motion authority.
+- Epic UE 5.8.1 discovers exactly **19** native `SHI.` suites and all **19 / 19** pass. A clean outside-Git BuildCookRun succeeds with **538 packages**; headless smoke mounts all 538, loads Entry with `ShiGameMode` and exits cleanly.
+- The accepted packaged v5 review preserves the complete head, hands, feet, garments and silhouette through motion. Real keyboard input then selects `read-the-names`, commits a verified transaction, autosaves and advances `rain-order → open-council`. Four hash-bound 1600×1000 frames record the performance phases and normal story route.
+- This is a **body-performance blockout, not final acting**. It does not authorize facial performance, lip sync, interaction contact, cloth/hair response, reconstructed late-Qin etiquette, close facial cinema, final formations or marketing use. Human animation, historical, cultural, cinematic, accessibility and physical-display review remain red.
+
+Next gate: add reviewed eye/facial/speech and interaction-hand systems without weakening reference-pose fallback, deterministic story authority or the single-runtime workstation policy; then repeat final-scene physical performance and observed-player review.
+
 ## 2026-08-10 · Five Unreal Daze council skeletal-character checkpoint
 
 - Built five deterministic skeletal production blockouts for the Keeper, Chen Sheng, Wu Guang, Aunt Yu and Courier Han from the pinned CC0 MPFB system basemesh and shared 53-bone game-engine rig, then added SHI-authored role silhouettes, generic practical layers, hair masses and carried shapes. The two historical identities use generic non-portrait faces; all clothing and fictional identities retain explicit reconstruction boundaries.
@@ -10,7 +22,7 @@
 - Epic UE 5.8.1 compiles the source, all **18 / 18** native `SHI.` suites pass, and a clean outside-Git BuildCookRun succeeds with exactly **536 packages**—the accepted 516 baseline plus twenty character assets. Headless smoke mounts all 536, loads Entry with `ShiGameMode` and exits cleanly.
 - This is a **skeletal production blockout, not final character art**. Neutral poses, generic faces and broad layers do not authorize close facial cinema, historical portrait/costume claims, speech/facial animation, final body performance, cloth/hair weather response, authored LODs or marketing use.
 
-Next gate: animate and deformation-test the shared cast, replace primitive interaction hands and remaining formation proxies, and admit historically reviewed garment/role detail only after human historical, character, cultural, cinematic, accessibility and physical-display review.
+Next gate completed in part by the body-performance checkpoint above; facial performance, interaction hands, cloth/hair response, formations and historically reviewed garment/role detail remain open.
 
 ## 2026-08-10 · Restrained Unreal wet-field vegetation and full playable-route checkpoint
 

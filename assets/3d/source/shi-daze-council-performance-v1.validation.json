@@ -1,0 +1,285 @@
+{
+  "assetId": "shi-daze-council-performance-v1",
+  "validator": "editable source plus clean FBX/GLB exact-skeleton, duration, root closure, bounded hand motion and finite deformation inspection",
+  "blenderVersion": "4.5.12 LTS",
+  "status": "pass",
+  "fps": 30,
+  "sampleCount": 121,
+  "durationSeconds": 4.0,
+  "boneCount": 53,
+  "rootMotion": false,
+  "source": {
+    "file": "assets/3d/rendered/shi-daze-council-performance-v1.blend",
+    "bytes": 19927841,
+    "sha256": "feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743",
+    "carrierRig": "SK_SHI_keeper_Rig",
+    "meshCount": 18,
+    "clips": {
+      "attentive-idle": {
+        "action": "AN_SHI_DazeCouncil_AttentiveIdle_01",
+        "curveContract": {
+          "fcurves": 477,
+          "keyedBones": 53,
+          "torsoDegrees": 0.5600000063342052,
+          "armDegrees": 0.1199999937343507,
+          "fingerDegrees": 3.800000077285512
+        },
+        "motion": {
+          "sampledPoses": 9,
+          "rootDisplacementMetres": 0.0,
+          "pelvisDisplacementMetres": 0.0,
+          "rightHandDisplacementMetres": 0.0011528417727309456,
+          "leftHandDisplacementMetres": 0.0021997040662737936,
+          "headDisplacementMetres": 0.004885857167656158,
+          "loopClosureMatrixError": 0.0,
+          "deformation": {
+            "sampledFrames": 9,
+            "verticesPerSample": [
+              13924
+            ],
+            "trianglesPerSample": [
+              27668
+            ],
+            "physicalHeightMetres": [
+              1.6974596894413025,
+              1.6979360497623475
+            ],
+            "minimumTriangleAreaPayloadUnits": 8.701552252931938e-08
+          }
+        }
+      },
+      "speaker-measured": {
+        "action": "AN_SHI_DazeCouncil_SpeakerMeasured_01",
+        "curveContract": {
+          "fcurves": 477,
+          "keyedBones": 53,
+          "torsoDegrees": 1.6499999605380684,
+          "armDegrees": 12.000000333930423,
+          "fingerDegrees": 7.500000208706514
+        },
+        "motion": {
+          "sampledPoses": 9,
+          "rootDisplacementMetres": 0.0,
+          "pelvisDisplacementMetres": 0.0,
+          "rightHandDisplacementMetres": 0.14449747035565072,
+          "leftHandDisplacementMetres": 0.012259862538559799,
+          "headDisplacementMetres": 0.012082455864632809,
+          "loopClosureMatrixError": 0.0,
+          "deformation": {
+            "sampledFrames": 9,
+            "verticesPerSample": [
+              13924
+            ],
+            "trianglesPerSample": [
+              27668
+            ],
+            "physicalHeightMetres": [
+              1.6975510037570984,
+              1.697756520572284
+            ],
+            "minimumTriangleAreaPayloadUnits": 8.701756617053884e-08
+          }
+        }
+      }
+    }
+  },
+  "formats": {
+    "fbx": {
+      "attentive-idle": {
+        "file": "assets/3d/export/shi-daze-council-performance-v1-attentive-idle.fbx",
+        "bytes": 3282476,
+        "sha256": "e923d0d6caf82fd8b453b918f92e1055b544a0b3cb87c0e77c2b906e907a0046",
+        "armature": "Armature",
+        "boneCount": 53,
+        "meshCount": 18,
+        "actions": 2,
+        "auxiliaryShapeKeyActions": [
+          "Key|Scene"
+        ],
+        "importedAction": "Armature|Scene",
+        "frameRange": [
+          2.0,
+          122.0
+        ],
+        "sampleCount": 121,
+        "fps": 30,
+        "durationSeconds": 4.0,
+        "motion": {
+          "sampledPoses": 9,
+          "rootDisplacementMetres": 0.0,
+          "pelvisDisplacementMetres": 0.0,
+          "rightHandDisplacementMetres": 0.0011532133906333964,
+          "leftHandDisplacementMetres": 0.0022001793522228976,
+          "headDisplacementMetres": 0.004886011815298682,
+          "loopClosureMatrixError": 0.0,
+          "deformation": null
+        }
+      },
+      "speaker-measured": {
+        "file": "assets/3d/export/shi-daze-council-performance-v1-speaker-measured.fbx",
+        "bytes": 3286748,
+        "sha256": "d9f9f836d06d6ad0ca99b36db65b5758f742e1d34b153b6e7df72278787f5acb",
+        "armature": "Armature",
+        "boneCount": 53,
+        "meshCount": 18,
+        "actions": 2,
+        "auxiliaryShapeKeyActions": [
+          "Key|Scene"
+        ],
+        "importedAction": "Armature|Scene",
+        "frameRange": [
+          2.0,
+          122.0
+        ],
+        "sampleCount": 121,
+        "fps": 30,
+        "durationSeconds": 4.0,
+        "motion": {
+          "sampledPoses": 9,
+          "rootDisplacementMetres": 0.0,
+          "pelvisDisplacementMetres": 0.0,
+          "rightHandDisplacementMetres": 0.14449757186833023,
+          "leftHandDisplacementMetres": 0.012260006678660213,
+          "headDisplacementMetres": 0.0120822415144488,
+          "loopClosureMatrixError": 0.0,
+          "deformation": null
+        }
+      }
+    },
+    "glb": {
+      "attentive-idle": {
+        "file": "assets/3d/export/shi-daze-council-performance-v1-attentive-idle.glb",
+        "bytes": 1137980,
+        "sha256": "0ab837b0c225f26cba6dcd744709eac21a0016dd1698f33cf215a230ea12568b",
+        "armature": "Armature",
+        "boneCount": 53,
+        "meshCount": 18,
+        "actions": 1,
+        "importedAction": "Animation",
+        "frameRange": [
+          0.8000000715255737,
+          96.80000305175781
+        ],
+        "importedFps": 24,
+        "durationSeconds": 4.000000124176343,
+        "textureDependencies": 0,
+        "payload": {
+          "animationName": "Animation",
+          "channels": 159,
+          "targetPaths": [
+            "rotation",
+            "scale",
+            "translation"
+          ],
+          "samplers": 159,
+          "samplesPerCurve": [
+            2,
+            121
+          ],
+          "durationSeconds": [
+            4.0,
+            4.0
+          ],
+          "skinJointCounts": [
+            53
+          ],
+          "meshCount": 18,
+          "images": 0,
+          "textures": 0
+        },
+        "motion": {
+          "sampledPoses": 9,
+          "rootDisplacementMetres": 0.0,
+          "pelvisDisplacementMetres": 0.0,
+          "rightHandDisplacementMetres": 0.0011528884164141444,
+          "leftHandDisplacementMetres": 0.002199669492639913,
+          "headDisplacementMetres": 0.004885867516335169,
+          "loopClosureMatrixError": 0.0,
+          "deformation": {
+            "sampledFrames": 9,
+            "verticesPerSample": [
+              16209
+            ],
+            "trianglesPerSample": [
+              27668
+            ],
+            "physicalHeightMetres": [
+              1.6964770373888314,
+              1.6969530400820076
+            ],
+            "minimumTriangleAreaPayloadUnits": 5.5007153381265e-08
+          }
+        }
+      },
+      "speaker-measured": {
+        "file": "assets/3d/export/shi-daze-council-performance-v1-speaker-measured.glb",
+        "bytes": 1145068,
+        "sha256": "5c0016152d09976e6013529b41416d4081eaff0f5597c3eec09145271ec57ac0",
+        "armature": "Armature",
+        "boneCount": 53,
+        "meshCount": 18,
+        "actions": 1,
+        "importedAction": "Animation",
+        "frameRange": [
+          0.8000000715255737,
+          96.80000305175781
+        ],
+        "importedFps": 24,
+        "durationSeconds": 4.000000124176343,
+        "textureDependencies": 0,
+        "payload": {
+          "animationName": "Animation",
+          "channels": 159,
+          "targetPaths": [
+            "rotation",
+            "scale",
+            "translation"
+          ],
+          "samplers": 159,
+          "samplesPerCurve": [
+            2,
+            121
+          ],
+          "durationSeconds": [
+            4.0,
+            4.0
+          ],
+          "skinJointCounts": [
+            53
+          ],
+          "meshCount": 18,
+          "images": 0,
+          "textures": 0
+        },
+        "motion": {
+          "sampledPoses": 9,
+          "rootDisplacementMetres": 0.0,
+          "pelvisDisplacementMetres": 0.0,
+          "rightHandDisplacementMetres": 0.14449731687801176,
+          "leftHandDisplacementMetres": 0.012259880194514952,
+          "headDisplacementMetres": 0.01208241371965019,
+          "loopClosureMatrixError": 0.0,
+          "deformation": {
+            "sampledFrames": 9,
+            "verticesPerSample": [
+              16209
+            ],
+            "trianglesPerSample": [
+              27668
+            ],
+            "physicalHeightMetres": [
+              1.6965688285417855,
+              1.6967736301012337
+            ],
+            "minimumTriangleAreaPayloadUnits": 5.499821232585268e-08
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "shared body-performance blockout only; no facial, speech, interaction, cloth or hair performance",
+    "not reconstructed late-Qin etiquette or final acting",
+    "physical-display and human animation/cultural review remain open"
+  ]
+}

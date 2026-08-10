@@ -8,6 +8,11 @@
       "Name": "SHI",
       "Type": "Runtime",
       "LoadingPhase": "Default"
+    },
+    {
+      "Name": "SHIEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
     }
   ],
   "Plugins": [

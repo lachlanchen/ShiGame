@@ -2,6 +2,18 @@
 
 SHI (《势》) is a production game repository. Treat every change as shipping work, not as a throwaway prototype.
 
+## Shared-workstation resource policy
+
+- Reuse the single SHI-owned noVNC/Xvfb/x11vnc/websockify stack recorded in `references/private/runtime-handoff.md`; never start a second stack while it is healthy.
+- Keep at most one packaged game, emulator, Blender, Unreal Editor, Unity Editor, or heavy build/model job for SHI at a time.
+- Before launching a heavy GUI or build, check `free -h`, SHI-owned processes, SHI tmux windows, and the recorded noVNC ports.
+- If available RAM is below 24 GiB or swap use exceeds 75%, stop only obsolete SHI-owned runtimes before starting heavy work. Never stop another project's service based only on size.
+- Stop a superseded SHI review build after its successor is accepted. Preserve evidence in screenshots, logs, manifests, and commits rather than resident processes.
+- Keep source assets, saves, evidence, and the current verified build. Retain at most the current and immediately previous reproducible package per milestone unless the user asks otherwise.
+- Do not duplicate SDKs, model weights, browser profiles, or source archives when a verified shared installation exists.
+- The session that launches a SHI runtime owns its exact cleanup and must update the private runtime handoff after replacement or shutdown.
+- Never commit runtime handoffs, browser profiles, credentials, cookies, private session history, caches, DerivedDataCache, Intermediate, Saved, or packaged build trees.
+
 ## Structure
 
 - `apps/web/`: React, TypeScript and Three.js playable client.

@@ -103,8 +103,8 @@
       "exports": {
         "fbx": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-keeper.fbx",
-          "bytes": 2600268,
-          "sha256": "576693a0fba293f5935771b0c39c510c8fb69e9343f56ebffd3c8ca4cd042e13"
+          "bytes": 2598668,
+          "sha256": "0582832ebcfe9d4f38e125160b30118498118dd1408efa2cbcbc78a2e80a24cd"
         },
         "glb": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-keeper.glb",
@@ -147,8 +147,8 @@
       "exports": {
         "fbx": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-chen-sheng.fbx",
-          "bytes": 2546060,
-          "sha256": "252f8facfb3b57b6233fa2a2c63a758fa26d0e077775ed87d607d820ac09b7d4"
+          "bytes": 2544540,
+          "sha256": "fc7f90dfbf1c9eacce48494ff45590bb11ba5c535d460a832518b0c9efb74475"
         },
         "glb": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-chen-sheng.glb",
@@ -191,8 +191,8 @@
       "exports": {
         "fbx": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-wu-guang.fbx",
-          "bytes": 2490380,
-          "sha256": "40410e48ac8e92c6a899538bfeded5d2cc73feb8e8681d78dbf1d10c41c67c42"
+          "bytes": 2488956,
+          "sha256": "77ab8e50681d0081a58bf1ac9dbc2db013afe8737655e52da42553850c997eb9"
         },
         "glb": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-wu-guang.glb",
@@ -235,8 +235,8 @@
       "exports": {
         "fbx": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-yu-mu.fbx",
-          "bytes": 2545660,
-          "sha256": "f523433722a4b534ec5f7c4feae7a2e0894dcb1341610cb7feca80812604d0d1"
+          "bytes": 2544140,
+          "sha256": "45304316a782178f42b3559a25334cd64b4b987ec9187d53472d4692a9c2bc26"
         },
         "glb": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-yu-mu.glb",
@@ -280,8 +280,8 @@
       "exports": {
         "fbx": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-qin-courier.fbx",
-          "bytes": 2600524,
-          "sha256": "78c8bb462efd6e4e0df201f779c9b0e3704e190b18b2b444de629ff89d61259c"
+          "bytes": 2598924,
+          "sha256": "41f4ef2a5fb37a309ab6c4b966ec06c2c53f3497e3c00b99b9ae64cc8c1a3c53"
         },
         "glb": {
           "file": "assets/3d/export/shi-daze-council-characters-v1-qin-courier.glb",
@@ -294,7 +294,7 @@
   "source": {
     "file": "assets/3d/rendered/shi-daze-council-characters-v1.blend",
     "bytes": 19332505,
-    "sha256": "1360836060fde31005e02b73c8fdfc726637309cd96adf1fbabed49eb4be8458"
+    "sha256": "2c33a739e02923dbfbbfa903f6c8098e5a118e6d865e29dde60728d066bd94a5"
   },
   "renders": {
     "front": {

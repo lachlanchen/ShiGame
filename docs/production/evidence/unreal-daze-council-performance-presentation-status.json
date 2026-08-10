@@ -1,0 +1,74 @@
+{
+  "assetId": "shi-daze-council-performance-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Packaged Unreal 5.8.1 body-performance review and one real story transaction on the single SHI-owned localhost noVNC desktop.",
+  "decision": "approved-runtime-shared-skeleton-body-performance-blockout-story-reviewed-not-final-acting",
+  "historicalBoundary": "Generic measured body language only. It is not reconstructed 209 BCE etiquette, a historical portrait performance, martial drill or transcript synchronization.",
+  "requiredDisclosure": "SHARED-SKELETON BODY-PERFORMANCE BLOCKOUT · NO FACIAL OR CLOTH PERFORMANCE · NOT RECONSTRUCTED HISTORICAL ETIQUETTE",
+  "presentation": {
+    "clipIds": ["attentive-idle", "speaker-measured"],
+    "speakerRole": "speaker-measured",
+    "listenerRole": "attentive-idle",
+    "sharedSkeletonBones": 53,
+    "rootScale": [1.0, 1.0, 1.0],
+    "rootMotion": false,
+    "completeBodyPreservedThroughMotion": true,
+    "facialPerformance": false,
+    "dialogueSynchronization": false,
+    "interactionHands": false,
+    "clothOrHairSimulation": false,
+    "historicalEtiquetteClaim": false,
+    "gameplayAuthority": false,
+    "saveAuthority": false,
+    "replication": false,
+    "finalActing": false
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 19,
+    "passed": 19,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.CouncilPerformancePresentationV1",
+    "coveredContracts": [
+      "two exact asset paths, shared Skeleton, 121 samples, four seconds and 30 fps",
+      "Root track removal, identity reference Root and rotation-only child transforms",
+      "role-specific clip mapping, loop and final-acting false state",
+      "reference-pose fallback for missing or drifting performance assets",
+      "unchanged collision, navigation, campaign, save and replication authority"
+    ]
+  },
+  "visiblePlaytest": {
+    "desktop": "single isolated Xvfb :129, localhost-only x11vnc 5940 and noVNC 6140",
+    "url": "http://127.0.0.1:6140/vnc.html?host=127.0.0.1&port=6140&autoconnect=1&resize=scale",
+    "package": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeCouncilPerformance-Review-v5/Linux",
+    "resolution": [1600, 1000],
+    "inputs": ["Keyboard 1 selected Read every name aloud","Keyboard Enter issued the selected order","Keyboard Space skipped the prepared consequence cinema"],
+    "campaignStart": "Act I, Scene 1, rain-order, turn 1, Chen Sheng speaker",
+    "campaignObserved": "Act II, Scene 2, open-council, turn 2, Aunt Yu speaker",
+    "storyAdvanced": true,
+    "transactionVerified": true,
+    "autosaved": true,
+    "normalUiVisible": true,
+    "choiceCardsVisible": true,
+    "rainVisible": true,
+    "animatedCouncilCharacterVisible": true
+  },
+  "reviewHistory": {
+    "rejected": "Early imports were rejected for invisible or severely stretched deformation; their evidence frames and packages v1-v3 were removed from the active project set.",
+    "rootCause": "The original FBX pipeline produced a 10000x shared Skeleton Root scale; bounded local rotations therefore amplified skinned deformation.",
+    "acceptedCorrection": "Export armature objects at identity scale with FBX global scale 100, bind to the corrected shared Skeleton, remove the animation Root track and normalize all child translation/scale channels to the Skeleton reference pose.",
+    "reviewBoundary": "Agent-observed technical body-performance acceptance only; human physical-display and animation/cultural review remain open."
+  },
+  "screenshots": [
+    {"file":"docs/production/evidence/unreal-daze-council-performance-speaker-emphasis-v5.png","role":"packaged measured-speaker phase with intact full body","dimensions":[1600,1000],"bytes":867139,"sha256":"b452c7ec6cad26be1d47c57f0368c362fff0580485d9e4b2e5c5fa0bcd62e06f"},
+    {"file":"docs/production/evidence/unreal-daze-council-performance-speaker-settle-v5.png","role":"packaged speaker settle phase with intact full body","dimensions":[1600,1000],"bytes":867239,"sha256":"38351c0ba4c468b82f708e6ec797f5fbcd3a604a740889a09b3efceabb0114e6"},
+    {"file":"docs/production/evidence/unreal-daze-council-performance-opening-v5.png","role":"normal packaged Act-I opening with animated speaker and complete playable UI","dimensions":[1600,1000],"bytes":691216,"sha256":"8bdf4660e172123658de1b4f3ab0db715c43aa9b73059beeb24bb774d6dca8ee"},
+    {"file":"docs/production/evidence/unreal-daze-council-performance-story-advanced-v5.png","role":"normal packaged Act-II state after a real verified transaction","dimensions":[1600,1000],"bytes":747184,"sha256":"412154682f69b30fa57edccfdf87a5f524921dcc2950d7cfa8c58a84731caae7"}
+  ],
+  "remainingGates": [
+    "human animation, historical, cultural, cinematic, accessibility and physical-display review",
+    "facial acting, eyes, lip sync, interaction contact, cloth and hair response",
+    "historically reviewed gesture/etiquette language and final scene performance",
+    "observed-player and physical-controller playtesting"
+  ]
+}

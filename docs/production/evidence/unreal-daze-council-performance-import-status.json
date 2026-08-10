@@ -1,0 +1,59 @@
+{
+  "assetId": "shi-daze-council-performance-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Read-only Unreal 5.8.1 inspection of two shared-skeleton council body-performance blockouts. This is not final acting, facial performance or reconstructed historical etiquette.",
+  "decision": "approved-engine-shared-skeleton-body-performance-blockout-packaged-not-final-acting",
+  "engine": {"version":"5.8.1-56057345+++UE5+Release-5.8","assetRoot":"/Game/SHI/Art/Characters/DazeCouncil/Performance"},
+  "import": {
+    "passed": true,
+    "mode": "inspect-only",
+    "sharedSkeleton": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton.SK_SHI_DazeCouncil_Skeleton",
+    "sourcePayload": "FBX with exact admitted 53-bone hierarchy and 18 keeper bind-space carrier meshes; Unreal import is animation-only",
+    "clipIds": ["attentive-idle", "speaker-measured"],
+    "samples": 121,
+    "frames": 120,
+    "durationSeconds": 4.0,
+    "framesPerSecond": 30.0,
+    "childTrackCount": 52,
+    "sampledFrames": [0, 46, 120],
+    "referenceRoot": {"translation":[0.0,6.100162863731384e-8,-0.000562518835067749],"rotation":[0.0,0.0,0.0,1.0],"scale":[1.0,1.0,1.0]},
+    "maximumRotationDegrees": {"attentive-idle":3.5796158028074885,"speaker-measured":12.984521317845358},
+    "checks": {
+      "exactAssetIdentity": true,
+      "sharedSkeleton": true,
+      "exactSamplesDurationAndRate": true,
+      "rootTrackRemoved": true,
+      "identityReferenceRootPreserved": true,
+      "rotationOnlyChildChannels": true,
+      "pelvisAndBodyTracksRetained": true,
+      "rootMotionDisabled": true,
+      "notAdditive": true,
+      "noUnexpectedAssets": true
+    }
+  },
+  "trackedUnrealAssets": [
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/Performance/AN_SHI_DazeCouncil_AttentiveIdle_01.uasset","bytes":342196,"sha256":"3e48984e45cf9a263bf0f3a6d7be34f34e82c55f9914564a3dc1af7ac7287463"},
+    {"file":"apps/unreal/Content/SHI/Art/Characters/DazeCouncil/Performance/AN_SHI_DazeCouncil_SpeakerMeasured_01.uasset","bytes":388672,"sha256":"6c0c948ba199023c89a66d4ad7c7b3839f504917233cd49326666b255a8a8901"}
+  ],
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeCouncilPerformance-Review-v5/Linux",
+    "packageCount": 538,
+    "priorAcceptedPackageCount": 536,
+    "addedPackageCount": 2,
+    "artifacts": [
+      {"role":"Linux development executable","bytes":298643952,"sha256":"0adfa9ea1330d3657f462a18c4de720dd838944825d6589a05b6412cfa35696e"},
+      {"role":"Pak metadata and non-IoStore payload","bytes":10426583,"sha256":"c5818e4920c27fc3eb10800f8f48a3475b40d60e1dff4d09f89a05bde2e5493a"},
+      {"role":"IoStore data container","bytes":167725120,"sha256":"624aba2470cc72c09a5ccb008a44dae50d0e2b3f4cc8fab780aa72f40361516e"},
+      {"role":"IoStore table of contents","bytes":152697,"sha256":"7f14bc9326e16991f43ed60db6c11727c28a8212e2bd4088b2ef0d44384d8ef9"}
+    ]
+  },
+  "smokeTest": {"command":"./SHI -nullrhi -unattended -nosound -UserDir=<isolated> -ExecCmds=Quit","exitCode":0,"containerPackageCount":538,"gameMode":"ShiGameMode","map":"/Engine/Maps/Entry","cleanRequestedExit":true},
+  "remainingGates": [
+    "facial rig, eyes, lip sync, interaction hands, cloth and hair response",
+    "historically and culturally reviewed gesture/etiquette language",
+    "authored LODs, final scene performance and physical-display review",
+    "human animation, historical, cultural, cinematic and accessibility approval"
+  ]
+}

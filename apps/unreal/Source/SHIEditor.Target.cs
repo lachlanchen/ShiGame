@@ -9,5 +9,6 @@ public class SHIEditorTarget : TargetRules
         DefaultBuildSettings = BuildSettingsVersion.V7;
         IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
         ExtraModuleNames.Add("SHI");
+        ExtraModuleNames.Add("SHIEditor");
     }
 }

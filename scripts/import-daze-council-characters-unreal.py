@@ -83,8 +83,9 @@ def import_mesh(source: Path, suffix: str, skeleton):
     # second time and collapses a 170 cm figure to 1.70 cm.
     mesh_options.set_editor_property("convert_scene_unit", False)
     mesh_options.set_editor_property("force_front_x_axis", False)
-    # The engine-ready FBX has the metre->centimetre conversion baked by the
-    # deterministic exporter; actor and import scale therefore remain identity.
+    # The engine-ready FBX records metre->centimetre as FBX global scaling with
+    # FBX_SCALE_ALL. The legacy Blender path retains metre-valued local bounds
+    # and, critically, imports the skeletal Root at identity scale.
     mesh_options.set_editor_property("import_uniform_scale", 1.0)
     mesh_options.set_editor_property("import_mesh_lods", False)
     mesh_options.set_editor_property("reorder_material_to_fbx_order", True)
@@ -129,6 +130,17 @@ def skeleton_reference_pose_count(skeleton) -> int:
     return len(skeleton_bone_names(skeleton))
 
 
+def transform_components(transform) -> dict:
+    translation = transform.translation
+    rotation = transform.rotation
+    scale = transform.scale3d
+    return {
+        "translation": [float(translation.x), float(translation.y), float(translation.z)],
+        "rotation": [float(rotation.x), float(rotation.y), float(rotation.z), float(rotation.w)],
+        "scale": [float(scale.x), float(scale.y), float(scale.z)],
+    }
+
+
 def inspect_mesh(character_id: str, suffix: str, expected_triangles: int, mesh, imported_paths: list[str]) -> dict:
     skeleton = mesh.get_editor_property("skeleton")
     # Unreal's Blender-compatibility path strips the Armature root transform,
@@ -146,10 +158,17 @@ def inspect_mesh(character_id: str, suffix: str, expected_triangles: int, mesh, 
             "material": interface.get_path_name() if interface else None,
         })
     expected_skeleton = f"{SKELETON_PATH}.{SKELETON_NAME}"
+    reference_root = (
+        skeleton.get_reference_pose().get_ref_bone_pose("Root", unreal.AnimPoseSpaces.LOCAL)
+        if skeleton else None
+    )
+    reference_root_components = transform_components(reference_root) if reference_root else None
     checks = {
         "assetPath": mesh.get_path_name() == f"{asset_path(suffix)}.{asset_name(suffix)}",
         "sharedSkeleton": bool(skeleton) and skeleton.get_path_name() == expected_skeleton,
         "exactReferencePoseBones": bool(skeleton) and skeleton_bone_names(skeleton) == list(BONE_NAMES),
+        "identityScaleReferenceRoot": bool(reference_root_components)
+        and all(abs(value - 1.0) <= 0.0001 for value in reference_root_components["scale"]),
         "rootAndPelvisRelationship": str(mesh.get_bone_parent("pelvis")) == "Root",
         "sourceTriangleContract": expected_triangles < 28000,
         "presentedPhysicalHeight": 155.0 <= max(dimensions) * PRESENTATION_SCALE <= 183.0,
@@ -174,6 +193,7 @@ def inspect_mesh(character_id: str, suffix: str, expected_triangles: int, mesh, 
         "skeleton": skeleton.get_path_name() if skeleton else None,
         "referencePoseBoneCount": skeleton_reference_pose_count(skeleton) if skeleton else 0,
         "referencePoseBones": skeleton_bone_names(skeleton) if skeleton else [],
+        "referenceRoot": reference_root_components,
         "physicsAsset": (
             mesh.get_editor_property("physics_asset").get_path_name()
             if mesh.get_editor_property("physics_asset") else None

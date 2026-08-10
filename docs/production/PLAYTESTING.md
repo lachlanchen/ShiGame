@@ -2,11 +2,11 @@
 
 SHI browser QA uses a dedicated localhost-only Xvfb/noVNC/Chrome profile so tests can be watched and reproduced without touching the user's normal browser.
 
-## Current Unreal vegetation review desktop
+## Current Unreal performance review desktop
 
-The accepted UE 5.8.1 Linux package remains visibly running on an isolated desktop at `http://127.0.0.1:6139/vnc.html?host=127.0.0.1&port=6139&autoconnect=1&resize=scale` (`Xvfb :128`, loopback x11vnc `5939`, loopback noVNC `6139`). The source-matched archive is `$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeVegetation-Review-v2/Linux`; its isolated normal user directory is outside Git.
+The current UE 5.8.1 Linux package remains visibly playable on the single SHI-owned desktop at `http://127.0.0.1:6140/vnc.html?host=127.0.0.1&port=6140&autoconnect=1&resize=scale` (`Xvfb :129`, loopback x11vnc `5940`, loopback noVNC `6140`). The source-matched package is `$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeCouncilPerformance-Review-v5/Linux`; its isolated user directory is outside Git. The reusable stack and live process ownership are recorded in the ignored `references/private/runtime-handoff.md`.
 
-Fresh keyboard input selected **Seize the relay beacon**, issued the Act-I order, selected **Extinguish the tower; move in silence**, issued the Act-II order, opened Broken Crossing, then issued **Screen through the reeds**, **Repair the landing** and **Release the reserve**. The route reaches **SUCCESS · Orderly crossing**, returns to Act III and preserves the campaign save hash and modified time exactly. The 106-instance vegetation layer remains visibly peripheral during council and engagement, while the shelter/command center and compacted route stay clear. Four hash-bound 1600×1000 frames and the complete technical/runtime boundary are recorded in [`evidence/unreal-daze-wet-field-vegetation-presentation-status.json`](evidence/unreal-daze-wet-field-vegetation-presentation-status.json). This is a watched engineering playthrough, not observed-player, physical-controller or final-scene approval.
+Fresh keyboard input selected **Read every name aloud**, issued the Act-I order and skipped the transition with the documented controls. The campaign advanced from Act I Scene 1 to Act II Scene 2, changed resources, recorded one decision and autosaved. The corrected council animation keeps the shared skeleton root at identity scale and preserves the complete head, hands, feet, garments and silhouette through motion. Reviewed 1600×1000 opening, performance and advanced-story frames live under `docs/production/evidence/`. This is a watched engineering playthrough and body-performance blockout—not observed-player, physical-controller, facial-performance, cloth-simulation or final-scene approval.
 
 ## Dedicated endpoints
 

@@ -1,7 +1,9 @@
 #include "ShiCouncilFigure.h"
 
 #include "ShiCouncilCharacterPresentationModel.h"
+#include "ShiCouncilPerformancePresentationModel.h"
 
+#include "Animation/AnimSequence.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -107,6 +109,30 @@ bool AShiCouncilFigure::InitializeFigure(UStaticMesh* Cylinder, UStaticMesh* Sph
         }
         CharacterMeshes.Add(CouncilCharacterId, Mesh);
     }
+    PerformanceClips.Empty();
+    for (const FString& RoleId : FShiCouncilPerformancePresentationModel::CanonicalRoleIds())
+    {
+        FShiCouncilPerformanceData Performance;
+        FString PerformanceError;
+        if (!FShiCouncilPerformancePresentationModel::Build(RoleId, Performance, PerformanceError))
+        {
+            UE_LOG(LogShiCouncilFigure, Warning, TEXT("Council performance contract rejected for %s: %s"),
+                *RoleId, *PerformanceError);
+            continue;
+        }
+        UAnimSequence* Sequence = LoadObject<UAnimSequence>(nullptr, *Performance.AnimationPath);
+        USkeleton* Skeleton = Sequence ? Sequence->GetSkeleton() : nullptr;
+        if (!Sequence || !Skeleton
+            || !FShiCouncilPerformancePresentationModel::ValidateSequence(
+                Performance, *Sequence, *Skeleton, PerformanceError))
+        {
+            UE_LOG(LogShiCouncilFigure, Warning,
+                TEXT("Council performance %s remains on the fail-closed reference-pose fallback: %s"),
+                *RoleId, Sequence && Skeleton ? *PerformanceError : TEXT("animation or Skeleton is unavailable"));
+            continue;
+        }
+        PerformanceClips.Add(RoleId, Sequence);
+    }
     OutError.Empty();
     return true;
 }
@@ -120,6 +146,14 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
     Tags.Add(FName(*FString::Printf(TEXT("ShiCharacter:%s"), *Participant.CharacterId)));
     Tags.Add(FName(*FString::Printf(TEXT("ShiCouncilSlot:%s"), *Participant.SlotId)));
     if (Participant.bSpeaker) Tags.Add(FName(TEXT("ShiCouncilSpeaker")));
+
+    CharacterMesh->Stop();
+    CharacterMesh->SetAnimation(nullptr);
+    CharacterMesh->SetForceRefPose(true);
+    CharacterMesh->bPauseAnims = false;
+    CharacterMesh->SetComponentTickEnabled(false);
+    bUsingPerformance = false;
+    PerformanceRoleId.Empty();
 
     const TObjectPtr<USkeletalMesh>* AdmittedMesh = CharacterMeshes.Find(Participant.CharacterId);
     bUsingSkeletalPresentation = AdmittedMesh && AdmittedMesh->Get();
@@ -136,6 +170,47 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
     Tags.Add(FName(bUsingSkeletalPresentation
         ? TEXT("ShiArtStatus:SkeletalProductionBlockout")
         : TEXT("ShiArtFallback:EnginePrimitive")));
+
+    if (bUsingSkeletalPresentation)
+    {
+        FShiCouncilPerformanceData Performance;
+        FString PerformanceError;
+        if (FShiCouncilPerformancePresentationModel::ForParticipant(
+                Participant.bSpeaker, Performance, PerformanceError))
+        {
+            const TObjectPtr<UAnimSequence>* AdmittedSequence = PerformanceClips.Find(Performance.RoleId);
+            UAnimSequence* Sequence = AdmittedSequence ? AdmittedSequence->Get() : nullptr;
+            USkeleton* MeshSkeleton = AdmittedMesh->Get()->GetSkeleton();
+            if (Sequence && MeshSkeleton
+                && FShiCouncilPerformancePresentationModel::ValidateSequence(
+                    Performance, *Sequence, *MeshSkeleton, PerformanceError))
+            {
+                CharacterMesh->SetForceRefPose(false);
+                CharacterMesh->PlayAnimation(Sequence, Performance.bLooping);
+                const float DeterministicStartSeconds = Participant.bSpeaker
+                    ? 0.f
+                    : static_cast<float>(GetTypeHash(Participant.SlotId) % 120u) / 30.f;
+                CharacterMesh->SetPosition(DeterministicStartSeconds, false);
+                CharacterMesh->SetComponentTickEnabled(true);
+                PerformanceRoleId = Performance.RoleId;
+                bUsingPerformance = true;
+                Tags.Add(FName(*FString::Printf(TEXT("ShiPerformance:%s"), *Performance.RoleId)));
+                Tags.Add(FName(TEXT("ShiPerformanceStatus:SharedSkeletonBodyBlockout")));
+            }
+        }
+        if (!bUsingPerformance)
+        {
+            CharacterMesh->Stop();
+            CharacterMesh->SetAnimation(nullptr);
+            CharacterMesh->SetForceRefPose(true);
+            CharacterMesh->SetComponentTickEnabled(false);
+            Tags.Add(FName(TEXT("ShiPerformanceFallback:ReferencePose")));
+            UE_LOG(LogShiCouncilFigure, Warning,
+                TEXT("Council character %s uses the reference-pose fallback: %s"),
+                *Participant.CharacterId,
+                PerformanceError.IsEmpty() ? TEXT("performance clip is unavailable") : *PerformanceError);
+        }
+    }
 
     const FLinearColor HeadColor = FLinearColor::LerpUsingHSV(Participant.Color, FLinearColor(.60f, .46f, .32f), .18f);
     const FLinearColor MantleColor = FLinearColor::LerpUsingHSV(Participant.Color, FLinearColor(.04f, .05f, .05f), .34f);
@@ -160,4 +235,6 @@ void AShiCouncilFigure::SetReviewVisible(bool bVisible)
     Body->SetHiddenInGame(!bVisible || bUsingSkeletalPresentation, true);
     Head->SetHiddenInGame(!bVisible || bUsingSkeletalPresentation, true);
     Mantle->SetHiddenInGame(!bVisible || bUsingSkeletalPresentation, true);
+    CharacterMesh->bPauseAnims = !bVisible;
+    CharacterMesh->SetComponentTickEnabled(bVisible && bUsingSkeletalPresentation && bUsingPerformance);
 }

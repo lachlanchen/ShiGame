@@ -16,7 +16,7 @@ Decision date: 2026-08-09. Unreal is now the priority 3D/cinematic delivery trac
 
 The first native gate is one high-quality Daze order, not a vast empty map:
 
-1. Rain-soaked Daze command space with an explorable wartable/assembly composition. Canonical speaker/Keeper blocking, a 44° dialogue lens and two clickable multi-part performance proxies are source-authored; final reviewed bodies, hands, faces, clothing, animation and native visual proof remain open.
+1. Rain-soaked Daze command space with an explorable wartable/assembly composition. Canonical speaker/Keeper blocking, a 44° dialogue lens, five identity-Root shared-skeleton production blockouts and two role-bound body-performance loops now pass packaged visual proof; final hands, faces, clothing, etiquette and acting remain open.
 2. Inspectable route/intelligence ground and command state are source-authored as five bounded canonical 3D sites plus nine live grain/trust/momentum/people/exposure/field/pursuit/method/oath signals with pointer/keyboard/gamepad focus, non-color-only shape/height/text grammar and scoped evidence. Native staging and review remain open.
 3. Three selectable orders and one complete, readable selected-order briefing.
 4. Explicit issue-order input from mouse, keyboard and controller.
@@ -27,7 +27,7 @@ The first native gate is one high-quality Daze order, not a vast empty map:
 9. Save/reload and source/evidence access. The source slice is authored; native interaction proof remains open.
 10. Linux Development and packaged builds, automation tests and visible noVNC play evidence.
 
-Current 2026-08-10 checkpoint: the official UE 5.8.1 client compiles, passes 17 native suites, packages and visibly plays. The command weight, fictional earth/wood command ground, `24 × 24 m` wet field, open Daze field shelter, deterministic rain and restrained 106-instance field-edge vegetation are admitted production blockouts with exact source/import/material/package hashes. The 516-package player advances two fresh campaign transactions, completes the three-pulse Broken Crossing exercise in rain beneath the dry shelter and returns the byte-identical campaign save unchanged. This clears engine/playability, default-white-surface, empty-sky shelter, first motivated-weather and empty-field-edge defects only; historically reviewed figures/formations, final sky/lighting/weather response, final-scene performance/accessibility and human review remain open before “film quality.”
+Current 2026-08-10 checkpoint: the official UE 5.8.1 client compiles, passes exactly 19 native suites, packages and visibly plays. The command weight, fictional earth/wood command ground, `24 × 24 m` wet field, open Daze field shelter, deterministic rain, restrained 106-instance field-edge vegetation, five skeletal council identities and two body-performance loops are admitted production blockouts with exact source/import/package evidence. The 538-package player passes clean smoke and real keyboard progression from Act I Scene 1 to Act II Scene 2 with a verified autosave. Its corrected identity Root preserves full-body deformation through speaker emphasis and settle. This clears the neutral-mannequin and catastrophic deformation defects only; facial/eye/speech, interaction hands, historically reviewed etiquette/formations, final sky/lighting/weather response, final-scene performance/accessibility and human review remain open before “film quality.”
 
 ## Film-feel principles
 

@@ -17,11 +17,17 @@
 #include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiCouncilStagingModel.h"
 #include "ShiCouncilCharacterPresentationModel.h"
+#include "ShiCouncilPerformancePresentationModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiRainPresentationModel.h"
 #include "ShiWetFieldVegetationPresentationModel.h"
 #include "ShiWartableModel.h"
 #include "Engine/SkeletalMesh.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/Skeleton.h"
+#if WITH_EDITOR
+#include "Animation/AnimData/IAnimationDataModel.h"
+#endif
 
 namespace
 {
@@ -311,6 +317,31 @@ bool FShiCouncilCharacterPresentationTest::RunTest(const FString& Parameters)
             TestTrue(*FString::Printf(TEXT("%s engine asset passes bones, materials, bounds and topology"), *CharacterId),
                 FShiCouncilCharacterPresentationModel::ValidateMesh(Presentation, *Mesh, Error));
             if (!Error.IsEmpty()) AddError(Error);
+            const USkeleton* SharedSkeleton = Mesh->GetSkeleton();
+            bool bReferencePoseMatchesSharedSkeleton = SharedSkeleton != nullptr;
+            if (SharedSkeleton)
+            {
+                const FReferenceSkeleton& MeshReference = Mesh->GetRefSkeleton();
+                const FReferenceSkeleton& SkeletonReference = SharedSkeleton->GetReferenceSkeleton();
+                bReferencePoseMatchesSharedSkeleton =
+                    MeshReference.GetRawBoneNum() == SkeletonReference.GetRawBoneNum();
+                for (int32 BoneIndex = 0;
+                    bReferencePoseMatchesSharedSkeleton && BoneIndex < MeshReference.GetRawBoneNum();
+                    ++BoneIndex)
+                {
+                    bReferencePoseMatchesSharedSkeleton =
+                        MeshReference.GetBoneName(BoneIndex) == SkeletonReference.GetBoneName(BoneIndex)
+                        && MeshReference.GetRefBonePose()[BoneIndex].Equals(
+                            SkeletonReference.GetRefBonePose()[BoneIndex], .0001f);
+                }
+                bReferencePoseMatchesSharedSkeleton &=
+                    !SkeletonReference.GetRefBonePose().IsEmpty()
+                    && SkeletonReference.GetRefBonePose()[0].GetScale3D().Equals(FVector::OneVector, .0001f);
+            }
+            TestTrue(*FString::Printf(
+                TEXT("%s mesh and shared Skeleton retain one exact local reference pose with identity Root scale"),
+                *CharacterId),
+                bReferencePoseMatchesSharedSkeleton);
             Skeletons.Add(Mesh->GetSkeleton());
         }
     }
@@ -340,6 +371,141 @@ bool FShiCouncilCharacterPresentationTest::RunTest(const FString& Parameters)
     AssetDrift.MeshPath = TEXT("/Game/Generated/WrongIdentity.WrongIdentity");
     TestFalse(TEXT("wrong or generated character asset is rejected"),
         FShiCouncilCharacterPresentationModel::Validate(AssetDrift, Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCouncilPerformancePresentationTest,
+    "SHI.Cinematic.CouncilPerformancePresentationV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCouncilPerformancePresentationTest::RunTest(const FString& Parameters)
+{
+    const TArray<FString>& RoleIds = FShiCouncilPerformancePresentationModel::CanonicalRoleIds();
+    const TArray<FString> ExpectedRoleIds = {TEXT("attentive-idle"), TEXT("speaker-measured")};
+    TestTrue(TEXT("two exact council body-performance roles remain canonical"), RoleIds == ExpectedRoleIds);
+
+    FString Error;
+    TSet<const USkeleton*> Skeletons;
+    for (const FString& RoleId : RoleIds)
+    {
+        FShiCouncilPerformanceData Performance;
+        TestTrue(*FString::Printf(TEXT("%s performance builds"), *RoleId),
+            FShiCouncilPerformancePresentationModel::Build(RoleId, Performance, Error));
+        if (!Error.IsEmpty()) AddError(Error);
+        TestTrue(*FString::Printf(TEXT("%s performance contract validates"), *RoleId),
+            FShiCouncilPerformancePresentationModel::Validate(Performance, Error));
+        TestEqual(*FString::Printf(TEXT("%s keeps 121 target samples"), *RoleId),
+            Performance.ExpectedSamples, 121);
+        TestTrue(*FString::Printf(TEXT("%s remains a disclosed body-only non-authoritative blockout"), *RoleId),
+            Performance.bLooping && Performance.bBodyOnly && Performance.bSharedSkeleton
+            && !Performance.bRootMotion && !Performance.bFacialPerformance
+            && !Performance.bInteractionAuthority && !Performance.bGameplayAuthority
+            && !Performance.bSaveAuthority && !Performance.bReplicated
+            && !Performance.bHistoricallyReconstructedEtiquette && !Performance.bFinalPerformance
+            && Performance.bWideAndMediumFramingOnly);
+
+        UAnimSequence* Sequence = LoadObject<UAnimSequence>(nullptr, *Performance.AnimationPath);
+        TestNotNull(*FString::Printf(TEXT("%s exact AnimSequence loads"), *RoleId), Sequence);
+        if (Sequence)
+        {
+#if WITH_EDITOR
+            TArray<FName> TrackNames;
+            IAnimationDataModel* DataModel = Sequence->GetDataModel();
+            TestNotNull(*FString::Printf(TEXT("%s exposes editor animation data"), *RoleId), DataModel);
+            if (DataModel) DataModel->GetBoneTrackNames(TrackNames);
+            TestEqual(*FString::Printf(TEXT("%s retains exactly 52 child-body tracks"), *RoleId),
+                TrackNames.Num(), 52);
+            TestFalse(*FString::Printf(TEXT("%s cannot override the admitted reference Root"), *RoleId),
+                TrackNames.Contains(FName(TEXT("Root"))));
+            TestTrue(*FString::Printf(TEXT("%s retains the pelvis/body animation chain"), *RoleId),
+                TrackNames.Contains(FName(TEXT("pelvis"))) && TrackNames.Contains(FName(TEXT("hand_r"))));
+            bool bRotationOnlyChannels = DataModel != nullptr;
+            if (DataModel && Sequence->GetSkeleton())
+            {
+                const FReferenceSkeleton& ReferenceSkeleton = Sequence->GetSkeleton()->GetReferenceSkeleton();
+                const TArray<FTransform>& ReferencePose = ReferenceSkeleton.GetRefBonePose();
+                for (const FName TrackName : TrackNames)
+                {
+                    const int32 BoneIndex = ReferenceSkeleton.FindBoneIndex(TrackName);
+                    TArray<FTransform> Transforms;
+                    DataModel->GetBoneTrackTransforms(TrackName, Transforms);
+                    bRotationOnlyChannels &= ReferencePose.IsValidIndex(BoneIndex)
+                        && Transforms.Num() == Performance.ExpectedSamples;
+                    if (!bRotationOnlyChannels) break;
+                    for (const FTransform& Transform : Transforms)
+                    {
+                        if (!Transform.GetTranslation().Equals(
+                                ReferencePose[BoneIndex].GetTranslation(), .0001f)
+                            || !Transform.GetScale3D().Equals(
+                                ReferencePose[BoneIndex].GetScale3D(), .0001f))
+                        {
+                            bRotationOnlyChannels = false;
+                            break;
+                        }
+                    }
+                    if (!bRotationOnlyChannels) break;
+                }
+            }
+            TestTrue(*FString::Printf(
+                TEXT("%s child positions/scales remain the exact shared reference pose"), *RoleId),
+                bRotationOnlyChannels);
+#endif
+            USkeleton* Skeleton = Sequence->GetSkeleton();
+            TestNotNull(*FString::Printf(TEXT("%s retains the admitted shared Skeleton"), *RoleId), Skeleton);
+            if (Skeleton)
+            {
+                TestTrue(*FString::Printf(TEXT("%s engine asset passes identity, timing and authority"), *RoleId),
+                    FShiCouncilPerformancePresentationModel::ValidateSequence(
+                        Performance, *Sequence, *Skeleton, Error));
+                if (!Error.IsEmpty()) AddError(Error);
+                Skeletons.Add(Skeleton);
+            }
+        }
+    }
+    TestEqual(TEXT("both body performances use one exact engine Skeleton"), Skeletons.Num(), 1);
+
+    FShiCouncilPerformanceData Listener;
+    FShiCouncilPerformanceData Speaker;
+    TestTrue(TEXT("non-speaker maps to attentive performance"),
+        FShiCouncilPerformancePresentationModel::ForParticipant(false, Listener, Error));
+    TestTrue(TEXT("speaker maps to measured performance"),
+        FShiCouncilPerformancePresentationModel::ForParticipant(true, Speaker, Error));
+    TestEqual(TEXT("listener role remains exact"), Listener.RoleId, FString(TEXT("attentive-idle")));
+    TestEqual(TEXT("speaker role remains exact"), Speaker.RoleId, FString(TEXT("speaker-measured")));
+
+    const FString StablePath = Listener.AnimationPath;
+    TestFalse(TEXT("unknown generated performance role is rejected"),
+        FShiCouncilPerformancePresentationModel::Build(TEXT("heroic-flourish"), Listener, Error));
+    TestEqual(TEXT("failed performance build is atomic"), Listener.AnimationPath, StablePath);
+
+    FShiCouncilPerformanceData PathDrift = Speaker;
+    PathDrift.AnimationPath = TEXT("/Game/Generated/Unreviewed.Unreviewed");
+    TestFalse(TEXT("unreviewed generated animation path is rejected"),
+        FShiCouncilPerformancePresentationModel::Validate(PathDrift, Error));
+    FShiCouncilPerformanceData TimingDrift = Speaker;
+    TimingDrift.ExpectedSamples = 120;
+    TestFalse(TEXT("sample-count drift is rejected"),
+        FShiCouncilPerformancePresentationModel::Validate(TimingDrift, Error));
+    FShiCouncilPerformanceData RateDrift = Speaker;
+    RateDrift.ExpectedFramesPerSecond = 60.f;
+    TestFalse(TEXT("frame-rate drift is rejected"),
+        FShiCouncilPerformancePresentationModel::Validate(RateDrift, Error));
+    FShiCouncilPerformanceData RootMotionDrift = Speaker;
+    RootMotionDrift.bRootMotion = true;
+    TestFalse(TEXT("root-motion authority is rejected"),
+        FShiCouncilPerformancePresentationModel::Validate(RootMotionDrift, Error));
+    FShiCouncilPerformanceData HistoricalOverclaim = Speaker;
+    HistoricalOverclaim.bHistoricallyReconstructedEtiquette = true;
+    TestFalse(TEXT("generic gesture cannot become reconstructed 209 BCE etiquette"),
+        FShiCouncilPerformancePresentationModel::Validate(HistoricalOverclaim, Error));
+    FShiCouncilPerformanceData FinalOverclaim = Speaker;
+    FinalOverclaim.bFinalPerformance = true;
+    TestFalse(TEXT("body blockout cannot become final acting without review"),
+        FShiCouncilPerformancePresentationModel::Validate(FinalOverclaim, Error));
+    FShiCouncilPerformanceData AuthorityDrift = Speaker;
+    AuthorityDrift.bGameplayAuthority = true;
+    TestFalse(TEXT("visual performance cannot acquire gameplay authority"),
+        FShiCouncilPerformancePresentationModel::Validate(AuthorityDrift, Error));
     return !HasAnyErrors();
 }
 

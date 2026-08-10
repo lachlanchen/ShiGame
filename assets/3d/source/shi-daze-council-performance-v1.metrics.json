@@ -1,0 +1,92 @@
+{
+  "assetId": "shi-daze-council-performance-v1",
+  "status": "shared-skeleton body performance blockout; not final acting or historical etiquette",
+  "sourceCharacterAsset": "shi-daze-council-characters-v1",
+  "blenderVersion": "4.5.12 LTS",
+  "fps": 30,
+  "startFrame": 1,
+  "endFrame": 121,
+  "sampleCount": 121,
+  "durationSeconds": 4.0,
+  "sharedSkeletonBones": 53,
+  "rootMotion": false,
+  "facialAnimation": false,
+  "clothOrHairSimulation": false,
+  "gameplayAuthority": false,
+  "clips": [
+    {
+      "role": "attentive-idle",
+      "action": "AN_SHI_DazeCouncil_AttentiveIdle_01",
+      "authoredFrames": [
+        1,
+        31,
+        61,
+        91,
+        121
+      ],
+      "exports": {
+        "fbx": {
+          "file": "assets/3d/export/shi-daze-council-performance-v1-attentive-idle.fbx",
+          "bytes": 3282476,
+          "sha256": "e923d0d6caf82fd8b453b918f92e1055b544a0b3cb87c0e77c2b906e907a0046"
+        },
+        "glb": {
+          "file": "assets/3d/export/shi-daze-council-performance-v1-attentive-idle.glb",
+          "bytes": 1137980,
+          "sha256": "0ab837b0c225f26cba6dcd744709eac21a0016dd1698f33cf215a230ea12568b"
+        }
+      }
+    },
+    {
+      "role": "speaker-measured",
+      "action": "AN_SHI_DazeCouncil_SpeakerMeasured_01",
+      "authoredFrames": [
+        1,
+        21,
+        46,
+        76,
+        101,
+        121
+      ],
+      "exports": {
+        "fbx": {
+          "file": "assets/3d/export/shi-daze-council-performance-v1-speaker-measured.fbx",
+          "bytes": 3286748,
+          "sha256": "d9f9f836d06d6ad0ca99b36db65b5758f742e1d34b153b6e7df72278787f5acb"
+        },
+        "glb": {
+          "file": "assets/3d/export/shi-daze-council-performance-v1-speaker-measured.glb",
+          "bytes": 1145068,
+          "sha256": "5c0016152d09976e6013529b41416d4081eaff0f5597c3eec09145271ec57ac0"
+        }
+      }
+    }
+  ],
+  "source": {
+    "file": "assets/3d/rendered/shi-daze-council-performance-v1.blend",
+    "bytes": 19927841,
+    "sha256": "feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743"
+  },
+  "renders": {
+    "attentive": {
+      "file": "assets/3d/rendered/shi-daze-council-performance-v1-attentive-frame-031.png",
+      "bytes": 1944363,
+      "sha256": "b4f6c13c08b8f2cd6bb1143436391276310ab70bd9d96a94542b31766ae91bce"
+    },
+    "speakerEmphasis": {
+      "file": "assets/3d/rendered/shi-daze-council-performance-v1-speaker-frame-046.png",
+      "bytes": 1944448,
+      "sha256": "7f7bae0b544e4b8b0ddb30426721d976e7a80e89fa50a944c7a7381d86cf2a17"
+    },
+    "speakerSettle": {
+      "file": "assets/3d/rendered/shi-daze-council-performance-v1-speaker-frame-076.png",
+      "bytes": 1945119,
+      "sha256": "f412a4d03040e20002fb5236a7ad1b812e4164b32b8ebcdf07c4b14aac03d4d6"
+    }
+  },
+  "limitations": [
+    "body performance only: no facial, speech, interaction, cloth or hair performance",
+    "generic blockout motion: not reconstructed late-Qin etiquette or final acting",
+    "wide and medium council framing only"
+  ]
+}

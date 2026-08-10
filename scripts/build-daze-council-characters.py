@@ -620,27 +620,27 @@ def export_character(character: dict, export_root: Path) -> dict[str, dict]:
     armature = character["armature"]
     original_armature_name = armature.name
     armature.name = "Armature"
-    original_armature_scale = armature.scale.copy()
     try:
-        # Unreal maps one numeric FBX unit to one centimetre for this skeletal
-        # path even when Blender writes metre metadata. Scale the complete bound
-        # hierarchy at its armature root for FBX only, preserving mesh/bone bind
-        # matrices and restoring the metre-native source before GLB.
-        armature.scale = original_armature_scale * 100.0
+        # Encode the metre-to-centimetre relationship as FBX global scaling,
+        # never as a scaled armature object. Unreal's Blender compatibility path
+        # retains the reviewed metre-valued local bounds while FBX_SCALE_ALL
+        # keeps the imported skeletal Root at identity scale. Object-scale x100
+        # produced a Root scale of 10,000: neutral bind cancellation looked
+        # correct, but even restrained bone rotations catastrophically stretched
+        # the skin.
         select_character(character)
         bpy.ops.export_scene.fbx(
             filepath=str(fbx_path), use_selection=True, object_types={"ARMATURE", "MESH"},
-            apply_unit_scale=True, axis_forward="-Z", axis_up="Y", add_leaf_bones=False,
+            global_scale=100.0, apply_unit_scale=True, apply_scale_options="FBX_SCALE_ALL",
+            axis_forward="-Z", axis_up="Y", add_leaf_bones=False,
             bake_anim=False, mesh_smooth_type="FACE", use_tspace=False, armature_nodetype="NULL",
         )
-        armature.scale = original_armature_scale
         select_character(character)
         bpy.ops.export_scene.gltf(
             filepath=str(glb_path), export_format="GLB", use_selection=True,
             export_skins=True, export_animations=False, export_apply=False, export_yup=True,
         )
     finally:
-        armature.scale = original_armature_scale
         armature.name = original_armature_name
     outputs = {}
     for kind, path in (("fbx", fbx_path), ("glb", glb_path)):

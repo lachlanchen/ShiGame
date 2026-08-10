@@ -8,6 +8,7 @@
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class USceneComponent;
+class UAnimSequence;
 class USkeletalMesh;
 class USkeletalMeshComponent;
 class UStaticMesh;
@@ -27,6 +28,8 @@ public:
     const FString& GetSlotId() const { return SlotId; }
     const FString& GetCharacterId() const { return CharacterId; }
     bool IsUsingSkeletalPresentation() const { return bUsingSkeletalPresentation; }
+    bool IsUsingPerformance() const { return bUsingPerformance; }
+    const FString& GetPerformanceRoleId() const { return PerformanceRoleId; }
 
 private:
     UPROPERTY(VisibleAnywhere)
@@ -47,7 +50,11 @@ private:
     TObjectPtr<UMaterialInstanceDynamic> MantleMaterial;
     UPROPERTY(Transient)
     TMap<FString, TObjectPtr<USkeletalMesh>> CharacterMeshes;
+    UPROPERTY(Transient)
+    TMap<FString, TObjectPtr<UAnimSequence>> PerformanceClips;
     FString SlotId;
     FString CharacterId;
+    FString PerformanceRoleId;
     bool bUsingSkeletalPresentation = false;
+    bool bUsingPerformance = false;
 };
