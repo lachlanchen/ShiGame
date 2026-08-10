@@ -84,6 +84,12 @@ This is the first usable object from the evaluated lane, but its status remains 
 
 This closes the technical engine-admission loop for one object without adopting a neural repository as production infrastructure. Runtime placement, authored final Unreal PBR materials, a visible 44° council-lens inspection, scene-level performance measurement and human cinematic review remain mandatory. The repeatable generator, validator, importer, renders, exports, Unreal assets, provenance and package receipts live in the repository.
 
+## Deterministic vegetation checkpoint
+
+The next usable scene object deliberately bypassed neural generation. Two simple wet-field silhouette families were authored by deterministic Blender Python, inspected through clean GLB/FBX round trips, and imported as exact low-cost Unreal LODs. A texture-free 15-node engine material uses authored vertex alpha for `2.4 cm` maximum GPU-only wind; native HISM placement fixes 42 taller clumps and 64 low tufts while excluding the shelter/command center and diagonal approach.
+
+This route was selected because an open-source image-to-3D model offered no advantage for sparse planar vegetation and would introduce invented species detail, retopology burden and material uncertainty. The result is still only a production vegetation blockout. It is useful evidence for the tool policy: choose the smallest controlled production method object by object, and accept an external AI repository only when it improves the reviewed result rather than merely adding sophistication. The exact source, clean-import validation, Unreal graphs, native hostile tests, 516-package cook and full playable-route evidence are hash-bound in `assets/provenance/shi-daze-wet-field-vegetation-v1.json`.
+
 ## Runtime game-AI policy
 
 No external generative agent is accepted into the runtime campaign. SHI's player-visible choices, opponent reads, uncertainty, engagement commands, save/replay and historical disclosures remain deterministic and testable. Offline AI may propose prose, poses, props or shots, but canonical story and gameplay change only through the same authored schema, source-claim closure, replay corpus and review gates used today.

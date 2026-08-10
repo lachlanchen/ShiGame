@@ -36,6 +36,8 @@
 #include "ShiOrderTransactionModel.h"
 #include "ShiRainField.h"
 #include "ShiRainPresentationModel.h"
+#include "ShiWetFieldVegetation.h"
+#include "ShiWetFieldVegetationPresentationModel.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiWartableModel.h"
 
@@ -61,6 +63,7 @@ void AShiGameMode::BeginPlay()
     bWetFieldEnvironmentReview = FParse::Param(FCommandLine::Get(), TEXT("ShiWetFieldEnvironmentReview"));
     bDazeFieldShelterReview = FParse::Param(FCommandLine::Get(), TEXT("ShiDazeFieldShelterReview"));
     bRainVfxReview = FParse::Param(FCommandLine::Get(), TEXT("ShiRainVfxReview"));
+    bWetFieldVegetationReview = FParse::Param(FCommandLine::Get(), TEXT("ShiWetFieldVegetationReview"));
 #endif
     LoadCinematicPreferences();
     if (!Campaign.LoadCanonical(LoadError))
@@ -103,7 +106,7 @@ void AShiGameMode::BeginPlay()
     }
 
     if (!bCommandWeightReview && !bCommandSurfaceReview && !bWetFieldEnvironmentReview
-        && !bDazeFieldShelterReview && !bRainVfxReview
+        && !bDazeFieldShelterReview && !bRainVfxReview && !bWetFieldVegetationReview
         && GEngine && GEngine->GameViewport)
     {
         SAssignNew(CommandScreen, SShiCommandScreen).GameMode(this);
@@ -1377,6 +1380,28 @@ void AShiGameMode::CreateCommandSpace()
     Rain->Tags.Add(FName(TEXT("ShiPresentation:NonAuthoritative")));
     Rain->Tags.Add(FName(TEXT("ShiArtStatus:ProductionVfxBlockout")));
     RainField = Rain;
+    const FShiWetFieldVegetationPresentationData VegetationPresentation =
+        FShiWetFieldVegetationPresentationModel::Build();
+    FString VegetationError;
+    if (!FShiWetFieldVegetationPresentationModel::Validate(VegetationPresentation, VegetationError))
+    {
+        LoadError = FString::Printf(TEXT("Wet-field vegetation presentation rejected: %s"), *VegetationError);
+        return;
+    }
+    AShiWetFieldVegetation* Vegetation = World->SpawnActor<AShiWetFieldVegetation>(
+        VegetationPresentation.Transform.GetLocation(), VegetationPresentation.Transform.Rotator());
+    if (!Vegetation || !Vegetation->Initialize(VegetationPresentation, VegetationError))
+    {
+        if (Vegetation) Vegetation->Destroy();
+        LoadError = FString::Printf(TEXT("Wet-field vegetation could not initialize: %s"), *VegetationError);
+        return;
+    }
+    Vegetation->SetActorScale3D(VegetationPresentation.Transform.GetScale3D());
+    Vegetation->SetActorEnableCollision(false);
+    Vegetation->Tags.Add(FName(TEXT("ShiEnvironment:WetFieldVegetation")));
+    Vegetation->Tags.Add(FName(TEXT("ShiPresentation:NonAuthoritative")));
+    Vegetation->Tags.Add(FName(TEXT("ShiArtStatus:ProductionVegetationBlockout")));
+    WetFieldVegetation = Vegetation;
     const FShiCommandSurfacePresentationData CommandSurfacePresentation = FShiCommandSurfacePresentationModel::Build();
     FString CommandSurfaceError;
     if (!FShiCommandSurfacePresentationModel::Validate(CommandSurfacePresentation, Campaign.Sites,
@@ -1595,7 +1620,12 @@ void AShiGameMode::CreateCommandSpace()
         LoadError = FString::Printf(TEXT("Live council staging rejected: %s"), *CouncilError);
         return;
     }
-    if (bRainVfxReview)
+    if (bWetFieldVegetationReview)
+    {
+        SetCameraImmediate(FShiWetFieldVegetationPresentationModel::ReviewCameraTransform(),
+            FShiWetFieldVegetationPresentationModel::ReviewFieldOfViewDegrees());
+    }
+    else if (bRainVfxReview)
     {
         SetCameraImmediate(FShiRainPresentationModel::ReviewCameraTransform(),
             FShiRainPresentationModel::ReviewFieldOfViewDegrees());

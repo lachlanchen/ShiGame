@@ -17,6 +17,7 @@ class ACameraActor;
 class APlayerController;
 class AShiCouncilFigure;
 class AShiRainField;
+class AShiWetFieldVegetation;
 class AStaticMeshActor;
 class UShiSoundscapeComponent;
 
@@ -119,6 +120,7 @@ private:
     bool bWetFieldEnvironmentReview = false;
     bool bDazeFieldShelterReview = false;
     bool bRainVfxReview = false;
+    bool bWetFieldVegetationReview = false;
     int32 SelectedEngagementCommandIndex = 0;
     FString EngagementCampaignSnapshot;
     TArray<FShiEngagementSignalData> EngagementSignals;
@@ -139,6 +141,7 @@ private:
     TWeakObjectPtr<AStaticMeshActor> WetFieldEnvironmentProp;
     TWeakObjectPtr<AStaticMeshActor> DazeFieldShelterProp;
     TWeakObjectPtr<AShiRainField> RainField;
+    TWeakObjectPtr<AShiWetFieldVegetation> WetFieldVegetation;
     FShiCouncilStageData CouncilStage;
     TArray<FShiCinematicBeatData> CinematicBeats;
     int32 CinematicBeatIndex = INDEX_NONE;

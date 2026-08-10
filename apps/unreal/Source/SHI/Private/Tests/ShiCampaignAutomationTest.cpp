@@ -18,6 +18,7 @@
 #include "ShiCouncilStagingModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiRainPresentationModel.h"
+#include "ShiWetFieldVegetationPresentationModel.h"
 #include "ShiWartableModel.h"
 
 namespace
@@ -499,6 +500,134 @@ bool FShiDazeRainPresentationTest::RunTest(const FString& Parameters)
     RoofLeak.ShelterRoofIntercept = Presentation.GroundIntercept;
     TestFalse(TEXT("a rain field that leaks through the shelter is rejected"),
         FShiRainPresentationModel::Validate(RoofLeak, Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiWetFieldVegetationPresentationTest,
+    "SHI.Cinematic.WetFieldVegetationPresentationV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiWetFieldVegetationPresentationTest::RunTest(const FString& Parameters)
+{
+    const FShiWetFieldVegetationPresentationData Presentation =
+        FShiWetFieldVegetationPresentationModel::Build();
+    FString Error;
+    TestTrue(TEXT("reviewed generic wet-field vegetation passes its disclosed presentation contract"),
+        FShiWetFieldVegetationPresentationModel::Validate(Presentation, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestTrue(TEXT("vegetation retains exact deterministic HISM budgets"),
+        Presentation.StalkInstanceCount == 42 && Presentation.TuftInstanceCount == 64
+        && Presentation.Seed == FShiWetFieldVegetationPresentationModel::Seed());
+    TestTrue(TEXT("material wind is bounded, horizontal and GPU-only"),
+        Presentation.bMaterialWindOnly && !Presentation.bCpuAnimated
+        && Presentation.WindDirection.Equals(FVector(1.f, .35f, 0.f), .001f)
+        && FMath::IsNearlyEqual(Presentation.WindSpeed, .38f, .001f)
+        && FMath::IsNearlyEqual(Presentation.WindAmplitude, 2.4f, .001f));
+    TestFalse(TEXT("generic forms are not presented as an exact botanical reconstruction"),
+        Presentation.bExactBotanicalReconstruction);
+    TestFalse(TEXT("vegetation remains explicitly below final-art status"), Presentation.bFinalArt);
+    TestFalse(TEXT("vegetation is not interactive"), Presentation.bInteractive);
+    TestFalse(TEXT("vegetation collision is disabled"), Presentation.bCollisionEnabled);
+    TestFalse(TEXT("vegetation does not affect navigation"), Presentation.bAffectsNavigation);
+    TestFalse(TEXT("vegetation does not affect campaign or engagement authority"), Presentation.bAffectsGameplay);
+    TestFalse(TEXT("vegetation state is never serialized"), Presentation.bSerialized);
+    TestFalse(TEXT("vegetation does not replicate"), Presentation.bReplicated);
+    TestTrue(TEXT("vegetation persists through the Broken Crossing exercise"), Presentation.bVisibleDuringEngagement);
+
+    TestFalse(TEXT("the shelter and command work area remain clear"),
+        FShiWetFieldVegetationPresentationModel::IsRootAdmitted(FVector2D::ZeroVector));
+    TestFalse(TEXT("the compacted approach corridor remains clear"),
+        FShiWetFieldVegetationPresentationModel::IsRootAdmitted(FVector2D(500.f, 140.f)));
+    TestFalse(TEXT("the wet-field edge margin remains clear"),
+        FShiWetFieldVegetationPresentationModel::IsRootAdmitted(FVector2D(1126.f, 0.f)));
+    TestTrue(TEXT("an admitted peripheral field root remains available"),
+        FShiWetFieldVegetationPresentationModel::IsRootAdmitted(FVector2D(800.f, -650.f)));
+
+    const TArray<FTransform> Stalks =
+        FShiWetFieldVegetationPresentationModel::BuildStalkTransforms(Presentation);
+    const TArray<FTransform> RepeatedStalks =
+        FShiWetFieldVegetationPresentationModel::BuildStalkTransforms(Presentation);
+    const TArray<FTransform> Tufts =
+        FShiWetFieldVegetationPresentationModel::BuildTuftTransforms(Presentation);
+    TestTrue(TEXT("deterministic placement fills exactly 42 stalks and 64 low tufts"),
+        Stalks.Num() == 42 && Tufts.Num() == 64 && RepeatedStalks.Num() == Stalks.Num());
+    bool bRepeatedExactly = RepeatedStalks.Num() == Stalks.Num();
+    bool bAllRootsAndScalesAdmitted = true;
+    for (int32 Index = 0; Index < Stalks.Num(); ++Index)
+    {
+        bRepeatedExactly &= Stalks[Index].Equals(RepeatedStalks[Index], .0001f);
+        const FVector Location = Stalks[Index].GetLocation();
+        const float Scale = Stalks[Index].GetScale3D().X;
+        bAllRootsAndScalesAdmitted &=
+            FShiWetFieldVegetationPresentationModel::IsRootAdmitted(FVector2D(Location.X, Location.Y))
+            && FMath::IsNearlyEqual(Location.Z, -7.6f, .001f)
+            && Scale >= .72f && Scale <= 1.06f;
+    }
+    for (const FTransform& Transform : Tufts)
+    {
+        const FVector Location = Transform.GetLocation();
+        const float Scale = Transform.GetScale3D().X;
+        bAllRootsAndScalesAdmitted &=
+            FShiWetFieldVegetationPresentationModel::IsRootAdmitted(FVector2D(Location.X, Location.Y))
+            && FMath::IsNearlyEqual(Location.Z, -7.6f, .001f)
+            && Scale >= .70f && Scale <= 1.12f;
+    }
+    TestTrue(TEXT("placement repeats bit-for-bit for the reviewed seed"), bRepeatedExactly);
+    TestTrue(TEXT("every generated root preserves edge, shelter, route and scale bounds"),
+        bAllRootsAndScalesAdmitted);
+
+    const FTransform ReviewCamera = FShiWetFieldVegetationPresentationModel::ReviewCameraTransform();
+    const FVector ReviewTarget(0.f, 0.f, 55.f);
+    TestTrue(TEXT("vegetation review camera holds both field edges and the protected center"),
+        FVector::DotProduct(ReviewCamera.GetRotation().GetForwardVector(),
+            (ReviewTarget - ReviewCamera.GetLocation()).GetSafeNormal()) > .9999f
+        && FVector::Dist(ReviewCamera.GetLocation(), ReviewTarget) > 2300.f
+        && FMath::IsNearlyEqual(FShiWetFieldVegetationPresentationModel::ReviewFieldOfViewDegrees(), 52.f));
+
+    FShiWetFieldVegetationPresentationData Scaled = Presentation;
+    Scaled.Transform.SetScale3D(FVector(1.01f));
+    TestFalse(TEXT("unreviewed vegetation-field scaling is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(Scaled, Error));
+    FShiWetFieldVegetationPresentationData Oversubscribed = Presentation;
+    Oversubscribed.TuftInstanceCount += 1;
+    TestFalse(TEXT("an oversized vegetation budget is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(Oversubscribed, Error));
+    FShiWetFieldVegetationPresentationData ClearanceDrift = Presentation;
+    ClearanceDrift.CentralExclusionHalfExtent.X = 419.f;
+    TestFalse(TEXT("vegetation entering the shelter envelope is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(ClearanceDrift, Error));
+    FShiWetFieldVegetationPresentationData CpuSway = Presentation;
+    CpuSway.bCpuAnimated = true;
+    TestFalse(TEXT("CPU per-instance vegetation sway is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(CpuSway, Error));
+    FShiWetFieldVegetationPresentationData WindDrift = Presentation;
+    WindDrift.WindAmplitude = 12.f;
+    TestFalse(TEXT("storm-thrashing wind amplitude is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(WindDrift, Error));
+    FShiWetFieldVegetationPresentationData Colliding = Presentation;
+    Colliding.bCollisionEnabled = true;
+    TestFalse(TEXT("vegetation collision authority is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(Colliding, Error));
+    FShiWetFieldVegetationPresentationData Authoritative = Presentation;
+    Authoritative.bAffectsGameplay = true;
+    TestFalse(TEXT("hidden vegetation gameplay authority is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(Authoritative, Error));
+    FShiWetFieldVegetationPresentationData Replicated = Presentation;
+    Replicated.bReplicated = true;
+    TestFalse(TEXT("replicated cosmetic vegetation is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(Replicated, Error));
+    FShiWetFieldVegetationPresentationData FalseHistory = Presentation;
+    FalseHistory.bExactBotanicalReconstruction = true;
+    TestFalse(TEXT("an unsupported exact botanical claim is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(FalseHistory, Error));
+    FShiWetFieldVegetationPresentationData PrematureFinal = Presentation;
+    PrematureFinal.bFinalArt = true;
+    TestFalse(TEXT("premature final-vegetation status is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(PrematureFinal, Error));
+    FShiWetFieldVegetationPresentationData HiddenExercise = Presentation;
+    HiddenExercise.bVisibleDuringEngagement = false;
+    TestFalse(TEXT("vegetation disappearing during the engagement is rejected"),
+        FShiWetFieldVegetationPresentationModel::Validate(HiddenExercise, Error));
     return !HasAnyErrors();
 }
 

@@ -1,0 +1,448 @@
+{
+  "assetId": "shi-daze-wet-field-vegetation-v1",
+  "validator": "clean Blender GLB/FBX import plus topology, dual-UV/island, vertex-wind-mask, material and bounds inspection",
+  "blender": "4.0.2",
+  "exports": [
+    {
+      "path": "export/shi-daze-wet-field-vegetation-v1-stalk-lod0.glb",
+      "label": "stalk-lod0",
+      "object": "SM_SHI_FieldStalkClump_01_LOD0",
+      "triangles": 84,
+      "vertices": 168,
+      "boundsMeters": {
+        "minimum": [
+          -0.3400000035762787,
+          -0.30000001192092896,
+          0.0
+        ],
+        "maximum": [
+          0.3400000035762787,
+          0.3100000023841858,
+          1.350000023841858
+        ],
+        "dimensions": [
+          0.6800000071525574,
+          0.6100000143051147,
+          1.350000023841858
+        ]
+      },
+      "materials": [
+        "M_SHI_RainDarkenedFieldPlant"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001"
+      ],
+      "colorAttributes": [
+        "Col"
+      ],
+      "alphaRange": [
+        0.0,
+        1.0
+      ],
+      "minimumTriangleArea": 0.0008675612868716748,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "nonOverlappingLightmapIslands": true,
+        "vertexWindMaskPresent": true,
+        "rootLockedTipFree": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true,
+        "noArmatureOrAnimation": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-wet-field-vegetation-v1-stalk-lod0.fbx",
+      "label": "stalk-lod0",
+      "object": "SM_SHI_FieldStalkClump_01_LOD0",
+      "triangles": 84,
+      "vertices": 112,
+      "boundsMeters": {
+        "minimum": [
+          -0.3400000035762787,
+          -0.30000001192092896,
+          -1.3550530475470168e-08
+        ],
+        "maximum": [
+          0.3400000035762787,
+          0.31000006198883057,
+          1.350000023841858
+        ],
+        "dimensions": [
+          0.6800000071525574,
+          0.6100000739097595,
+          1.3500000373923884
+        ]
+      },
+      "materials": [
+        "M_SHI_RainDarkenedFieldPlant"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "LightmapUV"
+      ],
+      "colorAttributes": [
+        "ShiPlantWind"
+      ],
+      "alphaRange": [
+        0.0,
+        1.0
+      ],
+      "minimumTriangleArea": 0.0008675612868716748,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "nonOverlappingLightmapIslands": true,
+        "vertexWindMaskPresent": true,
+        "rootLockedTipFree": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true,
+        "noArmatureOrAnimation": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-wet-field-vegetation-v1-stalk-lod1.glb",
+      "label": "stalk-lod1",
+      "object": "SM_SHI_FieldStalkClump_01_LOD1",
+      "triangles": 28,
+      "vertices": 56,
+      "boundsMeters": {
+        "minimum": [
+          -0.3400000035762787,
+          -0.30000001192092896,
+          0.0
+        ],
+        "maximum": [
+          0.3400000035762787,
+          0.3100000023841858,
+          1.350000023841858
+        ],
+        "dimensions": [
+          0.6800000071525574,
+          0.6100000143051147,
+          1.350000023841858
+        ]
+      },
+      "materials": [
+        "M_SHI_RainDarkenedFieldPlant"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001"
+      ],
+      "colorAttributes": [
+        "Col"
+      ],
+      "alphaRange": [
+        0.0,
+        1.0
+      ],
+      "minimumTriangleArea": 0.0008659423635145946,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "nonOverlappingLightmapIslands": true,
+        "vertexWindMaskPresent": true,
+        "rootLockedTipFree": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true,
+        "noArmatureOrAnimation": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-wet-field-vegetation-v1-stalk-lod1.fbx",
+      "label": "stalk-lod1",
+      "object": "SM_SHI_FieldStalkClump_01_LOD1",
+      "triangles": 28,
+      "vertices": 42,
+      "boundsMeters": {
+        "minimum": [
+          -0.3400000035762787,
+          -0.30000001192092896,
+          -1.3550530475470168e-08
+        ],
+        "maximum": [
+          0.3400000035762787,
+          0.31000006198883057,
+          1.350000023841858
+        ],
+        "dimensions": [
+          0.6800000071525574,
+          0.6100000739097595,
+          1.3500000373923884
+        ]
+      },
+      "materials": [
+        "M_SHI_RainDarkenedFieldPlant"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "LightmapUV"
+      ],
+      "colorAttributes": [
+        "ShiPlantWind"
+      ],
+      "alphaRange": [
+        0.0,
+        1.0
+      ],
+      "minimumTriangleArea": 0.0008659423635145946,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "nonOverlappingLightmapIslands": true,
+        "vertexWindMaskPresent": true,
+        "rootLockedTipFree": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true,
+        "noArmatureOrAnimation": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-wet-field-vegetation-v1-tuft-lod0.glb",
+      "label": "tuft-lod0",
+      "object": "SM_SHI_LowBladeTuft_01_LOD0",
+      "triangles": 64,
+      "vertices": 128,
+      "boundsMeters": {
+        "minimum": [
+          -0.44999998807907104,
+          -0.44999998807907104,
+          0.0
+        ],
+        "maximum": [
+          0.44999998807907104,
+          0.44999998807907104,
+          0.5199999809265137
+        ],
+        "dimensions": [
+          0.8999999761581421,
+          0.8999999761581421,
+          0.5199999809265137
+        ]
+      },
+      "materials": [
+        "M_SHI_RainDarkenedFieldPlant"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001"
+      ],
+      "colorAttributes": [
+        "Col"
+      ],
+      "alphaRange": [
+        0.0,
+        1.0
+      ],
+      "minimumTriangleArea": 0.0011363974035522872,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "nonOverlappingLightmapIslands": true,
+        "vertexWindMaskPresent": true,
+        "rootLockedTipFree": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true,
+        "noArmatureOrAnimation": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-wet-field-vegetation-v1-tuft-lod0.fbx",
+      "label": "tuft-lod0",
+      "object": "SM_SHI_LowBladeTuft_01_LOD0",
+      "triangles": 64,
+      "vertices": 96,
+      "boundsMeters": {
+        "minimum": [
+          -0.44999998807907104,
+          -0.44999998807907104,
+          -1.9670125084303436e-08
+        ],
+        "maximum": [
+          0.44999998807907104,
+          0.45000001788139343,
+          0.5199999809265137
+        ],
+        "dimensions": [
+          0.8999999761581421,
+          0.9000000059604645,
+          0.5200000005966388
+        ]
+      },
+      "materials": [
+        "M_SHI_RainDarkenedFieldPlant"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "LightmapUV"
+      ],
+      "colorAttributes": [
+        "ShiPlantWind"
+      ],
+      "alphaRange": [
+        0.0,
+        1.0
+      ],
+      "minimumTriangleArea": 0.0011363974035522872,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "nonOverlappingLightmapIslands": true,
+        "vertexWindMaskPresent": true,
+        "rootLockedTipFree": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true,
+        "noArmatureOrAnimation": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-wet-field-vegetation-v1-tuft-lod1.glb",
+      "label": "tuft-lod1",
+      "object": "SM_SHI_LowBladeTuft_01_LOD1",
+      "triangles": 14,
+      "vertices": 28,
+      "boundsMeters": {
+        "minimum": [
+          -0.44999998807907104,
+          -0.44999998807907104,
+          0.0
+        ],
+        "maximum": [
+          0.44999998807907104,
+          0.44999998807907104,
+          0.5199999809265137
+        ],
+        "dimensions": [
+          0.8999999761581421,
+          0.8999999761581421,
+          0.5199999809265137
+        ]
+      },
+      "materials": [
+        "M_SHI_RainDarkenedFieldPlant"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001"
+      ],
+      "colorAttributes": [
+        "Col"
+      ],
+      "alphaRange": [
+        0.0,
+        1.0
+      ],
+      "minimumTriangleArea": 0.002561477351776116,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "nonOverlappingLightmapIslands": true,
+        "vertexWindMaskPresent": true,
+        "rootLockedTipFree": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true,
+        "noArmatureOrAnimation": true
+      },
+      "passed": true
+    },
+    {
+      "path": "export/shi-daze-wet-field-vegetation-v1-tuft-lod1.fbx",
+      "label": "tuft-lod1",
+      "object": "SM_SHI_LowBladeTuft_01_LOD1",
+      "triangles": 14,
+      "vertices": 28,
+      "boundsMeters": {
+        "minimum": [
+          -0.44999998807907104,
+          -0.44999998807907104,
+          -1.9670125084303436e-08
+        ],
+        "maximum": [
+          0.44999998807907104,
+          0.45000001788139343,
+          0.5199999809265137
+        ],
+        "dimensions": [
+          0.8999999761581421,
+          0.9000000059604645,
+          0.5200000005966388
+        ]
+      },
+      "materials": [
+        "M_SHI_RainDarkenedFieldPlant"
+      ],
+      "uvLayers": [
+        "UVMap",
+        "LightmapUV"
+      ],
+      "colorAttributes": [
+        "ShiPlantWind"
+      ],
+      "alphaRange": [
+        0.0,
+        1.0
+      ],
+      "minimumTriangleArea": 0.002561477351776116,
+      "checks": {
+        "singleRenderMesh": true,
+        "collisionAbsent": true,
+        "exactTriangleCount": true,
+        "exactReferenceBounds": true,
+        "singleExpectedMaterial": true,
+        "uv0AndLightmapUv": true,
+        "nonOverlappingLightmapIslands": true,
+        "vertexWindMaskPresent": true,
+        "rootLockedTipFree": true,
+        "nonDegenerateTriangles": true,
+        "appliedIdentity": true,
+        "noArmatureOrAnimation": true
+      },
+      "passed": true
+    }
+  ],
+  "checks": {
+    "allEightExportsPass": true,
+    "exactAuthoredTriangles": true,
+    "lodReduction": true,
+    "boundedRuntimeInstances": true,
+    "exactGpuWindDefaults": true,
+    "explicitBotanicalBoundary": true
+  },
+  "passed": true
+}

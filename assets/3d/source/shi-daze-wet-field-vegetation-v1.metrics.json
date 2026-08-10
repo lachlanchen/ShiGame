@@ -1,0 +1,116 @@
+{
+  "assetId": "shi-daze-wet-field-vegetation-v1",
+  "blender": "4.0.2",
+  "generator": "build-daze-wet-field-vegetation.py",
+  "rootIntent": "deterministic texture-free generic wet-field vegetation production blockout",
+  "historicalStatus": "generic rain-flattened field-edge forms; not an exact botanical reconstruction",
+  "material": "M_SHI_RainDarkenedFieldPlant",
+  "vertexColor": "ShiPlantWind",
+  "runtime": {
+    "seed": "0x5EED20A",
+    "stalkInstances": 42,
+    "tuftInstances": 64,
+    "fieldRootHalfExtentCentimeters": 1125.0,
+    "centralExclusionHalfExtentCentimeters": [
+      520.0,
+      440.0
+    ],
+    "routeSlope": 0.28,
+    "routeHalfWidthCentimeters": 115.0,
+    "windSpeed": 0.38,
+    "windAmplitudeCentimeters": 2.4,
+    "windDirection": [
+      1.0,
+      0.35,
+      0.0
+    ]
+  },
+  "meshes": {
+    "stalk": {
+      "lod0Triangles": 84,
+      "lod1Triangles": 28,
+      "lod0BoundsMeters": {
+        "minimum": [
+          -0.3400000035762787,
+          -0.30000001192092896,
+          0.0
+        ],
+        "maximum": [
+          0.3400000035762787,
+          0.3100000023841858,
+          1.350000023841858
+        ],
+        "dimensions": [
+          0.6800000071525574,
+          0.6100000143051147,
+          1.350000023841858
+        ]
+      },
+      "lod1BoundsMeters": {
+        "minimum": [
+          -0.3400000035762787,
+          -0.30000001192092896,
+          0.0
+        ],
+        "maximum": [
+          0.3400000035762787,
+          0.3100000023841858,
+          1.350000023841858
+        ],
+        "dimensions": [
+          0.6800000071525574,
+          0.6100000143051147,
+          1.350000023841858
+        ]
+      }
+    },
+    "tuft": {
+      "lod0Triangles": 64,
+      "lod1Triangles": 14,
+      "lod0BoundsMeters": {
+        "minimum": [
+          -0.44999998807907104,
+          -0.44999998807907104,
+          0.0
+        ],
+        "maximum": [
+          0.44999998807907104,
+          0.44999998807907104,
+          0.5199999809265137
+        ],
+        "dimensions": [
+          0.8999999761581421,
+          0.8999999761581421,
+          0.5199999809265137
+        ]
+      },
+      "lod1BoundsMeters": {
+        "minimum": [
+          -0.44999998807907104,
+          -0.44999998807907104,
+          0.0
+        ],
+        "maximum": [
+          0.44999998807907104,
+          0.44999998807907104,
+          0.5199999809265137
+        ],
+        "dimensions": [
+          0.8999999761581421,
+          0.8999999761581421,
+          0.5199999809265137
+        ]
+      }
+    }
+  },
+  "exports": [
+    "shi-daze-wet-field-vegetation-v1-stalk-lod0.glb",
+    "shi-daze-wet-field-vegetation-v1-stalk-lod0.fbx",
+    "shi-daze-wet-field-vegetation-v1-stalk-lod1.glb",
+    "shi-daze-wet-field-vegetation-v1-stalk-lod1.fbx",
+    "shi-daze-wet-field-vegetation-v1-tuft-lod0.glb",
+    "shi-daze-wet-field-vegetation-v1-tuft-lod0.fbx",
+    "shi-daze-wet-field-vegetation-v1-tuft-lod1.glb",
+    "shi-daze-wet-field-vegetation-v1-tuft-lod1.fbx"
+  ]
+}

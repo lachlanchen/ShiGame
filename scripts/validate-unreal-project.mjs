@@ -18,6 +18,8 @@ const required = [
   "Source/SHI/ShiDazeFieldShelterPresentationModel.h", "Source/SHI/ShiDazeFieldShelterPresentationModel.cpp",
   "Source/SHI/ShiRainPresentationModel.h", "Source/SHI/ShiRainPresentationModel.cpp",
   "Source/SHI/ShiRainField.h", "Source/SHI/ShiRainField.cpp",
+  "Source/SHI/ShiWetFieldVegetationPresentationModel.h", "Source/SHI/ShiWetFieldVegetationPresentationModel.cpp",
+  "Source/SHI/ShiWetFieldVegetation.h", "Source/SHI/ShiWetFieldVegetation.cpp",
   "Source/SHI/ShiCommandWeightPresentationModel.h", "Source/SHI/ShiCommandWeightPresentationModel.cpp",
   "Source/SHI/ShiCouncilStagingModel.h", "Source/SHI/ShiCouncilStagingModel.cpp",
   "Source/SHI/ShiCouncilFigure.h", "Source/SHI/ShiCouncilFigure.cpp",
@@ -46,6 +48,9 @@ const required = [
   "Content/SHI/Art/VFX/DazeRain/M_SHI_RainStreak.uasset",
   "Content/SHI/Art/VFX/DazeRain/SM_SHI_RainRipple_01.uasset",
   "Content/SHI/Art/VFX/DazeRain/SM_SHI_RainStreak_01.uasset",
+  "Content/SHI/Art/Environment/WetFieldVegetation/M_SHI_RainDarkenedFieldPlant.uasset",
+  "Content/SHI/Art/Environment/WetFieldVegetation/SM_SHI_FieldStalkClump_01.uasset",
+  "Content/SHI/Art/Environment/WetFieldVegetation/SM_SHI_LowBladeTuft_01.uasset",
   "Content/StreamingAssets/chapter-01-daze.json", "Content/StreamingAssets/chapter-01-audio.json",
   "Content/StreamingAssets/chapter-01-broken-crossing.v1.json",
   "Content/StreamingAssets/chapter-01-replays.v1.json", "Content/StreamingAssets/editions.json",
@@ -591,6 +596,151 @@ if (rainPresentationEvidence.screenshots?.length !== 4
     || !rainPresentationEvidence.visiblePlaytest?.campaignSave?.modifiedTimeUnchanged)
   errors.push("Unreal Daze-rain material, disclosure, runtime, automation or visible-play receipt is incomplete");
 
+const vegetationProvenancePath = resolve(root, "assets/provenance/shi-daze-wet-field-vegetation-v1.json");
+const vegetationImportEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-wet-field-vegetation-import-status.json");
+const vegetationPresentationEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-wet-field-vegetation-presentation-status.json");
+const vegetationProvenance = JSON.parse(await readFile(vegetationProvenancePath, "utf8"));
+const vegetationImportEvidence = JSON.parse(await readFile(vegetationImportEvidencePath, "utf8"));
+const vegetationPresentationEvidence = JSON.parse(await readFile(vegetationPresentationEvidencePath, "utf8"));
+const vegetationDecision = "approved-runtime-wet-field-vegetation-production-blockout-council-engagement-story-reviewed-not-final-environment";
+if (vegetationProvenance.assetId !== "shi-daze-wet-field-vegetation-v1"
+    || vegetationProvenance.status !== vegetationDecision)
+  errors.push("Unreal wet-field-vegetation provenance does not preserve its bounded runtime blockout decision");
+if (vegetationImportEvidence.decision !== "approved-engine-wet-field-vegetation-production-blockout-packaged-not-final-environment")
+  errors.push("Unreal wet-field-vegetation import evidence is missing or overstates final-environment approval");
+if (vegetationPresentationEvidence.decision !== vegetationDecision)
+  errors.push("Unreal wet-field-vegetation presentation evidence is missing or overstates final-environment approval");
+for (const output of vegetationProvenance.outputs ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, "assets/provenance", output.file));
+    if (bytes.byteLength !== output.bytes || createHash("sha256").update(bytes).digest("hex") !== output.sha256)
+      errors.push(`wet-field-vegetation provenance receipt drifted: ${output.file}`);
+  } catch {
+    errors.push(`wet-field-vegetation provenance output is missing: ${output.file}`);
+  }
+}
+for (const tool of [vegetationProvenance.toolchain?.generator, vegetationProvenance.toolchain?.validator,
+  vegetationProvenance.toolchain?.unrealImporter, vegetationProvenance.toolchain?.unrealMaterialAuthor]) {
+  if (!tool?.file || !tool?.sha256) {
+    errors.push("wet-field-vegetation provenance omits a bounded tool receipt");
+    continue;
+  }
+  try {
+    const bytes = await readFile(resolve(root, "assets/provenance", tool.file));
+    if (createHash("sha256").update(bytes).digest("hex") !== tool.sha256)
+      errors.push(`wet-field-vegetation tool hash drifted: ${tool.file}`);
+  } catch {
+    errors.push(`wet-field-vegetation provenance tool is missing: ${tool.file}`);
+  }
+}
+for (const asset of vegetationImportEvidence.trackedUnrealAssets ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, asset.file));
+    if (bytes.byteLength !== asset.bytes || createHash("sha256").update(bytes).digest("hex") !== asset.sha256)
+      errors.push(`tracked Unreal wet-field-vegetation receipt drifted: ${asset.file}`);
+  } catch {
+    errors.push(`tracked Unreal wet-field-vegetation asset is missing: ${asset.file}`);
+  }
+}
+const vegetationStalkImport = vegetationImportEvidence.import?.stalk;
+const vegetationTuftImport = vegetationImportEvidence.import?.tuft;
+if (vegetationImportEvidence.trackedUnrealAssets?.length !== 3
+    || vegetationImportEvidence.import?.passed !== true
+    || vegetationImportEvidence.import?.readOnlyInspection?.mode !== "inspect-only"
+    || vegetationImportEvidence.import?.readOnlyInspection?.exitCode !== 0
+    || !vegetationImportEvidence.import?.readOnlyInspection?.trackedUassetHashesUnchanged
+    || vegetationImportEvidence.import?.readOnlyInspection?.unrelatedTrackedUassetHashesUnchanged !== 17
+    || vegetationStalkImport?.lodTriangles?.join(",") !== "84,28"
+    || vegetationTuftImport?.lodTriangles?.join(",") !== "64,14"
+    || vegetationStalkImport?.lodUvChannels?.join(",") !== "2,2"
+    || vegetationTuftImport?.lodUvChannels?.join(",") !== "2,2"
+    || vegetationStalkImport?.materialSlot !== "M_SHI_RainDarkenedFieldPlant"
+    || vegetationTuftImport?.materialSlot !== "M_SHI_RainDarkenedFieldPlant"
+    || vegetationStalkImport?.simpleCollisionCount !== 0 || vegetationStalkImport?.convexCollisionCount !== 0
+    || vegetationTuftImport?.simpleCollisionCount !== 0 || vegetationTuftImport?.convexCollisionCount !== 0
+    || vegetationStalkImport?.lightMapResolution !== 64 || vegetationTuftImport?.lightMapResolution !== 64
+    || vegetationStalkImport?.lightMapCoordinateIndex !== 1 || vegetationTuftImport?.lightMapCoordinateIndex !== 1
+    || vegetationStalkImport?.naniteEnabled !== false || vegetationTuftImport?.naniteEnabled !== false)
+  errors.push("Unreal wet-field-vegetation mesh/import receipt is incomplete");
+const vegetationStalkMin = vegetationStalkImport?.boundsCentimeters?.minimum ?? [];
+const vegetationStalkMax = vegetationStalkImport?.boundsCentimeters?.maximum ?? [];
+const vegetationTuftMin = vegetationTuftImport?.boundsCentimeters?.minimum ?? [];
+const vegetationTuftMax = vegetationTuftImport?.boundsCentimeters?.maximum ?? [];
+if (vegetationStalkMin.length !== 3 || vegetationStalkMax.length !== 3
+    || Math.abs(vegetationStalkMin[0] + 34) > .001 || Math.abs(vegetationStalkMin[1] + 31) > .001
+    || Math.abs(vegetationStalkMin[2]) > .001 || Math.abs(vegetationStalkMax[0] - 34) > .001
+    || Math.abs(vegetationStalkMax[1] - 30) > .001 || Math.abs(vegetationStalkMax[2] - 135) > .001
+    || vegetationTuftMin.length !== 3 || vegetationTuftMax.length !== 3
+    || Math.abs(vegetationTuftMin[0] + 45) > .001 || Math.abs(vegetationTuftMin[1] + 45) > .001
+    || Math.abs(vegetationTuftMin[2]) > .001 || Math.abs(vegetationTuftMax[0] - 45) > .001
+    || Math.abs(vegetationTuftMax[1] - 45) > .001 || Math.abs(vegetationTuftMax[2] - 52) > .001)
+  errors.push("Unreal wet-field-vegetation exact admitted bounds drifted");
+if (vegetationImportEvidence.package?.packageCount !== 516
+    || vegetationImportEvidence.package?.priorAcceptedPackageCount !== 513
+    || vegetationImportEvidence.package?.addedPackageCount !== 3
+    || vegetationImportEvidence.package?.result !== "BUILD SUCCESSFUL"
+    || vegetationImportEvidence.package?.alwaysCookPath !== "/Game/SHI/Art/Environment/WetFieldVegetation"
+    || vegetationImportEvidence.package?.cookedEntries?.length !== 5
+    || vegetationImportEvidence.package?.artifacts?.length !== 4
+    || vegetationImportEvidence.package?.rejectedFirstArchive?.accepted !== false
+    || vegetationImportEvidence.smokeTest?.exitCode !== 0
+    || vegetationImportEvidence.smokeTest?.containerPackageCount !== 516
+    || vegetationImportEvidence.smokeTest?.gameMode !== "ShiGameMode"
+    || vegetationImportEvidence.smokeTest?.materialOrLoadWarnings !== 0)
+  errors.push("Unreal wet-field-vegetation package, forced-cook, rejected-trial or smoke receipt is incomplete");
+for (const screenshot of vegetationPresentationEvidence.screenshots ?? []) {
+  try {
+    const bytes = await readFile(resolve(root, screenshot.file));
+    if (bytes.byteLength !== screenshot.bytes || createHash("sha256").update(bytes).digest("hex") !== screenshot.sha256)
+      errors.push(`wet-field-vegetation presentation screenshot drifted: ${screenshot.file}`);
+  } catch {
+    errors.push(`wet-field-vegetation presentation screenshot is missing: ${screenshot.file}`);
+  }
+}
+if (vegetationPresentationEvidence.screenshots?.length !== 4
+    || vegetationPresentationEvidence.material?.nodeCount !== 15
+    || vegetationPresentationEvidence.material?.usedWithInstancedStaticMeshes !== true
+    || vegetationPresentationEvidence.material?.readOnlyInspection?.mode !== "inspect-only"
+    || vegetationPresentationEvidence.material?.readOnlyInspection?.exitCode !== 0
+    || !vegetationPresentationEvidence.material?.readOnlyInspection?.passed
+    || !vegetationPresentationEvidence.material?.readOnlyInspection?.trackedUassetHashesUnchanged
+    || vegetationPresentationEvidence.material?.windAmplitudeCentimeters !== 2.4
+    || vegetationPresentationEvidence.material?.textures !== 0
+    || vegetationPresentationEvidence.presentation?.stalkInstances !== 42
+    || vegetationPresentationEvidence.presentation?.tuftInstances !== 64
+    || vegetationPresentationEvidence.presentation?.totalInstances !== 106
+    || vegetationPresentationEvidence.presentation?.rootHalfExtentCentimeters !== 1125
+    || vegetationPresentationEvidence.presentation?.centralExclusionHalfExtentCentimeters?.join(",") !== "520,440"
+    || vegetationPresentationEvidence.presentation?.routeHalfWidthCentimeters !== 115
+    || vegetationPresentationEvidence.presentation?.deterministicSeed !== 0x5EED20A
+    || vegetationPresentationEvidence.presentation?.exactBotanicalReconstruction !== false
+    || vegetationPresentationEvidence.presentation?.finalArt !== false
+    || vegetationPresentationEvidence.presentation?.interactive !== false
+    || vegetationPresentationEvidence.presentation?.runtimeCollision !== false
+    || vegetationPresentationEvidence.presentation?.navigationInfluence !== false
+    || vegetationPresentationEvidence.presentation?.gameplayAuthority !== false
+    || vegetationPresentationEvidence.presentation?.saveAuthority !== false
+    || vegetationPresentationEvidence.presentation?.replication !== false
+    || vegetationPresentationEvidence.presentation?.cpuAnimation !== false
+    || vegetationPresentationEvidence.presentation?.materialWindOnly !== true
+    || vegetationPresentationEvidence.presentation?.visibleDuringNonAuthoritativeEngagement !== true
+    || vegetationPresentationEvidence.presentation?.developmentReview?.fieldOfViewDegrees !== 52
+    || vegetationPresentationEvidence.automation?.discovered !== 17
+    || vegetationPresentationEvidence.automation?.passed !== 17
+    || vegetationPresentationEvidence.automation?.newSuite !== "SHI.Cinematic.WetFieldVegetationPresentationV1"
+    || !vegetationPresentationEvidence.visiblePlaytest?.storyAdvanced
+    || !vegetationPresentationEvidence.visiblePlaytest?.engagementAdvanced
+    || !vegetationPresentationEvidence.visiblePlaytest?.engagementCompleted
+    || !vegetationPresentationEvidence.visiblePlaytest?.campaignUnchangedByEngagement
+    || !vegetationPresentationEvidence.visiblePlaytest?.vegetationVisibleDuringCouncil
+    || !vegetationPresentationEvidence.visiblePlaytest?.vegetationVisibleDuringEngagement
+    || !vegetationPresentationEvidence.visiblePlaytest?.shelterAndCommandCenterClear
+    || !vegetationPresentationEvidence.visiblePlaytest?.approachCorridorClear
+    || vegetationPresentationEvidence.visiblePlaytest?.campaignSave?.sha256BeforeEngagement
+      !== vegetationPresentationEvidence.visiblePlaytest?.campaignSave?.sha256AfterReturn
+    || !vegetationPresentationEvidence.visiblePlaytest?.campaignSave?.modifiedTimeUnchanged)
+  errors.push("Unreal wet-field-vegetation material, disclosure, runtime, automation or visible-play receipt is incomplete");
+
 const project = JSON.parse(await readFile(resolve(unreal, "SHI.uproject"), "utf8"));
 if (project.EngineAssociation !== "5.8") errors.push("Unreal engine association must be 5.8");
 if (!project.Modules?.some((module) => module.Name === "SHI" && module.Type === "Runtime")) errors.push("SHI runtime module is not registered");
@@ -624,6 +774,8 @@ const wetFieldPresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiWe
 const shelterPresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiDazeFieldShelterPresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiDazeFieldShelterPresentationModel.cpp"), "utf8")}`;
 const rainPresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiRainPresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiRainPresentationModel.cpp"), "utf8")}`;
 const rainField = `${await readFile(resolve(unreal, "Source/SHI/ShiRainField.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiRainField.cpp"), "utf8")}`;
+const vegetationPresentation = `${await readFile(resolve(unreal, "Source/SHI/ShiWetFieldVegetationPresentationModel.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiWetFieldVegetationPresentationModel.cpp"), "utf8")}`;
+const vegetationActor = `${await readFile(resolve(unreal, "Source/SHI/ShiWetFieldVegetation.h"), "utf8")}\n${await readFile(resolve(unreal, "Source/SHI/ShiWetFieldVegetation.cpp"), "utf8")}`;
 const commandWeightPresentation = await readFile(resolve(unreal, "Source/SHI/ShiCommandWeightPresentationModel.cpp"), "utf8");
 const councilStaging = await readFile(resolve(unreal, "Source/SHI/ShiCouncilStagingModel.cpp"), "utf8");
 const councilFigure = await readFile(resolve(unreal, "Source/SHI/ShiCouncilFigure.cpp"), "utf8");
@@ -648,6 +800,8 @@ const shelterImporter = await readFile(resolve(root, "scripts/import-daze-field-
 const shelterMaterialAuthor = await readFile(resolve(root, "scripts/author-daze-field-shelter-materials-unreal.py"), "utf8");
 const rainImporter = await readFile(resolve(root, "scripts/import-daze-rain-vfx-unreal.py"), "utf8");
 const rainMaterialAuthor = await readFile(resolve(root, "scripts/author-daze-rain-vfx-materials-unreal.py"), "utf8");
+const vegetationImporter = await readFile(resolve(root, "scripts/import-daze-wet-field-vegetation-unreal.py"), "utf8");
+const vegetationMaterialAuthor = await readFile(resolve(root, "scripts/author-daze-wet-field-vegetation-material-unreal.py"), "utf8");
 for (const token of ["schema v7", "TimeIndex <=", "NextActIndex <", "StreamingAssets/chapter-01-daze.json", "StreamingAssets/editions.json", "initialResources", "nextNodeId", "commitments", "countermeasures", "characters", "speakerId", "FindCharacter", "ValidateEvidence", "public-link-metadata-only", "specialist-review-required"]) if (!model.includes(token)) errors.push(`Unreal model omits contract token: ${token}`);
 for (const token of ["ApplyEffects(Choice->Effects)", "CommitmentOutcome->Effects", "Choice->PressureEffects", "Opposition->Effects", "MethodRead->Effects", "Condition->Effects", "SelectFieldCondition", "CanChoose", "ReplaySaveJson", "MoveTemp(Candidate)"]) if (!session.includes(token)) errors.push(`Unreal deterministic session omits contract token: ${token}`);
 for (const token of ["project-original-procedural", "RequiredCues", "CreateRainSamples", "CreateCueSamples", "bDefaultEnabled"]) if (!audioModel.includes(token)) errors.push(`Unreal audio model omits contract token: ${token}`);
@@ -659,6 +813,8 @@ for (const token of ["SM_SHI_WetFieldEnvironment_01.SM_SHI_WetFieldEnvironment_0
 for (const token of ["SM_SHI_DazeFieldShelter_01.SM_SHI_DazeFieldShelter_01", "FICTIONAL PRACTICAL FIELD CONSTRUCTION", "NOT AN ATTESTED DAZE RECONSTRUCTION", "PRODUCTION BLOCKOUT", "FTransform::Identity", "PostCenters", "MinimumPostClearance", "MinimumEaveHeight", "bHistoricallyAttested = false", "bFinalArt = false", "bInteractive = false", "bCollisionEnabled = false", "bAffectsNavigation = false", "bVisibleDuringEngagement = true", "ReviewCameraTransform", "52.f"]) if (!shelterPresentation.includes(token)) errors.push(`Unreal Daze-shelter presentation model omits bounded construction/disclosure token: ${token}`);
 for (const token of ["SM_SHI_RainStreak_01.SM_SHI_RainStreak_01", "SM_SHI_RainRipple_01.SM_SHI_RainRipple_01", "M_SHI_RainStreak.M_SHI_RainStreak", "M_SHI_RainRipple.M_SHI_RainRipple", "DRAMATIC RAIN RECONSTRUCTION", "NOT EVIDENCE OF EXACT DAZE WEATHER IN 209 BCE", "PRODUCTION VFX BLOCKOUT", "FTransform::Identity", "FieldHalfExtent", "ShelterRoofIntercept", "MaximumDeltaSeconds", "StreakInstanceCount", "RipplePoolInstanceCount", "0x5EED209u", "bHistoricallyAttestedWeather = false", "bFinalArt = false", "bInteractive = false", "bCollisionEnabled = false", "bAffectsNavigation = false", "bAffectsGameplay = false", "bSerialized = false", "bTiedToRainAudio = false", "bVisibleDuringEngagement = true", "CanSpawnGroundRipple", "ReviewCameraTransform", "50.f"]) if (!rainPresentation.includes(token)) errors.push(`Unreal Daze-rain presentation model omits bounded VFX/disclosure token: ${token}`);
 for (const token of ["UInstancedStaticMeshComponent", "RainStreakInstances", "RainRippleInstances", "FRandomStream", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "SetGenerateOverlapEvents(false)", "SetCanEverAffectNavigation(false)", "SetActorEnableCollision(false)", "StreakStates.SetNum", "RippleStates.SetNum", "ImpactHeightAt", "CanSpawnGroundRipple", "BatchUpdateInstancesTransforms", "bReplicates = false"]) if (!rainField.includes(token)) errors.push(`Unreal Daze-rain actor omits bounded instancing/non-authority token: ${token}`);
+for (const token of ["SM_SHI_FieldStalkClump_01.SM_SHI_FieldStalkClump_01", "SM_SHI_LowBladeTuft_01.SM_SHI_LowBladeTuft_01", "M_SHI_RainDarkenedFieldPlant.M_SHI_RainDarkenedFieldPlant", "GENERIC RAIN-FLATTENED FIELD-EDGE FORMS", "NOT AN EXACT BOTANICAL RECONSTRUCTION", "PRODUCTION VEGETATION BLOCKOUT", "FTransform::Identity", "RootHalfExtent", "CentralExclusionHalfExtent", "RouteHalfWidth", "StalkInstanceCount", "TuftInstanceCount", "0x5EED20Au", "bExactBotanicalReconstruction = false", "bFinalArt = false", "bInteractive = false", "bCollisionEnabled = false", "bAffectsNavigation = false", "bAffectsGameplay = false", "bSerialized = false", "bReplicated = false", "bCpuAnimated = false", "bMaterialWindOnly = true", "bVisibleDuringEngagement = true", "IsRootAdmitted", "ReviewCameraTransform", "52.f"]) if (!vegetationPresentation.includes(token)) errors.push(`Unreal wet-field-vegetation presentation model omits bounded placement/disclosure token: ${token}`);
+for (const token of ["UHierarchicalInstancedStaticMeshComponent", "FieldStalkInstances", "LowBladeTuftInstances", "PrimaryActorTick.bCanEverTick = false", "bReplicates = false", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "SetGenerateOverlapEvents(false)", "SetCanEverAffectNavigation(false)", "SetActorEnableCollision(false)", "SetCullDistances", "AddInstances", "GetInstanceCount", "IsRootAdmitted"]) if (!vegetationActor.includes(token)) errors.push(`Unreal wet-field-vegetation actor omits bounded HISM/non-authority token: ${token}`);
 for (const token of ["SM_SHI_CommandWeight_01.SM_SHI_CommandWeight_01", "FShiCommandSurfacePresentationModel::SurfaceTopZ", "FShiCommandSurfacePresentationModel::EdgeClearance", "MinimumMarkerClearance", "CouncilAspectRatio", "bInteractive = false", "bVisibleDuringEngagement = false", "FRotator(0.f, 20.f, 0.f)", "FitsCommandSurface", "ProjectToCouncilFrame", "ReviewCameraTransform", "44.f", "too small in the council composition"]) if (!commandWeightPresentation.includes(token)) errors.push(`Unreal command-weight presentation model omits bounded placement/lens token: ${token}`);
 for (const token of ["SHI_COMMAND_WEIGHT_AUTHOR_MATERIALS", "EXPECTED_NODE_COUNTS", "REVIEWED_PARAMETER_VALUES", "NOISEFUNCTION_GRADIENT_TEX3D", "delete_all_material_expressions", "retune_authored_material", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_METALLIC", "MP_SPECULAR", "MP_AMBIENT_OCCLUSION", "MP_NORMAL", "compileClean", "inspect-only"]) if (!commandWeightMaterialAuthor.includes(token)) errors.push(`Unreal command-weight material author omits bounded graph/inspection token: ${token}`);
 for (const token of ["SHI_COMMAND_SURFACE_AUTHOR_MATERIALS", "EXPECTED_NODE_COUNTS", "REVIEWED_PARAMETER_VALUES", "NOISEFUNCTION_GRADIENT_TEX3D", "delete_all_material_expressions", "retune_authored_material", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_METALLIC", "MP_SPECULAR", "MP_AMBIENT_OCCLUSION", "MP_NORMAL", "compileClean", "inspect-only"]) if (!commandSurfaceMaterialAuthor.includes(token)) errors.push(`Unreal command-surface material author omits bounded graph/inspection token: ${token}`);
@@ -668,6 +824,8 @@ for (const token of ["SHI_DAZE_FIELD_SHELTER_REIMPORT", "inspect-only", "SM_SHI_
 for (const token of ["SHI_DAZE_FIELD_SHELTER_AUTHOR_MATERIALS", "EXPECTED_NODE_COUNTS", "REVIEWED_PARAMETER_VALUES", "NOISEFUNCTION_GRADIENT_TEX3D", "VertexColor", "delete_all_material_expressions", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_METALLIC", "MP_SPECULAR", "MP_AMBIENT_OCCLUSION", "MP_NORMAL", "compileClean", "inspect-only"]) if (!shelterMaterialAuthor.includes(token)) errors.push(`Unreal Daze-shelter material author omits bounded graph/inspection token: ${token}`);
 for (const token of ["SHI_DAZE_RAIN_VFX_REIMPORT", "inspect-only", "SM_SHI_RainStreak_01", "SM_SHI_RainRipple_01", "M_SHI_RainStreak", "M_SHI_RainRipple", "lod_triangles", "triangles", "all(count >= 2 for count in lod_uv_channels)", "simple_collision_count == 0", "convex_collision_count == 0", "light_map_resolution\")) == 64", "naniteDeliberatelyOff"]) if (!rainImporter.includes(token)) errors.push(`Unreal Daze-rain importer omits bounded reimport/inspection token: ${token}`);
 for (const token of ["SHI_DAZE_RAIN_VFX_AUTHOR_MATERIALS", "used_with_instanced_static_meshes", "delete_material_expression", "MP_OPACITY", "MP_EMISSIVE_COLOR", "MP_BASE_COLOR", "MP_NORMAL", "compileClean", "exactNodeCount", "noTextures", "inspect-only"]) if (!rainMaterialAuthor.includes(token)) errors.push(`Unreal Daze-rain material author omits exact translucent graph/inspection token: ${token}`);
+for (const token of ["SHI_DAZE_VEGETATION_REIMPORT", "inspect-only", "SM_SHI_FieldStalkClump_01", "SM_SHI_LowBladeTuft_01", "M_SHI_RainDarkenedFieldPlant", "triangles", "all(count >= 2 for count in lod_uv_channels)", "simple_collision_count == 0", "convex_collision_count == 0", "light_map_resolution\")) == 64", "naniteDeliberatelyOff"]) if (!vegetationImporter.includes(token)) errors.push(`Unreal wet-field-vegetation importer omits bounded reimport/inspection token: ${token}`);
+for (const token of ["SHI_DAZE_VEGETATION_AUTHOR_MATERIAL", "EXPECTED_NODE_COUNT = 15", "used_with_instanced_static_meshes", "MaterialExpressionVertexColor", "MaterialExpressionTime", "MaterialExpressionSine", "MP_BASE_COLOR", "MP_ROUGHNESS", "MP_SPECULAR", "MP_WORLD_POSITION_OFFSET", "MP_NORMAL", "MP_EMISSIVE_COLOR", "MP_OPACITY", "compileClean", "noTextureNormalEmissiveOrOpacityPretence", "inspect-only"]) if (!vegetationMaterialAuthor.includes(token)) errors.push(`Unreal wet-field-vegetation material author omits exact GPU-wind graph/inspection token: ${token}`);
 for (const token of ["speaker", "keeper", "HISTORICAL FIGURE · WORDS ARE AUTHORED DRAMATIZATION, NOT TRANSCRIPT", "FICTIONAL CHARACTER · PROJECT-AUTHORED DRAMATIC RECONSTRUCTION", "SpeakerCamera", "CouncilFieldOfViewDegrees", "FindParticipant", "SameParticipant", "cannot preserve canonical cast, disclosure, blocking and camera authorship", "OutStage = MoveTemp(Candidate)"]) if (!councilStaging.includes(token)) errors.push(`Unreal council staging omits cast/blocking/disclosure token: ${token}`);
 for (const token of ["FigureRoot", "Body", "Head", "Mantle", "InitializeFigure", "ShiCharacter:", "ShiCouncilSpeaker", "SetMobility", "SetRenderCustomDepth", "SetCustomDepthStencilValue", "SetActorTransform"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits live performance-proxy token: ${token}`);
 for (const token of ["resolution-order", "resolution-commitment", "resolution-pressure", "resolution-pursuit", "resolution-method-read", "resolution-field", "resolution-position", "MaximumSequenceSeconds", "MaximumEasedTranslation", "MaximumEasedRotationDegrees", "FieldOfViewForBeat", "CameraMotionBetween", "TEXT(\"cut\")", "TEXT(\"ease\")", "DominantResourceSignal", "EffectsSummary", "POSITION LOST", "OATH ESTABLISHED", "TotalDuration", "OutBeats = MoveTemp(BuiltBeats)"]) if (!cinematic.includes(token)) errors.push(`Unreal cinematic model omits resolution/motion-grammar token: ${token}`);
@@ -682,12 +840,14 @@ if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environm
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environment/WetField")')) errors.push("Unreal packaging does not force-cook the admitted wet-field assets");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environment/DazeShelter")')) errors.push("Unreal packaging does not force-cook the admitted Daze-shelter assets");
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/VFX/DazeRain")')) errors.push("Unreal packaging does not force-cook the admitted Daze-rain assets");
+if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Environment/WetFieldVegetation")')) errors.push("Unreal packaging does not force-cook the admitted wet-field-vegetation assets");
 if (!engineConfig.includes("r.CustomDepth=3")) errors.push("Unreal renderer does not preserve the selected wartable marker stencil");
 for (const token of ["prepare_external_directory", "SHI_UNREAL_DERIVED_DATA", "UE-LocalDataCachePath", "SHI_UNREAL_PACKAGE_ROOT", "must be a dedicated directory outside the Git repository", "-archivedirectory=\"$SHI_PACKAGE_ROOT\""]) if (!pipeline.includes(token)) errors.push(`Unreal pipeline omits outside-Git build/cache token: ${token}`);
 if (pipeline.includes('archivedirectory="$SHI_REPO_ROOT/apps/unreal')) errors.push("Unreal Linux packaging still writes archives inside the Git worktree");
 for (const token of ["RestoreChronicle", "SaveChronicle", "ForceUTF8WithoutBOM", "Gamepad_FaceButton_Bottom", "RequestNewChronicle", "CreateSoundscape", "ToggleSound", "Gamepad_FaceButton_Top", "ToggleEvidence", "Gamepad_LeftShoulder", "GetHitResultAtScreenPosition", "Gamepad_RightShoulder", "Gamepad_LeftThumbstick", "Gamepad_RightThumbstick", "RebuildCommandSignals", "FShiOrderTransactionModel::Build", "FShiOrderTransactionModel::BuildTurnSnapshot", "CanPresentCommandSignals", "CanPresentResolutionSequence", "CanPresentCouncilStage", "ApplyCouncilStage", "FocusCouncil", "CouncilFigures", "SaveChronicle(Transaction.Session", "Session = MoveTemp(Transaction.Session)", "SaveChronicle(CandidateSession", "Session = MoveTemp(CandidateSession)", "CURRENT CHRONICLE PRESERVED", "BeginPreparedResolutionSequence", "ORDER HELD", "StartCinematicBeat", "TickCinematicSequence", "SkipCinematicSequence", "Gamepad_FaceButton_Right", "Gamepad_Special_Right", "has no live world actor", "SetCameraImmediate", "SetFieldOfView", "CinematicHoldElapsed = -Beat->TransitionSeconds", "ToggleReducedMotion", "LoadCinematicPreferences", "SaveCinematicPreferences", "GGameUserSettingsIni", "ReducedMotion", "SetActorLocationAndRotation", "CameraTransitionElapsed = CameraTransitionDuration", "bReturningFromCommandSignal", "BeginCameraTransition", "FQuat::Slerp", "SetRenderCustomDepth", "ShiSite:", "ShiSignal:", "OpenEngagement", "IssueEngagementCommand", "CampaignMatchesEngagementSnapshot", "ApplyEngagementCommandSpace", "EngagementMetricMarkers", "ShiEngagement:", "CAMPAIGN SAVE UNCHANGED", "Session.ExportSaveJson(CampaignSnapshot", "CurrentCampaign != EngagementCampaignSnapshot", "FShiCommandSurfacePresentationModel::Build", "ShiCommandSurfaceReview", "ShiEnvironment:CommandSurface", "ShiPresentation:FictionalInterfaceStage", "FShiCommandWeightPresentationModel::Build", "ShiCommandWeightReviewFront", "ShiCommandWeightReviewBack", "SetCollisionEnabled(ECollisionEnabled::NoCollision)", "ShiProp:CommandWeight", "ShiPresentation:NonAuthoritative", "Prop->SetActorHiddenInGame(bVisible)", "FShiWetFieldEnvironmentPresentationModel::Build", "ShiWetFieldEnvironmentReview", "ShiEnvironment:WetField", "M_SHI_WetFieldGround", "M_SHI_ShallowRainwater", "SetCanEverAffectNavigation(false)"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits persistence/input/audio/evidence/world-signal/cinematic-motion/transaction/engagement-authority/surface/command-weight/wet-field token: ${token}`);
 for (const token of ["FShiDazeFieldShelterPresentationModel::Build", "ShiDazeFieldShelterReview", "ShiEnvironment:DazeShelter", "ShiPresentation:FictionalPracticalConstruction", "ShiArtStatus:ProductionBlockout", "M_SHI_RainDarkenedWood", "M_SHI_WovenReedMat", "M_SHI_CoarseFiberCord", "DazeFieldShelterProp"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits Daze-shelter runtime/disclosure token: ${token}`);
 for (const token of ["FShiRainPresentationModel::Build", "ShiRainVfxReview", "AShiRainField", "ShiEnvironment:DazeRain", "ShiPresentation:NonAuthoritative", "ShiArtStatus:ProductionVfxBlockout", "RainField", "ReviewFieldOfViewDegrees"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits Daze-rain runtime/disclosure token: ${token}`);
+for (const token of ["FShiWetFieldVegetationPresentationModel::Build", "ShiWetFieldVegetationReview", "AShiWetFieldVegetation", "ShiEnvironment:WetFieldVegetation", "ShiPresentation:NonAuthoritative", "ShiArtStatus:ProductionVegetationBlockout", "WetFieldVegetation", "ReviewFieldOfViewDegrees"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits wet-field-vegetation runtime/disclosure token: ${token}`);
 if (gameMode.includes("/Engine/BasicShapes/Plane.Plane") || gameMode.includes("Command-space ground")) errors.push("Unreal runtime still contains the superseded white engine-plane ground");
 for (const token of ["bOverride_AutoExposureBias", "ExposureCompensation", "PostProcessBlendWeight = 1.f"]) if (!gameMode.includes(token)) errors.push(`Unreal command camera omits reviewed exposure token: ${token}`);
 if (gameMode.indexOf("SaveChronicle(Transaction.Session") > gameMode.indexOf("Session = MoveTemp(Transaction.Session)")) errors.push("Unreal order commit mutates memory before the candidate save is durable");
@@ -703,6 +863,7 @@ for (const token of ["SHI.Cinematic.CommandSurfacePresentationV1", "reviewed com
 for (const token of ["SHI.Cinematic.WetFieldEnvironmentPresentationV1", "reviewed wet-field environment passes its presentation contract", "wet field is a bounded identity-root environment below the command surface", "wet field is not an interaction target", "wet field collision is disabled", "wet field does not affect navigation", "wet field persists beneath Broken Crossing", "environment review camera sees the whole bounded field", "unreviewed field scaling is rejected", "runtime field collision is rejected", "runtime field navigation authority is rejected", "a disappearing engagement environment is rejected", "terrain that violates command-surface clearance is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits wet-field presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.DazeFieldShelterPresentationV1", "reviewed Daze field shelter passes its disclosed blockout contract", "shelter is identity-rooted around rather than on the command surface", "each shelter post clears both command-surface axes", "shelter is not presented as an attested Daze reconstruction", "shelter remains explicitly below final-art status", "shelter is not an interaction target", "shelter collision is disabled", "shelter does not affect navigation", "shelter persists around the Broken Crossing exercise", "shelter review camera holds the roof and council clearance envelope", "unreviewed shelter scaling is rejected", "runtime shelter collision is rejected", "runtime shelter navigation authority is rejected", "a disappearing engagement shelter is rejected", "an unsupported reconstruction claim is rejected", "premature final-art status is rejected", "a post entering command clearance is rejected", "a shelter that compromises the council sightline is rejected", "a shelter outside the reviewed vertical envelope is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits Daze-shelter presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.DazeRainPresentationV1", "reviewed Daze rain passes its disclosed presentation contract", "rain uses exactly two bounded instanced pools", "rain is deterministic and bounded to the admitted wet field", "rain is not presented as attested Daze weather", "rain remains explicitly below final-art status", "rain is not an interaction target", "rain collision is disabled", "rain does not affect navigation", "rain does not affect campaign or engagement rules", "rain visual state is never serialized", "visible rain is independent of the opt-in audio control", "rain persists through the Broken Crossing exercise", "the exact shelter footprint intercepts rain at the roof", "exposed field rain reaches the admitted wet ground", "no ground ripple can spawn beneath the shelter", "rain review camera holds exposed field, roof edge and command shelter", "unreviewed rain-field scaling is rejected", "a per-drop or oversized rain pool is rejected", "runtime rain collision is rejected", "runtime rain navigation authority is rejected", "hidden gameplay weather authority is rejected", "serialized cosmetic rain state is rejected", "audio-coupled rain visibility is rejected", "an unsupported exact-weather claim is rejected", "premature final-weather status is rejected", "rain disappearing from the engagement is rejected", "a rain field that leaks through the shelter is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits Daze-rain presentation token: ${token}`);
+for (const token of ["SHI.Cinematic.WetFieldVegetationPresentationV1", "reviewed generic wet-field vegetation passes its disclosed presentation contract", "vegetation retains exact deterministic HISM budgets", "material wind is bounded, horizontal and GPU-only", "generic forms are not presented as an exact botanical reconstruction", "vegetation remains explicitly below final-art status", "vegetation is not interactive", "vegetation collision is disabled", "vegetation does not affect navigation", "vegetation does not affect campaign or engagement authority", "vegetation state is never serialized", "vegetation does not replicate", "vegetation persists through the Broken Crossing exercise", "the shelter and command work area remain clear", "the compacted approach corridor remains clear", "deterministic placement fills exactly 42 stalks and 64 low tufts", "vegetation review camera holds both field edges and the protected center", "unreviewed vegetation-field scaling is rejected", "an oversized vegetation budget is rejected", "vegetation entering the shelter envelope is rejected", "CPU per-instance vegetation sway is rejected", "storm-thrashing wind amplitude is rejected", "vegetation collision authority is rejected", "hidden vegetation gameplay authority is rejected", "replicated cosmetic vegetation is rejected", "an unsupported exact botanical claim is rejected", "premature final-vegetation status is rejected", "vegetation disappearing during the engagement is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits wet-field-vegetation presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.ResolutionGrammarV1", "opening sequence includes order, established oath, four response layers and position", "complete consequence sequence stays below five seconds", "first consequence shot cuts from unknowable prior inspection", "near pursuit-to-method translation uses one restrained ease", "pressure close reading has the narrowest authored lens", "position resolves through the widest authored lens", "cinematic cut/ease authorship cannot drift from spatial bounds", "cinematic lens grammar rejects disorienting drift", "cinematic planning never appends campaign history", "unbound cinematic world targets are rejected", "overlong cinematic shots are rejected", "cinematic layer reordering is rejected", "captured terminal position has a bounded consequence plan", "cinematic final resources must match resolution and world snapshots", "failed cinematic rebuild is atomic", "prepared world signal count"]) if (!automation.includes(token)) errors.push(`Unreal automation omits cinematic resolution/motion token: ${token}`);
 for (const token of ["SHI.Engagement.BrokenCrossingParityV1", "native exhaustive traversal matches Web route count", "native exhaustive traversal matches Web viable count", "every authored outcome is reachable", "every authored command is reachable", "each field condition preserves at least two viable plans", "same command from the same state is deterministic", "copy resolution never mutates the source position", "engagement replay rejects an invented authored response", "failed replay cannot mutate the accepted engagement", "native model rejects premature campaign authority", "native model rejects campaign condition drift", "six bounded 3D tallies follow every native position", "engagement signal height encodes its exact metric", "overlapping engagement pointers are rejected", "missing engagement metric rejects signal rebuild", "failed engagement signal rebuild is atomic"]) if (!engagementAutomation.includes(token)) errors.push(`Unreal engagement automation omits parity/hostile/spatial token: ${token}`);
 
@@ -711,4 +872,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter and Daze-rain production blockouts with explicit historical/final-art red gates.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain and wet-field-vegetation production blockouts with explicit historical/final-art red gates.`);

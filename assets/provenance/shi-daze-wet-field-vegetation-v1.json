@@ -1,0 +1,79 @@
+{
+  "assetId": "shi-daze-wet-field-vegetation-v1",
+  "createdAt": "2026-08-10",
+  "status": "approved-runtime-wet-field-vegetation-production-blockout-council-engagement-story-reviewed-not-final-environment",
+  "rightsStatus": "original SHI project-authored geometry, vertex-color wind mask, materials, deterministic runtime presentation, renders and source scripts",
+  "historicalStatus": "generic rain-flattened field-edge forms; not an exact botanical, crop, seasonal or surveyed 209 BCE Daze reconstruction",
+  "designSource": "../../docs/art/DAZE_WET_FIELD_VEGETATION_BRIEF.md",
+  "engineImportEvidence": "../../docs/production/evidence/unreal-daze-wet-field-vegetation-import-status.json",
+  "engineEvidence": "../../docs/production/evidence/unreal-daze-wet-field-vegetation-presentation-status.json",
+  "toolchain": {
+    "authoring": "AgenticApp portable Blender 4.0.2 and official Unreal Engine 5.8.1",
+    "generation": "deterministic Blender Python plus one bounded texture-free engine-authored material and native HISM presentation; no neural mesh, generated texture, model weights or private source material",
+    "generator": {
+      "file": "../../scripts/build-daze-wet-field-vegetation.py",
+      "sha256": "34c16632a4f81d8ec8968f9000673084c5fd1da4496d7097970d8ba048fcefb3"
+    },
+    "validator": {
+      "file": "../../scripts/validate-daze-wet-field-vegetation.py",
+      "sha256": "7553a03350096f8b0fa617ef99dc9577269cfa53d0626024bc04c98da945fb47",
+      "method": "clean GLB and FBX import for stalk/tuft LOD0/LOD1 with exact topology, material, dual UV, non-overlapping UV1, vertex-alpha wind mask, bounds, identity transform, zero collision and nondegenerate inspection plus clean-import render"
+    },
+    "unrealImporter": {
+      "file": "../../scripts/import-daze-wet-field-vegetation-unreal.py",
+      "sha256": "ceab4a8278b7d62cda364af1da22b0d811159d87fe19292c510e431a69180cc8",
+      "method": "explicit replacement behind SHI_DAZE_VEGETATION_REIMPORT=1 or hash-stable read-only inspection with exact UE 5.8 bounds, LOD, UV, slot, collision, lightmap, Nanite and screen-size assertions"
+    },
+    "unrealMaterialAuthor": {
+      "file": "../../scripts/author-daze-wet-field-vegetation-material-unreal.py",
+      "sha256": "215bcec8d1e6dfae1a0bf6fed95d76edbb9a06bbf63c06863fe0a917b8ea8fb3",
+      "method": "read-only by default; exact texture-free 15-node opaque default-lit two-sided graph authoring behind SHI_DAZE_VEGETATION_AUTHOR_MATERIAL=1, including instanced-static-mesh compilation and vertex-alpha-masked world-position-offset inspection"
+    }
+  },
+  "outputs": [
+    {"file": "../3d/rendered/shi-daze-wet-field-vegetation-v1.blend", "role": "editable source and lookdev", "bytes": 711428, "sha256": "9b955479a77db6c3bf93c1f0547bcd73c7134e1af0f3b96c18fad26a2482f880"},
+    {"file": "../3d/export/shi-daze-wet-field-vegetation-v1-stalk-lod0.fbx", "role": "Unreal stalk-clump LOD0 import", "bytes": 28716, "sha256": "5292d86d577d526046217e24d8864f9b3036d88b93d3a4d0618e0f0c6b1d960d"},
+    {"file": "../3d/export/shi-daze-wet-field-vegetation-v1-stalk-lod0.glb", "role": "stalk-clump LOD0 interchange", "bytes": 10352, "sha256": "d325b0c2174d217d2985d196162e40edc62b4e6213d24964623ceedc8c9ee60c"},
+    {"file": "../3d/export/shi-daze-wet-field-vegetation-v1-stalk-lod1.fbx", "role": "Unreal stalk-clump LOD1 import", "bytes": 21532, "sha256": "81dd7ed331148ce1cce8679822112af4f4580bd16ae71c8b90be3ae8bc8fa4cc"},
+    {"file": "../3d/export/shi-daze-wet-field-vegetation-v1-stalk-lod1.glb", "role": "stalk-clump LOD1 interchange", "bytes": 4628, "sha256": "4a6188dfc6f93d1e6347e9dc086fa511eb0c722c3fcf317c4053f21e071c7506"},
+    {"file": "../3d/export/shi-daze-wet-field-vegetation-v1-tuft-lod0.fbx", "role": "Unreal low-tuft LOD0 import", "bytes": 27436, "sha256": "3c41dcebb06e7f3722e0dc45f41acd33634fc1a90a8f6902a6f0af89b50e8cca"},
+    {"file": "../3d/export/shi-daze-wet-field-vegetation-v1-tuft-lod0.glb", "role": "low-tuft LOD0 interchange", "bytes": 8312, "sha256": "91753bb6f157d0f4f4291942d8b9aa11a94d2bcb8c8f6a23bdbf469da36095a4"},
+    {"file": "../3d/export/shi-daze-wet-field-vegetation-v1-tuft-lod1.fbx", "role": "Unreal low-tuft LOD1 import", "bytes": 20268, "sha256": "58285708b352f081150d10c6521dc6feca1519020d174254c40922f4026a80fa"},
+    {"file": "../3d/export/shi-daze-wet-field-vegetation-v1-tuft-lod1.glb", "role": "low-tuft LOD1 interchange", "bytes": 3196, "sha256": "6cf87b67b46e92e9cfa90a9c20cb6d9a3bc391e609b605d258dc12a5b4a67b72"},
+    {"file": "../3d/rendered/shi-daze-wet-field-vegetation-v1.png", "role": "source mesh, silhouette and vertex-alpha lookdev inspection", "bytes": 914235, "sha256": "a8a1c70684d2359b7720b7485f12bbc0bd26e0ccf4ac8eafee75db258eb43cec"},
+    {"file": "../3d/rendered/shi-daze-wet-field-vegetation-v1-glb-import.png", "role": "clean GLB interchange inspection", "bytes": 812163, "sha256": "6d7da66a624d74174a42789b1847ad4d1f258520e015e5d3f2f9ecb9448a1232"},
+    {"file": "../3d/source/shi-daze-wet-field-vegetation-v1.metrics.json", "role": "deterministic generation metrics", "bytes": 2996, "sha256": "1c3b8a27a2c9fb9c37e6291c3fa76df8966da4715a08631405b949de8691f71a"},
+    {"file": "../3d/source/shi-daze-wet-field-vegetation-v1.validation.json", "role": "clean interchange machine validation", "bytes": 11634, "sha256": "9de296077c5f73f149cde3146cab783a57208ddc6c6bc698c623d404a96920c2"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/WetFieldVegetation/M_SHI_RainDarkenedFieldPlant.uasset", "role": "Unreal texture-free opaque material with vertex-alpha-masked low-amplitude wind", "bytes": 14118, "sha256": "b35cbfedb6f709cd313725223b2f66c5e4da833a9d8bb4279ba94ec32e1cfa94"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/WetFieldVegetation/SM_SHI_FieldStalkClump_01.uasset", "role": "Unreal stalk-clump mesh with exact LOD0/LOD1, dual UVs and zero collision", "bytes": 124594, "sha256": "7c55d07ad58d78c040c5ef9ed28e642f4dd869c8ce51a35314deb8902674ec1a"},
+    {"file": "../../apps/unreal/Content/SHI/Art/Environment/WetFieldVegetation/SM_SHI_LowBladeTuft_01.uasset", "role": "Unreal low-tuft mesh with exact LOD0/LOD1, dual UVs and zero collision", "bytes": 122658, "sha256": "071f76408d59f33448832083e4e16897f47c6a514008a3375578b74d38252c98"},
+    {"file": "../../docs/production/evidence/unreal-daze-vegetation-review-v1.png", "role": "packaged whole-field silhouette, shelter exclusion and approach-corridor review", "bytes": 1028904, "sha256": "0cb476c62575e9684bf20e19bf72f2f3667b2f05b78398985f7335e64a9b8474"},
+    {"file": "../../docs/production/evidence/unreal-daze-vegetation-story-act-3-v1.png", "role": "fresh packaged Act-III story-progression review", "bytes": 552678, "sha256": "c8299245c6320a5d181f28110e542dd441040fa1ba259b66b363c6f7224811e7"},
+    {"file": "../../docs/production/evidence/unreal-daze-vegetation-engagement-complete-v1.png", "role": "packaged completed Broken Crossing review", "bytes": 407160, "sha256": "42a53d2c9d6ffcac14ede70e864249485d7fd0532c68c6a8eaebf2d483c31fe8"},
+    {"file": "../../docs/production/evidence/unreal-daze-vegetation-campaign-return-v1.png", "role": "packaged unchanged-campaign return review", "bytes": 551790, "sha256": "6f27c4ca9421271386af9451c66ad94665437f485bcef299b7f1f3f11cc6ed0d"}
+  ],
+  "technicalReview": {
+    "stalkLodTriangles": [84, 28],
+    "tuftLodTriangles": [64, 14],
+    "uvChannelsPerLod": [2, 2],
+    "collisionTriangles": 0,
+    "stalkInstances": 42,
+    "tuftInstances": 64,
+    "hismInstances": 106,
+    "cleanGlbImport": "pass",
+    "cleanFbxImport": "pass",
+    "unrealImport": "pass",
+    "unrealMaterial": "pass: one compile-clean 15-node opaque default-lit two-sided graph with vertex-alpha wind mask, instanced-static-mesh usage, no textures and no normal pretence",
+    "unrealNativeAutomation": "17 of 17 SHI suites pass, including WetFieldVegetationPresentationV1 hostile transform, bounds, clearance, instance-budget, wind, collision, navigation, authority, disclosure, final-art and engagement-visibility cases",
+    "unrealVisibleCampaign": "pass: fresh Act I to Act III with two verified transactions",
+    "unrealVisibleEngagement": "pass: Broken Crossing completes three pulses with Orderly crossing and the exact campaign save returns unchanged"
+  },
+  "constraints": [
+    "Do not identify the generic forms as exact species, crop, season, medicinal use, plant community or surveyed Daze vegetation",
+    "Keep the fixed 42 stalk and 64 tuft instances inside the reviewed 24-metre field with the exact central shelter/command and diagonal-route clearances",
+    "Keep vegetation noninteractive, collision-free, non-navigable, nonreplicated and independent from gameplay, campaign save and engagement authority",
+    "Keep wind material-only at the reviewed low amplitude; do not add per-instance CPU animation or storm-thrashing motion",
+    "Do not promote this production vegetation blockout to final environment, shipping art or marketing status",
+    "Complete historically reviewed figures and formations, interaction hands, cloth/hair response, final sky/lighting, physical-display performance/accessibility and human historical/botanical/cinematic/art review before final scene acceptance"
+  ]
+}

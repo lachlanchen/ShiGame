@@ -2,6 +2,12 @@
 
 SHI browser QA uses a dedicated localhost-only Xvfb/noVNC/Chrome profile so tests can be watched and reproduced without touching the user's normal browser.
 
+## Current Unreal vegetation review desktop
+
+The accepted UE 5.8.1 Linux package remains visibly running on an isolated desktop at `http://127.0.0.1:6139/vnc.html?host=127.0.0.1&port=6139&autoconnect=1&resize=scale` (`Xvfb :128`, loopback x11vnc `5939`, loopback noVNC `6139`). The source-matched archive is `$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeVegetation-Review-v2/Linux`; its isolated normal user directory is outside Git.
+
+Fresh keyboard input selected **Seize the relay beacon**, issued the Act-I order, selected **Extinguish the tower; move in silence**, issued the Act-II order, opened Broken Crossing, then issued **Screen through the reeds**, **Repair the landing** and **Release the reserve**. The route reaches **SUCCESS · Orderly crossing**, returns to Act III and preserves the campaign save hash and modified time exactly. The 106-instance vegetation layer remains visibly peripheral during council and engagement, while the shelter/command center and compacted route stay clear. Four hash-bound 1600×1000 frames and the complete technical/runtime boundary are recorded in [`evidence/unreal-daze-wet-field-vegetation-presentation-status.json`](evidence/unreal-daze-wet-field-vegetation-presentation-status.json). This is a watched engineering playthrough, not observed-player, physical-controller or final-scene approval.
+
 ## Dedicated endpoints
 
 | Service | Endpoint |

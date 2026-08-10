@@ -1,5 +1,19 @@
 # SHI progress log
 
+## 2026-08-10 · Restrained Unreal wet-field vegetation and full playable-route checkpoint
+
+- Authored the first restrained Daze field-edge layer as generic rain-flattened forms: 42 taller stalk clumps and 64 low blade tufts, deterministically placed from seed `0x5EED20A`. It is explicitly not an exact species, crop, season or surveyed 209 BCE botanical reconstruction.
+- Built two texture-free Blender meshes with exact `84 → 28` and `64 → 14` triangle LODs, dual UVs and a root-to-tip vertex-alpha wind mask. All eight GLB/FBX exports pass clean-import topology, material, bounds, transform, collision and nondegenerate validation; source and clean-import renders were visually reviewed.
+- Imported both meshes and authored one exact 15-node opaque/default-lit/two-sided Unreal material. The material supplies bounded `2.4 cm` GPU-only world-position-offset wind, no textures or unsupported normal detail, and a final read-only inspection preserves all three tracked Unreal hashes.
+- Added a fail-closed `AShiWetFieldVegetation` HISM layer with exactly 106 instances, no tick, collision, overlap, navigation, gameplay, save or replication authority. Mathematical exclusions keep the shelter/command center and the compacted diagonal approach visibly open.
+- The first native archive was correctly rejected: its C++ actor compiled, but string-only asset references left IoStore byte-identical to the rain baseline. The corrected isolated cook contract packages exactly three new assets; the clean UE 5.8.1 archive mounts **516 packages** and headless smoke loads `ShiGameMode` without material/load warnings.
+- All **17 / 17** native `SHI.` suites pass, including hostile transform, bounds, clearance, instance-budget, CPU-sway, wind-amplitude, collision, navigation, hidden authority, replication, exact-botanical-claim, final-art and engagement-visibility cases.
+- Fresh keyboard play on isolated localhost noVNC advances Act I → Act II → Act III, completes all three Broken Crossing pulses with **SUCCESS · Orderly crossing**, and returns to the exact campaign. The save keeps SHA-256 `75a231c943cbce90fd2fddc2b67790508aa30cb33fde1ce2f2cb44e99c0db9ee` and its timestamp unchanged.
+- Four 1600×1000 final-package frames retain whole-field, story, engagement-completion and campaign-return evidence. The live review remains available at localhost-only noVNC port 6139.
+- This is a **production vegetation blockout, not final cinematic environment art**. Primitive council figures, floating light proxy, BasicShape signals, historically reviewed character/formation language, interaction hands, cloth/hair response, final sky/lighting, physical-display final-scene performance/accessibility and human historical/botanical/cinematic/art approval remain red.
+
+Next gate: replace the primitive council figures and formation proxies with a period-reviewed five-character silhouette/garment blockout while preserving the accepted center/route clearances, playable campaign, non-authoritative engagement and deterministic package gates.
+
 ## 2026-08-10 · Source-matched Unreal rain and complete visible replay checkpoint
 
 - Authored the first bounded Daze rain layer as a deterministic production VFX blockout: 384 crossed-ribbon streaks, a fixed 72-ring ripple pool, exact `24 × 24 m` wet-field bounds, `1,900 cm/s` descent, a `0.70 s` ripple life and seed `0x5EED209`. This is dramatic reconstruction, not evidence of exact weather at Daze in 209 BCE.
@@ -12,7 +26,7 @@
 - Four final-package 1600×1000 frames prove rain on exposed ground, a dry shelter interior, story progression, engagement completion and unchanged return. The accepted stack remains available at localhost-only noVNC port 6138; the earlier shelter review stack was not disturbed.
 - This remains a **production VFX blockout, not final cinematic weather**. Vegetation, splashes/cloth/hair response, final sky/lighting, period-reviewed figures/formations, interaction hands, final-scene physical performance/accessibility and human historical/cinematic/art approval remain red.
 
-Next gate: admit restrained wet-field vegetation, then replace primitive figures, floating light and BasicShape signals with period-reviewed character and formation language while preserving the accepted campaign, shelter-interception and non-authoritative engagement contracts.
+Next gate completed by the vegetation checkpoint above; period-reviewed character and formation language remains open.
 
 ## 2026-08-10 · Wet-field Unreal environment and complete engagement checkpoint
 

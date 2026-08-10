@@ -1,0 +1,179 @@
+{
+  "assetId": "shi-daze-wet-field-vegetation-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Packaged Unreal 5.8.1 vegetation review, fresh normal story progression and complete three-pulse Broken Crossing exercise/return through an isolated localhost noVNC desktop. This accepts the field-edge layer as a deterministic production vegetation blockout only.",
+  "decision": "approved-runtime-wet-field-vegetation-production-blockout-council-engagement-story-reviewed-not-final-environment",
+  "historicalBoundary": "Generic rain-flattened field-edge forms. No exact species, crop, season, medicinal use, plant community or surveyed 209 BCE Daze landscape is claimed.",
+  "requiredDisclosure": "GENERIC RAIN-FLATTENED FIELD-EDGE FORMS · NOT AN EXACT BOTANICAL RECONSTRUCTION · PRODUCTION VEGETATION BLOCKOUT",
+  "presentation": {
+    "stalkInstances": 42,
+    "tuftInstances": 64,
+    "totalInstances": 106,
+    "rootHalfExtentCentimeters": 1125.0,
+    "centralExclusionHalfExtentCentimeters": [520.0, 440.0],
+    "routeSlope": 0.28,
+    "routeHalfWidthCentimeters": 115.0,
+    "rootZCentimeters": -7.6,
+    "stalkScaleRange": [0.72, 1.06],
+    "tuftScaleRange": [0.70, 1.12],
+    "deterministicSeed": 99537418,
+    "exactBotanicalReconstruction": false,
+    "finalArt": false,
+    "interactive": false,
+    "runtimeCollision": false,
+    "navigationInfluence": false,
+    "gameplayAuthority": false,
+    "saveAuthority": false,
+    "replication": false,
+    "cpuAnimation": false,
+    "materialWindOnly": true,
+    "visibleDuringNonAuthoritativeEngagement": true,
+    "actorTags": [
+      "ShiEnvironment:WetFieldVegetation",
+      "ShiPresentation:NonAuthoritative",
+      "ShiArtStatus:ProductionVegetationBlockout"
+    ],
+    "developmentReview": {
+      "flag": "-ShiWetFieldVegetationReview",
+      "fieldOfViewDegrees": 52.0,
+      "excludedFromShipping": true
+    }
+  },
+  "material": {
+    "authoringTool": "scripts/author-daze-wet-field-vegetation-material-unreal.py",
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "passed": true,
+      "trackedUassetHashesUnchanged": true,
+      "compileErrors": 0
+    },
+    "nodeCount": 15,
+    "blendMode": "opaque",
+    "shadingModel": "default-lit",
+    "twoSided": true,
+    "usedWithInstancedStaticMeshes": true,
+    "rootColor": [0.031, 0.042, 0.018, 1.0],
+    "tipColor": [0.053, 0.069, 0.029, 1.0],
+    "roughness": 0.86,
+    "specular": 0.18,
+    "windSpeed": 0.38,
+    "windAmplitudeCentimeters": 2.4,
+    "windDirection": [1.0, 0.35, 0.0],
+    "vertexAlphaWindMask": true,
+    "textures": 0,
+    "normalInput": false,
+    "emissiveInput": false,
+    "opacityInput": false
+  },
+  "automation": {
+    "filter": "SHI.",
+    "discovered": 17,
+    "passed": 17,
+    "exitCode": 0,
+    "newSuite": "SHI.Cinematic.WetFieldVegetationPresentationV1",
+    "negativeCases": [
+      "unreviewed transform, root bounds, central clearance and oversized instance budget",
+      "CPU per-instance sway or storm-thrashing material amplitude",
+      "runtime collision, navigation, gameplay, save or replication authority",
+      "unsupported exact botanical reconstruction claim",
+      "premature final-art status",
+      "vegetation hidden during engagement"
+    ]
+  },
+  "visiblePlaytest": {
+    "desktop": "isolated Xvfb :128, localhost-only x11vnc 5939 and noVNC 6139",
+    "url": "http://127.0.0.1:6139/vnc.html?host=127.0.0.1&port=6139&autoconnect=1&resize=scale",
+    "package": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeVegetation-Review-v2/Linux",
+    "inputs": [
+      "Keyboard selected Seize the relay beacon and issued the Act-I order",
+      "Keyboard selected Extinguish the tower; move in silence and issued the Act-II order",
+      "Keyboard opened Broken Crossing from Act III",
+      "Keyboard selected and issued Screen through the reeds, Repair the landing and Release the reserve across the open lane",
+      "Keyboard returned from the completed exercise to the campaign"
+    ],
+    "campaignStart": "Act I, Scene 1, turn 1, resources grain 42, trust 38, momentum 22, people 58 and danger 46",
+    "campaignObserved": "Act III, Scene 5 Broken Crossing, turn 3, two decisions, resources grain 32, trust 36, momentum 33, people 56 and danger 62",
+    "engagementObserved": "Broken Crossing pulse 1 through pulse 3 and deterministic SUCCESS / Orderly crossing completion",
+    "engagementFinalMetrics": {
+      "crossing": 58,
+      "rear": 59,
+      "reserve": 41,
+      "supplies": 57,
+      "pursuit": 45,
+      "signals": 63
+    },
+    "campaignSave": {
+      "sha256BeforeEngagement": "75a231c943cbce90fd2fddc2b67790508aa30cb33fde1ce2f2cb44e99c0db9ee",
+      "sha256AfterReturn": "75a231c943cbce90fd2fddc2b67790508aa30cb33fde1ce2f2cb44e99c0db9ee",
+      "modifiedTimeUnchanged": true
+    },
+    "campaignReturn": "same Act III scene, grain 32, trust 36, momentum 33, people 56, danger 62, turn 3 and two decisions",
+    "storyAdvanced": true,
+    "engagementAdvanced": true,
+    "engagementCompleted": true,
+    "campaignUnchangedByEngagement": true,
+    "vegetationVisibleDuringCouncil": true,
+    "vegetationVisibleDuringEngagement": true,
+    "shelterAndCommandCenterClear": true,
+    "approachCorridorClear": true,
+    "materialOrLoadWarnings": 0,
+    "runtimeObservation": {
+      "resolution": [1600, 1000],
+      "gameProcessResidentBytesApproximate": 1731629056,
+      "gameProcessCpuPercentApproximate": 124,
+      "primaryGpuSmPercentSample": 8,
+      "qualification": "single engineering sample on isolated Xvfb/noVNC; not a physical-display FPS certificate"
+    }
+  },
+  "screenshots": [
+    {
+      "file": "docs/production/evidence/unreal-daze-vegetation-review-v1.png",
+      "role": "development-only whole-field silhouette, shelter exclusion and approach-corridor review",
+      "dimensions": [1600, 1000],
+      "bytes": 1028904,
+      "sha256": "0cb476c62575e9684bf20e19bf72f2f3667b2f05b78398985f7335e64a9b8474"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-vegetation-story-act-3-v1.png",
+      "role": "fresh packaged Act-III story progression with readable peripheral vegetation",
+      "dimensions": [1600, 1000],
+      "bytes": 552678,
+      "sha256": "c8299245c6320a5d181f28110e542dd441040fa1ba259b66b363c6f7224811e7"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-vegetation-engagement-complete-v1.png",
+      "role": "completed deterministic SUCCESS exercise with vegetation remaining presentation-only",
+      "dimensions": [1600, 1000],
+      "bytes": 407160,
+      "sha256": "42a53d2c9d6ffcac14ede70e864249485d7fd0532c68c6a8eaebf2d483c31fe8"
+    },
+    {
+      "file": "docs/production/evidence/unreal-daze-vegetation-campaign-return-v1.png",
+      "role": "campaign return proving the exercise and vegetation did not mutate canonical campaign state",
+      "dimensions": [1600, 1000],
+      "bytes": 551790,
+      "sha256": "6f27c4ca9421271386af9451c66ad94665437f485bcef299b7f1f3f11cc6ed0d"
+    }
+  ],
+  "review": {
+    "rejectedFirstPass": [
+      "the first archive contained the new native actor but byte-identical old IoStore payload; it was rejected and the isolated vegetation directory was added to the explicit cook contract",
+      "an immediate Act-III capture retained camera-transition temporal blur; it was rejected and replaced after a settled review interval",
+      "Unreal editor import wrote unrelated Android-file-server and expanded-input defaults; those tool side effects were removed before the repository regression"
+    ],
+    "accepted": [
+      "42 taller sparse clumps and 64 lower flattened tufts break the stage-like open field without becoming a reed wall or crop",
+      "the shelter, command surface and diagonal approach remain visibly and mathematically clear",
+      "the texture-free 15-node graph supplies low-amplitude GPU wind without CPU tick, texture noise or runtime authority",
+      "the fixed HISM layer remains collision-free, non-navigable, noninteractive, nonreplicated and present during Broken Crossing",
+      "fresh packaged input advances two campaign transactions, completes Broken Crossing and returns without campaign mutation",
+      "the accepted judgment remains generic production vegetation blockout, not exact species evidence or final environment art"
+    ],
+    "remainingRedGates": [
+      "primitive proxy figures, floating light proxy and BasicShape signals are not final characters, props or formation language",
+      "historically reviewed period figures, formations, interaction hands, cloth/hair response and final sky/lighting remain open",
+      "physical-display final-scene performance/accessibility and human historical/botanical/cinematic/art review must be repeated"
+    ]
+  }
+}

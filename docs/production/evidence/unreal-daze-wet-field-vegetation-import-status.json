@@ -1,0 +1,127 @@
+{
+  "assetId": "shi-daze-wet-field-vegetation-v1",
+  "recordedAt": "2026-08-10",
+  "scope": "Isolated Unreal 5.8.1 admission of two deterministic generic wet-field vegetation meshes, one exact texture-free material, corrected force-cook boundary, fresh package and headless smoke. This accepts a production vegetation blockout, not an exact botanical reconstruction or final environment art.",
+  "engine": {
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "assetRoot": "/Game/SHI/Art/Environment/WetFieldVegetation"
+  },
+  "import": {
+    "passed": true,
+    "readOnlyInspection": {
+      "mode": "inspect-only",
+      "exitCode": 0,
+      "trackedUassetHashesUnchanged": true,
+      "unrelatedTrackedUassetHashesUnchanged": 17
+    },
+    "stalk": {
+      "assetPath": "/Game/SHI/Art/Environment/WetFieldVegetation/SM_SHI_FieldStalkClump_01.SM_SHI_FieldStalkClump_01",
+      "boundsCentimeters": {
+        "minimum": [-34.0, -31.0000057220459, -5.300339580571745e-7],
+        "maximum": [34.0, 29.999996185302734, 135.0]
+      },
+      "lodTriangles": [84, 28],
+      "lodUvChannels": [2, 2],
+      "lodScreenSizes": [1.0, 0.15000000596046448],
+      "materialSlot": "M_SHI_RainDarkenedFieldPlant",
+      "simpleCollisionCount": 0,
+      "convexCollisionCount": 0,
+      "lightMapResolution": 64,
+      "lightMapCoordinateIndex": 1,
+      "naniteEnabled": false
+    },
+    "tuft": {
+      "assetPath": "/Game/SHI/Art/Environment/WetFieldVegetation/SM_SHI_LowBladeTuft_01.SM_SHI_LowBladeTuft_01",
+      "boundsCentimeters": {
+        "minimum": [-45.0, -45.0, -6.810472541474155e-7],
+        "maximum": [45.0, 44.999996185302734, 52.0]
+      },
+      "lodTriangles": [64, 14],
+      "lodUvChannels": [2, 2],
+      "lodScreenSizes": [1.0, 0.20000000298023224],
+      "materialSlot": "M_SHI_RainDarkenedFieldPlant",
+      "simpleCollisionCount": 0,
+      "convexCollisionCount": 0,
+      "lightMapResolution": 64,
+      "lightMapCoordinateIndex": 1,
+      "naniteEnabled": false
+    }
+  },
+  "trackedUnrealAssets": [
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/WetFieldVegetation/M_SHI_RainDarkenedFieldPlant.uasset",
+      "bytes": 14118,
+      "sha256": "b35cbfedb6f709cd313725223b2f66c5e4da833a9d8bb4279ba94ec32e1cfa94"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/WetFieldVegetation/SM_SHI_FieldStalkClump_01.uasset",
+      "bytes": 124594,
+      "sha256": "7c55d07ad58d78c040c5ef9ed28e642f4dd869c8ce51a35314deb8902674ec1a"
+    },
+    {
+      "file": "apps/unreal/Content/SHI/Art/Environment/WetFieldVegetation/SM_SHI_LowBladeTuft_01.uasset",
+      "bytes": 122658,
+      "sha256": "071f76408d59f33448832083e4e16897f47c6a514008a3375578b74d38252c98"
+    }
+  ],
+  "package": {
+    "result": "BUILD SUCCESSFUL",
+    "exitCode": 0,
+    "outsideGitRoot": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeVegetation-Review-v2/Linux",
+    "packageCount": 516,
+    "priorAcceptedPackageCount": 513,
+    "addedPackageCount": 3,
+    "alwaysCookPath": "/Game/SHI/Art/Environment/WetFieldVegetation",
+    "cookedEntries": [
+      "M_SHI_RainDarkenedFieldPlant.uasset",
+      "SM_SHI_FieldStalkClump_01.uasset",
+      "SM_SHI_FieldStalkClump_01.ubulk",
+      "SM_SHI_LowBladeTuft_01.uasset",
+      "SM_SHI_LowBladeTuft_01.ubulk"
+    ],
+    "artifacts": [
+      {
+        "role": "Linux development executable",
+        "bytes": 298561840,
+        "sha256": "06dfd87740387c0cd05b7fd8879932e9887e5b8084b615b614c6de77c3f5127e"
+      },
+      {
+        "role": "Pak metadata and non-IoStore payload",
+        "bytes": 10425358,
+        "sha256": "ddabf5929bb9fad6de23ac2ea4116dd728aedc8fa8762356883348e3697b68a5"
+      },
+      {
+        "role": "IoStore data container",
+        "bytes": 165823616,
+        "sha256": "5fba81216828bd8c8d4998be8ec457583ca26d19c17b08ceff4d0109de0f67c6"
+      },
+      {
+        "role": "IoStore table of contents",
+        "bytes": 149378,
+        "sha256": "b8df5d23075ece9d7287f44b4ab92c730cc453348dcf01b2db95c8db8c2bf1e2"
+      }
+    ],
+    "rejectedFirstArchive": {
+      "path": "$SHI_UNREAL_PACKAGE_ROOT/SHI-Builds-DazeVegetation-Review-v1/Linux",
+      "reason": "native actor compiled, but the IoStore container was byte-identical to the rain baseline because C++ string asset paths were not cooker-discoverable",
+      "correctiveAction": "added only /Game/SHI/Art/Environment/WetFieldVegetation to DirectoriesToAlwaysCook and rebuilt v2",
+      "accepted": false
+    }
+  },
+  "smokeTest": {
+    "command": "./SHI -nullrhi -unattended -NoSound -NoSplash -UserDir=<isolated> -ExecCmds=quit -log",
+    "exitCode": 0,
+    "containerPackageCount": 516,
+    "gameMode": "ShiGameMode",
+    "map": "/Engine/Maps/Entry",
+    "materialOrLoadWarnings": 0,
+    "cleanRequestedExit": true
+  },
+  "decision": "approved-engine-wet-field-vegetation-production-blockout-packaged-not-final-environment",
+  "remainingGates": [
+    "replace primitive council figures, floating light proxy and BasicShape signals with historically reviewed figures, props and formation language",
+    "complete final sky, lighting, terrain integration and figure/cloth/hair wet-weather response",
+    "repeat physical-display final-scene performance, accessibility and controller review",
+    "complete human historical, botanical, cinematic and art-direction review before shipping or marketing use"
+  ]
+}
