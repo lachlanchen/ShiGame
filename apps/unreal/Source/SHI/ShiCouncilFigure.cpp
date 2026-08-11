@@ -4,20 +4,25 @@
 #include "ShiCouncilFacialPerformanceModel.h"
 #include "ShiCouncilPerformancePresentationModel.h"
 #include "ShiCouncilSkinLookdevModel.h"
+#include "ShiCouncilWetRegisterInteractionModel.h"
 
 #include "Animation/AnimSequence.h"
+#include "Animation/Skeleton.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/StaticMeshSocket.h"
 #include "Engine/SubsurfaceProfile.h"
 #include "Engine/Texture2D.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Materials/MaterialParameters.h"
+#include "MaterialDomain.h"
+#include "PhysicsEngine/BodySetup.h"
 
 namespace
 {
@@ -70,6 +75,151 @@ namespace
         }
         return true;
     }
+
+    bool ValidateWetRegisterSocket(const UStaticMesh& Mesh, const FName SocketName,
+        const FTransform& ExpectedTransform, FString& OutError)
+    {
+        const UStaticMeshSocket* Socket = Mesh.FindSocket(SocketName);
+        const FTransform ActualTransform = Socket
+            ? FTransform(Socket->RelativeRotation, Socket->RelativeLocation,
+                Socket->RelativeScale)
+            : FTransform::Identity;
+        if (!Socket || !ActualTransform.Equals(ExpectedTransform, .0001f))
+        {
+            OutError = FString::Printf(
+                TEXT("Wet-register marker socket %s is missing or drifted."),
+                *SocketName.ToString());
+            return false;
+        }
+        return true;
+    }
+
+    bool ValidateWetRegisterAnimationSamples(const UAnimSequence& Sequence,
+        const USkeleton& Skeleton,
+        const FShiCouncilWetRegisterInteractionContractData& Contract,
+        FString& OutError)
+    {
+        const FReferenceSkeleton& Reference = Skeleton.GetReferenceSkeleton();
+        const TArray<FTransform>& ReferencePose = Reference.GetRefBonePose();
+        if (Reference.GetNum() != Contract.BoneCount
+            || ReferencePose.Num() != Contract.BoneCount
+            || !Sequence.IsBoneCompressedDataValid())
+        {
+            OutError = TEXT("Wet-register clip requires exact 53-bone reference data and valid platform-compressed bone data.");
+            return false;
+        }
+
+        const TSet<FName> ArmBones = {
+            FName(TEXT("clavicle_l")), FName(TEXT("upperarm_l")),
+            FName(TEXT("lowerarm_l")), FName(TEXT("hand_l")),
+            FName(TEXT("clavicle_r")), FName(TEXT("upperarm_r")),
+            FName(TEXT("lowerarm_r")), FName(TEXT("hand_r"))
+        };
+        if (Reference.GetBoneName(0) != FName(TEXT("Root"))
+            || Reference.GetParentIndex(0) != INDEX_NONE)
+        {
+            OutError = TEXT("Wet-register compressed clip no longer has the exact Root hierarchy.");
+            return false;
+        }
+        for (const FName ArmBone : ArmBones)
+        {
+            if (Reference.FindBoneIndex(ArmBone) == INDEX_NONE)
+            {
+                OutError = FString::Printf(
+                    TEXT("Wet-register compressed clip is missing exact arm bone %s."),
+                    *ArmBone.ToString());
+                return false;
+            }
+        }
+        const FTransform ExpectedRoot = ReferencePose[0];
+        if (ExpectedRoot.ContainsNaN())
+        {
+            OutError = TEXT("Wet-register shared reference Root is non-finite.");
+            return false;
+        }
+
+        for (int32 SampleIndex = 0; SampleIndex < Contract.ExpectedSamples; ++SampleIndex)
+        {
+            const double SampleTime = static_cast<double>(SampleIndex)
+                / static_cast<double>(Contract.ExpectedFramesPerSecond);
+            const FAnimExtractContext ExtractContext(SampleTime, false, {}, false);
+            for (int32 BoneIndex = 0; BoneIndex < Reference.GetNum(); ++BoneIndex)
+            {
+                FTransform BoneTransform = ReferencePose[BoneIndex];
+                Sequence.GetBoneTransform(BoneTransform,
+                    FSkeletonPoseBoneIndex(BoneIndex), ExtractContext, false);
+                const FVector Scale = BoneTransform.GetScale3D();
+                if (BoneTransform.ContainsNaN()
+                    || Scale.X <= 0.f || Scale.Y <= 0.f || Scale.Z <= 0.f)
+                {
+                    OutError = FString::Printf(
+                        TEXT("Wet-register compressed transform is non-finite or non-positive at sample %d bone %s."),
+                        SampleIndex, *Reference.GetBoneName(BoneIndex).ToString());
+                    return false;
+                }
+                if (ArmBones.Contains(Reference.GetBoneName(BoneIndex))
+                    && !Scale.Equals(FVector::OneVector, .0001f))
+                {
+                    OutError = FString::Printf(
+                        TEXT("Wet-register compressed arm scale drifted at sample %d bone %s."),
+                        SampleIndex, *Reference.GetBoneName(BoneIndex).ToString());
+                    return false;
+                }
+                if (BoneIndex == 0)
+                {
+                    const FVector WorldTranslationDeltaCentimeters =
+                        (BoneTransform.GetTranslation() - ExpectedRoot.GetTranslation())
+                        * Contract.CharacterComponentScale;
+                    const float TranslationDriftCentimeters =
+                        WorldTranslationDeltaCentimeters.Size();
+                    const float RotationDriftDegrees = FMath::RadiansToDegrees(
+                        ExpectedRoot.GetRotation().AngularDistance(BoneTransform.GetRotation()));
+                    if (TranslationDriftCentimeters
+                            > FShiCouncilWetRegisterInteractionModel::RootTranslationToleranceCentimeters()
+                        || RotationDriftDegrees
+                            > FShiCouncilWetRegisterInteractionModel::RootYawToleranceDegrees())
+                    {
+                        OutError = FString::Printf(
+                            TEXT("Wet-register compressed Root drifted at sample %d (%.4f cm, %.4f deg)."),
+                            SampleIndex, TranslationDriftCentimeters, RotationDriftDegrees);
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    bool ValidateWetRegisterSharedReference(const USkeletalMesh& Mesh,
+        const USkeleton& Skeleton, int32 ExpectedBoneCount, FString& OutError)
+    {
+        const FReferenceSkeleton& MeshReference = Mesh.GetRefSkeleton();
+        const FReferenceSkeleton& SkeletonReference = Skeleton.GetReferenceSkeleton();
+        if (MeshReference.GetRawBoneNum() != ExpectedBoneCount
+            || SkeletonReference.GetRawBoneNum() != ExpectedBoneCount
+            || MeshReference.GetRefBonePose().Num() != ExpectedBoneCount
+            || SkeletonReference.GetRefBonePose().Num() != ExpectedBoneCount)
+        {
+            OutError = TEXT("Wet-register mesh and shared Skeleton no longer expose the exact 53-bone reference pose.");
+            return false;
+        }
+        for (int32 BoneIndex = 0; BoneIndex < ExpectedBoneCount; ++BoneIndex)
+        {
+            if (MeshReference.GetBoneName(BoneIndex)
+                    != SkeletonReference.GetBoneName(BoneIndex)
+                || MeshReference.GetParentIndex(BoneIndex)
+                    != SkeletonReference.GetParentIndex(BoneIndex)
+                || !MeshReference.GetRefBonePose()[BoneIndex].Equals(
+                    SkeletonReference.GetRefBonePose()[BoneIndex], .0001f))
+            {
+                OutError = FString::Printf(
+                    TEXT("Wet-register shared Skeleton hierarchy or local bind drifted at bone %d."),
+                    BoneIndex);
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 AShiCouncilFigure::AShiCouncilFigure()
@@ -86,12 +236,15 @@ AShiCouncilFigure::AShiCouncilFigure()
     Mantle->SetupAttachment(FigureRoot);
     CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
     CharacterMesh->SetupAttachment(FigureRoot);
+    WetRegisterProp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WetRegisterProp"));
+    WetRegisterProp->SetupAttachment(CharacterMesh, FName(TEXT("hand_l")));
 
     FigureRoot->SetMobility(EComponentMobility::Movable);
     Body->SetMobility(EComponentMobility::Movable);
     Head->SetMobility(EComponentMobility::Movable);
     Mantle->SetMobility(EComponentMobility::Movable);
     CharacterMesh->SetMobility(EComponentMobility::Movable);
+    WetRegisterProp->SetMobility(EComponentMobility::Movable);
 
     Body->SetRelativeLocation(FVector(0.f, 0.f, 68.f));
     Body->SetRelativeScale3D(FVector(.42f, .31f, 1.08f));
@@ -106,6 +259,12 @@ AShiCouncilFigure::AShiCouncilFigure()
     CharacterMesh->SetVisibility(false, true);
     CharacterMesh->SetHiddenInGame(true, true);
     CharacterMesh->SetComponentTickEnabled(false);
+    WetRegisterProp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    WetRegisterProp->SetGenerateOverlapEvents(false);
+    WetRegisterProp->SetCanEverAffectNavigation(false);
+    WetRegisterProp->SetVisibility(false, true);
+    WetRegisterProp->SetHiddenInGame(true, true);
+    WetRegisterProp->SetComponentTickEnabled(false);
     ConfigureCollision(*Body);
     ConfigureCollision(*Head);
     ConfigureCollision(*Mantle);
@@ -114,19 +273,46 @@ AShiCouncilFigure::AShiCouncilFigure()
 void AShiCouncilFigure::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    if (!bUsingFacialPerformance || !bReviewVisible
+    if ((!bUsingFacialPerformance && !bUsingWetRegisterInteraction) || !bReviewVisible
         || !FMath::IsFinite(DeltaSeconds) || DeltaSeconds <= 0.f)
     {
         return;
     }
-    FacialElapsedSeconds = bReducedMotion
-        ? FMath::Min(
-            FacialElapsedSeconds + DeltaSeconds,
-            FShiCouncilFacialPerformanceModel::CycleDurationSeconds() - KINDA_SMALL_NUMBER)
-        : FMath::Fmod(
-            FacialElapsedSeconds + DeltaSeconds,
-            FShiCouncilFacialPerformanceModel::CycleDurationSeconds());
-    ApplyFacialFrame();
+    if (bUsingWetRegisterInteraction)
+    {
+        WetRegisterElapsedSeconds = FMath::Min(
+            WetRegisterElapsedSeconds + DeltaSeconds,
+            FShiCouncilWetRegisterInteractionModel::ExpectedDurationSeconds());
+        ApplyWetRegisterInteractionFrame();
+    }
+    if (bUsingFacialPerformance)
+    {
+        if (bUsingWetRegisterInteraction)
+        {
+            FacialElapsedSeconds = FMath::Min(WetRegisterElapsedSeconds,
+                FShiCouncilFacialPerformanceModel::CycleDurationSeconds()
+                    - KINDA_SMALL_NUMBER);
+        }
+        else
+        {
+            FacialElapsedSeconds = bReducedMotion
+                ? FMath::Min(
+                    FacialElapsedSeconds + DeltaSeconds,
+                    FShiCouncilFacialPerformanceModel::CycleDurationSeconds()
+                        - KINDA_SMALL_NUMBER)
+                : FMath::Fmod(
+                    FacialElapsedSeconds + DeltaSeconds,
+                    FShiCouncilFacialPerformanceModel::CycleDurationSeconds());
+        }
+        ApplyFacialFrame();
+        if (bUsingWetRegisterInteraction)
+        {
+            // The manual clip refresh above establishes the arm pose. Facial
+            // morph overrides are consumed by a subsequent refresh so the
+            // terminal wet-register frame cannot retain the prior face.
+            CharacterMesh->RefreshBoneTransforms();
+        }
+    }
     RefreshActorTick();
 }
 
@@ -162,6 +348,23 @@ bool AShiCouncilFigure::InitializeFigure(UStaticMesh* Cylinder, UStaticMesh* Sph
             UE_LOG(LogShiCouncilFigure, Warning,
                 TEXT("Council skin lookdev remains on the accepted SkinClay fallback: %s"),
                 *SkinError);
+        }
+    }
+    WetRegisterMesh = nullptr;
+    WetRegisterMaterial = nullptr;
+    WetRegisterInteractionClip = nullptr;
+    bWetRegisterInteractionInventoryReady = false;
+    ClearWetRegisterInteraction();
+    if (bWetRegisterInteractionReviewEnabled)
+    {
+        FString InteractionError;
+        bWetRegisterInteractionInventoryReady =
+            LoadWetRegisterInteractionInventory(InteractionError);
+        if (!bWetRegisterInteractionInventoryReady)
+        {
+            UE_LOG(LogShiCouncilFigure, Warning,
+                TEXT("Council wet-register interaction remains on the accepted neutral fallback: %s"),
+                *InteractionError);
         }
     }
     FacialCharacterMeshes.Empty();
@@ -241,6 +444,101 @@ void AShiCouncilFigure::SetSkinLookdevReviewEnabled(bool bEnabled)
 #else
     bSkinLookdevReviewEnabled = bEnabled;
 #endif
+}
+
+void AShiCouncilFigure::SetWetRegisterInteractionReviewEnabled(
+    bool bEnabled, const FString& NodeId)
+{
+#if UE_BUILD_SHIPPING
+    bWetRegisterInteractionReviewEnabled = false;
+    WetRegisterNodeId.Empty();
+#else
+    bWetRegisterInteractionReviewEnabled = bEnabled;
+    WetRegisterNodeId = bEnabled ? NodeId : FString();
+#endif
+}
+
+bool AShiCouncilFigure::LoadWetRegisterInteractionInventory(FString& OutError)
+{
+    FShiCouncilWetRegisterInteractionContractData Contract;
+    if (!FShiCouncilWetRegisterInteractionModel::BuildContract(Contract, OutError))
+    {
+        return false;
+    }
+    UStaticMesh* PropMesh = LoadObject<UStaticMesh>(
+        nullptr, *FShiCouncilWetRegisterInteractionModel::CanonicalPropMeshPath());
+    UMaterialInterface* PropMaterial = LoadObject<UMaterialInterface>(
+        nullptr, *FShiCouncilWetRegisterInteractionModel::CanonicalPropMaterialPath());
+    UAnimSequence* InteractionClip = LoadObject<UAnimSequence>(
+        nullptr, *FShiCouncilWetRegisterInteractionModel::CanonicalAnimationPath());
+    USkeleton* ClipSkeleton = InteractionClip ? InteractionClip->GetSkeleton() : nullptr;
+    UMaterial* BaseMaterial = PropMaterial ? PropMaterial->GetMaterial() : nullptr;
+    if (!PropMesh || PropMesh->GetClass() != UStaticMesh::StaticClass()
+        || PropMesh->GetPathName()
+            != FShiCouncilWetRegisterInteractionModel::CanonicalPropMeshPath()
+        || !PropMaterial || PropMaterial->GetClass() != UMaterial::StaticClass()
+        || PropMaterial->GetPathName()
+            != FShiCouncilWetRegisterInteractionModel::CanonicalPropMaterialPath()
+        || !BaseMaterial || BaseMaterial->MaterialDomain != MD_Surface
+        || PropMaterial->GetBlendMode() != BLEND_Opaque
+        || !PropMaterial->GetShadingModels().HasOnlyShadingModel(MSM_DefaultLit)
+        || PropMaterial->IsTwoSided())
+    {
+        OutError = TEXT("Wet-register exact prop or opaque one-sided clay material is unavailable or drifted.");
+        return false;
+    }
+    const FVector PropDimensions = PropMesh->GetBounds().BoxExtent * 2.f;
+    const TArray<FStaticMaterial>& StaticMaterials = PropMesh->GetStaticMaterials();
+    const UBodySetup* BodySetup = PropMesh->GetBodySetup();
+    if (!PropDimensions.Equals(Contract.PropWorldDimensionsCentimeters, .05f)
+        || StaticMaterials.Num() != 1
+        || StaticMaterials[0].MaterialInterface != PropMaterial
+        || !BodySetup || BodySetup->AggGeom.GetElementCount() != 0
+        || BodySetup->CollisionTraceFlag != CTF_UseSimpleAsComplex
+        || PropMesh->IsNavigationRelevant() || PropMesh->GetNavCollision() != nullptr
+        || PropMesh->Sockets.Num() != Contract.MarkerSocketNames.Num()
+        || Contract.MarkerLocalTransformsCentimeters.Num()
+            != Contract.MarkerSocketNames.Num())
+    {
+        OutError = TEXT("Wet-register dimensions, single material, collision/navigation-free body or marker inventory drifted.");
+        return false;
+    }
+    for (int32 MarkerIndex = 0; MarkerIndex < Contract.MarkerSocketNames.Num(); ++MarkerIndex)
+    {
+        if (!ValidateWetRegisterSocket(*PropMesh,
+                FName(*Contract.MarkerSocketNames[MarkerIndex]),
+                Contract.MarkerLocalTransformsCentimeters[MarkerIndex], OutError))
+        {
+            return false;
+        }
+    }
+    if (!InteractionClip || InteractionClip->GetClass() != UAnimSequence::StaticClass()
+        || InteractionClip->GetPathName()
+            != FShiCouncilWetRegisterInteractionModel::CanonicalAnimationPath()
+        || !ClipSkeleton || ClipSkeleton->GetPathName()
+            != FShiCouncilWetRegisterInteractionModel::CanonicalSkeletonPath()
+        || InteractionClip->GetNumberOfSampledKeys() != Contract.ExpectedSamples
+        || !FMath::IsNearlyEqual(InteractionClip->GetPlayLength(),
+            Contract.ExpectedDurationSeconds, .0001f)
+        || !FMath::IsNearlyEqual(
+            static_cast<float>(InteractionClip->GetSamplingFrameRate().AsDecimal()),
+            Contract.ExpectedFramesPerSecond, .0001f)
+        || InteractionClip->HasRootMotion() || InteractionClip->IsValidAdditive()
+        || !InteractionClip->Notifies.IsEmpty())
+    {
+        OutError = TEXT("Wet-register exact non-additive, notify-free, root-stationary 121-sample clip or shared Skeleton drifted.");
+        return false;
+    }
+    if (!ValidateWetRegisterAnimationSamples(
+            *InteractionClip, *ClipSkeleton, Contract, OutError))
+    {
+        return false;
+    }
+    WetRegisterMesh = PropMesh;
+    WetRegisterMaterial = PropMaterial;
+    WetRegisterInteractionClip = InteractionClip;
+    OutError.Empty();
+    return true;
 }
 
 bool AShiCouncilFigure::LoadSkinLookdevInventory(FString& OutError)
@@ -361,6 +659,291 @@ bool AShiCouncilFigure::LoadSkinLookdevInventory(FString& OutError)
     return true;
 }
 
+bool AShiCouncilFigure::ActivateWetRegisterInteraction(
+    const FShiCouncilParticipantData& Participant, FString& OutError)
+{
+    FShiCouncilWetRegisterInteractionContractData Contract;
+    if (!FShiCouncilWetRegisterInteractionModel::BuildContract(Contract, OutError))
+    {
+        return false;
+    }
+    USkeletalMesh* AdmittedMesh = CharacterMesh->GetSkeletalMeshAsset();
+    USkeleton* MeshSkeleton = AdmittedMesh ? AdmittedMesh->GetSkeleton() : nullptr;
+    USkeleton* ClipSkeleton = WetRegisterInteractionClip
+        ? WetRegisterInteractionClip->GetSkeleton() : nullptr;
+    FShiCouncilFacialMeshData FacialPresentation;
+    FString FacialError;
+    const bool bExactFacialHierarchy = AdmittedMesh
+        && FShiCouncilFacialPerformanceModel::Build(
+            Contract.SpeakerCharacterId, FacialPresentation, FacialError)
+        && FShiCouncilFacialPerformanceModel::ValidateMesh(
+            FacialPresentation, *AdmittedMesh, FacialError);
+    FString SharedReferenceError;
+    const bool bExactSharedReference = AdmittedMesh && MeshSkeleton
+        && ValidateWetRegisterSharedReference(*AdmittedMesh, *MeshSkeleton,
+            Contract.BoneCount, SharedReferenceError);
+    if (!bWetRegisterInteractionInventoryReady || !WetRegisterMesh
+        || !WetRegisterMaterial || !WetRegisterInteractionClip
+        || WetRegisterNodeId != Contract.NodeId
+        || Participant.CharacterId != Contract.SpeakerCharacterId
+        || Participant.SlotId != Contract.ParticipantSlotId || !Participant.bSpeaker
+        || !bUsingFacialPerformance || !bExactFacialHierarchy
+        || !bExactSharedReference || !AdmittedMesh
+        || AdmittedMesh->GetPathName() != Contract.CharacterMeshPath
+        || !MeshSkeleton || MeshSkeleton->GetPathName() != Contract.SkeletonPath
+        || ClipSkeleton != MeshSkeleton
+        || MeshSkeleton->GetReferenceSkeleton().GetNum() != Contract.BoneCount
+        || MeshSkeleton->GetReferenceSkeleton().FindBoneIndex(FName(TEXT("hand_l"))) == INDEX_NONE
+        || MeshSkeleton->GetReferenceSkeleton().FindBoneIndex(FName(TEXT("hand_r"))) == INDEX_NONE
+        || !CharacterMesh->GetRelativeScale3D().Equals(Contract.CharacterComponentScale, .0001f))
+    {
+        if (!FacialError.IsEmpty())
+        {
+            OutError = FString::Printf(TEXT("Wet-register accepted facial hierarchy drifted: %s"),
+                *FacialError);
+        }
+        else if (!SharedReferenceError.IsEmpty())
+        {
+            OutError = SharedReferenceError;
+        }
+        else
+        {
+            OutError = TEXT("Wet-register route requires its exact rain-order speaker, facial mesh, shared 53-bone Skeleton and admitted three-asset inventory.");
+        }
+        return false;
+    }
+
+    FTransform LeftSupportMarker;
+    if (!FShiCouncilWetRegisterInteractionModel::TryGetMarkerLocalTransform(
+            Contract.MarkerIds[0], LeftSupportMarker))
+    {
+        OutError = TEXT("Wet-register left-support marker contract is unavailable.");
+        return false;
+    }
+    FTransform AttachmentTransform = LeftSupportMarker.Inverse();
+    AttachmentTransform.SetTranslation(
+        AttachmentTransform.GetTranslation()
+            * Contract.PropAttachmentRelativeScale.X);
+    AttachmentTransform.SetScale3D(Contract.PropAttachmentRelativeScale);
+
+    WetRegisterProp->SetStaticMesh(WetRegisterMesh);
+    WetRegisterProp->SetMaterial(0, WetRegisterMaterial);
+    WetRegisterProp->AttachToComponent(CharacterMesh,
+        FAttachmentTransformRules::KeepRelativeTransform, FName(TEXT("hand_l")));
+    WetRegisterProp->SetRelativeTransform(AttachmentTransform);
+    WetRegisterProp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    WetRegisterProp->SetGenerateOverlapEvents(false);
+    WetRegisterProp->SetCanEverAffectNavigation(false);
+    if (WetRegisterProp->GetStaticMesh() != WetRegisterMesh
+        || WetRegisterProp->GetMaterial(0) != WetRegisterMaterial
+        || WetRegisterProp->GetAttachParent() != CharacterMesh
+        || WetRegisterProp->GetAttachSocketName() != FName(TEXT("hand_l"))
+        || !WetRegisterProp->GetRelativeScale3D().Equals(
+            Contract.PropAttachmentRelativeScale, .000001f))
+    {
+        OutError = TEXT("Wet-register prop could not bind exactly to the left hand with x100 scale compensation.");
+        ClearWetRegisterInteraction();
+        return false;
+    }
+
+    CharacterMesh->SetForceRefPose(false);
+    CharacterMesh->OverrideAnimationData(
+        WetRegisterInteractionClip, false, false, 0.f, 0.f);
+    CharacterMesh->SetComponentTickEnabled(false);
+    bUsingWetRegisterInteraction = true;
+    bUsingPerformance = true;
+    PerformanceRoleId = Contract.AssetId;
+    WetRegisterElapsedSeconds = 0.f;
+    WetRegisterStateId.Empty();
+    Tags.Add(FName(TEXT("ShiArtStatus:WetRegisterInteractionEngineeringBlockout")));
+    Tags.Add(FName(TEXT("ShiWetRegisterInteraction:ChenShengV1")));
+    Tags.Add(FName(TEXT("ShiHistoricalStatus:DramaticReconstructionNotSurvivingRegister")));
+    Tags.Add(FName(TEXT("ShiFraming:WideMediumOnly")));
+    ApplyWetRegisterInteractionFrame();
+    if (!bUsingWetRegisterInteraction)
+    {
+        OutError = TEXT("Wet-register initial frame failed its runtime contact admission.");
+        return false;
+    }
+    OutError.Empty();
+    return true;
+}
+
+void AShiCouncilFigure::ApplyWetRegisterInteractionFrame()
+{
+    if (!bUsingWetRegisterInteraction) return;
+    const auto FailClosed = [this](const FString& Error)
+    {
+        UE_LOG(LogShiCouncilFigure, Error,
+            TEXT("Council wet-register runtime failed closed: %s"), *Error);
+        ClearWetRegisterInteraction();
+        Tags.Add(FName(TEXT("ShiWetRegisterInteractionFallback:NeutralReferencePose")));
+        ClearFacialFrame();
+        bUsingFacialPerformance = false;
+        FacialElapsedSeconds = 0.f;
+        CharacterMesh->Stop();
+        CharacterMesh->SetAnimation(nullptr);
+        CharacterMesh->SetForceRefPose(true);
+        CharacterMesh->RefreshBoneTransforms();
+        CharacterMesh->SetComponentTickEnabled(false);
+    };
+
+    FShiCouncilWetRegisterInteractionContractData Contract;
+    FString Error;
+    if (!FShiCouncilWetRegisterInteractionModel::BuildContract(Contract, Error)
+        || !bWetRegisterInteractionInventoryReady || !WetRegisterMesh
+        || !WetRegisterMaterial || !WetRegisterInteractionClip
+        || CharacterMesh->GetSkeletalMeshAsset() == nullptr
+        || CharacterMesh->GetSkeletalMeshAsset()->GetPathName()
+            != Contract.CharacterMeshPath
+        || WetRegisterProp->GetStaticMesh() != WetRegisterMesh
+        || WetRegisterProp->GetMaterial(0) != WetRegisterMaterial)
+    {
+        FailClosed(Error.IsEmpty()
+            ? TEXT("the exact runtime inventory or Chen mesh drifted") : Error);
+        return;
+    }
+
+    FShiCouncilWetRegisterInteractionFrameRequest Request;
+    Request.Contract = Contract;
+    Request.NodeId = WetRegisterNodeId;
+    Request.SpeakerCharacterId = CharacterId;
+    Request.ParticipantSlotId = SlotId;
+    Request.ReviewModeId = bWetRegisterInteractionReviewEnabled
+        ? FShiCouncilWetRegisterInteractionModel::CanonicalReviewModeId() : FString();
+    Request.ElapsedSeconds = WetRegisterElapsedSeconds;
+    Request.bDevelopmentReviewAuthorized = bWetRegisterInteractionReviewEnabled;
+    Request.bReducedMotion = bReducedMotion;
+    FShiCouncilWetRegisterInteractionFrameData Frame;
+    if (!FShiCouncilWetRegisterInteractionModel::Evaluate(Request, Frame, Error))
+    {
+        FailClosed(Error);
+        return;
+    }
+
+    CharacterMesh->SetPosition(Frame.PoseSeconds, false);
+    CharacterMesh->TickAnimation(0.f, false);
+    CharacterMesh->RefreshBoneTransforms();
+    WetRegisterProp->UpdateComponentToWorld();
+    WetRegisterProp->SetVisibility(bReviewVisible, true);
+    WetRegisterProp->SetHiddenInGame(!bReviewVisible, true);
+
+    const FVector ComponentScale = WetRegisterProp->GetComponentScale().GetAbs();
+    const FVector WorldDimensions = WetRegisterMesh->GetBounds().BoxExtent
+        * 2.f * ComponentScale;
+    const FTransform LeftHand = CharacterMesh->GetSocketTransform(
+        FName(TEXT("hand_l")), RTS_World);
+    const FTransform LeftMarker = WetRegisterProp->GetSocketTransform(
+        FName(*Contract.MarkerSocketNames[0]), RTS_World);
+    const float LeftTranslationDrift = FVector::Distance(
+        LeftHand.GetTranslation(), LeftMarker.GetTranslation());
+    const float LeftDot = FMath::Clamp(FMath::Abs(LeftHand.GetRotation()
+        | LeftMarker.GetRotation()), 0.f, 1.f);
+    const float LeftRotationDriftDegrees = FMath::RadiansToDegrees(
+        2.f * FMath::Acos(LeftDot));
+    bool bContactMatches = WorldDimensions.Equals(
+        Frame.PropWorldDimensionsCentimeters, .05f)
+        && FMath::IsFinite(LeftTranslationDrift)
+        && FMath::IsFinite(LeftRotationDriftDegrees)
+        && LeftTranslationDrift
+            <= FShiCouncilWetRegisterInteractionModel::LeftSupportTranslationToleranceCentimeters()
+        && LeftRotationDriftDegrees
+            <= FShiCouncilWetRegisterInteractionModel::LeftSupportRotationToleranceDegrees();
+    float RightFloatingDistance = 0.f;
+    if (bContactMatches && Frame.bRightContact)
+    {
+        const FTransform RightHand = CharacterMesh->GetSocketTransform(
+            FName(TEXT("hand_r")), RTS_World);
+        const FTransform RightMarker = WetRegisterProp->GetSocketTransform(
+            FName(*Contract.MarkerSocketNames[1]), RTS_World);
+        RightFloatingDistance = FVector::Distance(
+            RightHand.GetTranslation(), RightMarker.GetTranslation());
+        bContactMatches = FMath::IsFinite(RightFloatingDistance)
+            && RightFloatingDistance
+                <= FShiCouncilWetRegisterInteractionModel::RightFloatingToleranceCentimeters();
+    }
+    if (!bContactMatches)
+    {
+        FailClosed(FString::Printf(
+            TEXT("live prop/contact drift exceeded admission (left=%.4f cm, left-rotation=%.4f deg, right=%.4f cm)"),
+            LeftTranslationDrift, LeftRotationDriftDegrees, RightFloatingDistance));
+        return;
+    }
+
+    WetRegisterStateId = Frame.StateId;
+    if (!bLoggedWetRegisterAdmission)
+    {
+        bLoggedWetRegisterAdmission = true;
+        UE_LOG(LogShiCouncilFigure, Display,
+            TEXT("SHI_COUNCIL_WET_REGISTER_INTERACTION_RUNTIME_ADMITTED asset=%s node=%s character=%s role=speaker prop=%s material=%s clip=%s samples=%d fps=30.0000 duration=4.0000 dimensions_cm=32.0000,14.0000,2.0000 left_owner=hand_l relative_scale=0.0100 source_contact=conservative-mesh-sampled source_max_penetration_cm=%.4f source_left_support_max_floating_cm=%.4f source_right_hold_max_floating_cm=%.4f runtime_contact=wrist-marker motion=%s visible_mesh_review=false anatomy_review=false final_hand=false final_prop=false historical_object=false player_ownership_continuity=false human_historical_cultural_review=false"),
+            *Contract.AssetId, *Frame.NodeId, *Frame.SpeakerCharacterId,
+            *Frame.PropMeshPath, *Frame.PropMaterialPath, *Frame.AnimationPath,
+            Contract.ExpectedSamples,
+            Frame.MaximumObservedHandPenetrationCentimeters,
+            Frame.MaximumObservedLeftSupportFloatingCentimeters,
+            Frame.MaximumObservedRightFloatingCentimeters,
+            Frame.bReducedMotion ? TEXT("reduced") : TEXT("normal"));
+    }
+    if (!bLoggedWetRegisterBilateralContact
+        && Frame.StateId == TEXT("bilateral-contact") && Frame.bRightContact)
+    {
+        bLoggedWetRegisterBilateralContact = true;
+        UE_LOG(LogShiCouncilFigure, Display,
+            TEXT("SHI_COUNCIL_WET_REGISTER_INTERACTION_BILATERAL_CONTACT state=bilateral-contact semantic_sample=30 pose_sample=%d left_drift_cm=%.4f right_float_cm=%.4f runtime_contact=wrist-marker visible_mesh_review=false motion=%s"),
+            Frame.PoseSampleIndex, LeftTranslationDrift, RightFloatingDistance,
+            Frame.bReducedMotion ? TEXT("reduced") : TEXT("normal"));
+    }
+    if (!bLoggedWetRegisterHeldQuestion
+        && Frame.StateId == TEXT("held-question")
+        && Frame.bLeftSupport && Frame.bRightContact)
+    {
+        bLoggedWetRegisterHeldQuestion = true;
+        UE_LOG(LogShiCouncilFigure, Display,
+            TEXT("SHI_COUNCIL_WET_REGISTER_INTERACTION_HELD_QUESTION state=held-question semantic_sample=60 pose_sample=%d left_owner=true right_contact=true player_ownership_continuity=false human_historical_cultural_review=false motion=%s"),
+            Frame.PoseSampleIndex,
+            Frame.bReducedMotion ? TEXT("reduced") : TEXT("normal"));
+    }
+    if (!bLoggedWetRegisterOrderedRelease
+        && Frame.StateId == TEXT("ordered-release") && Frame.bRightReleasing)
+    {
+        bLoggedWetRegisterOrderedRelease = true;
+        UE_LOG(LogShiCouncilFigure, Display,
+            TEXT("SHI_COUNCIL_WET_REGISTER_INTERACTION_ORDERED_RELEASE state=ordered-release semantic_sample=90 pose_sample=%d left_owner=true right_contact=false motion=%s"),
+            Frame.PoseSampleIndex,
+            Frame.bReducedMotion ? TEXT("reduced") : TEXT("normal"));
+    }
+    if (!bLoggedWetRegisterTerminalClamp && Frame.bTerminalClamp
+        && Frame.StateId == TEXT("settle") && Frame.PoseSampleIndex == 120)
+    {
+        bLoggedWetRegisterTerminalClamp = true;
+        CharacterMesh->SetComponentTickEnabled(false);
+        UE_LOG(LogShiCouncilFigure, Display,
+            TEXT("SHI_COUNCIL_WET_REGISTER_INTERACTION_TERMINAL_CLAMP state=settle sample=120 seconds=4.0000 left_owner=true loop=false motion=%s"),
+            Frame.bReducedMotion ? TEXT("reduced") : TEXT("normal"));
+    }
+}
+
+void AShiCouncilFigure::ClearWetRegisterInteraction()
+{
+    const bool bWasUsingWetRegisterInteraction = bUsingWetRegisterInteraction;
+    bUsingWetRegisterInteraction = false;
+    if (bWasUsingWetRegisterInteraction)
+    {
+        bUsingPerformance = false;
+        PerformanceRoleId.Empty();
+    }
+    WetRegisterStateId.Empty();
+    WetRegisterElapsedSeconds = 0.f;
+    WetRegisterProp->SetVisibility(false, true);
+    WetRegisterProp->SetHiddenInGame(true, true);
+    WetRegisterProp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    WetRegisterProp->SetGenerateOverlapEvents(false);
+    Tags.Remove(FName(TEXT("ShiArtStatus:WetRegisterInteractionEngineeringBlockout")));
+    Tags.Remove(FName(TEXT("ShiWetRegisterInteraction:ChenShengV1")));
+    Tags.Remove(FName(TEXT("ShiHistoricalStatus:DramaticReconstructionNotSurvivingRegister")));
+    Tags.Remove(FName(TEXT("ShiWetRegisterInteractionFallback:NeutralReferencePose")));
+}
+
 void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Participant)
 {
     SlotId = Participant.SlotId;
@@ -368,7 +951,13 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
     bParticipantSpeaker = Participant.bSpeaker;
     bLoggedMorphSectionExercise = false;
     bLoggedSkinLookdevAdmission = false;
+    bLoggedWetRegisterAdmission = false;
+    bLoggedWetRegisterBilateralContact = false;
+    bLoggedWetRegisterHeldQuestion = false;
+    bLoggedWetRegisterOrderedRelease = false;
+    bLoggedWetRegisterTerminalClamp = false;
     FacialElapsedSeconds = 0.f;
+    WetRegisterElapsedSeconds = 0.f;
     SetActorTransform(Participant.Transform);
     Tags.Empty();
     Tags.Add(FName(*FString::Printf(TEXT("ShiCharacter:%s"), *Participant.CharacterId)));
@@ -387,6 +976,7 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
     SkinLookdevMaterialIndex = INDEX_NONE;
     PerformanceRoleId.Empty();
     CharacterMesh->EmptyOverrideMaterials();
+    ClearWetRegisterInteraction();
 
     const TObjectPtr<USkeletalMesh>* FacialMesh = FacialCharacterMeshes.Find(Participant.CharacterId);
     const TObjectPtr<USkeletalMesh>* NeutralMesh = CharacterMeshes.Find(Participant.CharacterId);
@@ -431,7 +1021,27 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
     {
         FShiCouncilPerformanceData Performance;
         FString PerformanceError;
-        if (FShiCouncilPerformancePresentationModel::ForParticipant(
+        if (bWetRegisterInteractionReviewEnabled)
+        {
+            if (!ActivateWetRegisterInteraction(Participant, PerformanceError))
+            {
+                ClearFacialFrame();
+                bUsingFacialPerformance = false;
+                FacialElapsedSeconds = 0.f;
+                CharacterMesh->Stop();
+                CharacterMesh->SetAnimation(nullptr);
+                CharacterMesh->SetForceRefPose(true);
+                CharacterMesh->RefreshBoneTransforms();
+                CharacterMesh->SetComponentTickEnabled(false);
+                Tags.Add(FName(TEXT("ShiWetRegisterInteractionFallback:NeutralReferencePose")));
+                UE_LOG(LogShiCouncilFigure, Error,
+                    TEXT("Council wet-register interaction failed closed for %s: %s"),
+                    *Participant.CharacterId,
+                    PerformanceError.IsEmpty()
+                        ? TEXT("interaction inventory is unavailable") : *PerformanceError);
+            }
+        }
+        else if (FShiCouncilPerformancePresentationModel::ForParticipant(
                 Participant.bSpeaker, Performance, PerformanceError))
         {
             const TObjectPtr<UAnimSequence>* AdmittedSequence = PerformanceClips.Find(Performance.RoleId);
@@ -454,7 +1064,7 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
                 Tags.Add(FName(TEXT("ShiPerformanceStatus:SharedSkeletonBodyBlockout")));
             }
         }
-        if (!bUsingPerformance)
+        if (!bUsingPerformance && !bWetRegisterInteractionReviewEnabled)
         {
             CharacterMesh->Stop();
             CharacterMesh->SetAnimation(nullptr);
@@ -471,6 +1081,10 @@ void AShiCouncilFigure::ApplyParticipant(const FShiCouncilParticipantData& Parti
     if (bUsingFacialPerformance)
     {
         ApplyFacialFrame();
+        if (bUsingWetRegisterInteraction)
+        {
+            CharacterMesh->RefreshBoneTransforms();
+        }
     }
 
     const FLinearColor HeadColor = FLinearColor::LerpUsingHSV(Participant.Color, FLinearColor(.60f, .46f, .32f), .18f);
@@ -637,7 +1251,13 @@ void AShiCouncilFigure::SetReducedMotion(bool bValue)
     if (bReducedMotion == bValue) return;
     bReducedMotion = bValue;
     FacialElapsedSeconds = 0.f;
+    WetRegisterElapsedSeconds = 0.f;
+    if (bUsingWetRegisterInteraction) ApplyWetRegisterInteractionFrame();
     if (bUsingFacialPerformance) ApplyFacialFrame();
+    if (bUsingWetRegisterInteraction && bUsingFacialPerformance)
+    {
+        CharacterMesh->RefreshBoneTransforms();
+    }
     RefreshActorTick();
 }
 
@@ -654,8 +1274,11 @@ void AShiCouncilFigure::SetReviewVisible(bool bVisible)
     Body->SetHiddenInGame(!bVisible || bUsingSkeletalPresentation, true);
     Head->SetHiddenInGame(!bVisible || bUsingSkeletalPresentation, true);
     Mantle->SetHiddenInGame(!bVisible || bUsingSkeletalPresentation, true);
+    WetRegisterProp->SetVisibility(bVisible && bUsingWetRegisterInteraction, true);
+    WetRegisterProp->SetHiddenInGame(!bVisible || !bUsingWetRegisterInteraction, true);
     CharacterMesh->bPauseAnims = !bVisible;
-    CharacterMesh->SetComponentTickEnabled(bVisible && bUsingSkeletalPresentation && bUsingPerformance);
+    CharacterMesh->SetComponentTickEnabled(bVisible && bUsingSkeletalPresentation
+        && bUsingPerformance && !bUsingWetRegisterInteraction);
     RefreshActorTick();
 }
 
@@ -722,5 +1345,13 @@ void AShiCouncilFigure::RefreshActorTick()
     const bool bReducedPassComplete = bReducedMotion
         && FacialElapsedSeconds >= FShiCouncilFacialPerformanceModel::CycleDurationSeconds()
             - 2.f * KINDA_SMALL_NUMBER;
-    SetActorTickEnabled(bUsingFacialPerformance && bReviewVisible && !bReducedPassComplete);
+    const bool bWetRegisterPassComplete = bUsingWetRegisterInteraction
+        && WetRegisterElapsedSeconds
+            >= FShiCouncilWetRegisterInteractionModel::ExpectedDurationSeconds()
+                - KINDA_SMALL_NUMBER;
+    const bool bTickFacial = bUsingFacialPerformance
+        && (bUsingWetRegisterInteraction ? !bWetRegisterPassComplete : !bReducedPassComplete);
+    const bool bTickWetRegister = bUsingWetRegisterInteraction
+        && !bWetRegisterPassComplete;
+    SetActorTickEnabled(bReviewVisible && (bTickFacial || bTickWetRegister));
 }

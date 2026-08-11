@@ -231,6 +231,43 @@
     "closeCameraApproved": false,
     "humanReviewApproved": false
   },
+  "historicalSnapshotPolicy": {
+    "snapshotBoundary": "build-time",
+    "immutableImportOrBuildTimeSnapshot": true,
+    "currentMutableCrossReceipt": false,
+    "historicalReceiptFiles": [
+      "apps/unreal/Source/SHI/ShiCouncilFigure.h",
+      "apps/unreal/Source/SHI/ShiCouncilFigure.cpp",
+      "apps/unreal/Source/SHI/ShiGameMode.h",
+      "apps/unreal/Source/SHI/ShiGameMode.cpp",
+      "apps/unreal/Config/DefaultGame.ini"
+    ],
+    "currentSourceSupersededBy": {
+      "assetId": "shi-daze-council-wet-register-interaction-v1",
+      "evidenceFile": "docs/production/evidence/unreal-daze-council-wet-register-interaction-runtime-status.json",
+      "nativeBuild": {
+        "status": "pass",
+        "logicalName": "SHI-DazeCouncilWetRegisterInteraction-NativeBuild-v7.log",
+        "tracked": false,
+        "bytes": 5673,
+        "sha256": "3474ef9841e2213746f25d0fdf514c276daff05ea235474ad9a53486a579326f",
+        "exitCode": 0
+      },
+      "fullShiNamespace": {
+        "status": "pass",
+        "filter": "SHI.",
+        "logicalName": "SHI-DazeCouncilWetRegisterInteraction-Automation-full-v5.log",
+        "tracked": false,
+        "bytes": 262237,
+        "sha256": "1cb22dff1b4e988a010c07abb118b9eb8a2fb4679f049affb6d78112d4fe32d8",
+        "discovered": 22,
+        "started": 22,
+        "passed": 22,
+        "failed": 0,
+        "exitCode": 0
+      }
+    }
+  },
   "compiledSourceSnapshot": [
     {
       "file": "apps/unreal/Source/SHI/ShiCouncilSkinLookdevModel.h",

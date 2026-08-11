@@ -34,6 +34,7 @@
 #include "ShiCouncilFigure.h"
 #include "ShiCouncilSkinLookdevModel.h"
 #include "ShiCouncilStagingModel.h"
+#include "ShiCouncilWetRegisterInteractionModel.h"
 #include "ShiDazeFieldShelterPresentationModel.h"
 #include "ShiWetFieldEnvironmentPresentationModel.h"
 #include "ShiOrderTransactionModel.h"
@@ -75,8 +76,21 @@ void AShiGameMode::BeginPlay()
         FParse::Param(FCommandLine::Get(), TEXT("ShiCouncilCharacterReviewSpeaker"));
     bCouncilSkinLookdevReview = FParse::Param(
         FCommandLine::Get(), TEXT("ShiCouncilSkinLookdevReview"));
+    bCouncilWetRegisterInteractionReview = FParse::Param(
+        FCommandLine::Get(), TEXT("ShiCouncilWetRegisterInteractionReview"));
     bCouncilCharacterReview = bCouncilCharacterReviewKeeper
-        || bCouncilCharacterReviewSpeaker || bCouncilSkinLookdevReview;
+        || bCouncilCharacterReviewSpeaker || bCouncilSkinLookdevReview
+        || bCouncilWetRegisterInteractionReview;
+    if (bCouncilWetRegisterInteractionReview
+        && (bCouncilCharacterReviewSpeaker || bCouncilCharacterReviewKeeper
+            || bCouncilSkinLookdevReview || bCommandWeightReview || bCommandSurfaceReview
+            || bWetFieldEnvironmentReview || bDazeFieldShelterReview || bRainVfxReview
+            || bWetFieldVegetationReview))
+    {
+        LoadError = TEXT("-ShiCouncilWetRegisterInteractionReview is a Chen-only inert route and cannot be combined with another presentation review route.");
+        UE_LOG(LogTemp, Error, TEXT("SHI wet-register interaction review rejected: %s"), *LoadError);
+        return;
+    }
     if (bCouncilSkinLookdevReview
         && (bCouncilCharacterReviewSpeaker || bCouncilCharacterReviewKeeper
             || bCommandWeightReview || bCommandSurfaceReview
@@ -100,13 +114,22 @@ void AShiGameMode::BeginPlay()
     }
     else
     {
-        if (bCouncilSkinLookdevReview)
+        if (bCouncilSkinLookdevReview || bCouncilWetRegisterInteractionReview)
         {
             bPersistenceEnabled = false;
             Session.Initialize(Campaign, CampaignSeed);
-            SaveStatus = TEXT("SKIN LOOKDEV REVIEW · STORY AND SAVE STATE ARE INERT");
-            UE_LOG(LogTemp, Display,
-                TEXT("SHI_COUNCIL_SKIN_LOOKDEV_REVIEW_INERT story_input=false save_read=false save_write=false campaign_advance=false"));
+            if (bCouncilSkinLookdevReview)
+            {
+                SaveStatus = TEXT("SKIN LOOKDEV REVIEW · STORY AND SAVE STATE ARE INERT");
+                UE_LOG(LogTemp, Display,
+                    TEXT("SHI_COUNCIL_SKIN_LOOKDEV_REVIEW_INERT story_input=false save_read=false save_write=false campaign_advance=false"));
+            }
+            else
+            {
+                SaveStatus = TEXT("WET-REGISTER INTERACTION REVIEW · STORY AND SAVE STATE ARE INERT");
+                UE_LOG(LogTemp, Display,
+                    TEXT("SHI_COUNCIL_WET_REGISTER_INTERACTION_REVIEW_INERT story_input=false save_read=false save_write=false campaign_advance=false"));
+            }
         }
         else
         {
@@ -399,6 +422,7 @@ void AShiGameMode::IssueEngagementCommand()
 
 void AShiGameMode::IssueSelectedOrder()
 {
+    if (bCouncilSkinLookdevReview || bCouncilWetRegisterInteractionReview) return;
     if (bEngagementOpen) { IssueEngagementCommand(); return; }
     if (IsCinematicSequenceActive()) return;
     const FShiNodeData* Node = GetCurrentNode();
@@ -474,7 +498,7 @@ void AShiGameMode::IssueSelectedOrder()
 void AShiGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    if (bCouncilSkinLookdevReview)
+    if (bCouncilSkinLookdevReview || bCouncilWetRegisterInteractionReview)
     {
         TickCamera(DeltaSeconds);
         return;
@@ -1062,6 +1086,11 @@ bool AShiGameMode::SaveChronicle(FString& OutError) const
 
 bool AShiGameMode::SaveChronicle(const FShiCampaignSession& SourceSession, FString& OutError) const
 {
+    if (bCouncilSkinLookdevReview || bCouncilWetRegisterInteractionReview)
+    {
+        OutError = TEXT("isolated council review routes cannot write campaign saves");
+        return false;
+    }
     FString Json;
     if (!SourceSession.ExportSaveJson(Json, OutError)) return false;
     const FString SavePath = GetSavePath();
@@ -1088,6 +1117,7 @@ bool AShiGameMode::SaveChronicle(const FShiCampaignSession& SourceSession, FStri
 
 void AShiGameMode::RequestNewChronicle()
 {
+    if (bCouncilSkinLookdevReview || bCouncilWetRegisterInteractionReview) return;
     if (!LoadError.IsEmpty() || bEngagementOpen || IsCinematicSequenceActive()) return;
     if (!bRestartArmed)
     {
@@ -1276,6 +1306,23 @@ void AShiGameMode::CreateCommandSpace()
         {
             LoadError = TEXT("Chen Sheng skin lookdev review requires a fresh council state with Chen Sheng in the speaker slot.");
             UE_LOG(LogTemp, Error, TEXT("SHI skin lookdev review rejected: %s"), *LoadError);
+            return;
+        }
+    }
+    if (bCouncilWetRegisterInteractionReview)
+    {
+        const FShiCouncilParticipantData* ReviewSpeaker = OpeningCouncilStage.Participants.FindByPredicate(
+            [](const FShiCouncilParticipantData& Participant) { return Participant.bSpeaker; });
+        if (OpeningCouncilStage.NodeId
+                != FShiCouncilWetRegisterInteractionModel::CanonicalNodeId()
+            || !ReviewSpeaker
+            || ReviewSpeaker->SlotId
+                != FShiCouncilWetRegisterInteractionModel::CanonicalParticipantSlotId()
+            || ReviewSpeaker->CharacterId
+                != FShiCouncilWetRegisterInteractionModel::CanonicalSpeakerCharacterId())
+        {
+            LoadError = TEXT("Wet-register interaction review requires a fresh rain-order council with Chen Sheng in the speaker slot.");
+            UE_LOG(LogTemp, Error, TEXT("SHI wet-register interaction review rejected: %s"), *LoadError);
             return;
         }
     }
@@ -1548,6 +1595,13 @@ void AShiGameMode::CreateCommandSpace()
         AShiCouncilFigure* Figure = World->SpawnActor<AShiCouncilFigure>();
         FString FigureError;
         if (Figure) Figure->SetSkinLookdevReviewEnabled(bCouncilSkinLookdevReview);
+        if (Figure) Figure->SetWetRegisterInteractionReviewEnabled(
+            bCouncilWetRegisterInteractionReview && Participant.bSpeaker
+                && Participant.SlotId
+                    == FShiCouncilWetRegisterInteractionModel::CanonicalParticipantSlotId()
+                && Participant.CharacterId
+                    == FShiCouncilWetRegisterInteractionModel::CanonicalSpeakerCharacterId(),
+            OpeningCouncilStage.NodeId);
         if (!Figure || !Figure->InitializeFigure(Cylinder, Sphere, Cube, BasicMaterial, FigureError))
         {
             LoadError = FString::Printf(TEXT("Council figure %s could not initialize: %s"), *Participant.SlotId, *FigureError);

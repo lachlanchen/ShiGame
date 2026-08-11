@@ -1,0 +1,779 @@
+{
+  "assetId": "shi-daze-council-wet-register-interaction-v1",
+  "schemaVersion": 1,
+  "createdAt": "2026-08-11T05:41:55+08:00",
+  "updatedAt": "2026-08-11T07:51:38+08:00",
+  "status": "import-native-package-runtime-and-watched-route-engineering-pass; visible-mesh-contact-human-historical-cultural-cinematic-accessibility-and-final gates red",
+  "disclosure": "PROJECT-ORIGINAL WET-REGISTER INTERACTION BLOCKOUT · DRAMATIC RECONSTRUCTION · NOT A SURVIVING QIN REGISTER · NOT FINAL HAND PERFORMANCE OR CLOSE-CAMERA AUTHORITY",
+  "engine": {
+    "name": "Unreal Engine",
+    "association": "5.8",
+    "version": "5.8.1-56057345+++UE5+Release-5.8",
+    "platform": "Linux",
+    "configuration": "Development Editor"
+  },
+  "admissionBoundary": {
+    "sourceReceipt": {
+      "file": "assets/provenance/shi-daze-council-wet-register-interaction-v1.json",
+      "bytes": 8765,
+      "sha256": "150a1f8b188a8d1b88cfa0c774731863e8aa0e63c932e8a74bb9e70898d926fc",
+      "immutableImportTimeSnapshot": true,
+      "currentMutableCrossReceipt": false,
+      "reviewStatusRemainsSourceScoped": {
+        "engineAdmission": false,
+        "sourceEngineering": false,
+        "humanHistoricalCulturalApproval": false,
+        "finalProp": false,
+        "finalHandAnimation": false,
+        "anatomy": false,
+        "cinematic": false,
+        "accessibility": false,
+        "playerOwnershipContinuity": false
+      }
+    },
+    "separateEngineeringEngineAdmission": true,
+    "engineeringAdmissionBasis": [
+      "authorized isolated import followed by a distinct default inspect-only process",
+      "three exact privacy-scanned uassets with material, socket, collision, navigation and compressed animation readback",
+      "current native source compiled successfully",
+      "focused 1/1 and complete SHI 22/22 native automation passed",
+      "path-sanitized package v4 cooked the exact three-asset root as 567 of 574 candidates",
+      "normal-v5 and reduced-v5 inert packaged-player routes emitted the exact ordered markers and shut down cleanly",
+      "seven raw-X11-matched watched frames and two later terminal-stable captures preserve the bounded engineering review"
+    ],
+    "packageAdmission": true,
+    "liveRuntimeMarkerAdmission": true,
+    "visibleNoVncAdmission": true,
+    "visibleNoVncEngineeringOnly": true,
+    "visibleMeshContactClearanceAdmission": false,
+    "materialArtAdmission": false,
+    "playerOwnershipContinuityAdmission": false,
+    "humanHistoricalCulturalAdmission": false,
+    "humanAnatomyAdmission": false,
+    "humanCinematicAdmission": false,
+    "closeCameraAdmission": false,
+    "finalProp": false,
+    "finalHandAnimation": false,
+    "finalCharacterArt": false
+  },
+  "importAdmission": {
+    "status": "pass-isolated-import-replace-plus-distinct-default-inspect-only-engineering-only",
+    "evidence": {
+      "file": "docs/production/evidence/unreal-daze-council-wet-register-interaction-import-status.json",
+      "bytes": 72005,
+      "sha256": "814e6c2767f6adc6c235dc7a16231adb83a703cd381627a4962aa16b432ed583"
+    },
+    "immutableImportReplaceReceiptRootSha256": "85c64e8515e6cc17a23528cbdec90823ee4ada2f4635eafbb7eb69c814913fb8",
+    "destination": "/Game/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1",
+    "mutationEnvironment": "SHI_DAZE_COUNCIL_WET_REGISTER_INTERACTION_REIMPORT",
+    "importReplace": {
+      "mode": "import-replace",
+      "mutationAuthorized": true,
+      "passed": true,
+      "saved": true,
+      "transientLog": {
+        "logicalName": "SHI-DazeCouncilWetRegisterInteraction-Import-v7.log",
+        "tracked": false,
+        "bytes": 323293,
+        "sha256": "f7140eed9d48b2f93008166b335dcd6f1239e0fb7afef326ceb90ac9dab96fa3",
+        "durableBoundary": "The mutable external log is not repository evidence; this manifest and the canonical import-status receipt preserve the reviewed result."
+      }
+    },
+    "defaultReadOnlyInspection": {
+      "mode": "inspect-only",
+      "mutationAuthorized": false,
+      "distinctFromImportProcess": true,
+      "exitCode": 0,
+      "passed": true,
+      "canonicalImportReceiptRootPreserved": true,
+      "trackedUassetHashesUnchanged": true,
+      "embeddedMetadataPrivacyPassed": true,
+      "all121By53TransformsResampled": true,
+      "compressedRuntimeDataValid": true,
+      "transientLog": {
+        "logicalName": "SHI-DazeCouncilWetRegisterInteraction-Inspect-v2.log",
+        "tracked": false,
+        "bytes": 302479,
+        "sha256": "a74004d62e86b6a0aa5da6754378af1acf89c0e888912a74ede09b981ba98ad1",
+        "durableBoundary": "The mutable external log is not repository evidence; the nested inspect-only receipt is embedded in the canonical import-status file."
+      }
+    },
+    "exactInventory": {
+      "trackedAssets": 3,
+      "staticMeshes": 1,
+      "materials": 1,
+      "animationSequences": 1,
+      "rigTexturePhysicsAudioNavigationOrGameplayAssets": 0
+    },
+    "prop": {
+      "dimensionsCentimeters": [32.0, 14.0, 2.0],
+      "observedBoundsCentimeters": {
+        "minimum": [-15.999999046325684, -7.0, -1.000000238418579],
+        "maximum": [15.999999046325684, 7.0, 1.000000238418579],
+        "dimensions": [31.999998092651367, 14.0, 2.000000476837158]
+      },
+      "fbxToUnrealImportUniformScale": 0.01,
+      "importScalePurpose": "FBX-to-Unreal static-mesh unit correction only; not runtime scale",
+      "materialSlotName": "M_SHI_DazeCouncil_WetRegister_Clay_01",
+      "importedMaterialSlotName": "M_SHI_DazeCouncil_WetRegister_Clay_01",
+      "materialGraphNodes": 4,
+      "materialTextures": 0,
+      "materialCompiledClean": true,
+      "socketNames": [
+        "WetRegister_LeftSupport",
+        "WetRegister_RightContact",
+        "WetRegister_CameraReadability"
+      ],
+      "socketLocationsCentimeters": [
+        [11.0, -5.5, -3.35],
+        [-11.0, 5.5, 3.35],
+        [0.0, 0.0, 1.0]
+      ],
+      "socketRotationsPitchYawRollDegrees": [
+        [0.0, 0.0, 180.0],
+        [0.0, 90.0, 0.0],
+        [0.0, 0.0, 0.0]
+      ],
+      "simpleCollisionCount": 0,
+      "convexCollisionCount": 0,
+      "collisionComplexity": "CTF_UseSimpleAsComplex",
+      "navigationRelevant": false,
+      "navigationCollision": false,
+      "naniteEnabled": false,
+      "passed": true
+    },
+    "animation": {
+      "skeleton": "/Game/SHI/Art/Characters/DazeCouncil/SK_SHI_DazeCouncil_Skeleton",
+      "boneCount": 53,
+      "trackCountAfterRootRemoval": 52,
+      "samples": 121,
+      "frames": 120,
+      "framesPerSecond": 30.0,
+      "durationSeconds": 4.0,
+      "looping": false,
+      "rootMotionEnabled": false,
+      "compressedDataValid": true,
+      "evaluationType": "Compressed",
+      "all121By53TransformsFinite": true,
+      "rootStationaryEverySample": true,
+      "armChainScaleUnchangedEverySample": true,
+      "semanticFrames": [1, 31, 61, 91, 121],
+      "semanticSamples": [0, 30, 60, 90, 120],
+      "contact": {
+        "leftMaximumDriftCentimeters": 0.0039685306858313904,
+        "leftMaximumAngularDriftDegrees": 0.0,
+        "leftSupportMaximumFloatingCentimeters": 0.3386637148479367,
+        "rightAcquisitionCount": 1,
+        "rightReleaseCount": 1,
+        "rightAcquisitionSample": 30,
+        "orderedReleasePhaseOnsetSample": 90,
+        "rightReleaseSample": 91,
+        "rightContactExitSample": 91,
+        "rightContinuousThroughHold": true,
+        "heldBoundaryInterpolation": {
+          "playbackSampleFirst": 89.0,
+          "playbackSampleLastInclusive": 90.0,
+          "subdivisions": 64,
+          "sampledPoints": 65,
+          "runtimeContactToleranceCentimeters": 0.8,
+          "authoringReserveCentimeters": 0.65,
+          "maximumRightDistanceCentimeters": 0.000028827104154457303,
+          "passed": true
+        },
+        "maximumPenetrationCentimeters": 0.3500294405966997,
+        "maximumFloatingCentimeters": 0.0
+      },
+      "passed": true
+    },
+    "nativePreparation": {
+      "materialConfigureInvokedOnlyDuringMutation": true,
+      "materialConstValidationAlwaysInvoked": true,
+      "materialIndependentReflectedReadbackPassed": true,
+      "socketConfigureInvokedOnlyDuringMutation": true,
+      "socketConstExactCountOrderValidationAlwaysInvoked": true,
+      "socketIndependentKnownNameReadbackPassed": true,
+      "collisionAndNavigationPostconditionsValidatedByCpp": true,
+      "compressedSequenceCachePreparedAndValidatedByCpp": true,
+      "passed": true
+    },
+    "acceptedAssetPreservation": {
+      "facialEvidence": {
+        "file": "docs/production/evidence/unreal-daze-council-facial-performance-import-status.json",
+        "bytes": 51449,
+        "sha256": "5a4a8d1136ecf3200b844313470585c8c90fb45e8e719d20ca99e58d60db0655"
+      },
+      "skinEvidence": {
+        "file": "docs/production/evidence/unreal-daze-council-skin-lookdev-import-status.json",
+        "bytes": 41086,
+        "sha256": "c80a07a63c56e4c486a65c3bbaa8e000fe9ad616ebb7037551a378c7657504c2"
+      },
+      "acceptedFacialHashesUnchanged": true,
+      "acceptedSkinHashesUnchanged": true,
+      "sharedSkeletonPackageAndReferencePoseUnchanged": true,
+      "isolatedDestination": true,
+      "passed": true
+    },
+    "privacy": {
+      "exactThreeUassetsScanned": true,
+      "privateAbsolutePathsAbsent": true,
+      "interchangeAssetImportDataAbsent": true,
+      "credentialTokenMarkersAbsent": true,
+      "relativeSourceIdentityRetainedForImportedPropAndAnimation": true,
+      "materialHasNoSourceIdentity": true,
+      "readOnlyInspectionRepeatedAndPassed": true,
+      "passed": true
+    }
+  },
+  "packageRuntimeAdmission": {
+    "status": "pass-engineering-only",
+    "presentationEvidence": {
+      "file": "docs/production/evidence/unreal-daze-council-wet-register-interaction-presentation-status.json",
+      "tracked": true,
+      "bytes": 40822,
+      "sha256": "3910929d223ddac6bd20d5240bcec24cceed9d3572a535cfe89b07396999f8ef"
+    },
+    "package": {
+      "logicalRoot": "$SHI_UNREAL_PACKAGE_ROOT/Linux",
+      "revision": "path-sanitized-review-v4",
+      "result": "BUILD SUCCESSFUL",
+      "exitCode": 0,
+      "cookedPackageCount": 567,
+      "incrementallySkippedPackageCount": 0,
+      "platformSkippedPackageCount": 7,
+      "totalCookCandidates": 574,
+      "priorAcceptedPackageCount": 564,
+      "addedPackageCount": 3,
+      "isolatedAssetCount": 3,
+      "cookErrors": 0,
+      "cookWarnings": 0,
+      "pathSanitized": true,
+      "unresolvedDependencyCount": 0,
+      "currentWorkstationPathMarkerCount": 0,
+      "afsCredentialValueRecorded": false,
+      "temporaryPostCookSnapshotGloballyCredentialFreeClaim": false,
+      "qualification": "The controlled source overlay held the exact three current uassets and excluded dirty user engine/input config. Automation later added a transient AFS credential to the disposable temporary config; its value is not recorded here and the post-cook snapshot is not claimed globally credential-free. Package/log filtering and package-artifact privacy checks remain separate bounded facts."
+    },
+    "runtimeLogs": {
+      "normalV5": {
+        "logicalFile": "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilWetRegisterInteraction-PathSanitized-Review-normal-v5.log",
+        "bytes": 127773,
+        "sha256": "1665f5e89d8fbe08e7a08f7b91bf1918b885ec91519e9c21338037cdc5786e97",
+        "warningSeverityMarkers": 12,
+        "errorSeverityMarkers": 0,
+        "targetedErrors": 0,
+        "processReturnCode": 143,
+        "cleanUnrealShutdown": true
+      },
+      "reducedV5": {
+        "logicalFile": "$SHI_UNREAL_REVIEW_ROOT/SHI-DazeCouncilWetRegisterInteraction-PathSanitized-Review-reduced-v5.log",
+        "bytes": 127679,
+        "sha256": "b18d11a83651181b3457202e35f569d9cf75c08e247f8122c6131400bc44e265",
+        "warningSeverityMarkers": 12,
+        "errorSeverityMarkers": 0,
+        "targetedErrors": 0,
+        "processReturnCode": 143,
+        "cleanUnrealShutdown": true
+      },
+      "documentedWarningClassesPerRun": {
+        "enhancedInputWithoutPlayerInputDuringInertRoute": 1,
+        "preMeshAssignmentHandSocketLookups": 8,
+        "motionVectorThreadSafety": 1,
+        "vulkanUnfreedAllocationShutdown": 2,
+        "total": 12
+      },
+      "campaignSaveAbsentBeforeAndAfterBothRuns": true,
+      "storyProgressionObserved": false
+    },
+    "observedMarkers": {
+      "normal": {
+        "bilateralSemanticPoseSamples": [30, 31],
+        "heldSemanticPoseSamples": [60, 60],
+        "orderedReleaseSemanticPoseSamples": [90, 90],
+        "terminalSample": 120
+      },
+      "reduced": {
+        "bilateralSemanticPoseSamples": [30, 30],
+        "heldSemanticPoseSamples": [60, 60],
+        "orderedReleaseSemanticPoseSamples": [90, 91],
+        "terminalSample": 120
+      },
+      "normalAndReducedOrderedOnce": true,
+      "terminalLoopFalse": true
+    },
+    "watchedEvidence": {
+      "trackedScreenshotCount": 7,
+      "rawXwdToTrackedPngPixelDifferenceCountEach": 0,
+      "normalLaterPhysicalSeparation": {
+        "captureStartSecondsAfterReleaseMarkerTimestamp": 0.545644844,
+        "laterVisibleSeparationObserved": true,
+        "exactSample91Proof": false
+      },
+      "reducedRelease": {
+        "poseSample": 91,
+        "wristMarkerEngineeringExit": true,
+        "visibleSeparationLegibleAtFullFrame": false,
+        "fingersAppearOverlappingAtFullFrame": true,
+        "visibleMeshClearanceProof": false
+      },
+      "normalTerminalStability": {
+        "fullFrameDifferentPixelCount": 664268,
+        "normalizedRmse": 0.00957814,
+        "ncc": 0.997455,
+        "environmentalRainAndEffectsContinue": true,
+        "watchedNoGrossCharacterOrPropRestart": true,
+        "exactPixelEquality": false
+      },
+      "reducedTerminalStability": {
+        "fullFrameDifferentPixelCount": 665476,
+        "normalizedRmse": 0.017198,
+        "ncc": 0.991802,
+        "environmentalRainAndEffectsContinue": true,
+        "watchedNoGrossCharacterOrPropRestart": true,
+        "exactPixelEquality": false
+      }
+    },
+    "engineeringAdmission": true,
+    "visibleHandMeshReviewApproved": false,
+    "visibleMeshContactClearanceApproved": false,
+    "materialArtReviewApproved": false,
+    "playerOwnershipContinuityReviewApproved": false,
+    "humanHistoricalCulturalReviewApproved": false,
+    "humanAnatomyReviewApproved": false,
+    "humanCinematicReviewApproved": false,
+    "humanAccessibilityLocalizationReviewApproved": false,
+    "closeCameraApproved": false,
+    "mouthInteriorApproved": false,
+    "voiceApproved": false,
+    "lipSyncApproved": false,
+    "finalProp": false,
+    "finalHandAnimation": false,
+    "finalCharacterArt": false
+  },
+  "trackedUnrealAssets": {
+    "root": "apps/unreal/Content/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1",
+    "receipts": {
+      "A_SHI_DazeCouncil_ChenSheng_WetRegister_Interaction_01.uasset": {
+        "bytes": 168077,
+        "sha256": "264ae1b9a1ca0b2b0e05e3351248562e4d2d88c83a1c1d80590eeb60b0062b29"
+      },
+      "M_SHI_DazeCouncil_WetRegister_Clay_01.uasset": {
+        "bytes": 10704,
+        "sha256": "63c89e6a26fc81285a364bf41966964c5835330ba36c7733d307cdf01a731755"
+      },
+      "SM_SHI_DazeCouncil_WetRegister_Blockout_01.uasset": {
+        "bytes": 22679,
+        "sha256": "a4e4403b906eeb7df49bdcd1ba766f036d4926e6a05194affd7af75091a17df8"
+      }
+    }
+  },
+  "sourceContractReceipts": {
+    "metrics": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1.metrics.json",
+      "bytes": 143071,
+      "sha256": "e7a1abae63401305aaf7e82fc24cb53aa350f12a117e1c38d48b0314b612f310"
+    },
+    "validation": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1.validation.json",
+      "bytes": 109756,
+      "sha256": "e2045361f05502296e265cc3620a8b3702fee26c23ea6684a4a8022945acf19c"
+    },
+    "propFbx": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-prop.fbx",
+      "bytes": 21788,
+      "sha256": "ea48062b9b9f0a6e844a2d22195e15c6f4b8be4c67fa9845cb68a8b62f678252"
+    },
+    "animationFbx": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-chen-sheng.fbx",
+      "bytes": 2703516,
+      "sha256": "7438a067220e770456f28d0e22e164bd798fb1cae12fb28561b8710358ff3302"
+    }
+  },
+  "toolchainReceipts": [
+    {
+      "role": "source-generator",
+      "file": "scripts/build-daze-council-wet-register-interaction.py",
+      "bytes": 76103,
+      "sha256": "bb5c7d43cceb9fa8e6d3942aee44c1cdbe2eb905e43cfe4ea96b4aad71a54994"
+    },
+    {
+      "role": "source-validator",
+      "file": "scripts/validate-daze-council-wet-register-interaction.py",
+      "bytes": 50797,
+      "sha256": "bb7eec331ae1824daedf0e05263ce60baa047537e1fe0ff9b73ca8a2cca1d589"
+    },
+    {
+      "role": "unreal-importer",
+      "file": "scripts/import-daze-council-wet-register-interaction-unreal.py",
+      "bytes": 159471,
+      "sha256": "3d265ad5eca3cf970821a50e01fe3a538bc50814e7a188baf1d4fa8fffca6f16"
+    },
+    {
+      "role": "native-import-helper-header",
+      "file": "apps/unreal/Source/SHIEditor/Public/ShiAnimationImportLibrary.h",
+      "bytes": 2453,
+      "sha256": "26feac976239eef9cdd98f8aec55f4932917aea06e9d6d7c74af10100ac8858e"
+    },
+    {
+      "role": "native-import-helper-implementation",
+      "file": "apps/unreal/Source/SHIEditor/Private/ShiAnimationImportLibrary.cpp",
+      "bytes": 16821,
+      "sha256": "3d028b3552241f4460377a3d0a90023734294cd79955ce257b60aa625219af54"
+    },
+    {
+      "role": "package-runtime-presentation-validator",
+      "file": "scripts/validate-daze-council-wet-register-interaction-package.mjs",
+      "bytes": 74170,
+      "sha256": "22aa422dc72d225d92c7d1e656947b0b4917dc1a1327e1ac7952fcec0a7cc513"
+    }
+  ],
+  "compiledSourceSnapshot": [
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilWetRegisterInteractionModel.h",
+      "bytes": 10389,
+      "sha256": "c5201111f5c7be0fa98f02e544ebae7aed86cfac151446c3d3e8d1d7a95fee4f"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilWetRegisterInteractionModel.cpp",
+      "bytes": 37160,
+      "sha256": "710cf639d2f297b4864a2dd3df3b64dcd0d72ea4357c898e740a87999d6f3707"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilFigure.h",
+      "bytes": 4691,
+      "sha256": "28abdf547b95c1cf16a45417925fe9f4c94cda0b7a8396bee64eed4653006a95"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiCouncilFigure.cpp",
+      "bytes": 64630,
+      "sha256": "bb4ea98a4b6737848ad6e03eee86d8476c049759d3dc2f93a21d7ae989a8a955"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiGameMode.h",
+      "bytes": 9245,
+      "sha256": "3db86a940e9afc090ebebe888449c14badb45709cac8854dcc683033272e4de9"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/ShiGameMode.cpp",
+      "bytes": 84106,
+      "sha256": "a52b58dfcad86071ee06145146f03d05c78ab946ba3a3cba6782f77d4e3ae829"
+    },
+    {
+      "file": "apps/unreal/Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp",
+      "bytes": 175862,
+      "sha256": "c59e19c6fffdabae5a843a31bc56dbd9f87c30c78f3b594d1aa36d41a9753580"
+    },
+    {
+      "file": "apps/unreal/Config/DefaultGame.ini",
+      "bytes": 1360,
+      "sha256": "353c6b5169408ab82bd7e55679531ce33ec253b8799b653385b2885c8787cf31"
+    }
+  ],
+  "cookContract": {
+    "configurationFile": "apps/unreal/Config/DefaultGame.ini",
+    "exactAlwaysCookRoot": "/Game/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1",
+    "configured": true,
+    "packageCookRunPerformed": true,
+    "packageRevision": "path-sanitized-review-v4",
+    "cookedPackageCount": 567,
+    "priorAcceptedPackageCount": 564,
+    "addedPackageCount": 3,
+    "isolatedAssetCount": 3,
+    "cookErrors": 0,
+    "cookWarnings": 0,
+    "passedEngineeringOnly": true
+  },
+  "nativeBuild": {
+    "status": "pass",
+    "command": "UnrealBuildTool SHIEditor Linux Development -Project=apps/unreal/SHI.uproject -WaitMutex",
+    "startedAtLocal": "2026-08-11T06:34:14+08:00",
+    "target": "SHIEditor",
+    "toolchain": "Epic bundled Clang 20.1.8, Linux SDK v26_clang-20.1.8-rockylinux8, bundled libc++",
+    "actions": [
+      "Compile SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h",
+      "Compile SHI.cpp",
+      "Compile ShiCouncilPerformancePresentationModel.cpp",
+      "Compile ShiCommandSurfacePresentationModel.cpp",
+      "Compile ShiDazeFieldShelterPresentationModel.cpp",
+      "Compile ShiCommandWeightPresentationModel.cpp",
+      "Compile ShiCouncilSkinLookdevModel.cpp",
+      "Compile ShiCouncilCharacterPresentationModel.cpp",
+      "Compile ShiCouncilWetRegisterInteractionModel.cpp",
+      "Compile ShiCouncilStagingModel.cpp",
+      "Compile ShiCouncilFacialPerformanceModel.cpp",
+      "Compile ShiCouncilSkinLookdevAutomationTest.cpp",
+      "Compile ShiCommandSignalModel.cpp",
+      "Compile ShiCinematicBeatModel.cpp",
+      "Compile Module.SHI.cpp",
+      "Compile ShiAudioModel.cpp",
+      "Compile ShiRainPresentationModel.cpp",
+      "Compile ShiEngagementAutomationTest.cpp",
+      "Compile ShiWetFieldVegetationPresentationModel.cpp",
+      "Compile ShiEngagementSignalModel.cpp",
+      "Compile ShiWetFieldEnvironmentPresentationModel.cpp",
+      "Compile ShiWartableModel.cpp",
+      "Compile SHIEditorModule.cpp",
+      "Compile ShiOrderTransactionModel.cpp",
+      "Compile PerModuleInline.gen.cpp",
+      "Compile ShiRainField.cpp",
+      "Compile Module.SHIEditor.gen.cpp",
+      "Compile ShiWetFieldVegetation.cpp",
+      "Compile ShiSoundscapeComponent.cpp",
+      "Compile ShiEngagementModel.cpp",
+      "Compile ShiCampaignSession.cpp",
+      "Compile ShiCampaignModel.cpp",
+      "Compile ShiEngagementSession.cpp",
+      "Compile ShiCouncilFigure.cpp",
+      "Compile ShiCommandScreen.cpp",
+      "Compile ShiAnimationImportLibrary.cpp",
+      "Compile ShiCampaignAutomationTest.cpp",
+      "Link libUnrealEditor-SHIEditor.so",
+      "Compile ShiGameMode.cpp",
+      "Link libUnrealEditor-SHI.so",
+      "WriteMetadata SHIEditor.target [NoUba]"
+    ],
+    "actionCount": 41,
+    "completedActionCount": 41,
+    "result": "Succeeded",
+    "executionSeconds": 36.08,
+    "exitCode": 0,
+    "transientLog": {
+      "logicalName": "SHI-DazeCouncilWetRegisterInteraction-NativeBuild-v7.log",
+      "tracked": false,
+      "bytes": 5673,
+      "sha256": "3474ef9841e2213746f25d0fdf514c276daff05ea235474ad9a53486a579326f",
+      "durableBoundary": "The build log remains outside Git; current compiled-source receipts and this reviewed result are durable."
+    }
+  },
+  "authoredRuntimeMarkers": {
+    "status": "observed-once-in-order-in-normal-v5-and-reduced-v5-inert-packaged-routes-engineering-only",
+    "observedInPackagedRuntime": true,
+    "admission": {
+      "token": "SHI_COUNCIL_WET_REGISTER_INTERACTION_RUNTIME_ADMITTED",
+      "requiredFields": {
+        "asset": "shi-daze-council-wet-register-interaction-v1",
+        "node": "rain-order",
+        "character": "chen-sheng",
+        "role": "speaker",
+        "samples": 121,
+        "fps": 30.0,
+        "duration": 4.0,
+        "dimensionsCentimeters": [32.0, 14.0, 2.0],
+        "leftOwner": "hand_l",
+        "relativeScale": 0.01,
+        "visibleMeshReview": false,
+        "anatomyReview": false,
+        "finalHand": false,
+        "finalProp": false,
+        "historicalObject": false,
+        "playerOwnershipContinuity": false,
+        "humanHistoricalCulturalReview": false
+      }
+    },
+    "heldQuestion": {
+      "token": "SHI_COUNCIL_WET_REGISTER_INTERACTION_HELD_QUESTION",
+      "state": "held-question",
+      "semanticSample": 60,
+      "leftOwner": true,
+      "rightContact": true,
+      "playerOwnershipContinuity": false,
+      "humanHistoricalCulturalReview": false
+    },
+    "orderedRelease": {
+      "token": "SHI_COUNCIL_WET_REGISTER_INTERACTION_ORDERED_RELEASE",
+      "state": "ordered-release",
+      "semanticSample": 90,
+      "semanticTimeSeconds": 3.0,
+      "standardMotionPoseSampleAtExactBoundary": 90,
+      "normalMotionFirstMarkerPoseSamplesAllowed": [90, 91],
+      "reducedMotionPoseSample": 91,
+      "rightContact": false,
+      "rightReleasing": true,
+      "physicalContactExitSample": 91,
+      "semanticAndPhysicalBoundaryDistinct": true
+    },
+    "observedPackagedRoutes": {
+      "normal": {
+        "bilateralPoseSample": 31,
+        "heldPoseSample": 60,
+        "orderedReleasePoseSample": 90,
+        "terminalPoseSample": 120
+      },
+      "reduced": {
+        "bilateralPoseSample": 30,
+        "heldPoseSample": 60,
+        "orderedReleasePoseSample": 91,
+        "terminalPoseSample": 120
+      },
+      "eachMarkerExactlyOnce": true,
+      "ordered": true,
+      "storyAndSaveInert": true,
+      "cleanControlledShutdown": true
+    },
+    "packageMarkerGateRemainsPending": false
+  },
+  "automation": {
+    "commonInvocation": {
+      "executable": "UnrealEditor-Cmd",
+      "map": "/Engine/Maps/Entry",
+      "flags": [
+        "-unattended",
+        "-nop4",
+        "-nosplash",
+        "-nullrhi",
+        "-nosound",
+        "-nowrite",
+        "-TestExit=Automation Test Queue Empty"
+      ],
+      "writeBoundary": "-nowrite; native automation did not mutate tracked assets"
+    },
+    "focusedWetRegisterSuite": {
+      "status": "pass",
+      "filter": "SHI.Cinematic.CouncilWetRegisterInteractionV1",
+      "discovered": 1,
+      "started": 1,
+      "passed": 1,
+      "failed": 0,
+      "exitCode": 0,
+      "test": "SHI.Cinematic.CouncilWetRegisterInteractionV1",
+      "transientLog": {
+        "logicalName": "SHI-DazeCouncilWetRegisterInteraction-Automation-focused-v5.log",
+        "tracked": false,
+        "bytes": 243218,
+        "sha256": "223e725b6edd74dff1ab550086abeb67e3fd24fe610e5b549ff862b7d68342d5"
+      }
+    },
+    "fullShiNamespace": {
+      "status": "pass",
+      "filter": "SHI.",
+      "discovered": 22,
+      "started": 22,
+      "passed": 22,
+      "failed": 0,
+      "exitCode": 0,
+      "tests": [
+        "SHI.Audio.ProceduralContractV1",
+        "SHI.Campaign.CrossEngineReplayV1",
+        "SHI.Campaign.OrderTransactionV1",
+        "SHI.Campaign.SaveReplayIntegrityV6",
+        "SHI.Campaign.SchemaV7Horizon",
+        "SHI.Cinematic.CommandSurfacePresentationV1",
+        "SHI.Cinematic.CommandWeightPresentationV1",
+        "SHI.Cinematic.CouncilCharacterPresentationV1",
+        "SHI.Cinematic.CouncilFacialPerformanceV1",
+        "SHI.Cinematic.CouncilPerformancePresentationV1",
+        "SHI.Cinematic.CouncilSkinLookdevV1",
+        "SHI.Cinematic.CouncilStagingV1",
+        "SHI.Cinematic.CouncilWetRegisterInteractionV1",
+        "SHI.Cinematic.DazeFieldShelterPresentationV1",
+        "SHI.Cinematic.DazeRainPresentationV1",
+        "SHI.Cinematic.ResolutionGrammarV1",
+        "SHI.Cinematic.WetFieldEnvironmentPresentationV1",
+        "SHI.Cinematic.WetFieldVegetationPresentationV1",
+        "SHI.CommandSpace.LiveSignalsV1",
+        "SHI.Engagement.BrokenCrossingParityV1",
+        "SHI.History.SourceClaimClosureV1",
+        "SHI.Wartable.SpatialIntelligenceV1"
+      ],
+      "transientLog": {
+        "logicalName": "SHI-DazeCouncilWetRegisterInteraction-Automation-full-v5.log",
+        "tracked": false,
+        "bytes": 262237,
+        "sha256": "1cb22dff1b4e988a010c07abb118b9eb8a2fb4679f049affb6d78112d4fe32d8"
+      }
+    }
+  },
+  "runtimeContract": {
+    "reviewFlag": "-ShiCouncilWetRegisterInteractionReview",
+    "campaignNode": "rain-order",
+    "speakerIdentity": "chen-sheng",
+    "speakerSlot": "speaker",
+    "leftOwnerBone": "hand_l",
+    "rightContactBone": "hand_r",
+    "propRuntimeScaleCompensation": 0.01,
+    "propNeverReparented": true,
+    "orderedReleasePhaseOnsetSample": 90,
+    "rightContactExitSample": 91,
+    "standardMotionExactBoundaryPoseSample": 90,
+    "reducedMotionReleaseOnsetPoseSample": 91,
+    "semanticReleasePrecedesMeasuredPhysicalExitBySamples": 1,
+    "terminalClampSeconds": 4.0,
+    "looping": false,
+    "deterministic": true,
+    "explicitDevelopmentAuthorizationRequired": true,
+    "neutralReferencePoseFallbackRequired": true,
+    "reviewOnly": true,
+    "storyAndSaveInert": true,
+    "offscreenKeeperToChenHandoffAssumed": true,
+    "handoffShown": false,
+    "clipAloneCompletesStoryBeat": false,
+    "multilingualSpeechTimingAuthority": false,
+    "voiceTimingAuthority": false,
+    "lipSyncTimingAuthority": false,
+    "campaignAuthority": false,
+    "choiceAuthority": false,
+    "inputAuthority": false,
+    "saveAuthority": false,
+    "replicationAuthority": false,
+    "physicsAuthority": false,
+    "collisionAuthority": false,
+    "navigationAuthority": false
+  },
+  "rejectedImportHistory": {
+    "status": "diagnostic-only-nonretained-no-current-authority",
+    "dottedImportedMaterialSlotRead": {
+      "logicalRevision": "v4",
+      "decision": "rejected-before-admission",
+      "reason": "A dotted Python read of ImportedMaterialSlotName was not a supported read-only inspection path.",
+      "externalLogRetainedByManifest": false,
+      "currentAuthority": false
+    },
+    "hundredTimesPropBounds": {
+      "logicalRevision": "v5",
+      "decision": "rejected-before-admission",
+      "reason": "The imported prop bounds were 100 times the frozen 32 x 14 x 2 cm contract.",
+      "externalLogRetainedByManifest": false,
+      "currentAuthority": false
+    }
+  },
+  "releaseGates": {
+    "sourceValidation": "pass-91-of-91-source-engineering-only",
+    "isolatedImportReplace": "pass-three-uassets-engineering-only",
+    "defaultReadOnlyInspection": "pass-distinct-process-hashes-unchanged",
+    "embeddedMetadataPrivacy": "pass-three-uassets-no-private-absolute-paths-or-credential-markers",
+    "nativeEditorBuild": "pass-v7-41-of-41-actions",
+    "selectedWetRegisterAutomation": "pass-1-of-1",
+    "fullProjectAutomation": "pass-22-of-22",
+    "exactAlwaysCookRoot": "pass-567-packages-three-isolated-assets-engineering-only",
+    "packagedBuildWithWetRegisterAssets": "pass-engineering-only",
+    "liveRuntimeAdmissionMarkers": "pass-normal-and-reduced-engineering-only",
+    "normalMotionVisibleNoVncReview": "pass-engineering-only",
+    "reducedMotionVisibleNoVncReview": "pass-engineering-only",
+    "visibleFallbackReview": "not-run",
+    "visibleHandMeshReview": "pending-human-review",
+    "visibleMeshContactAndClearanceReview": "required",
+    "materialArtReview": "pending-human-review",
+    "playerOwnershipContinuityReview": "pending-human-review",
+    "humanHandAnatomyAndContactReview": "required",
+    "humanHistoricalMaterialAndCulturalReview": "required",
+    "humanCinematicFramingAndActingReview": "required",
+    "cinematicContinuityReview": "required",
+    "humanAccessibilityAndLocalizationReview": "required",
+    "mouthInteriorVoiceAndMultilingualLipSync": "not-admitted",
+    "closeCameraUse": "rejected",
+    "finalProp": "not-admitted",
+    "finalHandAnimation": "not-admitted",
+    "finalCharacterArt": "not-admitted"
+  },
+  "limitations": [
+    "This evidence admits the isolated import, deterministic native contract, exact path-sanitized package, normal/reduced live markers and watched engineering route only; it does not approve visible mesh contact, clearance, anatomy, art, history, culture, accessibility or final release.",
+    "The source provenance remains an immutable import-time source receipt with source/final approval false; this separate runtime manifest does not rewrite it.",
+    "The seven selected raw X11 frames match their tracked PNGs pixel-for-pixel, but that proves capture lineage rather than artistic correctness. The visible fail-closed route remains unreviewed.",
+    "The normal sample-90 frame proves semantic release onset; the clearly later separation frame begins 0.5456 seconds after that marker and is not exact sample-91 proof.",
+    "The reduced release marker uses pose sample 91 and passes the wrist-marker engineering exit, but full-frame visible separation is subtle to effectively non-legible and the fingers appear to overlap the register; visible mesh clearance remains false.",
+    "Terminal and more-than-one-second-later stable frames retain high similarity without a gross character/prop restart while rain/effects continue, so exact pixel equality and cinematic-continuity approval are explicitly not claimed.",
+    "Each accepted run contains twelve documented nonfatal warnings and zero Error-severity or targeted failure markers; the warnings remain engineering debt rather than a quality waiver.",
+    "The generic low-poly hand carrier, texture-free prop and clay material remain below final anatomy, skin, sleeve, wet-response, historical-material and close-camera quality.",
+    "Keeper-to-Chen transfer and player ownership continuity remain assumed offscreen, not shown or human-approved.",
+    "Voice, lip sync, multilingual speech timing, mouth interior, final acting, historical-cultural review and accessibility review remain separate red gates."
+  ]
+}

@@ -24,6 +24,7 @@
     "validate:unreal": "node scripts/validate-unreal-project.mjs",
     "validate:unreal-facial-package": "node scripts/validate-daze-council-facial-performance-package.mjs",
     "validate:unreal-skin-lookdev-package": "node scripts/validate-daze-council-skin-lookdev-package.mjs",
+    "validate:unreal-wet-register-package": "node scripts/validate-daze-council-wet-register-interaction-package.mjs",
     "sanitize:unreal-linux-development-package": "node scripts/sanitize-unreal-linux-development-package.mjs",
     "validate:unreal-installer": "scripts/test-unreal-installer.sh",
     "validate:conformance": "vite-node scripts/validate-conformance-fixtures.ts",

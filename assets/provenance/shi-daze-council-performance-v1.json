@@ -18,6 +18,40 @@
       {"file":"../../apps/unreal/Source/SHIEditor/Private/ShiAnimationImportLibrary.cpp","sha256":"441f4ea17f3844be3c34af1328981f1f356e2fd33c6084d95ca598e1a77eeddf"}
     ]
   },
+  "historicalSnapshotPolicy": {
+    "snapshotBoundary": "import-time",
+    "immutableImportOrBuildTimeSnapshot": true,
+    "currentMutableCrossReceipt": false,
+    "historicalReceiptFiles": [
+      "../../apps/unreal/Source/SHIEditor/Public/ShiAnimationImportLibrary.h",
+      "../../apps/unreal/Source/SHIEditor/Private/ShiAnimationImportLibrary.cpp"
+    ],
+    "currentSourceSupersededBy": {
+      "assetId": "shi-daze-council-wet-register-interaction-v1",
+      "evidenceFile": "docs/production/evidence/unreal-daze-council-wet-register-interaction-runtime-status.json",
+      "nativeBuild": {
+        "status": "pass",
+        "logicalName": "SHI-DazeCouncilWetRegisterInteraction-NativeBuild-v7.log",
+        "tracked": false,
+        "bytes": 5673,
+        "sha256": "3474ef9841e2213746f25d0fdf514c276daff05ea235474ad9a53486a579326f",
+        "exitCode": 0
+      },
+      "fullShiNamespace": {
+        "status": "pass",
+        "filter": "SHI.",
+        "logicalName": "SHI-DazeCouncilWetRegisterInteraction-Automation-full-v5.log",
+        "tracked": false,
+        "bytes": 262237,
+        "sha256": "1cb22dff1b4e988a010c07abb118b9eb8a2fb4679f049affb6d78112d4fe32d8",
+        "discovered": 22,
+        "started": 22,
+        "passed": 22,
+        "failed": 0,
+        "exitCode": 0
+      }
+    }
+  },
   "outputs": [
     {"file":"../3d/rendered/shi-daze-council-performance-v1.blend","role":"editable exact-skeleton performance source","bytes":19927841,"sha256":"feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743"},
     {"file":"../3d/rendered/shi-daze-council-performance-v1-attentive-frame-031.png","role":"source attentive deformation review","bytes":1944363,"sha256":"b4f6c13c08b8f2cd6bb1143436391276310ab70bd9d96a94542b31766ae91bce"},

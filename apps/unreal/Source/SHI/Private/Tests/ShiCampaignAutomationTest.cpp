@@ -19,6 +19,7 @@
 #include "ShiCouncilCharacterPresentationModel.h"
 #include "ShiCouncilFacialPerformanceModel.h"
 #include "ShiCouncilPerformancePresentationModel.h"
+#include "ShiCouncilWetRegisterInteractionModel.h"
 #include "ShiOrderTransactionModel.h"
 #include "ShiRainPresentationModel.h"
 #include "ShiWetFieldVegetationPresentationModel.h"
@@ -979,6 +980,727 @@ bool FShiCouncilFacialPerformanceTest::RunTest(const FString& Parameters)
     CycleFrame.CycleSeconds = FShiCouncilFacialPerformanceModel::CycleDurationSeconds();
     TestFalse(TEXT("facial frame cycle overflow is rejected"),
         FShiCouncilFacialPerformanceModel::ValidateFrame(CycleFrame, Error));
+    return !HasAnyErrors();
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiCouncilWetRegisterInteractionTest,
+    "SHI.Cinematic.CouncilWetRegisterInteractionV1",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiCouncilWetRegisterInteractionTest::RunTest(const FString& Parameters)
+{
+    FString Error;
+    FShiCampaignModel Campaign;
+    TestTrue(TEXT("canonical campaign loads for wet-register admission"),
+        Campaign.LoadCanonical(Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    const FShiNodeData* RainOrder = Campaign.FindNode(
+        FShiCouncilWetRegisterInteractionModel::CanonicalNodeId());
+    TestNotNull(TEXT("wet-register interaction binds an authored campaign node"), RainOrder);
+    TestTrue(TEXT("rain-order retains Chen Sheng as its canonical speaker"),
+        RainOrder
+        && RainOrder->Id == FShiCouncilWetRegisterInteractionModel::CanonicalNodeId()
+        && RainOrder->SpeakerId
+            == FShiCouncilWetRegisterInteractionModel::CanonicalSpeakerCharacterId());
+
+    FShiCouncilWetRegisterInteractionContractData Contract;
+    TestTrue(TEXT("canonical wet-register interaction contract builds"),
+        FShiCouncilWetRegisterInteractionModel::BuildContract(Contract, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestTrue(TEXT("canonical wet-register interaction contract validates"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Contract, Error));
+    if (!Error.IsEmpty()) AddError(Error);
+    TestTrue(TEXT("contract is admitted only for the exact review route, node, speaker and slot"),
+        Contract.AssetId == FShiCouncilWetRegisterInteractionModel::CanonicalAssetId()
+        && Contract.ReviewModeId
+            == FShiCouncilWetRegisterInteractionModel::CanonicalReviewModeId()
+        && Contract.NodeId == FShiCouncilWetRegisterInteractionModel::CanonicalNodeId()
+        && Contract.SpeakerCharacterId
+            == FShiCouncilWetRegisterInteractionModel::CanonicalSpeakerCharacterId()
+        && Contract.ParticipantSlotId
+            == FShiCouncilWetRegisterInteractionModel::CanonicalParticipantSlotId()
+        && Contract.PropOwnerBone
+            == FShiCouncilWetRegisterInteractionModel::CanonicalPropOwnerBone()
+        && Contract.PropOwnerBone == FName(TEXT("hand_l"))
+        && Contract.RightContactBone
+            == FShiCouncilWetRegisterInteractionModel::CanonicalRightContactBone()
+        && Contract.RightContactBone == FName(TEXT("hand_r")));
+    TestTrue(TEXT("canonical story keeps the soaked register with the player before this Chen-only slice"),
+        RainOrder
+        && RainOrder->Context.Resolve(TEXT("en")).Contains(
+            Contract.CanonicalPlayerOwnershipContext)
+        && RainOrder->SourceRefs.Contains(TEXT("dramatic-daze-keeper"))
+        && Contract.bKeeperOwnsRegisterBeforeClip
+        && Contract.bAssumesPriorOffscreenKeeperToChenHandoff
+        && !Contract.bHandoffShown
+        && !Contract.bPlayerOwnershipContinuityApproved
+        && !Contract.bClipAloneCompletesStoryBeat
+        && Contract.bTwoCharacterTransferDeferred
+        && !Contract.bFinalStoryBeatApproved
+        && Contract.StoryContinuityBoundary.Contains(TEXT("unshown offscreen Keeper-to-Chen handoff"))
+        && Contract.StoryContinuityBoundary.Contains(TEXT("remain unapproved")));
+
+    TestEqual(TEXT("contract owns exactly one prop, material and non-looping clip"),
+        Contract.AssetInventory.Num(),
+        FShiCouncilWetRegisterInteractionModel::AssetInventoryCount());
+    if (Contract.AssetInventory.Num()
+        != FShiCouncilWetRegisterInteractionModel::AssetInventoryCount())
+    {
+        AddError(TEXT("Canonical wet-register inventory is incomplete; exact inventory checks cannot run."));
+        return false;
+    }
+    TestTrue(TEXT("prop is the exact isolated StaticMesh"),
+        Contract.AssetInventory[0].AssetId == TEXT("wet-register-blockout")
+        && Contract.AssetInventory[0].AssetClass == TEXT("StaticMesh")
+        && Contract.AssetInventory[0].AssetPath
+            == FShiCouncilWetRegisterInteractionModel::CanonicalPropMeshPath());
+    TestTrue(TEXT("clay response is the exact isolated Material"),
+        Contract.AssetInventory[1].AssetId == TEXT("wet-register-clay")
+        && Contract.AssetInventory[1].AssetClass == TEXT("Material")
+        && Contract.AssetInventory[1].AssetPath
+            == FShiCouncilWetRegisterInteractionModel::CanonicalPropMaterialPath());
+    TestTrue(TEXT("interaction is the exact isolated AnimSequence"),
+        Contract.AssetInventory[2].AssetId == TEXT("chen-sheng-wet-register-interaction")
+        && Contract.AssetInventory[2].AssetClass == TEXT("AnimSequence")
+        && Contract.AssetInventory[2].AssetPath
+            == FShiCouncilWetRegisterInteractionModel::CanonicalAnimationPath());
+
+    const TArray<FString> ExpectedMarkers = {
+        TEXT("wet-register-left-support"), TEXT("wet-register-right-contact"),
+        TEXT("wet-register-camera-readability")
+    };
+    const TArray<FString> ExpectedMarkerSockets = {
+        TEXT("WetRegister_LeftSupport"), TEXT("WetRegister_RightContact"),
+        TEXT("WetRegister_CameraReadability")
+    };
+    TestTrue(TEXT("three exact ordered prop markers remain canonical"),
+        Contract.MarkerIds == ExpectedMarkers
+        && Contract.MarkerIds
+            == FShiCouncilWetRegisterInteractionModel::CanonicalMarkerIds()
+        && Contract.MarkerSocketNames == ExpectedMarkerSockets
+        && Contract.MarkerSocketNames
+            == FShiCouncilWetRegisterInteractionModel::CanonicalMarkerSocketNames());
+    TestEqual(TEXT("every marker has one exact prop-local transform"),
+        Contract.MarkerLocalTransformsCentimeters.Num(), 3);
+    if (Contract.MarkerLocalTransformsCentimeters.Num() != 3)
+    {
+        AddError(TEXT("Canonical marker transforms are incomplete; spatial checks cannot run."));
+        return false;
+    }
+    TestTrue(TEXT("left-support marker uses the reviewed external wrist-alignment frame"),
+        Contract.MarkerLocalTransformsCentimeters[0].GetLocation().Equals(
+            FVector(11.f, -5.5f, -3.35f), .0001f)
+        && Contract.MarkerLocalTransformsCentimeters[0].GetRotation().Equals(
+            FQuat(FRotator(0.f, 0.f, 180.f)), .0001f));
+    TestTrue(TEXT("right-contact marker uses the reviewed external wrist-alignment frame"),
+        Contract.MarkerLocalTransformsCentimeters[1].GetLocation().Equals(
+            FVector(-11.f, 5.5f, 3.35f), .0001f)
+        && Contract.MarkerLocalTransformsCentimeters[1].GetRotation().Equals(
+            FQuat(FRotator(0.f, 90.f, 0.f)), .0001f));
+    TestTrue(TEXT("camera-readability marker remains centered on the readable face"),
+        Contract.MarkerLocalTransformsCentimeters[2].Equals(
+            FTransform(FQuat::Identity, FVector(0.f, 0.f, 1.f), FVector::OneVector),
+            .0001f));
+    FTransform MarkerTransform;
+    TestTrue(TEXT("left-support transform can be resolved without duplicating a literal"),
+        FShiCouncilWetRegisterInteractionModel::TryGetMarkerLocalTransform(
+            TEXT("wet-register-left-support"), MarkerTransform)
+        && MarkerTransform.Equals(Contract.MarkerLocalTransformsCentimeters[0], .0001f));
+    const FTransform StableMarkerTransform = MarkerTransform;
+    TestFalse(TEXT("unknown generated prop marker is rejected"),
+        FShiCouncilWetRegisterInteractionModel::TryGetMarkerLocalTransform(
+            TEXT("generated-camera-socket"), MarkerTransform));
+    TestTrue(TEXT("failed marker lookup is atomic"),
+        MarkerTransform.Equals(StableMarkerTransform, .0001f));
+
+    const TArray<FString> ExpectedStateIds = {
+        TEXT("start"), TEXT("bilateral-contact"), TEXT("held-question"),
+        TEXT("ordered-release"), TEXT("settle")
+    };
+    const TArray<int32> ExpectedSourceFrames = {1, 31, 61, 91, 121};
+    const TArray<int32> ExpectedSamples = {0, 30, 60, 90, 120};
+    TestTrue(TEXT("five exact semantic states remain canonical and ordered"),
+        FShiCouncilWetRegisterInteractionModel::CanonicalSemanticStateIds()
+            == ExpectedStateIds
+        && Contract.SemanticStates.Num() == ExpectedStateIds.Num());
+    if (Contract.SemanticStates.Num() != ExpectedStateIds.Num())
+    {
+        AddError(TEXT("Canonical wet-register semantic states are incomplete; timeline checks cannot run."));
+        return false;
+    }
+    bool bSemanticAnchorsExact = true;
+    for (int32 Index = 0; Index < ExpectedStateIds.Num(); ++Index)
+    {
+        const FShiCouncilWetRegisterSemanticStateData& State = Contract.SemanticStates[Index];
+        bSemanticAnchorsExact &= State.StateId == ExpectedStateIds[Index]
+            && State.SourceFrame == ExpectedSourceFrames[Index]
+            && State.SampleIndex == ExpectedSamples[Index]
+            && State.TimeSeconds == static_cast<float>(Index)
+            && State.bLeftSupport;
+    }
+    TestTrue(TEXT("source frames 1/31/61/91/121 map exactly to samples 0/30/60/90/120"),
+        bSemanticAnchorsExact);
+    TestTrue(TEXT("right contact acquires once, holds, then enters one ordered release"),
+        !Contract.SemanticStates[0].bRightContact
+        && Contract.SemanticStates[1].bRightContact
+        && Contract.SemanticStates[2].bRightContact
+        && !Contract.SemanticStates[3].bRightContact
+        && Contract.SemanticStates[3].bRightReleasing
+        && !Contract.SemanticStates[4].bRightContact
+        && !Contract.SemanticStates[4].bRightReleasing
+        && Contract.ContactAcquisitionCount == 1 && Contract.ContactReleaseCount == 1
+        && Contract.ContactAcquisitionSample == 30
+        && Contract.OrderedReleasePhaseOnsetSample == 90
+        && Contract.ContactReleaseSample == 91);
+
+    TestTrue(TEXT("prop envelope and x100 attachment compensation are exact"),
+        Contract.PropWorldDimensionsCentimeters.Equals(FVector(32.f, 14.f, 2.f), .0001f)
+        && Contract.CharacterComponentScale.Equals(FVector(100.f), .0001f)
+        && Contract.PropAttachmentRelativeScale.Equals(FVector(.01f), .000001f));
+    TestTrue(TEXT("clip retains exact shared-rig timing and cannot loop"),
+        Contract.BoneCount == 53 && Contract.ExpectedSamples == 121
+        && Contract.ExpectedFramesPerSecond == 30.f
+        && Contract.ExpectedDurationSeconds == 4.f
+        && !Contract.bClipLooping && !Contract.bRootMotion);
+    TestTrue(TEXT("contract hard-binds the first accepted 121-sample source measurements"),
+        Contract.bSourceMeasurementReceiptBound
+        && Contract.MaximumObservedRootTranslationDriftCentimeters
+            == FShiCouncilWetRegisterInteractionModel::AcceptedRootTranslationDriftCentimeters()
+        && Contract.MaximumObservedRootYawDriftDegrees
+            == FShiCouncilWetRegisterInteractionModel::AcceptedRootYawDriftDegrees()
+        && Contract.MaximumObservedLeftSupportDriftCentimeters
+            == FShiCouncilWetRegisterInteractionModel::AcceptedLeftSupportDriftCentimeters()
+        && Contract.MaximumObservedLeftSupportDriftDegrees
+            == FShiCouncilWetRegisterInteractionModel::AcceptedLeftSupportDriftDegrees()
+        && Contract.MaximumObservedLeftSupportFloatingCentimeters
+            == FShiCouncilWetRegisterInteractionModel::AcceptedLeftSupportFloatingCentimeters()
+        && Contract.MaximumObservedHandPenetrationCentimeters
+            == FShiCouncilWetRegisterInteractionModel::AcceptedHandPenetrationCentimeters()
+        && Contract.MaximumObservedRightFloatingCentimeters
+            == FShiCouncilWetRegisterInteractionModel::AcceptedRightFloatingCentimeters()
+        && FShiCouncilWetRegisterInteractionModel::AcceptedRootTranslationDriftCentimeters()
+            == 0.0
+        && FShiCouncilWetRegisterInteractionModel::AcceptedRootYawDriftDegrees()
+            == 0.0
+        && FShiCouncilWetRegisterInteractionModel::AcceptedLeftSupportDriftCentimeters()
+            == .0039685306858313904
+        && FShiCouncilWetRegisterInteractionModel::AcceptedLeftSupportDriftDegrees()
+            == 0.0
+        && FShiCouncilWetRegisterInteractionModel::AcceptedLeftSupportFloatingCentimeters()
+            == .3386637148479367
+        && FShiCouncilWetRegisterInteractionModel::AcceptedHandPenetrationCentimeters()
+            == .3500294405966997
+        && FShiCouncilWetRegisterInteractionModel::AcceptedRightFloatingCentimeters()
+            == 0.0
+        && Contract.MinimumObservedArmChainScale == 1.f
+        && Contract.MaximumObservedArmChainScale == 1.f);
+
+    FShiCouncilFacialMeshData ChenFace;
+    TestTrue(TEXT("accepted Chen Sheng facial mesh contract builds for cross-binding"),
+        FShiCouncilFacialPerformanceModel::Build(TEXT("chen-sheng"), ChenFace, Error));
+    TestTrue(TEXT("interaction binds the accepted Chen Sheng mesh and exact shared 53-bone Skeleton"),
+        ChenFace.MeshPath == Contract.CharacterMeshPath
+        && ChenFace.SkeletonPath == Contract.SkeletonPath
+        && ChenFace.BoneCount == Contract.BoneCount
+        && Contract.BoneCount == FShiCouncilFacialPerformanceModel::BoneCount()
+        && Contract.SkeletonSourceName == TEXT("SK_SHI_DazeCouncil_Skeleton")
+        && Contract.SkeletonHierarchyAndBindSha256
+            == FShiCouncilWetRegisterInteractionModel::CanonicalSkeletonHierarchyAndBindSha256()
+        && Contract.SkeletonHierarchyAndBindSha256
+            == TEXT("b04056562dc0a4212b7d72e9bb091fd7c130f96f3442a584fdf38123805ee9fa"));
+    TestTrue(TEXT("interaction stays a disclosed dramatic engineering blockout"),
+        Contract.bEngineeringBlockout && Contract.bDramaticReconstruction
+        && Contract.HistoricalDisclosure.Contains(TEXT("PROJECT-ORIGINAL"))
+        && Contract.HistoricalDisclosure.Contains(TEXT("NOT A SURVIVING QIN REGISTER"))
+        && Contract.ContactMeasurementScope.Contains(TEXT("all 121 source frames"))
+        && Contract.ContactMeasurementScope.Contains(TEXT("wrist-marker alignment is a separate live runtime gate"))
+        && Contract.ContactMeasurementScope.Contains(TEXT("conservative hand-mesh penetration/floating passed source rejection thresholds"))
+        && Contract.ContactMeasurementScope.Contains(TEXT("watched in-engine deformation/anatomy review remains required"))
+        && Contract.SourceWatchedDecision == TEXT("conditional-engineering-accept")
+        && !Contract.bHistoricallyAuthenticatedObject
+        && !Contract.bHumanHistoricalCulturalReviewApproved
+        && Contract.bConservativeSourceMeshContactProxyPassed
+        && !Contract.bVisibleMeshContactReviewed
+        && !Contract.bCloseCameraApproved && !Contract.bFinalProp
+        && !Contract.bFinalHandAnimation);
+    TestTrue(TEXT("interaction contract has no random, audio, simulation, collision or campaign authority"),
+        Contract.bDeterministic && Contract.bAllTransformsFinite
+        && Contract.bNoNegativeScale && Contract.bNoIkStretch
+        && !Contract.bRandomized && !Contract.bAudioDriven
+        && !Contract.bTranscriptDriven && !Contract.bPhysicsDriven
+        && !Contract.bProceduralNoise && !Contract.bPropReparentedDuringClip
+        && !Contract.bPropAttachedToCamera && !Contract.bCollisionEnabled
+        && !Contract.bInteractionInputAuthority && !Contract.bChoiceAuthority
+        && !Contract.bGameplayAuthority && !Contract.bCampaignMutationAuthority
+        && !Contract.bSaveAuthority && !Contract.bNavigationAuthority
+        && !Contract.bReplicated);
+
+    auto MakeRequest = [&Contract](float ElapsedSeconds, bool bReducedMotion)
+    {
+        FShiCouncilWetRegisterInteractionFrameRequest Request;
+        Request.Contract = Contract;
+        Request.NodeId = FShiCouncilWetRegisterInteractionModel::CanonicalNodeId();
+        Request.SpeakerCharacterId =
+            FShiCouncilWetRegisterInteractionModel::CanonicalSpeakerCharacterId();
+        Request.ParticipantSlotId =
+            FShiCouncilWetRegisterInteractionModel::CanonicalParticipantSlotId();
+        Request.ReviewModeId =
+            FShiCouncilWetRegisterInteractionModel::CanonicalReviewModeId();
+        Request.ElapsedSeconds = ElapsedSeconds;
+        Request.bDevelopmentReviewAuthorized = true;
+        Request.bReducedMotion = bReducedMotion;
+        return Request;
+    };
+    auto SemanticFramesEqual = [](const FShiCouncilWetRegisterInteractionFrameData& Left,
+                                  const FShiCouncilWetRegisterInteractionFrameData& Right)
+    {
+        return Left.AssetId == Right.AssetId && Left.RouteId == Right.RouteId
+            && Left.NodeId == Right.NodeId
+            && Left.SpeakerCharacterId == Right.SpeakerCharacterId
+            && Left.ParticipantSlotId == Right.ParticipantSlotId
+            && Left.StateId == Right.StateId && Left.StateIndex == Right.StateIndex
+            && Left.SemanticSampleIndex == Right.SemanticSampleIndex
+            && Left.bLeftSupport == Right.bLeftSupport
+            && Left.bRightContact == Right.bRightContact
+            && Left.bRightReleasing == Right.bRightReleasing
+            && Left.bLeftHandOwnsProp == Right.bLeftHandOwnsProp
+            && Left.bKeeperOwnsRegisterBeforeClip
+                == Right.bKeeperOwnsRegisterBeforeClip
+            && Left.bAssumesPriorOffscreenKeeperToChenHandoff
+                == Right.bAssumesPriorOffscreenKeeperToChenHandoff
+            && Left.bHandoffShown == Right.bHandoffShown
+            && Left.bPlayerOwnershipContinuityApproved
+                == Right.bPlayerOwnershipContinuityApproved
+            && Left.bClipAloneCompletesStoryBeat
+                == Right.bClipAloneCompletesStoryBeat
+            && Left.bTwoCharacterTransferDeferred
+                == Right.bTwoCharacterTransferDeferred
+            && Left.bFinalStoryBeatApproved == Right.bFinalStoryBeatApproved
+            && Left.bDeterministic == Right.bDeterministic;
+    };
+    auto FramesExactlyEqual = [](const FShiCouncilWetRegisterInteractionFrameData& Left,
+                                 const FShiCouncilWetRegisterInteractionFrameData& Right)
+    {
+        return Left.AssetId == Right.AssetId && Left.RouteId == Right.RouteId
+            && Left.NodeId == Right.NodeId
+            && Left.SpeakerCharacterId == Right.SpeakerCharacterId
+            && Left.ParticipantSlotId == Right.ParticipantSlotId
+            && Left.StateId == Right.StateId
+            && Left.RequestedSeconds == Right.RequestedSeconds
+            && Left.PlaybackSeconds == Right.PlaybackSeconds
+            && Left.PoseSeconds == Right.PoseSeconds
+            && Left.PlaybackSampleIndex == Right.PlaybackSampleIndex
+            && Left.PoseSampleIndex == Right.PoseSampleIndex
+            && Left.SemanticSampleIndex == Right.SemanticSampleIndex
+            && Left.StateIndex == Right.StateIndex
+            && Left.bDevelopmentReviewAuthorized == Right.bDevelopmentReviewAuthorized
+            && Left.bReducedMotion == Right.bReducedMotion
+            && Left.bMotionSuppressed == Right.bMotionSuppressed
+            && Left.bTerminalClamp == Right.bTerminalClamp
+            && Left.bLeftSupport == Right.bLeftSupport
+            && Left.bRightContact == Right.bRightContact
+            && Left.bRightReleasing == Right.bRightReleasing
+            && Left.bKeeperOwnsRegisterBeforeClip
+                == Right.bKeeperOwnsRegisterBeforeClip
+            && Left.bAssumesPriorOffscreenKeeperToChenHandoff
+                == Right.bAssumesPriorOffscreenKeeperToChenHandoff
+            && Left.bHandoffShown == Right.bHandoffShown
+            && Left.bPlayerOwnershipContinuityApproved
+                == Right.bPlayerOwnershipContinuityApproved
+            && Left.bClipAloneCompletesStoryBeat
+                == Right.bClipAloneCompletesStoryBeat
+            && Left.bTwoCharacterTransferDeferred
+                == Right.bTwoCharacterTransferDeferred
+            && Left.bFinalStoryBeatApproved == Right.bFinalStoryBeatApproved
+            && Left.bDeterministic == Right.bDeterministic;
+    };
+
+    const TArray<int32> ExpectedReducedPoseSamples = {0, 30, 60, 91, 120};
+    for (int32 StateIndex = 0; StateIndex < ExpectedStateIds.Num(); ++StateIndex)
+    {
+        FShiCouncilWetRegisterInteractionFrameData Normal;
+        FShiCouncilWetRegisterInteractionFrameData Reduced;
+        const float AnchorSeconds = static_cast<float>(StateIndex);
+        TestTrue(*FString::Printf(TEXT("normal state %s evaluates at its exact anchor"),
+            *ExpectedStateIds[StateIndex]),
+            FShiCouncilWetRegisterInteractionModel::Evaluate(
+                MakeRequest(AnchorSeconds, false), Normal, Error));
+        TestTrue(*FString::Printf(TEXT("reduced state %s evaluates at its exact held cut"),
+            *ExpectedStateIds[StateIndex]),
+            FShiCouncilWetRegisterInteractionModel::Evaluate(
+                MakeRequest(AnchorSeconds, true), Reduced, Error));
+        TestTrue(*FString::Printf(TEXT("normal and reduced state %s preserve semantic parity"),
+            *ExpectedStateIds[StateIndex]),
+            SemanticFramesEqual(Normal, Reduced)
+            && Normal.StateId == ExpectedStateIds[StateIndex]
+            && Normal.PlaybackSampleIndex == ExpectedSamples[StateIndex]
+            && Normal.PoseSampleIndex == ExpectedSamples[StateIndex]
+            && Reduced.PoseSampleIndex == ExpectedReducedPoseSamples[StateIndex]
+            && !Normal.bMotionSuppressed && Reduced.bMotionSuppressed);
+    }
+
+    const TArray<float> BetweenAnchorTimes = {.5f, 1.5f, 2.5f, 3.5f};
+    const TArray<int32> BetweenAnchorReducedPoseSamples = {0, 30, 60, 91};
+    bool bHeldCutParity = true;
+    for (int32 Index = 0; Index < BetweenAnchorTimes.Num(); ++Index)
+    {
+        FShiCouncilWetRegisterInteractionFrameData Normal;
+        FShiCouncilWetRegisterInteractionFrameData Reduced;
+        bHeldCutParity &= FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(BetweenAnchorTimes[Index], false), Normal, Error);
+        bHeldCutParity &= FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(BetweenAnchorTimes[Index], true), Reduced, Error);
+        bHeldCutParity &= SemanticFramesEqual(Normal, Reduced)
+            && Normal.PoseSampleIndex == 15 + Index * 30
+            && Reduced.PoseSampleIndex == BetweenAnchorReducedPoseSamples[Index]
+            && FMath::IsNearlyEqual(Reduced.PoseSeconds,
+                static_cast<float>(BetweenAnchorReducedPoseSamples[Index]) / 30.f,
+                .0001f)
+            && Reduced.bMotionSuppressed && !Normal.bMotionSuppressed;
+    }
+    TestTrue(TEXT("reduced motion holds the same four intermediate semantic states without interpolation"),
+        bHeldCutParity);
+
+    FShiCouncilWetRegisterInteractionFrameData JustBeforeReleaseBoundary;
+    FShiCouncilWetRegisterInteractionFrameData ExactReleaseBoundary;
+    FShiCouncilWetRegisterInteractionFrameData JustAfterReleaseBoundary;
+    FShiCouncilWetRegisterInteractionFrameData ReducedReleaseBoundary;
+    TestTrue(TEXT("normal timeline evaluates immediately before the exact release phase boundary"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(2.999f, false), JustBeforeReleaseBoundary, Error));
+    TestTrue(TEXT("normal timeline evaluates the exact release phase boundary"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(3.f, false), ExactReleaseBoundary, Error));
+    TestTrue(TEXT("normal timeline evaluates immediately after the exact release phase boundary"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(3.001f, false), JustAfterReleaseBoundary, Error));
+    TestTrue(TEXT("reduced timeline uses the first physically separated ordered-release pose"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(3.f, true), ReducedReleaseBoundary, Error));
+    TestTrue(TEXT("contact authority holds to t=3 and phase onset remains distinct from sample-91 physical exit"),
+        JustBeforeReleaseBoundary.PlaybackSampleIndex == 90
+        && JustBeforeReleaseBoundary.PoseSampleIndex == 90
+        && JustBeforeReleaseBoundary.StateId == TEXT("held-question")
+        && JustBeforeReleaseBoundary.bRightContact
+        && !JustBeforeReleaseBoundary.bRightReleasing
+        && ExactReleaseBoundary.PlaybackSampleIndex == 90
+        && ExactReleaseBoundary.PoseSampleIndex == 90
+        && ExactReleaseBoundary.StateId == TEXT("ordered-release")
+        && ExactReleaseBoundary.SemanticSampleIndex == 90
+        && !ExactReleaseBoundary.bRightContact
+        && ExactReleaseBoundary.bRightReleasing
+        && JustAfterReleaseBoundary.StateId == TEXT("ordered-release")
+        && !JustAfterReleaseBoundary.bRightContact
+        && JustAfterReleaseBoundary.bRightReleasing
+        && SemanticFramesEqual(ExactReleaseBoundary, ReducedReleaseBoundary)
+        && ReducedReleaseBoundary.SemanticSampleIndex == 90
+        && ReducedReleaseBoundary.PoseSampleIndex == 91
+        && FMath::IsNearlyEqual(ReducedReleaseBoundary.PoseSeconds, 91.f / 30.f,
+            .0001f));
+
+    FShiCouncilWetRegisterInteractionFrameData DeterministicA;
+    FShiCouncilWetRegisterInteractionFrameData DeterministicB;
+    TestTrue(TEXT("normal timeline evaluates a repeated deterministic sample"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(2.375f, false), DeterministicA, Error)
+        && FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(2.375f, false), DeterministicB, Error));
+    TestTrue(TEXT("identical wet-register input produces an exactly identical frame"),
+        FramesExactlyEqual(DeterministicA, DeterministicB));
+
+    FShiCouncilWetRegisterInteractionFrameData TerminalAtFour;
+    FShiCouncilWetRegisterInteractionFrameData TerminalAfterOneSecond;
+    FShiCouncilWetRegisterInteractionFrameData TerminalMuchLater;
+    TestTrue(TEXT("four-second terminal frame evaluates"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(4.f, false), TerminalAtFour, Error));
+    TestTrue(TEXT("terminal frame remains held for at least one second"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(5.f, false), TerminalAfterOneSecond, Error));
+    TestTrue(TEXT("late evaluation remains clamped and cannot loop"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(
+            MakeRequest(40.f, false), TerminalMuchLater, Error));
+    TestTrue(TEXT("terminal state is stable at sample 120 without a restart"),
+        SemanticFramesEqual(TerminalAtFour, TerminalAfterOneSecond)
+        && SemanticFramesEqual(TerminalAtFour, TerminalMuchLater)
+        && TerminalAtFour.StateId == TEXT("settle")
+        && TerminalAtFour.PlaybackSeconds == 4.f
+        && TerminalAtFour.PoseSampleIndex == 120
+        && TerminalAfterOneSecond.PlaybackSeconds == 4.f
+        && TerminalAfterOneSecond.PoseSampleIndex == 120
+        && TerminalMuchLater.PlaybackSeconds == 4.f
+        && TerminalMuchLater.PoseSampleIndex == 120
+        && TerminalAtFour.bTerminalClamp && TerminalAfterOneSecond.bTerminalClamp
+        && TerminalMuchLater.bTerminalClamp && !TerminalMuchLater.bCanLoop);
+
+    FShiCouncilWetRegisterInteractionContractData Drift = Contract;
+    Drift.ReviewModeId = TEXT("-ShiCouncilSkinLookdevReview");
+    TestFalse(TEXT("conflicting review route is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.NodeId = TEXT("open-council");
+    TestFalse(TEXT("wrong campaign node is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.SpeakerCharacterId = TEXT("wu-guang");
+    TestFalse(TEXT("wrong speaker identity is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.CharacterMeshPath = TEXT("/Game/Generated/WrongFace.WrongFace");
+    TestFalse(TEXT("unaccepted character mesh identity is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.SkeletonPath = TEXT("/Game/Generated/WrongSkeleton.WrongSkeleton");
+    TestFalse(TEXT("wrong shared Skeleton is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.SkeletonHierarchyAndBindSha256[0] = TEXT('0');
+    TestFalse(TEXT("shared Skeleton hierarchy/bind receipt drift is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.BoneCount = 52;
+    TestFalse(TEXT("52-bone rig drift is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.AssetInventory.Swap(0, 1);
+    TestFalse(TEXT("asset inventory reordering is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.AssetInventory.Add(Contract.AssetInventory[0]);
+    TestFalse(TEXT("extra generated asset is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MarkerLocalTransformsCentimeters[0].AddToTranslation(FVector(.01f, 0.f, 0.f));
+    TestFalse(TEXT("left-support marker drift is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.SemanticStates[3].SampleIndex = 89;
+    TestFalse(TEXT("ordered-release sample drift is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.ExpectedSamples = 120;
+    TestFalse(TEXT("120-sample clip is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.PropWorldDimensionsCentimeters.Z = 200.f;
+    TestFalse(TEXT("x100 oversized prop envelope is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.PropAttachmentRelativeScale = FVector::OneVector;
+    TestFalse(TEXT("missing x100 attachment compensation is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.ContactAcquisitionCount = 2;
+    TestFalse(TEXT("repeated right-contact acquisition is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MaximumObservedRootTranslationDriftCentimeters =
+        FShiCouncilWetRegisterInteractionModel::RootTranslationToleranceCentimeters() + .001f;
+    TestFalse(TEXT("root translation drift outside tolerance is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MaximumObservedLeftSupportDriftCentimeters =
+        FShiCouncilWetRegisterInteractionModel::LeftSupportTranslationToleranceCentimeters() + .001f;
+    TestFalse(TEXT("left-support contact drift outside tolerance is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MaximumObservedLeftSupportDriftCentimeters += .000001f;
+    TestFalse(TEXT("in-tolerance drift from the exact accepted measurement receipt is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MaximumObservedLeftSupportFloatingCentimeters =
+        FShiCouncilWetRegisterInteractionModel::LeftSupportFloatingToleranceCentimeters() + .001;
+    TestFalse(TEXT("left-support source-mesh floating outside tolerance is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MaximumObservedHandPenetrationCentimeters =
+        FShiCouncilWetRegisterInteractionModel::HandPenetrationToleranceCentimeters() + .001;
+    TestFalse(TEXT("right-hand penetration outside tolerance is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MaximumObservedRightFloatingCentimeters =
+        FShiCouncilWetRegisterInteractionModel::RightFloatingToleranceCentimeters() + .001f;
+    TestFalse(TEXT("right-hand floating contact outside tolerance is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MinimumObservedArmChainScale = .999f;
+    TestFalse(TEXT("arm-chain scale drift is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.MaximumObservedRootYawDriftDegrees =
+        std::numeric_limits<float>::quiet_NaN();
+    TestFalse(TEXT("non-finite root receipt is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bVisibleMeshContactReviewed = true;
+    TestFalse(TEXT("wrist-marker proxy cannot claim visible mesh-contact review"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bKeeperOwnsRegisterBeforeClip = false;
+    TestFalse(TEXT("Chen-only clip cannot erase the Keeper's prior register ownership"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bAssumesPriorOffscreenKeeperToChenHandoff = false;
+    TestFalse(TEXT("Chen cannot silently erase the required prior player-to-Chen handoff"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bHandoffShown = true;
+    TestFalse(TEXT("one-character clip cannot claim to show the Keeper-to-Chen handoff"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bPlayerOwnershipContinuityApproved = true;
+    TestFalse(TEXT("unreviewed player ownership continuity cannot be promoted"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bClipAloneCompletesStoryBeat = true;
+    TestFalse(TEXT("one-character contact proof cannot claim to complete the story beat"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bTwoCharacterTransferDeferred = false;
+    TestFalse(TEXT("one-character clip cannot silently close the deferred two-character transfer"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bFinalStoryBeatApproved = true;
+    TestFalse(TEXT("interaction blockout cannot claim final story-beat approval"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bConservativeSourceMeshContactProxyPassed = false;
+    TestFalse(TEXT("missing conservative source-mesh contact pass is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bSourceMeasurementReceiptBound = false;
+    TestFalse(TEXT("unbound source measurements are rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bClipLooping = true;
+    TestFalse(TEXT("looping conflict is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bRandomized = true;
+    TestFalse(TEXT("randomized performance is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bAudioDriven = true;
+    TestFalse(TEXT("audio-driven hand performance is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bCollisionEnabled = true;
+    TestFalse(TEXT("gameplay collision is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bGameplayAuthority = true;
+    TestFalse(TEXT("gameplay authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bCampaignMutationAuthority = true;
+    TestFalse(TEXT("campaign mutation authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bSaveAuthority = true;
+    TestFalse(TEXT("save authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+    Drift = Contract;
+    Drift.bReplicated = true;
+    TestFalse(TEXT("replication authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateContract(Drift, Error));
+
+    const FShiCouncilWetRegisterInteractionFrameData StableFrame = DeterministicA;
+    FShiCouncilWetRegisterInteractionFrameData AtomicFrame = StableFrame;
+    FShiCouncilWetRegisterInteractionFrameRequest RejectedRequest = MakeRequest(1.f, false);
+    RejectedRequest.bDevelopmentReviewAuthorized = false;
+    TestFalse(TEXT("missing exact review flag fails closed"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(RejectedRequest, AtomicFrame, Error));
+    TestTrue(TEXT("failed review admission is atomic"),
+        FramesExactlyEqual(AtomicFrame, StableFrame));
+    RejectedRequest = MakeRequest(1.f, false);
+    RejectedRequest.NodeId = TEXT("open-council");
+    TestFalse(TEXT("runtime node conflict fails closed"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(RejectedRequest, AtomicFrame, Error));
+    TestTrue(TEXT("failed node admission is atomic"),
+        FramesExactlyEqual(AtomicFrame, StableFrame));
+    RejectedRequest = MakeRequest(1.f, false);
+    RejectedRequest.SpeakerCharacterId = TEXT("keeper");
+    TestFalse(TEXT("runtime identity conflict fails closed"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(RejectedRequest, AtomicFrame, Error));
+    TestTrue(TEXT("failed identity admission is atomic"),
+        FramesExactlyEqual(AtomicFrame, StableFrame));
+    RejectedRequest = MakeRequest(-KINDA_SMALL_NUMBER, false);
+    TestFalse(TEXT("negative evaluation time is rejected"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(RejectedRequest, AtomicFrame, Error));
+    TestTrue(TEXT("failed negative-time evaluation is atomic"),
+        FramesExactlyEqual(AtomicFrame, StableFrame));
+    RejectedRequest = MakeRequest(std::numeric_limits<float>::quiet_NaN(), false);
+    TestFalse(TEXT("NaN evaluation time is rejected"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(RejectedRequest, AtomicFrame, Error));
+    TestTrue(TEXT("failed NaN-time evaluation is atomic"),
+        FramesExactlyEqual(AtomicFrame, StableFrame));
+    RejectedRequest = MakeRequest(std::numeric_limits<float>::infinity(), false);
+    TestFalse(TEXT("infinite evaluation time is rejected"),
+        FShiCouncilWetRegisterInteractionModel::Evaluate(RejectedRequest, AtomicFrame, Error));
+    TestTrue(TEXT("failed infinite-time evaluation is atomic"),
+        FramesExactlyEqual(AtomicFrame, StableFrame));
+
+    FShiCouncilWetRegisterInteractionFrameData FrameDrift = StableFrame;
+    FrameDrift.StateId = TEXT("heroic-declaration");
+    TestFalse(TEXT("invented semantic beat is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.PoseSampleIndex += 1;
+    TestFalse(TEXT("pose sample drift is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bRightContact = !FrameDrift.bRightContact;
+    TestFalse(TEXT("runtime contact-state drift is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.MaximumObservedRootTranslationDriftCentimeters =
+        std::numeric_limits<float>::infinity();
+    TestFalse(TEXT("non-finite runtime root drift is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bCanLoop = true;
+    TestFalse(TEXT("runtime looping is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bHandoffShown = true;
+    TestFalse(TEXT("runtime frame cannot invent a Keeper-to-Chen handoff"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bPlayerOwnershipContinuityApproved = true;
+    TestFalse(TEXT("runtime frame cannot approve unresolved player ownership continuity"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bClipAloneCompletesStoryBeat = true;
+    TestFalse(TEXT("runtime frame cannot make this one-character clip the whole story beat"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bFinalStoryBeatApproved = true;
+    TestFalse(TEXT("runtime frame cannot promote the blockout to a final story beat"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bInteractionInputAuthority = true;
+    TestFalse(TEXT("runtime interaction-input authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bChoiceAuthority = true;
+    TestFalse(TEXT("runtime choice authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bGameplayAuthority = true;
+    TestFalse(TEXT("runtime gameplay authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bCampaignMutationAuthority = true;
+    TestFalse(TEXT("runtime campaign mutation authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bSaveAuthority = true;
+    TestFalse(TEXT("runtime save authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
+    FrameDrift = StableFrame;
+    FrameDrift.bReplicated = true;
+    TestFalse(TEXT("runtime replication authority is rejected"),
+        FShiCouncilWetRegisterInteractionModel::ValidateFrame(FrameDrift, Error));
     return !HasAnyErrors();
 }
 

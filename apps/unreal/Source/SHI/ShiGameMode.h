@@ -124,6 +124,7 @@ private:
     bool bCouncilCharacterReview = false;
     bool bCouncilCharacterReviewKeeper = false;
     bool bCouncilSkinLookdevReview = false;
+    bool bCouncilWetRegisterInteractionReview = false;
     int32 SelectedEngagementCommandIndex = 0;
     FString EngagementCampaignSnapshot;
     TArray<FShiEngagementSignalData> EngagementSignals;

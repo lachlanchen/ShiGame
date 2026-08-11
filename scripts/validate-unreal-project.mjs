@@ -26,6 +26,7 @@ const required = [
   "Source/SHI/ShiCouncilPerformancePresentationModel.h", "Source/SHI/ShiCouncilPerformancePresentationModel.cpp",
   "Source/SHI/ShiCouncilFacialPerformanceModel.h", "Source/SHI/ShiCouncilFacialPerformanceModel.cpp",
   "Source/SHI/ShiCouncilSkinLookdevModel.h", "Source/SHI/ShiCouncilSkinLookdevModel.cpp",
+  "Source/SHI/ShiCouncilWetRegisterInteractionModel.h", "Source/SHI/ShiCouncilWetRegisterInteractionModel.cpp",
   "Source/SHI/ShiCouncilFigure.h", "Source/SHI/ShiCouncilFigure.cpp",
   "Source/SHI/ShiCinematicBeatModel.h", "Source/SHI/ShiCinematicBeatModel.cpp",
   "Source/SHI/ShiOrderTransactionModel.h", "Source/SHI/ShiOrderTransactionModel.cpp",
@@ -92,6 +93,9 @@ const required = [
   "Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_BaseColor_2K.uasset",
   "Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_DetailNormal_1K.uasset",
   "Content/SHI/Art/Characters/DazeCouncilSkinLookdevV1/T_SHI_ChenSheng_Skin_Masks_2K.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1/A_SHI_DazeCouncil_ChenSheng_WetRegister_Interaction_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1/M_SHI_DazeCouncil_WetRegister_Clay_01.uasset",
+  "Content/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1/SM_SHI_DazeCouncil_WetRegister_Blockout_01.uasset",
   "Content/StreamingAssets/chapter-01-daze.json", "Content/StreamingAssets/chapter-01-audio.json",
   "Content/StreamingAssets/chapter-01-broken-crossing.v1.json",
   "Content/StreamingAssets/chapter-01-replays.v1.json", "Content/StreamingAssets/editions.json",
@@ -941,11 +945,27 @@ for (const output of councilPerformanceProvenance.outputs ?? []) {
     errors.push(`council-performance source/export output is missing: ${output.file}`);
   }
 }
+const historicalCouncilPerformanceNormalizerReceipts = {
+  "../../apps/unreal/Source/SHIEditor/Public/ShiAnimationImportLibrary.h":
+    "9445a686942bdc8c5947eaa948217ee31a66ff6a5deb291284411fe848c6a4d8",
+  "../../apps/unreal/Source/SHIEditor/Private/ShiAnimationImportLibrary.cpp":
+    "441f4ea17f3844be3c34af1328981f1f356e2fd33c6084d95ca598e1a77eeddf",
+};
+if (!hasExactWetRegisterCurrentSourceSupersession(
+  councilPerformanceProvenance.historicalSnapshotPolicy,
+  Object.keys(historicalCouncilPerformanceNormalizerReceipts),
+)) errors.push("council-performance historical normalizer receipts lack exact immutable-snapshot and current Gate 5A supersession semantics");
 for (const tool of [councilPerformanceProvenance.toolchain?.generator,
   councilPerformanceProvenance.toolchain?.validator, councilPerformanceProvenance.toolchain?.unrealImporter,
   ...(councilPerformanceProvenance.toolchain?.unrealNormalizer ?? [])]) {
   if (!tool?.file || !tool?.sha256) {
     errors.push("council-performance provenance omits a bounded tool receipt");
+    continue;
+  }
+  const historicalSha256 = historicalCouncilPerformanceNormalizerReceipts[tool.file];
+  if (historicalSha256) {
+    if (tool.sha256 !== historicalSha256)
+      errors.push(`council-performance historical tool receipt drifted: ${tool.file}`);
     continue;
   }
   try {
@@ -1103,6 +1123,31 @@ const sameStringSet = (actual, expected) => Array.isArray(actual)
   && [...actual].sort().join("\n") === [...expected].sort().join("\n");
 const everyCheckPassed = (checks) => checks && Object.keys(checks).length > 0
   && Object.values(checks).every((value) => value === true);
+function hasExactWetRegisterCurrentSourceSupersession(policy, historicalReceiptFiles) {
+  const supersession = policy?.currentSourceSupersededBy;
+  const exactHistoricalFiles = Array.isArray(policy?.historicalReceiptFiles)
+    && policy.historicalReceiptFiles.length === historicalReceiptFiles.length
+    && [...policy.historicalReceiptFiles].sort().join("\n")
+      === [...historicalReceiptFiles].sort().join("\n");
+  return policy?.immutableImportOrBuildTimeSnapshot === true
+    && policy?.currentMutableCrossReceipt === false
+    && exactHistoricalFiles
+    && supersession?.assetId === "shi-daze-council-wet-register-interaction-v1"
+    && supersession?.evidenceFile
+      === "docs/production/evidence/unreal-daze-council-wet-register-interaction-runtime-status.json"
+    && supersession?.nativeBuild?.logicalName
+      === "SHI-DazeCouncilWetRegisterInteraction-NativeBuild-v7.log"
+    && supersession?.nativeBuild?.bytes === 5673
+    && supersession?.nativeBuild?.sha256
+      === "3474ef9841e2213746f25d0fdf514c276daff05ea235474ad9a53486a579326f"
+    && supersession?.fullShiNamespace?.logicalName
+      === "SHI-DazeCouncilWetRegisterInteraction-Automation-full-v5.log"
+    && supersession?.fullShiNamespace?.passed === 22
+    && supersession?.fullShiNamespace?.failed === 0
+    && supersession?.fullShiNamespace?.bytes === 262237
+    && supersession?.fullShiNamespace?.sha256
+      === "1cb22dff1b4e988a010c07abb118b9eb8a2fb4679f049affb6d78112d4fe32d8";
+}
 
 const facialProvenance = await readFacialJson(facialProvenancePath, "Daze council facial provenance");
 const facialMetrics = await readFacialJson(facialMetricsPath, "Daze council facial metrics");
@@ -1151,9 +1196,17 @@ for (const tool of [
   facialProvenance.toolchain?.unrealImporter,
   facialProvenance.toolchain?.packageReviewValidator,
 ]) await verifyFacialReceipt(resolve(root, "assets/provenance"), tool, "Daze council facial tool");
-for (const [evidenceType, receipt] of Object.entries(facialProvenance.engineEvidenceReceipts ?? {}))
-  await verifyFacialReceipt(resolve(root, "assets/provenance"), receipt,
-    `Daze council facial ${evidenceType} engine evidence`);
+for (const [evidenceType, receipt] of Object.entries(facialProvenance.engineEvidenceReceipts ?? {})) {
+  if (evidenceType === "runtime") {
+    if (receipt.file !== "../../docs/production/evidence/unreal-daze-council-facial-performance-runtime-status.json"
+        || receipt.bytes !== 10904
+        || receipt.sha256 !== "0712ce84fed16a0d83cf3427c22df9b2ee3af61474c11c88628d141558f75191")
+      errors.push("Daze council facial provenance historical runtime-evidence receipt drifted");
+  } else {
+    await verifyFacialReceipt(resolve(root, "assets/provenance"), receipt,
+      `Daze council facial ${evidenceType} engine evidence`);
+  }
+}
 if (Object.keys(facialProvenance.engineEvidenceReceipts ?? {}).sort().join(",") !== "import,presentation,runtime")
   errors.push("Daze council facial provenance must retain exact import, runtime and presentation receipts");
 
@@ -1350,8 +1403,13 @@ const historicallyBoundFacialSharedSources = {
   "apps/unreal/Source/SHI/ShiCouncilFigure.h": [2693, "c24aaf859d8216afe15feacbe26be6953c0f180cf216b59972ce564a71f8384c"],
   "apps/unreal/Source/SHI/ShiCouncilFigure.cpp": [17259, "a68f807373548e41702144099ec3aefcb4183a478c5e96c1e28df7a89b5bd6a3"],
   "apps/unreal/Source/SHI/ShiGameMode.cpp": [78715, "8145101a7cb021b0f8423dd0a01c19404eb74c0bda4bcd06904357d54702965e"],
+  "apps/unreal/Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp": [133212, "58a350a9437ad6609e41849e14fc85ed152686010d552d00dd3f794c69a315f6"],
   "apps/unreal/Config/DefaultGame.ini": [1181, "1154fff38e5a45029a6420bb9e6769e65ca8dd0aee04afd6a32fdf4459e768b0"],
 };
+if (!hasExactWetRegisterCurrentSourceSupersession(
+  facialRuntimeEvidence.historicalSnapshotPolicy,
+  ["apps/unreal/Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp"],
+)) errors.push("Daze council facial historical shared automation receipt lacks exact immutable-snapshot and current Gate 5A supersession semantics");
 for (const receipt of facialRuntimeEvidence.compiledSourceSnapshot ?? []) {
   const historical = historicallyBoundFacialSharedSources[receipt.file];
   if (historical) {
@@ -2032,8 +2090,26 @@ const expectedSkinCompiledFiles = [
 ];
 if (!sameStringSet(skinRuntimeEvidence.compiledSourceSnapshot?.map((item) => item.file), expectedSkinCompiledFiles))
   errors.push("Daze council skin runtime evidence omits one or more compiled/configured source receipts");
-for (const receipt of skinRuntimeEvidence.compiledSourceSnapshot ?? [])
-  await verifyFacialReceipt(root, receipt, "Daze council skin compiled source snapshot");
+const historicallyBoundSkinSharedSources = {
+  "apps/unreal/Source/SHI/ShiCouncilFigure.h": [3419, "f6437f3f0ff4c146e1b1990efdf5f9e216969c66b089eecb1c07068c425fb8b9"],
+  "apps/unreal/Source/SHI/ShiCouncilFigure.cpp": [33663, "5788a5035be8e9c894a679b59c36b5267e3bb34dbbcfdc454995de7ced596709"],
+  "apps/unreal/Source/SHI/ShiGameMode.h": [9190, "41ff0cec08927aebaf0c2169e9dc1e3c303f4d79bdde00454210cb8ce88d1de4"],
+  "apps/unreal/Source/SHI/ShiGameMode.cpp": [80973, "112f987eab93790f67db59410c4f3ba2330e725c77a7fcd75d6d495d04376577"],
+  "apps/unreal/Config/DefaultGame.ini": [1265, "3942e8beeab24b0b059a535b8755c1519f2dfb3026eac79b894cbeb11534e1a5"],
+};
+if (!hasExactWetRegisterCurrentSourceSupersession(
+  skinRuntimeEvidence.historicalSnapshotPolicy,
+  Object.keys(historicallyBoundSkinSharedSources),
+)) errors.push("Daze council skin historical shared-source receipts lack exact immutable-snapshot and current Gate 5A supersession semantics");
+for (const receipt of skinRuntimeEvidence.compiledSourceSnapshot ?? []) {
+  const historical = historicallyBoundSkinSharedSources[receipt.file];
+  if (historical) {
+    if (receipt.bytes !== historical[0] || receipt.sha256 !== historical[1])
+      errors.push(`Daze council skin historical compiled source receipt drifted: ${receipt.file}`);
+  } else {
+    await verifyFacialReceipt(root, receipt, "Daze council skin compiled source snapshot");
+  }
+}
 const skinNativeBuild = skinRuntimeEvidence.nativeBuild;
 const selectedSkinSuite = skinRuntimeEvidence.automation?.selectedSkinLookdevSuite;
 const fullSkinSuite = skinRuntimeEvidence.automation?.fullShiNamespace;
@@ -2809,6 +2885,855 @@ if (rejectedPrivacyV4History?.status !== "rejected-for-public-package-workstatio
     || rejectedPrivacyV4History?.humanReviewApproved !== false)
   errors.push("Daze council skin presentation loses exact rejected privacy-v4 package/runtime history");
 
+const wetRegisterAssetId = "shi-daze-council-wet-register-interaction-v1";
+const wetRegisterDestination = "/Game/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1";
+const wetRegisterDisclosure = "PROJECT-ORIGINAL WET-REGISTER INTERACTION BLOCKOUT · DRAMATIC RECONSTRUCTION · NOT A SURVIVING QIN REGISTER · NOT FINAL HAND PERFORMANCE OR CLOSE-CAMERA AUTHORITY";
+const wetRegisterProvenancePath = resolve(root, "assets/provenance/shi-daze-council-wet-register-interaction-v1.json");
+const wetRegisterValidationPath = resolve(root, "assets/3d/source/shi-daze-council-wet-register-interaction-v1.validation.json");
+const wetRegisterImportEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-wet-register-interaction-import-status.json");
+const wetRegisterRuntimeEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-wet-register-interaction-runtime-status.json");
+const wetRegisterPresentationEvidencePath = resolve(root, "docs/production/evidence/unreal-daze-council-wet-register-interaction-presentation-status.json");
+const wetRegisterProvenance = await readFacialJson(wetRegisterProvenancePath, "Daze council wet-register source provenance");
+const wetRegisterValidation = await readFacialJson(wetRegisterValidationPath, "Daze council wet-register source validation");
+const wetRegisterImportEvidence = await readFacialJson(wetRegisterImportEvidencePath, "Daze council wet-register Unreal import evidence");
+const wetRegisterRuntimeEvidence = await readFacialJson(wetRegisterRuntimeEvidencePath, "Daze council wet-register Unreal runtime evidence");
+const wetRegisterPresentationEvidence = await readFacialJson(wetRegisterPresentationEvidencePath, "Daze council wet-register Unreal presentation evidence");
+
+if (wetRegisterProvenance.assetId !== wetRegisterAssetId
+    || wetRegisterProvenance.status !== "engineering-only source candidate; no final, historical, cinematic or engine approval"
+    || wetRegisterProvenance.creationMethod !== "deterministic project-authored Blender Python; no neural generation"
+    || wetRegisterProvenance.reviewDecisions?.watchedSourceVisual?.decision !== "conditional-engineering-accept"
+    || wetRegisterProvenance.reviewStatus?.engineAdmission !== false
+    || wetRegisterProvenance.reviewStatus?.sourceEngineering !== false
+    || wetRegisterProvenance.reviewStatus?.humanHistoricalCulturalApproval !== false
+    || wetRegisterProvenance.reviewStatus?.finalProp !== false
+    || wetRegisterProvenance.reviewStatus?.finalHandAnimation !== false
+    || wetRegisterProvenance.reviewStatus?.anatomy !== false
+    || wetRegisterProvenance.reviewStatus?.cinematic !== false
+    || wetRegisterProvenance.reviewStatus?.accessibility !== false
+    || wetRegisterProvenance.reviewStatus?.playerOwnershipContinuity !== false)
+  errors.push("Daze council wet-register source provenance no longer preserves its immutable source-only and all-red final-review boundary");
+if (wetRegisterValidation.assetId !== wetRegisterAssetId
+    || wetRegisterValidation.status !== "pass"
+    || Object.keys(wetRegisterValidation.checks ?? {}).length !== 91
+    || !everyCheckPassed(wetRegisterValidation.checks))
+  errors.push("Daze council wet-register source validation no longer proves all 91 exact source checks");
+
+const wetRegisterAdmission = wetRegisterRuntimeEvidence.admissionBoundary;
+const wetRegisterSourceReceipt = wetRegisterAdmission?.sourceReceipt;
+if (wetRegisterRuntimeEvidence.assetId !== wetRegisterAssetId
+    || wetRegisterRuntimeEvidence.schemaVersion !== 1
+    || wetRegisterRuntimeEvidence.status !== "import-native-package-runtime-and-watched-route-engineering-pass; visible-mesh-contact-human-historical-cultural-cinematic-accessibility-and-final gates red"
+    || wetRegisterRuntimeEvidence.disclosure !== wetRegisterDisclosure
+    || wetRegisterRuntimeEvidence.engine?.association !== "5.8"
+    || wetRegisterRuntimeEvidence.engine?.version !== "5.8.1-56057345+++UE5+Release-5.8"
+    || wetRegisterSourceReceipt?.immutableImportTimeSnapshot !== true
+    || wetRegisterSourceReceipt?.currentMutableCrossReceipt !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.engineAdmission !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.sourceEngineering !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.humanHistoricalCulturalApproval !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.finalProp !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.finalHandAnimation !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.anatomy !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.cinematic !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.accessibility !== false
+    || wetRegisterSourceReceipt?.reviewStatusRemainsSourceScoped?.playerOwnershipContinuity !== false
+    || wetRegisterAdmission?.separateEngineeringEngineAdmission !== true
+    || wetRegisterAdmission?.engineeringAdmissionBasis?.length !== 7
+    || wetRegisterAdmission?.packageAdmission !== true
+    || wetRegisterAdmission?.liveRuntimeMarkerAdmission !== true
+    || wetRegisterAdmission?.visibleNoVncAdmission !== true
+    || wetRegisterAdmission?.visibleNoVncEngineeringOnly !== true
+    || Object.entries(wetRegisterAdmission ?? {}).some(([key, value]) => [
+      "visibleMeshContactClearanceAdmission", "materialArtAdmission", "playerOwnershipContinuityAdmission",
+      "humanHistoricalCulturalAdmission", "humanAnatomyAdmission",
+      "humanCinematicAdmission", "closeCameraAdmission", "finalProp",
+      "finalHandAnimation", "finalCharacterArt",
+    ].includes(key) && value !== false))
+  errors.push("Daze council wet-register runtime evidence confuses source/final approval with the separate bounded engineering engine admission");
+await verifyFacialReceipt(root, wetRegisterSourceReceipt, "Daze council wet-register runtime-to-source provenance");
+
+const wetRegisterImportAdmission = wetRegisterRuntimeEvidence.importAdmission;
+await verifyFacialReceipt(root, wetRegisterImportAdmission?.evidence,
+  "Daze council wet-register runtime-to-current import evidence");
+if (wetRegisterImportAdmission?.status !== "pass-isolated-import-replace-plus-distinct-default-inspect-only-engineering-only"
+    || wetRegisterImportAdmission?.immutableImportReplaceReceiptRootSha256 !== "85c64e8515e6cc17a23528cbdec90823ee4ada2f4635eafbb7eb69c814913fb8"
+    || wetRegisterImportAdmission?.destination !== wetRegisterDestination
+    || wetRegisterImportAdmission?.mutationEnvironment !== "SHI_DAZE_COUNCIL_WET_REGISTER_INTERACTION_REIMPORT"
+    || wetRegisterImportAdmission?.importReplace?.mode !== "import-replace"
+    || wetRegisterImportAdmission?.importReplace?.mutationAuthorized !== true
+    || wetRegisterImportAdmission?.importReplace?.passed !== true
+    || wetRegisterImportAdmission?.importReplace?.saved !== true
+    || wetRegisterImportAdmission?.importReplace?.transientLog?.logicalName !== "SHI-DazeCouncilWetRegisterInteraction-Import-v7.log"
+    || wetRegisterImportAdmission?.importReplace?.transientLog?.tracked !== false
+    || wetRegisterImportAdmission?.importReplace?.transientLog?.bytes !== 323293
+    || wetRegisterImportAdmission?.importReplace?.transientLog?.sha256 !== "f7140eed9d48b2f93008166b335dcd6f1239e0fb7afef326ceb90ac9dab96fa3"
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.mode !== "inspect-only"
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.mutationAuthorized !== false
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.distinctFromImportProcess !== true
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.exitCode !== 0
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.passed !== true
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.canonicalImportReceiptRootPreserved !== true
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.trackedUassetHashesUnchanged !== true
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.embeddedMetadataPrivacyPassed !== true
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.all121By53TransformsResampled !== true
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.compressedRuntimeDataValid !== true
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.transientLog?.logicalName !== "SHI-DazeCouncilWetRegisterInteraction-Inspect-v2.log"
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.transientLog?.tracked !== false
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.transientLog?.bytes !== 302479
+    || wetRegisterImportAdmission?.defaultReadOnlyInspection?.transientLog?.sha256 !== "a74004d62e86b6a0aa5da6754378af1acf89c0e888912a74ede09b981ba98ad1"
+    || wetRegisterImportAdmission?.exactInventory?.trackedAssets !== 3
+    || wetRegisterImportAdmission?.exactInventory?.staticMeshes !== 1
+    || wetRegisterImportAdmission?.exactInventory?.materials !== 1
+    || wetRegisterImportAdmission?.exactInventory?.animationSequences !== 1
+    || wetRegisterImportAdmission?.exactInventory?.rigTexturePhysicsAudioNavigationOrGameplayAssets !== 0)
+  errors.push("Daze council wet-register runtime evidence does not bind the exact import-replace plus nested default inspect-only admission");
+
+if (wetRegisterImportEvidence.assetId !== wetRegisterAssetId
+    || wetRegisterImportEvidence.schemaVersion !== 1
+    || wetRegisterImportEvidence.mode !== "import-replace"
+    || wetRegisterImportEvidence.mutationAuthorized !== true
+    || wetRegisterImportEvidence.destination !== wetRegisterDestination
+    || wetRegisterImportEvidence.engineVersion !== "5.8.1-56057345+++UE5+Release-5.8"
+    || wetRegisterImportEvidence.saved !== true || wetRegisterImportEvidence.passed !== true
+    || wetRegisterImportEvidence.readOnlyInspection?.mode !== "inspect-only"
+    || wetRegisterImportEvidence.readOnlyInspection?.mutationAuthorized !== false
+    || wetRegisterImportEvidence.readOnlyInspection?.distinctFromImportProcess !== true
+    || wetRegisterImportEvidence.readOnlyInspection?.exitCode !== 0
+    || wetRegisterImportEvidence.readOnlyInspection?.passed !== true
+    || wetRegisterImportEvidence.readOnlyInspection?.immutableImportReceiptRootSha256
+      !== wetRegisterImportAdmission?.immutableImportReplaceReceiptRootSha256
+    || wetRegisterImportEvidence.readOnlyInspection?.canonicalImportReceiptRootPreserved !== true
+    || wetRegisterImportEvidence.readOnlyInspection?.trackedUassetHashesUnchanged !== true
+    || wetRegisterImportEvidence.readOnlyInspection?.embeddedMetadataPrivacyPassed !== true
+    || wetRegisterImportEvidence.readOnlyInspection?.all121By53TransformsResampled !== true
+    || wetRegisterImportEvidence.readOnlyInspection?.compressedRuntimeDataValid !== true
+    || wetRegisterImportEvidence.sourceContract?.passed !== true
+    || !everyCheckPassed(wetRegisterImportEvidence.sourceContract?.checks)
+    || wetRegisterImportEvidence.destinationInventory?.passed !== true
+    || wetRegisterImportEvidence.destinationInventory?.assets?.length !== 3
+    || wetRegisterImportEvidence.acceptedAssetPreservation?.passed !== true
+    || !everyCheckPassed(wetRegisterImportEvidence.acceptedAssetPreservation?.checks))
+  errors.push("Daze council wet-register canonical import evidence is not the exact accepted root plus read-only inspection receipt");
+
+const wetRegisterProp = wetRegisterImportAdmission?.prop;
+const wetRegisterImportProp = wetRegisterImportEvidence.prop;
+const expectedWetSocketNames = ["WetRegister_LeftSupport", "WetRegister_RightContact", "WetRegister_CameraReadability"];
+const expectedWetSocketLocations = [[11, -5.5, -3.35], [-11, 5.5, 3.35], [0, 0, 1]];
+const expectedWetSocketRotations = [[0, 0, 180], [0, 90, 0], [0, 0, 0]];
+if (wetRegisterProp?.dimensionsCentimeters?.join(",") !== "32,14,2"
+    || wetRegisterProp?.fbxToUnrealImportUniformScale !== 0.01
+    || wetRegisterProp?.importScalePurpose !== "FBX-to-Unreal static-mesh unit correction only; not runtime scale"
+    || wetRegisterProp?.materialSlotName !== "M_SHI_DazeCouncil_WetRegister_Clay_01"
+    || wetRegisterProp?.importedMaterialSlotName !== "M_SHI_DazeCouncil_WetRegister_Clay_01"
+    || wetRegisterProp?.materialGraphNodes !== 4 || wetRegisterProp?.materialTextures !== 0
+    || wetRegisterProp?.materialCompiledClean !== true
+    || JSON.stringify(wetRegisterProp?.socketNames) !== JSON.stringify(expectedWetSocketNames)
+    || JSON.stringify(wetRegisterProp?.socketLocationsCentimeters) !== JSON.stringify(expectedWetSocketLocations)
+    || JSON.stringify(wetRegisterProp?.socketRotationsPitchYawRollDegrees) !== JSON.stringify(expectedWetSocketRotations)
+    || wetRegisterProp?.simpleCollisionCount !== 0 || wetRegisterProp?.convexCollisionCount !== 0
+    || wetRegisterProp?.collisionComplexity !== "CTF_UseSimpleAsComplex"
+    || wetRegisterProp?.navigationRelevant !== false || wetRegisterProp?.navigationCollision !== false
+    || wetRegisterProp?.naniteEnabled !== false || wetRegisterProp?.passed !== true
+    || Math.abs((wetRegisterImportProp?.boundsCentimeters?.minimum?.[0] ?? 0) + 16) > 0.001
+    || Math.abs((wetRegisterImportProp?.boundsCentimeters?.minimum?.[1] ?? 0) + 7) > 0.001
+    || Math.abs((wetRegisterImportProp?.boundsCentimeters?.minimum?.[2] ?? 0) + 1) > 0.001
+    || Math.abs((wetRegisterImportProp?.boundsCentimeters?.maximum?.[0] ?? 0) - 16) > 0.001
+    || Math.abs((wetRegisterImportProp?.boundsCentimeters?.maximum?.[1] ?? 0) - 7) > 0.001
+    || Math.abs((wetRegisterImportProp?.boundsCentimeters?.maximum?.[2] ?? 0) - 1) > 0.001
+    || wetRegisterImportProp?.materials?.length !== 1
+    || wetRegisterImportProp?.materials?.[0]?.materialSlotName !== "M_SHI_DazeCouncil_WetRegister_Clay_01"
+    || wetRegisterImportProp?.materials?.[0]?.importedMaterialSlotName !== "M_SHI_DazeCouncil_WetRegister_Clay_01"
+    || wetRegisterImportProp?.simpleCollisionCount !== 0 || wetRegisterImportProp?.convexCollisionCount !== 0
+    || wetRegisterImportProp?.collisionComplexity !== "<CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX: 2>"
+    || wetRegisterImportProp?.hasNavigationData !== false || wetRegisterImportProp?.naniteEnabled !== false
+    || wetRegisterImportProp?.passed !== true || !everyCheckPassed(wetRegisterImportProp?.checks)
+    || wetRegisterImportEvidence.material?.expressionClasses?.length !== 4
+    || wetRegisterImportEvidence.material?.usedTextures?.length !== 0
+    || wetRegisterImportEvidence.material?.compileErrors?.length !== 0
+    || wetRegisterImportEvidence.material?.passed !== true
+    || wetRegisterImportEvidence.staticMeshMaterialBindingPreparation?.passed !== true
+    || wetRegisterImportEvidence.staticMeshSocketPreparation?.passed !== true
+    || wetRegisterImportEvidence.staticMeshCollisionlessPreparation?.passed !== true)
+  errors.push("Daze council wet-register prop admission drifts from exact bounds, material, socket, collision, navigation or privacy-safe engineering scope");
+
+const wetRegisterAnimation = wetRegisterImportAdmission?.animation;
+const wetRegisterImportAnimation = wetRegisterImportEvidence.animation;
+const wetRegisterSourceContact = wetRegisterImportEvidence.sourceContract
+  ?.interactionContract?.animation?.contact;
+if (wetRegisterAnimation?.boneCount !== 53 || wetRegisterAnimation?.trackCountAfterRootRemoval !== 52
+    || wetRegisterAnimation?.samples !== 121 || wetRegisterAnimation?.frames !== 120
+    || wetRegisterAnimation?.framesPerSecond !== 30 || wetRegisterAnimation?.durationSeconds !== 4
+    || wetRegisterAnimation?.looping !== false || wetRegisterAnimation?.rootMotionEnabled !== false
+    || wetRegisterAnimation?.compressedDataValid !== true || wetRegisterAnimation?.evaluationType !== "Compressed"
+    || wetRegisterAnimation?.all121By53TransformsFinite !== true
+    || wetRegisterAnimation?.rootStationaryEverySample !== true
+    || wetRegisterAnimation?.armChainScaleUnchangedEverySample !== true
+    || wetRegisterAnimation?.semanticFrames?.join(",") !== "1,31,61,91,121"
+    || wetRegisterAnimation?.semanticSamples?.join(",") !== "0,30,60,90,120"
+    || wetRegisterAnimation?.contact?.leftMaximumDriftCentimeters !== 0.0039685306858313904
+    || wetRegisterAnimation?.contact?.leftMaximumAngularDriftDegrees !== 0
+    || wetRegisterAnimation?.contact?.leftSupportMaximumFloatingCentimeters !== 0.3386637148479367
+    || wetRegisterAnimation?.contact?.rightAcquisitionCount !== 1
+    || wetRegisterAnimation?.contact?.rightReleaseCount !== 1
+    || wetRegisterAnimation?.contact?.rightAcquisitionSample !== 30
+    || wetRegisterAnimation?.contact?.orderedReleasePhaseOnsetSample !== 90
+    || wetRegisterAnimation?.contact?.rightReleaseSample !== 91
+    || wetRegisterAnimation?.contact?.rightContactExitSample !== 91
+    || wetRegisterAnimation?.contact?.rightContinuousThroughHold !== true
+    || wetRegisterAnimation?.contact?.heldBoundaryInterpolation?.playbackSampleFirst !== 89
+    || wetRegisterAnimation?.contact?.heldBoundaryInterpolation?.playbackSampleLastInclusive !== 90
+    || wetRegisterAnimation?.contact?.heldBoundaryInterpolation?.subdivisions !== 64
+    || wetRegisterAnimation?.contact?.heldBoundaryInterpolation?.sampledPoints !== 65
+    || wetRegisterAnimation?.contact?.heldBoundaryInterpolation?.runtimeContactToleranceCentimeters !== 0.8
+    || wetRegisterAnimation?.contact?.heldBoundaryInterpolation?.authoringReserveCentimeters !== 0.65
+    || wetRegisterAnimation?.contact?.heldBoundaryInterpolation?.maximumRightDistanceCentimeters
+      !== 0.000028827104154457303
+    || wetRegisterAnimation?.contact?.heldBoundaryInterpolation?.passed !== true
+    || wetRegisterAnimation?.contact?.maximumPenetrationCentimeters !== 0.3500294405966997
+    || wetRegisterAnimation?.contact?.maximumFloatingCentimeters !== 0
+    || wetRegisterAnimation?.passed !== true
+    || wetRegisterSourceContact?.orderedReleasePhaseOnsetSample !== 90
+    || wetRegisterSourceContact?.rightReleaseSample !== 91
+    || wetRegisterSourceContact?.rightContactExitSample !== 91
+    || wetRegisterSourceContact?.rightContinuousThroughHold !== true
+    || wetRegisterImportAnimation?.samples !== 121 || wetRegisterImportAnimation?.trackCount !== 52
+    || wetRegisterImportAnimation?.durationSeconds !== 4 || wetRegisterImportAnimation?.framesPerSecond !== 30
+    || wetRegisterImportAnimation?.rootMotionEnabled !== false || wetRegisterImportAnimation?.rateScale !== 1
+    || wetRegisterImportAnimation?.compressionPreparation?.compressedDataValid !== true
+    || wetRegisterImportAnimation?.sampleInspection?.evaluationType !== "Compressed"
+    || wetRegisterImportAnimation?.sampleInspection?.sampledFrames !== 121
+    || wetRegisterImportAnimation?.sampleInspection?.sampledBonesPerFrame !== 53
+    || wetRegisterImportAnimation?.sampleInspection?.passed !== true
+    || wetRegisterImportAnimation?.passed !== true || !everyCheckPassed(wetRegisterImportAnimation?.checks))
+  errors.push("Daze council wet-register animation admission drifts from exact 121x53 compressed deterministic contact sampling");
+
+const wetRegisterNativePreparation = wetRegisterImportAdmission?.nativePreparation;
+if (wetRegisterNativePreparation?.materialConfigureInvokedOnlyDuringMutation !== true
+    || wetRegisterNativePreparation?.materialConstValidationAlwaysInvoked !== true
+    || wetRegisterNativePreparation?.materialIndependentReflectedReadbackPassed !== true
+    || wetRegisterNativePreparation?.socketConfigureInvokedOnlyDuringMutation !== true
+    || wetRegisterNativePreparation?.socketConstExactCountOrderValidationAlwaysInvoked !== true
+    || wetRegisterNativePreparation?.socketIndependentKnownNameReadbackPassed !== true
+    || wetRegisterNativePreparation?.collisionAndNavigationPostconditionsValidatedByCpp !== true
+    || wetRegisterNativePreparation?.compressedSequenceCachePreparedAndValidatedByCpp !== true
+    || wetRegisterNativePreparation?.passed !== true
+    || wetRegisterImportEvidence.staticMaterialBindingSourceGuard?.passed !== true
+    || wetRegisterImportEvidence.staticMeshImportSourceGuard?.passed !== true
+    || wetRegisterImportEvidence.staticMeshSocketSourceGuard?.passed !== true
+    || wetRegisterImportEvidence.runtimeAdmissionSourceGuard?.passed !== true
+    || wetRegisterImportEvidence.animationCompressionPreparation?.passed !== true)
+  errors.push("Daze council wet-register importer no longer binds mutation-only native preparation to independent read-only validation");
+
+const wetRegisterPreservation = wetRegisterImportAdmission?.acceptedAssetPreservation;
+await verifyFacialReceipt(root, wetRegisterPreservation?.facialEvidence,
+  "Daze council wet-register preserved facial evidence");
+await verifyFacialReceipt(root, wetRegisterPreservation?.skinEvidence,
+  "Daze council wet-register preserved skin evidence");
+if (wetRegisterPreservation?.acceptedFacialHashesUnchanged !== true
+    || wetRegisterPreservation?.acceptedSkinHashesUnchanged !== true
+    || wetRegisterPreservation?.sharedSkeletonPackageAndReferencePoseUnchanged !== true
+    || wetRegisterPreservation?.isolatedDestination !== true
+    || wetRegisterPreservation?.passed !== true
+    || wetRegisterImportEvidence.acceptedAssetPreservation?.checks?.acceptedFacialHashesUnchanged !== true
+    || wetRegisterImportEvidence.acceptedAssetPreservation?.checks?.acceptedSkinHashesUnchanged !== true
+    || wetRegisterImportEvidence.acceptedAssetPreservation?.checks?.sharedSkeletonPackageAndReferencePoseUnchanged !== true)
+  errors.push("Daze council wet-register admission does not prove accepted facial, skin and shared-skeleton preservation");
+
+const expectedWetRegisterUassets = {
+  "A_SHI_DazeCouncil_ChenSheng_WetRegister_Interaction_01.uasset": [168077, "264ae1b9a1ca0b2b0e05e3351248562e4d2d88c83a1c1d80590eeb60b0062b29"],
+  "M_SHI_DazeCouncil_WetRegister_Clay_01.uasset": [10704, "63c89e6a26fc81285a364bf41966964c5835330ba36c7733d307cdf01a731755"],
+  "SM_SHI_DazeCouncil_WetRegister_Blockout_01.uasset": [22679, "a4e4403b906eeb7df49bdcd1ba766f036d4926e6a05194affd7af75091a17df8"],
+};
+if (wetRegisterRuntimeEvidence.trackedUnrealAssets?.root
+      !== "apps/unreal/Content/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1"
+    || !sameStringSet(Object.keys(wetRegisterRuntimeEvidence.trackedUnrealAssets?.receipts ?? {}), Object.keys(expectedWetRegisterUassets))
+    || !sameStringSet(Object.keys(wetRegisterImportEvidence.trackedUnrealAssets?.receipts ?? {}), Object.keys(expectedWetRegisterUassets)))
+  errors.push("Daze council wet-register evidence does not retain exactly three isolated uasset receipts");
+for (const [file, [expectedBytes, expectedSha256]] of Object.entries(expectedWetRegisterUassets)) {
+  const runtimeReceipt = wetRegisterRuntimeEvidence.trackedUnrealAssets?.receipts?.[file];
+  const importReceipt = wetRegisterImportEvidence.trackedUnrealAssets?.receipts?.[file];
+  const filePath = resolve(root, "apps/unreal/Content/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1", file);
+  try {
+    const bytes = await readFile(filePath);
+    const text = bytes.toString("latin1");
+    const sha256 = createHash("sha256").update(bytes).digest("hex");
+    if (bytes.byteLength !== expectedBytes || sha256 !== expectedSha256
+        || runtimeReceipt?.bytes !== expectedBytes || runtimeReceipt?.sha256 !== expectedSha256
+        || importReceipt?.bytes !== expectedBytes || importReceipt?.sha256 !== expectedSha256)
+      errors.push(`Daze council wet-register uasset receipt drifted: ${file}`);
+    for (const token of ["/home/", "/Users/", "C:/Users/", "C:\\Users\\", "InterchangeAssetImportData", "@crypt_", "Bearer "])
+      if (text.includes(token)) errors.push(`Daze council wet-register uasset embeds forbidden private path, import metadata or credential marker: ${file}`);
+  } catch {
+    errors.push(`Daze council wet-register uasset is missing or unreadable: ${file}`);
+  }
+}
+if (wetRegisterImportAdmission?.privacy?.exactThreeUassetsScanned !== true
+    || wetRegisterImportAdmission?.privacy?.privateAbsolutePathsAbsent !== true
+    || wetRegisterImportAdmission?.privacy?.interchangeAssetImportDataAbsent !== true
+    || wetRegisterImportAdmission?.privacy?.credentialTokenMarkersAbsent !== true
+    || wetRegisterImportAdmission?.privacy?.relativeSourceIdentityRetainedForImportedPropAndAnimation !== true
+    || wetRegisterImportAdmission?.privacy?.materialHasNoSourceIdentity !== true
+    || wetRegisterImportAdmission?.privacy?.readOnlyInspectionRepeatedAndPassed !== true
+    || wetRegisterImportAdmission?.privacy?.passed !== true
+    || wetRegisterImportEvidence.embeddedMetadataPrivacy?.passed !== true
+    || !everyCheckPassed(wetRegisterImportEvidence.embeddedMetadataPrivacy?.checks))
+  errors.push("Daze council wet-register evidence weakens the exact three-uasset embedded-metadata privacy gate");
+
+for (const receipt of Object.values(wetRegisterRuntimeEvidence.sourceContractReceipts ?? {}))
+  await verifyFacialReceipt(root, receipt, "Daze council wet-register source contract");
+for (const receipt of wetRegisterRuntimeEvidence.toolchainReceipts ?? [])
+  await verifyFacialReceipt(root, receipt, `Daze council wet-register ${receipt.role ?? "tool"}`);
+for (const receipt of wetRegisterRuntimeEvidence.compiledSourceSnapshot ?? [])
+  await verifyFacialReceipt(root, receipt, "Daze council wet-register compiled source snapshot");
+if (Object.keys(wetRegisterRuntimeEvidence.sourceContractReceipts ?? {}).length !== 4
+    || wetRegisterRuntimeEvidence.toolchainReceipts?.length !== 6
+    || wetRegisterRuntimeEvidence.compiledSourceSnapshot?.length !== 8)
+  errors.push("Daze council wet-register runtime evidence omits exact source, importer, helper or compiled-source receipts");
+
+const wetRegisterCookLine = '+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Characters/DazeCouncilWetRegisterInteractionV1")';
+const wetRegisterGameConfig = await readFile(resolve(unreal, "Config/DefaultGame.ini"), "utf8");
+if (wetRegisterRuntimeEvidence.cookContract?.configurationFile !== "apps/unreal/Config/DefaultGame.ini"
+    || wetRegisterRuntimeEvidence.cookContract?.exactAlwaysCookRoot !== wetRegisterDestination
+    || wetRegisterRuntimeEvidence.cookContract?.configured !== true
+    || wetRegisterRuntimeEvidence.cookContract?.packageCookRunPerformed !== true
+    || wetRegisterRuntimeEvidence.cookContract?.packageRevision !== "path-sanitized-review-v4"
+    || wetRegisterRuntimeEvidence.cookContract?.cookedPackageCount !== 567
+    || wetRegisterRuntimeEvidence.cookContract?.priorAcceptedPackageCount !== 564
+    || wetRegisterRuntimeEvidence.cookContract?.addedPackageCount !== 3
+    || wetRegisterRuntimeEvidence.cookContract?.isolatedAssetCount !== 3
+    || wetRegisterRuntimeEvidence.cookContract?.cookErrors !== 0
+    || wetRegisterRuntimeEvidence.cookContract?.cookWarnings !== 0
+    || wetRegisterRuntimeEvidence.cookContract?.passedEngineeringOnly !== true
+    || wetRegisterGameConfig.split(wetRegisterCookLine).length - 1 !== 1)
+  errors.push("Daze council wet-register exact always-cook root or bounded 567-package engineering receipt drifted");
+
+const wetRegisterBuild = wetRegisterRuntimeEvidence.nativeBuild;
+if (wetRegisterBuild?.status !== "pass" || wetRegisterBuild?.target !== "SHIEditor"
+    || wetRegisterBuild?.actionCount !== 41 || wetRegisterBuild?.completedActionCount !== 41
+    || wetRegisterBuild?.actions?.length !== 41
+    || wetRegisterBuild?.result !== "Succeeded" || wetRegisterBuild?.executionSeconds !== 36.08
+    || wetRegisterBuild?.exitCode !== 0
+    || wetRegisterBuild?.transientLog?.logicalName !== "SHI-DazeCouncilWetRegisterInteraction-NativeBuild-v7.log"
+    || wetRegisterBuild?.transientLog?.tracked !== false
+    || wetRegisterBuild?.transientLog?.bytes !== 5673
+    || wetRegisterBuild?.transientLog?.sha256 !== "3474ef9841e2213746f25d0fdf514c276daff05ea235474ad9a53486a579326f")
+  errors.push("Daze council wet-register runtime evidence does not bind the current v7 41/41 native editor build");
+const wetRegisterMarkers = wetRegisterRuntimeEvidence.authoredRuntimeMarkers;
+if (wetRegisterMarkers?.status !== "observed-once-in-order-in-normal-v5-and-reduced-v5-inert-packaged-routes-engineering-only"
+    || wetRegisterMarkers?.observedInPackagedRuntime !== true
+    || wetRegisterMarkers?.admission?.token !== "SHI_COUNCIL_WET_REGISTER_INTERACTION_RUNTIME_ADMITTED"
+    || wetRegisterMarkers?.admission?.requiredFields?.asset !== wetRegisterAssetId
+    || wetRegisterMarkers?.admission?.requiredFields?.node !== "rain-order"
+    || wetRegisterMarkers?.admission?.requiredFields?.character !== "chen-sheng"
+    || wetRegisterMarkers?.admission?.requiredFields?.role !== "speaker"
+    || wetRegisterMarkers?.admission?.requiredFields?.samples !== 121
+    || wetRegisterMarkers?.admission?.requiredFields?.fps !== 30
+    || wetRegisterMarkers?.admission?.requiredFields?.duration !== 4
+    || wetRegisterMarkers?.admission?.requiredFields?.dimensionsCentimeters?.join(",") !== "32,14,2"
+    || wetRegisterMarkers?.admission?.requiredFields?.leftOwner !== "hand_l"
+    || wetRegisterMarkers?.admission?.requiredFields?.relativeScale !== 0.01
+    || Object.entries(wetRegisterMarkers?.admission?.requiredFields ?? {}).some(([key, value]) => [
+      "visibleMeshReview", "anatomyReview", "finalHand", "finalProp", "historicalObject",
+      "playerOwnershipContinuity", "humanHistoricalCulturalReview",
+    ].includes(key) && value !== false)
+    || wetRegisterMarkers?.heldQuestion?.token !== "SHI_COUNCIL_WET_REGISTER_INTERACTION_HELD_QUESTION"
+    || wetRegisterMarkers?.heldQuestion?.state !== "held-question"
+    || wetRegisterMarkers?.heldQuestion?.semanticSample !== 60
+    || wetRegisterMarkers?.heldQuestion?.leftOwner !== true
+    || wetRegisterMarkers?.heldQuestion?.rightContact !== true
+    || wetRegisterMarkers?.heldQuestion?.playerOwnershipContinuity !== false
+    || wetRegisterMarkers?.heldQuestion?.humanHistoricalCulturalReview !== false
+    || wetRegisterMarkers?.orderedRelease?.token !== "SHI_COUNCIL_WET_REGISTER_INTERACTION_ORDERED_RELEASE"
+    || wetRegisterMarkers?.orderedRelease?.state !== "ordered-release"
+    || wetRegisterMarkers?.orderedRelease?.semanticSample !== 90
+    || wetRegisterMarkers?.orderedRelease?.semanticTimeSeconds !== 3
+    || wetRegisterMarkers?.orderedRelease?.standardMotionPoseSampleAtExactBoundary !== 90
+    || wetRegisterMarkers?.orderedRelease?.normalMotionFirstMarkerPoseSamplesAllowed?.join(",") !== "90,91"
+    || wetRegisterMarkers?.orderedRelease?.reducedMotionPoseSample !== 91
+    || wetRegisterMarkers?.orderedRelease?.rightContact !== false
+    || wetRegisterMarkers?.orderedRelease?.rightReleasing !== true
+    || wetRegisterMarkers?.orderedRelease?.physicalContactExitSample !== 91
+    || wetRegisterMarkers?.orderedRelease?.semanticAndPhysicalBoundaryDistinct !== true
+    || wetRegisterMarkers?.observedPackagedRoutes?.normal?.bilateralPoseSample !== 31
+    || wetRegisterMarkers?.observedPackagedRoutes?.normal?.heldPoseSample !== 60
+    || wetRegisterMarkers?.observedPackagedRoutes?.normal?.orderedReleasePoseSample !== 90
+    || wetRegisterMarkers?.observedPackagedRoutes?.normal?.terminalPoseSample !== 120
+    || wetRegisterMarkers?.observedPackagedRoutes?.reduced?.bilateralPoseSample !== 30
+    || wetRegisterMarkers?.observedPackagedRoutes?.reduced?.heldPoseSample !== 60
+    || wetRegisterMarkers?.observedPackagedRoutes?.reduced?.orderedReleasePoseSample !== 91
+    || wetRegisterMarkers?.observedPackagedRoutes?.reduced?.terminalPoseSample !== 120
+    || wetRegisterMarkers?.observedPackagedRoutes?.eachMarkerExactlyOnce !== true
+    || wetRegisterMarkers?.observedPackagedRoutes?.ordered !== true
+    || wetRegisterMarkers?.observedPackagedRoutes?.storyAndSaveInert !== true
+    || wetRegisterMarkers?.observedPackagedRoutes?.cleanControlledShutdown !== true
+    || wetRegisterMarkers?.packageMarkerGateRemainsPending !== false)
+  errors.push("Daze council wet-register authored/observed marker contract loses sample-90 onset, sample-91 physical exit or exact inert packaged-route evidence");
+const wetRegisterFocused = wetRegisterRuntimeEvidence.automation?.focusedWetRegisterSuite;
+const wetRegisterFull = wetRegisterRuntimeEvidence.automation?.fullShiNamespace;
+if (wetRegisterFocused?.status !== "pass"
+    || wetRegisterFocused?.filter !== "SHI.Cinematic.CouncilWetRegisterInteractionV1"
+    || wetRegisterFocused?.discovered !== 1 || wetRegisterFocused?.started !== 1
+    || wetRegisterFocused?.passed !== 1 || wetRegisterFocused?.failed !== 0
+    || wetRegisterFocused?.exitCode !== 0
+    || wetRegisterFocused?.transientLog?.logicalName !== "SHI-DazeCouncilWetRegisterInteraction-Automation-focused-v5.log"
+    || wetRegisterFocused?.transientLog?.tracked !== false
+    || wetRegisterFocused?.transientLog?.bytes !== 243218
+    || wetRegisterFocused?.transientLog?.sha256 !== "223e725b6edd74dff1ab550086abeb67e3fd24fe610e5b549ff862b7d68342d5"
+    || wetRegisterFull?.status !== "pass" || wetRegisterFull?.filter !== "SHI."
+    || wetRegisterFull?.discovered !== 22 || wetRegisterFull?.started !== 22
+    || wetRegisterFull?.passed !== 22 || wetRegisterFull?.failed !== 0
+    || wetRegisterFull?.exitCode !== 0 || wetRegisterFull?.tests?.length !== 22
+    || !wetRegisterFull.tests.includes("SHI.Cinematic.CouncilWetRegisterInteractionV1")
+    || wetRegisterFull?.transientLog?.logicalName !== "SHI-DazeCouncilWetRegisterInteraction-Automation-full-v5.log"
+    || wetRegisterFull?.transientLog?.tracked !== false
+    || wetRegisterFull?.transientLog?.bytes !== 262237
+    || wetRegisterFull?.transientLog?.sha256 !== "1cb22dff1b4e988a010c07abb118b9eb8a2fb4679f049affb6d78112d4fe32d8")
+  errors.push("Daze council wet-register runtime evidence does not prove focused 1/1 and complete SHI 22/22 native automation");
+
+const wetRegisterContract = wetRegisterRuntimeEvidence.runtimeContract;
+if (wetRegisterContract?.reviewFlag !== "-ShiCouncilWetRegisterInteractionReview"
+    || wetRegisterContract?.campaignNode !== "rain-order"
+    || wetRegisterContract?.speakerIdentity !== "chen-sheng" || wetRegisterContract?.speakerSlot !== "speaker"
+    || wetRegisterContract?.leftOwnerBone !== "hand_l" || wetRegisterContract?.rightContactBone !== "hand_r"
+    || wetRegisterContract?.propRuntimeScaleCompensation !== 0.01
+    || wetRegisterContract?.propNeverReparented !== true
+    || wetRegisterContract?.orderedReleasePhaseOnsetSample !== 90
+    || wetRegisterContract?.rightContactExitSample !== 91
+    || wetRegisterContract?.standardMotionExactBoundaryPoseSample !== 90
+    || wetRegisterContract?.reducedMotionReleaseOnsetPoseSample !== 91
+    || wetRegisterContract?.semanticReleasePrecedesMeasuredPhysicalExitBySamples !== 1
+    || wetRegisterContract?.terminalClampSeconds !== 4 || wetRegisterContract?.looping !== false
+    || wetRegisterContract?.deterministic !== true
+    || wetRegisterContract?.explicitDevelopmentAuthorizationRequired !== true
+    || wetRegisterContract?.neutralReferencePoseFallbackRequired !== true
+    || wetRegisterContract?.reviewOnly !== true || wetRegisterContract?.storyAndSaveInert !== true
+    || wetRegisterContract?.offscreenKeeperToChenHandoffAssumed !== true
+    || wetRegisterContract?.handoffShown !== false || wetRegisterContract?.clipAloneCompletesStoryBeat !== false
+    || Object.entries(wetRegisterContract ?? {}).some(([key, value]) => [
+      "multilingualSpeechTimingAuthority", "voiceTimingAuthority", "lipSyncTimingAuthority",
+      "campaignAuthority", "choiceAuthority", "inputAuthority", "saveAuthority",
+      "replicationAuthority", "physicsAuthority", "collisionAuthority", "navigationAuthority",
+    ].includes(key) && value !== false))
+  errors.push("Daze council wet-register runtime contract overstates story, timing, input, save, replication, physics, collision or navigation authority");
+
+const wetRegisterRejectedHistory = wetRegisterRuntimeEvidence.rejectedImportHistory;
+if (wetRegisterRejectedHistory?.status !== "diagnostic-only-nonretained-no-current-authority"
+    || wetRegisterRejectedHistory?.dottedImportedMaterialSlotRead?.logicalRevision !== "v4"
+    || wetRegisterRejectedHistory?.dottedImportedMaterialSlotRead?.decision !== "rejected-before-admission"
+    || wetRegisterRejectedHistory?.dottedImportedMaterialSlotRead?.externalLogRetainedByManifest !== false
+    || wetRegisterRejectedHistory?.dottedImportedMaterialSlotRead?.currentAuthority !== false
+    || wetRegisterRejectedHistory?.hundredTimesPropBounds?.logicalRevision !== "v5"
+    || wetRegisterRejectedHistory?.hundredTimesPropBounds?.decision !== "rejected-before-admission"
+    || wetRegisterRejectedHistory?.hundredTimesPropBounds?.externalLogRetainedByManifest !== false
+    || wetRegisterRejectedHistory?.hundredTimesPropBounds?.currentAuthority !== false)
+  errors.push("Daze council wet-register rejected import history is retained as current or authoritative evidence");
+
+const wetRegisterGates = wetRegisterRuntimeEvidence.releaseGates;
+if (wetRegisterGates?.sourceValidation !== "pass-91-of-91-source-engineering-only"
+    || wetRegisterGates?.isolatedImportReplace !== "pass-three-uassets-engineering-only"
+    || wetRegisterGates?.defaultReadOnlyInspection !== "pass-distinct-process-hashes-unchanged"
+    || wetRegisterGates?.embeddedMetadataPrivacy !== "pass-three-uassets-no-private-absolute-paths-or-credential-markers"
+    || wetRegisterGates?.nativeEditorBuild !== "pass-v7-41-of-41-actions"
+    || wetRegisterGates?.selectedWetRegisterAutomation !== "pass-1-of-1"
+    || wetRegisterGates?.fullProjectAutomation !== "pass-22-of-22"
+    || wetRegisterGates?.exactAlwaysCookRoot !== "pass-567-packages-three-isolated-assets-engineering-only"
+    || wetRegisterGates?.packagedBuildWithWetRegisterAssets !== "pass-engineering-only"
+    || wetRegisterGates?.liveRuntimeAdmissionMarkers !== "pass-normal-and-reduced-engineering-only"
+    || wetRegisterGates?.normalMotionVisibleNoVncReview !== "pass-engineering-only"
+    || wetRegisterGates?.reducedMotionVisibleNoVncReview !== "pass-engineering-only"
+    || wetRegisterGates?.visibleFallbackReview !== "not-run"
+    || wetRegisterGates?.visibleHandMeshReview !== "pending-human-review"
+    || wetRegisterGates?.visibleMeshContactAndClearanceReview !== "required"
+    || wetRegisterGates?.materialArtReview !== "pending-human-review"
+    || wetRegisterGates?.playerOwnershipContinuityReview !== "pending-human-review"
+    || wetRegisterGates?.humanHandAnatomyAndContactReview !== "required"
+    || wetRegisterGates?.humanHistoricalMaterialAndCulturalReview !== "required"
+    || wetRegisterGates?.humanCinematicFramingAndActingReview !== "required"
+    || wetRegisterGates?.cinematicContinuityReview !== "required"
+    || wetRegisterGates?.humanAccessibilityAndLocalizationReview !== "required"
+    || wetRegisterGates?.mouthInteriorVoiceAndMultilingualLipSync !== "not-admitted"
+    || wetRegisterGates?.closeCameraUse !== "rejected"
+    || wetRegisterGates?.finalProp !== "not-admitted"
+    || wetRegisterGates?.finalHandAnimation !== "not-admitted"
+    || wetRegisterGates?.finalCharacterArt !== "not-admitted")
+  errors.push("Daze council wet-register runtime evidence fails to preserve package, marker, visible, material, continuity, human and final red gates");
+
+const wetRegisterRuntimePresentation = wetRegisterRuntimeEvidence.packageRuntimeAdmission;
+if (wetRegisterRuntimePresentation?.status !== "pass-engineering-only"
+    || wetRegisterRuntimePresentation?.presentationEvidence?.file
+      !== "docs/production/evidence/unreal-daze-council-wet-register-interaction-presentation-status.json"
+    || wetRegisterRuntimePresentation?.presentationEvidence?.tracked !== true
+    || wetRegisterRuntimePresentation?.presentationEvidence?.bytes !== 40822
+    || wetRegisterRuntimePresentation?.presentationEvidence?.sha256
+      !== "3910929d223ddac6bd20d5240bcec24cceed9d3572a535cfe89b07396999f8ef"
+    || wetRegisterRuntimePresentation?.package?.logicalRoot !== "$SHI_UNREAL_PACKAGE_ROOT/Linux"
+    || wetRegisterRuntimePresentation?.package?.revision !== "path-sanitized-review-v4"
+    || wetRegisterRuntimePresentation?.package?.result !== "BUILD SUCCESSFUL"
+    || wetRegisterRuntimePresentation?.package?.exitCode !== 0
+    || wetRegisterRuntimePresentation?.package?.cookedPackageCount !== 567
+    || wetRegisterRuntimePresentation?.package?.incrementallySkippedPackageCount !== 0
+    || wetRegisterRuntimePresentation?.package?.platformSkippedPackageCount !== 7
+    || wetRegisterRuntimePresentation?.package?.totalCookCandidates !== 574
+    || wetRegisterRuntimePresentation?.package?.priorAcceptedPackageCount !== 564
+    || wetRegisterRuntimePresentation?.package?.addedPackageCount !== 3
+    || wetRegisterRuntimePresentation?.package?.isolatedAssetCount !== 3
+    || wetRegisterRuntimePresentation?.package?.cookErrors !== 0
+    || wetRegisterRuntimePresentation?.package?.cookWarnings !== 0
+    || wetRegisterRuntimePresentation?.package?.pathSanitized !== true
+    || wetRegisterRuntimePresentation?.package?.unresolvedDependencyCount !== 0
+    || wetRegisterRuntimePresentation?.package?.currentWorkstationPathMarkerCount !== 0
+    || wetRegisterRuntimePresentation?.package?.afsCredentialValueRecorded !== false
+    || wetRegisterRuntimePresentation?.package?.temporaryPostCookSnapshotGloballyCredentialFreeClaim !== false)
+  errors.push("Daze council wet-register runtime does not cross-bind the exact path-sanitized v4 package engineering receipt");
+const wetRegisterRuntimeNormal = wetRegisterRuntimePresentation?.runtimeLogs?.normalV5;
+const wetRegisterRuntimeReduced = wetRegisterRuntimePresentation?.runtimeLogs?.reducedV5;
+if (wetRegisterRuntimeNormal?.bytes !== 127773
+    || wetRegisterRuntimeNormal?.sha256 !== "1665f5e89d8fbe08e7a08f7b91bf1918b885ec91519e9c21338037cdc5786e97"
+    || wetRegisterRuntimeNormal?.warningSeverityMarkers !== 12
+    || wetRegisterRuntimeNormal?.errorSeverityMarkers !== 0
+    || wetRegisterRuntimeNormal?.targetedErrors !== 0
+    || wetRegisterRuntimeNormal?.processReturnCode !== 143
+    || wetRegisterRuntimeNormal?.cleanUnrealShutdown !== true
+    || wetRegisterRuntimeReduced?.bytes !== 127679
+    || wetRegisterRuntimeReduced?.sha256 !== "b18d11a83651181b3457202e35f569d9cf75c08e247f8122c6131400bc44e265"
+    || wetRegisterRuntimeReduced?.warningSeverityMarkers !== 12
+    || wetRegisterRuntimeReduced?.errorSeverityMarkers !== 0
+    || wetRegisterRuntimeReduced?.targetedErrors !== 0
+    || wetRegisterRuntimeReduced?.processReturnCode !== 143
+    || wetRegisterRuntimeReduced?.cleanUnrealShutdown !== true
+    || wetRegisterRuntimePresentation?.runtimeLogs?.documentedWarningClassesPerRun?.total !== 12
+    || wetRegisterRuntimePresentation?.runtimeLogs?.campaignSaveAbsentBeforeAndAfterBothRuns !== true
+    || wetRegisterRuntimePresentation?.runtimeLogs?.storyProgressionObserved !== false
+    || wetRegisterRuntimePresentation?.observedMarkers?.normal?.bilateralSemanticPoseSamples?.join(",") !== "30,31"
+    || wetRegisterRuntimePresentation?.observedMarkers?.normal?.heldSemanticPoseSamples?.join(",") !== "60,60"
+    || wetRegisterRuntimePresentation?.observedMarkers?.normal?.orderedReleaseSemanticPoseSamples?.join(",") !== "90,90"
+    || wetRegisterRuntimePresentation?.observedMarkers?.normal?.terminalSample !== 120
+    || wetRegisterRuntimePresentation?.observedMarkers?.reduced?.bilateralSemanticPoseSamples?.join(",") !== "30,30"
+    || wetRegisterRuntimePresentation?.observedMarkers?.reduced?.heldSemanticPoseSamples?.join(",") !== "60,60"
+    || wetRegisterRuntimePresentation?.observedMarkers?.reduced?.orderedReleaseSemanticPoseSamples?.join(",") !== "90,91"
+    || wetRegisterRuntimePresentation?.observedMarkers?.reduced?.terminalSample !== 120
+    || wetRegisterRuntimePresentation?.observedMarkers?.normalAndReducedOrderedOnce !== true
+    || wetRegisterRuntimePresentation?.observedMarkers?.terminalLoopFalse !== true)
+  errors.push("Daze council wet-register runtime loses exact normal/reduced markers, warning qualification, inert saves or controlled shutdowns");
+const wetRegisterRuntimeWatched = wetRegisterRuntimePresentation?.watchedEvidence;
+if (wetRegisterRuntimeWatched?.trackedScreenshotCount !== 7
+    || wetRegisterRuntimeWatched?.rawXwdToTrackedPngPixelDifferenceCountEach !== 0
+    || wetRegisterRuntimeWatched?.normalLaterPhysicalSeparation?.captureStartSecondsAfterReleaseMarkerTimestamp !== 0.545644844
+    || wetRegisterRuntimeWatched?.normalLaterPhysicalSeparation?.laterVisibleSeparationObserved !== true
+    || wetRegisterRuntimeWatched?.normalLaterPhysicalSeparation?.exactSample91Proof !== false
+    || wetRegisterRuntimeWatched?.reducedRelease?.poseSample !== 91
+    || wetRegisterRuntimeWatched?.reducedRelease?.wristMarkerEngineeringExit !== true
+    || wetRegisterRuntimeWatched?.reducedRelease?.visibleSeparationLegibleAtFullFrame !== false
+    || wetRegisterRuntimeWatched?.reducedRelease?.fingersAppearOverlappingAtFullFrame !== true
+    || wetRegisterRuntimeWatched?.reducedRelease?.visibleMeshClearanceProof !== false
+    || wetRegisterRuntimeWatched?.normalTerminalStability?.environmentalRainAndEffectsContinue !== true
+    || wetRegisterRuntimeWatched?.normalTerminalStability?.watchedNoGrossCharacterOrPropRestart !== true
+    || wetRegisterRuntimeWatched?.normalTerminalStability?.exactPixelEquality !== false
+    || wetRegisterRuntimeWatched?.reducedTerminalStability?.environmentalRainAndEffectsContinue !== true
+    || wetRegisterRuntimeWatched?.reducedTerminalStability?.watchedNoGrossCharacterOrPropRestart !== true
+    || wetRegisterRuntimeWatched?.reducedTerminalStability?.exactPixelEquality !== false
+    || wetRegisterRuntimePresentation?.engineeringAdmission !== true
+    || wetRegisterRuntimePresentation?.visibleHandMeshReviewApproved !== false
+    || wetRegisterRuntimePresentation?.visibleMeshContactClearanceApproved !== false
+    || wetRegisterRuntimePresentation?.materialArtReviewApproved !== false
+    || wetRegisterRuntimePresentation?.playerOwnershipContinuityReviewApproved !== false
+    || wetRegisterRuntimePresentation?.humanHistoricalCulturalReviewApproved !== false
+    || wetRegisterRuntimePresentation?.humanAnatomyReviewApproved !== false
+    || wetRegisterRuntimePresentation?.humanCinematicReviewApproved !== false
+    || wetRegisterRuntimePresentation?.humanAccessibilityLocalizationReviewApproved !== false
+    || wetRegisterRuntimePresentation?.closeCameraApproved !== false
+    || wetRegisterRuntimePresentation?.mouthInteriorApproved !== false
+    || wetRegisterRuntimePresentation?.voiceApproved !== false
+    || wetRegisterRuntimePresentation?.lipSyncApproved !== false
+    || wetRegisterRuntimePresentation?.finalProp !== false
+    || wetRegisterRuntimePresentation?.finalHandAnimation !== false
+    || wetRegisterRuntimePresentation?.finalCharacterArt !== false)
+  errors.push("Daze council wet-register runtime loses watched caveats or promotes a visible-mesh, human, close, mouth, voice, lip-sync or final gate");
+
+const wetRegisterPresentationBytes = await readFile(wetRegisterPresentationEvidencePath);
+const wetRegisterPresentationSha256 = createHash("sha256").update(wetRegisterPresentationBytes).digest("hex");
+if (wetRegisterPresentationBytes.byteLength !== 40822
+    || wetRegisterPresentationSha256 !== "3910929d223ddac6bd20d5240bcec24cceed9d3572a535cfe89b07396999f8ef")
+  errors.push("Daze council wet-register final watched-presentation receipt drifted");
+
+const wetRegisterPresentationDecision = "package-runtime-engineering-pass-visible-blockout-review-only-not-final-not-close-camera-not-human-reviewed";
+if (wetRegisterPresentationEvidence.schemaVersion !== 1
+    || wetRegisterPresentationEvidence.assetId !== wetRegisterAssetId
+    || wetRegisterPresentationEvidence.decision !== wetRegisterPresentationDecision
+    || wetRegisterPresentationEvidence.requiredDisclosure !== wetRegisterDisclosure
+    || !wetRegisterPresentationEvidence.scope?.includes("visible mesh contact and clearance")
+    || !wetRegisterPresentationEvidence.scope?.includes("accessibility, localization")
+    || !wetRegisterPresentationEvidence.historicalBoundary?.includes("not an authenticated surviving Qin object")
+    || !wetRegisterPresentationEvidence.historicalBoundary?.includes("Human historical and cultural review has not occurred"))
+  errors.push("Daze council wet-register presentation overstates its blockout, historical or human-review boundary");
+
+const wetRegisterPresentationImport = wetRegisterPresentationEvidence.importAdmission;
+if (wetRegisterPresentationImport?.status !== "pass"
+    || wetRegisterPresentationImport?.file !== "docs/production/evidence/unreal-daze-council-wet-register-interaction-import-status.json"
+    || wetRegisterPresentationImport?.tracked !== true
+    || wetRegisterPresentationImport?.bytes !== 72005
+    || wetRegisterPresentationImport?.sha256 !== "814e6c2767f6adc6c235dc7a16231adb83a703cd381627a4962aa16b432ed583"
+    || wetRegisterPresentationImport?.immutableImportReceiptRootSha256
+      !== "85c64e8515e6cc17a23528cbdec90823ee4ada2f4635eafbb7eb69c814913fb8"
+    || wetRegisterPresentationImport?.canonicalImportReceiptRootPreserved !== true
+    || wetRegisterPresentationImport?.readOnlyInspectionPassed !== true
+    || wetRegisterPresentationImport?.trackedUassetHashesUnchanged !== true
+    || wetRegisterPresentationImport?.embeddedMetadataPrivacyPassed !== true
+    || wetRegisterPresentationImport?.engineeringOnly !== true
+    || wetRegisterPresentationImport?.humanHistoricalCulturalReviewApproved !== false
+    || wetRegisterPresentationImport?.finalHandAnimation !== false
+    || wetRegisterPresentationImport?.finalProp !== false)
+  errors.push("Daze council wet-register presentation loses the immutable import snapshot or promotes it beyond engineering scope");
+
+const wetRegisterPresentationPackage = wetRegisterPresentationEvidence.package;
+if (wetRegisterPresentationPackage?.result !== "BUILD SUCCESSFUL"
+    || wetRegisterPresentationPackage?.exitCode !== 0
+    || wetRegisterPresentationPackage?.outsideGitRoot !== "$SHI_UNREAL_PACKAGE_ROOT/Linux"
+    || wetRegisterPresentationPackage?.alwaysCookPath !== wetRegisterDestination
+    || wetRegisterPresentationPackage?.priorAcceptedPackageCount !== 564
+    || wetRegisterPresentationPackage?.addedPackageCount !== 3
+    || wetRegisterPresentationPackage?.isolatedAssetCount !== 3
+    || wetRegisterPresentationPackage?.cookedPackageCount !== 567
+    || wetRegisterPresentationPackage?.incrementallySkippedPackageCount !== 0
+    || wetRegisterPresentationPackage?.platformSkippedPackageCount !== 7
+    || wetRegisterPresentationPackage?.totalCookCandidates !== 574
+    || wetRegisterPresentationPackage?.cookErrors !== 0
+    || wetRegisterPresentationPackage?.cookWarnings !== 0
+    || wetRegisterPresentationPackage?.engineeringAdmission !== true
+    || wetRegisterPresentationPackage?.humanApproval !== false
+    || wetRegisterPresentationPackage?.finalReleaseApproval !== false
+    || wetRegisterPresentationPackage?.sourceSnapshot?.root !== "$SHI_UNREAL_ANONYMIZED_PACKAGE_SOURCE/apps/unreal"
+    || wetRegisterPresentationPackage?.sourceSnapshot?.matchesCurrentRepositoryReceipts !== true
+    || wetRegisterPresentationPackage?.sourceSnapshot?.userDirtyDefaultEngineAndDefaultInputExcludedFromControlledOverlay !== true
+    || wetRegisterPresentationPackage?.sourceSnapshot?.automationAppendedTransientAfsCredentialToTemporaryConfigAfterCook !== true
+    || wetRegisterPresentationPackage?.sourceSnapshot?.globallyCredentialFreeSnapshotClaim !== false
+    || wetRegisterPresentationPackage?.sourceSnapshot?.credentialValueRecorded !== false
+    || wetRegisterPresentationPackage?.buildLog?.bytes !== 284245
+    || wetRegisterPresentationPackage?.buildLog?.sha256 !== "73190af4fc16d9dc63a6db080188826479e2de978230c844dcc9c7c6e6db6238"
+    || wetRegisterPresentationPackage?.buildLog?.scan?.cookedPackageCount !== 567
+    || wetRegisterPresentationPackage?.buildLog?.scan?.cookErrorMarkers !== 0
+    || wetRegisterPresentationPackage?.buildLog?.scan?.cookWarningMarkers !== 0
+    || wetRegisterPresentationPackage?.buildLog?.scan?.afsCredentialValueMarkers !== 0
+    || wetRegisterPresentationPackage?.buildLog?.scan?.passed !== true
+    || wetRegisterPresentationPackage?.pathSanitization?.status !== "pass-authorized-rpath-mutation-then-immutable-inspection"
+    || wetRegisterPresentationPackage?.pathSanitization?.currentWorkstationPathMarkerCount !== 0
+    || wetRegisterPresentationPackage?.pathSanitization?.securityTokenMarkerCount !== 0
+    || wetRegisterPresentationPackage?.pathSanitization?.unresolvedDependencyCount !== 0
+    || wetRegisterPresentationPackage?.pathSanitization?.changesOnlyExecutableRpath !== true
+    || wetRegisterPresentationPackage?.pathSanitization?.finalReleaseApproval !== false
+    || wetRegisterPresentationPackage?.headlessSmoke?.status !== "not-run-for-this-interaction-package"
+    || wetRegisterPresentationPackage?.headlessSmoke?.claim !== false)
+  errors.push("Daze council wet-register presentation package is not the exact bounded, path-sanitized engineering-only v4 pass");
+if (!sameStringSet(Object.keys(wetRegisterPresentationPackage?.sourceSnapshot?.trackedUassets ?? {}), Object.keys(expectedWetRegisterUassets))
+    || Object.entries(expectedWetRegisterUassets).some(([file, [bytes, sha256]]) =>
+      wetRegisterPresentationPackage?.sourceSnapshot?.trackedUassets?.[file]?.bytes !== bytes
+      || wetRegisterPresentationPackage?.sourceSnapshot?.trackedUassets?.[file]?.sha256 !== sha256))
+  errors.push("Daze council wet-register package snapshot no longer binds exactly the three current uassets");
+const expectedWetRegisterPackageArtifacts = {
+  "SHI.sh": [218, "7eeb214781ca5113696ae2be6c5124b5404cd4abcd1fff39aa383ba15ff1cf1e"],
+  "SHI/Binaries/Linux/SHI": [298881648, "f3f80ebf2482a47e696eec4bae851adde20d0e28e6a4a888ace30d35af64950d"],
+  "SHI/Content/Paks/SHI-Linux.pak": [10428073, "1d598f7e42bef619a728432a07428f2ee540f41e2ec5a82d3322ca01462d5958"],
+  "SHI/Content/Paks/SHI-Linux.ucas": [176534656, "4f68bade7cb8bccb1bf1f515caf468fa0b19a459a5b7d99361c8f4c494c953ea"],
+  "SHI/Content/Paks/SHI-Linux.utoc": [159385, "c906a3eb8a1e1603a646b59a66ed38d6c4545a4789c1ee8238a269c7808b09e2"],
+};
+if (!sameStringSet((wetRegisterPresentationPackage?.artifacts ?? []).map((item) => item.relativePath), Object.keys(expectedWetRegisterPackageArtifacts))
+    || (wetRegisterPresentationPackage?.artifacts ?? []).some((item) => {
+      const expected = expectedWetRegisterPackageArtifacts[item.relativePath];
+      return !expected || item.bytes !== expected[0] || item.sha256 !== expected[1];
+    }))
+  errors.push("Daze council wet-register presentation loses an exact packaged-player artifact receipt");
+
+const wetRegisterVisible = wetRegisterPresentationEvidence.visiblePlaytest;
+const expectedWetRegisterVisibleRuns = {
+  "wet-register-normal": {
+    reducedMotion: false, motion: "normal", override: "ReducedMotion=False",
+    bytes: 127773, sha256: "1665f5e89d8fbe08e7a08f7b91bf1918b885ec91519e9c21338037cdc5786e97",
+    markerSamples: {bilateral: [30, 31], held: [60, 60], orderedRelease: [90, 90], terminal: [undefined, 120]},
+  },
+  "wet-register-reduced": {
+    reducedMotion: true, motion: "reduced", override: "ReducedMotion=True",
+    bytes: 127679, sha256: "b18d11a83651181b3457202e35f569d9cf75c08e247f8122c6131400bc44e265",
+    markerSamples: {bilateral: [30, 30], held: [60, 60], orderedRelease: [90, 91], terminal: [undefined, 120]},
+  },
+};
+if (wetRegisterVisible?.package !== "$SHI_UNREAL_PACKAGE_ROOT/Linux"
+    || wetRegisterVisible?.resolution?.join(",") !== "1600,1000"
+    || wetRegisterVisible?.renderer !== "Vulkan"
+    || wetRegisterVisible?.selectedGpu !== "NVIDIA GeForce RTX 4090 D"
+    || wetRegisterVisible?.developmentReviewOnly !== true
+    || wetRegisterVisible?.stackCount !== 1 || wetRegisterVisible?.stackReusedAcrossRuns !== true
+    || wetRegisterVisible?.normalReviewed !== true || wetRegisterVisible?.reducedMotionReviewed !== true
+    || wetRegisterVisible?.visibleHandMeshReviewApproved !== false
+    || wetRegisterVisible?.playerOwnershipContinuityReviewApproved !== false
+    || wetRegisterVisible?.humanHistoricalCulturalReviewApproved !== false
+    || wetRegisterVisible?.finalCharacterArtApproved !== false
+    || wetRegisterVisible?.storyProgressionReview !== "not-run-inert-review-route"
+    || wetRegisterVisible?.visibleFallbackReview !== "not-run"
+    || !sameStringSet((wetRegisterVisible?.runtimeLogs ?? []).map((run) => run.reviewId), Object.keys(expectedWetRegisterVisibleRuns)))
+  errors.push("Daze council wet-register visible review loses its exact two-route development-only boundary");
+for (const run of wetRegisterVisible?.runtimeLogs ?? []) {
+  const expected = expectedWetRegisterVisibleRuns[run.reviewId];
+  if (!expected || run.reviewFlag !== "-ShiCouncilWetRegisterInteractionReview"
+      || run.reducedMotion !== expected.reducedMotion || run.motion !== expected.motion
+      || run.commandLineReducedMotionOverride !== expected.override || run.commandLineOverrideObserved !== true
+      || run.visibleCharacterId !== "chen-sheng" || run.visibleRole !== "speaker"
+      || run.tracked !== false || run.bytes !== expected.bytes || run.sha256 !== expected.sha256
+      || Object.entries({
+        inertMarkers: 1, runtimeAdmissionMarkers: 1, bilateralContactMarkers: 1,
+        heldQuestionMarkers: 1, orderedReleaseMarkers: 1, terminalClampMarkers: 1,
+        runtimeFailClosedMarkers: 0, neutralFallbackMarkers: 0, storyMutationMarkers: 0,
+        defaultMaterialFallbackWarnings: 0, fatalErrors: 0, unhandledExceptions: 0,
+        assertionFailures: 0, warningSeverityMarkers: 12, errorSeverityMarkers: 0,
+        targetedErrors: 0, passed: true,
+      }).some(([key, value]) => run.scan?.[key] !== value)
+      || Object.entries(expected.markerSamples).some(([phase, [semantic, pose]]) =>
+        run.markerSamples?.[phase]?.semantic !== semantic || run.markerSamples?.[phase]?.pose !== pose)
+      || run.inertEvidence?.exactInertMarkerObserved !== true
+      || run.inertEvidence?.storyProgressionObserved !== false
+      || run.inertEvidence?.campaignSaveMutationObserved !== false
+      || run.inertEvidence?.campaignSaveBefore?.exists !== false
+      || run.inertEvidence?.campaignSaveAfter?.exists !== false
+      || run.inertEvidence?.campaignSaveUnchanged !== true
+      || run.shutdown?.processReturnCode !== 143 || run.shutdown?.cleanUnrealShutdown !== true)
+    errors.push(`Daze council wet-register visible runtime receipt drifted: ${run.reviewId ?? "unknown"}`);
+}
+
+const expectedWetRegisterScreenshots = {
+  "docs/production/evidence/unreal-daze-council-wet-register-normal-held-v1.png": ["wet-register-normal", "held", 885909, "b5bccda585ec9fa364baaee216062eaea3b0ecd9d08da90359722c3324763f91"],
+  "docs/production/evidence/unreal-daze-council-wet-register-normal-release-onset-v1.png": ["wet-register-normal", "ordered-release", 880587, "909cef096a9d95f50ceb91924eac7b3215d45d986d890f6eb935720eebb29916"],
+  "docs/production/evidence/unreal-daze-council-wet-register-normal-later-physical-separation-v1.png": ["wet-register-normal", "physical-exit", 882347, "9752f84b3ff4c4964275706d589fdca6a83ca2cc5e3ef1a6f21bc568b35cf759"],
+  "docs/production/evidence/unreal-daze-council-wet-register-normal-terminal-v1.png": ["wet-register-normal", "terminal", 884420, "8e3325c191ac73211c844137081729ae775f0059d7bacd3548cf0b4ed596a363"],
+  "docs/production/evidence/unreal-daze-council-wet-register-reduced-held-v1.png": ["wet-register-reduced", "held", 883994, "0840c28c3017970a87234e62b40d0ef767abcdb625bdc8952d9fab6812eb8dca"],
+  "docs/production/evidence/unreal-daze-council-wet-register-reduced-release-v1.png": ["wet-register-reduced", "ordered-release", 883046, "29c4369233d7be2665dcad2d77e11d75349e481bfe29532e8ffaa7b29d676e07"],
+  "docs/production/evidence/unreal-daze-council-wet-register-reduced-terminal-v1.png": ["wet-register-reduced", "terminal", 882657, "35e6cc39d079d4b2ba66b6285f0e8ecd1ebcefcb3e670ab2c00ad14fa40cc3d9"],
+};
+if (!sameStringSet((wetRegisterPresentationEvidence.screenshots ?? []).map((item) => item.file), Object.keys(expectedWetRegisterScreenshots)))
+  errors.push("Daze council wet-register presentation must retain exactly seven reviewed screenshots");
+for (const screenshot of wetRegisterPresentationEvidence.screenshots ?? []) {
+  const expected = expectedWetRegisterScreenshots[screenshot.file];
+  if (!expected || screenshot.reviewId !== expected[0] || screenshot.phase !== expected[1]
+      || screenshot.dimensions?.join(",") !== "1600,1000" || screenshot.bitDepth !== 8
+      || screenshot.channels !== 3 || screenshot.colorSpace !== "sRGB" || screenshot.alpha !== false
+      || screenshot.bytes !== expected[2] || screenshot.sha256 !== expected[3]
+      || screenshot.rawXwdToTrackedPngPixelDifferenceCount !== 0
+      || screenshot.visibleHandMeshReviewApproved !== false
+      || screenshot.visibleMeshContactClearanceApproved !== false
+      || screenshot.finalHandAnimation !== false || screenshot.finalProp !== false)
+    errors.push(`Daze council wet-register screenshot metadata drifted: ${screenshot.file ?? "unknown"}`);
+  try {
+    const png = await readFile(resolve(root, screenshot.file));
+    if (png.byteLength !== expected?.[2]
+        || createHash("sha256").update(png).digest("hex") !== expected?.[3]
+        || png.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a"
+        || png.readUInt32BE(16) !== 1600 || png.readUInt32BE(20) !== 1000
+        || png[24] !== 8 || png[25] !== 2 || png[28] !== 0)
+      errors.push(`Daze council wet-register screenshot payload or PNG dimensions drifted: ${screenshot.file}`);
+  } catch {
+    errors.push(`Daze council wet-register screenshot is missing or unreadable: ${screenshot.file ?? "unknown"}`);
+  }
+}
+
+const wetRegisterRawCapture = wetRegisterVisible?.rawCaptureEvidence;
+const expectedWetRegisterRawPhaseKeys = {
+  normal: ["held", "ordered-release", "physical-exit", "terminal", "terminal-stable"],
+  reduced: ["held", "ordered-release", "terminal", "terminal-stable"],
+};
+for (const [motion, expectedKeys] of Object.entries(expectedWetRegisterRawPhaseKeys)) {
+  const route = wetRegisterRawCapture?.[motion];
+  if (!sameStringSet(Object.keys(route?.phases ?? {}), expectedKeys)
+      || route?.terminalStability?.exactPixelEquality !== false
+      || route?.terminalStability?.environmentalRainAndEffectsContinue !== true
+      || route?.terminalStability?.watchedNoGrossCharacterOrPropRestart !== true)
+    errors.push(`Daze council wet-register ${motion} raw-capture inventory or terminal rain/FX qualification drifted`);
+}
+const wetRegisterNormalPhases = wetRegisterRawCapture?.normal?.phases;
+const wetRegisterReducedPhases = wetRegisterRawCapture?.reduced?.phases;
+if (wetRegisterNormalPhases?.["ordered-release"]?.semanticSample !== 90
+    || wetRegisterNormalPhases?.["ordered-release"]?.poseSample !== 90
+    || wetRegisterNormalPhases?.["ordered-release"]?.physicalContactExitSampleProof !== false
+    || wetRegisterNormalPhases?.["ordered-release"]?.visibleMeshClearanceProof !== false
+    || wetRegisterNormalPhases?.["physical-exit"]?.laterVisibleSeparationObserved !== true
+    || wetRegisterNormalPhases?.["physical-exit"]?.exactSample91Proof !== false
+    || wetRegisterReducedPhases?.["ordered-release"]?.semanticSample !== 90
+    || wetRegisterReducedPhases?.["ordered-release"]?.poseSample !== 91
+    || wetRegisterReducedPhases?.["ordered-release"]?.wristMarkerEngineeringExit !== true
+    || wetRegisterReducedPhases?.["ordered-release"]?.visibleMeshReviewApproved !== false
+    || wetRegisterReducedPhases?.["ordered-release"]?.visibleMeshClearanceProof !== false
+    || wetRegisterReducedPhases?.["ordered-release"]?.visibleSeparationLegibleAtFullFrame !== false
+    || wetRegisterReducedPhases?.["ordered-release"]?.fingersAppearOverlappingAtFullFrame !== true)
+  errors.push("Daze council wet-register normal/reduced capture caveats confuse marker engineering with visible mesh clearance");
+for (const screenshot of wetRegisterPresentationEvidence.screenshots ?? []) {
+  const motion = screenshot.reviewId === "wet-register-normal" ? "normal" : "reduced";
+  const rawPhase = wetRegisterRawCapture?.[motion]?.phases?.[screenshot.phase];
+  if (rawPhase?.trackedScreenshot !== screenshot.file
+      || rawPhase?.renderedPng?.bytes !== screenshot.bytes
+      || rawPhase?.renderedPng?.sha256 !== screenshot.sha256
+      || rawPhase?.rawXwdToTrackedPngPixelDifferenceCount !== 0)
+    errors.push(`Daze council wet-register raw capture does not bind tracked screenshot: ${screenshot.file ?? "unknown"}`);
+}
+
+const expectedWetRegisterPresentationAuthority = {
+  developmentReviewOnly: true, engineeringAdmission: true, terminalPoseEngineeringApproved: true,
+  visibleHandMeshReviewApproved: false, visibleMeshContactClearanceApproved: false,
+  materialArtReviewApproved: false, playerOwnershipContinuityReviewApproved: false,
+  humanHistoricalCulturalReviewApproved: false, humanAnatomyReviewApproved: false,
+  humanCinematicReviewApproved: false, cinematicContinuityApproved: false,
+  humanAccessibilityLocalizationReviewApproved: false, historicalPropAuthentication: false,
+  closeCameraApproved: false, mouthInteriorApproved: false, voiceApproved: false,
+  lipSyncApproved: false, finalProp: false, finalHandAnimation: false,
+  finalCharacterArt: false, campaignAuthority: false, choiceAuthority: false,
+  inputAuthority: false, saveAuthority: false,
+};
+const wetRegisterPresentationAuthority = wetRegisterPresentationEvidence.authorityBoundary;
+if (!sameStringSet(Object.keys(wetRegisterPresentationAuthority ?? {}), Object.keys(expectedWetRegisterPresentationAuthority))
+    || Object.entries(expectedWetRegisterPresentationAuthority).some(([key, value]) => wetRegisterPresentationAuthority?.[key] !== value))
+  errors.push("Daze council wet-register presentation loses a required engineering pass or red authority gate");
+const expectedWetRegisterPresentationGates = {
+  packagedBuildWithWetRegisterAssets: "pass-engineering-only",
+  liveRuntimeAdmissionMarkers: "pass-normal-and-reduced-engineering-only",
+  normalMotionVisibleNoVncReview: "pass-engineering-only",
+  reducedMotionVisibleNoVncReview: "pass-engineering-only",
+  visibleFallbackReview: "not-run",
+  visibleHandMeshReview: "pending-human-review",
+  visibleMeshContactAndClearanceReview: "required",
+  materialArtReview: "pending-human-review",
+  playerOwnershipContinuityReview: "pending-human-review",
+  humanHandAnatomyAndContactReview: "required",
+  humanHistoricalMaterialAndCulturalReview: "required",
+  humanCinematicFramingAndActingReview: "required",
+  cinematicContinuityReview: "required",
+  humanAccessibilityAndLocalizationReview: "required",
+  mouthInteriorVoiceAndMultilingualLipSync: "not-admitted",
+  closeCameraUse: "rejected",
+  finalProp: "not-admitted",
+  finalHandAnimation: "not-admitted",
+  finalCharacterArt: "not-admitted",
+};
+if (!sameStringSet(Object.keys(wetRegisterPresentationEvidence.releaseGates ?? {}), Object.keys(expectedWetRegisterPresentationGates))
+    || Object.entries(expectedWetRegisterPresentationGates).some(([key, value]) => wetRegisterPresentationEvidence.releaseGates?.[key] !== value))
+  errors.push("Daze council wet-register presentation no longer preserves exact engineering-only passes and downstream red gates");
+const expectedWetRegisterRemainingRedGates = [
+  "visible mesh contact, finger placement, deformation and clearance",
+  "hand and wrist anatomy, skin, sleeve and wet response",
+  "register material, construction and historical-cultural review",
+  "keeper-to-Chen handoff and cinematic continuity",
+  "close framing, final camera, acting and character art",
+  "mouth interior, voice, multilingual pronunciation and lip sync",
+  "accessibility, localization, physical-display and observed-player review",
+];
+if (wetRegisterPresentationEvidence.review?.engineeringDecision !== "pass-bounded-package-runtime-markers-and-watched-terminal-route"
+    || wetRegisterPresentationEvidence.review?.visualMeshDecision !== "reject-contact-and-clearance-as-final-or-human-approved"
+    || wetRegisterPresentationEvidence.review?.remainingRedGates?.join("\n") !== expectedWetRegisterRemainingRedGates.join("\n"))
+  errors.push("Daze council wet-register watched review no longer names every visible-mesh, anatomy, continuity, history, accessibility, localization, close, mouth, voice or final red gate");
+
+const wetRegisterRuntimeText = await readFile(wetRegisterRuntimeEvidencePath, "utf8");
+const wetRegisterImportText = await readFile(wetRegisterImportEvidencePath, "utf8");
+const wetRegisterPresentationText = wetRegisterPresentationBytes.toString("utf8");
+for (const [label, text] of [["runtime", wetRegisterRuntimeText], ["import", wetRegisterImportText], ["presentation", wetRegisterPresentationText]])
+  for (const token of ["/home/", "/Users/", "C:/Users/", "C:\\Users\\", "SecurityToken="])
+    if (text.includes(token)) errors.push(`Daze council wet-register ${label} evidence embeds an absolute workstation path`);
+
 const project = JSON.parse(await readFile(resolve(unreal, "SHI.uproject"), "utf8"));
 if (project.EngineAssociation !== "5.8") errors.push("Unreal engine association must be 5.8");
 if (!project.Modules?.some((module) => module.Name === "SHI" && module.Type === "Runtime")) errors.push("SHI runtime module is not registered");
@@ -2970,6 +3895,7 @@ for (const token of ["SHI_COUNCIL_SKIN_LOOKDEV_RUNTIME_ADMITTED", "SHI_COUNCIL_S
 for (const token of ["ShiCouncilSkinLookdevReview", "-ShiCouncilSkinLookdevReview is Chen-only", "SHI_COUNCIL_SKIN_LOOKDEV_REVIEW_INERT", "SetSkinLookdevReviewEnabled", "CanonicalTargetCharacterId"]) if (!gameMode.includes(token)) errors.push(`Unreal playable shell omits Chen-only inert skin-review token: ${token}`);
 for (const token of ["SHI_DAZE_COUNCIL_SKIN_LOOKDEV_REIMPORT", "inspect-only", "canonicalHeightRemainedSourceOnly", "trackedUassetHashesUnchanged", "immutableImportReceiptRootSha256"]) if (!councilSkinLookdevImporter.includes(token)) errors.push(`Unreal council-skin importer omits mutation/read-only receipt token: ${token}`);
 if (!gameConfig.includes('+DirectoriesToAlwaysCook=(Path="/Game/SHI/Art/Characters/DazeCouncilSkinLookdevV1")')) errors.push("Unreal packaging config omits the isolated skin-lookdev always-cook path");
+for (const token of ["SHI_COUNCIL_WET_REGISTER_INTERACTION_RUNTIME_ADMITTED", "SHI_COUNCIL_WET_REGISTER_INTERACTION_HELD_QUESTION", "semantic_sample=60", "player_ownership_continuity=false", "human_historical_cultural_review=false", "bLoggedWetRegisterHeldQuestion"]) if (!councilFigure.includes(token)) errors.push(`Unreal council figure omits wet-register admission/held-question marker red-gate token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandWeightPresentationV1", "preserves contact, pointer clearance and the 44-degree safe frame", "not a gameplay interaction target", "lower decision-object field without covering the speaker", "development front review camera looks exactly at the admitted prop", "development back review camera looks exactly at the admitted prop", "a prop that crowds a live signal is rejected", "a floating command weight is rejected", "an unauthored council lens cannot admit the prop"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-weight presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.CommandSurfacePresentationV1", "reviewed command ground contains every site and live signal", "command ground is not an interaction target", "command ground has no runtime collision", "command ground remains beneath the non-authoritative engagement exercise", "surface review camera sees the whole authored command field", "unreviewed surface scaling is rejected", "runtime surface collision is rejected", "a disappearing engagement ground is rejected", "a signal outside the safe command field is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits command-surface presentation token: ${token}`);
 for (const token of ["SHI.Cinematic.WetFieldEnvironmentPresentationV1", "reviewed wet-field environment passes its presentation contract", "wet field is a bounded identity-root environment below the command surface", "wet field is not an interaction target", "wet field collision is disabled", "wet field does not affect navigation", "wet field persists beneath Broken Crossing", "environment review camera sees the whole bounded field", "unreviewed field scaling is rejected", "runtime field collision is rejected", "runtime field navigation authority is rejected", "a disappearing engagement environment is rejected", "terrain that violates command-surface clearance is rejected"]) if (!automation.includes(token)) errors.push(`Unreal automation omits wet-field presentation token: ${token}`);
@@ -2984,4 +3910,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain, wet-field-vegetation, five identity-Root shared-skeleton council characters, two body-performance clips, exact 21-control silent facial-intent cadence and an isolated five-asset Chen Sheng skin engineering lookdev with package/visible/human/final-art red gates.`);
+console.log(`Unreal project contract valid: engine ${project.EngineAssociation}, canonical schema-v7/edition/audio/engagement staging, 46 campaign routes plus a native 76-route Broken Crossing parity boundary, deterministic save/replay, fail-closed durable-first order transactions with canonical council cast/blocking, source-claim ledger, bounded inspectable 3D wartable, live command signals and sub-five-second cut/ease/lens resolution cinema with persistent reduced motion, procedural soundscape, controls, and hash-bound runtime-presented command-weight, command-surface, wet-field, Daze field-shelter, Daze-rain, wet-field-vegetation, five identity-Root shared-skeleton council characters, two body-performance clips, exact 21-control silent facial-intent cadence, an isolated five-asset Chen Sheng skin engineering lookdev, and an isolated three-asset wet-register package/runtime watched engineering pass with visible-mesh, anatomy, continuity, historical-cultural, accessibility, localization, close-camera, mouth, voice, lip-sync and final-art gates red.`);

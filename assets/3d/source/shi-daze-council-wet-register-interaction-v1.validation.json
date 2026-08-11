@@ -1,0 +1,3059 @@
+{
+  "assetId": "shi-daze-council-wet-register-interaction-v1",
+  "status": "pass",
+  "validator": "editable source plus clean FBX/GLB exact geometry, rig, sample, contact, authority, provenance and privacy inspection",
+  "blenderVersion": "4.5.12 LTS",
+  "scripts": {
+    "generator": {
+      "file": "scripts/build-daze-council-wet-register-interaction.py",
+      "bytes": 76103,
+      "sha256": "bb5c7d43cceb9fa8e6d3942aee44c1cdbe2eb905e43cfe4ea96b4aad71a54994"
+    },
+    "validator": {
+      "file": "scripts/validate-daze-council-wet-register-interaction.py",
+      "bytes": 50797,
+      "sha256": "bb7eec331ae1824daedf0e05263ce60baa047537e1fe0ff9b73ca8a2cca1d589"
+    }
+  },
+  "checks": {
+    "static:metricsAssetId": true,
+    "static:provenanceAssetId": true,
+    "static:generatorScriptReceipts": true,
+    "static:exactDimensions": true,
+    "static:centerOrigin": true,
+    "static:exactAxisReflection": true,
+    "static:exactMarkerIds": true,
+    "static:exactMarkerContracts": true,
+    "static:propAuthorityDisabled": true,
+    "static:exactSkeletonContract": true,
+    "static:exactAnimationBoundary": true,
+    "static:measuredContactSamples": true,
+    "static:measuredLeftSupportFloating": true,
+    "static:meshContactReceiptSamplesAll121Frames": true,
+    "static:storyContinuityFailClosed": true,
+    "static:silentTimingBoundary": true,
+    "static:projectionMatchedCouncilDiagnostic": true,
+    "static:exactRenderDimensions": true,
+    "static:authorityBoundaryFalse": true,
+    "static:reviewBoundaryFalse": true,
+    "static:watchedSourceVisualDecisionRecorded": true,
+    "static:authorshipBoundary": true,
+    "static:noPrivateBinaryPaths": true,
+    "receipts:metricsPropFbx": true,
+    "receipts:metricsAnimationFbx": true,
+    "receipts:provenancePropFbx": true,
+    "receipts:provenanceAnimationFbx": true,
+    "receipts:allInterchangeReceipts": true,
+    "receipts:allRenderReceipts": true,
+    "source:exactRigObject": true,
+    "source:exactSkeletonName": true,
+    "source:exactSkeletonBones": true,
+    "source:exactSkeletonBindHash": true,
+    "source:identityRigTransform": true,
+    "source:exactPropBounds": true,
+    "source:centerMeshOrigin": true,
+    "source:manifoldSingleProp": true,
+    "source:boundedPropTopology": true,
+    "source:exactMaterialSlot": true,
+    "source:textureFreeProp": true,
+    "source:propAuthorityDisabled": true,
+    "source:exactBoneParentAttachment": true,
+    "source:exactMarkerObjects": true,
+    "source:exactActionRange": true,
+    "source:exactSelfContainedCurves": true,
+    "source:finiteIdentityAuthorityCurves": true,
+    "source:noRuntimeConstraints": true,
+    "source:exact121FrameSampling": true,
+    "source:exactContactTransitions": true,
+    "source:continuousContactThroughHold": true,
+    "source:rootWithinContract": true,
+    "source:leftSupportWithinContract": true,
+    "source:armScaleExactlyOne": true,
+    "source:allTransformsFinite": true,
+    "source:meshContactProxySamplesAll121Frames": true,
+    "source:conservativeMeshPenetrationWithinContract": true,
+    "source:conservativeMeshFloatingWithinContract": true,
+    "source:leftSupportMeshFloatingWithinContract": true,
+    "prop:fbx:oneExactMesh": true,
+    "prop:fbx:exactPhysicalBounds": true,
+    "prop:fbx:centerOrigin": true,
+    "prop:fbx:singleManifoldComponent": true,
+    "prop:fbx:exactMaterial": true,
+    "prop:fbx:textureFree": true,
+    "prop:fbx:noCollisionMesh": true,
+    "prop:fbx:metricsAuthoritativeMarkers": true,
+    "prop:glb:oneExactMesh": true,
+    "prop:glb:exactPhysicalBounds": true,
+    "prop:glb:centerOrigin": true,
+    "prop:glb:singleManifoldComponent": true,
+    "prop:glb:exactMaterial": true,
+    "prop:glb:textureFree": true,
+    "prop:glb:noCollisionMesh": true,
+    "prop:glb:metricsAuthoritativeMarkers": true,
+    "animation:fbx:oneExactArmature": true,
+    "animation:fbx:exact53BoneHierarchy": true,
+    "animation:fbx:oneRigAction": true,
+    "animation:fbx:exactFrameRange": true,
+    "animation:fbx:exactSampleCount": true,
+    "animation:fbx:exactDuration": true,
+    "animation:fbx:textureFree": true,
+    "animation:fbx:finiteImportedTransforms": true,
+    "animation:glb:oneExactArmature": true,
+    "animation:glb:exact53BoneHierarchy": true,
+    "animation:glb:oneRigAction": true,
+    "animation:glb:exactFrameRange": true,
+    "animation:glb:exactSampleCount": true,
+    "animation:glb:exactDuration": true,
+    "animation:glb:textureFree": true,
+    "animation:glb:finiteImportedTransforms": true,
+    "animation:glb:glbPayloadContract": true
+  },
+  "receipts": {
+    "propFbx": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-prop.fbx",
+      "bytes": 21788,
+      "sha256": "ea48062b9b9f0a6e844a2d22195e15c6f4b8be4c67fa9845cb68a8b62f678252"
+    },
+    "animationFbx": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-chen-sheng.fbx",
+      "bytes": 2703516,
+      "sha256": "7438a067220e770456f28d0e22e164bd798fb1cae12fb28561b8710358ff3302"
+    },
+    "propGlb": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-prop.glb",
+      "bytes": 7680,
+      "sha256": "63083c70edb118d0d3c118cb355dc0faf561452dde634071daeba8736fb59ce9"
+    },
+    "animationGlb": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-chen-sheng.glb",
+      "bytes": 1103340,
+      "sha256": "9146cb1dc3ac2ce4b229c285dfa12288e7cbbc35cc0d699cf9b5e11e1f187496"
+    },
+    "source": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1.blend",
+      "bytes": 7202551,
+      "sha256": "6910591a9373a9e3b877c46b8a496f66107376845d0ce292946060cfe9b7a8c9"
+    },
+    "metrics": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1.metrics.json",
+      "bytes": 143071,
+      "sha256": "e7a1abae63401305aaf7e82fc24cb53aa350f12a117e1c38d48b0314b612f310"
+    },
+    "provenance": {
+      "file": "assets/provenance/shi-daze-council-wet-register-interaction-v1.json",
+      "bytes": 8765,
+      "sha256": "150a1f8b188a8d1b88cfa0c774731863e8aa0e63c932e8a74bb9e70898d926fc"
+    },
+    "renders": {
+      "oblique-001": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-001.png",
+        "bytes": 465921,
+        "sha256": "db676df158f43a1c6992f2c84445c40edb1eb77ccb2e70921684e27cb84c68a9"
+      },
+      "oblique-031": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-031.png",
+        "bytes": 466068,
+        "sha256": "2880190872a587a60e802f92c823933ff534500c29979c1074a7b68da1223685"
+      },
+      "oblique-061": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-061.png",
+        "bytes": 466343,
+        "sha256": "bba553a7c832955067a6baa425030119e0f2c314450919f23428b66b0464d523"
+      },
+      "oblique-091": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-091.png",
+        "bytes": 466559,
+        "sha256": "014138962ee6f61cf17153cc55cfd8d4c8b399cff96ef49dcaa7a2435385beb3"
+      },
+      "oblique-121": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-121.png",
+        "bytes": 465638,
+        "sha256": "b483e620ee8943af871f7fa02f98d2312768cd87b1de194de6497760ea2dd340"
+      },
+      "front-061": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-front-frame-061.png",
+        "bytes": 448154,
+        "sha256": "a011a90d01d63243a5f2bb6d8320eabd5d49ef255dc4e4b136fa84284584463e"
+      },
+      "profile-061": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-profile-frame-061.png",
+        "bytes": 434115,
+        "sha256": "ca4d01eef529633a02a7d9dac01f2505265210656036b9e81b71f20f34ad9e0d"
+      },
+      "council-44deg-061": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-council-44deg-frame-061.png",
+        "bytes": 1249469,
+        "sha256": "a23b328ab16280887d0f1171d6ab6a103eb9e8db5dad51ef74c0f70d3c01cea6"
+      }
+    }
+  },
+  "binaryPrivacy": {
+    "source": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 2
+    },
+    "propFbx": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 1
+    },
+    "propGlb": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "animationFbx": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 1
+    },
+    "animationGlb": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "render:oblique-001": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "render:oblique-031": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "render:oblique-061": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "render:oblique-091": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "render:oblique-121": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "render:front-061": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "render:profile-061": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    },
+    "render:council-44deg-061": {
+      "privateUserRootOccurrences": 0,
+      "portableReplacementOccurrences": 0
+    }
+  },
+  "renderDimensionsPixels": {
+    "oblique-001": [
+      720,
+      720
+    ],
+    "oblique-031": [
+      720,
+      720
+    ],
+    "oblique-061": [
+      720,
+      720
+    ],
+    "oblique-091": [
+      720,
+      720
+    ],
+    "oblique-121": [
+      720,
+      720
+    ],
+    "front-061": [
+      720,
+      720
+    ],
+    "profile-061": [
+      720,
+      720
+    ],
+    "council-44deg-061": [
+      1600,
+      1000
+    ]
+  },
+  "source": {
+    "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1.blend",
+    "bytes": 7202551,
+    "sha256": "6910591a9373a9e3b877c46b8a496f66107376845d0ce292946060cfe9b7a8c9",
+    "skeleton": {
+      "name": "SK_SHI_DazeCouncil_Skeleton",
+      "boneCount": 53,
+      "boneNames": [
+        "Root",
+        "pelvis",
+        "spine_01",
+        "spine_02",
+        "spine_03",
+        "clavicle_l",
+        "upperarm_l",
+        "lowerarm_l",
+        "hand_l",
+        "index_01_l",
+        "index_02_l",
+        "index_03_l",
+        "middle_01_l",
+        "middle_02_l",
+        "middle_03_l",
+        "pinky_01_l",
+        "pinky_02_l",
+        "pinky_03_l",
+        "ring_01_l",
+        "ring_02_l",
+        "ring_03_l",
+        "thumb_01_l",
+        "thumb_02_l",
+        "thumb_03_l",
+        "clavicle_r",
+        "upperarm_r",
+        "lowerarm_r",
+        "hand_r",
+        "index_01_r",
+        "index_02_r",
+        "index_03_r",
+        "middle_01_r",
+        "middle_02_r",
+        "middle_03_r",
+        "pinky_01_r",
+        "pinky_02_r",
+        "pinky_03_r",
+        "ring_01_r",
+        "ring_02_r",
+        "ring_03_r",
+        "thumb_01_r",
+        "thumb_02_r",
+        "thumb_03_r",
+        "neck_01",
+        "head",
+        "thigh_l",
+        "calf_l",
+        "foot_l",
+        "ball_l",
+        "thigh_r",
+        "calf_r",
+        "foot_r",
+        "ball_r"
+      ],
+      "hierarchyAndBindSha256": "b04056562dc0a4212b7d72e9bb091fd7c130f96f3442a584fdf38123805ee9fa"
+    },
+    "propBoundsMetres": {
+      "minimum": [
+        -0.1599999964237213,
+        -0.07000000029802322,
+        -0.009999999776482582
+      ],
+      "maximum": [
+        0.1599999964237213,
+        0.07000000029802322,
+        0.009999999776482582
+      ],
+      "dimensions": [
+        0.3199999928474426,
+        0.14000000059604645,
+        0.019999999552965164
+      ],
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "propTopology": {
+      "vertices": 152,
+      "weldedVertices": 152,
+      "normalSplitVertices": 0,
+      "triangles": 300,
+      "nonManifoldEdges": 0,
+      "inconsistentWindingEdges": 0,
+      "connectedComponents": 1,
+      "signedVolume": 0.0008888905773199443
+    },
+    "markers": {
+      "wet-register-left-support": {
+        "parent": "SM_SHI_DazeCouncil_WetRegister_Blockout_01",
+        "positionCentimeters": [
+          10.999999940395355,
+          5.499999970197678,
+          -3.3500000834465027
+        ],
+        "rotationXYZDegrees": [
+          180.00000500895632,
+          0.0,
+          0.0
+        ],
+        "frameKind": "external-wrist-alignment"
+      },
+      "wet-register-right-contact": {
+        "parent": "SM_SHI_DazeCouncil_WetRegister_Blockout_01",
+        "positionCentimeters": [
+          -10.999999940395355,
+          -5.499999970197678,
+          3.3500000834465027
+        ],
+        "rotationXYZDegrees": [
+          0.0,
+          0.0,
+          -90.00000250447816
+        ],
+        "frameKind": "external-wrist-alignment"
+      },
+      "wet-register-camera-readability": {
+        "parent": "SM_SHI_DazeCouncil_WetRegister_Blockout_01",
+        "positionCentimeters": [
+          0.0,
+          0.0,
+          0.9999999776482582
+        ],
+        "rotationXYZDegrees": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "frameKind": "camera-readability"
+      }
+    },
+    "action": {
+      "fcurves": 530,
+      "keyedBones": [
+        "Root",
+        "ball_l",
+        "ball_r",
+        "calf_l",
+        "calf_r",
+        "clavicle_l",
+        "clavicle_r",
+        "foot_l",
+        "foot_r",
+        "hand_l",
+        "hand_r",
+        "head",
+        "index_01_l",
+        "index_01_r",
+        "index_02_l",
+        "index_02_r",
+        "index_03_l",
+        "index_03_r",
+        "lowerarm_l",
+        "lowerarm_r",
+        "middle_01_l",
+        "middle_01_r",
+        "middle_02_l",
+        "middle_02_r",
+        "middle_03_l",
+        "middle_03_r",
+        "neck_01",
+        "pelvis",
+        "pinky_01_l",
+        "pinky_01_r",
+        "pinky_02_l",
+        "pinky_02_r",
+        "pinky_03_l",
+        "pinky_03_r",
+        "ring_01_l",
+        "ring_01_r",
+        "ring_02_l",
+        "ring_02_r",
+        "ring_03_l",
+        "ring_03_r",
+        "spine_01",
+        "spine_02",
+        "spine_03",
+        "thigh_l",
+        "thigh_r",
+        "thumb_01_l",
+        "thumb_01_r",
+        "thumb_02_l",
+        "thumb_02_r",
+        "thumb_03_l",
+        "thumb_03_r",
+        "upperarm_l",
+        "upperarm_r"
+      ],
+      "channelCounts": {
+        "location": 159,
+        "rotation_quaternion": 212,
+        "scale": 159
+      },
+      "keyFrames": [
+        1,
+        24,
+        30,
+        31,
+        61,
+        84,
+        90,
+        91,
+        92,
+        105,
+        121
+      ],
+      "allFinite": true,
+      "allBoneLocationsZero": true,
+      "allBoneScalesOne": true,
+      "rootQuaternionIdentity": true
+    },
+    "motion": {
+      "sampledFrames": 121,
+      "transitions": [
+        {
+          "sourceFrame": 31,
+          "unrealSample": 30,
+          "state": "acquired"
+        },
+        {
+          "sourceFrame": 92,
+          "unrealSample": 91,
+          "state": "released"
+        }
+      ],
+      "rootMaximumTranslationCentimeters": 0.0,
+      "rootMaximumYawDegrees": 0.0,
+      "leftMaximumDriftCentimeters": 0.0039685306858313904,
+      "leftMaximumAngularDriftDegrees": 0.0,
+      "rightMaximumContactReferenceGapCentimeters": 2.8827104154457303e-05,
+      "rightContinuousFrames31ThroughReleaseOnset": true,
+      "heldBoundaryInterpolation": {
+        "basis": "continuous source sub-samples from sample 89 through sample 90 at the exact t=3.0 ordered-release phase onset; endpoint included conservatively",
+        "firstSourceFrame": 90.0,
+        "lastSourceFrameInclusive": 91.0,
+        "subdivisions": 64,
+        "sampledPoints": 65,
+        "runtimeContactToleranceCentimeters": 0.8,
+        "authoringReserveCentimeters": 0.65,
+        "maximumRightDistanceCentimeters": 2.8827104154457303e-05,
+        "passed": true,
+        "samples": [
+          {
+            "sourceFrame": 90.0,
+            "playbackSample": 89.0,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.015625,
+            "playbackSample": 89.015625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.03125,
+            "playbackSample": 89.03125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.046875,
+            "playbackSample": 89.046875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.0625,
+            "playbackSample": 89.0625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.078125,
+            "playbackSample": 89.078125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.09375,
+            "playbackSample": 89.09375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.109375,
+            "playbackSample": 89.109375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.125,
+            "playbackSample": 89.125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.140625,
+            "playbackSample": 89.140625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.15625,
+            "playbackSample": 89.15625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.171875,
+            "playbackSample": 89.171875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.1875,
+            "playbackSample": 89.1875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.203125,
+            "playbackSample": 89.203125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.21875,
+            "playbackSample": 89.21875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.234375,
+            "playbackSample": 89.234375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.25,
+            "playbackSample": 89.25,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.265625,
+            "playbackSample": 89.265625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.28125,
+            "playbackSample": 89.28125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.296875,
+            "playbackSample": 89.296875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.3125,
+            "playbackSample": 89.3125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.328125,
+            "playbackSample": 89.328125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.34375,
+            "playbackSample": 89.34375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.359375,
+            "playbackSample": 89.359375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.375,
+            "playbackSample": 89.375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.390625,
+            "playbackSample": 89.390625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.40625,
+            "playbackSample": 89.40625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.421875,
+            "playbackSample": 89.421875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.4375,
+            "playbackSample": 89.4375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.453125,
+            "playbackSample": 89.453125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.46875,
+            "playbackSample": 89.46875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.484375,
+            "playbackSample": 89.484375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.5,
+            "playbackSample": 89.5,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.515625,
+            "playbackSample": 89.515625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.53125,
+            "playbackSample": 89.53125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.546875,
+            "playbackSample": 89.546875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.5625,
+            "playbackSample": 89.5625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.578125,
+            "playbackSample": 89.578125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.59375,
+            "playbackSample": 89.59375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.609375,
+            "playbackSample": 89.609375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.625,
+            "playbackSample": 89.625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.640625,
+            "playbackSample": 89.640625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.65625,
+            "playbackSample": 89.65625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.671875,
+            "playbackSample": 89.671875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.6875,
+            "playbackSample": 89.6875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.703125,
+            "playbackSample": 89.703125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.71875,
+            "playbackSample": 89.71875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.734375,
+            "playbackSample": 89.734375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.75,
+            "playbackSample": 89.75,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.765625,
+            "playbackSample": 89.765625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.78125,
+            "playbackSample": 89.78125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.796875,
+            "playbackSample": 89.796875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.8125,
+            "playbackSample": 89.8125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.828125,
+            "playbackSample": 89.828125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.84375,
+            "playbackSample": 89.84375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.859375,
+            "playbackSample": 89.859375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.875,
+            "playbackSample": 89.875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.890625,
+            "playbackSample": 89.890625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.90625,
+            "playbackSample": 89.90625,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.921875,
+            "playbackSample": 89.921875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.9375,
+            "playbackSample": 89.9375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.953125,
+            "playbackSample": 89.953125,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.96875,
+            "playbackSample": 89.96875,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 90.984375,
+            "playbackSample": 89.984375,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          },
+          {
+            "sourceFrame": 91.0,
+            "playbackSample": 90.0,
+            "rightDistanceCentimeters": 2.8827104154457303e-05
+          }
+        ]
+      },
+      "armChainScaleMinimum": 1.0,
+      "armChainScaleMaximum": 1.0,
+      "allTransformsFinite": true,
+      "meshContactProxy": {
+        "kind": "all 121 source frames of hand-weighted body vertices against conservative un-beveled prop box; watched review remains required",
+        "sampledSourceFrames": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119,
+          120,
+          121
+        ],
+        "contactRows": [
+          {
+            "sourceFrame": 1,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.296489757572761
+            }
+          },
+          {
+            "sourceFrame": 2,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.30114936274837
+            }
+          },
+          {
+            "sourceFrame": 3,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.312018826892846
+            }
+          },
+          {
+            "sourceFrame": 4,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.324581948404614
+            }
+          },
+          {
+            "sourceFrame": 5,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.334519056805846
+            }
+          },
+          {
+            "sourceFrame": 6,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.337869341446577
+            }
+          },
+          {
+            "sourceFrame": 7,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.330784582515392
+            }
+          },
+          {
+            "sourceFrame": 8,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.309974614514292
+            }
+          },
+          {
+            "sourceFrame": 9,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.272469810694973
+            }
+          },
+          {
+            "sourceFrame": 10,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.215647435448552
+            }
+          },
+          {
+            "sourceFrame": 11,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.13760815928289
+            }
+          },
+          {
+            "sourceFrame": 12,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.03701387965826
+            }
+          },
+          {
+            "sourceFrame": 13,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.913292870822662
+            }
+          },
+          {
+            "sourceFrame": 14,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.765523909999239
+            }
+          },
+          {
+            "sourceFrame": 15,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.58035146885197
+            }
+          },
+          {
+            "sourceFrame": 16,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.350599881552716
+            }
+          },
+          {
+            "sourceFrame": 17,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.071762678743395
+            }
+          },
+          {
+            "sourceFrame": 18,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 8.739355245523006
+            }
+          },
+          {
+            "sourceFrame": 19,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 8.349122206100388
+            }
+          },
+          {
+            "sourceFrame": 20,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 7.897113124923923
+            }
+          },
+          {
+            "sourceFrame": 21,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 7.380087755867609
+            }
+          },
+          {
+            "sourceFrame": 22,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 6.7956647535366645
+            }
+          },
+          {
+            "sourceFrame": 23,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 6.143175779842137
+            }
+          },
+          {
+            "sourceFrame": 24,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 5.4238163642632164
+            }
+          },
+          {
+            "sourceFrame": 25,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 4.506746055640793
+            }
+          },
+          {
+            "sourceFrame": 26,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 3.359276040970581
+            }
+          },
+          {
+            "sourceFrame": 27,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 2.1448174642388684
+            }
+          },
+          {
+            "sourceFrame": 28,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 1.03898887770071
+            }
+          },
+          {
+            "sourceFrame": 29,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.20641414234665412
+            }
+          },
+          {
+            "sourceFrame": 30,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 35,
+              "maximumConservativeBoxPenetrationCentimeters": 0.21194713190197945,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 31,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 51,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3020320553332567,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 32,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 51,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3066700417548418,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 33,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 51,
+              "maximumConservativeBoxPenetrationCentimeters": 0.31102863140404224,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 34,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 53,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3150549251586199,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 35,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 55,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3187906462699175,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 36,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 56,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3222603816539049,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 37,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.325469346717,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 38,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.32840785570442677,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 39,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3310960251837969,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 40,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.333571108058095,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 41,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3358271438628435,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 42,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3378246445208788,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 43,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.33965003676712513,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 44,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.34129288978874683,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 45,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.34273755736649036,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 46,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3440369386225939,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 47,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.345150800421834,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 48,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3461163956671953,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 49,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.34697693772614,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 50,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.347652705386281,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 51,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.34827408380806446,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 52,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3487412352114916,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 53,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3491122741252184,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 54,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.34943115897476673,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 55,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3496293444186449,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 56,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3498170990496874,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 57,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.349912466481328,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 58,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3499698359519243,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 59,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 60,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500227350741625,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 61,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 62,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 63,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 64,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 65,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 66,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 67,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 68,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 69,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 70,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 71,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 72,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 73,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 74,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 75,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 76,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 77,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 78,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 79,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 80,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 81,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 82,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 83,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 84,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3500294405966997,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 85,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.34646359272301197,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 86,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.337569834664464,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 87,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 57,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3260400611907244,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 88,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 53,
+              "maximumConservativeBoxPenetrationCentimeters": 0.314487935975194,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 89,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 51,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3055926878005266,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 90,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 51,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3020320553332567,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 91,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 51,
+              "maximumConservativeBoxPenetrationCentimeters": 0.3020320553332567,
+              "minimumConservativeBoxDistanceCentimeters": 0.0
+            }
+          },
+          {
+            "sourceFrame": 92,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.06247116157527447
+            }
+          },
+          {
+            "sourceFrame": 93,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.07993970169233972
+            }
+          },
+          {
+            "sourceFrame": 94,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.22664460885700116
+            }
+          },
+          {
+            "sourceFrame": 95,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.4826241099014756
+            }
+          },
+          {
+            "sourceFrame": 96,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.8317412691834157
+            }
+          },
+          {
+            "sourceFrame": 97,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 1.260290477799203
+            }
+          },
+          {
+            "sourceFrame": 98,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 1.756205420187065
+            }
+          },
+          {
+            "sourceFrame": 99,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 2.307953888870978
+            }
+          },
+          {
+            "sourceFrame": 100,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 2.904405584462119
+            }
+          },
+          {
+            "sourceFrame": 101,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 3.5340875714796836
+            }
+          },
+          {
+            "sourceFrame": 102,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 4.185419502803444
+            }
+          },
+          {
+            "sourceFrame": 103,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 4.846442429889943
+            }
+          },
+          {
+            "sourceFrame": 104,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 5.5052497156807965
+            }
+          },
+          {
+            "sourceFrame": 105,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 6.150017025897835
+            }
+          },
+          {
+            "sourceFrame": 106,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 6.746810545885112
+            }
+          },
+          {
+            "sourceFrame": 107,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 7.274390158253587
+            }
+          },
+          {
+            "sourceFrame": 108,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 7.739646793542143
+            }
+          },
+          {
+            "sourceFrame": 109,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 8.149043406747829
+            }
+          },
+          {
+            "sourceFrame": 110,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 8.508292571711035
+            }
+          },
+          {
+            "sourceFrame": 111,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 8.82257140226986
+            }
+          },
+          {
+            "sourceFrame": 112,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.096087581347712
+            }
+          },
+          {
+            "sourceFrame": 113,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.332583754779602
+            }
+          },
+          {
+            "sourceFrame": 114,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.536690462682065
+            }
+          },
+          {
+            "sourceFrame": 115,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.72980375723372
+            }
+          },
+          {
+            "sourceFrame": 116,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 9.911533263216816
+            }
+          },
+          {
+            "sourceFrame": 117,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.073660336174461
+            }
+          },
+          {
+            "sourceFrame": 118,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.207629768882134
+            }
+          },
+          {
+            "sourceFrame": 119,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.306989437451602
+            }
+          },
+          {
+            "sourceFrame": 120,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.368546785028819
+            }
+          },
+          {
+            "sourceFrame": 121,
+            "left": {
+              "selectedVertices": 1629,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 0.3386637148479367
+            },
+            "right": {
+              "selectedVertices": 1627,
+              "insideConservativeBoxVertices": 0,
+              "maximumConservativeBoxPenetrationCentimeters": 0.0,
+              "minimumConservativeBoxDistanceCentimeters": 10.389310893854796
+            }
+          }
+        ],
+        "maximumPenetrationCentimeters": 0.3500294405966997,
+        "maximumFloatingCentimeters": 0.0,
+        "leftSupportMaximumFloatingCentimeters": 0.3386637148479367
+      }
+    },
+    "checks": {
+      "exactRigObject": true,
+      "exactSkeletonName": true,
+      "exactSkeletonBones": true,
+      "exactSkeletonBindHash": true,
+      "identityRigTransform": true,
+      "exactPropBounds": true,
+      "centerMeshOrigin": true,
+      "manifoldSingleProp": true,
+      "boundedPropTopology": true,
+      "exactMaterialSlot": true,
+      "textureFreeProp": true,
+      "propAuthorityDisabled": true,
+      "exactBoneParentAttachment": true,
+      "exactMarkerObjects": true,
+      "exactActionRange": true,
+      "exactSelfContainedCurves": true,
+      "finiteIdentityAuthorityCurves": true,
+      "noRuntimeConstraints": true,
+      "exact121FrameSampling": true,
+      "exactContactTransitions": true,
+      "continuousContactThroughHold": true,
+      "rootWithinContract": true,
+      "leftSupportWithinContract": true,
+      "armScaleExactlyOne": true,
+      "allTransformsFinite": true,
+      "meshContactProxySamplesAll121Frames": true,
+      "conservativeMeshPenetrationWithinContract": true,
+      "conservativeMeshFloatingWithinContract": true,
+      "leftSupportMeshFloatingWithinContract": true
+    }
+  },
+  "formats": {
+    "prop": {
+      "fbx": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-prop.fbx",
+        "bytes": 21788,
+        "sha256": "ea48062b9b9f0a6e844a2d22195e15c6f4b8be4c67fa9845cb68a8b62f678252",
+        "format": "fbx",
+        "boundsMetres": {
+          "minimum": [
+            -16.0,
+            -7.0,
+            -1.0000003576278687
+          ],
+          "maximum": [
+            16.0,
+            7.0,
+            1.0000003576278687
+          ],
+          "dimensions": [
+            32.0,
+            14.0,
+            2.0000007152557373
+          ],
+          "center": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "payloadUnitToMetres": 0.01,
+        "topology": {
+          "vertices": 152,
+          "weldedVertices": 152,
+          "normalSplitVertices": 0,
+          "triangles": 300,
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "connectedComponents": 1,
+          "signedVolume": 0.0008888905773199443
+        },
+        "markers": {},
+        "checks": {
+          "oneExactMesh": true,
+          "exactPhysicalBounds": true,
+          "centerOrigin": true,
+          "singleManifoldComponent": true,
+          "exactMaterial": true,
+          "textureFree": true,
+          "noCollisionMesh": true,
+          "metricsAuthoritativeMarkers": true
+        }
+      },
+      "glb": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-prop.glb",
+        "bytes": 7680,
+        "sha256": "63083c70edb118d0d3c118cb355dc0faf561452dde634071daeba8736fb59ce9",
+        "format": "glb",
+        "boundsMetres": {
+          "minimum": [
+            -0.1599999964237213,
+            -0.07000000029802322,
+            -0.009999999776482582
+          ],
+          "maximum": [
+            0.1599999964237213,
+            0.07000000029802322,
+            0.009999999776482582
+          ],
+          "dimensions": [
+            0.3199999928474426,
+            0.14000000059604645,
+            0.019999999552965164
+          ],
+          "center": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "payloadUnitToMetres": 1.0,
+        "topology": {
+          "vertices": 176,
+          "weldedVertices": 152,
+          "normalSplitVertices": 24,
+          "triangles": 300,
+          "nonManifoldEdges": 0,
+          "inconsistentWindingEdges": 0,
+          "connectedComponents": 1,
+          "signedVolume": 0.0008888900992969444
+        },
+        "markers": {},
+        "checks": {
+          "oneExactMesh": true,
+          "exactPhysicalBounds": true,
+          "centerOrigin": true,
+          "singleManifoldComponent": true,
+          "exactMaterial": true,
+          "textureFree": true,
+          "noCollisionMesh": true,
+          "metricsAuthoritativeMarkers": true
+        }
+      }
+    },
+    "animation": {
+      "fbx": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-chen-sheng.fbx",
+        "bytes": 2703516,
+        "sha256": "7438a067220e770456f28d0e22e164bd798fb1cae12fb28561b8710358ff3302",
+        "format": "fbx",
+        "armature": "Armature",
+        "boneCount": 53,
+        "action": "Armature|Scene",
+        "allActions": [
+          "Armature|Scene",
+          "Key.001|Scene",
+          "Key|Scene"
+        ],
+        "frameRange": [
+          2.0,
+          122.0
+        ],
+        "normalizedSourceFrameRange": [
+          1.0,
+          121.0
+        ],
+        "importFrameOffset": 1.0,
+        "sceneFps": 30,
+        "sampleCount": 121,
+        "durationSecondsAt30Fps": 4.0,
+        "payload": null,
+        "checks": {
+          "oneExactArmature": true,
+          "exact53BoneHierarchy": true,
+          "oneRigAction": true,
+          "exactFrameRange": true,
+          "exactSampleCount": true,
+          "exactDuration": true,
+          "textureFree": true,
+          "finiteImportedTransforms": true
+        }
+      },
+      "glb": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-chen-sheng.glb",
+        "bytes": 1103340,
+        "sha256": "9146cb1dc3ac2ce4b229c285dfa12288e7cbbc35cc0d699cf9b5e11e1f187496",
+        "format": "glb",
+        "armature": "Armature",
+        "boneCount": 53,
+        "action": "Animation",
+        "allActions": [
+          "Animation"
+        ],
+        "frameRange": [
+          1.0,
+          121.0
+        ],
+        "normalizedSourceFrameRange": [
+          1.0,
+          121.0
+        ],
+        "importFrameOffset": 0.0,
+        "sceneFps": 30,
+        "sampleCount": 121,
+        "durationSecondsAt30Fps": 4.0,
+        "payload": {
+          "animations": 1,
+          "skinJointCounts": [
+            53
+          ],
+          "samplesPerCurve": [
+            2,
+            121
+          ],
+          "durationSeconds": [
+            4.0,
+            4.0
+          ],
+          "images": 0,
+          "textures": 0
+        },
+        "checks": {
+          "oneExactArmature": true,
+          "exact53BoneHierarchy": true,
+          "oneRigAction": true,
+          "exactFrameRange": true,
+          "exactSampleCount": true,
+          "exactDuration": true,
+          "textureFree": true,
+          "finiteImportedTransforms": true,
+          "glbPayloadContract": true
+        }
+      }
+    }
+  },
+  "reviewStatus": {
+    "sourceEngineeringValidation": true,
+    "visibleHandMeshReview": false,
+    "engineAdmission": false,
+    "humanHistoricalCulturalApproval": false,
+    "finalProp": false,
+    "finalHandAnimation": false
+  },
+  "watchedSourceVisualDecision": {
+    "decision": "conditional-engineering-accept",
+    "reasons": [
+      "the accepted low-poly hand carrier remains below final finger, skin, wrist and sleeve deformation quality",
+      "exact Unreal transform and runtime playback remain an independent engine gate",
+      "human anatomy, cinematic, historical-material and cultural-performance approval remain open"
+    ],
+    "passedObservations": [
+      "palm-down right contact and left underside support are mechanically legible",
+      "sample 91 establishes measured wrist exit with staged finger opening and frame 121 returns the open hand toward the torso",
+      "the 44-degree projection diagnostic preserves face, hands, prop, ground and subtitle-safe negative space"
+    ],
+    "retainedUse": "bounded source/interchange engineering interaction candidate only"
+  },
+  "limitations": [
+    "source mesh contact is a conservative rejection proxy, not watched deformation approval",
+    "engine, normal/reduced runtime, camera, sleeve, anatomy, historical-material and cultural-performance gates remain open",
+    "the interaction has no campaign, save, replication, gameplay, input, physics or navigation authority"
+  ]
+}

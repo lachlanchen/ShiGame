@@ -1,0 +1,208 @@
+{
+  "assetId": "shi-daze-council-wet-register-interaction-v1",
+  "status": "engineering-only source candidate; no final, historical, cinematic or engine approval",
+  "publicDisclosure": "PROJECT-ORIGINAL WET-REGISTER INTERACTION BLOCKOUT · DRAMATIC RECONSTRUCTION · NOT A SURVIVING QIN REGISTER",
+  "creationMethod": "deterministic project-authored Blender Python; no neural generation",
+  "generatorScript": {
+    "file": "scripts/build-daze-council-wet-register-interaction.py",
+    "bytes": 76103,
+    "sha256": "bb5c7d43cceb9fa8e6d3942aee44c1cdbe2eb905e43cfe4ea96b4aad71a54994"
+  },
+  "authorship": {
+    "neuralGeneration": false,
+    "generatedImagePixelsSampled": false,
+    "privateReferencePixelsSampled": false,
+    "method": "Deterministic project-authored Blender Python builds an abstract beveled cuboid and keys the accepted Chen Sheng 53-bone rig from fixed transforms."
+  },
+  "sourceCharacterAsset": "shi-daze-council-facial-performance-v1",
+  "sourceInput": {
+    "file": "assets/3d/rendered/shi-daze-council-facial-performance-v1.blend",
+    "bytes": 7616511,
+    "sha256": "6e72c762162a10df001fddef877571bbbcb8d25f696203008d98ac234eabeecc"
+  },
+  "tools": [
+    {
+      "name": "Blender",
+      "version": "4.5.12 LTS",
+      "license": "GPL-2.0-or-later application; application code is not shipped as a game asset",
+      "role": "editable geometry, exact-rig animation, interchange export and review rendering"
+    },
+    {
+      "name": "SHI wet-register build script",
+      "license": "repository project code",
+      "role": "deterministic dimensions, transforms, action and receipts"
+    }
+  ],
+  "upstreamRights": {
+    "characterBaseline": "Pinned MPFB/MakeHuman CC0 basemesh and game_engine rig through the admitted SHI Chen Sheng derivative",
+    "propGeometry": "project-authored primitive geometry",
+    "animation": "project-authored deterministic engineering motion",
+    "textures": "none",
+    "generatedMedia": "none"
+  },
+  "reviewStatus": {
+    "engineAdmission": false,
+    "humanHistoricalCulturalApproval": false,
+    "finalProp": false,
+    "finalHandAnimation": false,
+    "engine": false,
+    "historical": false,
+    "finalHand": false,
+    "sourceEngineering": false,
+    "anatomy": false,
+    "cinematic": false,
+    "culturalPerformance": false,
+    "accessibility": false,
+    "watchedSourceVisual": false,
+    "playerOwnershipContinuity": false
+  },
+  "storyContinuity": {
+    "campaignNode": "rain-order",
+    "speaker": "chen-sheng",
+    "speakerSlot": "speaker",
+    "keeperOwnsRegisterBeforeClip": true,
+    "authoredOffscreenPriorHandoffAssumption": true,
+    "handoffShown": false,
+    "playerOwnershipContinuityReview": "pending",
+    "clipAloneCompletesStoryBeat": false,
+    "twoCharacterTransferDeferred": true
+  },
+  "timingBoundary": {
+    "durationSeconds": 4.0,
+    "purpose": "silent-engineering-interaction-timing-only",
+    "multilingualSpeechTimingAuthority": false,
+    "voiceTimingAuthority": false,
+    "lipSyncTimingAuthority": false
+  },
+  "reviewDecisions": {
+    "watchedSourceVisual": {
+      "decision": "conditional-engineering-accept",
+      "reasons": [
+        "the accepted low-poly hand carrier remains below final finger, skin, wrist and sleeve deformation quality",
+        "exact Unreal transform and runtime playback remain an independent engine gate",
+        "human anatomy, cinematic, historical-material and cultural-performance approval remain open"
+      ],
+      "passedObservations": [
+        "palm-down right contact and left underside support are mechanically legible",
+        "sample 91 establishes measured wrist exit with staged finger opening and frame 121 returns the open hand toward the torso",
+        "the 44-degree projection diagnostic preserves face, hands, prop, ground and subtitle-safe negative space"
+      ],
+      "retainedUse": "bounded source/interchange engineering interaction candidate only"
+    }
+  },
+  "authorityBoundary": {
+    "campaign": false,
+    "save": false,
+    "replication": false,
+    "gameplay": false,
+    "input": false,
+    "physics": false,
+    "navigation": false
+  },
+  "historicalBoundary": {
+    "historicallyAuthenticatedProp": false,
+    "survivingRegisterClaim": false,
+    "materialSpeciesClaim": false,
+    "administrativeFormatClaim": false,
+    "dialogueIsTranscript": false
+  },
+  "outputs": {
+    "prop": {
+      "fbx": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-prop.fbx",
+        "bytes": 21788,
+        "sha256": "ea48062b9b9f0a6e844a2d22195e15c6f4b8be4c67fa9845cb68a8b62f678252",
+        "sanitizedPrivatePathOccurrences": 1
+      },
+      "glb": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-prop.glb",
+        "bytes": 7680,
+        "sha256": "63083c70edb118d0d3c118cb355dc0faf561452dde634071daeba8736fb59ce9",
+        "sanitizedPrivatePathOccurrences": 0
+      }
+    },
+    "animation": {
+      "fbx": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-chen-sheng.fbx",
+        "bytes": 2703516,
+        "sha256": "7438a067220e770456f28d0e22e164bd798fb1cae12fb28561b8710358ff3302",
+        "sanitizedPrivatePathOccurrences": 1
+      },
+      "glb": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-chen-sheng.glb",
+        "bytes": 1103340,
+        "sha256": "9146cb1dc3ac2ce4b229c285dfa12288e7cbbc35cc0d699cf9b5e11e1f187496",
+        "sanitizedPrivatePathOccurrences": 0
+      }
+    },
+    "source": {
+      "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1.blend",
+      "bytes": 7202551,
+      "sha256": "6910591a9373a9e3b877c46b8a496f66107376845d0ce292946060cfe9b7a8c9",
+      "sanitizedPrivatePathOccurrences": 2
+    },
+    "renders": {
+      "oblique-001": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-001.png",
+        "bytes": 465921,
+        "sha256": "db676df158f43a1c6992f2c84445c40edb1eb77ccb2e70921684e27cb84c68a9",
+        "metadataSanitized": true,
+        "metadataPolicy": "retain-only-IHDR-PLTE-tRNS-IDAT-IEND"
+      },
+      "oblique-031": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-031.png",
+        "bytes": 466068,
+        "sha256": "2880190872a587a60e802f92c823933ff534500c29979c1074a7b68da1223685",
+        "metadataSanitized": true,
+        "metadataPolicy": "retain-only-IHDR-PLTE-tRNS-IDAT-IEND"
+      },
+      "oblique-061": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-061.png",
+        "bytes": 466343,
+        "sha256": "bba553a7c832955067a6baa425030119e0f2c314450919f23428b66b0464d523",
+        "metadataSanitized": true,
+        "metadataPolicy": "retain-only-IHDR-PLTE-tRNS-IDAT-IEND"
+      },
+      "oblique-091": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-091.png",
+        "bytes": 466559,
+        "sha256": "014138962ee6f61cf17153cc55cfd8d4c8b399cff96ef49dcaa7a2435385beb3",
+        "metadataSanitized": true,
+        "metadataPolicy": "retain-only-IHDR-PLTE-tRNS-IDAT-IEND"
+      },
+      "oblique-121": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-oblique-frame-121.png",
+        "bytes": 465638,
+        "sha256": "b483e620ee8943af871f7fa02f98d2312768cd87b1de194de6497760ea2dd340",
+        "metadataSanitized": true,
+        "metadataPolicy": "retain-only-IHDR-PLTE-tRNS-IDAT-IEND"
+      },
+      "front-061": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-front-frame-061.png",
+        "bytes": 448154,
+        "sha256": "a011a90d01d63243a5f2bb6d8320eabd5d49ef255dc4e4b136fa84284584463e",
+        "metadataSanitized": true,
+        "metadataPolicy": "retain-only-IHDR-PLTE-tRNS-IDAT-IEND"
+      },
+      "profile-061": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-profile-frame-061.png",
+        "bytes": 434115,
+        "sha256": "ca4d01eef529633a02a7d9dac01f2505265210656036b9e81b71f20f34ad9e0d",
+        "metadataSanitized": true,
+        "metadataPolicy": "retain-only-IHDR-PLTE-tRNS-IDAT-IEND"
+      },
+      "council-44deg-061": {
+        "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1-council-44deg-frame-061.png",
+        "bytes": 1249469,
+        "sha256": "a23b328ab16280887d0f1171d6ab6a103eb9e8db5dad51ef74c0f70d3c01cea6",
+        "metadataSanitized": true,
+        "metadataPolicy": "retain-only-IHDR-PLTE-tRNS-IDAT-IEND"
+      }
+    }
+  },
+  "metrics": {
+    "file": "assets/3d/source/shi-daze-council-wet-register-interaction-v1.metrics.json",
+    "bytes": 143071,
+    "sha256": "e7a1abae63401305aaf7e82fc24cb53aa350f12a117e1c38d48b0314b612f310"
+  }
+}
