@@ -23,6 +23,21 @@ The primary work is story, player consequence and film design. Characters, asset
 
 ## Current boundary
 
+### Owner direction, 2026-09-26
+
+The long-range anthology ambition is now explicit: explore the history covered
+by Zizhi Tongjian through cinematic, consequential play, with separately
+researched Tokugawa Ieyasu material as a possible later work. This is a content
+vision, not a promise to release every era or copy a modern novel. Daze remains
+the near-term production proof; the ordered foundation gates below are unchanged.
+Use image-first identity locking, locally produced music and reviewed video
+where appropriate, while retaining editable in-engine action and shared rules.
+The bounded route, current hardware, model-rights exclusions and first casting
+brief are in [LOCAL_CINEMA_WORKFLOW.md](LOCAL_CINEMA_WORKFLOW.md). No existing
+final-art, history, human-review or release gate is waived.
+
+### Earlier desktop baseline
+
 As of 2026-08-11, the Web campaign and packaged Unreal route are genuinely interactive, and shared deterministic rules, source ledgers, localization infrastructure and bounded accessibility checks exist. Unreal passes twenty-one native `SHI.` suites. The accepted council facial v2 package proves five shared-skeleton engineering figures, an exact 21-control silent-intent contract and corrected morph-capable materials; the isolated Chen Sheng skin route proves a privacy-bounded, path-sanitized five-asset material pipeline while leaving its watched visual-art gate explicitly rejected.
 
 That evidence is a production foundation, not final character work. The current faces are generic non-portrait blockouts. Interaction hands, final mouth anatomy, voice/lip synchronization, close framing, identity-specific art and acting, final light/material response, broad performance capture and human historical, cultural, accessibility and player review remain open. The prior accepted body-performance package remains the latest input-driven story-progression and headless-smoke proof for that lane.

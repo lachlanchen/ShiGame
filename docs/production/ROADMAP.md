@@ -6,6 +6,13 @@ Long-range continuation, film-level acceptance and release gates are defined in 
 
 ## Foundation-phase outcomes
 
+Owner direction recorded 2026-09-26: the long-range vision is a Zizhi Tongjian
+historical anthology, with possible later Tokugawa material. The immediate
+foundation remains Daze and its consequential playable slice, not all eras at
+once. Follow [the local cinema workflow](LOCAL_CINEMA_WORKFLOW.md) for image-first
+casting, local music auditions, model-rights review and restrained video use.
+This update matches the production charter and does not advance any quality gate.
+
 - A complete, replayable Daze-to-next-late-Qin vertical slice with a coherent authored ending and a shared-rules historical martial-command encounter. Chu–Han campaign scale belongs to later phases rather than this gate.
 - A complete playable Web reference and stable Unreal cinematic desktop vertical-slice candidate; Unity remains a maintained shared-schema baseline. Public alpha is not a foundation-phase completion claim.
 - Source, localization, asset, audio, build, accessibility, performance and playtest pipelines capable of supporting a full game.
