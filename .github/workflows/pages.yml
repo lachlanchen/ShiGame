@@ -36,6 +36,8 @@ jobs:
         env:
           SHI_BASE_PATH: /ShiGame/
       - uses: actions/configure-pages@v6
+      - name: Include mobile privacy and support pages
+        run: cp store/privacy.html store/support.html apps/web/dist/
       - uses: actions/upload-pages-artifact@v5
         with:
           path: apps/web/dist
