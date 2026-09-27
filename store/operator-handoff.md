@@ -5,7 +5,11 @@ native iOS, and selected **US$0.99 paid up front**. Do not create a free Play ap
 Apple first release is manual. Testing, submission, approval, and public release
 must be recorded separately. Native iOS1.0.0(1) is **WAITING_FOR_REVIEW** as of
 2026-09-26T10:39:46Z; it is not approved or publicly released. TestFlight internal
-build state is **IN_BETA_TESTING**, with the existing owner account invited.
+build state is **IN_BETA_TESTING**. A fresh September 27 audit found the existing
+owner tester still **NOT_INVITED**, correcting the earlier invitation claim.
+One invitation was then accepted by Apple and read back as **INVITED**. A later
+tester readback reports **INSTALLED**; this is not a SHI-specific physical-device
+launch, gameplay or save-recovery QA receipt.
 
 iOS uses SwiftUI, SceneKit and a Foundation campaign engine, not a web wrapper.
 Android bundles the existing offline game with Capacitor. Both use the versioned
@@ -81,3 +85,22 @@ Qualification and provider results will be appended to exact artifact records.
   private mobile-publication note. Read it before reserving physical devices;
   receiving the note does not establish physical-device QA. No device was used
   and no other project's runtime or session was changed for this follow-up.
+
+## Testing follow-up — 2026-09-27
+
+- Owner again requested test submission. Reconciled exact existing build 1 on
+  both platforms instead of uploading or submitting a duplicate.
+- Apple: native 1.0.0(1) is VALID, not expired, attached to SHI Internal and
+  IN_BETA_TESTING. App Review remains WAITING_FOR_REVIEW with MANUAL release.
+  Only the already configured owner tester received the missing invitation;
+  no external/public beta group, new tester, review withdrawal or release.
+- Google: 1.0.0(1) is Active and Available to internal testers. Only SHI Internal
+  Owner is selected. Other apps' email lists remain unselected and unchanged.
+  Install through the internal-test link in release.json with that account.
+  The latest Publishing overview now consolidates 14 changes as ready to publish,
+  including both country settings. All remain held; Managed publishing stays ON.
+  No Changes in review section remains. No publication action was taken.
+- Current source snapshot still matches the retained 170-file build manifest.
+  No cinematic/music candidates entered these signed or submitted artifacts.
+- Continue media work in the separate
+  [Part 01 production packet](../docs/production/CINEMA_PART_01.md).

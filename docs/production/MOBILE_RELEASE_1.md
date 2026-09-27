@@ -3,6 +3,14 @@
 The owner requested mobile development/test/review, a paid USD0.99 release,
 and genuinely native iOS. Public release is a separate gate.
 
+September27 follow-up: both internal test builds remain available. Corrected an
+earlier invitation claim by sending the missing invitation to the existing
+Apple tester once; provider readback INVITED, subsequently INSTALLED at tester
+level, not a physical gameplay receipt. Formal Apple review is still waiting.
+Google now consolidates14changes as ready to publish, including territory
+settings; all remain held under managed publishing. See `store/release.json`
+for the latest observation; September26 details below remain historical.
+
 ## Architecture
 
 iOS is a SwiftUI application with a Foundation deterministic campaign engine,
