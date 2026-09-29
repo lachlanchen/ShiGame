@@ -1,5 +1,49 @@
 # SHI mobile publication
 
+## Android public-release authorization — 2026-09-30
+
+The owner explicitly approved promoting the retained tested Android 1.0.0 (1)
+to Production, submitting it for review, and publishing once approved at the
+US$0.99 base price in all eligible markets (the existing 169-market selection).
+This supersedes the Android public-release hold in historical notes below;
+Apple remains on manual hold and was not touched.
+
+The earlier September 30 live audit found 14 approved changes held by managed
+publishing, including the closed Alpha build and country settings. Production
+was INACTIVE with no release. The Production row in Publishing overview was
+only a country-setting change, not approval of a Production build.
+
+The owner restored Console login. The exact retained AAB and paired APK hashes
+match `release.json`; the price is Paid / United States USD0.99, and all 169
+targeted countries match the territory manifest. Used Add from library for
+versionCode 1; no new upload or build. Release `1.0.0 (1) - Chapter I` passed
+the preview as Ready to release. No blocking errors; the subsequent track
+dashboard recommends R8 optimization, which is not a reason to replace this
+tested release during review.
+
+Confirmed submission once at **2026-09-30 07:47 HKT** (23:47 UTC September 29).
+Submission activity identifies **submission 3, Production, In review**.
+Production track `4698739578429753044`, release `1`, shows Active with this
+release **in review** and 169 countries. Active does not mean publicly live.
+Managed publishing stays ON. The earlier 14 approved changes remain held;
+the new Production release is a separate change undergoing review.
+Automatic pre-review checks subsequently completed; the Console explicitly
+reports **Your changes are now in review**. Public US listing still returned
+HTTP404. The full local repository validation also passed (76 core/web tests);
+that checks the development worktree, not a replacement for the retained
+signed artifact's original qualification.
+
+Next: re-read the exact release and Publishing overview after approval, then
+publish the authorized candidate and its reviewed launch settings. Preserve
+unrelated changes and stop if a different build or scope appears. Do not
+resubmit, rebuild or substitute the newer development worktree. Verify the
+public listing separately after Google accepts publication. The owner's
+authorization already covers this final Android step; no repeat confirmation
+is needed. Apple was not rechecked or changed. No background polling job is
+running; review completion requires a later status check.
+
+## Historical qualification and submissions
+
 Owner authorized iOS/Android testing and review on 2026-09-26, specified genuinely
 native iOS, and selected **US$0.99 paid up front**. Do not create a free Play app.
 Apple first release is manual. Testing, submission, approval, and public release

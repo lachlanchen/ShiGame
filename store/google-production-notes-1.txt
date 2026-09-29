@@ -1,0 +1,3 @@
+<en-US>
+First release: playable Chapter I of SHI, an offline historical strategy narrative set in late Qin China. Make consequential choices, manage resources, and revisit your decisions in the chronicle. Includes on-device progress saving, a campaign map, and a historical source ledger. No account, ads, subscriptions, or in-app purchases. Later chapters and the desktop combat scene are not included.
+</en-US>
