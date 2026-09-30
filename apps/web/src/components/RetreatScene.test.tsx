@@ -43,6 +43,7 @@ describe("retreat development scene", () => {
     const input = props();
     input.rulesHash = retreatStory.saveCompatibility.rulesSHA256;
     const first = render(<RetreatScene {...input} />);
+    expect(first.queryByTestId("retreat-prose-revision")).toBeNull();
     await choose(first, "decline-dispatch");
     const old = JSON.parse(localStorage.getItem(retreatSaveKey)!);
     old.storySHA256 = retreatStory.saveCompatibility.previousStorySHA256[0];
@@ -50,6 +51,7 @@ describe("retreat development scene", () => {
     first.unmount(); localStorage.setItem(retreatSaveKey, bytes);
     const resumed = render(<RetreatScene {...input} />);
     expect(resumed.queryByRole("alert")).toBeNull();
+    expect(resumed.getByTestId("retreat-prose-revision").textContent).toContain("你的决定与物资不变");
     expect(localStorage.getItem(retreatSaveKey)).toBe(bytes);
     fireEvent.click(within(resumed.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
     if (failNext) {
@@ -58,12 +60,14 @@ describe("retreat development scene", () => {
       fireEvent.click(resumed.getByTestId("retreat-commit"));
       await resumed.findByRole("alert");
       expect(localStorage.getItem(retreatSaveKey)).toBe(bytes);
+      expect(resumed.getByTestId("retreat-prose-revision")).toBeTruthy();
       expect(resumed.queryByTestId("retreat-response")).toBeNull();
     }
     await choose(resumed, "gather-own");
     const next = JSON.parse(localStorage.getItem(retreatSaveKey)!);
     expect(next.choices).toEqual(["decline-dispatch", "gather-own"]);
     expect(next.storySHA256).toBe(input.storyHash);
+    expect(resumed.queryByTestId("retreat-prose-revision")).toBeNull();
   });
 
   it.each(["send-support", "decline-dispatch"])("recalls the missing escort only after %s, including resume", async dispatch => {

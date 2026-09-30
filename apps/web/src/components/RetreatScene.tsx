@@ -20,16 +20,18 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
   entry: RetreatEntry; rulesHash: string; storyHash: string; reducedMotion: boolean;
   onClose: () => void; onSavingChange?: (value: boolean) => void;
 }) {
-  const [{ initial, damaged }] = useState(() => {
+  const [{ initial, damaged, revised }] = useState(() => {
     const initial = createRetreat(rules, entry);
     try {
       const saved = gameStorage.getItem(retreatSaveKey);
-      if (!saved) return { initial, damaged: false };
+      if (!saved) return { initial, damaged: false, revised: false };
       const compatible = story.saveCompatibility.rulesSHA256 === rulesHash ? story.saveCompatibility.previousStorySHA256 : [];
-      const restored = restoreRetreat(rules, entry, JSON.parse(saved), rulesHash, storyHash, compatible);
-      return { initial: restored ?? initial, damaged: !restored };
-    } catch { return { initial, damaged: true }; }
+      const snapshot = JSON.parse(saved);
+      const restored = restoreRetreat(rules, entry, snapshot, rulesHash, storyHash, compatible);
+      return { initial: restored ?? initial, damaged: !restored, revised: Boolean(restored && snapshot.storySHA256 !== storyHash) };
+    } catch { return { initial, damaged: true, revised: false }; }
   });
+  const [revisionNotice, setRevisionNotice] = useState(revised);
   const [state, setState] = useState(initial), [invalid, setInvalid] = useState(damaged);
   const [selected, setSelected] = useState(0), [reading, setReading] = useState(initial.history.length > 0);
   const [busy, setBusy] = useState(false), [error, setError] = useState(false), [reset, setReset] = useState(false);
@@ -58,7 +60,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       previous = gameStorage.getItem(retreatSaveKey);
       gameStorage.setItem(retreatSaveKey, encodeRetreatSnapshot(next, rulesHash, storyHash)); wrote = true;
       await flushPersistence();
-      if (alive.current) { setState(next); setSelected(0); setReading(next.history.length > 0); setInvalid(false); setReset(false); }
+      if (alive.current) { setState(next); setSelected(0); setReading(next.history.length > 0); setInvalid(false); setReset(false); setRevisionNotice(false); }
     } catch {
       if (wrote) try {
         if (previous === null) gameStorage.removeItem(retreatSaveKey); else gameStorage.setItem(retreatSaveKey, previous);
@@ -84,6 +86,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     <p className="chen-boundary">参考《资治通鉴》卷七、卷八。对白、地方行动与分支结局均为原创戏剧重构，并非史书记载。</p>
     <p className="chen-boundary">粮秣与支持数值承接已完成的议事，表示剩余组织能力，不表示北方粮仓搬到陈地。人物去向须由本段实际发生的事件确认，不凭旧日合作假定重逢。</p>
     {invalid && <p role="alert" className="chen-error">存档损坏、来自另一段经历或内容已改版。原存档保留；明确重开前不能提交命令。</p>}
+    {revisionNotice && <p role="status" className="chen-boundary" data-testid="retreat-prose-revision">故事文字已修订，你的决定与物资不变。正在按原进度阅读新版文字；确认下一项行动后才会更新存档版本。</p>}
     {error && <p role="alert" className="chen-error">未能保存，命令尚未确认。请恢复存储后重试。</p>}
     <div className="chen-layout"><section className="chen-main">
       {reset ? <section className="chen-scene"><h3 ref={heading} tabIndex={-1}>替换本段开发存档？此前章节不变。</h3>

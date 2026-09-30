@@ -35,6 +35,7 @@ import CryptoKit
 
         let live = session("route.json")
         precondition(live.engine != nil && live.error == nil && !FileManager.default.fileExists(atPath: live.saveURL.path))
+        precondition(!live.resumedEarlierProse)
         precondition(!live.choose("invented-order") && live.engine!.history.isEmpty)
         pass("opening and invalid order never write a save")
         precondition(live.choose("send-support"))
@@ -50,10 +51,12 @@ import CryptoKit
             try oldBytes.write(to: url)
             let migrated = session(name)
             precondition(!migrated.needsRecovery && migrated.error == nil)
+            precondition(migrated.resumedEarlierProse)
             precondition(migrated.engine!.history == live.engine!.history && migrated.response?.index == 0)
             try unchanged(url, oldBytes)
             migrated.continueResponse(migrated.response!.id)
             precondition(migrated.choose("borrow-local-grain"))
+            precondition(!migrated.resumedEarlierProse)
             let updated = try JSONDecoder().decode(RetreatChronicle.self, from: Data(contentsOf: url))
             precondition(updated.storySHA256 == migrated.storyFingerprint && updated.choices == ["send-support", "borrow-local-grain"])
         }

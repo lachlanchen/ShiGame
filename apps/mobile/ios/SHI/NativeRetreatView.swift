@@ -30,6 +30,10 @@ struct NativeRetreatView: View {
                         Text(session.story.text("title")).font(.system(.largeTitle, design: .serif))
                             .accessibilityAddTraits(.isHeader).accessibilityFocused($headingFocused).id("retreat-top")
                         Text("开发试玩 · 简体中文 · 原创戏剧重构。Chinese-language development preview. Not a release build.").font(.footnote)
+                        if session.resumedEarlierProse {
+                            Text("故事文字已修订，你的决定与物资不变。正在按原进度阅读新版文字；确认下一项行动后才会更新存档版本。")
+                                .font(.footnote).accessibilityIdentifier("retreat-prose-revision")
+                        }
                         if let engine = session.engine {
                             let presentation = RetreatPresentation(story: session.story, engine: engine, reading: session.response != nil)
                             if session.needsRecovery { notice("存档不兼容或已损坏，原文件已保留。确认重开前不能提交命令，此前章节不变。") }

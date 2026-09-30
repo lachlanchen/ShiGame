@@ -13,6 +13,7 @@ struct RetreatResponse: Identifiable {
     @Published private(set) var engine: RetreatEngine?
     @Published private(set) var response: RetreatResponse?
     @Published private(set) var needsRecovery = false
+    @Published private(set) var resumedEarlierProse = false
     @Published private(set) var error: String?
     let definition: Record
     let story: Record
@@ -55,6 +56,7 @@ struct RetreatResponse: Identifiable {
                     rulesFingerprint: rulesFingerprint, storyFingerprint: storyFingerprint, save: save,
                     compatibleStoryFingerprints: compatible)
                 engine = restored
+                resumedEarlierProse = save.storySHA256 != storyFingerprint
                 if !restored.history.isEmpty { response = RetreatResponse(index: restored.history.count - 1) }
             }
         } catch { self.error = error.localizedDescription; needsRecovery = true }
@@ -64,6 +66,7 @@ struct RetreatResponse: Identifiable {
         let data = try JSONEncoder().encode(candidate.chronicle(rulesFingerprint: rulesFingerprint, storyFingerprint: storyFingerprint))
         try FileManager.default.createDirectory(at: saveURL.deletingLastPathComponent(), withIntermediateDirectories: true)
         try writer(data, saveURL)
+        resumedEarlierProse = false
     }
     @discardableResult func choose(_ id: String) -> Bool {
         guard !committing, !needsRecovery, response == nil, var next = engine else { return false }
