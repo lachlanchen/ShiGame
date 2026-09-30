@@ -1,6 +1,7 @@
 import { gzipSync } from "node:zlib";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { extname, relative, resolve } from "node:path";
+import { initialAssets } from "./web-build-assets.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const dist = resolve(root, "apps/web/dist");
@@ -43,17 +44,16 @@ const gzipBytes = async (path) => gzipSync(await readFile(path)).byteLength;
 
 const indexPath = resolve(dist, "index.html");
 const html = await readFile(indexPath, "utf8").catch(() => fail("apps/web/dist/index.html is missing; run the web build first."));
-const scriptUrls = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map((match) => match[1]);
-const cssUrls = [...html.matchAll(/<link\b[^>]*\brel=["']stylesheet["'][^>]*\bhref=["']([^"']+)["'][^>]*>/gi)].map((match) => match[1]);
+const { scripts: scriptUrls, styles: cssUrls, javascript: initialJavaScriptUrls } = initialAssets(html);
 if (scriptUrls.length !== 1) fail(`expected one initial module script, found ${scriptUrls.length}.`);
 if (cssUrls.length !== 1) fail(`expected one initial stylesheet, found ${cssUrls.length}.`);
-for (const url of [...scriptUrls, ...cssUrls]) {
+for (const url of [...initialJavaScriptUrls, ...cssUrls]) {
   if (/^(?:https?:)?\/\//i.test(url)) fail(`initial asset is remote: ${url}`);
 }
 
-const initialJs = resolveAsset(scriptUrls[0]);
+const initialJsPaths = new Set(initialJavaScriptUrls.map(resolveAsset));
 const initialCss = resolveAsset(cssUrls[0]);
-const initialJsGzip = await gzipBytes(initialJs);
+const initialJsGzip = (await Promise.all([...initialJsPaths].map(gzipBytes))).reduce((sum, size) => sum + size, 0);
 const initialCssGzip = await gzipBytes(initialCss);
 assertAtMost("initial JavaScript gzip", initialJsGzip, limits.initialJavaScriptGzip);
 assertAtMost("initial CSS gzip", initialCssGzip, limits.initialCssGzip);
@@ -82,7 +82,7 @@ const fontBytes = fontRecords.reduce((sum, record) => sum + record.bytes, 0);
 assertAtMost("self-hosted font artifact", fontBytes, limits.fontBytes, mib);
 assertAtMost("self-hosted font file count", fontRecords.length, limits.fontFiles, (value) => String(value));
 
-const javascriptRecords = deploymentRecords.filter((record) => record.extension === ".js" && record.path !== initialJs);
+const javascriptRecords = deploymentRecords.filter((record) => record.extension === ".js" && !initialJsPaths.has(record.path));
 let largestLazyJs = { relative: "none", gzip: 0 };
 for (const record of javascriptRecords) {
   const gzip = await gzipBytes(record.path);
