@@ -91,6 +91,27 @@ test("all Fan Yang outcomes survive into complete retreat readings without confl
   }
 });
 
+test("council policy readings retain all three decisions through retreat", () => {
+  const memories = {
+    defer: ["拨单的名号栏仍空着", "乡里管事带来了共验时分给他的账", "当初出城只传一道令"],
+    crown: ["新拨单用着议事后定下的王号", "先供军的那一笔还在", "当初说留在陈地，如今却要带人走"],
+    alliance: ["还没有哪张回书能替所有人答应", "下一趟还没人押信回来", "各路都有自己的领队"],
+  };
+  for (const [policy, expected] of Object.entries(memories)) {
+    const text = run("--council", policy, "--ending", "remnant");
+    assert.equal(text, run("--council", policy, "--ending", "remnant"));
+    assert.ok(text.includes("实际结果：remnant"));
+    assert.ok(text.includes("不是让掌简人登上王位"));
+    for (const memory of expected) assert.ok(text.includes(memory));
+    for (const other of Object.entries(memories).filter(([key]) => key !== policy).flatMap(([, values]) => values)) assert.ok(!text.includes(other));
+  }
+  for (const args of [["--council"], ["--council", "emperor"], ["--council", "crown", "--council", "alliance"], ["--council", "defer", "--check"]]) {
+    const result = spawnSync(process.execPath, [...command, ...args], { cwd: root, encoding: "utf8" });
+    assert.notEqual(result.status, 0);
+    assert.ok(!result.stdout.includes("# 势"));
+  }
+});
+
 test("complete readings expose reception-dependent character arcs without borrowing other branches", () => {
   for (const [reception, ending] of [["gather-own", "together"], ["open-reception", "scattered"], ["verify-with-partners", "remnant"], ["borrow-local-grain", "together"]]) {
     const text = run("--reception", reception, "--ending", ending);

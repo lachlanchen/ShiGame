@@ -17,6 +17,8 @@ export const routes = [
   { id: "beacon", title: "夺燧之后，余部上路", note: "夺取亭燧后选择潜行；留下的追查痕迹，延续到撤离时如何保管凭记。", args: ["--beacon", "--ending", "remnant"] },
   { id: "fanyang-opened", title: "范阳开城之后", note: "受降有了结果，但没有凭空送来陈地的军粮。沿真实支出接续到撤离。", args: ["--fanyang", "opened", "--ending", "remnant"] },
   { id: "fanyang-deferred", title: "补约未成之后", note: "追加的保证仍未换来开城；花掉的粮与时间，不能在下一幕抹掉。", args: ["--fanyang", "deferred", "--ending", "remnant"] },
+  { id: "council-crown", title: "王号与未兑现的粮", note: "接受王号、军粮优先、固守陈地的政策示例；撤离时仍须面对城内缺额与留下的承诺。", args: ["--council", "crown", "--ending", "remnant"] },
+  { id: "council-alliance", title: "各家的旗，各家的答复", note: "约立诸部、购粮商队、分路行动的政策示例；结盟不等于所有人已交出指挥权。", args: ["--council", "alliance", "--ending", "remnant"] },
 ];
 export const escapeHTML = value => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 export function renderReading(markdown) {

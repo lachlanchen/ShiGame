@@ -3,13 +3,13 @@ import test from "node:test";
 import { JSDOM } from "jsdom";
 import { collectReadings, renderBook, renderReading } from "./build-story-review.mjs";
 
-test("offline review contains eleven complete legal readings with no active remote content", () => {
+test("offline review contains thirteen complete legal readings with no active remote content", () => {
   const readings = collectReadings();
   const html = renderBook(readings);
   assert.equal(html, renderBook(readings));
   const doc = new JSDOM(html).window.document;
   assert.equal(doc.documentElement.lang, "zh-Hans");
-  assert.equal(doc.querySelectorAll("details").length, 11);
+  assert.equal(doc.querySelectorAll("details").length, 13);
   assert.equal(doc.querySelectorAll("details[open]").length, 1);
   assert.equal(doc.querySelectorAll("script,iframe,img,link,form").length, 0);
   for (const reading of readings) {
@@ -25,6 +25,8 @@ test("offline review contains eleven complete legal readings with no active remo
   assert.ok(doc.getElementById("beacon").textContent.includes("实际结果：remnant"));
   assert.ok(doc.getElementById("fanyang-opened").textContent.includes("范阳受降了"));
   assert.ok(doc.getElementById("fanyang-deferred").textContent.includes("补过条件，还是没成"));
+  assert.ok(doc.getElementById("council-crown").textContent.includes("新拨单用着议事后定下的王号"));
+  assert.ok(doc.getElementById("council-alliance").textContent.includes("还没有哪张回书能替所有人答应"));
 });
 test("source prose cannot become executable markup", () => {
   const doc = new JSDOM(renderReading('<script>alert(1)</script>\n\n<img src="https://example.com/tracker">')).window.document;
