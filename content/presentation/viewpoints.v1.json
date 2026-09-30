@@ -6,8 +6,8 @@
     "council": {
       "title": { "en": "At the council table", "zh-Hans": "转入议事案前" },
       "bridge": {
-        "en": "Later, in Chen. Outside the council room, someone waiting for grain asks whether the old claim still counts. The man at the door cannot answer; he turns to listen inside. There, they are still arguing over whose name the next order should bear.",
-        "zh-Hans": "后来，陈地。议事处门外，等着领粮的人问旧凭记还算不算数。守门的人答不上来，回头听屋里的动静。里面还在争，下一道命令该落谁的名。"
+        "en": "Later, in Chen. Someone waiting for grain asks whether the old claim still counts. The doorkeeper turns toward the council room for an answer.",
+        "zh-Hans": "后来，陈地。领粮的人问旧凭记还算不算数。守门的人回头望向议事处，等里面答话。"
       },
       "chapterBridges": [
         {
@@ -33,8 +33,8 @@
         }
       ],
       "text": {
-        "en": "For this interlude, you make policy for the side leading the council. You are not crowning the keeper himself. The crown, alliance and deferred-title choices are real alternatives within this counterfactual story; their promises and costs remain part of the journey. Later, the viewpoint returns to the people carrying out those decisions.",
-        "zh-Hans": "这一幕由你替主持议事的一方作出政策决定，不是让掌简人本人登上王位。称王、结盟、暂缓名号，是这段反事实故事中的不同选择；承诺与代价都会留下。此后视角将回到执行这些决定的人。"
+        "en": "Here you set policy for the council's leading side, not crowning the keeper himself. These counterfactual choices leave lasting promises and costs. Later you return to those carrying them out.",
+        "zh-Hans": "此幕由你替议事主事一方定策，不是让掌简人登上王位。反事实选择的承诺与代价会保留，随后回到执行者视角。"
       }
     },
     "fanyang": {

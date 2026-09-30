@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: visible review identified long council setup",
+  "change": "Shorten council role explanation and generic bridge in shared English/Chinese presentation. Preserve policy viewpoint versus keeper identity, counterfactual boundary, persistent promises/costs and return to execution viewpoint. Keep all three choice-specific memories unchanged.",
+  "presentationSHA256": "c53c07bbaa5194a4de11cc3c057d0a7c18408bd31d85c87b0061a49499d714da",
+  "setupUnicodeCharacterCounts": { "en": { "before": 583, "after": 334 }, "zh-Hans": { "before": 148, "after": 88 } },
+  "verification": "Execution73949 exit0: 57 focused component tests, two complete-reading tests covering four endings, native export sync and parity validation. Execution40644 exit0: visible UI full together route,40 checks,no browser exceptions.",
+  "visualReview": {
+    "privatePath": ".runtime/story-review/2026-09-30T21-20-48.645Z/02d-council-strategy-mobile.png",
+    "sha256": "0439257ba0218453dc1902d149d5c66aa5cdcf7a513cd2c4a4176df65cb7b33e",
+    "finding": "Reviewed390x844 screenshot: scene heading and complete shortened role explanation fit above the centered strategic memory, unlike preceding capture. Text wraps without overlap. Choice A and part of B remain visible below; screenshot scroll centering means this is not a measured reduction in control distance. Vertical scrolling remains necessary."
+  },
+  "cleanup": "Exact ownedPIDs3193102/3193145/3193146/3193147/3193148 gone;4173/5921/6121/9321 closed;49GiB available. No active GUI or job.",
+  "limitations": ["Agent editorial/visual review, not human pacing acceptance.", "Chinese village-strategy route only visually reviewed; no new native screenshot.", "No rules, save schema, paid media, signing, submission or release change."],
+  "skill": "noVNC webapp control used for visible interaction and screenshot evidence; project cleanup policy applied afterward."
+}
