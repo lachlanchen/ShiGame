@@ -59,7 +59,12 @@ readback. The current unsigned iPad QA result passed25/25 and has reviewed
 relaunch/ending screenshots; that is not a signed package, upgrade test or upload.
 Retained release1.0.0(1) must not be overwritten. The iOS script now requires an
 explicit SHI_BUILD and refuses existing archives/exports; Android still needs
-numbered staging before its next release build.
+its signed candidate and upgrade qualification before distribution. Android's
+script now also requires SHI_BUILD, reserves a fresh ignored versioned output
+directory, and redirects app outputs away from the retained build1 packages.
+It checks the APK identity/version/signature and compares before/after source
+manifests. Neither script uploads. Failed candidate output is retained for
+diagnosis; do not blindly rerun or remove the current project's build lock.
 
 September30 readiness probe: Apple lists only build1, VALID and not expired.
 The established signing Mac is reachable with the existing SHI workspace,

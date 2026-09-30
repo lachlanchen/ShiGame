@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "candidateBuild": 2,
+  "createdOn": "2026-09-30",
+  "scope": "Internal beta candidate only; not uploaded or approved for public release",
+  "android": {
+    "status": "signed-local-candidate-awaiting-runtime-upgrade-qa",
+    "applicationId": "art.lazying.shi",
+    "versionCode": 2,
+    "minSDK": 24,
+    "targetSDK": 36,
+    "apkSHA256": "0f9b1e6b258c2a843c62da661e7ba1662959b488ab3051ae60ddd5ccf46836c9",
+    "aabSHA256": "eff93faee4bb5f4fc4f876f2d194e007dc8d4a880da51b6a2136762cbb469061",
+    "signingCertificateSHA256": "3ce089f4f9f7da11355ecace697bfade9377f9159fff14f4529b5b090a3032c8",
+    "sourceSetSHA256": "880457118e3eb7f2941f26444717e424db37994ef6b4e27816ac5c3f61cfbbde",
+    "sourceFiles": 201,
+    "sourceUnchangedDuringBuild": true,
+    "retainedBuild1Unchanged": true,
+    "qualification": ["full repository validation", "85 web tests", "release compilation and packaging", "release lint completed", "APK identity/version/signature"],
+    "limitations": ["Gradle unit test is generated arithmetic smoke only", "lint warnings include manifest order, extraction rules, tooling versions and unused resources", "installed upgrade and save preservation untested for this artifact", "AAB provider processing and live version-code reconciliation pending"],
+    "uploaded": false
+  },
+  "apple": {
+    "status": "source-staged-not-archived",
+    "reason": "Shared signing Mac busy with another project; no foreign process interrupted",
+    "uploaded": false
+  }
+}

@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+
+def signingNames = ['SHI_ANDROID_KEYSTORE_FILE', 'SHI_ANDROID_KEYSTORE_PASSWORD', 'SHI_ANDROID_KEY_ALIAS', 'SHI_ANDROID_KEY_PASSWORD']
+def signingReady = signingNames.every { System.getenv(it) }
+def shiBuild = providers.gradleProperty('shiBuild').getOrElse('1')
+def shiVersion = providers.gradleProperty('shiVersion').getOrElse('1.0.0')
+if (!(shiBuild ==~ /[1-9][0-9]{0,9}/) || shiBuild.toLong() > 2100000000L || !(shiVersion ==~ /[0-9]+\.[0-9]+\.[0-9]+/)) {
+    throw new GradleException('Invalid SHI build/version properties')
+}
+if (providers.gradleProperty('shiAppBuildDir').isPresent()) {
+    layout.buildDirectory.set(file(providers.gradleProperty('shiAppBuildDir').get()))
+}
+
+android {
+    namespace = "art.lazying.shi"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "art.lazying.shi"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode shiBuild.toInteger()
+        versionName shiVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        if (signingReady) {
+            release {
+                storeFile file(System.getenv('SHI_ANDROID_KEYSTORE_FILE'))
+                storePassword System.getenv('SHI_ANDROID_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('SHI_ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('SHI_ANDROID_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            if (signingReady) { signingConfig signingConfigs.release }
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+tasks.register('verifyShiSigning') {
+    doLast {
+        if (!providers.gradleProperty('shiBuild').isPresent()) {
+            throw new GradleException('Release packaging requires an explicit provider-verified shiBuild number.')
+        }
+        if (!signingReady || !file(System.getenv('SHI_ANDROID_KEYSTORE_FILE')).isFile()) {
+            throw new GradleException('Configure the SHI-owned upload key outside the repository before a release build.')
+        }
+    }
+}
+tasks.matching { it.name ==~ /(assemble|bundle)\w*Release/ }.configureEach { dependsOn 'verifyShiSigning' }
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
