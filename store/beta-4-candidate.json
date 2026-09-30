@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "candidateBuild": 4,
+  "createdOn": "2026-09-30",
+  "scope": "Local signed Android candidate, not uploaded or publicly released",
+  "android": {
+    "status": "signed-upgrade-route-and-unread-reaction-reviewed",
+    "applicationId": "art.lazying.shi",
+    "versionCode": 4,
+    "apkSHA256": "aa11865c6aa3ec17e189cb2c7f20f7b4d472aa293cc754ea725527b9da9dc11c",
+    "aabSHA256": "951fc4f4c6fb2a01b283571989aec46c83ef0e54262bafa65190ec17d236218a",
+    "sourceSetSHA256": "4f209d0356d04e754877b7cd6ee9ef7f8bcb695b54c79563475613984d15f356",
+    "sourceFiles": 203,
+    "sourceUnchangedDuringBuild": true,
+    "qualification": [
+      "Full source validation passed including98 web tests before packaging; signed release build, lint and generated Gradle unit smoke passed",
+      "API34 emulator install-r from build3 to4 retained seed CB918329, one decision, resources38/54/25/67/61",
+      "Committed Ask each fire for one pot in build4; force-stop/relaunch then Continue restored identical unread reaction text, visually reviewed",
+      "Acknowledged reaction, sent households across first, rooted movement in village covenants; reached Deep Roots with Names under protection kept",
+      "Opened fresh Chen council carrying Stores intact, a slow arrival; grain7 tempo2 city4 allies3 veterans4",
+      "After another force-stop/relaunch, completed chapter remains and acknowledged reaction does not reopen",
+      "Final journal has exactly entries01/02/03/04; final chapter resources45/100/3/100/93"
+    ],
+    "limitations": [
+      "English portrait API34 emulator only; not physical-device, all-locale, latest-OS or deliberate offline qualification",
+      "Upgrade route: first decision was made under build3; not a fresh full route entirely under build4",
+      "Council entry verified on4; full three-round council completion previously verified on3",
+      "Provider version-code reconciliation, AAB processing and internal distribution still pending",
+      "Mixed tracked and inherited uncommitted source manifest, not a clean reproducible commit; App integration remains in overlapping dirty files",
+      "Existing lint warnings and generated arithmetic-only Gradle unit test remain"
+    ],
+    "uploaded": false
+  }
+}
