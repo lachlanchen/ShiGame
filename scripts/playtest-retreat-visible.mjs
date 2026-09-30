@@ -7,7 +7,7 @@ import net from "node:net";
 const root = resolve(import.meta.dirname, "..");
 const route = process.argv[2] ?? "together";
 const storyBranch = process.argv[3] ?? "baseline";
-if (!["together", "dispersed", "remnant", "scattered"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered] [baseline|partner-search|loan-search]");
+if (!["together", "dispersed", "remnant", "scattered", "book"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book] [baseline|partner-search|loan-search]");
 const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
 const reserves = route === "scattered" || storyBranch !== "baseline" ? "send-support" : "keep-reserve";
@@ -94,6 +94,30 @@ try {
   execFileSync("xdotool", ["windowmove", "--sync", windowId, "0", "0", "windowsize", "--sync", windowId, "1600", "1000"], { env: xenv });
   report.windowGeometry = execFileSync("xdotool", ["getwindowgeometry", "--shell", windowId], { env: xenv, encoding: "utf8" });
   check(/WIDTH=1600\b/.test(report.windowGeometry) && /HEIGHT=1000\b/.test(report.windowGeometry), "Chrome window fits the dedicated desktop");
+  if (route === "book") {
+    await send("Page.navigate", { url: new URL("file://" + resolve(root, ".runtime/story-book/index.html")).href });
+    await until("document.title==='势 · 第一卷故事审阅'");
+    await capture("book-desktop");
+    await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+    await capture("book-phone");
+    check(await evaluate("document.documentElement.scrollWidth<=innerWidth"), "book phone has no horizontal overflow");
+    await click('a[href="#courier"]');
+    await until("location.hash==='#courier'");
+    await click('#courier > summary');
+    check(await evaluate("document.querySelector('#courier').open"), "courier route opens through visible summary");
+    await evaluate("document.querySelector('#courier > summary').focus()");
+    execFileSync("xdotool", ["windowfocus", "--sync", windowId, "key", "--clearmodifiers", "Return"], { env: xenv });
+    await until("!document.querySelector('#courier').open");
+    check(true, "keyboard Enter closes the focused route");
+    await click('#courier > summary');
+    await evaluate("([...document.querySelectorAll('#courier p')].find(e=>e.textContent.startsWith('韩驿使来信：'))).scrollIntoView({block:'center'})");
+    await capture("book-courier-phone");
+    check(await evaluate("document.documentElement.scrollWidth<=innerWidth"), "expanded courier text has no horizontal overflow");
+    await click('#courier .back');
+    await until("location.hash==='#top'");
+    check(true, "return link reaches route directory");
+    check(await evaluate("!document.querySelector('script,iframe,img,link,form')"), "offline book has no active external content");
+  } else {
   await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
   await until("document.documentElement.lang==='zh-Hans'"); await capture("01-title");
   await click('[data-testid="begin-game"]');
@@ -196,6 +220,7 @@ try {
   await click('[data-testid="chen-council"] [data-council-action="close"]');
   await until("!document.querySelector('.drawer')");
   check(await evaluate("getComputedStyle(document.body).overflowY!=='hidden'"), "background page scrolling restored after closing story");
+  }
   check(report.errors.length === 0, "no browser runtime exceptions"); report.status = "passed";
 } catch (error) {
   report.status = "failed"; report.failure = error.stack;

@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-01",
+  "scope": "Offline first-volume story review book; no gameplay or store changes",
+  "command": "node scripts/playtest-retreat-visible.mjs book",
+  "htmlSha256": "aea55b50dd8f1911fa9740686e790e718f8d4ee3787fbfbbfea7fc3b4efee588",
+  "initialAttempt": {
+    "execution": 64329,
+    "exitCode": 1,
+    "reason": "Synthetic CDP Enter did not close the focused native details disclosure; timeout. Not counted as passing."
+  },
+  "finalAttempt": {
+    "execution": 21358,
+    "exitCode": 0,
+    "checksPassed": 11,
+    "browserExceptions": 0,
+    "inputCorrection": "Use xdotool Return on the focused desktop browser; no page implementation change.",
+    "privateEvidenceDirectory": ".runtime/story-review/2026-09-30T21-41-58.237Z"
+  },
+  "visualReview": {
+    "reviewer": "Codex",
+    "screenshotsIndividuallyInspected": ["book-desktop.png", "book-phone.png", "book-courier-phone.png"],
+    "observations": [
+      "Desktop directory and first reading are legible with a bounded text column.",
+      "At 390 by 844, directory links wrap and paragraphs remain within the viewport.",
+      "Courier letter and surrounding dialogue are legible; vertical scrolling is expected."
+    ]
+  },
+  "behaviorVerified": ["Directory link and visible summary open courier reading", "Desktop Enter collapses focused summary", "Return link reaches directory", "No horizontal overflow in checked phone states", "No script, iframe, image, linked stylesheet or form elements"],
+  "cleanup": {
+    "ownedPidsIndependentlyConfirmedAbsent": [3333191, 3333241, 3333242, 3333243, 3333244],
+    "portsConfirmedClosed": [4173, 5921, 6121, 9321],
+    "currentGuiUrl": null
+  },
+  "limits": ["Eight branching sample readings, not eight consecutive chapters or exhaustive route coverage", "Not human story acceptance", "Not full accessibility or screen-reader qualification", "No native device, store submission or public release in this checkpoint"]
+}
