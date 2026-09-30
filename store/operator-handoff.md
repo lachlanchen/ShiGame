@@ -1,5 +1,16 @@
 # SHI mobile publication
 
+## Recurring beta authorization — 2026-09-30
+
+The owner explicitly requested regular TestFlight and Google Play internal-test
+upgrades so they can test ongoing development. Use the existing SHI owner tester
+groups after each meaningful, qualified mobile checkpoint. This is standing
+authorization for those beta uploads/distributions, not a request to upload
+every edit or to widen tester access. See [beta workflow](BETA_WORKFLOW.md).
+It does not authorize replacing a build under formal review or publicly releasing
+new development builds. The existing Android build1 authorization below remains
+separate. Do not infer provider availability from a successful upload alone.
+
 ## Android public-release authorization — 2026-09-30
 
 The owner explicitly approved promoting the retained tested Android 1.0.0 (1)
