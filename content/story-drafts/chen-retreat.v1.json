@@ -279,6 +279,23 @@
       "unresolved": "分行分配的是实际剩余物资；凭记保管方式仍按先前决定，不复原已去掉的身份。人手全散或物资全无时不可冒充此有序结局。"
     }
   },
+  "scatteredEnding": {
+    "boundary": "Only present when the resource rules resolve release-groups to scattered. The authoring-only choice graph does not determine this outcome. Original dramatization; no new casualties, reunion, repayment or inventory transfer.",
+    "response": [
+      { "speaker": "narrator", "text": "账还没核完，路边已经有人背起行李。你叫住前面的人，想先把去处问清；他回头应了一声，脚下却没有停。后面几个人跟着走了。" },
+      { "speaker": "keeper", "text": "等等。还有几笔没交代。" },
+      { "speaker": "narrator", "text": "有人说以后再算。你把简翻到那一笔，抬头时，说话的人已混进远去的人影里。原先说好的分行，没有等到一一交接。" }
+    ],
+    "lines": [
+      { "speaker": "narrator", "text": "路口的说话声渐渐远了。你仍站在摊开的布旁，把方才确实听见的去向记下。没听清的地方空着，没有一道口令能把它们填满。" }
+    ],
+    "variants": [
+      { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "先前分出去的凭记没有收回来。你只裹好自己手里的这一份，在旁边注明哪些还要另找持简的人核对。现在连他们在哪里，也得重新问。" }] },
+      { "when": { "records": "carry-records" }, "lines": [{ "speaker": "narrator", "text": "简仍在你的囊里。先前说过谁来问便找你，如今你却不知道该到哪里找他们。你没有把无人应答的几笔勾掉。" }] },
+      { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "匿名欠账还在，能当面作证的人却不在眼前。你将空白的一面翻回去；留下的数目，已不能独自告诉你该追上谁。" }] }
+    ],
+    "unresolved": "去向和生死未明，不等于死亡或安全抵达。未偿欠账继续保留；物资归属未明，不能再当作可调拨的公共库存。"
+  },
   "epilogue": "史书所记，陈胜败亡后，吕臣曾聚兵复取陈地。反秦之事没有在此结束。本卷虚构队伍的去向由上面的选择收束，不声称他们参与了吕臣的行动。",
   "remainingGates": [
     "历史时序与消息旅程对照原页，独立审校对白和人物权限。",

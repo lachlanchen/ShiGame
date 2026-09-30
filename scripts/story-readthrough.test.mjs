@@ -22,6 +22,18 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
   assert.equal(JSON.stringify({ draft, input, together }), before);
 });
 
+test("resource-triggered scattering has validated original prose without pretending the authoring graph predicts it", () => {
+  assert.ok(draft.scatteredEnding.response.length >= 2);
+  assert.deepEqual(draft.scatteredEnding.variants.map(variant => variant.when.records).sort(), ["carry-records", "divide-records", "strip-identities"]);
+  assert.ok(!Object.hasOwn(draft.endings, "scattered"));
+  const broken = structuredClone(draft);
+  broken.scatteredEnding.variants[0].when.records = "restored-every-name";
+  assert.throws(() => validateDraft(broken), /Unknown fact/);
+  const empty = structuredClone(draft);
+  empty.scatteredEnding.response = [];
+  assert.throws(() => validateDraft(empty), /Missing authored lines/);
+});
+
 test("each evacuation order has its own physical withdrawal before sorting records", () => {
   const evacuationScene = draft.scenes.find(scene => scene.id === "evacuation");
   for (const choice of evacuationScene.choices) {

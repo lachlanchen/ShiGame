@@ -89,7 +89,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         <button className="primary-button" disabled={busy} data-council-action="reset" onClick={() => void persist(createRetreat(rules, entry))}>确认重开</button>
         <button className="text-button" disabled={busy} data-council-action="cancel" onClick={() => setReset(false)}>取消</button></section>
       : reading && lastChoice && lastScene ? <section className="chen-scene" data-testid="retreat-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{lastChoice.title}</h3>
-        {state.outcome === "scattered" ? <p className="chen-prose">{rules.scattered.reaction["zh-Hans"]}</p> : lines(lastChoice.response)}
+        {state.outcome === "scattered" ? lines(story.scatteredEnding.response) : lines(lastChoice.response)}
         {state.outcome && witnessed.map(event => <div data-testid="retreat-companion-answer" key={event.id}>{lines(event.endingResponses[state.outcome!])}</div>)}
         {last && witnessed.map(event => {
           const replies = event.decisionResponses as Record<string, { speaker: string; text: string }[]> | undefined;
@@ -100,7 +100,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         {lines((lastScene as typeof lastScene & { exitLines?: { speaker: string; text: string }[] }).exitLines ?? [])}
         <button className="primary-button" data-council-action="continue" onClick={() => setReading(false)}>继续 →</button></section>
       : state.completed && state.outcome ? <section className="chen-scene" data-testid="retreat-outcome" data-outcome={state.outcome} aria-live="polite"><h3 ref={heading} tabIndex={-1}>{outcomeTitle(state.outcome)}</h3>
-        {state.outcome === "scattered" ? <><p>{rules.scattered.reaction["zh-Hans"]}</p><p>{rules.scattered.recovery["zh-Hans"]}</p></> : lines(story.endings[state.outcome].lines)}
+        {state.outcome === "scattered" ? <>{lines(story.scatteredEnding.lines)}<div data-testid="retreat-scattered-memory">{story.scatteredEnding.variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}</div><p>{rules.scattered.recovery["zh-Hans"]}</p></> : lines(story.endings[state.outcome].lines)}
         {state.outcome !== "scattered" && <div data-testid="retreat-ending-memory">{story.endings[state.outcome].variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}</div>}
         <p>{story.epilogue}</p><p>本卷开发段落到此结束。后续尚未开放。</p>
         <p>物资归属：{state.resourceCustody === "common" ? "现存队伍" : state.resourceCustody === "groups" ? "分行各组，不再是公共库存" : "未明，不能重复调拨"}</p>
@@ -132,6 +132,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       <p>{story.viewpoint.historyBoundary}</p>
       {(reading ? lastScene : scene)?.sourceIds.map(id => { const source = story.sources[id as keyof typeof story.sources]; return <p key={id}>{source.work}卷{source.volume} · {source.anchor}。{source.supports}</p>; })}
       {state.completed && state.outcome && state.outcome !== "scattered" && <p>{story.endings[state.outcome].unresolved}</p>}
+      {state.completed && state.outcome === "scattered" && <p>{story.scatteredEnding.unresolved}</p>}
       <p>{story.boundary}</p></details>
     {!reset && <button className="text-button" data-council-action="retry" disabled={busy} onClick={() => setReset(true)}>重开本段…</button>}
   </section>;

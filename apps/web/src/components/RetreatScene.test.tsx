@@ -326,21 +326,35 @@ describe("retreat development scene", () => {
     expect(JSON.parse(localStorage.getItem(retreatSaveKey)!).choices).toEqual([]);
   });
 
-  it("previews scattering and never substitutes the peaceful dispersion response", async () => {
+  it.each(["divide-records", "carry-records", "strip-identities"])("previews scattering and preserves its %s closing scene after resume", async records => {
     const input = props(), empty = structuredClone(entry);
     for (const key of ["grain", "tempo", "city", "allies", "veterans"] as const) empty.fanyang.metrics[key] = 0;
+    empty.fanyang.metrics.tempo = 1; // Allows copying; zero grain still makes orderly dispersion impossible.
     const view = render(<RetreatScene {...input} entry={empty} />);
-    for (const id of ["decline-dispatch", "gather-own", "split-routes", "carry-records"]) await choose(view, id);
+    for (const id of ["decline-dispatch", "gather-own", "split-routes", records]) await choose(view, id);
     fireEvent.click(view.container.querySelector('[data-retreat-choice="release-groups"]')!);
     expect(view.getByTestId("retreat-preview").getAttribute("data-outcome")).toBe("scattered");
     fireEvent.click(view.getByTestId("retreat-commit"));
     const response = await view.findByTestId("retreat-response");
     expect(response.textContent).toContain("账还没核完");
     expect(response.textContent).not.toContain("愿结伴的结伴");
+    for (const line of retreatStory.scatteredEnding.response) expect(response.textContent).toContain(line.text);
     fireEvent.click(within(response).getByRole("button", { name: /继续/ }));
     expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe("scattered");
     expect(view.queryByTestId("retreat-ending-memory")).toBeNull();
     expect(view.getByTestId("retreat-outcome").textContent).not.toContain("人分开了，账还是找你");
+    const memory = view.getByTestId("retreat-scattered-memory");
+    for (const variant of retreatStory.scatteredEnding.variants) {
+      for (const line of variant.lines) expect(memory.textContent?.includes(line.text)).toBe(variant.when.records === records);
+    }
+    const prose = view.getByTestId("retreat-outcome").textContent;
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const restored = render(<RetreatScene {...input} entry={empty} />);
+    expect(restored.getByTestId("retreat-response").textContent).toContain("原先说好的分行，没有等到一一交接");
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(restored.getByTestId("retreat-outcome").textContent).toBe(prose);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
   });
 
   it("saves borrowed grain and its debt together, rolls back failure, and preserves the debt after resume and dispersal", async () => {

@@ -97,8 +97,11 @@ export function validateDraft(draft) {
       if (choice.ending) assert.ok(Object.hasOwn(draft.endings, choice.ending), `Missing ending: ${choice.ending}`);
     }
   }
-  for (const ending of Object.values(draft.endings)) {
-    assert.ok(nonempty(ending.title) && nonempty(ending.unresolved));
+  assert.ok(nonempty(draft.scatteredEnding?.boundary));
+  checkLines(draft.scatteredEnding.response);
+  for (const ending of [...Object.values(draft.endings), draft.scatteredEnding]) {
+    assert.ok(nonempty(ending.unresolved));
+    if (ending !== draft.scatteredEnding) assert.ok(nonempty(ending.title));
     checkLines(ending.lines);
     for (const variant of ending.variants) {
       checkCondition(variant.when, draft.scenes.length);
