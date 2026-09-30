@@ -488,7 +488,15 @@ describe("retreat development scene", () => {
     empty.fanyang.metrics.tempo = 1; // Allows copying; zero grain still makes orderly dispersion impossible.
     const view = render(<RetreatScene {...input} entry={empty} />);
     for (const id of ["decline-dispatch", "gather-own", "split-routes", records]) await choose(view, id);
+    fireEvent.click(view.container.querySelector('[data-retreat-choice="stay-together"]')!);
+    expect(view.getByTestId("retreat-prior-choice-required").textContent).toContain("此前撤离时没有选择护送家户");
+    expect(view.getByText(/粮秣：0 \/ 需要 2 还缺 2/)).toBeTruthy();
+    expect((view.getByTestId("retreat-commit") as HTMLButtonElement).disabled).toBe(true);
+    const beforeInspection = localStorage.getItem(retreatSaveKey);
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    expect(localStorage.getItem(retreatSaveKey)).toBe(beforeInspection);
     fireEvent.click(view.container.querySelector('[data-retreat-choice="release-groups"]')!);
+    expect(view.queryByTestId("retreat-prior-choice-required")).toBeNull();
     expect(view.getByTestId("retreat-preview").getAttribute("data-outcome")).toBe("scattered");
     fireEvent.click(view.getByTestId("retreat-commit"));
     const response = await view.findByTestId("retreat-response");

@@ -134,8 +134,8 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         <div className="chen-offers">{scene.choices.map((item, index) => <button key={item.id} data-retreat-choice={item.id} data-council-choice={item.id} data-council-action="offer" disabled={busy || invalid} aria-pressed={choice.id === item.id} onClick={() => setSelected(index)}><span>{String.fromCharCode(65 + index)}</span>{item.title}{!inspectRetreatChoice(rules, state, item.id).available && <small>条件未满足，可查看原因</small>}</button>)}</div>
         <section className="chen-offer-detail" aria-live="polite"><h4>{choice.title}</h4><p>{choice.intent}</p><p>{explanations[choice.id]}</p>
           {preview.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{answerExplanations[answer.afterChoice]}</p>)}
-          {!preview.prerequisiteMet && <p>需要先完成家户护送。</p>}
-          <ul>{preview.checks.filter(check => check.required > 0).map(check => <li key={check.key}>{metrics[check.key]}：{check.value} / 需要 {check.required} {check.met ? "✓" : "不足"}</li>)}</ul>
+          {!preview.prerequisiteMet && <p data-testid="retreat-prior-choice-required">此前撤离时没有选择护送家户，因此现在不能组织这次共同等待。可查看其他去向；当前命令不会改写那次撤离。</p>}
+          <ul>{preview.checks.filter(check => check.required > 0).map(check => <li key={check.key}>{metrics[check.key]}：{check.value} / 需要 {check.required} {check.met ? "✓" : `还缺 ${check.required - check.value}`}</li>)}</ul>
           {preview.maximumChecks.map(check => <p key={check.key}>要求借粮前{metrics[check.key]} ≤ {check.maximum}（当前 {check.value}）{check.met ? "✓" : "已超过"}</p>)}
           {preview.newDebt && <p data-testid="retreat-debt-preview">新欠本地粮主：{preview.newDebt.grain} 份粮秣。债随约定保留，分行或去名不会销账。</p>}
           {preview.after && <div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{state.metrics[key]} → {preview.after![key]}</b></span>)}</div>}

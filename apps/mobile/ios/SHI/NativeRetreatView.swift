@@ -117,9 +117,9 @@ struct NativeRetreatView: View {
                 ForEach(Array(preview.answers.enumerated()), id: \.offset) { _, answer in
                     Text(session.definition.object("answerExplanationsZh").text(answer.text("afterChoice"))).foregroundStyle(gold)
                 }
-                if !preview.prerequisiteMet { Text("需要先完成家户护送。") }
+                if !preview.prerequisiteMet { Text("此前撤离时没有选择护送家户，因此现在不能组织这次共同等待。可查看其他去向；当前命令不会改写那次撤离。") }
                 ForEach(preview.requirements.filter { $0.required > 0 }) { check in
-                    Text("\(metrics[check.id]!)：\(check.value) / 需要 \(check.required) \(check.met ? "✓" : "不足")")
+                    Text("\(metrics[check.id]!)：\(check.value) / 需要 \(check.required) \(check.met ? "✓" : "还缺 \(check.required - check.value)")")
                 }
                 ForEach(preview.maximums.keys.sorted(), id: \.self) { key in
                     Text("要求借粮前\(metrics[key] ?? key) ≤ \(preview.maximums[key]!)（当前 \(engine.metrics[key, default: 0])）")
