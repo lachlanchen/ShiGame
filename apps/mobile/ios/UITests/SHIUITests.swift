@@ -180,7 +180,7 @@ final class SHIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["council-title"].waitForExistence(timeout: 10))
     }
     @discardableResult
-    func councilDecision(_ id: String, _ app: XCUIApplication) -> [String: String] {
+    func councilDecision(_ id: String, _ app: XCUIApplication, expectedOutcome: String? = nil) -> [String: String] {
         let offer = app.buttons["council-offer-" + id]
         reveal(offer, in: app); offer.tap()
         var expected: [String: String] = [:]
@@ -196,6 +196,16 @@ final class SHIUITests: XCTestCase {
             }
             let delta = after - before
             expected[key] = preview + " (\(delta > 0 ? "+" : "")\(delta))"
+        }
+        let outcomePreview = app.staticTexts["council-outcome-preview"]
+        if let expectedOutcome {
+            reveal(outcomePreview, in: app)
+            XCTAssertTrue(outcomePreview.exists)
+            XCTAssertEqual(outcomePreview.value as? String, expectedOutcome)
+            XCTAssertFalse(app.staticTexts["council-response"].exists)
+            capture("council-final-outcome-preview")
+        } else {
+            XCTAssertFalse(outcomePreview.exists)
         }
         let commit = app.buttons["council-commit"]
         reveal(commit, in: app); XCTAssertTrue(commit.isEnabled); commit.tap()
@@ -233,7 +243,7 @@ final class SHIUITests: XCTestCase {
         capture("council-03-native-resumed")
         councilContinue(app)
         let secondChanges = councilDecision("joint-ledger", app); councilContinue(app)
-        let thirdChanges = councilDecision("one-command", app)
+        let thirdChanges = councilDecision("one-command", app, expectedOutcome: "common-front")
         // Simulate leaving after durable commitment, before reading the ending.
         app.terminate(); app.launch()
         XCTAssertTrue(app.buttons["begin-game"].waitForExistence(timeout: 15)); app.buttons["begin-game"].tap()
