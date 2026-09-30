@@ -5,7 +5,7 @@
   "createdOn": "2026-09-30",
   "scope": "Android internal-beta candidate; no upload or public-release approval claimed",
   "android": {
-    "status": "signed-local-candidate-mobile-fixes-reviewed",
+    "status": "held-unread-chapter-aftermath-skipped-on-relaunch",
     "applicationId": "art.lazying.shi",
     "versionCode": 3,
     "apkSHA256": "09a7ac30027945d4fb6ab1cbc2bdc6ca44c0d81b58bd64d34b9a41f3faa21ea7",
@@ -24,7 +24,7 @@
     ],
     "limitations": [
       "One English portrait route on API34 emulator; not physical-device or all-locale qualification",
-      "New-game Chapter I route on this exact package still to verify",
+      "Fresh Chapter I seed CB918329: read-the-names persisted exactly one turn and resources38/54/25/67/61, but force-stop during unread aftermath resumes at decision2 instead of the reaction. Candidate held; source fix requires a new numbered package and repeat device QA",
       "AAB provider processing, live version-code reconciliation and internal distribution pending",
       "Existing lint warnings and generated arithmetic-only Gradle unit test remain"
     ],
