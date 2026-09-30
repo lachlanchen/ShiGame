@@ -15,6 +15,8 @@ export const routes = [
   { id: "loan", title: "借来的粮，留下的债", note: "渡过眼前难关，不代表偿还已经办妥。", args: ["--reception", "borrow-local-grain", "--ending", "together"] },
   { id: "courier", title: "韩驿使的一封回信", note: "从开篇争取驿使到后来收到路讯；回信不等于本人归队。", args: ["--courier", "--ending", "remnant"] },
   { id: "beacon", title: "夺燧之后，余部上路", note: "夺取亭燧后选择潜行；留下的追查痕迹，延续到撤离时如何保管凭记。", args: ["--beacon", "--ending", "remnant"] },
+  { id: "fanyang-opened", title: "范阳开城之后", note: "受降有了结果，但没有凭空送来陈地的军粮。沿真实支出接续到撤离。", args: ["--fanyang", "opened", "--ending", "remnant"] },
+  { id: "fanyang-deferred", title: "补约未成之后", note: "追加的保证仍未换来开城；花掉的粮与时间，不能在下一幕抹掉。", args: ["--fanyang", "deferred", "--ending", "remnant"] },
 ];
 export const escapeHTML = value => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 export function renderReading(markdown) {

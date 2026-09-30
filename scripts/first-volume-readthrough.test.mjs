@@ -65,6 +65,32 @@ test("beacon reading carries pursuit into record custody without borrowing anoth
   }
 });
 
+test("all Fan Yang outcomes survive into complete retreat readings without conflation", () => {
+  const reports = {
+    opened: "范阳受降了。这封信只说到交接，没说给我们送粮",
+    withdrawn: "没开城。使者平安回去了，我们的人也撤了",
+    deferred: "补过条件，还是没成。花掉的粮已经记在这封信后面",
+  };
+  for (const [outcome, report] of Object.entries(reports)) {
+    const text = run("--fanyang", outcome, "--ending", "remnant");
+    assert.equal(text, run("--fanyang", outcome, "--ending", "remnant"));
+    assert.ok(text.includes(`实际结果：${outcome}`));
+    assert.ok(text.includes("实际结果：remnant"));
+    assert.ok(text.includes(report));
+    for (const other of Object.values(reports).filter(value => value !== report)) assert.ok(!text.includes(other));
+    if (outcome === "opened") assert.ok(text.includes("public-safety → guarded-escort → accept-transfer"));
+    if (outcome === "deferred") {
+      assert.ok(text.includes("public-safety → guarded-escort → amend-guarantee"));
+      assert.ok(text.includes("那份账我不抹"));
+    }
+  }
+  for (const args of [["--fanyang"], ["--fanyang", "victory"], ["--fanyang", "opened", "--fanyang", "deferred"], ["--fanyang", "withdrawn", "--check"]]) {
+    const result = spawnSync(process.execPath, [...command, ...args], { cwd: root, encoding: "utf8" });
+    assert.notEqual(result.status, 0);
+    assert.ok(!result.stdout.includes("# 势"));
+  }
+});
+
 test("complete readings expose reception-dependent character arcs without borrowing other branches", () => {
   for (const [reception, ending] of [["gather-own", "together"], ["open-reception", "scattered"], ["verify-with-partners", "remnant"], ["borrow-local-grain", "together"]]) {
     const text = run("--reception", reception, "--ending", ending);
