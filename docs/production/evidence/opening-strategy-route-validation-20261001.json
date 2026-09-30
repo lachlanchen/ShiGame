@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-01",
+  "baseline": "b293685",
+  "previousTurnClassification": "progress: implemented three strategic dawn memories in shared story content",
+  "change": "Expanded chapter-memory UI integration tests from four histories to twelve, covering all three final opening strategies with each existing opening/organization/crossing itinerary.",
+  "routes": {
+    "strategies": ["root-in-villages", "race-for-chen", "send-two-envoys"],
+    "openingCrossingOrganization": [
+      ["read-the-names", "repair-the-ford", "issue-grain-tallies"],
+      ["read-the-names", "repair-the-ford", "voluntary-pots"],
+      ["take-the-beacon", "cut-the-carts", "extinguish-and-move"],
+      ["hide-the-register", "families-first", "turn-the-courier"]
+    ],
+    "council": ["defer-title", "joint-ledger", "one-command"],
+    "fanyang": ["public-safety", "hold-talks", "withdraw-envoy"],
+    "retreatToDawn": ["decline-dispatch", "gather-own", "split-routes", "carry-records"]
+  },
+  "assertions": [
+    "Each requested strategic choice actually appears in a successful chapter history.",
+    "Inherited resource state is replayed through council and envoy; no supplies are injected.",
+    "Only matching chapter memories appear at evacuation, records and dawn.",
+    "Strategic memory precedes the final question.",
+    "Reopening at dawn first restores the saved reaction, then the identical scene; save bytes and entry remain unchanged."
+  ],
+  "verification": {
+    "focused": "47 RetreatScene tests and web TypeScript check passed",
+    "fullCommand": "npm run validate",
+    "execution": 15928,
+    "exitCode": 0,
+    "authoringTests": 23,
+    "coreTests": 58,
+    "webTests": 199,
+    "resourceAudit": "117671 complete retreat routes from 993 real inherited entries; four outcomes, no dead ends, 15 grain-empty entries with loan-supported recovery"
+  },
+  "limitations": "Component tests are not browser screenshots, physical-device or human pacing review. Fixed test revision identifiers are used for these entry fixtures; the separate App integration test validates actual canonical hashes. No new store, native runtime or media action. Unrelated inherited work preserved."
+}

@@ -84,17 +84,19 @@ describe("retreat development scene", () => {
     ["read-the-names", "repair-the-ford", "voluntary-pots"],
     ["take-the-beacon", "cut-the-carts", "extinguish-and-move"],
     ["hide-the-register", "families-first", "turn-the-courier"],
-  ])("recalls replay-verified %s, %s and %s without changing saves or inventing other memories", async (opening, crossing, organization) => {
+  ].flatMap(route => ["root-in-villages", "race-for-chen", "send-two-envoys"].map(strategy => [...route, strategy])))
+  ("recalls replay-verified %s, %s, %s and %s without inventing other memories", async (opening, crossing, organization, strategy) => {
     const input = props();
     let priorChapter = createInitialState(definitions.campaign, 0);
     while (!priorChapter.completed) {
       const node = getNode(definitions.campaign, priorChapter.currentNodeId);
       const preferred = node.id === "rain-order" ? opening : node.id === "broken-crossing" ? crossing
-        : node.timeIndex === 1 ? organization : undefined;
+        : node.timeIndex === 1 ? organization : node.choices.some(choice => choice.id === strategy) ? strategy : undefined;
       priorChapter = resolveChoice(definitions.campaign, priorChapter,
         preferred ?? node.choices.find(choice => canChoose(choice, priorChapter.resources))!.id).state;
     }
     expect(priorChapter.failureReason).toBeUndefined();
+    expect(priorChapter.history.some(turn => turn.choiceId === strategy)).toBe(true);
     let priorCouncil = createCouncil(definitions.council, councilEntry(priorChapter)!);
     for (const id of ["defer-title", "joint-ledger", "one-command"]) priorCouncil = resolveCouncil(definitions.council, priorCouncil, id);
     const savedCouncil = JSON.parse(encodeCouncilSnapshot(priorCouncil, councilHash.trim()));
@@ -135,6 +137,15 @@ describe("retreat development scene", () => {
       && priorChapter.history.some(turn => turn.choiceId === callback.afterChoice))!;
     expect(strategicMemory.lines.length).toBeGreaterThan(0);
     expect(dawnText.indexOf(strategicMemory.lines[0]!.text)).toBeLessThan(dawnText.indexOf("还按原来的队么？"));
+    const dawnSave = localStorage.getItem(retreatSaveKey);
+    restored.unmount();
+    const dawnRestored = render(<RetreatScene {...input} />);
+    expect(dawnRestored.queryByTestId("retreat-chapter-memory")).toBeNull();
+    fireEvent.click(within(dawnRestored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    assertMemory(dawnRestored, "dawn");
+    expect(dawnRestored.getByTestId("retreat-scene").textContent).toBe(dawnText);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(dawnSave);
+    expect(JSON.stringify(input.entry)).toBe(originalEntry);
   });
 
   it.each(["escort-households", "hold-formation", "split-routes"])("shows the saved %s withdrawal before the records scene and preserves it on resume", async evacuation => {
