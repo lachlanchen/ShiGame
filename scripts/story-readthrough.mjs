@@ -50,6 +50,16 @@ export function validateDraft(draft) {
     }
   };
   const callbacks = new Set();
+  const events = new Set();
+  for (const event of draft.witnessedEvents) {
+    assert.ok(nonempty(event.id) && !events.has(event.id), "Duplicate/empty witnessed event");
+    events.add(event.id);
+    assert.ok(positions.has(event.sceneId) && nonempty(event.observation), "Invalid witnessed event");
+    checkCondition(event.when, positions.get(event.sceneId));
+    checkLines(event.lines);
+    assert.deepEqual(Object.keys(event.endingResponses).sort(), ["dispersed", "remnant", "scattered", "together"]);
+    for (const response of Object.values(event.endingResponses)) checkLines(response);
+  }
   for (const callback of draft.councilCallbacks) {
     assert.ok(positions.has(callback.sceneId), "Unknown council callback scene");
     assert.ok(councilChoiceRounds.has(callback.afterChoice), "Unknown prior council choice");
@@ -101,21 +111,24 @@ export function readRoute(draft, input, choices, priorCouncilChoices = []) {
   let sceneId = draft.entry;
   let endingId;
   const transcript = [];
+  const witnessedEvents = [];
   for (const choiceId of choices) {
     assert.ok(sceneId && !endingId, "Route continues after its ending");
     const scene = draft.scenes.find(item => item.id === sceneId);
     const choice = scene.choices.find(item => item.id === choiceId);
     assert.ok(choice && matches(choice.requires, facts), `Unavailable choice: ${choiceId}`);
+    const arrivals = draft.witnessedEvents.filter(event => event.sceneId === scene.id && matches(event.when, facts));
+    witnessedEvents.push(...arrivals.map(event => event.id));
     transcript.push({ sceneId, title: scene.title, transition: scene.transition, setting: scene.setting,
-      lines: [...scene.lines, ...draft.councilCallbacks.filter(item => item.sceneId === scene.id && priorCouncilChoices.includes(item.afterChoice)).flatMap(item => item.lines), ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines)],
+      lines: [...scene.lines, ...arrivals.flatMap(event => event.lines), ...draft.councilCallbacks.filter(item => item.sceneId === scene.id && priorCouncilChoices.includes(item.afterChoice)).flatMap(item => item.lines), ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines)],
       choiceId, choiceTitle: choice.title, intent: choice.intent,
-      reaction: [...choice.response, ...(scene.exitLines ?? [])] });
+      reaction: [...choice.response, ...arrivals.flatMap(event => choice.ending ? event.endingResponses[choice.ending] : []), ...(scene.exitLines ?? [])] });
     facts[sceneId] = choiceId;
     sceneId = choice.next;
     endingId = choice.ending;
   }
   assert.ok(endingId && !sceneId, "Incomplete reading route");
-  return { facts, transcript, endingId, ending: draft.endings[endingId] };
+  return { facts, transcript, endingId, ending: draft.endings[endingId], witnessedEvents };
 }
 
 export function auditDraft(draft) {
@@ -125,6 +138,7 @@ export function auditDraft(draft) {
   const endingCounts = Object.fromEntries(Object.keys(draft.endings).map(key => [key, 0]));
   const choicesSeen = new Set();
   const variantsSeen = new Set();
+  const witnessedSeen = new Set();
   let routes = 0;
   for (const input of inputs) {
     const visit = (sceneId, facts, path) => {
@@ -140,6 +154,7 @@ export function auditDraft(draft) {
         else {
           const result = readRoute(draft, input, nextPath);
           assert.equal(result.endingId, choice.ending);
+          result.witnessedEvents.forEach(id => witnessedSeen.add(id));
           endingCounts[choice.ending]++;
           routes++;
         }
@@ -150,9 +165,10 @@ export function auditDraft(draft) {
   assert.equal(choicesSeen.size, draft.scenes.reduce((sum, scene) => sum + scene.choices.length, 0), "Unreachable choice");
   assert.equal(variantsSeen.size, draft.scenes.reduce((sum, scene) => sum + scene.variants.length, 0), "Unreachable conditional dialogue");
   assert.ok(Object.values(endingCounts).every(count => count > 0), "Unreachable ending");
+  assert.equal(witnessedSeen.size, draft.witnessedEvents.length, "Unreachable witnessed event");
   return { scope: "Authoring graph only; not resource balance, save integration, historical review or shipped gameplay",
     inputContexts: inputs.length, routes, choices: choicesSeen.size, conditionalPassages: variantsSeen.size,
-    councilCallbacks: draft.councilCallbacks.length, endings: endingCounts };
+    councilCallbacks: draft.councilCallbacks.length, witnessedEvents: witnessedSeen.size, endings: endingCounts };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

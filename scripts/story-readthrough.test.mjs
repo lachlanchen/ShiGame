@@ -12,6 +12,7 @@ test("every authored choice, conditional passage and ending is reachable without
   assert.equal(result.inputContexts, 27);
   assert.equal(result.choices, 17);
   assert.equal(result.routes, 9072);
+  assert.equal(result.witnessedEvents, 1);
   assert.deepEqual(result.endings, { together: 1296, remnant: 3888, dispersed: 3888 });
 });
 
@@ -69,13 +70,41 @@ test("earlier decisions remain facts and select later responses without restorin
   assert.equal(result.endingId, "remnant");
 });
 
-test("unestablished whereabouts neither conjure speakers nor assert their departure", () => {
+test("unestablished whereabouts require a new witnessed event before a recurring companion speaks", () => {
   const result = readRoute(draft, { fanyang: "withdrawn", yu: "unestablished", han: "unestablished" }, together);
   const lines = result.transcript.flatMap(beat => [...beat.lines, ...beat.reaction]);
-  assert.ok(lines.every(line => !["yu-mu", "qin-courier"].includes(line.speaker)));
+  assert.ok(result.transcript.slice(0, 4).flatMap(beat => [...beat.lines, ...beat.reaction]).every(line => !["yu-mu", "qin-courier"].includes(line.speaker)));
+  assert.ok(lines.every(line => line.speaker !== "qin-courier"));
+  assert.deepEqual(result.witnessedEvents, ["yu-rendezvous-arrival"]);
+  assert.ok(result.transcript[4].lines.some(line => line.speaker === "yu-mu"));
   assert.ok(lines.some(line => line.text.includes("没有韩驿使的新回信")));
   assert.ok(lines.some(line => line.text.includes("不是全部同行者的点名")));
   assert.ok(lines.every(line => !line.text.includes("离队的家户没有回来")));
+});
+
+test("Yu's new arrival requires a retained reserve and escort, and never overrides an authored absence", () => {
+  for (const yu of ["present", "absent", "unestablished"]) {
+    for (const reserves of ["keep-reserve", "send-support", "verify-road", "decline-dispatch"]) {
+      for (const evacuation of ["escort-households", "hold-formation", "split-routes"]) {
+        const result = readRoute(draft, { ...input, yu }, [reserves, "gather-own", evacuation, "strip-identities", "release-groups"]);
+        assert.equal(result.witnessedEvents.includes("yu-rendezvous-arrival"), yu === "unestablished" && reserves === "keep-reserve" && evacuation === "escort-households");
+        if (yu === "absent") assert.ok(result.transcript.flatMap(beat => beat.lines).every(line => line.speaker !== "yu-mu"));
+        assert.ok(result.transcript.at(-1).lines.some(line => line.text.includes("没有补写那些被去掉的名字")));
+      }
+    }
+  }
+});
+
+test("Yu receives a different answer for each authored orderly ending without promising future presence", () => {
+  const answers = new Set();
+  for (const final of ["stay-together", "move-with-remnant", "release-groups"]) {
+    const result = readRoute(draft, { ...input, yu: "unestablished" }, ["keep-reserve", "gather-own", "escort-households", "carry-records", final]);
+    const reaction = result.transcript.at(-1).reaction;
+    assert.ok(reaction.some(line => line.speaker === "yu-mu"));
+    answers.add(reaction.find(line => line.speaker === "yu-mu").text);
+  }
+  assert.equal(answers.size, 3);
+  assert.ok(draft.witnessedEvents[0].endingResponses.scattered.some(line => line.text.includes("此后的去向仍须另问")));
 });
 
 test("invalid, unavailable, incomplete and overlong reading routes are rejected", () => {
@@ -118,7 +147,10 @@ test("authoring validation rejects unknown facts, future knowledge, bad destinat
     value => { value.councilCallbacks[0].afterChoice = "invented"; },
     value => { value.councilCallbacks[0].sceneId = "missing"; },
     value => { value.councilCallbacks.push(structuredClone(value.councilCallbacks[0])); },
-    value => { value.viewpoint.text = ""; }
+    value => { value.viewpoint.text = ""; },
+    value => { value.witnessedEvents[0].when.dawn = "stay-together"; },
+    value => { value.witnessedEvents[0].sceneId = "missing"; },
+    value => { value.witnessedEvents.push(structuredClone(value.witnessedEvents[0])); }
   ]) {
     const copy = structuredClone(draft);
     mutate(copy);

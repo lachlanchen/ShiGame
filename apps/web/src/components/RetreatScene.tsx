@@ -39,6 +39,12 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
   const beforeLast = last ? state.history.slice(0, -1).reduce((current, turn) => resolveRetreat(rules, current, turn.choiceId), createRetreat(rules, entry)) : null;
   const lastPreview = last && beforeLast ? inspectRetreatChoice(rules, beforeLast, last.choiceId) : null;
   const facts: Record<string, string> = { ...entry.readingContext, ...Object.fromEntries(state.history.map(turn => [turn.sceneId, turn.choiceId])) };
+  // Observations derive from saved choices, never from an assumed old presence.
+  // A later ending cannot turn a witnessed arrival into guaranteed future custody.
+  const witnessed = story.witnessedEvents.filter(event =>
+    (state.history.length > story.scenes.findIndex(scene => scene.id === event.sceneId)
+      || (!reading && state.history.length === story.scenes.findIndex(scene => scene.id === event.sceneId)))
+    && Object.entries(event.when).every(([key, value]) => facts[key] === value));
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
   useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [state.history.length, reading, reset]);
   const persist = async (next: RetreatState) => {
@@ -73,7 +79,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     <header className="chen-header"><h2 id="retreat-title">{story.title}</h2><button className="icon-button" data-council-action="close" aria-label="返回范阳" disabled={busy} onClick={() => { if (!transaction.current) onClose(); }}>×</button></header>
     <p className="chen-boundary">开发试玩 · 简体中文。<span lang="en"> Chinese-language development preview. Not a release build.</span></p>
     <p className="chen-boundary">参考《资治通鉴》卷七、卷八。对白、地方行动与分支结局均为原创戏剧重构，并非史书记载。</p>
-    <p className="chen-boundary">粮秣与支持数值承接已完成的议事，表示剩余组织能力，不表示北方粮仓搬到陈地。人物当前去向尚未确认，不凭旧日合作假定重逢。</p>
+    <p className="chen-boundary">粮秣与支持数值承接已完成的议事，表示剩余组织能力，不表示北方粮仓搬到陈地。人物去向须由本段实际发生的事件确认，不凭旧日合作假定重逢。</p>
     {invalid && <p role="alert" className="chen-error">存档损坏、来自另一段经历或内容已改版。原存档保留；明确重开前不能提交命令。</p>}
     {error && <p role="alert" className="chen-error">未能保存，命令尚未确认。请恢复存储后重试。</p>}
     <div className="chen-layout"><section className="chen-main">
@@ -82,6 +88,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         <button className="text-button" disabled={busy} data-council-action="cancel" onClick={() => setReset(false)}>取消</button></section>
       : reading && lastChoice && lastScene ? <section className="chen-scene" data-testid="retreat-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{lastChoice.title}</h3>
         {state.outcome === "scattered" ? <p className="chen-prose">{rules.scattered.reaction["zh-Hans"]}</p> : lines(lastChoice.response)}
+        {state.outcome && witnessed.map(event => <div data-testid="retreat-companion-answer" key={event.id}>{lines(event.endingResponses[state.outcome!])}</div>)}
         {lastPreview?.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{answerExplanations[answer.afterChoice]}</p>)}
         {last && <div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{last.before[key]} → {last.after[key]}</b></span>)}</div>}
         {lines((lastScene as typeof lastScene & { exitLines?: { speaker: string; text: string }[] }).exitLines ?? [])}
@@ -94,6 +101,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       : scene && choice && preview ? <section className="chen-scene"><p className="eyebrow">{state.history.length + 1} / {story.scenes.length}</p><h3 ref={heading} tabIndex={-1}>{scene.title}</h3>
         {state.history.length === 0 && <section data-testid="retreat-viewpoint"><h4>{story.viewpoint.title}</h4><p>{story.viewpoint.text}</p></section>}
         <p>{scene.setting}</p>{lines(scene.lines)}
+        {witnessed.filter(event => event.sceneId === scene.id).map(event => <div data-testid="retreat-witnessed-arrival" key={event.id}>{lines(event.lines)}</div>)}
         {story.councilCallbacks.some(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)) && <div data-testid="retreat-council-memory">{story.councilCallbacks.filter(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)).map(callback => <div key={callback.afterChoice}>{lines(callback.lines)}</div>)}</div>}
         {scene.variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}
         <div className="chen-offers">{scene.choices.map((item, index) => <button key={item.id} data-retreat-choice={item.id} data-council-choice={item.id} data-council-action="offer" disabled={busy || invalid} aria-pressed={choice.id === item.id} onClick={() => setSelected(index)}>{item.title}{!inspectRetreatChoice(rules, state, item.id).available && <small>条件未满足，可查看原因</small>}</button>)}</div>
@@ -110,6 +118,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         </section></section> : null}
     </section><aside className="chen-position" aria-label="当前局势"><h3>当前局势</h3><ul className="chen-metrics">{councilMetricKeys.map(key => <li key={key}><span>{metrics[key]}</span><span>{state.metrics[key]} / 10</span></li>)}</ul>
       {state.debts.length > 0 && <section data-testid="retreat-debts"><h3>未偿之约</h3>{state.debts.map(debt => <p key={debt.id}>欠本地粮主 {debt.grain} 份粮秣；债未偿还，粮主另持欠契。分行不表示免责。</p>)}</section>}
+      {witnessed.length > 0 && <section data-testid="retreat-observations"><h3>已见之人</h3>{witnessed.map(event => <p key={event.id}>{event.observation}</p>)}</section>}
     </aside></div>
     <details className="chen-history"><summary>史料与开发说明</summary><p>{(reading ? lastScene : scene)?.transition}</p>
       <p>{story.viewpoint.historyBoundary}</p>

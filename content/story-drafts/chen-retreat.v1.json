@@ -37,6 +37,29 @@
     "chen-fall": { "work": "资治通鉴", "volume": 8, "anchor": "二世益遣长史司马欣至其御庄贾杀陈王以降", "supports": "陈地战局恶化与陈胜败亡；地方粮站撤离为虚构，不是掌简人亲历下城父事件。" },
     "embers": { "work": "资治通鉴", "volume": 8, "anchor": "陈王故涓人将军吕臣为苍头军至葬陈王于砀", "supports": "吕臣聚兵复陈。不证明玩家队伍参与或幸存者必然加入。" }
   },
+  "witnessedEvents": [
+    {
+      "id": "yu-rendezvous-arrival",
+      "sceneId": "dawn",
+      "when": { "yu": "unestablished", "reserves": "keep-reserve", "evacuation": "escort-households" },
+      "observation": "妪母曾抵达会合处；只确认这次相见，不证明全部家户到齐，也不保证此后一直同行。",
+      "endingResponses": {
+        "together": [{ "speaker": "keeper", "text": "锅先放下。今日的粮够，守路的人也留下。明日等多久，点过粮再说。" }, { "speaker": "yu-mu", "text": "那先烧水。下一拨来了，别叫他们站着等。" }],
+        "remnant": [{ "speaker": "keeper", "text": "还得走一段。锅先捆回去，到了再支。" }, { "speaker": "yu-mu", "text": "我问问这几个人。肯同走的跟上，走不动的，你得听他们把话说完。" }],
+        "dispersed": [{ "speaker": "keeper", "text": "各组自己定去处。这一份领清，后面的事不再由我替你们答应。" }, { "speaker": "yu-mu", "text": "我留在这里问他们。碗先不收，总有人还想坐一会儿。" }],
+        "scattered": [{ "speaker": "narrator", "text": "还没说定往哪里去，就有人离开了会合处。妪母收拢碗，去找方才一同来的几个人。你最后看见她在路口，此后的去向仍须另问。" }]
+      },
+      "lines": [
+        { "speaker": "narrator", "text": "留在本地的接应队又带来几个人。领头的人肩上搭着一条旧布，走近才看清是妪母。她把布从肩上解下，里面裹着几只碗。" },
+        { "speaker": "keeper", "text": "你从哪里过来的？" },
+        { "speaker": "yu-mu", "text": "城边。我们跟着几个灶口住，没跟北边的使团走。你留下的人找到我们，说这边有车肯等。" },
+        { "speaker": "narrator", "text": "她将碗放稳，先数身后的人，少数了一遍，又重数。" },
+        { "speaker": "yu-mu", "text": "这几个到了。别的我没见着，别问我一句就算都齐了。" },
+        { "speaker": "keeper", "text": "先坐。后面的去向，我们还在问。" },
+        { "speaker": "yu-mu", "text": "坐得下。先告诉我，这次是歇脚，还是要留下过夜？锅放下了，再挪就慢了。" }
+      ]
+    }
+  ],
   "councilCallbacks": [
     { "sceneId": "reserves", "afterChoice": "take-crown", "lines": [{ "speaker": "narrator", "text": "新拨单用着议事后定下的王号。乡里管事认得那个印，却没有因此收起自己的凭记。" }, { "speaker": "supply-officer", "text": "名号已经定了，怎么还要一笔笔问？" }, { "speaker": "keeper", "text": "拥立时说过不搬空陈地的粮仓。印在这里，答应的话也在。" }] },
     { "sceneId": "reserves", "afterChoice": "recognize-allies", "lines": [{ "speaker": "narrator", "text": "往来文书上留着不同旗号。约立六国的提议传出去了，还没有哪张回书能替所有人答应。" }, { "speaker": "supply-officer", "text": "既然说一同反秦，这批人就一起调走。" }, { "speaker": "keeper", "text": "答应结盟，不等于把各家的粮都交到这张桌上。先点明哪一部肯出。" }] },

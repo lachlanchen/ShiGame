@@ -38,6 +38,35 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("witnesses Yu only after a saved escort and preserves the limited observation across resume and dispersal", async () => {
+    const input = props();
+    input.entry = structuredClone(input.entry);
+    input.entry.fanyang.metrics = { ...input.entry.fanyang.metrics, grain: 8, tempo: 8, city: 8, allies: 8, veterans: 8 };
+    const view = render(<RetreatScene {...input} />);
+    expect(view.queryByTestId("retreat-observations")).toBeNull();
+    for (const id of ["keep-reserve", "gather-own", "escort-households"]) await choose(view, id);
+    expect(view.queryByTestId("retreat-witnessed-arrival")).toBeNull();
+    fireEvent.click(view.container.querySelector('[data-retreat-choice="strip-identities"]')!);
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    await view.findByTestId("retreat-response");
+    expect(view.queryByTestId("retreat-observations")).toBeNull();
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const restored = render(<RetreatScene {...input} />);
+    expect(restored.queryByTestId("retreat-observations")).toBeNull();
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(restored.getByTestId("retreat-witnessed-arrival").textContent).toContain("没跟北边的使团走");
+    expect(restored.getByTestId("retreat-observations").textContent).toContain("不保证此后一直同行");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    fireEvent.click(restored.container.querySelector('[data-retreat-choice="release-groups"]')!);
+    fireEvent.click(restored.getByTestId("retreat-commit"));
+    await restored.findByTestId("retreat-response");
+    expect(restored.getByTestId("retreat-companion-answer").textContent).toContain("我留在这里问他们");
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(restored.getByTestId("retreat-observations").textContent).toContain("不保证此后一直同行");
+    expect(input.entry.continuity.currentCompanionPresence.yu).toBe("unestablished");
+  });
+
   it.each([
     ["take-crown", "新拨单用着议事后定下的王号", "拨单的名号栏仍空着"],
     ["recognize-allies", "约立六国的提议传出去了", "新拨单用着议事后定下的王号"],
