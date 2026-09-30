@@ -5,6 +5,10 @@ import { webcrypto } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import * as persistence from "./persistence";
+import { createInitialState, resolveChoice, type Campaign } from "@shi/game-core";
+import campaignData from "../../../content/campaigns/chapter-01-daze.json";
+import chapterFixtures from "../../../content/conformance/chapter-01-replays.v1.json";
+import { ui } from "./i18n";
 
 vi.mock("./components/ThreeBackdrop", () => ({
   ThreeBackdrop: () => <div data-testid="three-backdrop" />,
@@ -56,6 +60,42 @@ class FakeAudioContext {
 }
 
 describe("playable web shell", () => {
+  it.each(chapterFixtures.routes.filter(item => item.final.failureReason === "captured").flatMap(route =>
+    (["en", "zh-Hans"] as const).map(locale => ({ locale, route, id: route.id }))))("resumes the captured ending in $locale: $id", async ({ locale, route }) => {
+    localStorage.setItem("shi.locale", locale);
+    const campaign = campaignData as Campaign;
+    let state = createInitialState(campaign, chapterFixtures.seed);
+    for (const choice of route.choiceIds) state = resolveChoice(campaign, state, choice).state;
+    expect(state.failureReason).toBe("captured");
+    localStorage.setItem("shi.chapter-01.save.v6", JSON.stringify(state));
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    expect(await view.findByTestId("chapter-ending-prose")).toHaveProperty("textContent", ui[locale].capturedText);
+    expect(view.queryByTestId("council-enter")).toBeNull();
+    expect(view.queryByText(ui[locale].endingWatchfulText)).toBeNull();
+    const saved = JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!);
+    expect(saved.history).toEqual(state.history);
+    expect(saved.resources).toEqual(state.resources);
+  });
+
+  it("reaches capture through real controls without evaluating another pursuit round", async () => {
+    vi.stubEnv("VITE_SHI_NATIVE", "1");
+    localStorage.setItem("shi.locale", "en");
+    localStorage.setItem("shi.chapter-01.seed.v1", String(chapterFixtures.seed));
+    const route = chapterFixtures.routes.find(item => item.final.failureReason === "captured")!;
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    for (const id of route.choiceIds) {
+      fireEvent.click(view.container.querySelector(`[data-choice-id="${id}"]`)!);
+      fireEvent.click(await view.findByTestId("commit-selected"));
+      fireEvent.click(await view.findByTestId("resolution-continue"));
+    }
+    expect(view.getByTestId("chapter-ending-prose").textContent).toBe(ui.en.capturedText);
+    expect(view.getByTestId("shi-app").getAttribute("data-opposition-stage")).toBe("complete");
+    expect(view.queryByTestId("commit-selected")).toBeNull();
+    expect(view.queryByTestId("council-enter")).toBeNull();
+  });
+
   it.each([true, false])("plays title through Chen, Fan Yang and a retreat ending with resume and guarded saves (success=%s)", async success => {
     vi.stubGlobal("crypto", webcrypto);
     vi.stubEnv("VITE_SHI_NATIVE", "1");

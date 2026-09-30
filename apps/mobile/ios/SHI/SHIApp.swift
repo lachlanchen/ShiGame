@@ -309,9 +309,8 @@ struct CampaignView: View {
         let key = engine.ending == "wildfire" ? "endingWildfire" : engine.ending == "deep-roots" ? "endingRoots" : "endingWatchful"
         return VStack(alignment: .leading, spacing: 18) {
             Text(t(engine.failure == nil ? "complete" : "failed")).font(.caption).foregroundStyle(gold)
-            Text(t(key)).font(.largeTitle)
-            if let reason = engine.failure { Text(t(reason)) }
-            Text(t(key + "Text"))
+            Text(t(engine.failure ?? key)).font(.largeTitle)
+            Text(t((engine.failure ?? key) + "Text"))
             Text(locale.hasPrefix("zh") ? "本版本包含第一章；后续章节尚未推出。" : "This edition contains Chapter I. Later chapters are not yet available.").font(.footnote)
             if CouncilEntry.from(engine) != nil {
                 Button(CouncilContent.definition.object("labels").localized("enter", locale)) { showingCouncil = true }

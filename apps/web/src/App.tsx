@@ -138,7 +138,7 @@ export function App() {
   const screenRef = useRef(screen);
   const node = getNode(campaign, state.currentNodeId);
   const activeCondition = selectFieldCondition(campaign, node, state.seed, state.history.length);
-  const oppositionStage = selectOppositionStage(campaign, state.resources);
+  const oppositionStage = state.completed ? null : selectOppositionStage(campaign, state.resources);
   const methodRead = selectMethodRead(campaign, state);
   const activeCommitment = selectActiveCommitment(campaign, state);
   const commitmentStakeholder = activeCommitment ? campaign.characters.find((character) => character.id === activeCommitment.stakeholderId)! : null;
@@ -629,7 +629,7 @@ export function App() {
   }
 
   return (
-    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-opposition-stage={oppositionStage.id} data-method-read-id={methodRead.read.id} data-commitment-id={activeCommitment?.id ?? "none"} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
+    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-opposition-stage={oppositionStage?.id ?? "complete"} data-method-read-id={methodRead.read.id} data-commitment-id={activeCommitment?.id ?? "none"} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
       <Suspense fallback={<div className="three-backdrop" aria-hidden="true" />}><ThreeBackdrop reducedMotion={reducedMotion} paused={Boolean(drawer || resolution)} /></Suspense>
       <div className="game-stage" data-testid="game-stage" inert={Boolean(drawer || resolution)} aria-hidden={resolution ? true : undefined}>
       <header className="game-header">
@@ -648,7 +648,7 @@ export function App() {
 
       <Suspense fallback={<section className="campaign-horizon-placeholder" aria-busy="true" />}><CampaignHorizon campaign={campaign} node={node} locale={locale} /></Suspense>
 
-      <Suspense fallback={<section className="opposition-panel opposition-loading" aria-busy="true" />}><OppositionPanel stageId={oppositionStage.id} readId={methodRead.read.id} methodCounts={methodRead.counts} locale={locale} /></Suspense>
+      {oppositionStage && <Suspense fallback={<section className="opposition-panel opposition-loading" aria-busy="true" />}><OppositionPanel stageId={oppositionStage.id} readId={methodRead.read.id} methodCounts={methodRead.counts} locale={locale} /></Suspense>}
       {activeCommitment && commitmentStakeholder && <Suspense fallback={<section className="commitment-panel commitment-loading" aria-busy="true" />}><CommitmentPanel commitmentId={activeCommitment.id} stakeholder={commitmentStakeholder.name} locale={locale} /></Suspense>}
 
       <div className="game-grid">
@@ -715,7 +715,7 @@ export function App() {
           <div>
             <p className="eyebrow">{state.failureReason ? translate(locale, "failed") : translate(locale, "complete")}</p>
             <h2>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</h2>
-            <p>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText")}</p>
+            <p data-testid="chapter-ending-prose">{state.failureReason ? translate(locale, state.failureReason === "captured" ? "capturedText" : "scatteredText") : translate(locale, ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText")}</p>
             {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} locale={locale} /></Suspense>}
           </div>
           <div className="chen-ending-actions">

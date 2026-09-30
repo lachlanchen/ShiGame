@@ -8,6 +8,16 @@ import { oppositionUi } from "./opposition-i18n";
 import { decisionUi } from "./decision-i18n";
 
 describe("interface localization", () => {
+  it("gives each failure a distinct nonempty narrative in all eleven locales", () => {
+    for (const locale of supportedLocales) {
+      expect(ui[locale].capturedText.trim()).not.toBe("");
+      expect(ui[locale].scatteredText.trim()).not.toBe("");
+      expect(ui[locale].capturedText).not.toBe(ui[locale].captured);
+      expect(ui[locale].scatteredText).not.toBe(ui[locale].scattered);
+      expect(ui[locale].capturedText).not.toBe(ui[locale].scatteredText);
+    }
+  });
+
   it("covers every interface key in every supported locale", () => {
     const keys = Object.keys(ui.en);
     for (const locale of supportedLocales) {
