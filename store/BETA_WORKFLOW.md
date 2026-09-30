@@ -15,7 +15,8 @@ failure must not be described as successful distribution to both.
 Use only the existing SHI internal groups and tester membership. No new public
 beta, external tester invitation, price/territory change, review withdrawal or
 production promotion is implied. Preserve the separately authorized Android
-build1 production workflow and Apple's manual-release state.
+build1 production workflow. Apple build1 was separately authorized and released
+on September30; new betas do not inherit public-release authorization.
 
 ## Before each upload
 

@@ -1,5 +1,26 @@
 # SHI mobile publication
 
+## Apple public release accepted — 2026-09-30
+
+The owner explicitly requested post-processing and listing the Apple game online.
+Live readback confirmed version1.0.0, retained build1, VALID, with status
+PENDING_DEVELOPER_RELEASE: Apple review had passed. Reverified USD0.99 base price
+and the exact173 authorized markets, with no preorders. Mainland China/Vietnam
+remain excluded. No build substitution, new upload or review withdrawal.
+
+Sent one appStoreVersionReleaseRequests POST for version
+ef1a86c7-68f4-4eb5-bc2e-e3c3d3c39e8c. Apple accepted it and readback now reports
+READY_FOR_SALE / READY_FOR_DISTRIBUTION. All173 selected territories report
+PROCESSING_TO_AVAILABLE; the first public US page probe remains HTTP404.
+This supersedes historical Apple hold instructions, but does not prove storefront
+propagation. Next step is read-only availability/listing verification, not another
+release request. New beta development remains separate from this approved build.
+
+Public destination: https://apps.apple.com/us/app/id6816377548
+Private receipt, intent, exact preflight and readbacks are in
+.runtime/native-council-20260930/apple-*-release*.json and
+apple-public-release-{intent,receipt}.json. No Google state was changed here.
+
 ## Recurring beta authorization — 2026-09-30
 
 The owner explicitly requested regular TestFlight and Google Play internal-test
