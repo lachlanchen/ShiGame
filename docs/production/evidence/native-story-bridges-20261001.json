@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-01",
+  "sourceCommit": "e3fa718",
+  "status": "native-typechecks-and-presentation-checks-passed",
+  "sourceArchiveSHA256": "38f648d11895607b04be6860640933ad5b2240c4eb186752db1519744af96b30",
+  "readingInputsArchiveSHA256": "6df52e380eafc17ae77423fb539dc15fd391c924298ec95468845353660230d7",
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/NativeViewpointIntro.swift": "f56284c11a3f63e785a4271b9fc411017832832abafeb8c79804d0782764c9d7",
+    "content/presentation/viewpoints.v1.json": "dc4e8372e276ae214277c6f6486a9ddc4f60b94469e1c132ac87754c5f1d7e56",
+    "content/story-drafts/chen-retreat.v1.json": "4da5ebee6b47132e9b4db464bed460bd6d21cb30662f7c289ddae55b1352f83f"
+  },
+  "typecheck": {
+    "target": "arm64-apple-ios16.0-simulator",
+    "sdk": "iPhoneSimulator27.0.sdk",
+    "modes": ["production", "SHI_RETREAT_PREVIEW"],
+    "scope": "All current SHI Swift source files, including the narrative bridge view",
+    "exitCode": 0
+  },
+  "presentation": {
+    "checker": "apps/mobile/ios/Tests/RetreatPresentationChecks.swift",
+    "phaseSamples": 50,
+    "outcomes": ["together", "remnant", "dispersed", "scattered"],
+    "scope": "Real native chapter/council/Fan Yang entry replay, scoped callbacks, companion timing, custody endings and saved reaction replay against the latest retreat prose; sampled routes, not exhaustive web/native parity",
+    "exitCode": 0
+  },
+  "coordination": "AgentLink verified the pinned Mac peer and idle compiler state; used a separate bridge-check folder inside the existing SHI QA stage, preserving prior simulator result bundles. Archives matched before extraction. No SDK duplication, foreign-service changes, signing changes or installation.",
+  "cleanup": {
+    "activeCompilers": 0,
+    "bootedSimulators": 0,
+    "swapUsedMiB": 1.88
+  },
+  "limits": [
+    "Typecheck does not prove an installed iOS16 runtime works.",
+    "No new graphical native, physical-device, VoiceOver or human story acceptance.",
+    "Latest shared prose has not replaced the earlier simulator screenshot evidence.",
+    "No archive, TestFlight upload, store submission or public release."
+  ]
+}
