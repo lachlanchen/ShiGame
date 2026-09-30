@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-01",
+  "baselineCommit": "27e91a7",
+  "scope": "Visible title-to-orderly-dispersal web route and full repository validation",
+  "storySha256": "5dc4c55df79826646c392fd58290c5d054cb9b1dc321b12e6ab77d0e81953d8d",
+  "presentationSha256": "8c163d3782f68a70cd26f0e76e3460d32d78cd72eba7ec7022bc0500e0df71a9",
+  "visibleRun": {
+    "execution": 14603,
+    "command": "node scripts/playtest-retreat-visible.mjs dispersed baseline",
+    "exitCode": 0,
+    "checksPassed": 41,
+    "browserExceptions": 0,
+    "privateEvidenceDirectory": ".runtime/story-review/2026-09-30T22-02-43.822Z",
+    "viewport": "390x844 after desktop title",
+    "verified": ["Real UI route reaches disclosed dispersed outcome", "Chen arrival and selected village-strategy memory appear", "Orderly release scene renders with centrally held records", "Decision record contains five committed retreat choices and does not mutate the save", "Checked panels have no horizontal overflow", "Background scrolling resumes after closing the story"]
+  },
+  "visualReview": {
+    "reviewer": "Codex",
+    "screenshots": [
+      {"file": "05c-release-of-command-mobile.png", "sha256": "b6c11b1c423bd253d04775218730d83acea65ee9c9c4b90218c44517424b349c", "finding": "Release exchange and following custody dialogue are legible, with no overlap; unresolved accounts remain after the traveller departs."},
+      {"file": "02b-council-bridge-mobile.png", "sha256": "ea60ec32fb1052dc8960d4eb12805c0071ba666d896e731cb4ac9be5219d958d", "finding": "Arrival, role boundary and strategy memory are legible. Setup remains long before the first choice; pacing is not accepted merely because text fits horizontally."}
+    ]
+  },
+  "repositoryValidation": {"execution": 5111, "command": "npm run validate", "exitCode": 0, "authoringTests": 25, "coreTests": 58, "webTests": 207, "retreatAudit": "117671 complete legal routes from 993 inherited entries"},
+  "cleanup": {"ownedPidsConfirmedAbsent": [3476234,3476290,3476291,3476292,3476293], "portsConfirmedClosed": [4173,5921,6121,9321], "currentGuiUrl": null},
+  "limits": ["One visible route, not every branch", "No new native build or physical-device qualification", "No thirteen-route book visual review in this run", "No human story acceptance or store action", "Skill required visible-control operation, screenshot inspection and exact runtime cleanup"]
+}

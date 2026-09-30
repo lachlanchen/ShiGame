@@ -126,7 +126,7 @@ try {
   await click('[data-testid="council-enter"]');
   await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
   await capture("02-council-mobile"); await layout("council");
-  check(await evaluate("document.querySelector('[data-testid=council-story-bridge]')?.textContent.includes('旧凭记还算不算数')"), "council transition connects food claims to authority");
+  check(await evaluate("document.querySelector('[data-testid=council-story-bridge]')?.textContent.includes('掌简人随粮队入城') && document.querySelector('[data-testid=council-story-bridge]')?.textContent.includes('领粮的人举起旧凭记')"), "council transition establishes arrival and unresolved food claims");
   await evaluate("document.querySelector('[data-testid=council-story-bridge]').scrollIntoView({block:'center'})");
   await capture("02b-council-bridge-mobile");
   check(await evaluate("document.querySelector('[data-testid=council-chapter-bridge]')?.dataset.choice==='root-in-villages'"), "council recalls the actual village strategy");
@@ -195,6 +195,12 @@ try {
   await capture("05-ending-response-mobile");
   await click('[data-testid="retreat-response"] [data-council-action="continue"]');
   check(await evaluate(`document.querySelector('[data-testid=retreat-outcome]')?.dataset.outcome===${JSON.stringify(route)}`), `complete title-to-${route} route`);
+  const releaseLine = "没有再问他们何时归队";
+  check(await evaluate(`document.querySelector('[data-testid=retreat-outcome]').textContent.includes(${JSON.stringify(releaseLine)})`) === (route === "dispersed"), "personal release belongs only to orderly dispersal");
+  if (route === "dispersed") {
+    await evaluate(`([...document.querySelectorAll('[data-testid=retreat-outcome] p')].find(e=>e.textContent.includes(${JSON.stringify(releaseLine)}))).scrollIntoView({block:'center'})`);
+    await capture("05c-release-of-command-mobile"); await layout("release of command");
+  }
   const closingLine = { together: "锅边已经有人喊你吃饭", dispersed: "人分开了，账还是找你", remnant: "你把装简的囊换到身前", scattered: "你没有把无人应答的几笔勾掉" }[route];
   const memoryId = route === "scattered" ? "retreat-scattered-memory" : "retreat-ending-memory";
   check(await evaluate(`document.querySelector('[data-testid=${memoryId}]').textContent.includes(${JSON.stringify(closingLine)})`), "ending preserves centrally held records");
