@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "candidateBuild": 5,
+  "createdOn": "2026-09-30",
+  "scope": "Signed Android internal-test candidate; runtime qualification and upload pending",
+  "providerPreflight": {
+    "method": "Read-only visible Google Play Console releases and all-app-bundles pages",
+    "uploadedVersionCodes": [1],
+    "bundlePagination": "1 - 1 of 1",
+    "internalTrack": "Build1 available to internal testers",
+    "productionTrack": "Build1 in review, not publicly released",
+    "closedAlphaTrack": "Build1 ready to publish; held",
+    "writes": false
+  },
+  "android": {
+    "status": "signed-awaiting-runtime-qualification",
+    "applicationId": "art.lazying.shi",
+    "versionCode": 5,
+    "apkSHA256": "da61fc0a7c232ea0188da84c18b02f3b3f8e855a27c34e2509394ab3601e0992",
+    "aabSHA256": "db8b02fc446c79f74a21a546fc8bcd8bcb8ecb39cca8bb1173663af4703d0d00",
+    "sourceSetSHA256": "9ae5119e60f8087217c7b6d4ecd26c033c4903a358d90764f033a85623b90923",
+    "sourceFiles": 205,
+    "sourceUnchangedDuringBuild": true,
+    "qualification": [
+      "Signed release APK/AAB, release lint and generated Gradle unit smoke passed",
+      "Package/version/signature checked by guarded build script",
+      "Committed web source previously passed105web and34core tests and production size budgets"
+    ],
+    "limitations": [
+      "Exact signed build5 not yet installed or runtime-tested",
+      "Must test title Back/Escape with pending reaction, full route, source ledger, offline/resume and save upgrade",
+      "Source manifest includes existing uncommitted iOS/cinematic inputs; not a fully clean source checkout",
+      "No new visual/audio assets admitted; no physical-device qualification",
+      "Local swap58of71GiB exceeds shared-workstation75percent threshold; no emulator started",
+      "Provider availability must be rechecked before upload; no build-number reservation claimed"
+    ],
+    "uploaded": false
+  }
+}
