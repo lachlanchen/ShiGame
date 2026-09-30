@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-01",
+  "status": "session-tests-and-ios-typechecks-passed",
+  "scope": "Revised prose notice and transactional save state; not visual or physical-device acceptance.",
+  "execution": { "transfer": 34019, "compileAndTests": 80218, "exitCode": 0 },
+  "archiveSHA256": "7c5ee43c021a2c5036e82b8dfcb3b323cd0432c568782254c40f18598c0f85e2",
+  "sourceHashes": {
+    "apps/mobile/ios/SHI/RetreatSession.swift": "964cd5c3a8c19c7554e9f97e3283fd12307da640176752c837c5f861311bbce7",
+    "apps/mobile/ios/Tests/RetreatSessionChecks.swift": "82a578dde55e9a7846fb1edd217285dc5302271c0fdec495fdd2ab9a9624743c"
+  },
+  "nativeSessionChecks": 10,
+  "verified": [
+    "Fresh session does not show the prose revision flag.",
+    "Each reviewed older prose fingerprint restores its original history and exposes the revision flag without changing saved bytes.",
+    "Injected disk-full failure on the next choice leaves the notice, original history and old save bytes intact.",
+    "A successful retry clears the notice and records the current story fingerprint exactly once.",
+    "All 18 Swift app sources typecheck for arm64 iOS 16 simulator in both production and SHI_RETREAT_PREVIEW modes using the installed simulator SDK."
+  ],
+  "cleanup": "Compiler and test commands completed; no matching compiler, test or xcodebuild process remained. No simulator or GUI launched. Mac swap remained 1.88 MiB.",
+  "remaining": "Visible VoiceOver/layout review of the notice and a full application migration exercise; website and store builds unchanged."
+}

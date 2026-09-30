@@ -49,12 +49,20 @@ import CryptoKit
             previous["storySHA256"] = fingerprint
             let oldBytes = try JSONSerialization.data(withJSONObject: previous)
             try oldBytes.write(to: url)
-            let migrated = session(name)
+            var failMigrationWrite = true
+            let migrated = RetreatSession(entry: entry, rulesData: rulesData, storyData: storyData, saveURL: url) { bytes, destination in
+                if failMigrationWrite { throw CocoaError(.fileWriteOutOfSpace) }
+                try bytes.write(to: destination, options: .atomic)
+            }
             precondition(!migrated.needsRecovery && migrated.error == nil)
             precondition(migrated.resumedEarlierProse)
             precondition(migrated.engine!.history == live.engine!.history && migrated.response?.index == 0)
             try unchanged(url, oldBytes)
             migrated.continueResponse(migrated.response!.id)
+            precondition(!migrated.choose("borrow-local-grain"))
+            precondition(migrated.resumedEarlierProse && migrated.engine!.history == live.engine!.history)
+            try unchanged(url, oldBytes)
+            failMigrationWrite = false
             precondition(migrated.choose("borrow-local-grain"))
             precondition(!migrated.resumedEarlierProse)
             let updated = try JSONDecoder().decode(RetreatChronicle.self, from: Data(contentsOf: url))
