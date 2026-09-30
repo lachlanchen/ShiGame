@@ -12,8 +12,9 @@
     "SHIUITests.swift": "42ce83cb8e0f167c114f273982604fd11fb7187d43c3a2d2c00ed5153e58e8a4"
   },
   "verification": "Scoped diff check passed. Fix has not yet been compiled or rerun; prior successful compilation does not verify it.",
-  "evidence": "Remote decision-record-ipad.xcresult finalized; exported failure hierarchy B2422858-6273-4D08-9D19-948E04561901.txt read. Video transfer still active at handoff; no completed screenshot review claimed.",
-  "cleanup": "Final result probe confirmed simulator Shutdown; no new test launched. Evidence transfer is separate and remains tracked in private runtime handoff.",
+  "evidence": "Remote decision-record-ipad.xcresult finalized; exported failure hierarchy B2422858-6273-4D08-9D19-948E04561901.txt read. Follow-up extracted exact278s frame on Mac from the preserved original recording and downloaded it successfully. Visually inspected all five rows and closing prose, readable without overlap; this confirms content visibility, not corrected accessibility behavior.",
+  "reviewedFrame": { "privatePath": ".runtime/native-retreat-integration-20261001/decision-record-frame-278.jpg", "sha256": "488e25c37e53e1a50ca3b9a4b0d44dd379d39655b354506a4ee57c1359aa8718", "sourceRun": "failed original test, not the fixed rerun" },
+  "cleanup": "Original test simulator was Shutdown. Large recording copy was intentionally canceled after confirming214MB source size; remote original retained and incomplete local copy not used as evidence. Fixed rerun now uses one owned simulator with shutdown trap, tracked in private runtime handoff.",
   "limitations": ["Internal priority-inversion warning remains.", "Native visual acceptance and restart-cancel checks after the failing step remain unverified.", "No signing, store submission or public release."],
-  "next": "Finish the existing evidence transfer, inspect the recording, then compile and rerun the corrected row accessibility check without duplicating an active job."
+  "next": "Await the single fixed UI rerun20803 (decision-record-ipad-fixed.xcresult); no pass or visual acceptance inferred before it finishes. Do not restart the original test or canceled transfer."
 }
