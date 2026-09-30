@@ -60,6 +60,15 @@ import CryptoKit
                 let restored = try RetreatEngine.restore(definition: rules, entry: entry, rulesFingerprint: ru,
                     storyFingerprint: st, save: JSONDecoder().decode(RetreatChronicle.self, from: encoded))
                 precondition(restored.history == engine.history && restored.debts == engine.debts && restored.outcome == engine.outcome)
+                let oldFingerprint = String(repeating: "e", count: 64)
+                let oldSave = try engine.chronicle(rulesFingerprint: ru, storyFingerprint: oldFingerprint)
+                rejects { _ = try RetreatEngine.restore(definition: rules, entry: entry,
+                    rulesFingerprint: ru, storyFingerprint: st, save: oldSave) }
+                let migrated = try RetreatEngine.restore(definition: rules, entry: entry,
+                    rulesFingerprint: ru, storyFingerprint: st, save: oldSave,
+                    compatibleStoryFingerprints: [oldFingerprint])
+                precondition(migrated.history == engine.history && migrated.debts == engine.debts
+                    && migrated.outcome == engine.outcome && migrated.resourceCustody == engine.resourceCustody)
                 rejects { _ = try engine.preview("invented-order") }
                 states += 1; if engine.completed { endings += 1 }
             }

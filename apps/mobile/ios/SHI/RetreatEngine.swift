@@ -116,10 +116,11 @@ struct RetreatEngine {
             rulesSHA256: rulesFingerprint, storySHA256: storyFingerprint, choices: history.map(\.choiceId))
     }
     static func restore(definition: Record, entry: RetreatEntry, rulesFingerprint: String,
-                        storyFingerprint: String, save: RetreatChronicle) throws -> RetreatEngine {
+                        storyFingerprint: String, save: RetreatChronicle, compatibleStoryFingerprints: [String] = []) throws -> RetreatEngine {
         guard [rulesFingerprint, storyFingerprint].allSatisfy(FanyangEntry.validDigest), save.version == 1,
               save.definitionId == definition.text("id"), save.entryId == entry.id,
-              save.rulesSHA256 == rulesFingerprint, save.storySHA256 == storyFingerprint,
+              save.rulesSHA256 == rulesFingerprint, FanyangEntry.validDigest(save.storySHA256),
+              (save.storySHA256 == storyFingerprint || compatibleStoryFingerprints.contains(save.storySHA256)),
               save.choices.count <= 5 else { throw CampaignError.invalid("Retreat save does not match this entry or revision.") }
         var engine = try RetreatEngine(definition: definition, entry: entry)
         for id in save.choices { try engine.choose(id) }

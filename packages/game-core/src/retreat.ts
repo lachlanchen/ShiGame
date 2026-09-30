@@ -99,12 +99,15 @@ export function encodeRetreatSnapshot(state: RetreatState, rulesSHA256: string, 
     rulesSHA256, storySHA256, choices: state.history.map(turn => turn.choiceId) });
 }
 
-export function restoreRetreat(definition: RetreatDefinition, entry: RetreatEntry, snapshot: unknown, rulesSHA256: string, storySHA256: string): RetreatState | null {
+// compatibleStorySHA256 must come from reviewed current content, never the snapshot.
+export function restoreRetreat(definition: RetreatDefinition, entry: RetreatEntry, snapshot: unknown, rulesSHA256: string, storySHA256: string, compatibleStorySHA256: readonly string[] = []): RetreatState | null {
   if (!snapshot || typeof snapshot !== "object" || Array.isArray(snapshot)
     || ![rulesSHA256, storySHA256].every(hash => /^[a-f0-9]{64}$/.test(hash))) return null;
   const saved = snapshot as { version?: unknown; definitionId?: unknown; entryId?: unknown; rulesSHA256?: unknown; storySHA256?: unknown; choices?: unknown };
   if (saved.version !== 1 || saved.definitionId !== definition.id || saved.entryId !== entry.id
-    || saved.rulesSHA256 !== rulesSHA256 || saved.storySHA256 !== storySHA256
+    || saved.rulesSHA256 !== rulesSHA256
+    || typeof saved.storySHA256 !== "string" || !/^[a-f0-9]{64}$/.test(saved.storySHA256)
+    || (saved.storySHA256 !== storySHA256 && !compatibleStorySHA256.includes(saved.storySHA256))
     || !Array.isArray(saved.choices) || saved.choices.length > definition.scenes.length) return null;
   try {
     let state = createRetreat(definition, entry);

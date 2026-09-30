@@ -48,8 +48,12 @@ struct RetreatResponse: Identifiable {
         do {
             if FileManager.default.fileExists(atPath: self.saveURL.path) {
                 let save = try JSONDecoder().decode(RetreatChronicle.self, from: Data(contentsOf: self.saveURL))
+                let compatibility = story["saveCompatibility"] as? Record ?? [:]
+                let compatible = compatibility.text("rulesSHA256") == rulesFingerprint
+                    ? compatibility.strings("previousStorySHA256") : []
                 let restored = try RetreatEngine.restore(definition: definition, entry: entry,
-                    rulesFingerprint: rulesFingerprint, storyFingerprint: storyFingerprint, save: save)
+                    rulesFingerprint: rulesFingerprint, storyFingerprint: storyFingerprint, save: save,
+                    compatibleStoryFingerprints: compatible)
                 engine = restored
                 if !restored.history.isEmpty { response = RetreatResponse(index: restored.history.count - 1) }
             }

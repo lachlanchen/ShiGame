@@ -25,7 +25,8 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     try {
       const saved = gameStorage.getItem(retreatSaveKey);
       if (!saved) return { initial, damaged: false };
-      const restored = restoreRetreat(rules, entry, JSON.parse(saved), rulesHash, storyHash);
+      const compatible = story.saveCompatibility.rulesSHA256 === rulesHash ? story.saveCompatibility.previousStorySHA256 : [];
+      const restored = restoreRetreat(rules, entry, JSON.parse(saved), rulesHash, storyHash, compatible);
       return { initial: restored ?? initial, damaged: !restored };
     } catch { return { initial, damaged: true }; }
   });

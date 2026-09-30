@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
+import { createHash } from "node:crypto";
 
 const draftURL = new URL("../content/story-drafts/chen-retreat.v1.json", import.meta.url);
+const rulesHash = createHash("sha256").update(await readFile(new URL("../content/campaigns/chen-retreat.rules.v1.json", import.meta.url))).digest("hex");
 const council = JSON.parse(await readFile(new URL("../content/councils/chen-council.v1.json", import.meta.url), "utf8"));
 const councilChoiceRounds = new Map(council.rounds.flatMap(round => round.choices.map(choice => [choice.id, round.id])));
 const chapter = JSON.parse(await readFile(new URL("../content/campaigns/chapter-01-daze.json", import.meta.url), "utf8"));
@@ -17,6 +19,11 @@ export function validateDraft(draft) {
   assert.equal(draft.schemaVersion, 1);
   assert.equal(draft.status, "authoring-only");
   assert.equal(draft.publicationApproved, false);
+  assert.equal(draft.saveCompatibility?.rulesSHA256, rulesHash, "Prose compatibility requires reviewed unchanged rules");
+  const previous = draft.saveCompatibility.previousStorySHA256;
+  assert.ok(Array.isArray(previous) && previous.every(value => typeof value === "string" && /^[a-f0-9]{64}$/.test(value)), "Invalid compatible story fingerprint");
+  assert.equal(new Set(previous).size, previous.length, "Duplicate compatible story fingerprint");
+  assert.ok(nonempty(draft.saveCompatibility.review), "Missing compatibility review");
   for (const field of ["id", "title", "locale", "boundary", "inputBoundary", "epilogue"]) assert.ok(nonempty(draft[field]), field);
   assert.ok(draft.remainingGates.length > 0);
   for (const key of ["title", "text", "historyBoundary"]) assert.ok(nonempty(draft.viewpoint?.[key]), `Missing viewpoint ${key}`);

@@ -39,6 +39,25 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("resumes reviewed prose without rewriting the save until a new order is committed", async () => {
+    const input = props();
+    input.rulesHash = retreatStory.saveCompatibility.rulesSHA256;
+    const first = render(<RetreatScene {...input} />);
+    await choose(first, "decline-dispatch");
+    const old = JSON.parse(localStorage.getItem(retreatSaveKey)!);
+    old.storySHA256 = retreatStory.saveCompatibility.previousStorySHA256[0];
+    const bytes = JSON.stringify(old);
+    first.unmount(); localStorage.setItem(retreatSaveKey, bytes);
+    const resumed = render(<RetreatScene {...input} />);
+    expect(resumed.queryByRole("alert")).toBeNull();
+    expect(localStorage.getItem(retreatSaveKey)).toBe(bytes);
+    fireEvent.click(within(resumed.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    await choose(resumed, "gather-own");
+    const next = JSON.parse(localStorage.getItem(retreatSaveKey)!);
+    expect(next.choices).toEqual(["decline-dispatch", "gather-own"]);
+    expect(next.storySHA256).toBe(input.storyHash);
+  });
+
   it.each(["send-support", "decline-dispatch"])("recalls the missing escort only after %s, including resume", async dispatch => {
     const input = props();
     const view = render(<RetreatScene {...input} />);

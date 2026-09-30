@@ -7,6 +7,18 @@ const draft = JSON.parse(await readFile(new URL("../content/story-drafts/chen-re
 const input = { fanyang: "opened", yu: "present", han: "cooperating" };
 const together = ["keep-reserve", "open-reception", "escort-households", "divide-records", "stay-together"];
 
+test("prose compatibility metadata refuses changed rules, malformed fingerprints and missing review", () => {
+  for (const change of [
+    item => { item.rulesSHA256 = "0".repeat(64); },
+    item => { item.previousStorySHA256 = ["anything"]; },
+    item => { item.previousStorySHA256.push(item.previousStorySHA256[0]); },
+    item => { item.review = ""; }
+  ]) {
+    const copy = structuredClone(draft); change(copy.saveCompatibility);
+    assert.throws(() => validateDraft(copy));
+  }
+});
+
 test("every authored choice, conditional passage and ending is reachable without a narrative dead end", () => {
   const result = auditDraft(draft);
   assert.equal(result.inputContexts, 27);

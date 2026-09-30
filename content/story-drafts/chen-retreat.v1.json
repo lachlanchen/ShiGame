@@ -4,6 +4,14 @@
   "status": "authoring-only",
   "locale": "zh-Hans",
   "publicationApproved": false,
+  "saveCompatibility": {
+    "rulesSHA256": "b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867",
+    "previousStorySHA256": [
+      "516216d186a1dfe328d91d1195ab50e03f72fc050343ca6085577c93346a9c2c",
+      "759474096e96ab8af7dcfcaaf73f4a96d82eb7aba94c4578af0f6e257fef886d"
+    ],
+    "review": "Reviewed prose-only revisions: escort finale callback and this compatibility metadata. No choice, condition, rule, witnessed event, custody or entry change. Replay against unchanged rules and exact entry; never trust saved totals or accept an unlisted revision."
+  },
   "title": "陈地余火",
   "viewpoint": {
     "title": "从议事案前，回到粮棚",

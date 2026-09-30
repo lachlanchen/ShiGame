@@ -196,4 +196,22 @@ describe("resource-backed retreat rules", () => {
     }
     expect(() => encodeRetreatSnapshot(state, "invalid", storyHash)).toThrow();
   });
+
+  it("replays only explicitly reviewed prose revisions without mutating old saves", () => {
+    expect(story.saveCompatibility.rulesSHA256).toBe(rulesHash);
+    const compatible = story.saveCompatibility.previousStorySHA256;
+    const entry = entries[0]!;
+    const state = follow(entry, ["decline-dispatch", "gather-own"]);
+    for (const old of compatible) {
+      const saved = JSON.parse(encodeRetreatSnapshot(state, rulesHash, old));
+      const before = JSON.stringify(saved);
+      expect(restoreRetreat(rules, entry, saved, rulesHash, storyHash)).toBeNull();
+      expect(restoreRetreat(rules, entry, saved, rulesHash, storyHash, compatible)).toEqual(state);
+      expect(JSON.stringify(saved)).toBe(before);
+      for (const invalid of [{ ...saved, entryId: "foreign" }, { ...saved, rulesSHA256: "0".repeat(64) },
+        { ...saved, choices: ["stay-together"] }, { ...saved, storySHA256: "f".repeat(64), compatibleStorySHA256: ["f".repeat(64)] }]) {
+        expect(restoreRetreat(rules, entry, invalid, rulesHash, storyHash, compatible)).toBeNull();
+      }
+    }
+  });
 });
