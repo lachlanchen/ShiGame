@@ -266,6 +266,7 @@
       "title": "仍可同行",
       "lines": [{ "speaker": "narrator", "text": "锅重新支起来。先到的人把车挪开，给后来者留下停靠的地方。掌简人开始核今日的粮，不再等一枚远方的印。" }],
       "variants": [
+        { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "rear-guard", "text": "借来的也算在今日的粮里？" }, { "speaker": "keeper", "text": "算。吃了多少照实记，欠的不能跟着减。" }, { "speaker": "narrator", "text": "你把欠契放在粮数旁，留出核问的位置。锅已经架好，偿还的日子却还定不下来。" }] },
         { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "核到一笔领粮，另一组的人取出自己的凭记，蹲到你身旁。两份对不上，你们便各自留着，没有急着把其中一份涂掉。" }] },
         { "when": { "records": "carry-records" }, "lines": [{ "speaker": "narrator", "text": "来核账的人在你面前坐下。你把囊口解开，先让他认自己的那一笔。锅边已经有人喊你吃饭，你答了一声，还没有起身。" }] },
         { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "有人指着匿名欠账问，这笔该算给谁。你请他去找当时在场的人，把那一格留空。简上少了可供追索的姓名，锅边却仍有人等着一个答复。" }] }
@@ -276,6 +277,7 @@
       "title": "余部上路",
       "lines": [{ "speaker": "narrator", "text": "前面的人起身，后面的队伍慢慢跟上。有人还肯听你的安排，有人只是需要同走这一段。会合处留下了下一站的消息，没有留下一个必能兑现的归期。" }],
       "variants": [
+        { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "rear-guard", "text": "借粮的人来这里找，找不到你呢？" }, { "speaker": "keeper", "text": "把问讯的地方再留一份。有人来问，不要只说我们走了。" }, { "speaker": "narrator", "text": "你另记下这一笔欠粮，再起身追上前队。消息能不能传回陈地，还没有人答得上来。" }] },
         { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "有人问凭记由谁带，你指了指分别收好的几包。拿简的人各自应了一声。走出几步，你回头数的是人，不再只是自己身上的行囊。" }] },
         { "when": { "records": "carry-records" }, "lines": [{ "speaker": "narrator", "text": "你把装简的囊换到身前。后面有人追问到了哪里能找你，你停下来，把下一处问讯的地方又说了一遍。说完才重新跟上队伍。" }] },
         { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "收拾时，手指碰到削去名字的地方。你将匿名欠账包好，带着它上路。前头有人招呼快走，你没有回去补那几个字。" }] }
@@ -286,6 +288,7 @@
       "title": "各自的归路",
       "lines": [{ "speaker": "narrator", "text": "有人留在路边等同伴，有人领清自己那份便先走。各组商量着不同的去处，话声渐渐分远。" }],
       "variants": [
+        { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "rear-guard", "text": "分完这些，借的那笔算谁的？" }, { "speaker": "keeper", "text": "欠契怎么写，还怎么算。别临走才把没作保的人添上去。" }, { "speaker": "narrator", "text": "你将新借的那笔单独指给面前的人看。分的是眼下的粮，不是让各组替你重新认下一份欠契。" }] },
         { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "几份凭记已经分在各组手里。临走前，拿简的人彼此问清日后到哪里找。你听着，把自己那份卷好，没有再伸手收回他们的。" }] },
         { "when": { "records": "carry-records" }, "lines": [{ "speaker": "rear-guard", "text": "人分开了，账还是找你？" }, { "speaker": "keeper", "text": "简还在我这里。要核的，趁现在来。以后到哪里问，我留下话。" }, { "speaker": "narrator", "text": "你把收了一半的囊重新打开。已经背起行李的人中，有一个又坐了下来。" }] },
         { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "离开前，有人想替另一组认一笔欠账。你问他当时是否在场，他摇了摇头。那一笔仍旧空着。你收起匿名的简，没有叫他猜一个名字。" }] }
@@ -304,6 +307,7 @@
       { "speaker": "narrator", "text": "路口的说话声渐渐远了。你仍站在摊开的布旁，把方才确实听见的去向记下。没听清的地方空着，没有一道口令能把它们填满。" }
     ],
     "variants": [
+      { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "narrator", "text": "那份借粮的欠契还在。你原想趁分行时把它再说清，如今抬起头，面前已不是方才那些人。你没有在欠数旁写下已清，也没有把离开的人都添作保人。" }] },
       { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "先前分出去的凭记没有收回来。你只裹好自己手里的这一份，在旁边注明哪些还要另找持简的人核对。现在连他们在哪里，也得重新问。" }] },
       { "when": { "records": "carry-records" }, "lines": [{ "speaker": "narrator", "text": "简仍在你的囊里。先前说过谁来问便找你，如今你却不知道该到哪里找他们。你没有把无人应答的几笔勾掉。" }] },
       { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "匿名欠账还在，能当面作证的人却不在眼前。你将空白的一面翻回去；留下的数目，已不能独自告诉你该追上谁。" }] }

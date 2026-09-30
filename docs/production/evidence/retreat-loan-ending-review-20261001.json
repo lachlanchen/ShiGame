@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-01",
+  "baseline": "7b829ff",
+  "priority": "Complete the first-volume story before expanding cinematic assets",
+  "previousTurnClassification": "progress: committed native story-flow assertions and finalized simulator evidence",
+  "change": "Four loan-only ending passages give the borrowed-grain decision a dramatic consequence after the last choice.",
+  "source": "content/story-drafts/chen-retreat.v1.json",
+  "sourceSHA256": "8d2177ca40f6bb276411386cb0fd9854ba22ba231c506ffa67915381f04254ef",
+  "authorship": "Original Chinese dramatization by the development agent; no historical quotation or new historical claim.",
+  "editorialReview": {
+    "status": "agent-reviewed development draft, not human acceptance or release approval",
+    "together": "Using borrowed food does not reduce the outstanding debt; repayment date remains unknown.",
+    "remnant": "Moving creates a practical problem of finding the borrower. Leaving information does not guarantee delivery to Chen.",
+    "dispersed": "Dividing current supplies does not rewrite the debt or conscript new guarantors.",
+    "scattered": "The intended debt discussion fails as people leave. Neither repayment nor new guarantors are invented.",
+    "continuity": "The lender remains absent in Chen; the separate loan contract survives all three identity-record choices. No new resources, repayment, rescue or casualties."
+  },
+  "verification": [
+    "22 authoring tests passed; 9072 authoring routes audited, not resource-route proof.",
+    "36 reception/custody/ending combinations check loan callback inclusion and exclusion for the three authored orderly endings.",
+    "39 RetreatScene tests passed, including synthetic loan inputs for orderly dispersal and scattering, save failure rollback, ending prose, and reload without save mutation.",
+    "Web TypeScript check passed.",
+    "Native shared content synchronized and parity validation passed; no native runtime test of these new passages.",
+    "Continuous reading-copy replay and exact comparison passed; its non-loan example prose is unchanged, source hash updated."
+  ],
+  "remaining": [
+    "Visual review of the new ending passages on mobile and native clients.",
+    "Human first-volume readthrough and branch pacing feedback.",
+    "Broader localization and Unreal story integration remain incomplete."
+  ],
+  "release": "Development content only. No store upload, submission or release."
+}

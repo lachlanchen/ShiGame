@@ -98,7 +98,7 @@ test("chapter memories reject foreign choices, duplicate callbacks and conflicti
 
 test("resource-triggered scattering has validated original prose without pretending the authoring graph predicts it", () => {
   assert.ok(draft.scatteredEnding.response.length >= 2);
-  assert.deepEqual(draft.scatteredEnding.variants.map(variant => variant.when.records).sort(), ["carry-records", "divide-records", "strip-identities"]);
+  assert.deepEqual(draft.scatteredEnding.variants.filter(variant => variant.when.records).map(variant => variant.when.records).sort(), ["carry-records", "divide-records", "strip-identities"]);
   assert.ok(!Object.hasOwn(draft.endings, "scattered"));
   const broken = structuredClone(draft);
   broken.scatteredEnding.variants[0].when.records = "restored-every-name";
@@ -140,6 +140,25 @@ test("all nine ending memories preserve the chosen record custody without invent
   const invalid = structuredClone(draft);
   invalid.endings.remnant.variants[0].when.records = "invented-records";
   assert.throws(() => validateDraft(invalid), /Unknown fact/);
+});
+
+test("borrowed grain has a distinct unpaid obligation in each ending without leaking to other receptions", () => {
+  const endings = { "stay-together": "together", "move-with-remnant": "remnant", "release-groups": "dispersed" };
+  for (const [choice, outcome] of Object.entries(endings)) {
+    const callback = draft.endings[outcome].variants.filter(variant => variant.when["bad-news"] === "borrow-local-grain");
+    assert.equal(callback.length, 1);
+    for (const reception of ["borrow-local-grain", "gather-own", "open-reception", "verify-with-partners"]) {
+      for (const custody of ["carry-records", "divide-records", "strip-identities"]) {
+        const result = readRoute(draft, input, ["keep-reserve", reception, "escort-households", custody, choice]);
+        assert.equal(result.endingId, outcome);
+        for (const line of callback[0].lines) assert.equal(result.ending.lines.some(actual => actual.text === line.text), reception === "borrow-local-grain");
+        assert.ok(callback[0].lines.every(line => line.speaker !== "granary-holder"), "The lender stayed in Chen");
+      }
+    }
+  }
+  const scattered = draft.scatteredEnding.variants.filter(variant => variant.when["bad-news"] === "borrow-local-grain");
+  assert.equal(scattered.length, 1);
+  assert.ok(scattered[0].lines[0].text.includes("没有在欠数旁写下已清"));
 });
 
 test("the opening finishes the northern report before council reminders and ends on the actionable question", () => {

@@ -448,10 +448,12 @@ describe("retreat development scene", () => {
     expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
   });
 
-  it("saves borrowed grain and its debt together, rolls back failure, and preserves the debt after resume and dispersal", async () => {
+  it.each(["dispersed", "scattered"] as const)("preserves borrowed grain, debt and the matching %s ending through save failure and resume", async (outcome) => {
     const supported = structuredClone(entry);
     for (const key of ["tempo", "city", "allies", "veterans"] as const) supported.fanyang.metrics[key] = 6;
     supported.fanyang.metrics.grain = 0;
+    // Deliberate unit-test inputs, not proof of campaign-route reachability.
+    if (outcome === "scattered") Object.assign(supported.fanyang.metrics, { city: 2, allies: 4, veterans: 0 });
     const input = { ...props(), entry: supported };
     let view = render(<RetreatScene {...input} />);
     await choose(view, "decline-dispatch");
@@ -477,8 +479,17 @@ describe("retreat development scene", () => {
     expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
     fireEvent.click(within(view.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
     for (const id of ["split-routes", "strip-identities", "release-groups"]) await choose(view, id);
-    expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe("dispersed");
+    expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe(outcome);
     expect(view.getByTestId("retreat-debts").textContent).toContain("分行不表示免责");
+    const ending = outcome === "scattered" ? retreatStory.scatteredEnding : retreatStory.endings.dispersed;
+    const loan = ending.variants.find(variant => variant.when["bad-news"] === "borrow-local-grain")!;
+    for (const line of loan.lines) expect(view.getByTestId("retreat-outcome").textContent).toContain(line.text);
+    const endingSave = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    view = render(<RetreatScene {...input} />);
+    fireEvent.click(within(view.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    for (const line of loan.lines) expect(view.getByTestId("retreat-outcome").textContent).toContain(line.text);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(endingSave);
   });
 
   it("has a named Chinese dialog, keyboard focus wrapping and no automatic semantic violations", async () => {
