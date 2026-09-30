@@ -102,8 +102,14 @@ try {
   await click('[data-testid="council-enter"]');
   await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
   await capture("02-council-mobile"); await layout("council");
+  check(await evaluate("document.querySelector('[data-testid=council-story-bridge]')?.textContent.includes('旧凭记还算不算数')"), "council transition connects food claims to authority");
+  await evaluate("document.querySelector('[data-testid=council-story-bridge]').scrollIntoView({block:'center'})");
+  await capture("02b-council-bridge-mobile");
   for (const id of ["defer-title", "joint-ledger", "one-command"]) { await click(`[data-council-choice="${id}"]`); await click('[data-testid="council-commit"]'); await click('[data-testid="council-continue"]'); }
   await click('[data-testid="fanyang-enter"]');
+  check(await evaluate("document.querySelector('[data-testid=fanyang-story-bridge]')?.textContent.includes('哪些士卒肯听他的话')"), "envoy transition preserves uncertain local obedience");
+  await evaluate("document.querySelector('[data-testid=fanyang-story-bridge]').scrollIntoView({block:'center'})");
+  await capture("02c-envoy-bridge-mobile"); await layout("envoy bridge");
   for (const id of ["public-safety", "hold-talks", "withdraw-envoy"]) { await click(`[data-fanyang-choice="${id}"]`); await click('[data-testid="fanyang-commit"]'); await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); }
   await click('[data-testid="retreat-enter"]'); await until(exists('[data-testid="retreat-commit"]'));
   await capture("03-retreat-mobile"); await layout("retreat opening");

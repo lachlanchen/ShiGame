@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-01",
+  "timezone": "Asia/Hong_Kong",
+  "sourceCommit": "11cae39",
+  "command": "node scripts/playtest-retreat-visible.mjs together",
+  "scope": "Agent-operated title-to-together development web route at 390x844; not native, human acceptance or release approval.",
+  "result": "passed",
+  "checks": 30,
+  "browserExceptions": 0,
+  "privateEvidence": ".runtime/story-review/2026-09-30T20-00-13.128Z",
+  "visuallyReviewed": ["02b-council-bridge-mobile.png", "02c-envoy-bridge-mobile.png"],
+  "observations": [
+    "Viewpoint boundary precedes the original dramatic bridge, followed by the established introduction and first decision.",
+    "Both passages are readable without horizontal overflow or overlapping controls.",
+    "The opening choice list requires vertical scrolling; this is a substantial prose introduction, not evidence of a finished cinematic interaction.",
+    "Actual controls remain reachable and the route completes with the together forecast and ending, matching custody memory and restored background scrolling."
+  ],
+  "cleanup": {
+    "verifiedAbsentPids": [2678338, 2678425, 2678426, 2678427, 2678428],
+    "verifiedClosedPorts": [4173, 5921, 6121, 9321],
+    "availableMemoryGiB": 48,
+    "currentRuntime": null,
+    "foreignProcessesModified": false
+  },
+  "remaining": [
+    "Human narrative and reading-length feedback",
+    "Native compilation and graphical review of bridge additions",
+    "Latest retreat prose review on native hardware",
+    "Remaining locales and supported-device accessibility testing"
+  ]
+}
