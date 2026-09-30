@@ -5,9 +5,13 @@ import { resolve } from "node:path";
 import net from "node:net";
 
 const root = resolve(import.meta.dirname, "..");
+const route = process.argv[2] ?? "together";
+if (!["together", "dispersed"].includes(route) || process.argv.length > 3) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed]");
+const evacuation = route === "together" ? "escort-households" : "hold-formation";
 const out = resolve(root, ".runtime/story-review", new Date().toISOString().replaceAll(":", "-"));
 await mkdir(out, { recursive: true });
 const report = { status: "running", output: out, started: new Date().toISOString(), checks: [], screenshots: [], errors: [], owned: [],
+  route,
   boundary: "Agent-operated visible development web route; not human acceptance, native or store verification." };
 const children = [], logs = [];
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -45,13 +49,14 @@ const click = async selector => {
 };
 const capture = async name => {
   await send("Page.bringToFront");
-  await evaluate("document.fonts.ready"); await delay(250);
+  await evaluate("document.fonts.ready"); await delay(650);
   const frame = await send("Page.captureScreenshot", { format: "png" });
   await writeFile(resolve(out, `${name}.png`), Buffer.from(frame.data, "base64")); report.screenshots.push(`${name}.png`);
 };
 const layout = async name => {
   const value = await evaluate("({viewport:innerWidth,document:document.documentElement.scrollWidth,drawers:[...document.querySelectorAll('.drawer')].map(e=>({width:e.clientWidth,scroll:e.scrollWidth}))})");
   check(value.document <= value.viewport + 1 && value.drawers.every(d => d.scroll <= d.width + 1), `${name}: no horizontal overflow`);
+  check(await evaluate("getComputedStyle(document.body).overflowY==='hidden'"), `${name}: background page scrolling locked`);
 };
 try {
   for (const port of [4173, 5921, 6121, 9321]) await freePort(port);
@@ -79,6 +84,11 @@ try {
   await send("Page.enable"); await send("Runtime.enable");
   await send("Page.navigate", { url: "http://127.0.0.1:4173/?seed=00000000" });
   await until(exists('[data-testid="begin-game"]'));
+  const xenv = { ...process.env, DISPLAY: ":121" };
+  const windowId = execFileSync("xdotool", ["search", "--onlyvisible", "--class", "Google-chrome"], { env: xenv, encoding: "utf8" }).trim().split("\n")[0];
+  execFileSync("xdotool", ["windowmove", "--sync", windowId, "0", "0", "windowsize", "--sync", windowId, "1600", "1000"], { env: xenv });
+  report.windowGeometry = execFileSync("xdotool", ["getwindowgeometry", "--shell", windowId], { env: xenv, encoding: "utf8" });
+  check(/WIDTH=1600\b/.test(report.windowGeometry) && /HEIGHT=1000\b/.test(report.windowGeometry), "Chrome window fits the dedicated desktop");
   await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
   await until("document.documentElement.lang==='zh-Hans'"); await capture("01-title");
   await click('[data-testid="begin-game"]');
@@ -92,23 +102,39 @@ try {
   for (const id of ["public-safety", "hold-talks", "withdraw-envoy"]) { await click(`[data-fanyang-choice="${id}"]`); await click('[data-testid="fanyang-commit"]'); await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); }
   await click('[data-testid="retreat-enter"]'); await until(exists('[data-testid="retreat-commit"]'));
   await capture("03-retreat-mobile"); await layout("retreat opening");
-  for (const id of ["keep-reserve", "gather-own", "escort-households", "carry-records"]) {
+  for (const id of ["keep-reserve", "gather-own", evacuation, "carry-records"]) {
     await click(`[data-retreat-choice="${id}"]`);
     if (id === "keep-reserve") {
       await capture("03b-retreat-choice-mobile");
       report.choiceGeometry = await evaluate("(()=>{const e=document.querySelector('[data-retreat-choice=keep-reserve]'),r=document.createRange();r.selectNodeContents([...e.childNodes].find(n=>n.nodeType===Node.TEXT_NODE));return {labelWidth:r.getBoundingClientRect().width,buttonWidth:e.getBoundingClientRect().width}})()");
       check(report.choiceGeometry.labelWidth > report.choiceGeometry.buttonWidth / 2, "retreat choice uses a readable text column");
     }
-    await click('[data-testid="retreat-commit"]'); await click('[data-testid="retreat-response"] [data-council-action="continue"]');
+    await click('[data-testid="retreat-commit"]');
+    if (id === evacuation) {
+      const expected = route === "together" ? "掌心全是木刺" : "墙角以里";
+      check(await evaluate(`document.querySelector('[data-testid=retreat-response]').textContent.includes(${JSON.stringify(expected)})`), "saved evacuation presents its matching physical aftermath");
+      await capture("04-evacuation-aftermath-mobile"); await layout("evacuation aftermath");
+    }
+    await click('[data-testid="retreat-response"] [data-council-action="continue"]');
   }
-  check(await evaluate(exists('[data-testid="retreat-witnessed-arrival"]')), "Yu arrives through actual saved choices");
-  await evaluate("document.querySelector('[data-testid=retreat-witnessed-arrival]').scrollIntoView({block:'start'})");
-  await capture("04-yu-arrival-mobile"); await layout("Yu arrival");
-  await click('[data-retreat-choice="stay-together"]'); await click('[data-testid="retreat-commit"]');
+  check(await evaluate(exists('[data-testid="retreat-witnessed-arrival"]')) === (route === "together"), "Yu presence matches the actual escort decision");
+  if (route === "together") {
+    await evaluate("document.querySelector('[data-testid=retreat-witnessed-arrival]').scrollIntoView({block:'start'})");
+    await capture("04-yu-arrival-mobile"); await layout("Yu arrival");
+  }
+  await click(`[data-retreat-choice="${route === "together" ? "stay-together" : "release-groups"}"]`); await click('[data-testid="retreat-commit"]');
   await capture("05-ending-response-mobile");
   await click('[data-testid="retreat-response"] [data-council-action="continue"]');
-  check(await evaluate("document.querySelector('[data-testid=retreat-outcome]')?.dataset.outcome==='together'"), "complete title-to-together route");
+  check(await evaluate(`document.querySelector('[data-testid=retreat-outcome]')?.dataset.outcome===${JSON.stringify(route)}`), `complete title-to-${route} route`);
+  const closingLine = route === "together" ? "锅边已经有人喊你吃饭" : "人分开了，账还是找你";
+  check(await evaluate(`document.querySelector('[data-testid=retreat-ending-memory]').textContent.includes(${JSON.stringify(closingLine)})`), "ending preserves centrally held records");
+  await evaluate("document.querySelector('[data-testid=retreat-outcome]').scrollIntoView({block:'start'})");
   await capture("06-ending-mobile"); await layout("ending");
+  await click('[data-testid="retreat-outcome"] [data-council-action="close"]');
+  await click('[data-testid="fanyang-scene"] [data-council-action="close"]');
+  await click('[data-testid="chen-council"] [data-council-action="close"]');
+  await until("!document.querySelector('.drawer')");
+  check(await evaluate("getComputedStyle(document.body).overflowY!=='hidden'"), "background page scrolling restored after closing story");
   check(report.errors.length === 0, "no browser runtime exceptions"); report.status = "passed";
 } catch (error) {
   report.status = "failed"; report.failure = error.stack;

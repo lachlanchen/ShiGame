@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "build": "npm run build passed including full validation and the production development-content exclusion gate. Initial JS 80.91 KiB/100; CSS 11.83 KiB/12; largest lazy JS 178.95 KiB/200; deploy 26.97 MiB/30. Local build only.",
+  "sourceBaseline": "18cb723 plus modal scroll-lock and visible-test changes",
+  "commands": ["node scripts/playtest-retreat-visible.mjs dispersed", "node scripts/playtest-retreat-visible.mjs together"],
+  "scope": "Two real-controls development web routes, from title through opening, council, Fan Yang and retreat. Fresh isolated incognito sessions; no injected game state.",
+  "passed": [
+    "390x844 mobile layout: no horizontal overflow in council, retreat opening, evacuation aftermath and ending; together route also checks Yu arrival",
+    "Saved formation and escort decisions show their respective newly authored physical aftermaths",
+    "Yu arrives on the escort route and is not invented on the formation route",
+    "Both endings preserve the earlier central record-custody choice",
+    "Modal background scrolling is locked and is restored after returning through Fan Yang and Chen and closing the panel",
+    "No captured JavaScript runtime exception; noVNC endpoint reachable; dedicated Chrome window verified at 1600x1000"
+  ],
+  "visualReview": "Inspected both mobile aftermaths and endings. Chinese text and continue/return controls are readable. The initial alternate-route capture exposed two scrollbars; after the CSS fix, screenshots show one panel scrollbar and a wider reading column. Long prose still requires deliberate scrolling; this is not a cinematic media acceptance.",
+  "screenshot": {
+    "file": "retreat-dispersed-mobile-20261001.png",
+    "sha256": "fbb98d646d3bf34d29e6c02eea432c00a3876c78648fbd2adbc04b417135671b",
+    "origin": "Reviewed local Chrome capture of SHI development UI",
+    "licenseStatus": "Project-generated UI evidence, not third-party or AI-generated media",
+    "intendedUse": "Branch continuity and mobile reading regression evidence; not store marketing"
+  },
+  "cleanup": "Each run stopped its exact owned process groups. Ports 4173, 5921, 6121 and 9321 verified closed before the next job. No foreign processes stopped.",
+  "limits": "No physical device, native, Unreal, Safari, human story acceptance, audio/video approval or publication. Remnant and scattered routes still require graphical review. Save/resume is covered by separate component tests, not these browser runs."
+}
