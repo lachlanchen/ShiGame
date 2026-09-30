@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "sourceBaseline": "ceef5cb plus expanded visible-browser harness",
+  "scope": "Agent-operated local development web, visible Chrome, 390x844 mobile viewport. No game-state injection.",
+  "sharedEntry": "Seed 00000000; four default legal opening choices; council defer-title/joint-ledger/one-command; Fan Yang public-safety/hold-talks/withdraw-envoy.",
+  "routes": [
+    {
+      "command": "node scripts/playtest-retreat-visible.mjs scattered",
+      "choices": ["send-support", "open-reception", "escort-households", "carry-records", "release-groups"],
+      "result": "Passed. Real spending exhausts grain before the last choice. UI forecasts scattered before commit, then presents the saved scattering reaction and central-record closing passage. No Yu arrival is invented without the reserve. Final grain 0, tempo 2, city 10, allies 4, veterans 1; resource custody unresolved."
+    },
+    {
+      "command": "node scripts/playtest-retreat-visible.mjs remnant",
+      "choices": ["keep-reserve", "gather-own", "hold-formation", "carry-records", "move-with-remnant"],
+      "result": "Passed. Forecast and saved ending are remnant, with formation aftermath and centrally carried records. Final grain 3, tempo 4, city 6, allies 0, veterans 4; resource custody common."
+    }
+  ],
+  "visualReview": "Inspected scattering choice/cost warning, reaction and conclusion, and remnant conclusion. Readable Chinese prose, one scrollbar and visible continuation/return controls. The exact scattering forecast was checked in DOM before commitment; its screenshot shows earlier warning text and costs rather than the full below-fold forecast.",
+  "checks": "No horizontal overflow in four checked story surfaces; background scrolling locked while modal and restored on close; no captured browser runtime exceptions; desktop geometry verified; script syntax check passed.",
+  "initialFailure": "The first scattered run rejected a correctly laid-out short label because its glyph width was less than half the button. Screenshot inspection disproved a UI regression. The harness now measures the actual text-column width and label position relative to the marker. Corrected scattered and remnant runs passed.",
+  "screenshot": {
+    "file": "retreat-scattered-mobile-20261001.png",
+    "sha256": "82510cdd54731507cd8323c83201c2b6d674b42063bc7cde738fe15d523e3062",
+    "origin": "Reviewed local Chrome capture of original SHI development UI",
+    "licenseStatus": "Project-generated UI evidence; not externally generated media",
+    "intendedUse": "Story and mobile regression evidence, not store marketing"
+  },
+  "cleanup": "All exact owned processes stopped between runs and after completion; ports 4173/5921/6121/9321 closed. Foreign processes preserved.",
+  "limits": "Together and dispersed were reviewed in the preceding checkpoint; there is now one sampled graphical route per outcome, not exhaustive visual acceptance. No native/device/Safari, human playtest, audio/video or release acceptance. Full application validation last passed at ceef5cb; this checkpoint changes only test harness and evidence."
+}

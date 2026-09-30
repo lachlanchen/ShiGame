@@ -6,8 +6,11 @@ import net from "node:net";
 
 const root = resolve(import.meta.dirname, "..");
 const route = process.argv[2] ?? "together";
-if (!["together", "dispersed"].includes(route) || process.argv.length > 3) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed]");
-const evacuation = route === "together" ? "escort-households" : "hold-formation";
+if (!["together", "dispersed", "remnant", "scattered"].includes(route) || process.argv.length > 3) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered]");
+const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
+const reserves = route === "scattered" ? "send-support" : "keep-reserve";
+const reception = route === "scattered" ? "open-reception" : "gather-own";
+const finalChoice = route === "together" ? "stay-together" : route === "remnant" ? "move-with-remnant" : "release-groups";
 const out = resolve(root, ".runtime/story-review", new Date().toISOString().replaceAll(":", "-"));
 await mkdir(out, { recursive: true });
 const report = { status: "running", output: out, started: new Date().toISOString(), checks: [], screenshots: [], errors: [], owned: [],
@@ -102,16 +105,16 @@ try {
   for (const id of ["public-safety", "hold-talks", "withdraw-envoy"]) { await click(`[data-fanyang-choice="${id}"]`); await click('[data-testid="fanyang-commit"]'); await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); }
   await click('[data-testid="retreat-enter"]'); await until(exists('[data-testid="retreat-commit"]'));
   await capture("03-retreat-mobile"); await layout("retreat opening");
-  for (const id of ["keep-reserve", "gather-own", evacuation, "carry-records"]) {
+  for (const id of [reserves, reception, evacuation, "carry-records"]) {
     await click(`[data-retreat-choice="${id}"]`);
-    if (id === "keep-reserve") {
+    if (id === reserves) {
       await capture("03b-retreat-choice-mobile");
-      report.choiceGeometry = await evaluate("(()=>{const e=document.querySelector('[data-retreat-choice=keep-reserve]'),r=document.createRange();r.selectNodeContents([...e.childNodes].find(n=>n.nodeType===Node.TEXT_NODE));return {labelWidth:r.getBoundingClientRect().width,buttonWidth:e.getBoundingClientRect().width}})()");
-      check(report.choiceGeometry.labelWidth > report.choiceGeometry.buttonWidth / 2, "retreat choice uses a readable text column");
+      report.choiceGeometry = await evaluate(`(()=>{const e=document.querySelector('[data-retreat-choice=${reserves}]'),r=document.createRange();r.selectNodeContents([...e.childNodes].find(n=>n.nodeType===Node.TEXT_NODE));const label=r.getBoundingClientRect();return {labelWidth:label.width,labelStart:label.x,markerEnd:e.firstElementChild.getBoundingClientRect().right,textColumnWidth:parseFloat(getComputedStyle(e).gridTemplateColumns.split(' ')[1]),buttonWidth:e.getBoundingClientRect().width}})()`);
+      check(report.choiceGeometry.labelStart >= report.choiceGeometry.markerEnd && report.choiceGeometry.textColumnWidth > report.choiceGeometry.buttonWidth / 2, "retreat choice uses a readable text column");
     }
     await click('[data-testid="retreat-commit"]');
     if (id === evacuation) {
-      const expected = route === "together" ? "掌心全是木刺" : "墙角以里";
+      const expected = evacuation === "escort-households" ? "掌心全是木刺" : "墙角以里";
       check(await evaluate(`document.querySelector('[data-testid=retreat-response]').textContent.includes(${JSON.stringify(expected)})`), "saved evacuation presents its matching physical aftermath");
       await capture("04-evacuation-aftermath-mobile"); await layout("evacuation aftermath");
     }
@@ -122,12 +125,16 @@ try {
     await evaluate("document.querySelector('[data-testid=retreat-witnessed-arrival]').scrollIntoView({block:'start'})");
     await capture("04-yu-arrival-mobile"); await layout("Yu arrival");
   }
-  await click(`[data-retreat-choice="${route === "together" ? "stay-together" : "release-groups"}"]`); await click('[data-testid="retreat-commit"]');
+  await click(`[data-retreat-choice="${finalChoice}"]`);
+  check(await evaluate(`document.querySelector('[data-testid=retreat-preview]')?.dataset.outcome===${JSON.stringify(route)}`), "final outcome disclosed before commitment");
+  if (route === "scattered") await capture("04b-scattering-warning-mobile");
+  await click('[data-testid="retreat-commit"]');
   await capture("05-ending-response-mobile");
   await click('[data-testid="retreat-response"] [data-council-action="continue"]');
   check(await evaluate(`document.querySelector('[data-testid=retreat-outcome]')?.dataset.outcome===${JSON.stringify(route)}`), `complete title-to-${route} route`);
-  const closingLine = route === "together" ? "锅边已经有人喊你吃饭" : "人分开了，账还是找你";
-  check(await evaluate(`document.querySelector('[data-testid=retreat-ending-memory]').textContent.includes(${JSON.stringify(closingLine)})`), "ending preserves centrally held records");
+  const closingLine = { together: "锅边已经有人喊你吃饭", dispersed: "人分开了，账还是找你", remnant: "你把装简的囊换到身前", scattered: "你没有把无人应答的几笔勾掉" }[route];
+  const memoryId = route === "scattered" ? "retreat-scattered-memory" : "retreat-ending-memory";
+  check(await evaluate(`document.querySelector('[data-testid=${memoryId}]').textContent.includes(${JSON.stringify(closingLine)})`), "ending preserves centrally held records");
   await evaluate("document.querySelector('[data-testid=retreat-outcome]').scrollIntoView({block:'start'})");
   await capture("06-ending-mobile"); await layout("ending");
   await click('[data-testid="retreat-outcome"] [data-council-action="close"]');
