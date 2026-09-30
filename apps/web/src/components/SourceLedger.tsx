@@ -1,5 +1,6 @@
-import { localize, type Campaign, type HistoricalClaim, type Locale, type SourceRef } from "@shi/game-core";
+import { localize, type HistoricalClaim, type Locale, type SourceRef } from "@shi/game-core";
 import claimsJson from "../generated/chapter-01-claims.json";
+import sourcesJson from "../generated/chapter-01-sources.json";
 import { translateEvidence } from "../evidence-i18n";
 import { translate } from "../i18n";
 
@@ -16,8 +17,8 @@ const claimStatusLabel = (claim: HistoricalClaim, locale: Locale) => {
   return translateEvidence(locale, "evidenceLocated");
 };
 
-export function SourceLedger({ campaign, locale, activeIds, activeClaimIds, contextTitle, onClose }: { campaign: Campaign; locale: Locale; activeIds: string[]; activeClaimIds: string[]; contextTitle?: string; onClose: () => void }) {
-  const sources = campaign.sources.filter((source) => activeIds.includes(source.id));
+export function SourceLedger({ locale, activeIds, activeClaimIds, contextTitle, onClose }: { locale: Locale; activeIds: string[]; activeClaimIds: string[]; contextTitle?: string; onClose: () => void }) {
+  const sources = (sourcesJson as SourceRef[]).filter((source) => activeIds.includes(source.id));
   const claims = (claimsJson as HistoricalClaim[]).filter((claim) => activeClaimIds.includes(claim.id));
   return (
     <aside className="drawer" data-testid="sources-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "sources")}>
