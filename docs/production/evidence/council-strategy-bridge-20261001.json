@@ -10,11 +10,23 @@
     "focusedAndTypes": "Execution76038 exit0: 57 focused tests, core/web typechecks, native export synchronization and content parity validation.",
     "readings": "Execution98523 exit0: both complete-reading tests pass; all four ending exports deterministic and saved default exact.",
     "dataContract": "Native-content validator checks bilingual coverage and exact correspondence with the canonical three-roads choices.",
-    "scopedDiff": "Passed. No rule, resource, campaign hash or save-schema change."
+    "scopedDiff": "Passed. No rule, resource, campaign hash or save-schema change.",
+    "nativeCompilation": "Follow-up execution58767 exit0: all current SHI Swift sources typechecked in production and SHI_RETREAT_PREVIEW modes, arm64 iOS16 simulator target against installed iOS27 SDK. This is compilation evidence, not runtime selection or layout acceptance."
+  },
+  "nativeCompileReceipt": {
+    "sourceCommit": "32dc5e7",
+    "coordination": "AgentLink skill and protocol read; pinned Mac mini identity and idle resources verified before using the existing SHI-owned bridge-check stage. No foreign service or release checkout changed.",
+    "transfer": "Execution58822 exit0; archive hash verified before extraction",
+    "archiveSHA256": "b7ea5802ae520a47a14abc5260333410e62ee3665cc2766b1820b001cf4635f6",
+    "sourceSHA256": {
+      "NativeViewpointIntro.swift": "fda0ac07ff8c0b8bf4f63d936b413787b0b3bcb8d2a95e3e3f4b3e4ba59c98e4",
+      "NativeCouncilView.swift": "746a95023e14978a4307b7655dd686faaba8da66d77f93384559e93069230ede"
+    },
+    "cleanup": "Probe70298 exit0: source hashes match, no xcodebuild/swift-frontend or booted simulator, swap1.88MiB. No GUI, installation, signing or store action. All handles terminal; do not rerun merely to finalize."
   },
   "review": "Agent editorial review: the selected strategy creates a concrete question in the council without inventing a successful envoy reply, universal village support or a player-led historical conquest. These are original dramatized transitions, not new historical claims.",
   "remaining": [
-    "Compile and review the changed native views; content parity alone does not prove Swift compilation or layout.",
+    "Review the changed native views at runtime; successful typechecking does not prove selection behavior or layout.",
     "Visible mobile layout and human story review for the additional paragraph.",
     "Wider story, localization, cinematic and release gates remain open. No store action performed."
   ]
