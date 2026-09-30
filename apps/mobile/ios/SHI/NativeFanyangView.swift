@@ -77,7 +77,10 @@ struct NativeFanyangView: View {
         let offer = engine.choices.first { $0.text("id") == selectedID } ?? engine.choices.first ?? [:]
         Text("\(engine.history.count + 1) / 3").font(.caption).foregroundStyle(gold)
         Text(text(engine.round, "title")).font(.title2).accessibilityAddTraits(.isHeader)
-        if engine.history.isEmpty { Text(text(session.definition, "introduction")).lineSpacing(6) }
+        if engine.history.isEmpty {
+            NativeViewpointIntro(scene: "fanyang", locale: locale)
+            Text(text(session.definition, "introduction")).lineSpacing(6)
+        }
         Text(text(engine.round, "context")).lineSpacing(6)
         ForEach(engine.choices, id: \.idValue) { item in
             Button { selectedID = item.text("id") } label: {

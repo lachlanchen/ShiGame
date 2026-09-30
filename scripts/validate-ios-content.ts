@@ -10,6 +10,14 @@ import { translateCommitment } from "../apps/web/src/commitment-i18n";
 
 const root = resolve(import.meta.dirname, "..");
 const resource = resolve(root, "apps/mobile/ios/SHI/Resources");
+const viewpoints = await readFile(resolve(root, "content/presentation/viewpoints.v1.json"));
+assert(viewpoints.equals(await readFile(resolve(resource, "viewpoints.v1.json"))), "Native viewpoint presentation differs from shared prose");
+const viewpointData = JSON.parse(viewpoints.toString());
+assert.equal(viewpointData.schemaVersion, 1);
+assert.deepEqual(Object.keys(viewpointData.scenes).sort(), ["council", "fanyang"]);
+for (const scene of Object.values(viewpointData.scenes) as { title: Record<string, string>; text: Record<string, string> }[]) {
+  for (const field of [scene.title, scene.text]) for (const locale of ["en", "zh-Hans"]) assert(field[locale]?.trim(), `Missing ${locale} viewpoint prose`);
+}
 assert((await readFile(resolve(root, "assets/art/keyart/daze-village-rain-v1.png"))).equals(
   await readFile(resolve(resource, "daze-village-rain-v1.png")),
 ), "Native title art differs from the reviewed source");

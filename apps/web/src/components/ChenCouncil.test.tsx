@@ -23,6 +23,18 @@ const props = () => ({ origin: origin(), locale: "en" as const, reducedMotion: f
 afterEach(() => { cleanup(); localStorage.clear(); vi.restoreAllMocks(); });
 
 describe("Chen council presentation", () => {
+  it("explains the policy viewpoint before the first order without adding a saved turn", async () => {
+    const view = render(<ChenCouncil {...props()} />);
+    expect(view.getByTestId("council-viewpoint").textContent).toContain("not crowning the keeper himself");
+    expect(localStorage.getItem("shi.chen-council.v1")).toBeNull();
+    fireEvent.click(view.container.querySelector('[data-council-choice="defer-title"]')!);
+    fireEvent.click(view.getByTestId("council-commit"));
+    await view.findByTestId("council-continue");
+    expect(view.queryByTestId("council-viewpoint")).toBeNull();
+    fireEvent.click(view.getByTestId("council-continue"));
+    expect(view.queryByTestId("council-viewpoint")).toBeNull();
+  });
+
   it.each(supportedLocales)("previews final coalition consequences without saving an order (%s)", async locale => {
     const input = { ...props(), locale };
     let state = createCouncil(councilData, councilEntry(input.origin)!);

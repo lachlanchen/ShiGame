@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ViewpointIntro } from "./ViewpointIntro";
 import { createFanyang, encodeFanyangSnapshot, fanyangAnswers, fanyangCanChoose, fanyangGateChecks,
   fanyangMetricKeys, fanyangProspects, localize, resolveFanyang, restoreFanyang,
   type FanyangDefinition, type FanyangEntry, type FanyangState, type Locale, type LocalizedText } from "@shi/game-core";
@@ -76,7 +77,7 @@ export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onS
         {onContinue && <button className="primary-button" data-council-action="continue" data-testid="retreat-enter" onClick={() => onContinue(encodeFanyangSnapshot(state, fingerprint))}>{say("Continue in Chen · development preview", "回到陈地 · 开发试玩")} →</button>}
         <button className="primary-button" data-council-action="close" onClick={onClose}>{say("Return to Chen", "返回陈县议事")}</button></section>
       : round && choice ? <section className="chen-scene"><p className="eyebrow">{state.history.length + 1} / {definition.rounds.length}</p><h3 ref={heading} tabIndex={-1}>{text(round.title)}</h3>
-        {state.history.length === 0 && <p className="chen-prose">{text(definition.introduction)}</p>}<p className="chen-prose">{text(round.context)}</p>
+        {state.history.length === 0 && <><ViewpointIntro scene="fanyang" locale={locale} /><p className="chen-prose">{text(definition.introduction)}</p></>}<p className="chen-prose">{text(round.context)}</p>
         <div className="chen-offers">{round.choices.map((item, index) => <button key={item.id} data-council-action="offer" data-council-choice={item.id} data-fanyang-choice={item.id} aria-pressed={item.id === choice.id} disabled={busy || invalid} onClick={() => { setSelected(index); onCue("select"); }}><span>{String.fromCharCode(65 + index)}</span>{text(item.title)}{!fanyangCanChoose(definition, state, item) && <small>{say("Unavailable: requirements not met", "暂不可用：条件未满足")}</small>}</button>)}</div>
         <section className="chen-offer-detail" aria-live="polite"><h4>{text(choice.title)}</h4><p>{text(choice.intent)}</p>
           {choice.requires && <p>{say("Requires", "需要")}: {fanyangMetricKeys.filter(metric => choice.requires?.[metric] !== undefined).map(metric => `${text(definition.metrics[metric])} ≥ ${choice.requires![metric]}`).join(" · ")}</p>}

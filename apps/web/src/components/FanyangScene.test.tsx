@@ -29,6 +29,14 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("Fan Yang playable continuation", () => {
+  it("introduces the envoy once before negotiation without transporting the Chen households", async () => {
+    const view = render(<FanyangScene {...props()} />);
+    expect(view.getByTestId("fanyang-viewpoint").textContent).toContain("have not travelled here with the camera");
+    expect(localStorage.getItem(key)).toBeNull();
+    await choose(view, "public-safety");
+    expect(view.queryByTestId("fanyang-viewpoint")).toBeNull();
+  });
+
   it("shows an optional honest planning warning without making an order", () => {
     const view = render(<FanyangScene {...props()} entry={{ ...entry, metrics: { ...entry.metrics, grain: 0 } }} />);
     const help = view.getByTestId("fanyang-prospects");
