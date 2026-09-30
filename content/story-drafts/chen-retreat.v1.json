@@ -5,6 +5,11 @@
   "locale": "zh-Hans",
   "publicationApproved": false,
   "title": "陈地余火",
+  "viewpoint": {
+    "title": "从议事案前，回到粮棚",
+    "text": "议事篇由你决定推演中议事一方的政策；范阳篇转入受托使者的交涉。现在回到陈地掌简人：他不是议事篇接受王号的人，也不能调动所有远军。先前作出的政策及其代价仍然有效，下面会按你的决议接续，不把暂缓名号改写成已经称王。",
+    "historyBoundary": "本段延续反事实议事的政治选择，借用《资治通鉴》所记的秦军反击、吴广与陈胜败亡作为外部战局。它不是完整的宏观历史模拟：这些外部事件不由当前的地方粮站命令决定。先前的称王、结盟或暂缓名号均不是被撤销的梦境，也不声称是史书记载的另一条真实路线。"
+  },
   "boundary": "原创分支剧本草案。历史背景参考《资治通鉴》卷七、卷八；对白、地方行动与结局为重构。此文件不进入发行包，不改写现有存档。选择条件只供读稿检查，不是最终资源或战斗规则。",
   "entry": "reserves",
   "inputs": {
@@ -33,6 +38,9 @@
     "embers": { "work": "资治通鉴", "volume": 8, "anchor": "陈王故涓人将军吕臣为苍头军至葬陈王于砀", "supports": "吕臣聚兵复陈。不证明玩家队伍参与或幸存者必然加入。" }
   },
   "councilCallbacks": [
+    { "sceneId": "reserves", "afterChoice": "take-crown", "lines": [{ "speaker": "narrator", "text": "新拨单用着议事后定下的王号。乡里管事认得那个印，却没有因此收起自己的凭记。" }, { "speaker": "supply-officer", "text": "名号已经定了，怎么还要一笔笔问？" }, { "speaker": "keeper", "text": "拥立时说过不搬空陈地的粮仓。印在这里，答应的话也在。" }] },
+    { "sceneId": "reserves", "afterChoice": "recognize-allies", "lines": [{ "speaker": "narrator", "text": "往来文书上留着不同旗号。约立六国的提议传出去了，还没有哪张回书能替所有人答应。" }, { "speaker": "supply-officer", "text": "既然说一同反秦，这批人就一起调走。" }, { "speaker": "keeper", "text": "答应结盟，不等于把各家的粮都交到这张桌上。先点明哪一部肯出。" }] },
+    { "sceneId": "reserves", "afterChoice": "defer-title", "lines": [{ "speaker": "narrator", "text": "拨单的名号栏仍空着，旁边是临时议事留下的署记。军吏指着空处，笔却递到了掌简人手里。" }, { "speaker": "supply-officer", "text": "到底以谁的名义催？总得填一个。" }, { "speaker": "keeper", "text": "写这次经手的人，别替还没议定的事落印。共验的约还在，谁领了多少，照样得认。" }] },
     { "sceneId": "reserves", "afterChoice": "army-rations", "lines": [{ "speaker": "narrator", "text": "来领粮的乡里管事没有挤到桌前。他等军吏说完，才把上次留在城内的那份缺额指给你看。" }, { "speaker": "keeper", "text": "先供军的那一笔还在。这次拨多少，不能再说城里已经领足。" }] },
     { "sceneId": "reserves", "afterChoice": "joint-ledger", "lines": [{ "speaker": "narrator", "text": "乡里管事带来了共验时分给他的账。他将自己的那份摊在拨粮单旁，没有先伸手去拿粮。" }, { "speaker": "keeper", "text": "按两边对得上的数算。新增的这一拨，另起一行。" }] },
     { "sceneId": "reserves", "afterChoice": "buy-convoys", "lines": [{ "speaker": "supply-officer", "text": "上回不是等来了商队？再照原路催一趟。" }, { "speaker": "keeper", "text": "上回到的已经入过账。下一趟还没人押信回来，不能先拨出去。" }] },
@@ -199,7 +207,7 @@
   "epilogue": "史书所记，陈胜败亡后，吕臣曾聚兵复取陈地。反秦之事没有在此结束。本卷虚构队伍的去向由上面的选择收束，不声称他们参与了吕臣的行动。",
   "remainingGates": [
     "历史时序与消息旅程对照原页，独立审校对白和人物权限。",
-    "将陈县反事实名号政策与宏观历史权限明确区分，不悄悄撤销玩家既有决定。",
+    "回到掌简人的视角已明示，三种名号政策分别接续；仍需在议事入口补足切换提示，并以人类试玩检验有限反事实主干是否尊重玩家选择。",
     "从现有合法存档回放建立输入，保留粮秣、伙伴、家户与名籍状态；不能通过测试情境补满资源。",
     "为撤离编写实际资源、冲突与灾难恢复规则，验证没有隐形死亡、重复分粮或不可预警的死路。",
     "完成英文及其余目标语种、本地化与可访问性审阅；目前只有简体中文读稿。",

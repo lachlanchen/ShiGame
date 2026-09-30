@@ -38,6 +38,25 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it.each([
+    ["take-crown", "新拨单用着议事后定下的王号", "拨单的名号栏仍空着"],
+    ["recognize-allies", "约立六国的提议传出去了", "新拨单用着议事后定下的王号"],
+    ["defer-title", "拨单的名号栏仍空着", "新拨单用着议事后定下的王号"]
+  ])("preserves %s as a distinct political state at the viewpoint handoff", (authority, expected, excluded) => {
+    const input = props();
+    // Presentation fixture only; real entries still come through canonical replay.
+    input.entry = structuredClone(input.entry);
+    input.entry.council.choices[0] = authority;
+    const before = JSON.stringify(input.entry);
+    const view = render(<RetreatScene {...input} />);
+    expect(view.getByTestId("retreat-viewpoint").textContent).toContain("不是议事篇接受王号的人");
+    const memory = view.getByTestId("retreat-council-memory").textContent;
+    expect(memory).toContain(expected);
+    expect(memory).not.toContain(excluded);
+    expect(localStorage.getItem(retreatSaveKey)).toBeNull();
+    expect(JSON.stringify(input.entry)).toBe(before);
+  });
+
   it("remembers the replayed council's grain account and command choice in later scenes", async () => {
     const input = props();
     const before = JSON.stringify(input.entry);

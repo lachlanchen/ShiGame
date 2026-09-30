@@ -17,6 +17,7 @@ export function validateDraft(draft) {
   assert.equal(draft.publicationApproved, false);
   for (const field of ["id", "title", "locale", "boundary", "inputBoundary", "epilogue"]) assert.ok(nonempty(draft[field]), field);
   assert.ok(draft.remainingGates.length > 0);
+  for (const key of ["title", "text", "historyBoundary"]) assert.ok(nonempty(draft.viewpoint?.[key]), `Missing viewpoint ${key}`);
   const domains = new Map();
   for (const [key, values] of Object.entries(draft.inputs)) {
     assert.ok(Array.isArray(values) && values.length && values.every(nonempty), key);
@@ -168,6 +169,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const [, fanyang, yu, han, ...choices] = args;
     const result = readRoute(draft, { fanyang, yu, han }, choices, priorCouncilChoices);
     console.log(`${draft.title}\n${draft.boundary}\n`);
+    console.log(`${draft.viewpoint.title}\n${draft.viewpoint.text}\n${draft.viewpoint.historyBoundary}\n`);
     for (const beat of result.transcript) {
       console.log(`${beat.title}\n${beat.setting}`);
       for (const line of beat.lines) console.log(`${line.speaker}: ${line.text}`);

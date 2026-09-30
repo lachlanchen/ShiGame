@@ -22,9 +22,10 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
 });
 
 test("council promises return only in their intended scenes and never invent another prior choice", () => {
+  for (const authority of ["take-crown", "recognize-allies", "defer-title"]) {
   for (const provisions of ["army-rations", "joint-ledger", "buy-convoys"]) {
     for (const dispatch of ["one-command", "many-banners", "hold-chen"]) {
-      const prior = ["defer-title", provisions, dispatch];
+      const prior = [authority, provisions, dispatch];
       const before = JSON.stringify(prior);
       const result = readRoute(draft, input, together, prior);
       for (const callback of draft.councilCallbacks) {
@@ -35,6 +36,7 @@ test("council promises return only in their intended scenes and never invent ano
       }
       assert.equal(JSON.stringify(prior), before);
     }
+  }
   }
   assert.throws(() => readRoute(draft, input, together, ["made-up-order"]));
   assert.throws(() => readRoute(draft, input, together, ["hold-chen", "one-command"]));
@@ -115,7 +117,8 @@ test("authoring validation rejects unknown facts, future knowledge, bad destinat
     value => { value.publicationApproved = true; },
     value => { value.councilCallbacks[0].afterChoice = "invented"; },
     value => { value.councilCallbacks[0].sceneId = "missing"; },
-    value => { value.councilCallbacks.push(structuredClone(value.councilCallbacks[0])); }
+    value => { value.councilCallbacks.push(structuredClone(value.councilCallbacks[0])); },
+    value => { value.viewpoint.text = ""; }
   ]) {
     const copy = structuredClone(draft);
     mutate(copy);
