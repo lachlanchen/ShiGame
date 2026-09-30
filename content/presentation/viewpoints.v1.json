@@ -5,6 +5,10 @@
   "scenes": {
     "council": {
       "title": { "en": "At the council table", "zh-Hans": "转入议事案前" },
+      "bridge": {
+        "en": "Later, in Chen. Outside the council room, someone waiting for grain asks whether the old claim still counts. The man at the door cannot answer; he turns to listen inside. There, they are still arguing over whose name the next order should bear.",
+        "zh-Hans": "后来，陈地。议事处门外，等着领粮的人问旧凭记还算不算数。守门的人答不上来，回头听屋里的动静。里面还在争，下一道命令该落谁的名。"
+      },
       "text": {
         "en": "For this interlude, you make policy for the side leading the council. You are not crowning the keeper himself. The crown, alliance and deferred-title choices are real alternatives within this counterfactual story; their promises and costs remain part of the journey. Later, the viewpoint returns to the people carrying out those decisions.",
         "zh-Hans": "这一幕由你替主持议事的一方作出政策决定，不是让掌简人本人登上王位。称王、结盟、暂缓名号，是这段反事实故事中的不同选择；承诺与代价都会留下。此后视角将回到执行这些决定的人。"
@@ -12,6 +16,10 @@
     },
     "fanyang": {
       "title": { "en": "With the northern envoy", "zh-Hans": "转入北方使者的交涉" },
+      "bridge": {
+        "en": "The council's decisions reach a northern envoy. Before meeting the people from the city, he unfolds the document once more. It says what was agreed in Chen. It cannot tell him which of the soldiers waiting here will obey him.",
+        "zh-Hans": "陈地议定的文书传到北方使者手里。去见城里来的人之前，他又展开看了一遍。上面写着陈地答应了什么，却没有告诉他，眼前哪些士卒肯听他的话。"
+      },
       "text": {
         "en": "You now act through an entrusted envoy outside Fan Yang. The keeper and the Chen households have not travelled here with the camera. Council decisions shape the support behind this mission; the inherited meters represent that support, not one storehouse shared across distant places. The envoy can negotiate, make a limited commitment, or withdraw—not command every army.",
         "zh-Hans": "现在由你通过受托使者在范阳城外交涉。掌简人与陈地家户没有随着视角一起抵达北方。议事决定影响这次差事得到的支持；继承数值表示这种支持，不是两地共用同一座粮仓。使者可以交涉、作出有限承诺或退回，不能号令所有军队。"

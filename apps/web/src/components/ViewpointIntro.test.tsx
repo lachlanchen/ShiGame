@@ -16,6 +16,8 @@ describe("shared viewpoint prose", () => {
       expect(section.lang).toBe(language);
       expect(section.dir).toBe("ltr");
       expect(section.textContent).toContain(content.scenes[scene].text[language]);
+      expect(view.getByTestId(`${scene}-story-bridge`).textContent).toBe(content.scenes[scene].bridge[language]);
+      expect(section.querySelectorAll("p")[0]?.textContent).toBe(content.scenes[scene].text[language]);
       expect(section.querySelector("button, a, input")).toBeNull();
       expect(JSON.stringify(localStorage)).toBe(before);
     });

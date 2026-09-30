@@ -7,5 +7,6 @@ export function ViewpointIntro({ scene, locale }: { scene: keyof typeof presenta
   return <section data-testid={`${scene}-viewpoint`} lang={language} dir="ltr">
     <h4>{localize(passage.title, locale)}</h4>
     <p className="chen-prose">{localize(passage.text, locale)}</p>
+    <p className="chen-prose" data-testid={`${scene}-story-bridge`}>{localize(passage.bridge, locale)}</p>
   </section>;
 }

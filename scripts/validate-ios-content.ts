@@ -24,8 +24,8 @@ assert(viewpoints.equals(await readFile(resolve(resource, "viewpoints.v1.json"))
 const viewpointData = JSON.parse(viewpoints.toString());
 assert.equal(viewpointData.schemaVersion, 1);
 assert.deepEqual(Object.keys(viewpointData.scenes).sort(), ["council", "fanyang"]);
-for (const scene of Object.values(viewpointData.scenes) as { title: Record<string, string>; text: Record<string, string> }[]) {
-  for (const field of [scene.title, scene.text]) for (const locale of ["en", "zh-Hans"]) assert(field[locale]?.trim(), `Missing ${locale} viewpoint prose`);
+for (const scene of Object.values(viewpointData.scenes) as { title: Record<string, string>; text: Record<string, string>; bridge: Record<string, string> }[]) {
+  for (const field of [scene.title, scene.text, scene.bridge]) for (const locale of ["en", "zh-Hans"]) assert(field[locale]?.trim(), `Missing ${locale} viewpoint prose`);
 }
 assert((await readFile(resolve(root, "assets/art/keyart/daze-village-rain-v1.png"))).equals(
   await readFile(resolve(resource, "daze-village-rain-v1.png")),

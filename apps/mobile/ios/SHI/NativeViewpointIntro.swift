@@ -17,6 +17,8 @@ struct NativeViewpointIntro: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(passage.localized("title", locale)).font(.headline).accessibilityAddTraits(.isHeader)
                 Text(passage.localized("text", locale)).lineSpacing(6)
+                Text(passage.localized("bridge", locale)).lineSpacing(6)
+                    .accessibilityIdentifier("\(scene)-story-bridge")
             }.accessibilityElement(children: .combine).accessibilityIdentifier("\(scene)-viewpoint")
         }
     }

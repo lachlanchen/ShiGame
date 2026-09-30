@@ -48,7 +48,7 @@ for (const id of openingChoices) {
 assert.ok(chapter.completed && !chapter.failureReason);
 const origin = councilEntry(chapter); assert.ok(origin);
 let council = createCouncil(councilDef, origin);
-add(`## ${zh(councilDef.title)}`, zh(councilDef.boundary), zh(viewpoints.scenes.council.text), zh(councilDef.introduction));
+add(`## ${zh(councilDef.title)}`, zh(councilDef.boundary), zh(viewpoints.scenes.council.text), zh(viewpoints.scenes.council.bridge), zh(councilDef.introduction));
 for (const id of ["defer-title", "joint-ledger", "one-command"]) {
   const round = councilDef.rounds[council.history.length];
   const choice = round.choices.find((item: { id: string }) => item.id === id); assert.ok(choice);
@@ -62,7 +62,7 @@ add(zh(councilDef.outcomes[council.outcome].title), zh(councilDef.outcomes[counc
 const councilSave = JSON.parse(encodeCouncilSnapshot(council, sources.get(councilPath)!));
 const fanyangEntry = prepareFanyangEntry(councilDef, chapter, councilSave, sources.get(councilPath)!); assert.ok(fanyangEntry);
 let fanyang = createFanyang(fanyangDef, fanyangEntry);
-add(`## ${zh(fanyangDef.title)}`, zh(fanyangDef.boundary), zh(viewpoints.scenes.fanyang.text), zh(fanyangDef.introduction));
+add(`## ${zh(fanyangDef.title)}`, zh(fanyangDef.boundary), zh(viewpoints.scenes.fanyang.text), zh(viewpoints.scenes.fanyang.bridge), zh(fanyangDef.introduction));
 for (const id of ["public-safety", "hold-talks", "withdraw-envoy"]) {
   const round = fanyangDef.rounds[fanyang.history.length];
   const choice = round.choices.find((item: { id: string }) => item.id === id); assert.ok(choice);
