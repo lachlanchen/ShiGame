@@ -39,7 +39,7 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
-  it("resumes reviewed prose without rewriting the save until a new order is committed", async () => {
+  it.each([false, true])("resumes reviewed prose and preserves old bytes if the next write fails (failure=%s)", async failNext => {
     const input = props();
     input.rulesHash = retreatStory.saveCompatibility.rulesSHA256;
     const first = render(<RetreatScene {...input} />);
@@ -52,6 +52,14 @@ describe("retreat development scene", () => {
     expect(resumed.queryByRole("alert")).toBeNull();
     expect(localStorage.getItem(retreatSaveKey)).toBe(bytes);
     fireEvent.click(within(resumed.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    if (failNext) {
+      vi.spyOn(persistence, "flushPersistence").mockRejectedValueOnce(new Error("migration write failed")).mockResolvedValue(undefined);
+      fireEvent.click(resumed.container.querySelector('[data-retreat-choice="gather-own"]')!);
+      fireEvent.click(resumed.getByTestId("retreat-commit"));
+      await resumed.findByRole("alert");
+      expect(localStorage.getItem(retreatSaveKey)).toBe(bytes);
+      expect(resumed.queryByTestId("retreat-response")).toBeNull();
+    }
     await choose(resumed, "gather-own");
     const next = JSON.parse(localStorage.getItem(retreatSaveKey)!);
     expect(next.choices).toEqual(["decline-dispatch", "gather-own"]);

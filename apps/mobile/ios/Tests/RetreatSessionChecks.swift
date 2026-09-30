@@ -39,6 +39,25 @@ import CryptoKit
         pass("opening and invalid order never write a save")
         precondition(live.choose("send-support"))
         let firstBytes = try Data(contentsOf: live.saveURL), firstID = live.response!.id
+        let currentStory = try JSONSerialization.jsonObject(with: storyData) as! Record
+        let compatibility = currentStory.object("saveCompatibility")
+        for (index, fingerprint) in compatibility.strings("previousStorySHA256").enumerated() {
+            let name = "prose-migration-\(index).json"
+            let url = root.appendingPathComponent(name)
+            var previous = try JSONSerialization.jsonObject(with: firstBytes) as! Record
+            previous["storySHA256"] = fingerprint
+            let oldBytes = try JSONSerialization.data(withJSONObject: previous)
+            try oldBytes.write(to: url)
+            let migrated = session(name)
+            precondition(!migrated.needsRecovery && migrated.error == nil)
+            precondition(migrated.engine!.history == live.engine!.history && migrated.response?.index == 0)
+            try unchanged(url, oldBytes)
+            migrated.continueResponse(migrated.response!.id)
+            precondition(migrated.choose("borrow-local-grain"))
+            let updated = try JSONDecoder().decode(RetreatChronicle.self, from: Data(contentsOf: url))
+            precondition(updated.storySHA256 == migrated.storyFingerprint && updated.choices == ["send-support", "borrow-local-grain"])
+        }
+        pass("reviewed prose resumes without writing; next confirmed order records current revision")
         precondition(!live.choose("borrow-local-grain"))
         live.continueResponse("stale-response")
         precondition(live.response?.id == firstID)
