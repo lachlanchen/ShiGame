@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: four opening exchanges revised with unchanged replay outcomes",
+  "finding": "The council's generic arrival did not acknowledge the immediately preceding strategic choice, although later retreat memories did.",
+  "change": "Three original bilingual transition passages connect village agreements, the rush toward Chen or two envoy missions to the council's unresolved authority. Select exactly one from actual chapter history; absent or conflicting strategy evidence produces no invented memory. Fan Yang does not display these passages.",
+  "presentationSHA256": "027cda75501e0e21ef3f56cdca7a2cbaf674c87900bb9c50f0cfa0d0df25e55b",
+  "integration": ["Web council entry", "Native SwiftUI council entry source", "Rule-backed continuous reading export"],
+  "verification": {
+    "web": "Execution99398 exit0: 206 tests passed, including six new tests for three real seed-zero completed campaign strategies in both authored languages, unchosen-text exclusion and unchanged origin/storage.",
+    "focusedAndTypes": "Execution76038 exit0: 57 focused tests, core/web typechecks, native export synchronization and content parity validation.",
+    "readings": "Execution98523 exit0: both complete-reading tests pass; all four ending exports deterministic and saved default exact.",
+    "dataContract": "Native-content validator checks bilingual coverage and exact correspondence with the canonical three-roads choices.",
+    "scopedDiff": "Passed. No rule, resource, campaign hash or save-schema change."
+  },
+  "review": "Agent editorial review: the selected strategy creates a concrete question in the council without inventing a successful envoy reply, universal village support or a player-led historical conquest. These are original dramatized transitions, not new historical claims.",
+  "remaining": [
+    "Compile and review the changed native views; content parity alone does not prove Swift compilation or layout.",
+    "Visible mobile layout and human story review for the additional paragraph.",
+    "Wider story, localization, cinematic and release gates remain open. No store action performed."
+  ]
+}

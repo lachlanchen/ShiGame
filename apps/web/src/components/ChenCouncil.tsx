@@ -165,7 +165,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
           <div className="chen-actions"><button className="primary-button" data-council-action="close" onClick={onClose}>{label("close")}</button><button className="text-button" data-council-action="retry" onClick={() => setConfirmReset(true)}>{label("retry")}</button></div>
         </section> : round && choice ? <section className="chen-scene" key={round.id}>
           <p className="eyebrow">{label("round")} · {state.history.length + 1} / 3</p><h3 ref={sceneHeading} tabIndex={-1}>{text(round.title)}</h3>
-          {state.history.length === 0 && <><ViewpointIntro scene="council" locale={locale} /><p className="chen-prose">{text(definition.introduction)}</p></>}
+          {state.history.length === 0 && <><ViewpointIntro scene="council" locale={locale} chapterChoices={origin.history.map(turn => turn.choiceId)} /><p className="chen-prose">{text(definition.introduction)}</p></>}
           <p className="chen-prose">{text(round.context)}</p>
           <div className="chen-offers" aria-label={label("inspect")}>{round.choices.map((item, index) => <button key={item.id} data-council-action="offer" data-council-choice={item.id} aria-pressed={choice.id === item.id}
             disabled={busy || invalid} onClick={() => { setSelected(index); onCue("select"); }}><span>{String.fromCharCode(65 + index)}</span>{text(item.title)}{!councilCanChoose(state, item) && <small>{label("need")} {Object.entries(item.requires ?? {}).map(([k, v]) => `${text(definition.metrics[k as keyof typeof definition.metrics].title)} ${v}`).join(" · ")}</small>}</button>)}</div>

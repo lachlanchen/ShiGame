@@ -104,6 +104,8 @@
 
 后来，陈地。议事处门外，等着领粮的人问旧凭记还算不算数。守门的人答不上来，回头听屋里的动静。里面还在争，下一道命令该落谁的名。
 
+你先前选了从乡里立约，不急着多取城邑。议事处门槛上，一名乡里管事停住脚：“今天答应供粮，明天有事找谁？”屋里叫他入席，他却等着听一个名字。
+
 城门已经打开。攻下一座城是一回事，让城里的人供养一场战争，又是另一回事。印信搁在案上，一时没人伸手。
 
 ### 谁能代表这场起事？
@@ -424,4 +426,4 @@
 
 - content/campaigns/chen-retreat.rules.v1.json — SHA256 b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867
 
-- content/presentation/viewpoints.v1.json — SHA256 dc4e8372e276ae214277c6f6486a9ddc4f60b94469e1c132ac87754c5f1d7e56
+- content/presentation/viewpoints.v1.json — SHA256 027cda75501e0e21ef3f56cdca7a2cbaf674c87900bb9c50f0cfa0d0df25e55b

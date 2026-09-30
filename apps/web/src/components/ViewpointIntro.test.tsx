@@ -7,6 +7,15 @@ import { ViewpointIntro } from "./ViewpointIntro";
 
 afterEach(cleanup);
 describe("shared viewpoint prose", () => {
+  it("does not invent a strategic memory for absent, conflicting or foreign choices", () => {
+    for (const chapterChoices of [[], ["take-crown"], ["root-in-villages", "race-for-chen"]]) {
+      const view = render(<ViewpointIntro scene="council" locale="en" chapterChoices={chapterChoices} />);
+      expect(view.queryByTestId("council-chapter-bridge")).toBeNull();
+      view.unmount();
+    }
+    const view = render(<ViewpointIntro scene="fanyang" locale="en" chapterChoices={["root-in-villages"]} />);
+    expect(view.queryByTestId("council-chapter-bridge")).toBeNull();
+  });
   for (const scene of ["council", "fanyang"] as const) {
     it.each(supportedLocales)(`${scene} presents its actual language without controls or storage writes (%s)`, locale => {
       const before = JSON.stringify(localStorage);

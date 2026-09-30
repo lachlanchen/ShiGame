@@ -115,7 +115,7 @@ struct NativeCouncilView: View {
         Text(label("round") + " · \(engine.history.count + 1) / 3").font(.caption).foregroundStyle(gold)
         Text(text(engine.round, "title")).font(.title2).accessibilityAddTraits(.isHeader)
         if engine.history.isEmpty {
-            NativeViewpointIntro(scene: "council", locale: locale)
+            NativeViewpointIntro(scene: "council", locale: locale, chapterChoices: origin.history.map { $0.text("choiceId") })
             Text(text(session.definition, "introduction")).lineSpacing(6)
         }
         Text(text(engine.round, "context")).lineSpacing(6)

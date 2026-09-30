@@ -9,6 +9,7 @@ import { ChenCouncil } from "./ChenCouncil";
 import * as persistence from "../persistence";
 import rawFingerprint from "../generated/chen-council.v1.sha256?raw";
 import rawCouncilData from "../generated/chen-council.v1.json";
+import viewpoints from "../../../../content/presentation/viewpoints.v1.json";
 import { supportedLocales } from "@shi/game-core";
 
 const councilData = rawCouncilData as CouncilDefinition;
@@ -23,6 +24,24 @@ const props = () => ({ origin: origin(), locale: "en" as const, reducedMotion: f
 afterEach(() => { cleanup(); localStorage.clear(); vi.restoreAllMocks(); });
 
 describe("Chen council presentation", () => {
+  for (const locale of ["en", "zh-Hans"] as const) {
+    it.each(viewpoints.scenes.council.chapterBridges)(`carries $afterChoice into the council from real history (${locale})`, memory => {
+      let chapter = createInitialState(campaign, 0);
+      for (const id of ["read-the-names", "issue-grain-tallies", "repair-the-ford", memory.afterChoice]) {
+        chapter = resolveChoice(campaign, chapter, id).state;
+      }
+      expect(chapter.completed).toBe(true);
+      expect(chapter.failureReason).toBeUndefined();
+      const before = JSON.stringify(chapter);
+      const view = render(<ChenCouncil {...props()} origin={chapter} locale={locale} />);
+      expect(view.getByTestId("council-chapter-bridge").textContent).toBe(memory.text[locale]);
+      for (const other of viewpoints.scenes.council.chapterBridges.filter(item => item.afterChoice !== memory.afterChoice)) {
+        expect(view.container.textContent).not.toContain(other.text[locale]);
+      }
+      expect(JSON.stringify(chapter)).toBe(before);
+      expect(localStorage.getItem("shi.chen-council.v1")).toBeNull();
+    });
+  }
   it("explains the policy viewpoint before the first order without adding a saved turn", async () => {
     const view = render(<ChenCouncil {...props()} />);
     expect(view.getByTestId("council-viewpoint").textContent).toContain("not crowning the keeper himself");

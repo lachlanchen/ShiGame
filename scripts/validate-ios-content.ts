@@ -34,6 +34,11 @@ assert((await readFile(resolve(root, "assets/mobile/shi-icon-1024.png"))).equals
   await readFile(resolve(root, "apps/mobile/ios/SHI/Assets.xcassets/AppIcon.appiconset/AppIcon.png")),
 ), "Native app icon differs from the reviewed mobile identity");
 const source = await readFile(resolve(root, "content/campaigns/chapter-01-daze.json"));
+const strategicChoices = JSON.parse(source.toString()).nodes.find((node: { id: string }) => node.id === "three-roads").choices.map((choice: { id: string }) => choice.id).sort();
+assert.deepEqual(viewpointData.scenes.council.chapterBridges.map((item: { afterChoice: string }) => item.afterChoice).sort(), strategicChoices, "Council bridges must cover exactly the real chapter strategies");
+for (const memory of viewpointData.scenes.council.chapterBridges) {
+  for (const locale of ["en", "zh-Hans"]) assert(memory.text[locale]?.trim(), "Missing council strategy bridge translation");
+}
 assert(source.equals(await readFile(resolve(resource, "campaign.json"))), "Native campaign differs from the canonical campaign; run npm run sync:ios");
 assert((await readFile(resolve(root, "content/councils/chen-council.v1.json"))).equals(await readFile(resolve(resource, "chen-council.v1.json"))), "Native council differs from its shared definition");
 const hash = createHash("sha256").update(source).digest("hex");

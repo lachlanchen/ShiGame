@@ -54,7 +54,10 @@ for (const id of openingChoices) {
 assert.ok(chapter.completed && !chapter.failureReason);
 const origin = councilEntry(chapter); assert.ok(origin);
 let council = createCouncil(councilDef, origin);
-add(`## ${zh(councilDef.title)}`, zh(councilDef.boundary), zh(viewpoints.scenes.council.text), zh(viewpoints.scenes.council.bridge), zh(councilDef.introduction));
+const councilMemories = viewpoints.scenes.council.chapterBridges.filter((item: { afterChoice: string }) => chapter.history.some(turn => turn.choiceId === item.afterChoice));
+add(`## ${zh(councilDef.title)}`, zh(councilDef.boundary), zh(viewpoints.scenes.council.text), zh(viewpoints.scenes.council.bridge));
+if (councilMemories.length === 1) add(zh(councilMemories[0].text));
+add(zh(councilDef.introduction));
 for (const id of ["defer-title", "joint-ledger", "one-command"]) {
   const round = councilDef.rounds[council.history.length];
   const choice = round.choices.find((item: { id: string }) => item.id === id); assert.ok(choice);

@@ -9,6 +9,29 @@
         "en": "Later, in Chen. Outside the council room, someone waiting for grain asks whether the old claim still counts. The man at the door cannot answer; he turns to listen inside. There, they are still arguing over whose name the next order should bear.",
         "zh-Hans": "后来，陈地。议事处门外，等着领粮的人问旧凭记还算不算数。守门的人答不上来，回头听屋里的动静。里面还在争，下一道命令该落谁的名。"
       },
+      "chapterBridges": [
+        {
+          "afterChoice": "root-in-villages",
+          "text": {
+            "en": "You chose to build ties with the villages before reaching for more territory. At the council door, a village representative stops with one foot over the threshold. “If we agree to supply you today, who do we come to tomorrow?” Someone inside calls him to take his place. He waits for an answer before moving.",
+            "zh-Hans": "你先前选了从乡里立约，不急着多取城邑。议事处门槛上，一名乡里管事停住脚：“今天答应供粮，明天有事找谁？”屋里叫他入席，他却等着听一个名字。"
+          }
+        },
+        {
+          "afterChoice": "race-for-chen",
+          "text": {
+            "en": "You chose to hurry toward Chen. Now a man carrying a grain tally asks where the next column is to assemble. No one at the table answers at once. He stays by the door; the men outside are waiting for him to return. Reaching the city has not settled who may give the next order.",
+            "zh-Hans": "你先前催着往陈走。如今一个拿着粮筹的人来问，下一队该在哪里集合。案前一时没人回答。他停在门边，外面的人还等他回话。赶到了城里，下一道令由谁来下，却还没说定。"
+          }
+        },
+        {
+          "afterChoice": "send-two-envoys",
+          "text": {
+            "en": "You chose to send envoys along two roads. At the table, someone asks whose name should be put on any message sent after them. Another reaches for a blank slip, then stops. No new reply has arrived in this scene; the council must first decide what its own word is worth.",
+            "zh-Hans": "你先前遣人分问两路。案前有人问，若再追送一封信，该署谁的名。旁边的人拿起空简，又停了手。这一幕还没有带来新的回信；先得说清，从这里送出去的话算谁的承诺。"
+          }
+        }
+      ],
       "text": {
         "en": "For this interlude, you make policy for the side leading the council. You are not crowning the keeper himself. The crown, alliance and deferred-title choices are real alternatives within this counterfactual story; their promises and costs remain part of the journey. Later, the viewpoint returns to the people carrying out those decisions.",
         "zh-Hans": "这一幕由你替主持议事的一方作出政策决定，不是让掌简人本人登上王位。称王、结盟、暂缓名号，是这段反事实故事中的不同选择；承诺与代价都会留下。此后视角将回到执行这些决定的人。"
