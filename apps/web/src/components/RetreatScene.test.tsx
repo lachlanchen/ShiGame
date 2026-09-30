@@ -39,6 +39,20 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it.each(["send-support", "decline-dispatch"])("recalls the missing escort only after %s, including resume", async dispatch => {
+    const input = props();
+    const view = render(<RetreatScene {...input} />);
+    for (const id of [dispatch, "gather-own", "hold-formation", "carry-records"]) await choose(view, id);
+    const memory = "那天是我叫他们跟车走的";
+    expect(view.container.textContent!.includes(memory)).toBe(dispatch === "send-support");
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const resumed = render(<RetreatScene {...input} />);
+    fireEvent.click(within(resumed.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(resumed.container.textContent!.includes(memory)).toBe(dispatch === "send-support");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+  });
+
   it.each(["verify-with-partners", "borrow-local-grain"].flatMap(reception =>
     ["escort-households", "hold-formation", "split-routes"].map(evacuation => [reception, evacuation])))
   ("carries the unfinished search through %s and %s without an invented reunion", async (reception, evacuation) => {

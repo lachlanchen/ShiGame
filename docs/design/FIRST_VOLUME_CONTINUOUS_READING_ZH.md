@@ -446,7 +446,7 @@ SHI narrative reconstruction；Chapter I authored-content register · revision 2
 
 - content/councils/fanyang-guarantee.v1.json — SHA256 7f528bfbf63dfaaf56b9828c9561e1e657edc760e3e9c135171d0bcb17d3d2e2
 
-- content/story-drafts/chen-retreat.v1.json — SHA256 516216d186a1dfe328d91d1195ab50e03f72fc050343ca6085577c93346a9c2c
+- content/story-drafts/chen-retreat.v1.json — SHA256 759474096e96ab8af7dcfcaaf73f4a96d82eb7aba94c4578af0f6e257fef886d
 
 - content/campaigns/chen-retreat.rules.v1.json — SHA256 b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867
 

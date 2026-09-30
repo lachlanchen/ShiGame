@@ -22,6 +22,21 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
   assert.equal(JSON.stringify({ draft, input, together }), before);
 });
 
+test("the dispatched escort remains an unanswered responsibility at the finale, only when sent", () => {
+  const callback = draft.scenes.find(scene => scene.id === "dawn").variants.find(variant => variant.when.reserves === "send-support");
+  assert.ok(callback);
+  for (const reserves of ["keep-reserve", "send-support", "verify-road", "decline-dispatch"]) {
+    for (const records of ["divide-records", "carry-records", "strip-identities"]) {
+      const result = readRoute(draft, input, [reserves, "gather-own", "hold-formation", records, "move-with-remnant"]);
+      for (const beat of result.transcript) for (const line of callback.lines) {
+        assert.equal(beat.lines.some(actual => actual.text === line.text), reserves === "send-support" && beat.sceneId === "dawn");
+      }
+      assert.equal(result.endingId, "remnant");
+      assert.equal(result.facts.records, records);
+    }
+  }
+});
+
 test("death reports leave a human pause before duties and the final decision resume", () => {
   for (const reception of ["open-reception", "verify-with-partners", "borrow-local-grain", "gather-own"]) {
     const result = readRoute(draft, input, ["keep-reserve", reception, "escort-households", "carry-records", "stay-together"]);
