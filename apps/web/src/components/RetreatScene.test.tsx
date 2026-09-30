@@ -114,7 +114,7 @@ describe("retreat development scene", () => {
       const memory = current.getByTestId("retreat-chapter-memory");
       for (const callback of retreatStory.chapterCallbacks) {
         for (const line of callback.lines) expect(memory.textContent?.includes(line.text)).toBe(
-          callback.sceneId === sceneId && [opening, crossing, organization].includes(callback.afterChoice));
+          callback.sceneId === sceneId && priorChapter.history.some(turn => turn.choiceId === callback.afterChoice));
       }
     };
     assertMemory(view, "evacuation");
@@ -128,6 +128,13 @@ describe("retreat development scene", () => {
     assertMemory(restored, "records");
     expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
     expect(JSON.stringify(input.entry)).toBe(originalEntry);
+    await choose(restored, "carry-records");
+    assertMemory(restored, "dawn");
+    const dawnText = restored.getByTestId("retreat-scene").textContent!;
+    const strategicMemory = retreatStory.chapterCallbacks.find(callback => callback.sceneId === "dawn"
+      && priorChapter.history.some(turn => turn.choiceId === callback.afterChoice))!;
+    expect(strategicMemory.lines.length).toBeGreaterThan(0);
+    expect(dawnText.indexOf(strategicMemory.lines[0]!.text)).toBeLessThan(dawnText.indexOf("还按原来的队么？"));
   });
 
   it.each(["escort-households", "hold-formation", "split-routes"])("shows the saved %s withdrawal before the records scene and preserves it on resume", async evacuation => {

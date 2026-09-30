@@ -366,6 +366,10 @@
 
 你从囊里拿出凭记。有人过来核账，守路的人替你看着身后的来路。
 
+守路士卒：当初你说先把乡里的路接起来。如今还往那些地方去？
+
+掌简人：先问。那时肯开门的人，如今家里还有没有粮，我不知道。别带着这一队人直接上门。
+
 守路士卒：还按原来的队么？
 
 所选行动：守住会合处，重整同行的队伍
@@ -416,7 +420,7 @@
 
 - content/councils/fanyang-guarantee.v1.json — SHA256 c82095174dc481a023420916ae82bbc76e169c57c1076b5bbf65ce9f97a8cf24
 
-- content/story-drafts/chen-retreat.v1.json — SHA256 8d2177ca40f6bb276411386cb0fd9854ba22ba231c506ffa67915381f04254ef
+- content/story-drafts/chen-retreat.v1.json — SHA256 121b9fbf08604e6089fe2811ed46a8879ebde10111bb31bb0385c046484fb547
 
 - content/campaigns/chen-retreat.rules.v1.json — SHA256 b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867
 

@@ -86,6 +86,9 @@
     }
   ],
   "chapterCallbacks": [
+    { "sceneId": "dawn", "afterChoice": "root-in-villages", "lines": [{ "speaker": "rear-guard", "text": "当初你说先把乡里的路接起来。如今还往那些地方去？" }, { "speaker": "keeper", "text": "先问。那时肯开门的人，如今家里还有没有粮，我不知道。别带着这一队人直接上门。" }] },
+    { "sceneId": "dawn", "afterChoice": "race-for-chen", "lines": [{ "speaker": "rear-guard", "text": "那时催着往陈走，谁都怕落在后面。如今出了城，往哪里赶？" }, { "speaker": "keeper", "text": "先看看身后。这些人还能走多远，问过再定，不只看前面哪座城近。" }] },
+    { "sceneId": "dawn", "afterChoice": "send-two-envoys", "lines": [{ "speaker": "rear-guard", "text": "先前遣出去问路的，两边还等他们回话么？" }, { "speaker": "keeper", "text": "来信留着问讯。可眼下这些人在哪里歇，不能一直等别人替我们定。没有新回话，就别说哪边已经肯收留。" }] },
     { "sceneId": "records", "afterChoice": "issue-grain-tallies", "lines": [{ "speaker": "keeper", "text": "当初凭券取粮时，乡老是一笔笔记下才开的窖。还没核清的旧券，别和已经领过的混在一起。" }, { "speaker": "rear-guard", "text": "你能留下凭记。人若各走各的，谁还找得到你？" }] },
     { "sceneId": "records", "afterChoice": "voluntary-pots", "lines": [{ "speaker": "keeper", "text": "最初说好一处灶火只献一釜。那是自愿给的，别改写成他们还欠我们。" }, { "speaker": "rear-guard", "text": "后来另立的约呢？" }, { "speaker": "keeper", "text": "照那份约核。不能把两回事混着算。" }] },
     { "sceneId": "evacuation", "afterChoice": "families-first", "lines": [{ "speaker": "keeper", "text": "那回渡河，让家户先过，守在后面的人一直等到最后。这次若还这样走，得先给断后的人留好退路。" }, { "speaker": "rear-guard", "text": "先说在哪儿收队。我得把话传到最后一个人。" }] },

@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-01",
+  "baseline": "cbd304a",
+  "previousTurnClassification": "progress: four complete rule-backed readings implemented and validated",
+  "storySHA256": "121b9fbf08604e6089fe2811ed46a8879ebde10111bb31bb0385c046484fb547",
+  "change": "Three original dawn exchanges recall root-in-villages, race-for-chen or send-two-envoys immediately before the final question. The first-volume strategic intention now returns at its conclusion instead of disappearing after the opening.",
+  "editorialReview": {
+    "status": "agent-reviewed development draft; not human acceptance",
+    "sourceBasis": "Read the three canonical opening intentions and consequences in chapter-01-daze.json; no new historical claim or quotation.",
+    "rootInVillages": "Past willingness to open doors does not establish present food or consent to receive a whole group.",
+    "raceForChen": "The guard recalls the earlier rush; the keeper now asks what the present people can manage, without assigning them a destination.",
+    "sendTwoEnvoys": "Waiting for information cannot indefinitely postpone shelter. No new reply, alliance or safe destination is invented.",
+    "placement": "After current arrivals, records and search reports, before the final question. Only the actual prior choice selects a passage. No compulsory change of values or final decision."
+  },
+  "verification": [
+    "23 authoring tests passed, including 27 strategy/custody/ending combinations that preserve reactions and ending prose, plus exclusion from earlier scenes.",
+    "All four complete rule-backed readings and the exact saved Chinese example pass.",
+    "39 web scene tests passed; existing replay-derived chapter cases now check the dawn memory and its order after resuming earlier progress. These cases are not coverage of all three strategies as real campaign routes.",
+    "Web TypeScript check passed after correcting test-only possibly-undefined indexing.",
+    "Native shared content synchronized and parity validated; no new native runtime claim."
+  ],
+  "boundaries": "Development-only shared story revision. Existing rule and published campaign bytes unchanged. Preview saves remain revision-bound and require explicit restart on mismatch. No GUI, remote build, media generation or release operation.",
+  "remaining": "New passages need visual and human pacing review; first-volume completion and broader production goal remain unproven."
+}

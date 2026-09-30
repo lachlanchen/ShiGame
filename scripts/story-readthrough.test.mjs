@@ -39,7 +39,7 @@ test("death reports leave a human pause before duties and the final decision res
 });
 
 test("all nine opening/crossing pairs return only their own memories in the intended scenes", () => {
-  assert.equal(draft.chapterCallbacks.length, 8);
+  assert.equal(draft.chapterCallbacks.length, 11);
   for (const opening of ["read-the-names", "take-the-beacon", "hide-the-register"]) {
     for (const crossing of ["families-first", "repair-the-ford", "cut-the-carts"]) {
       const prior = [opening, crossing];
@@ -94,6 +94,28 @@ test("chapter memories reject foreign choices, duplicate callbacks and conflicti
   wrongScene.chapterCallbacks[0].sceneId = "unwritten-scene";
   assert.throws(() => validateDraft(wrongScene), /Unknown chapter callback scene/);
   assert.throws(() => readRoute(draft, input, together, [], ["families-first", "cut-the-carts"]), /Conflicting prior chapter choices/);
+});
+
+test("opening strategy returns before the final question without choosing the ending for the player", () => {
+  const strategies = ["root-in-villages", "race-for-chen", "send-two-envoys"];
+  const memories = draft.chapterCallbacks.filter(callback => strategies.includes(callback.afterChoice));
+  assert.equal(memories.length, 3);
+  for (const strategy of strategies) for (const records of ["carry-records", "divide-records", "strip-identities"]) {
+    for (const ending of ["stay-together", "move-with-remnant", "release-groups"]) {
+      const choices = ["keep-reserve", "gather-own", "escort-households", records, ending];
+      const baseline = readRoute(draft, input, choices);
+      const result = readRoute(draft, input, choices, [], [strategy]);
+      const dawn = result.transcript.at(-1);
+      assert.equal(dawn.sceneId, "dawn");
+      assert.equal(dawn.lines.at(-1).text, "还按原来的队么？");
+      for (const callback of memories) for (const line of callback.lines) {
+        assert.equal(dawn.lines.some(actual => actual.text === line.text), callback.afterChoice === strategy);
+        assert.ok(result.transcript.slice(0, -1).every(beat => !beat.lines.some(actual => actual.text === line.text)));
+      }
+      assert.deepEqual(result.ending, baseline.ending);
+      assert.deepEqual(result.transcript.map(beat => beat.reaction), baseline.transcript.map(beat => beat.reaction));
+    }
+  }
 });
 
 test("resource-triggered scattering has validated original prose without pretending the authoring graph predicts it", () => {
