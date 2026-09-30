@@ -6,15 +6,17 @@ import net from "node:net";
 
 const root = resolve(import.meta.dirname, "..");
 const route = process.argv[2] ?? "together";
-if (!["together", "dispersed", "remnant", "scattered"].includes(route) || process.argv.length > 3) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered]");
+const storyBranch = process.argv[3] ?? "baseline";
+if (!["together", "dispersed", "remnant", "scattered"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered] [baseline|partner-search|loan-search]");
+const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
-const reserves = route === "scattered" ? "send-support" : "keep-reserve";
-const reception = route === "scattered" ? "open-reception" : "gather-own";
+const reserves = route === "scattered" || storyBranch !== "baseline" ? "send-support" : "keep-reserve";
+const reception = storyBranch === "partner-search" ? "verify-with-partners" : storyBranch === "loan-search" ? "borrow-local-grain" : route === "scattered" ? "open-reception" : "gather-own";
 const finalChoice = route === "together" ? "stay-together" : route === "remnant" ? "move-with-remnant" : "release-groups";
 const out = resolve(root, ".runtime/story-review", new Date().toISOString().replaceAll(":", "-"));
 await mkdir(out, { recursive: true });
 const report = { status: "running", output: out, started: new Date().toISOString(), checks: [], screenshots: [], errors: [], owned: [],
-  route,
+  route, storyBranch, grainPromise, reception,
   boundary: "Agent-operated visible development web route; not human acceptance, native or store verification." };
 const children = [], logs = [];
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -96,7 +98,7 @@ try {
   await until("document.documentElement.lang==='zh-Hans'"); await capture("01-title");
   await click('[data-testid="begin-game"]');
   await click('[data-testid="guide-continue"]');
-  for (let n = 0; n < 4; n++) { await click('[data-testid="commit-selected"]'); await click('[data-testid="resolution-continue"]'); }
+  for (let n = 0; n < 4; n++) { if (n === 1) await click(`[data-choice-id="${grainPromise}"]`); await click('[data-testid="commit-selected"]'); await click('[data-testid="resolution-continue"]'); }
   await click('[data-testid="council-enter"]');
   await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
   await capture("02-council-mobile"); await layout("council");
@@ -108,8 +110,9 @@ try {
   for (const id of [reserves, reception, evacuation, "carry-records"]) {
     if (id === "carry-records") {
       const memory = await evaluate("document.querySelector('[data-testid=retreat-chapter-memory]')?.textContent ?? ''");
-      check(memory.includes("当初凭券取粮时") && memory.includes("谁还找得到你"), "opening grain promise returns as a custody dilemma");
-      check(!memory.includes("一处灶火只献一釜"), "unselected voluntary contribution is not remembered as fact");
+      const voluntary = grainPromise === "voluntary-pots";
+      check(voluntary ? memory.includes("一处灶火只献一釜") && memory.includes("不能把两回事混着算") : memory.includes("当初凭券取粮时") && memory.includes("谁还找得到你"), "selected opening grain promise returns as a custody dilemma");
+      check(!memory.includes(voluntary ? "当初凭券取粮时" : "一处灶火只献一釜"), "unselected food promise is not remembered as fact");
       await evaluate("document.querySelector('[data-testid=retreat-chapter-memory]').scrollIntoView({block:'start'})");
       await capture("04b-grain-promise-mobile"); await layout("grain promise");
     }
@@ -127,8 +130,16 @@ try {
     }
     await click('[data-testid="retreat-response"] [data-council-action="continue"]');
   }
-  check(await evaluate(exists('[data-testid="retreat-witnessed-arrival"]')) === (route === "together"), "Yu presence matches the actual escort decision");
-  if (route === "together") {
+  if (storyBranch !== "baseline") {
+    const expectedSearch = storyBranch === "partner-search" ? "没有阿衡的消息" : "粮数对上了，找人的事还没对上";
+    check(await evaluate(`document.querySelector('[data-testid=retreat-scene]').textContent.includes(${JSON.stringify(expectedSearch)})`), "search receives its selected unresolved follow-up");
+    check(!await evaluate("document.querySelector('[data-testid=retreat-scene]').textContent.includes('左鞋还缠着麻绳')"), "unwitnessed reunion is not invented");
+    await evaluate(`([...document.querySelectorAll('[data-testid=retreat-scene] p')].find(e=>e.textContent.includes(${JSON.stringify(expectedSearch)}))).scrollIntoView({block:'center'})`);
+    await capture("04c-search-follow-up-mobile"); await layout("search follow-up");
+  }
+  const yuArrives = reserves === "keep-reserve" && evacuation === "escort-households";
+  check(await evaluate(exists('[data-testid="retreat-witnessed-arrival"]')) === yuArrives, "Yu presence matches the actual escort decision");
+  if (yuArrives) {
     await evaluate("document.querySelector('[data-testid=retreat-witnessed-arrival]').scrollIntoView({block:'start'})");
     await capture("04-yu-arrival-mobile"); await layout("Yu arrival");
   }
@@ -142,6 +153,7 @@ try {
   const closingLine = { together: "锅边已经有人喊你吃饭", dispersed: "人分开了，账还是找你", remnant: "你把装简的囊换到身前", scattered: "你没有把无人应答的几笔勾掉" }[route];
   const memoryId = route === "scattered" ? "retreat-scattered-memory" : "retreat-ending-memory";
   check(await evaluate(`document.querySelector('[data-testid=${memoryId}]').textContent.includes(${JSON.stringify(closingLine)})`), "ending preserves centrally held records");
+  if (storyBranch === "loan-search") check(await evaluate("document.querySelector('[data-testid=retreat-debts]')?.textContent.includes('债未偿还')"), "new grain debt survives the ending");
   await evaluate("document.querySelector('[data-testid=retreat-outcome]').scrollIntoView({block:'start'})");
   await capture("06-ending-mobile"); await layout("ending");
   await click('[data-testid="retreat-outcome"] [data-council-action="close"]');
