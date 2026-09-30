@@ -38,6 +38,16 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("keeps the actionable supply question after reports and prior promises in the reading order", () => {
+    const view = render(<RetreatScene {...props()} />);
+    const scene = view.container.querySelector(".chen-main .chen-scene")!;
+    const prose = [...scene.querySelectorAll("p.chen-prose")].map(node => node.textContent);
+    expect(prose.at(-1)).toContain("今天能不能一起走");
+    expect(prose.findIndex(text => text?.includes("使者平安回去了"))).toBeLessThan(prose.findIndex(text => text?.includes("共验时分给他的账")));
+    expect(view.getByTestId("retreat-commit")).toBeTruthy();
+    expect(localStorage.getItem(retreatSaveKey)).toBeNull();
+  });
+
   it.each([true, false])("uses the prior courier choice for Han's letter without inventing his physical presence (recruited=%s)", async recruited => {
     const input = props();
     let priorChapter = createInitialState(definitions.campaign, 0);

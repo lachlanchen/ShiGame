@@ -108,8 +108,9 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         {state.history.length === 0 && <section data-testid="retreat-viewpoint"><h4>{story.viewpoint.title}</h4><p>{story.viewpoint.text}</p></section>}
         <p>{scene.setting}</p>{lines(scene.lines)}
         {witnessed.filter(event => event.sceneId === scene.id).map(event => <div data-testid="retreat-witnessed-arrival" key={event.id}>{lines(event.lines)}</div>)}
-        {story.councilCallbacks.some(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)) && <div data-testid="retreat-council-memory">{story.councilCallbacks.filter(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)).map(callback => <div key={callback.afterChoice}>{lines(callback.lines)}</div>)}</div>}
         {scene.variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}
+        {story.councilCallbacks.some(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)) && <div data-testid="retreat-council-memory">{story.councilCallbacks.filter(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)).map(callback => <div key={callback.afterChoice}>{lines(callback.lines)}</div>)}</div>}
+        {lines(scene.decisionLeadIn ?? [])}
         <div className="chen-offers">{scene.choices.map((item, index) => <button key={item.id} data-retreat-choice={item.id} data-council-choice={item.id} data-council-action="offer" disabled={busy || invalid} aria-pressed={choice.id === item.id} onClick={() => setSelected(index)}>{item.title}{!inspectRetreatChoice(rules, state, item.id).available && <small>条件未满足，可查看原因</small>}</button>)}</div>
         <section className="chen-offer-detail" aria-live="polite"><h4>{choice.title}</h4><p>{choice.intent}</p><p>{explanations[choice.id]}</p>
           {preview.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{answerExplanations[answer.afterChoice]}</p>)}

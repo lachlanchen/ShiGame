@@ -85,6 +85,7 @@ export function validateDraft(draft) {
       assert.ok(source && [7, 8].includes(source.volume) && nonempty(source.anchor) && nonempty(source.supports), `Missing source: ${sourceId}`);
     }
     checkLines(scene.lines);
+    if (scene.decisionLeadIn) checkLines(scene.decisionLeadIn);
     for (const variant of scene.variants) { checkCondition(variant.when, index); checkLines(variant.lines); }
     if (scene.exitLines) checkLines(scene.exitLines);
     for (const choice of scene.choices) {
@@ -130,7 +131,7 @@ export function readRoute(draft, input, choices, priorCouncilChoices = [], prior
       && (!event.priorChapterChoice || priorChapterChoices.includes(event.priorChapterChoice)));
     witnessedEvents.push(...arrivals.map(event => event.id));
     transcript.push({ sceneId, title: scene.title, transition: scene.transition, setting: scene.setting,
-      lines: [...scene.lines, ...arrivals.flatMap(event => event.lines), ...draft.councilCallbacks.filter(item => item.sceneId === scene.id && priorCouncilChoices.includes(item.afterChoice)).flatMap(item => item.lines), ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines)],
+      lines: [...scene.lines, ...arrivals.flatMap(event => event.lines), ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines), ...draft.councilCallbacks.filter(item => item.sceneId === scene.id && priorCouncilChoices.includes(item.afterChoice)).flatMap(item => item.lines), ...(scene.decisionLeadIn ?? [])],
       choiceId, choiceTitle: choice.title, intent: choice.intent,
       reaction: [...choice.response, ...arrivals.flatMap(event => event.decisionResponses?.[choiceId] ?? []),
         ...draft.witnessedEvents.filter(event => witnessedEvents.includes(event.id)).flatMap(event => choice.ending ? event.endingResponses[choice.ending] : []), ...(scene.exitLines ?? [])] });

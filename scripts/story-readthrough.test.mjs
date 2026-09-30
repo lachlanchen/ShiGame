@@ -22,6 +22,19 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
   assert.equal(JSON.stringify({ draft, input, together }), before);
 });
 
+test("the opening finishes the northern report before council reminders and ends on the actionable question", () => {
+  for (const fanyang of draft.inputs.fanyang) {
+    const result = readRoute(draft, { ...input, fanyang }, together, ["take-crown", "joint-ledger", "hold-chen"]);
+    const opening = result.transcript[0].lines;
+    const report = draft.scenes[0].variants.find(variant => variant.when.fanyang === fanyang).lines[0].text;
+    const reminder = draft.councilCallbacks.find(callback => callback.afterChoice === "take-crown").lines[0].text;
+    assert.ok(opening.findIndex(line => line.text === report) < opening.findIndex(line => line.text === reminder));
+    assert.equal(opening.at(-1).speaker, "supply-officer");
+    assert.equal(opening.at(-1).text, "西边催得急。你留在这里的人，今天能不能一起走？");
+    assert.equal(opening.filter(line => line.text === opening.at(-1).text).length, 1);
+  }
+});
+
 test("council promises return only in their intended scenes and never invent another prior choice", () => {
   for (const authority of ["take-crown", "recognize-allies", "defer-title"]) {
   for (const provisions of ["army-rations", "joint-ledger", "buy-convoys"]) {
