@@ -22,5 +22,4 @@ private:
     FString SavePath;
     FString LastSavedJson;
     bool Publish(FShiChenCouncilModel Candidate, FString& Error);
-    static bool WriteReplacement(const FString& Path, const FString& Json, FString& Error);
 };

@@ -30,6 +30,7 @@
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
 #include "ShiChenCouncilScreen.h"
+#include "ShiAtomicSaveFile.h"
 #include "ShiCommandSurfacePresentationModel.h"
 #include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilFigure.h"
@@ -1096,26 +1097,7 @@ bool AShiGameMode::SaveChronicle(const FShiCampaignSession& SourceSession, FStri
     }
     FString Json;
     if (!SourceSession.ExportSaveJson(Json, OutError)) return false;
-    const FString SavePath = GetSavePath();
-    const FString SaveDirectory = FPaths::GetPath(SavePath);
-    if (!IFileManager::Get().DirectoryExists(*SaveDirectory) && !IFileManager::Get().MakeDirectory(*SaveDirectory, true))
-    {
-        OutError = TEXT("the save directory could not be created");
-        return false;
-    }
-    const FString TemporaryPath = SavePath + TEXT(".tmp");
-    if (!FFileHelper::SaveStringToFile(Json, *TemporaryPath, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
-    {
-        OutError = TEXT("the temporary chronicle could not be written");
-        return false;
-    }
-    if (!IFileManager::Get().Move(*SavePath, *TemporaryPath, true, true, false, true))
-    {
-        OutError = TEXT("the verified chronicle could not replace the previous save");
-        return false;
-    }
-    OutError.Empty();
-    return true;
+    return FShiAtomicSaveFile::WriteUtf8(GetSavePath(), Json, OutError);
 }
 
 void AShiGameMode::OpenChenCouncil()
