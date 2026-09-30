@@ -55,6 +55,98 @@ class FakeAudioContext {
 }
 
 describe("playable web shell", () => {
+  it.each([true, false])("carries a full chapter through Chen to Fan Yang and guards parent exits while saving (success=%s)", async success => {
+    vi.stubEnv("VITE_SHI_NATIVE", "1");
+    let view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    for (let turn = 0; turn < 4; turn++) {
+      fireEvent.click(await view.findByTestId("commit-selected"));
+      fireEvent.click(await view.findByTestId("resolution-continue"));
+    }
+    const chapter = localStorage.getItem("shi.chapter-01.save.v6");
+    fireEvent.click(await view.findByTestId("council-enter"));
+    await view.findByTestId("chen-council");
+    for (const id of ["defer-title", "joint-ledger", "one-command"]) {
+      fireEvent.click(view.container.querySelector(`[data-council-choice="${id}"]`)!);
+      fireEvent.click(view.getByTestId("council-commit"));
+      await view.findByTestId("council-response");
+      fireEvent.click(view.getByTestId("council-continue"));
+    }
+    const chen = localStorage.getItem("shi.chen-council.v1");
+    fireEvent.click(view.getByTestId("fanyang-enter"));
+    const scene = await view.findByTestId("fanyang-scene");
+    expect(view.getByTestId("game-stage").hasAttribute("inert")).toBe(true);
+    // Inspecting an offer, wrapping focus and opening global shortcuts must not
+    // create an order or replace this continuation with another drawer.
+    const first = scene.querySelector<HTMLButtonElement>("[data-council-action='close']")!;
+    const last = scene.querySelector<HTMLButtonElement>("[data-council-action='retry']")!;
+    first.focus(); fireEvent.keyDown(first, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(last);
+    fireEvent.keyDown(last, { key: "Tab" }); expect(document.activeElement).toBe(first);
+    fireEvent.keyDown(window, { key: "r", altKey: true });
+    fireEvent.keyDown(window, { key: "m", altKey: true });
+    expect(view.getByTestId("fanyang-scene")).toBe(scene);
+    expect(localStorage.getItem("shi.fanyang-guarantee.v1")).toBeNull();
+    const buttons = Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 }));
+    const pad = { id: "Fan Yang controller", index: 0, connected: true, mapping: "standard", timestamp: 0, axes: [0, 0, 0, 0], buttons } as unknown as Gamepad;
+    Object.defineProperty(navigator, "getGamepads", { configurable: true, value: () => [pad] });
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-controller")).toBe("connected"));
+    const press = async (index: number) => {
+      buttons[index]!.pressed = true; buttons[index]!.value = 1;
+      await act(() => new Promise(resolve => setTimeout(resolve, 35)));
+      buttons[index]!.pressed = false; buttons[index]!.value = 0;
+      await act(() => new Promise(resolve => setTimeout(resolve, 35)));
+    };
+    scene.querySelector<HTMLElement>("h3[tabindex]")!.focus();
+    await press(0);
+    expect(document.activeElement?.getAttribute("data-fanyang-choice")).toBe("public-safety");
+    await press(15); await press(0);
+    expect(scene.querySelector('[data-fanyang-choice="witnessed-transfer"]')?.getAttribute("aria-pressed")).toBe("true");
+    expect(localStorage.getItem("shi.fanyang-guarantee.v1")).toBeNull();
+    fireEvent.click(scene.querySelector('[data-fanyang-choice="public-safety"]')!);
+    let finish!: () => void, fail!: (error: Error) => void;
+    vi.spyOn(persistence, "flushPersistence").mockReturnValueOnce(new Promise<void>((resolve, reject) => { finish = resolve; fail = reject; })).mockResolvedValue(undefined);
+    fireEvent.click(view.getByTestId("fanyang-commit"));
+    fireEvent.click(view.container.querySelector(".drawer-scrim")!);
+    fireEvent.keyDown(document, { key: "Escape" });
+    const back = new Event("shi-native-back", { cancelable: true });
+    act(() => { window.dispatchEvent(back); });
+    expect(back.defaultPrevented).toBe(true);
+    expect(view.getByTestId("fanyang-scene")).toBe(scene);
+    expect(view.queryByTestId("fanyang-response")).toBeNull();
+    await act(async () => { if (success) finish(); else fail(new Error("storage full")); });
+    if (!success) {
+      await view.findByRole("alert");
+      expect(localStorage.getItem("shi.fanyang-guarantee.v1")).toBeNull();
+      fireEvent.click(view.getByTestId("fanyang-commit"));
+    }
+    await view.findByTestId("fanyang-response");
+    const firstOrder = localStorage.getItem("shi.fanyang-guarantee.v1");
+    view.unmount();
+    view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    fireEvent.click(await view.findByTestId("council-enter"));
+    fireEvent.click(await view.findByTestId("council-continue"));
+    fireEvent.click(view.getByTestId("fanyang-enter"));
+    expect(await view.findByTestId("fanyang-response")).toBeTruthy();
+    expect(localStorage.getItem("shi.fanyang-guarantee.v1")).toBe(firstOrder);
+    fireEvent.click(view.getByTestId("fanyang-response").querySelector("button")!);
+    for (const id of ["guarded-escort", "accept-transfer"]) {
+      fireEvent.click(view.container.querySelector(`[data-fanyang-choice="${id}"]`)!);
+      fireEvent.click(view.getByTestId("fanyang-commit"));
+      await view.findByTestId("fanyang-response");
+      fireEvent.click(view.getByTestId("fanyang-response").querySelector("button")!);
+    }
+    expect(view.getByTestId("fanyang-outcome").getAttribute("data-outcome")).toBe("opened");
+    const final = localStorage.getItem("shi.fanyang-guarantee.v1");
+    const journal = view.getByTestId("fanyang-journal");
+    fireEvent.click(journal.querySelector("summary")!);
+    expect(journal.querySelectorAll("ol > li")).toHaveLength(3);
+    expect(localStorage.getItem("shi.fanyang-guarantee.v1")).toBe(final);
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(chapter);
+    expect(localStorage.getItem("shi.chen-council.v1")).toBe(chen);
+  });
+
   it("resumes an unread aftermath after remount and acknowledges it without replaying the order", async () => {
     vi.stubEnv("VITE_SHI_NATIVE", "1");
     const first = render(<App />);

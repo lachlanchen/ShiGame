@@ -84,7 +84,16 @@ export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onS
         </section></section> : null}
     </section><aside className="chen-position" aria-label={say("Position and gate conditions", "局势与开城条件")}><h3>{say("Your position", "当前局势")}</h3>
       <ul className="chen-metrics">{fanyangMetricKeys.map(metric => <li key={metric}><span>{text(definition.metrics[metric])}</span><span>{state.metrics[metric]} / 10</span></li>)}</ul>
-      <h3>{say("Conditions for surrender", "受降条件")}</h3><ul>{fanyangGateChecks(definition, state).map(check => <li key={check.key}>{check.met ? "✓" : "—"} {text(definition.metrics[check.key])}: {check.value} / {check.required}</li>)}</ul></aside></div>
+      <h3>{say("Conditions for surrender", "受降条件")}</h3><ul>{fanyangGateChecks(definition, state).map(check => <li key={check.key}>{check.met ? "✓" : "—"} {text(definition.metrics[check.key])}: {check.value} {check.met ? "≥" : "<"} {check.required}</li>)}</ul></aside></div>
+    {state.history.length > 0 && <details className="chen-history" data-testid="fanyang-journal"><summary>{say("Your decisions at Fan Yang", "范阳决策记录")}</summary><ol>
+      {state.history.map((turn, index) => {
+        const past = definition.rounds[index]!.choices.find(item => item.id === turn.choiceId)!;
+        const before = { ...state, history: state.history.slice(0, index) };
+        return <li key={turn.choiceId}><h3>{text(past.title)}</h3><p>{text(past.response)}</p>
+          {fanyangAnswers(before, past).map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{text(answer.text)}</p>)}
+          {changes(turn.before, turn.after)}</li>;
+      })}
+    </ol></details>}
     {!reset && <button className="text-button" data-council-action="retry" disabled={busy} onClick={() => setReset(true)}>{say("Restart this scene…", "重开本场景…")}</button>}
   </div>;
 }
