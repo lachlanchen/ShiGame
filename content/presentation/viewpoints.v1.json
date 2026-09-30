@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "id": "viewpoints.v1",
-  "boundary": "Original presentation text for viewpoint transitions. No rules, choices, resource effects or historical claims are added. Human narrative and translation review pending.",
+  "boundary": "Original presentation text for viewpoint transitions. No rules, choices or resource effects are added. Chen's change of control draws on Zizhi Tongjian volume 7; the keeper's arrival with a supply column is dramatization, not a claim that the player captured Chen. Human narrative and translation review pending.",
   "scenes": {
     "council": {
       "title": { "en": "At the council table", "zh-Hans": "转入议事案前" },
       "bridge": {
-        "en": "Later, in Chen. Someone waiting for grain asks whether the old claim still counts. The doorkeeper turns toward the council room for an answer.",
-        "zh-Hans": "后来，陈地。领粮的人问旧凭记还算不算数。守门的人回头望向议事处，等里面答话。"
+        "en": "Some time later, Chen has changed hands. The keeper enters with a supply column; the carts stop outside the council room. Someone waiting for grain holds up an old claim and asks whether it still counts. The doorkeeper looks inside for an answer.",
+        "zh-Hans": "隔了一段时日，陈地已经易手。掌简人随粮队入城，车在议事处外停下。领粮的人举起旧凭记，问还算不算数。守门的人回头望向屋里，等里面答话。"
       },
       "chapterBridges": [
         {

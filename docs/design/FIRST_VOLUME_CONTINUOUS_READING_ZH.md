@@ -102,7 +102,7 @@
 
 此幕由你替议事主事一方定策，不是让掌简人登上王位。反事实选择的承诺与代价会保留，随后回到执行者视角。
 
-后来，陈地。领粮的人问旧凭记还算不算数。守门的人回头望向议事处，等里面答话。
+隔了一段时日，陈地已经易手。掌简人随粮队入城，车在议事处外停下。领粮的人举起旧凭记，问还算不算数。守门的人回头望向屋里，等里面答话。
 
 你先前选了从乡里立约，不急着多取城邑。议事处门槛上，一名乡里管事停住脚：“今天答应供粮，明天有事找谁？”屋里叫他入席，他却等着听一个名字。
 
@@ -428,4 +428,4 @@
 
 - content/campaigns/chen-retreat.rules.v1.json — SHA256 b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867
 
-- content/presentation/viewpoints.v1.json — SHA256 c53c07bbaa5194a4de11cc3c057d0a7c18408bd31d85c87b0061a49499d714da
+- content/presentation/viewpoints.v1.json — SHA256 8c163d3782f68a70cd26f0e76e3460d32d78cd72eba7ec7022bc0500e0df71a9

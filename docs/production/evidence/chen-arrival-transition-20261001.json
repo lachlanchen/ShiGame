@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-01",
+  "previousCheckpoint": "Progress: 0293ea5 exposed and tested a complete beacon reading",
+  "scope": "Clarify the narrative time jump and keeper's arrival before Chen policy choices",
+  "presentationSha256": "8c163d3782f68a70cd26f0e76e3460d32d78cd72eba7ec7022bc0500e0df71a9",
+  "historicalReference": {
+    "work": "Zizhi Tongjian",
+    "volume": 7,
+    "entry": "Qin Er Shi, first year, seventh month",
+    "privateSource": "../ZhJpBook/books/zizhi-tongjian/markdown/wenyan.md",
+    "sourceSha256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+    "linesRead": "2654-2672",
+    "anchor": "攻陳 through 陳勝乃入據陳",
+    "supports": "The account describes combat at Chen before Chen Sheng occupied it and the later council discussion.",
+    "doesNotSupport": "The fictional keeper's presence, supply-column arrival, conversations, or a causal claim that a local player strategy captured Chen."
+  },
+  "editorialReview": {
+    "reviewer": "Codex",
+    "languages": ["en", "zh-Hans"],
+    "change": "A stated time interval and third-person supply-column arrival connect the road journey to the council. The old claim at the doorway retains the practical question motivating deliberation.",
+    "boundaries": "Existing policy-role explanation remains; no player battle victory, casualty count, date of arrival, resources or choices were added. Presentation boundary explicitly labels the arrival as dramatization."
+  },
+  "verification": {
+    "webExecution": 13510,
+    "webExitCode": 0,
+    "focusedWebTestsPassed": 58,
+    "readingExecution": 89820,
+    "readingExitCode": 0,
+    "completeReadingTestsPassed": 6,
+    "bookTestsPassed": 2,
+    "nativeContentParity": "passed after synchronization",
+    "offlineBook": "Regenerated with nine readings"
+  },
+  "limits": ["Not a playable siege scene", "Fresh visual and native runtime review remain pending", "Human narrative and translation acceptance remain open", "No private source excerpt published, store submission or release action"]
+}

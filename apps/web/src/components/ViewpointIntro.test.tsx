@@ -7,6 +7,14 @@ import { ViewpointIntro } from "./ViewpointIntro";
 
 afterEach(cleanup);
 describe("shared viewpoint prose", () => {
+  it("separates the keeper's arrival from the council's policy role", () => {
+    const view = render(<ViewpointIntro scene="council" locale="zh-Hans" chapterChoices={["root-in-villages"]} />);
+    const prose = view.getByTestId("council-viewpoint").textContent!;
+    expect(prose).toContain("不是让掌简人登上王位");
+    expect(prose).toContain("隔了一段时日，陈地已经易手");
+    expect(prose).toContain("掌简人随粮队入城");
+    expect(prose.indexOf("掌简人随粮队入城")).toBeLessThan(prose.indexOf("你先前选了从乡里立约"));
+  });
   it("does not invent a strategic memory for absent, conflicting or foreign choices", () => {
     for (const chapterChoices of [[], ["take-crown"], ["root-in-villages", "race-for-chen"]]) {
       const view = render(<ViewpointIntro scene="council" locale="en" chapterChoices={chapterChoices} />);
