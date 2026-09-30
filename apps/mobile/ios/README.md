@@ -4,6 +4,22 @@ SwiftUI presentation, SceneKit schematic map and Foundation campaign rules.
 No embedded browser. The canonical narrative remains in `content/campaigns`
 and `content/councils`; SwiftUI does not maintain a separate translation/story.
 
+## Numbered beta archives
+
+Use `scripts/build-ios.sh` on the qualified signing Mac after syncing a frozen
+source snapshot and generated resources into an isolated SHI staging directory.
+Set `SHI_ROOT` to that directory, `SHI_VERSION` (default1.0.0), and explicitly
+set `SHI_BUILD` to a new build number verified against App Store Connect.
+The script overrides Xcode's version settings, checks the archived bundle ID
+and version, and refuses existing archives/exports. It never uploads.
+
+One `.shi-ios-build-lock` under the staging release directory protects concurrent
+invocations there; shared-host preflight must still rule out builds in other
+SHI workspaces. Failed archives remain for diagnosis. Reconcile live processes
+and artifacts before clearing a stale lock or retrying; never delete build1.
+Run `node --test scripts/test-ios-build-preflight.mjs` for local admission tests.
+These tests do not establish signing, runtime quality or TestFlight readiness.
+
 ## Unread Chapter I reactions
 
 New native chronicles save an optional `pendingAftermath` boolean alongside the

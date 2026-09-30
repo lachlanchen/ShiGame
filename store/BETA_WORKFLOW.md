@@ -57,8 +57,9 @@ Prepare the accumulated saved-consequence, lifecycle and Chen council work as
 the next mobile beta. Build2 is only a tentative next number until live provider
 readback. The current unsigned iPad QA result passed25/25 and has reviewed
 relaunch/ending screenshots; that is not a signed package, upgrade test or upload.
-Retained release1.0.0(1) must not be overwritten. Existing build scripts still
-default to build1 and need explicit versioned staging before reuse.
+Retained release1.0.0(1) must not be overwritten. The iOS script now requires an
+explicit SHI_BUILD and refuses existing archives/exports; Android still needs
+numbered staging before its next release build.
 
 September30 readiness probe: Apple lists only build1, VALID and not expired.
 The established signing Mac is reachable with the existing SHI workspace,
