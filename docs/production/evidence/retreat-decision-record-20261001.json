@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-01",
+  "baseline": "037a50e",
+  "previousTurnClassification": "progress: twelve replay-derived strategic histories and full validation verified",
+  "feature": "Optional collapsed decision record after the development web retreat ending. Lists all five saved choices in order, canonical rule explanations and actual before/after changes; explicitly distinguishes unchanged metrics from cleared obligations.",
+  "dataBoundary": "Read-only projection of replayed state.history and existing shared content. No new narrative outcomes, historical claims, resources, saves or migrations. Original UI explanatory labels agent-reviewed; development-only.",
+  "tests": "47 RetreatScene tests and web TypeScript check passed. Loan/dispersed and loan/scattered cases verify closed default, exact chosen IDs, 0-to-2 loan effect, unchanged release metrics, unchanged save on expansion, and identical record after reload.",
+  "visibleReview": {
+    "command": "node scripts/playtest-retreat-visible.mjs dispersed loan-search",
+    "execution": 25758,
+    "exitCode": 0,
+    "passedChecks": 42,
+    "runtimeExceptions": 0,
+    "privateEvidence": ".runtime/story-review/2026-09-30T20-34-10.126Z",
+    "inspectedFrame": "06b-decision-record-mobile.png",
+    "finding": "At390x844, record appears below closing prose, remains closed until requested, and expands to readable ordered decisions and metric changes without horizontal overflow. Full record requires vertical scrolling. Real title-to-ending route, no injected resources."
+  },
+  "cleanup": { "absentPids": [2896959, 2897130, 2897131, 2897132, 2897133], "closedPorts": [4173, 5921, 6121, 9321], "availableMemoryGiB": 48, "currentRuntime": null },
+  "remaining": ["Native iOS equivalent is not implemented yet.", "Only a development web feature; no Android package or store submission.", "Human story/pacing acceptance and broader goal remain incomplete."]
+}

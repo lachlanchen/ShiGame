@@ -104,6 +104,20 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         {state.outcome !== "scattered" && <div data-testid="retreat-ending-memory">{story.endings[state.outcome].variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}</div>}
         <p>{story.epilogue}</p><p>本卷开发段落到此结束。后续尚未开放。</p>
         <p>物资归属：{state.resourceCustody === "common" ? "现存队伍" : state.resourceCustody === "groups" ? "分行各组，不再是公共库存" : "未明，不能重复调拨"}</p>
+        <details className="chen-history" data-testid="retreat-decision-record"><summary>回看这一路的决定</summary>
+          <p>这里只记录已经确认的行动与当时的变化，不代表失散者已经归来，也不替你判定哪条路最好。</p>
+          <ol>{state.history.map(turn => {
+            const recordedScene = story.scenes.find(item => item.id === turn.sceneId)!;
+            const recordedChoice = recordedScene.choices.find(item => item.id === turn.choiceId)!;
+            return <li key={turn.sceneId} data-recorded-choice={turn.choiceId}>
+              <h4>{recordedScene.title} · {recordedChoice.title}</h4>
+              <p>{explanations[turn.choiceId]}</p>
+              <ul>{councilMetricKeys.filter(key => turn.before[key] !== turn.after[key]).map(key =>
+                <li key={key}>{metrics[key]}：{turn.before[key]} → {turn.after[key]}</li>)}</ul>
+              {councilMetricKeys.every(key => turn.before[key] === turn.after[key]) && <p>本次未改变这五项数值；已作出的承诺与记录仍然保留。</p>}
+            </li>;
+          })}</ol>
+        </details>
         <button className="primary-button" data-council-action="close" onClick={onClose}>返回范阳</button></section>
       : scene && choice && preview ? <section className="chen-scene"><p className="eyebrow">{state.history.length + 1} / {story.scenes.length}</p><h3 ref={heading} tabIndex={-1}>{scene.title}</h3>
         {state.history.length === 0 && <section data-testid="retreat-viewpoint"><h4>{story.viewpoint.title}</h4><p>{story.viewpoint.text}</p></section>}

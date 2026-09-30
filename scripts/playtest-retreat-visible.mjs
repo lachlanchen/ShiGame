@@ -168,6 +168,14 @@ try {
   }
   await evaluate("document.querySelector('[data-testid=retreat-outcome]').scrollIntoView({block:'start'})");
   await capture("06-ending-mobile"); await layout("ending");
+  const savedBeforeRecord = await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')");
+  check(!await evaluate("document.querySelector('[data-testid=retreat-decision-record]').open"), "decision record does not interrupt the ending");
+  await click('[data-testid="retreat-decision-record"] summary');
+  check(await evaluate("document.querySelector('[data-testid=retreat-decision-record]').open"), "decision record opens through its visible control");
+  check(await evaluate("document.querySelectorAll('[data-testid=retreat-decision-record] [data-recorded-choice]').length===5"), "record contains five committed retreat choices");
+  await capture("06b-decision-record-mobile"); await layout("decision record");
+  check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "reading the decision record does not rewrite the save");
+  await click('[data-testid="retreat-decision-record"] summary');
   await click('[data-testid="retreat-outcome"] [data-council-action="close"]');
   await click('[data-testid="fanyang-scene"] [data-council-action="close"]');
   await click('[data-testid="chen-council"] [data-council-action="close"]');

@@ -499,6 +499,18 @@ describe("retreat development scene", () => {
     for (const id of ["split-routes", "strip-identities", "release-groups"]) await choose(view, id);
     expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe(outcome);
     expect(view.getByTestId("retreat-debts").textContent).toContain("分行不表示免责");
+    const decisionRecord = view.getByTestId("retreat-decision-record") as HTMLDetailsElement;
+    expect(decisionRecord.open).toBe(false);
+    const decisionSave = localStorage.getItem(retreatSaveKey);
+    fireEvent.click(within(decisionRecord).getByText("回看这一路的决定"));
+    expect(decisionRecord.open).toBe(true);
+    expect([...decisionRecord.querySelectorAll("[data-recorded-choice]")].map(element => element.getAttribute("data-recorded-choice")))
+      .toEqual(["decline-dispatch", "borrow-local-grain", "split-routes", "strip-identities", "release-groups"]);
+    const loanRecord = decisionRecord.querySelector('[data-recorded-choice="borrow-local-grain"]')!;
+    expect(loanRecord.textContent).toContain("粮秣：0 → 2");
+    expect(loanRecord.textContent).toContain("粮主保留欠契");
+    expect(decisionRecord.querySelector('[data-recorded-choice="release-groups"]')!.textContent).toContain("本次未改变这五项数值");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(decisionSave);
     const ending = outcome === "scattered" ? retreatStory.scatteredEnding : retreatStory.endings.dispersed;
     const loan = ending.variants.find(variant => variant.when["bad-news"] === "borrow-local-grain")!;
     for (const line of loan.lines) expect(view.getByTestId("retreat-outcome").textContent).toContain(line.text);
@@ -508,6 +520,8 @@ describe("retreat development scene", () => {
     fireEvent.click(within(view.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
     for (const line of loan.lines) expect(view.getByTestId("retreat-outcome").textContent).toContain(line.text);
     expect(localStorage.getItem(retreatSaveKey)).toBe(endingSave);
+    expect((view.getByTestId("retreat-decision-record") as HTMLDetailsElement).open).toBe(false);
+    expect(view.getByTestId("retreat-decision-record").textContent).toBe(decisionRecord.textContent);
   });
 
   it("has a named Chinese dialog, keyboard focus wrapping and no automatic semantic violations", async () => {
