@@ -22,6 +22,44 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
   assert.equal(JSON.stringify({ draft, input, together }), before);
 });
 
+test("all nine opening/crossing pairs return only their own memories in the intended scenes", () => {
+  assert.equal(draft.chapterCallbacks.length, 6);
+  for (const opening of ["read-the-names", "take-the-beacon", "hide-the-register"]) {
+    for (const crossing of ["families-first", "repair-the-ford", "cut-the-carts"]) {
+      const prior = [opening, crossing];
+      const before = JSON.stringify(prior);
+      const result = readRoute(draft, input, together, [], prior);
+      for (const callback of draft.chapterCallbacks) {
+        for (const beat of result.transcript) {
+          for (const line of callback.lines) {
+            assert.equal(beat.lines.some(actual => actual.text === line.text),
+              callback.sceneId === beat.sceneId && prior.includes(callback.afterChoice));
+          }
+        }
+      }
+      assert.equal(JSON.stringify(prior), before);
+      assert.equal(result.endingId, "together");
+    }
+  }
+  const unknown = readRoute(draft, input, together);
+  for (const callback of draft.chapterCallbacks) {
+    assert.ok(unknown.transcript.every(beat => callback.lines.every(line => !beat.lines.some(actual => actual.text === line.text))));
+  }
+});
+
+test("chapter memories reject foreign choices, duplicate callbacks and conflicting prior orders", () => {
+  const foreign = structuredClone(draft);
+  foreign.chapterCallbacks[0].afterChoice = "hold-chen";
+  assert.throws(() => validateDraft(foreign), /Unknown prior chapter choice/);
+  const duplicate = structuredClone(draft);
+  duplicate.chapterCallbacks.push(duplicate.chapterCallbacks[0]);
+  assert.throws(() => validateDraft(duplicate), /Duplicate chapter callback/);
+  const wrongScene = structuredClone(draft);
+  wrongScene.chapterCallbacks[0].sceneId = "unwritten-scene";
+  assert.throws(() => validateDraft(wrongScene), /Unknown chapter callback scene/);
+  assert.throws(() => readRoute(draft, input, together, [], ["families-first", "cut-the-carts"]), /Conflicting prior chapter choices/);
+});
+
 test("resource-triggered scattering has validated original prose without pretending the authoring graph predicts it", () => {
   assert.ok(draft.scatteredEnding.response.length >= 2);
   assert.deepEqual(draft.scatteredEnding.variants.map(variant => variant.when.records).sort(), ["carry-records", "divide-records", "strip-identities"]);

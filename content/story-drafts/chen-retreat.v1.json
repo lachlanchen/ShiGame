@@ -85,6 +85,14 @@
       ]
     }
   ],
+  "chapterCallbacks": [
+    { "sceneId": "evacuation", "afterChoice": "families-first", "lines": [{ "speaker": "keeper", "text": "那回渡河，让家户先过，守在后面的人一直等到最后。这次若还这样走，得先给断后的人留好退路。" }, { "speaker": "rear-guard", "text": "先说在哪儿收队。我得把话传到最后一个人。" }] },
+    { "sceneId": "evacuation", "afterChoice": "repair-the-ford", "lines": [{ "speaker": "narrator", "text": "门边有人把粮袋往车轮下拖。你伸手拦住，让他先拿垫车的木料。" }, { "speaker": "keeper", "text": "渡口那次，粮袋填下去就没再取回来。这次还没到非用粮不可的时候。先看看轮子卡在哪里。" }] },
+    { "sceneId": "evacuation", "afterChoice": "cut-the-carts", "lines": [{ "speaker": "keeper", "text": "渡口弃过一次车，有三户折回去找东西。这次别只喊人快走，先问清谁还在车旁。" }, { "speaker": "rear-guard", "text": "我去问。问到的报回来；那三户后来去了哪里，我不知道。" }] },
+    { "sceneId": "records", "afterChoice": "read-the-names", "lines": [{ "speaker": "narrator", "text": "你摊开带出的凭记，想起雨棚里逐个念出名字的声音。那时有人答应，也有人等着听下一个。眼前有几行字还认得，却没有人来应。" }, { "speaker": "keeper", "text": "没人应的，先留着。念过他的名字，不等于知道他如今在哪里。" }] },
+    { "sceneId": "records", "afterChoice": "take-the-beacon", "lines": [{ "speaker": "keeper", "text": "夺亭燧那回，我以为截住信号就能抢出时间。后来邻亭的骑卒还是找上了路。" }, { "speaker": "narrator", "text": "你把凭记翻到写着来处的一面。路能从足迹找，人的住处也能从这些字找。这一面要不要留下，得在装囊前想定。" }] },
+    { "sceneId": "records", "afterChoice": "hide-the-register", "lines": [{ "speaker": "keeper", "text": "雨夜把名籍藏起来时，我只想再等一晚。现在这些领过粮、欠着粮的事，不能也藏起来就算办完。" }, { "speaker": "narrator", "text": "你把眼前带出的凭记逐份分开。新写的账与还能辨认的旧记各放一边，缺下的地方没有补字。" }] }
+  ],
   "councilCallbacks": [
     { "sceneId": "reserves", "afterChoice": "take-crown", "lines": [{ "speaker": "narrator", "text": "新拨单用着议事后定下的王号。乡里管事认得那个印，却没有因此收起自己的凭记。" }, { "speaker": "supply-officer", "text": "名号已经定了，怎么还要一笔笔问？" }, { "speaker": "keeper", "text": "拥立时说过不搬空陈地的粮仓。印在这里，答应的话也在。" }] },
     { "sceneId": "reserves", "afterChoice": "recognize-allies", "lines": [{ "speaker": "narrator", "text": "往来文书上留着不同旗号。约立六国的提议传出去了，还没有哪张回书能替所有人答应。" }, { "speaker": "supply-officer", "text": "既然说一同反秦，这批人就一起调走。" }, { "speaker": "keeper", "text": "答应结盟，不等于把各家的粮都交到这张桌上。先点明哪一部肯出。" }] },

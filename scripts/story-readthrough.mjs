@@ -75,6 +75,15 @@ export function validateDraft(draft) {
     callbacks.add(key);
     checkLines(callback.lines);
   }
+  const chapterCallbacks = new Set();
+  for (const callback of draft.chapterCallbacks) {
+    assert.ok(positions.has(callback.sceneId), "Unknown chapter callback scene");
+    assert.ok(chapterChoiceNodes.has(callback.afterChoice), "Unknown prior chapter choice");
+    const key = `${callback.sceneId}:${callback.afterChoice}`;
+    assert.ok(!chapterCallbacks.has(key), "Duplicate chapter callback");
+    chapterCallbacks.add(key);
+    checkLines(callback.lines);
+  }
   for (const [index, scene] of draft.scenes.entries()) {
     assert.ok(nonempty(scene.title) && nonempty(scene.setting) && nonempty(scene.transition));
     assert.ok(Number.isInteger(scene.act) && scene.act >= 5 && scene.act <= 8);
@@ -138,7 +147,7 @@ export function readRoute(draft, input, choices, priorCouncilChoices = [], prior
       && (!event.priorChapterChoice || priorChapterChoices.includes(event.priorChapterChoice)));
     witnessedEvents.push(...arrivals.map(event => event.id));
     transcript.push({ sceneId, title: scene.title, transition: scene.transition, setting: scene.setting,
-      lines: [...scene.lines, ...arrivals.flatMap(event => event.lines), ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines), ...draft.councilCallbacks.filter(item => item.sceneId === scene.id && priorCouncilChoices.includes(item.afterChoice)).flatMap(item => item.lines), ...(scene.decisionLeadIn ?? [])],
+      lines: [...scene.lines, ...arrivals.flatMap(event => event.lines), ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines), ...draft.councilCallbacks.filter(item => item.sceneId === scene.id && priorCouncilChoices.includes(item.afterChoice)).flatMap(item => item.lines), ...draft.chapterCallbacks.filter(item => item.sceneId === scene.id && priorChapterChoices.includes(item.afterChoice)).flatMap(item => item.lines), ...(scene.decisionLeadIn ?? [])],
       choiceId, choiceTitle: choice.title, intent: choice.intent,
       reaction: [...choice.response, ...arrivals.flatMap(event => event.decisionResponses?.[choiceId] ?? []),
         ...draft.witnessedEvents.filter(event => witnessedEvents.includes(event.id)).flatMap(event => choice.ending ? event.endingResponses[choice.ending] : []), ...(scene.exitLines ?? [])] });
@@ -190,7 +199,7 @@ export function auditDraft(draft) {
   assert.equal(witnessedSeen.size, draft.witnessedEvents.length, "Unreachable witnessed event");
   return { scope: "Authoring graph only; not resource balance, save integration, historical review or shipped gameplay",
     inputContexts: inputs.length, routes, choices: choicesSeen.size, conditionalPassages: variantsSeen.size,
-    councilCallbacks: draft.councilCallbacks.length, witnessedEvents: witnessedSeen.size, endings: endingCounts };
+    councilCallbacks: draft.councilCallbacks.length, chapterCallbacks: draft.chapterCallbacks.length, witnessedEvents: witnessedSeen.size, endings: endingCounts };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

@@ -39,6 +39,55 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it.each([
+    ["read-the-names", "repair-the-ford"],
+    ["take-the-beacon", "cut-the-carts"],
+    ["hide-the-register", "families-first"],
+  ])("recalls replay-verified %s and %s without changing saves or inventing other memories", async (opening, crossing) => {
+    const input = props();
+    let priorChapter = createInitialState(definitions.campaign, 0);
+    while (!priorChapter.completed) {
+      const node = getNode(definitions.campaign, priorChapter.currentNodeId);
+      const preferred = node.id === "rain-order" ? opening : node.id === "broken-crossing" ? crossing
+        : node.id === "fire-council" ? "extinguish-and-move" : undefined;
+      priorChapter = resolveChoice(definitions.campaign, priorChapter,
+        preferred ?? node.choices.find(choice => canChoose(choice, priorChapter.resources))!.id).state;
+    }
+    expect(priorChapter.failureReason).toBeUndefined();
+    let priorCouncil = createCouncil(definitions.council, councilEntry(priorChapter)!);
+    for (const id of ["defer-title", "joint-ledger", "one-command"]) priorCouncil = resolveCouncil(definitions.council, priorCouncil, id);
+    const savedCouncil = JSON.parse(encodeCouncilSnapshot(priorCouncil, councilHash.trim()));
+    const origin = prepareFanyangEntry(definitions.council, priorChapter, savedCouncil, councilHash.trim())!;
+    let priorFanyang = createFanyang(definitions.fanyang, origin);
+    for (const id of ["public-safety", "hold-talks", "withdraw-envoy"]) priorFanyang = resolveFanyang(definitions.fanyang, priorFanyang, id);
+    input.entry = prepareRetreatEntry(definitions, { chapter: priorChapter, council: savedCouncil,
+      fanyang: JSON.parse(encodeFanyangSnapshot(priorFanyang, fanyangReview.contentSHA256)) },
+      { campaign: "a".repeat(64), council: councilHash.trim(), fanyang: fanyangReview.contentSHA256 })!;
+    expect(input.entry).not.toBeNull();
+    const originalEntry = JSON.stringify(input.entry);
+    const view = render(<RetreatScene {...input} />);
+    expect(view.queryByTestId("retreat-chapter-memory")).toBeNull();
+    await choose(view, "decline-dispatch");
+    await choose(view, "gather-own");
+    const assertMemory = (current: ReturnType<typeof render>, selected: string) => {
+      const memory = current.getByTestId("retreat-chapter-memory");
+      for (const callback of retreatStory.chapterCallbacks) {
+        for (const line of callback.lines) expect(memory.textContent?.includes(line.text)).toBe(callback.afterChoice === selected);
+      }
+    };
+    assertMemory(view, crossing);
+    await choose(view, "split-routes");
+    assertMemory(view, opening);
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const restored = render(<RetreatScene {...input} />);
+    expect(restored.queryByTestId("retreat-chapter-memory")).toBeNull();
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    assertMemory(restored, opening);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    expect(JSON.stringify(input.entry)).toBe(originalEntry);
+  });
+
   it.each(["escort-households", "hold-formation", "split-routes"])("shows the saved %s withdrawal before the records scene and preserves it on resume", async evacuation => {
     const input = props();
     input.entry = structuredClone(input.entry);
