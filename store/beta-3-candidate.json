@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "candidateBuild": 3,
+  "createdOn": "2026-09-30",
+  "scope": "Android internal-beta candidate; no upload or public-release approval claimed",
+  "android": {
+    "status": "signed-local-candidate-mobile-fixes-reviewed",
+    "applicationId": "art.lazying.shi",
+    "versionCode": 3,
+    "apkSHA256": "09a7ac30027945d4fb6ab1cbc2bdc6ca44c0d81b58bd64d34b9a41f3faa21ea7",
+    "aabSHA256": "117d1e42f86c2bca6cdd042ea12bc599e72f1c17a968ae9015b669ea0fe17664",
+    "sourceSetSHA256": "41ea07d259d14fc71d6d905d752f76e445953a873210c02e1242056d17d80bac",
+    "sourceFiles": 201,
+    "sourceUnchangedDuringBuild": true,
+    "qualification": [
+      "Full repository validation including86 web tests; release lint and signed APK/AAB build",
+      "API34: in-place update from candidate2, continuing the retained release1 save",
+      "Rendered mobile ending text no longer squeezed by council actions",
+      "Saved reaction, new committed reaction, next question and final outcome scrolled into view",
+      "defer-title / joint-ledger / one-command route reaches common-front with grain4 tempo5 city7 allies2 veterans6",
+      "Final response and outcome text identical after force-stop/relaunch",
+      "Chapter I still shows Deep Roots after council completion"
+    ],
+    "limitations": [
+      "One English portrait route on API34 emulator; not physical-device or all-locale qualification",
+      "New-game Chapter I route on this exact package still to verify",
+      "AAB provider processing, live version-code reconciliation and internal distribution pending",
+      "Existing lint warnings and generated arithmetic-only Gradle unit test remain"
+    ],
+    "uploaded": false
+  }
+}

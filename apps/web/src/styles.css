@@ -523,9 +523,10 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
   [dir="rtl"] .field-reveal { padding-right: 0; border-right: 0; }
   .resolution-deltas { margin-top: 10px; }
   .resolution-banner > button { position: absolute; top: 6px; right: 8px; }
-  .ending-panel { grid-template-columns: auto 1fr; gap: 16px; padding: 28px 22px; }
+  .ending-panel { grid-template-columns: auto minmax(0, 1fr); gap: 16px; padding: 28px 22px; }
   .ending-seal { width: 58px; height: 58px; font-size: 2.3rem; }
   .ending-panel .primary-button { grid-column: 1 / -1; }
+  .ending-panel .chen-ending-actions { grid-column: 1 / -1; min-width: 0; }
   .guide-drawer { padding: 25px 22px 35px; }
   .audio-drawer { padding: 25px 22px 35px; }
   .guide-intro { margin-top: 18px; }
