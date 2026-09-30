@@ -246,12 +246,14 @@ struct CampaignView: View {
                     .frame(height: 230).clipShape(RoundedRectangle(cornerRadius: 20))
                     .accessibilityLabel("Schematic campaign map. \(localized(engine.node, "title"))")
                 resourceStrip(engine.resources)
-                Text(localized(engine.node, "title")).font(.system(.largeTitle, design: .serif)).accessibilityAddTraits(.isHeader).accessibilityIdentifier("story-title")
-                Text(localized(engine.node, "context")).font(.body).lineSpacing(6)
-                Text(localized(engine.node, "dialogue")).font(.system(.title3, design: .serif)).lineSpacing(6).padding(20).frame(maxWidth: .infinity, alignment: .leading).background(gold.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
-                Text(t("reconstruction")).font(.caption).foregroundStyle(gold)
-                if let echo = engine.node.records("storyEchoes").first(where: { engine.flags.contains($0.text("requiredFlag")) }) {
-                    Text(localized(echo, "text")).lineSpacing(6)
+                if engine.failure == nil {
+                    Text(localized(engine.node, "title")).font(.system(.largeTitle, design: .serif)).accessibilityAddTraits(.isHeader).accessibilityIdentifier("story-title")
+                    Text(localized(engine.node, "context")).font(.body).lineSpacing(6)
+                    Text(localized(engine.node, "dialogue")).font(.system(.title3, design: .serif)).lineSpacing(6).padding(20).frame(maxWidth: .infinity, alignment: .leading).background(gold.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
+                    Text(t("reconstruction")).font(.caption).foregroundStyle(gold)
+                    if let echo = engine.node.records("storyEchoes").first(where: { engine.flags.contains($0.text("requiredFlag")) }) {
+                        Text(localized(echo, "text")).lineSpacing(6)
+                    }
                 }
                 if engine.completed { ending(engine) }
                 else {

@@ -597,6 +597,22 @@ export function App() {
     });
   };
 
+  const endingPanel = (
+    <section className="ending-panel">
+      <span className="ending-seal">{state.failureReason ? "止" : ending === "wildfire" ? "火" : ending === "deep-roots" ? "根" : "觀"}</span>
+      <div>
+        <p className="eyebrow">{state.failureReason ? translate(locale, "failed") : translate(locale, "complete")}</p>
+        <h2 id={state.failureReason ? "story-title" : undefined}>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</h2>
+        <p data-testid="chapter-ending-prose">{state.failureReason ? translate(locale, state.failureReason === "captured" ? "capturedText" : "scatteredText") : translate(locale, ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText")}</p>
+        {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} locale={locale} /></Suspense>}
+      </div>
+      <div className="chen-ending-actions">
+        {!state.failureReason && <button className="primary-button" data-testid="council-enter" onClick={() => openDrawer("council")}>{locale.startsWith("zh") ? "进入陈地议事" : "Continue to the council at Chen"} <span>→</span></button>}
+        <button className="primary-button" ref={endingRestartRef} onClick={restart}>{translate(locale, "restart")} <span>↺</span></button>
+      </div>
+    </section>
+  );
+
   if (screen === "title") {
     return (
       <main className="title-screen" data-testid="shi-app" data-screen="title" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
@@ -657,28 +673,30 @@ export function App() {
           <div className="map-legend"><span><i className="dot active" />{localize(campaign.sites.find((site) => site.id === node.siteId)!.name, locale)}</span><span>{node.dateLabel && localize(node.dateLabel, locale)}</span></div>
         </div>
 
-        <article className="story-panel" ref={storyRef} tabIndex={-1} aria-labelledby="story-title">
-          <div className="story-number"><span>{String(nodeNumber).padStart(2, "0")}</span><i /></div>
-          <p className="date-line" dir={contentDirection(node.dateLabel, locale)}>{localize(node.dateLabel, locale)}</p>
-          <h1 id="story-title" dir={contentDirection(node.title, locale)}>{localize(node.title, locale)}</h1>
-          <p className="context" dir={contentDirection(node.context, locale)}>{localize(node.context, locale)}</p>
-          <section className="field-signal" data-testid="field-signal" aria-label={translate(locale, "fieldSignal")}>
-            <div className="field-signal-head"><span>{translate(locale, "fieldSignal")} · {translate(locale, "reconstruction")}</span><code>{translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</code></div>
-            <h2 dir={contentDirection(activeCondition.title, locale)}>{localize(activeCondition.title, locale)}</h2>
-            <p dir={contentDirection(activeCondition.signal, locale)}>{localize(activeCondition.signal, locale)}</p>
-            <div className="field-effects">{Object.entries(activeCondition.effects).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
-          </section>
-          <blockquote className="dialogue">
-            <p dir={contentDirection(node.dialogue, locale)}>{localize(node.dialogue, locale)}</p>
-            <footer><strong dir={contentDirection(speaker.name, locale)}>{localize(speaker.name, locale)}</strong><span dir={contentDirection(speaker.role, locale)}>{localize(speaker.role, locale)}</span>{!speaker.historical && <em>{translate(locale, "reconstruction")}</em>}</footer>
-          </blockquote>
-          {storyEcho && storyEchoSpeaker && (
-            <aside className="story-echo" data-testid="story-echo" data-story-echo-id={storyEcho.id} aria-label={translate(locale, "reconstruction")}>
-              <p dir={contentDirection(storyEcho.text, locale)}>{localize(storyEcho.text, locale)}</p>
-              <footer><strong dir={contentDirection(storyEchoSpeaker.name, locale)}>{localize(storyEchoSpeaker.name, locale)}</strong><span>{translate(locale, "reconstruction")}</span></footer>
-            </aside>
-          )}
-          <button className="source-link" onClick={openNodeSources}><span>◫</span>{translate(locale, "openSources")} · {node.sourceRefs.length}</button>
+        <article className={`story-panel${state.failureReason ? " story-panel-failed" : ""}`} ref={storyRef} tabIndex={-1} aria-labelledby="story-title">
+          {state.failureReason ? endingPanel : <>
+            <div className="story-number"><span>{String(nodeNumber).padStart(2, "0")}</span><i /></div>
+            <p className="date-line" dir={contentDirection(node.dateLabel, locale)}>{localize(node.dateLabel, locale)}</p>
+            <h1 id="story-title" dir={contentDirection(node.title, locale)}>{localize(node.title, locale)}</h1>
+            <p className="context" dir={contentDirection(node.context, locale)}>{localize(node.context, locale)}</p>
+            <section className="field-signal" data-testid="field-signal" aria-label={translate(locale, "fieldSignal")}>
+              <div className="field-signal-head"><span>{translate(locale, "fieldSignal")} · {translate(locale, "reconstruction")}</span><code>{translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</code></div>
+              <h2 dir={contentDirection(activeCondition.title, locale)}>{localize(activeCondition.title, locale)}</h2>
+              <p dir={contentDirection(activeCondition.signal, locale)}>{localize(activeCondition.signal, locale)}</p>
+              <div className="field-effects">{Object.entries(activeCondition.effects).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
+            </section>
+            <blockquote className="dialogue">
+              <p dir={contentDirection(node.dialogue, locale)}>{localize(node.dialogue, locale)}</p>
+              <footer><strong dir={contentDirection(speaker.name, locale)}>{localize(speaker.name, locale)}</strong><span dir={contentDirection(speaker.role, locale)}>{localize(speaker.role, locale)}</span>{!speaker.historical && <em>{translate(locale, "reconstruction")}</em>}</footer>
+            </blockquote>
+            {storyEcho && storyEchoSpeaker && (
+              <aside className="story-echo" data-testid="story-echo" data-story-echo-id={storyEcho.id} aria-label={translate(locale, "reconstruction")}>
+                <p dir={contentDirection(storyEcho.text, locale)}>{localize(storyEcho.text, locale)}</p>
+                <footer><strong dir={contentDirection(storyEchoSpeaker.name, locale)}>{localize(storyEchoSpeaker.name, locale)}</strong><span>{translate(locale, "reconstruction")}</span></footer>
+              </aside>
+            )}
+            <button className="source-link" onClick={openNodeSources}><span>◫</span>{translate(locale, "openSources")} · {node.sourceRefs.length}</button>
+          </>}
         </article>
       </div>
 
@@ -710,19 +728,7 @@ export function App() {
           })()}
         </section>
       ) : (
-        <section className="ending-panel">
-          <span className="ending-seal">{state.failureReason ? "止" : ending === "wildfire" ? "火" : ending === "deep-roots" ? "根" : "觀"}</span>
-          <div>
-            <p className="eyebrow">{state.failureReason ? translate(locale, "failed") : translate(locale, "complete")}</p>
-            <h2>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</h2>
-            <p data-testid="chapter-ending-prose">{state.failureReason ? translate(locale, state.failureReason === "captured" ? "capturedText" : "scatteredText") : translate(locale, ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText")}</p>
-            {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} locale={locale} /></Suspense>}
-          </div>
-          <div className="chen-ending-actions">
-            {!state.failureReason && <button className="primary-button" data-testid="council-enter" onClick={() => openDrawer("council")}>{locale.startsWith("zh") ? "进入陈地议事" : "Continue to the council at Chen"} <span>→</span></button>}
-            <button className="primary-button" ref={endingRestartRef} onClick={restart}>{translate(locale, "restart")} <span>↺</span></button>
-          </div>
-        </section>
+        !state.failureReason && endingPanel
       )}
       </div>
 

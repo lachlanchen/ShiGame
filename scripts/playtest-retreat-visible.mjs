@@ -46,8 +46,7 @@ const until = async expression => { for (let i = 0; i < 120; i++) { if (await ev
 const exists = selector => `!!document.querySelector(${JSON.stringify(selector)})`;
 const click = async selector => {
   await send("Page.bringToFront"); await until(exists(selector));
-  await evaluate(`document.querySelector(${JSON.stringify(selector)}).scrollIntoView({block:'center'})`);
-  await delay(200);
+  await until(`(() => {const e=document.querySelector(${JSON.stringify(selector)});e.scrollIntoView({block:'center',behavior:'instant'});const r=e.getBoundingClientRect();return e.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2))})()`);
   const point = await evaluate(`(() => {const e=document.querySelector(${JSON.stringify(selector)}),r=e.getBoundingClientRect();if(e.disabled)throw Error('Disabled control');const x=r.x+r.width/2,y=r.y+r.height/2;if(!e.contains(document.elementFromPoint(x,y)))throw Error('Occluded control');return {x,y}})()`);
   await send("Input.dispatchMouseEvent", { type: "mousePressed", ...point, button: "left", clickCount: 1 });
   await send("Input.dispatchMouseEvent", { type: "mouseReleased", ...point, button: "left", clickCount: 1 });
@@ -131,6 +130,7 @@ try {
     }
     await until(exists('[data-testid="chapter-ending-prose"]'));
     check(await evaluate("document.querySelector('[data-testid=chapter-ending-prose]').textContent.includes('追兵喝止')"), "capture has its own closing prose");
+    check(await evaluate("!document.querySelector('.dialogue,[data-testid=field-signal],[data-testid=story-echo]') && document.querySelectorAll('.ending-panel').length===1"), "defeat replaces next-scene dialogue rather than following it");
     check(await evaluate("document.querySelector('[data-testid=shi-app]').dataset.oppositionStage==='complete' && !document.querySelector('[data-testid=council-enter],[data-testid=commit-selected]')"), "terminal screen offers no next pursuit round or council entry");
     const save = await evaluate("localStorage.getItem('shi.chapter-01.save.v6')");
     const saved = JSON.parse(save);

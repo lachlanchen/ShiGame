@@ -73,6 +73,11 @@ describe("playable web shell", () => {
     expect(await view.findByTestId("chapter-ending-prose")).toHaveProperty("textContent", ui[locale].capturedText);
     expect(view.queryByTestId("council-enter")).toBeNull();
     expect(view.queryByText(ui[locale].endingWatchfulText)).toBeNull();
+    expect(view.container.querySelector('.dialogue')).toBeNull();
+    expect(view.queryByTestId('field-signal')).toBeNull();
+    expect(view.queryByTestId('story-echo')).toBeNull();
+    expect(view.container.querySelectorAll('.ending-panel')).toHaveLength(1);
+    expect(view.container.querySelector('#story-title')?.textContent).toBe(ui[locale].captured);
     const saved = JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!);
     expect(saved.history).toEqual(state.history);
     expect(saved.resources).toEqual(state.resources);
