@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "native-cli-session-checks-passed",
+  "baseline": "5b3d20f plus the two new source hashes below",
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/RetreatSession.swift": "87d38e52f02f6e787ba898914b2984c34e417b26c8b8ae03c6161c4d7825959a",
+    "apps/mobile/ios/Tests/RetreatSessionChecks.swift": "b8d629f39fef947d503e6f4b3956c4b095eac6501f615edc1b5654ce6ee802a2"
+  },
+  "contentAndEngineBaseline": "native-retreat-rules-20261001.json; retained engine and five canonical input hashes rechecked before compilation",
+  "platform": "Shared Mac mini, existing Apple Swift6.4 toolchain; Foundation/Combine/CryptoKit CLI, not an installed iOS app",
+  "compileCommand": "xcrun swiftc CampaignEngine.swift CouncilEngine.swift FanyangEngine.swift RetreatEntry.swift RetreatEngine.swift RetreatSession.swift RetreatSessionChecks.swift -o retreat-session-checks",
+  "runCommand": "./retreat-session-checks chapter-01-daze.json chen-council.v1.json fanyang-guarantee.v1.json chen-retreat.rules.v1.json chen-retreat.v1.json session-checks-1",
+  "exitCode": 0,
+  "checksPassed": 9,
+  "checks": [
+    "Opening and invalid orders do not create a save",
+    "Five real legal retreat decisions, loan debt, unread reaction, stale acknowledgment, resume and completed-order lock",
+    "Injected failed loan write leaves disk, capacity, debt and reaction unchanged; retry commits once",
+    "Failed restart retains bytes, decisions and unread reaction",
+    "Corrupt save blocked and retained; explicit restart creates an exact-byte backup",
+    "Foreign entry and independently changed rules/story revisions do not overwrite progress",
+    "Missing or structurally mismatched story/rules cannot initialize or replace progress",
+    "Disk write precedes engine publication; observer reentrant choose/restart rejected",
+    "Prior Fan Yang engine remains unchanged"
+  ],
+  "developmentBoundary": "Explicitly supplied authoring-only story, matching shared scene/choice IDs and separate SHI/development save path. Story bytes are not promoted into the production bundle.",
+  "localChecks": ["npm run validate:ios-content", "npm run validate:repo, including18 authoring tests"],
+  "limits": [
+    "CLI coverage of normal atomic filesystem behavior and injected pre-write failure, not power-loss or hardware storage-fault testing.",
+    "Backup success checked; backup permission failure not simulated.",
+    "Reopen intentionally presents the last saved reaction again; acknowledgment is presentation-only and does not write a decision.",
+    "Native reading/choice UI, accessibility, simulator/device gameplay and human story review remain pending.",
+    "No simulator, installed app, signing, store build, submission or public release changed."
+  ]
+}
