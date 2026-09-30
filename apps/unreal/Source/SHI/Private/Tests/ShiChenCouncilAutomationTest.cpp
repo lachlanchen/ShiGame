@@ -7,6 +7,9 @@
 #include "Serialization/JsonSerializer.h"
 #include "ShiChenCouncilModel.h"
 #include "ShiCampaignSession.h"
+#include "ShiChenCouncilSession.h"
+#include "HAL/PlatformFileManager.h"
+#include "Misc/Guid.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiChenChapterEntryTest, "SHI.ChenCouncil.ChapterEntry",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
@@ -54,6 +57,50 @@ bool FShiChenChapterEntryTest::RunTest(const FString& Parameters)
         else
         {
             ++Survivors;
+            if (Survivors == 1)
+            {
+                auto& Files = FPlatformFileManager::Get().GetPlatformFile();
+                const FString Directory = FPaths::ProjectSavedDir() / TEXT("Automation/Council") / FGuid::NewGuid().ToString(EGuidFormats::Digits);
+                const FString Path = Directory / TEXT("council.json");
+                FShiChenCouncilSession Disk, Stale;
+                TestFalse(TEXT("Unopened disk session rejects choice"), Disk.Commit(TEXT("defer-title"), Error));
+                TestTrue(TEXT("Create real disk save"), Disk.Open(Definition, Chapter, Path, Error));
+                TestTrue(TEXT("Open second snapshot"), Stale.Open(Definition, Chapter, Path, Error));
+                TestTrue(TEXT("Disk-backed decision"), Disk.Commit(TEXT("defer-title"), Error));
+                TestFalse(TEXT("Stale session cannot overwrite newer decision"), Stale.Commit(TEXT("defer-title"), Error));
+                TestEqual(TEXT("Stale model does not advance"), Stale.GetModel().GetHistory().Num(), 0);
+                TestTrue(TEXT("Resume real disk save"), Stale.Open(Definition, Chapter, Path, Error));
+                TestEqual(TEXT("Resume retains saved choice"), Stale.GetModel().GetHistory().Num(), 1);
+                TestFalse(TEXT("Duplicate disk decision rejected"), Stale.Commit(TEXT("defer-title"), Error));
+                while (!Stale.GetModel().IsCompleted())
+                {
+                    bool Advanced = false;
+                    for (const auto& Choice : Stale.GetModel().GetChoices())
+                    {
+                        FShiChenTurn Preview;
+                        if (Stale.GetModel().Preview(Choice, Preview))
+                        { Advanced = Stale.Commit(Choice, Error); break; }
+                    }
+                    if (!TestTrue(TEXT("Save next council round"), Advanced)) break;
+                }
+                FShiChenCouncilSession Finished;
+                TestTrue(TEXT("Reopen completed disk council"), Finished.Open(Definition, Chapter, Path, Error));
+                TestTrue(TEXT("Disk completion survives reopen"), Finished.GetModel().IsCompleted());
+                TestEqual(TEXT("Disk ending survives reopen"), Finished.GetModel().GetOutcome(), Stale.GetModel().GetOutcome());
+                const FString Corrupt = TEXT("{preserve damaged save");
+                TestTrue(TEXT("Install corrupt test fixture"), FFileHelper::SaveStringToFile(Corrupt, *Path));
+                TestFalse(TEXT("Corruption rejects further decision"), Disk.Commit(TEXT("army-rations"), Error));
+                TestEqual(TEXT("Failed disk save does not advance"), Disk.GetModel().GetHistory().Num(), 1);
+                TestFalse(TEXT("Corrupt save not replaced on open"), Finished.Open(Definition, Chapter, Path, Error));
+                TestTrue(TEXT("Failed open retains prior live model"), Finished.GetModel().IsCompleted());
+                FString PreservedFile;
+                FFileHelper::LoadFileToString(PreservedFile, *Path);
+                TestEqual(TEXT("Corrupt bytes preserved"), PreservedFile, Corrupt);
+                TestFalse(TEXT("Unwritable destination rejects fresh session"), Finished.Open(Definition, Chapter, Path / TEXT("child.json"), Error));
+                TestTrue(TEXT("Failed create preserves live ending"), Finished.GetModel().IsCompleted());
+                TestTrue(TEXT("Remove exact generated fixture"), Files.DeleteFile(*Path));
+                TestTrue(TEXT("No temporary council file remains"), Files.DeleteDirectory(*Directory));
+            }
             FString Save;
             TestTrue(TEXT("Chapter-bound export"), Next.ExportSaveJson(Save, Error));
             TSharedPtr<FJsonObject> Saved;
