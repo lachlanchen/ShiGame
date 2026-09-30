@@ -38,6 +38,11 @@ import CryptoKit
                 let view = RetreatPresentation(story: story, engine: engine, reading: false)
                 let lines = texts(view.sceneLines)
                 precondition(view.responseLines.isEmpty)
+                if view.scene.text("id") == "dawn" {
+                    let question = "还按原来的队么？"
+                    precondition(lines.last == question, "Ask for the final decision after the reports")
+                    precondition(lines.filter { $0 == question }.count == 1)
+                }
                 for key in ["chapterCallbacks", "councilCallbacks"] {
                     for callback in story.records(key) {
                         for line in texts(callback.records("lines")) {
