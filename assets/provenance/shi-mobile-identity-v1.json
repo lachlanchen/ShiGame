@@ -1,0 +1,12 @@
+{
+  "assetId": "shi-mobile-identity-v1",
+  "createdAt": "2026-09-26",
+  "files": ["assets/mobile/shi-seal-outlined.svg", "assets/mobile/shi-icon-1024.png", "assets/mobile/shi-icon-512.png"],
+  "source": "Existing assets/favicon.svg project-original seal; explicit Noto Serif CJK SC glyph outline",
+  "generator": "scripts/render-mobile-icons.py; fontTools outline and CairoSVG raster export, no model generation",
+  "licenseStatus": "Project-original seal under repository terms; Noto Serif CJK font SIL OFL-1.1",
+  "intendedUse": ["iOS launcher", "Android launcher", "store identity"],
+  "reviewStatus": "approved-for-mobile-testing",
+  "review": { "date": "2026-09-26", "legibleGlyph": true, "opaqueSquare": true, "missingGlyphDraftsRejected": true },
+  "limitations": "Not evidence of ancient seal-script form; modern project identity. Store submission uses this reviewed export only."
+}

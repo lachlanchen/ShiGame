@@ -67,3 +67,27 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# Native mobile generated payloads, signing, and build state
+apps/mobile/**/build/
+apps/mobile/**/.gradle/
+apps/mobile/**/local.properties
+apps/mobile/android/capacitor-cordova-android-plugins/
+apps/mobile/android/app/src/main/assets/
+apps/mobile/ios/App/App/public/
+apps/mobile/ios/App/App/capacitor.config.json
+apps/mobile/ios/App/Pods/
+apps/mobile/ios/**/xcuserdata/
+apps/mobile/ios/**/.build/
+apps/mobile/ios/**/DerivedData/
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.ipa
+*.apk
+*.aab
+*.xcarchive/
+apps/mobile/ios/SHI/Resources/
+apps/mobile/ios/SHI.xcodeproj/
+apps/mobile/ios/SHI-Info.plist

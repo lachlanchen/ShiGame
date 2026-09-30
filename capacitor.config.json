@@ -1,0 +1,8 @@
+{
+  "appId": "art.lazying.shi",
+  "appName": "SHI",
+  "webDir": "apps/web/dist",
+  "android": { "path": "apps/mobile/android", "backgroundColor": "#17150f", "allowMixedContent": false },
+  "plugins": { "SystemBars": { "style": "DARK" } },
+  "server": { "androidScheme": "https" }
+}

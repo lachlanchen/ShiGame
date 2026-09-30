@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SHI</string>
+    <string name="title_activity_main">SHI</string>
+    <string name="package_name">art.lazying.shi</string>
+    <string name="custom_url_scheme">art.lazying.shi</string>
+</resources>

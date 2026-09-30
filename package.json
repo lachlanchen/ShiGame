@@ -8,6 +8,8 @@
     "packages/game-core"
   ],
   "scripts": {
+    "build:android-web": "npm run sync:content && VITE_SHI_NATIVE=1 npm --workspace @shi/web run build",
+    "build:android": "bash scripts/build-android.sh",
     "dev": "npm run sync:content && npm --workspace @shi/web run dev -- --host 127.0.0.1",
     "build": "npm run validate && npm --workspace @shi/web run build && npm run validate:web-build",
     "test": "npm run sync:content && npm run validate:content && npm run validate:audio && npm --workspace @shi/game-core run test && npm --workspace @shi/web run test",
@@ -40,6 +42,13 @@
     "node": ">=22"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.5.1",
     "jsdom": "26.1.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.1",
+    "@capacitor/app": "8.0.0",
+    "@capacitor/core": "8.5.1",
+    "@capacitor/preferences": "8.0.0"
   }
 }

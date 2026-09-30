@@ -1,0 +1,10 @@
+/* Native-only chrome clearance; browser bundle and layout remain unchanged. */
+html[data-native] { overscroll-behavior: none; }
+html[data-native] .title-screen { min-height: 100svh; }
+html[data-native] .title-topbar, html[data-native] .game-header { padding-top: max(18px, env(safe-area-inset-top)); }
+html[data-native] .title-footer { padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+html[data-native] .drawer { padding-top: max(34px, env(safe-area-inset-top)); padding-bottom: max(50px, env(safe-area-inset-bottom)); }
+html[data-native] .game-shell { padding-bottom: env(safe-area-inset-bottom); }
+.native-legal { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px; }
+.native-legal a { display: inline-flex; align-items: center; min-height: 44px; color: #dfc78e; font-size: 16px; text-underline-offset: 4px; }
+.native-save-warning { position: fixed; z-index: 100; bottom: env(safe-area-inset-bottom, 0); padding: 18px; background: #70291f; color: #fff; width: 100%; }
