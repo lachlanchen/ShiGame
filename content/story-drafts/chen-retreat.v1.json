@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "chen-retreat-story-draft.v1",
+  "status": "authoring-only",
+  "locale": "zh-Hans",
+  "publicationApproved": false,
+  "title": "陈地余火",
+  "boundary": "原创分支剧本草案。历史背景参考《资治通鉴》卷七、卷八；对白、地方行动与结局为重构。此文件不进入发行包，不改写现有存档。选择条件只供读稿检查，不是最终资源或战斗规则。",
+  "entry": "reserves",
+  "inputs": {
+    "fanyang": ["opened", "withdrawn", "deferred"],
+    "yu": ["present", "absent"],
+    "han": ["cooperating", "unavailable"]
+  },
+  "inputBoundary": "读稿时显式指定情境；不得把这些枚举当作旧存档已存事实。接入游戏前必须从合法行动回放映射，未知关系不得默认为合作，范阳使者也不得默认为掌简人本人。",
+  "sources": {
+    "qin-response": { "work": "资治通鉴", "volume": 7, "anchor": "陈王既遣周章至周文走", "supports": "孔鲋进谏与秦军反击的历史环境，不证明游戏里的信件抵达日期或本部部署。" },
+    "broken-command": { "work": "资治通鉴", "volume": 8, "anchor": "周章出关至李归等死", "supports": "周文败亡、田臧矫令杀吴广及随后军事失败。田臧的说辞是被记述的立场，不是中立鉴定。" },
+    "chen-fall": { "work": "资治通鉴", "volume": 8, "anchor": "二世益遣长史司马欣至其御庄贾杀陈王以降", "supports": "陈地战局恶化与陈胜败亡；地方粮站撤离为虚构，不是掌简人亲历下城父事件。" },
+    "embers": { "work": "资治通鉴", "volume": 8, "anchor": "陈王故涓人将军吕臣为苍头军至葬陈王于砀", "supports": "吕臣聚兵复陈。不证明玩家队伍参与或幸存者必然加入。" }
+  },
+  "scenes": [
+    {
+      "id": "reserves",
+      "act": 5,
+      "title": "两份消息",
+      "sourceIds": ["qin-response"],
+      "transition": "陈地，北方交涉之后。视角回到掌简人。使团的文书辗转抵达；送信人与范阳使者并非同一人。两份文书的成文和抵达时间分别待历史校对，不用一条精确日期制造同时发生的错觉。",
+      "lines": [
+        { "speaker": "narrator", "text": "送信人把水碗捧在手里，还没喝。催粮的军吏已经站到他旁边，问北边是不是又下了一城。" },
+        { "speaker": "keeper", "text": "先让他喝。文书在这里。" },
+        { "speaker": "narrator", "text": "军吏把另一张拨粮单摊开。车数填好了，押送的人还空着。" },
+        { "speaker": "supply-officer", "text": "西边催得急。你留在这里的人，今天能不能一起走？" }
+      ],
+      "variants": [
+        { "when": { "fanyang": "opened" }, "lines": [{ "speaker": "keeper", "text": "范阳受降了。这封信只说到交接，没说给我们送粮。" }, { "speaker": "supply-officer", "text": "我也没等他们的粮。我等的是你的人。" }] },
+        { "when": { "fanyang": "withdrawn" }, "lines": [{ "speaker": "keeper", "text": "没开城。使者平安回去了，我们的人也撤了。" }, { "speaker": "supply-officer", "text": "那就别把北边的粮写进来。眼下只有这些车。" }] },
+        { "when": { "fanyang": "deferred" }, "lines": [{ "speaker": "keeper", "text": "补过条件，还是没成。花掉的粮已经记在这封信后面。" }, { "speaker": "supply-officer", "text": "那份账我不抹。可西边等不了你重新筹齐。" }] },
+        { "when": { "yu": "present" }, "lines": [{ "speaker": "yu-mu", "text": "粮站说今天不发了。让我们等下一车。下一车在哪儿？" }] },
+        { "when": { "yu": "absent" }, "lines": [{ "speaker": "narrator", "text": "管粮人放下一叠退回的凭记。离队的家户没有回来，凭记也不能算作他们已经领过粮。" }] }
+      ],
+      "choices": [
+        { "id": "keep-reserve", "title": "留接应队，减少这次外派", "intent": "本部留人护粮与接应。前线少得到这批人手；当面说明欠下的支援，不能同时记作已派出。", "response": [{ "speaker": "keeper", "text": "车照约送，押车的人回来。剩下这队留着接应。我在拨单上写明白。" }, { "speaker": "supply-officer", "text": "我把这句话带回去。他们还会来问你。" }, { "speaker": "narrator", "text": "军吏没有带走那张空白名册。你安排留下的人检查粮站到集合处的路。" }], "next": "bad-news" },
+        { "id": "send-support", "title": "把预备队随粮车派出", "intent": "及时兑现外援，暂时失去本地接应人手。伙伴收到支援不等于保证日后能还兵还车。", "response": [{ "speaker": "keeper", "text": "一起走。到地方给个回信，别只写粮收到了，把人也点清。" }, { "speaker": "supply-officer", "text": "我让接车的人押记。能不能回来，不是我一个人说了算。" }, { "speaker": "narrator", "text": "车队出了粮站。空出来的地方很宽，你才看清还剩多少人搬袋。" }], "next": "bad-news" },
+        { "id": "verify-road", "title": "暂缓增派，先验路讯", "intent": "派本部人员核实道路与消息，支援会迟。查明一段道路并不能获得整场战争的全知视角。", "response": [{ "speaker": "keeper", "text": "先把已经备好的送走。新增的这队等验路的人回来，不许报成已经出发。" }, { "speaker": "supply-officer", "text": "若我先到，他们问起来，我就照实说。" }, { "speaker": "narrator", "text": "探路人各带一份短简离开，约定回来只报亲眼看见的路段。" }], "next": "bad-news" }
+      ]
+    },
+    {
+      "id": "bad-news",
+      "act": 6,
+      "title": "把手松开",
+      "sourceIds": ["broken-command"],
+      "transition": "后来，西路败兵陆续抵达。此时仅能确认亲见的局部战况；吴广死讯在本场之后经另一条消息核实，不由眼前伤卒一次讲完。",
+      "lines": [
+        { "speaker": "narrator", "text": "伤卒把两份领取凭记放到桌上。一份是他的，另一份边角沾着干血。" },
+        { "speaker": "keeper", "text": "另一个人呢？" },
+        { "speaker": "wounded-soldier", "text": "过了沟就没见着。我找过了。" },
+        { "speaker": "narrator", "text": "你刚伸手，他便把两份凭记都攥回去。旁边执戈的人朝前挪了一步。" },
+        { "speaker": "keeper", "text": "先退开。他不把这东西交给我，也能喝水。" }
+      ],
+      "variants": [
+        { "when": { "reserves": "keep-reserve" }, "lines": [{ "speaker": "narrator", "text": "接应的人把伤卒扶进棚里，回来问是否还要去路口接下一拨。预留的人手开始派上用场。" }] },
+        { "when": { "reserves": "send-support" }, "lines": [{ "speaker": "narrator", "text": "棚里的人问起那支押粮队。伤卒没有见过他们。已经送出的支援，此刻不能再调出来替你守路。" }] },
+        { "when": { "reserves": "verify-road" }, "lines": [{ "speaker": "narrator", "text": "验路人已带回一段可走的路讯，却没有见到全部西进队伍。你把知道和不知道的分开记下。" }] },
+        { "when": { "han": "cooperating" }, "lines": [{ "speaker": "qin-courier", "text": "路讯我可以补。驿里谁放过人，别写进要传出去的那份。" }, { "speaker": "keeper", "text": "那就只记哪段能走，哪段是你听来的。" }] },
+        { "when": { "han": "unavailable" }, "lines": [{ "speaker": "narrator", "text": "你手里的驿路抄件没有可靠的署记。本部探路人只肯为走过的那一段作证，不能把整张图都当作通路。" }] }
+      ],
+      "choices": [
+        { "id": "open-reception", "title": "公开已核实的败讯，接纳来人", "intent": "组织路口接应，新增食宿与护送负担。只报已经核实的事，不宣布所有军队覆没。", "response": [{ "speaker": "keeper", "text": "把空棚清出来。路口留两个人，告诉后来的人往这里走。谁的名字没对上，先记失散。" }, { "speaker": "wounded-soldier", "text": "那一份先别销。他还可能来。" }, { "speaker": "narrator", "text": "他松开手，留下同伴的凭记。新来的队伍还在增长，锅里的粮不会因此变多。" }], "next": "evacuation" },
+        { "id": "verify-with-partners", "title": "请邻部共同核实与分担", "intent": "让伙伴一起核人、分派接应，时间会过去，也可能有人只肯接自己认识的队伍。", "response": [{ "speaker": "keeper", "text": "把各部的管事请来，先说各自见到了谁。今夜能接几人，也一并说清。" }, { "speaker": "partner-steward", "text": "我带两个人来认。车我不能先答应，得回去问。" }, { "speaker": "narrator", "text": "你给伤卒留了位置，没有把一句愿意商量记成已经借到车辆。" }], "next": "evacuation" },
+        { "id": "gather-own", "title": "先收拢本部，不再扩大接应", "intent": "守住眼前能够照顾的人，停止承诺接纳更多队伍；后来的失散者需要另找去处。", "response": [{ "speaker": "keeper", "text": "棚里的人留下。再来的人，把我们知道的路告诉他们，别再许这里有空位。" }, { "speaker": "wounded-soldier", "text": "那他来了呢？" }, { "speaker": "keeper", "text": "留下会合的地方。我不能让你在这里一直等。" }], "next": "evacuation" }
+      ],
+      "exitLines": [
+        { "speaker": "narrator", "text": "后来，另一条消息核实了吴广遭杀的死讯。西面的命令已经换过人，拿着旧令来领粮的人却还在路上。" },
+        { "speaker": "wounded-soldier", "text": "这上面的安排，还算么？" },
+        { "speaker": "keeper", "text": "不能只看是谁写的了。眼下能办到的，我给你另记；办不到的，当面说。" }
+      ]
+    },
+    {
+      "id": "evacuation",
+      "act": 7,
+      "title": "粮站最后一趟",
+      "sourceIds": ["chen-fall"],
+      "transition": "再后来，陈地战局恶化。本场是虚构粮站的撤离，不让掌简人代替陈胜指挥全部战场。",
+      "lines": [
+        { "speaker": "narrator", "text": "守路的人回来时，戈杆折了一截。他把断杆靠在门边，没有坐下。" },
+        { "speaker": "rear-guard", "text": "我们退了一段。还能再接一趟，别把车堵在门口。" },
+        { "speaker": "keeper", "text": "回来的人从哪边过？" },
+        { "speaker": "rear-guard", "text": "沿墙留道。车先出去，人才能退。" }
+      ],
+      "variants": [
+        { "when": { "yu": "present" }, "lines": [{ "speaker": "narrator", "text": "妪母把锅挪到车角，给伤员腾出坐处。车夫重新系绳，她扶着车，等他试稳了才松手。" }, { "speaker": "yu-mu", "text": "你叫我守着这一车，我就守着。别一会儿又换个去处。" }] },
+        { "when": { "yu": "absent" }, "lines": [{ "speaker": "narrator", "text": "车夫把座位腾给眼前的伤员。先前离队的家户去向未明，你不能把这一次装车算作已经接回他们。" }] },
+        { "when": { "reserves": "keep-reserve" }, "lines": [{ "speaker": "rear-guard", "text": "你留下的接应队在外面。让他们先带一批走，我们断后。" }] },
+        { "when": { "reserves": "send-support" }, "lines": [{ "speaker": "rear-guard", "text": "押粮的人还没回。这里的人得分开用，不能又押车又守路。" }] },
+        { "when": { "reserves": "verify-road" }, "lines": [{ "speaker": "rear-guard", "text": "验过的那段还能走。出了那段，我们得再看，别叫所有车一齐挤过去。" }] },
+        { "when": { "bad-news": "open-reception" }, "lines": [{ "speaker": "narrator", "text": "新收的伤卒也在等车。你曾指给他们这座棚，如今撤离的安排必须算上他们。" }] },
+        { "when": { "bad-news": "verify-with-partners" }, "lines": [{ "speaker": "partner-steward", "text": "我们的人到路口接。但你得把分给我们的那几户说清，别两边都以为对方带了。" }] },
+        { "when": { "bad-news": "gather-own" }, "lines": [{ "speaker": "narrator", "text": "本部的人已经聚到粮站。被你劝往别处的队伍不在这里，撤离清点不能把他们算作同行。" }] }
+      ],
+      "choices": [
+        { "id": "escort-households", "title": "护送家户与伤员先走", "intent": "守路者留到最后接应。保全眼前的非战斗人员，不等于所有旧日失散者都已找回。", "response": [{ "speaker": "keeper", "text": "这几车先走，到会合处停下。守路的人回来时，给他们留车位和粮，别都分完。" }, { "speaker": "rear-guard", "text": "认准最后那辆。我们跟上。" }, { "speaker": "narrator", "text": "车轮离开门槛。持械的人侧身让出通道，等最后一车过去才收队。" }], "next": "records" },
+        { "id": "hold-formation", "title": "带本部成队撤出", "intent": "保留能继续护路的队形，车慢就缩小护送范围。没能跟上的人留下接应责任，不被写成自愿离开。", "response": [{ "speaker": "keeper", "text": "不要拆队。跟得上的沿墙走，后面的人把停下的位置记住。" }, { "speaker": "rear-guard", "text": "车再慢下去呢？" }, { "speaker": "keeper", "text": "先保住这支队。掉下的人不能记成已经送到。" }], "next": "records" },
+        { "id": "split-routes", "title": "分组离开，约定再会", "intent": "降低拥堵与被一并截住的风险，却难以互相支援。每组领到实际可带走的物资，不能重复分配。", "response": [{ "speaker": "keeper", "text": "两组分开走，各自点清人。到了先等，不要听见一点风声就再搬地方。" }, { "speaker": "rear-guard", "text": "若等不到呢？" }, { "speaker": "keeper", "text": "留下去向，再走。别让后来的人只找到一块空地。" }], "next": "records" }
+      ]
+    },
+    {
+      "id": "records",
+      "act": 7,
+      "title": "带走什么凭据",
+      "sourceIds": ["chen-fall"],
+      "transition": "本部出城后的短暂停歇。本场只处理撤离时带出的现有凭记，不复原开篇失落或毁损的名籍。",
+      "lines": [
+        { "speaker": "narrator", "text": "你把剩下的简摊在布上。有人已领了粮，有人仍欠着，有几处只剩无法辨认的墨迹。" },
+        { "speaker": "rear-guard", "text": "这些若被搜走，能找到多少人？" },
+        { "speaker": "keeper", "text": "有些能。可全没了，谁欠谁，也就只剩嘴说。" }
+      ],
+      "variants": [],
+      "choices": [
+        { "id": "divide-records", "title": "请各组分持必要的凭记", "intent": "用时间核对与分交，减少一次丢失全部的风险。只抄仍可确认的事项，不补写未知者姓名。", "response": [{ "speaker": "keeper", "text": "各组留自己的。双方说得清的才抄，认不出的空着。" }, { "speaker": "narrator", "text": "你让拿简的人当面复述一遍，再把各份分别裹好。仍有几笔没有找到能作证的人。" }], "next": "dawn" },
+        { "id": "carry-records", "title": "由掌简人保管现有凭记", "intent": "不再停留抄分，保留追查和偿还的凭据；集中保管也集中暴露风险，后续不能当作没有名录。", "response": [{ "speaker": "keeper", "text": "先都放我这里。到了再一笔一笔核。谁来问，也先来找我。" }, { "speaker": "narrator", "text": "绳结收紧，简装进随身的囊里。你的承诺和能辨认的名字仍绑在一起。" }], "next": "dawn" },
+        { "id": "strip-identities", "title": "去掉可追查身份，另留欠账", "intent": "保护可辨识的身份，但失去部分追认能力。匿名欠账不能神奇地恢复原来的姓名和全部债权。", "response": [{ "speaker": "keeper", "text": "能指到住处和亲属的去掉。领过多少、还欠多少，另留一份。" }, { "speaker": "rear-guard", "text": "日后若有人不认呢？" }, { "speaker": "keeper", "text": "能作证的留下记号。没人能证明的，我不能替他们编出来。" }], "next": "dawn" }
+      ]
+    },
+    {
+      "id": "dawn",
+      "act": 8,
+      "title": "天亮以后",
+      "sourceIds": ["chen-fall", "embers"],
+      "transition": "抵达临时落脚处，经过休整与消息核实后。不是撤离当夜便全知远方发生的一切。",
+      "lines": [
+        { "speaker": "narrator", "text": "陈胜败亡的消息终于得到核实。没有人再来催交那张旧拨粮单。眼前等着的，还是吃饭、找人和往哪里走。" },
+        { "speaker": "rear-guard", "text": "还按原来的队么？" }
+      ],
+      "variants": [
+        { "when": { "evacuation": "escort-households", "yu": "present" }, "lines": [{ "speaker": "yu-mu", "text": "这一车到了。守路的人呢？来了就让他们先坐。" }] },
+        { "when": { "evacuation": "escort-households", "yu": "absent" }, "lines": [{ "speaker": "narrator", "text": "这次护送的家户到了。你另留一栏记先前失散的人，没有把两个数合在一起。" }] },
+        { "when": { "evacuation": "hold-formation" }, "lines": [{ "speaker": "narrator", "text": "持械的人仍能列起队。粮车和家户没有到齐，收队的口令不能使空下的位置补满。" }] },
+        { "when": { "evacuation": "split-routes" }, "lines": [{ "speaker": "narrator", "text": "先到的一组留下路标。另一组的去向仍需等消息，不能把“约好来”记成“已经到”。" }] },
+        { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "点过的人各自收起那份凭记。有争议的几笔还等见证人回来。" }] },
+        { "when": { "records": "carry-records" }, "lines": [{ "speaker": "narrator", "text": "你从囊里拿出凭记。有人过来核账，守路的人替你看着身后的来路。" }] },
+        { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "匿名欠账还在。有人能当面作证，也有几笔暂时找不到该交给谁。你没有补写那些被去掉的名字。" }] }
+      ],
+      "choices": [
+        { "id": "stay-together", "title": "守住会合处，重整同行的队伍", "requires": { "evacuation": "escort-households" }, "intent": "本读稿仅在集中护送路线展示此尾声。正式规则还须检查剩余粮食、接应能力和伙伴意愿；不能只凭最后这句话得到团圆。", "response": [{ "speaker": "keeper", "text": "先把来了的人安顿下。余下的粮点清，再定还能等多久。未到的人，继续留消息。" }], "ending": "together" },
+        { "id": "move-with-remnant", "title": "带已聚起的人继续转移", "intent": "带眼前的人走，留下真实去向与未偿责任。没有抵达的人仍是失散，不在结局自动归队。", "response": [{ "speaker": "keeper", "text": "把去向留在这里。能走的人跟上，欠的粮和没找回的人，一并记着。" }, { "speaker": "rear-guard", "text": "谁来接后面的人？" }, { "speaker": "keeper", "text": "先安排联络。做不到回接，就别写成已经答应。" }], "ending": "remnant" },
+        { "id": "release-groups", "title": "交代清楚，让各组自行选择去处", "intent": "结束统一编队，按现存物资分配并交代责任。不是把失控溃散改名为自愿解散；灾难状态需要正式规则另行处理。", "response": [{ "speaker": "keeper", "text": "愿结伴的结伴。先把能分的分清，不能还的留凭，别让人以为走了便一笔勾销。" }, { "speaker": "narrator", "text": "有人仍站在原处，也有人开始问别组要往哪里走。你等他们说完，没有再喊集合。" }], "ending": "dispersed" }
+      ]
+    }
+  ],
+  "endings": {
+    "together": { "title": "仍可同行", "lines": [{ "speaker": "narrator", "text": "锅重新支起来。先到的人把车挪开，给后来者留下停靠的地方。掌简人开始核今日的粮，不再等一枚远方的印。" }], "unresolved": "先前失散者与未偿欠账继续存在；正式版必须以真实余粮决定等待能力，不能默认全员归来。" },
+    "remnant": { "title": "余部上路", "lines": [{ "speaker": "narrator", "text": "第一辆车动了，后面的队伍慢慢跟上。有人还肯听你的安排，有人只是需要同走这一段。会合处留下了下一站的消息，没有留下一个必能兑现的归期。" }], "unresolved": "持械力量和关系须由实际状态继承。未完成的接应与补偿不因转移清零。" },
+    "dispersed": { "title": "各自的归路", "lines": [{ "speaker": "narrator", "text": "几份凭记交到不同的人手里。有人留在路边等同伴，有人先走。直到最后一组离开，掌简人才把空下的布卷好。" }], "unresolved": "这里分交的是仍然持有或新作的可确认凭记，不是复原已去掉的身份名录。人手全散或物资全无时不可冒充此有序结局。" }
+  },
+  "epilogue": "史书所记，陈胜败亡后，吕臣曾聚兵复取陈地。反秦之事没有在此结束。本卷虚构队伍的去向由上面的选择收束，不声称他们参与了吕臣的行动。",
+  "remainingGates": [
+    "历史时序与消息旅程对照原页，独立审校对白和人物权限。",
+    "将陈县反事实名号政策与宏观历史权限明确区分，不悄悄撤销玩家既有决定。",
+    "从现有合法存档回放建立输入，保留粮秣、伙伴、家户与名籍状态；不能通过测试情境补满资源。",
+    "为撤离编写实际资源、冲突与灾难恢复规则，验证没有隐形死亡、重复分粮或不可预警的死路。",
+    "完成英文及其余目标语种、本地化与可访问性审阅；目前只有简体中文读稿。",
+    "接入共享游戏流程并完成全程试玩；作者读稿与路径检查不等于移动端、Web或Unreal可玩验收。"
+  ]
+}
