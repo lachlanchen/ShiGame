@@ -13,6 +13,19 @@
     "han": ["cooperating", "unavailable", "unestablished"]
   },
   "inputBoundary": "读稿时显式指定情境；不得把这些枚举当作旧存档已存事实。现有存档回放只证明过去的选择，不能证明后来是否同行，因此真实续接使用unestablished，不等同于离队或死亡。present与absent等确定情境仍只供作者试读，须经未来场景建立后才能用于实际玩家。范阳使者不得默认为掌简人本人。",
+  "sourceReadback": {
+    "checkedOn": "2026-10-01",
+    "localReference": "ZhJpBook/books/zizhi-tongjian/markdown/wenyan.md",
+    "sha256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+    "inspectedLineRanges": [[2630, 2685], [2758, 2805]],
+    "findings": [
+      "卷七所记陈胜称王与张耳陈余的劝谏，不能证明掌简人有决定宏观名号的权限；既有反事实议事与历史主干的衔接仍待处理。",
+      "卷八叙周文退屯曹阳二月余、再退渑池十余日而败亡，随后叙田臧矫令杀吴广。不得把编年文本中的相邻段落当作同日战报。",
+      "陈胜遇害地点为返程中的下城父，不是掌简人撤离粮站时亲眼所见。文本未提供虚构粮站接报所需日程。",
+      "吕臣复陈作为历史后记，不使玩家或旧同伴自动加入其军。伤卒、阿衡、借粮及具体接应路线均为原创戏剧重构。"
+    ],
+    "limits": "原文混有胡三省音注及校勘文字；这里区分叙事与注释，不作精确公历换算，不将此自查冒充独立史学审校。原始私有书稿不随游戏发布。"
+  },
   "sources": {
     "qin-response": { "work": "资治通鉴", "volume": 7, "anchor": "陈王既遣周章至周文走", "supports": "孔鲋进谏与秦军反击的历史环境，不证明游戏里的信件抵达日期或本部部署。" },
     "broken-command": { "work": "资治通鉴", "volume": 8, "anchor": "周章出关至李归等死", "supports": "周文败亡、田臧矫令杀吴广及随后军事失败。田臧的说辞是被记述的立场，不是中立鉴定。" },
@@ -54,11 +67,11 @@
       "title": "把手松开",
       "setting": "后来，败归的人陆续走进粮棚。来的人说法不一，许多队伍仍没有消息。",
       "sourceIds": ["broken-command"],
-      "transition": "后来，西路败兵陆续抵达。此时仅能确认亲见的局部战况；吴广死讯在本场之后经另一条消息核实，不由眼前伤卒一次讲完。",
+      "transition": "卷八先叙周文退屯曹阳二月余，再退渑池十余日而败亡，继叙田臧矫令杀吴广。这里压缩的是读者跨越的时段，不是把这些事放在一天。伤卒只证明自己的遭遇；吴广死讯在本场之后由另一条消息核实。史料未给这座虚构粮站的收信日期。",
       "lines": [
         { "speaker": "narrator", "text": "伤卒把两份领取凭记放到桌上。一份是他的，另一份边角沾着干血。" },
         { "speaker": "keeper", "text": "另一个人呢？" },
-        { "speaker": "wounded-soldier", "text": "过了沟就没见着。我找过了。" },
+        { "speaker": "wounded-soldier", "text": "过了沟就没见着。我找过了。他叫阿衡，左脚的鞋用麻绳绑着。" },
         { "speaker": "narrator", "text": "你刚伸手，他便把两份凭记都攥回去。旁边执戈的人朝前挪了一步。" },
         { "speaker": "keeper", "text": "先退开。他不把这东西交给我，也能喝水。" },
         { "speaker": "narrator", "text": "门外的粮主看了看棚里的人，仍没有把带来的契简放下。" },
@@ -80,7 +93,7 @@
         { "id": "gather-own", "title": "先收拢本部，不再扩大接应", "intent": "守住眼前能够照顾的人，停止承诺接纳更多队伍；后来的失散者需要另找去处。", "response": [{ "speaker": "keeper", "text": "棚里的人留下。再来的人，把我们知道的路告诉他们，别再许这里有空位。" }, { "speaker": "wounded-soldier", "text": "那他来了呢？" }, { "speaker": "keeper", "text": "留下会合的地方。我不能让你在这里一直等。" }], "next": "evacuation" }
       ],
       "exitLines": [
-        { "speaker": "narrator", "text": "后来，另一条消息核实了吴广遭杀的死讯。西面的命令已经换过人，拿着旧令来领粮的人却还在路上。" },
+        { "speaker": "narrator", "text": "又过了一段时日，送到陈地的另一份回报证实吴广已遭杀害。伤卒先前没有说起这件事。如今换了发令的人，拿着旧令来领粮的队伍却还在路上。" },
         { "speaker": "wounded-soldier", "text": "这上面的安排，还算么？" },
         { "speaker": "keeper", "text": "不能只看是谁写的了。眼下能办到的，我给你另记；办不到的，当面说。" }
       ]
@@ -144,12 +157,16 @@
       "title": "天亮以后",
       "setting": "临时落脚处。队伍休整了一段时日，陆续核实来信，也等待还没有抵达的人。",
       "sourceIds": ["chen-fall", "embers"],
-      "transition": "抵达临时落脚处，经过休整与消息核实后。不是撤离当夜便全知远方发生的一切。",
+      "transition": "抵达临时落脚处，经过休整与消息核实后。卷八记陈胜往汝阴，回程至下城父遇害；掌简人没有亲历该事，也不把城外撤离之夜写作死亡消息抵达之日。阿衡的个体遭遇为本剧新发生的虚构事件，不是旧名籍证明全员归来。",
       "lines": [
         { "speaker": "narrator", "text": "陈胜败亡的消息终于得到核实。没有人再来催交那张旧拨粮单。眼前等着的，还是吃饭、找人和往哪里走。" },
         { "speaker": "rear-guard", "text": "还按原来的队么？" }
       ],
       "variants": [
+        { "when": { "bad-news": "open-reception", "evacuation": "escort-households" }, "lines": [{ "speaker": "narrator", "text": "末车抵达时，伤卒忽然挤到车旁。一个人扶着车辕下来，左鞋还缠着麻绳。他是照路口接应者的指引找到粮棚，又跟上这趟车的。" }, { "speaker": "wounded-soldier", "text": "阿衡。我还当你走了另一条路。" }, { "speaker": "narrator", "text": "他伸手想拍同伴的肩，看到伤口，又把手挪到肘下。你给两人让出坐处。这一次是亲眼见到了人，不是从旧凭记推算出谁该回来。其他失散者仍没有消息。" }] },
+        { "when": { "bad-news": "open-reception", "evacuation": "hold-formation" }, "lines": [{ "speaker": "narrator", "text": "你记得伤卒说起的那只麻绳绑着的鞋。眼前还没有这样一个人。接纳过来人，并不等于已经把每个人护送到这里；先前缩小的护送范围，如今成了必须回查的一段路。" }] },
+        { "when": { "bad-news": "open-reception", "evacuation": "split-routes" }, "lines": [{ "speaker": "narrator", "text": "路口曾留过接应的人，现在各组还未会齐。你问起那个左鞋缠麻绳的人，先到的人都摇头。你记下还没问到哪一组，等下一拨消息。" }] },
+        { "when": { "bad-news": "gather-own" }, "lines": [{ "speaker": "narrator", "text": "铺开问讯简时，你想起伤卒问的那句话：那他来了呢？那天你答应留下会合处，却没有答应让他一直等。你将眼下的去向写清，放在约好的地方；有没有人循着它找来，现在还不知道。" }] },
         { "when": { "evacuation": "escort-households", "yu": "present" }, "lines": [{ "speaker": "yu-mu", "text": "这一车到了。守路的人呢？来了就让他们先坐。" }] },
         { "when": { "evacuation": "escort-households", "yu": "absent" }, "lines": [{ "speaker": "narrator", "text": "这次护送的家户到了。你另留一栏记先前失散的人，没有把两个数合在一起。" }] },
         { "when": { "evacuation": "escort-households", "yu": "unestablished" }, "lines": [{ "speaker": "narrator", "text": "你核对这趟实际护送的人。至于旧日的整支队伍，现在还没有一份足以确认所有去向的回报。" }] },

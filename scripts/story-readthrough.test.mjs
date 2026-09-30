@@ -63,6 +63,25 @@ test("invalid, unavailable, incomplete and overlong reading routes are rejected"
   assert.throws(() => readRoute(draft, input, ["keep-reserve", "open-reception", "split-routes", "divide-records", "stay-together"]));
 });
 
+test("the wounded soldier's reunion needs reception and escort, not a restored identity register", () => {
+  for (const reception of ["open-reception", "verify-with-partners", "borrow-local-grain", "gather-own"]) {
+    for (const evacuation of ["escort-households", "hold-formation", "split-routes"]) {
+      for (const records of ["divide-records", "carry-records", "strip-identities"]) {
+        const result = readRoute(draft, { fanyang: "opened", yu: "unestablished", han: "unestablished" },
+          ["keep-reserve", reception, evacuation, records, "release-groups"]);
+        const dawn = result.transcript.at(-1).lines;
+        const reunion = dawn.some(line => line.speaker === "wounded-soldier" && line.text.startsWith("阿衡。"));
+        assert.equal(reunion, reception === "open-reception" && evacuation === "escort-households");
+        if (reunion) {
+          assert.ok(dawn.some(line => line.text.includes("亲眼见到了人")));
+          assert.ok(dawn.some(line => line.text.includes("其他失散者仍没有消息")));
+        }
+        if (records === "strip-identities") assert.ok(dawn.some(line => line.text.includes("没有补写那些被去掉的名字")));
+      }
+    }
+  }
+});
+
 test("authoring validation rejects unknown facts, future knowledge, bad destinations and publication promotion", () => {
   for (const mutate of [
     value => { value.scenes[0].variants[0].when.fanyang = "invented"; },

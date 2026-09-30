@@ -38,6 +38,26 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("pays off reception and escort with a witnessed reunion after resume, even with identities removed", async () => {
+    const input = props();
+    input.entry = structuredClone(input.entry);
+    // Explicit capacity fixture; do not claim this is a canonical prior route.
+    input.entry.fanyang.metrics = { ...input.entry.fanyang.metrics, grain: 8, tempo: 8, city: 8, allies: 8, veterans: 8 };
+    const view = render(<RetreatScene {...input} />);
+    for (const id of ["keep-reserve", "open-reception", "escort-households", "strip-identities"]) await choose(view, id);
+    expect(view.getByText("阿衡。我还当你走了另一条路。", { exact: false })).toBeTruthy();
+    expect(view.getByText(/其他失散者仍没有消息/)).toBeTruthy();
+    expect(view.getByText(/没有补写那些被去掉的名字/)).toBeTruthy();
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const restored = render(<RetreatScene {...input} />);
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(restored.getByText(/亲眼见到了人/)).toBeTruthy();
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    await choose(restored, "release-groups");
+    expect(restored.getByTestId("retreat-outcome")).toBeTruthy();
+  });
+
   it("keeps authoring caveats in optional notes and explains the active choice in Chinese", () => {
     const view = render(<RetreatScene {...props()} />);
     expect(view.getByText("陈地，收发粮秣的院落。北方的文书辗转抵达，西边的催援也到了。")).toBeTruthy();
