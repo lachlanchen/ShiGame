@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-01",
+  "implementation": "218a872",
+  "accessibilityFix": "fe5265d",
+  "test": "SHIUITests/testRetreatContinuationResumeEndingAndCancel",
+  "result": { "execution": 20803, "exitCode": 0, "passed": 1, "failed": 0, "testSeconds": 292.998 },
+  "scope": "Unsigned SHIAftermathQA build, iPad Pro 11 M5 simulator running iOS 27; not a physical-device or store build.",
+  "archiveSHA256": "7140f4ca632dfbe4220b5ae5b3e8e4948b7af5ac6d47beab6c23713bc6f32420",
+  "storySHA256": "121b9fbf08604e6089fe2811ed46a8879ebde10111bb31bb0385c046484fb547",
+  "verified": [
+    "Continuous opening, council, Fan Yang and retreat route reaches the dispersed ending.",
+    "Saved retreat reaction survives termination and relaunch.",
+    "Expanded decision record exposes first and last canonical row identifiers after the accessibility fix.",
+    "Restart cancellation preserves the ending; return reaches Fan Yang withdrawn state."
+  ],
+  "visualReview": {
+    "attachments": ["2414AB03-0BD7-4EFF-801A-0CE1556D86EE.png", "5910A484-4A9E-43C0-ACFD-336F67E953FE.png"],
+    "localPreviews": [".runtime/native-retreat-integration-20261001/decision-record-fixed-first.jpg", ".runtime/native-retreat-integration-20261001/decision-record-fixed-last.jpg"],
+    "bothPreviewSHA256": "5f2468d0af2e28167fc1d4eb89c9dee00ddad5f8773cb0ef2a0c5226981c360c",
+    "finding": "Both previews inspected. Identical framing because all five rows fit on this portrait iPad. Ending, historical boundary, five explanations and metric changes are readable without overlap. Original PNG attachments retained remotely."
+  },
+  "cleanup": "Final result/export executions72149 and88567 exited0. Exact simulator shut down; no booted simulator or xcodebuild/swift-frontend remained at final check. No active evidence transfer.",
+  "limitations": [
+    "Test taps disclosure a second time but does not explicitly assert row disappearance; do not claim collapsed-state verification.",
+    "Internal priority-inversion warning remains; this is not performance acceptance.",
+    "No human playtest acceptance, physical-device validation, store submission or public release.",
+    "This verifies one complete route and ending presentation, not completion of the whole story or game."
+  ]
+}

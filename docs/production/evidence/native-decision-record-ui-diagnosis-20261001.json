@@ -16,5 +16,5 @@
   "reviewedFrame": { "privatePath": ".runtime/native-retreat-integration-20261001/decision-record-frame-278.jpg", "sha256": "488e25c37e53e1a50ca3b9a4b0d44dd379d39655b354506a4ee57c1359aa8718", "sourceRun": "failed original test, not the fixed rerun" },
   "cleanup": "Original test simulator was Shutdown. Large recording copy was intentionally canceled after confirming214MB source size; remote original retained and incomplete local copy not used as evidence. Fixed rerun now uses one owned simulator with shutdown trap, tracked in private runtime handoff.",
   "limitations": ["Internal priority-inversion warning remains.", "Native visual acceptance and restart-cancel checks after the failing step remain unverified.", "No signing, store submission or public release."],
-  "next": "Await the single fixed UI rerun20803 (decision-record-ipad-fixed.xcresult); no pass or visual acceptance inferred before it finishes. Do not restart the original test or canceled transfer."
+  "next": "Resolved by fixed rerun20803 exit0; see native-decision-record-ui-passed-20261001.json. Earlier pending verification and limitations describe the failed run, not current status. Do not restart either completed test or canceled transfer."
 }
