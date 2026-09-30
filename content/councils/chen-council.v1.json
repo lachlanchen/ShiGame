@@ -1,0 +1,600 @@
+{
+  "schemaVersion": 1,
+  "id": "chen-council.v1",
+  "title": {
+    "en": "The council at Chen",
+    "zh-Hans": "陈地议事"
+  },
+  "introduction": {
+    "en": "The gate has opened. Winning the city was one decision; persuading its people to feed a war is another. A seal lies on the table. Nobody reaches for it yet.",
+    "zh-Hans": "城门已经打开。攻下一座城是一回事，让城里的人供养一场战争，又是另一回事。印信搁在案上，一时没人伸手。"
+  },
+  "boundary": {
+    "en": "Playable counterfactual interlude · After Chapter I, imagine reaching Chen. This is not a claim that every opening route historically led here. Dialogue, interests and numbers are game reconstruction. Your Chapter I save stays unchanged.",
+    "zh-Hans": "可玩推演幕间 · 第一章之后，假设你抵达陈地。并非所有开局路线在史实上都会走到这里。对白、利益设定与数值均为游戏重构；第一章存档不会改变。"
+  },
+  "objective": {
+    "en": "Secure at least two groups at 6 support, retain 2 grain, and reach 3 tempo for a common front. The numbers describe this game—not historical measurements. There is no single historical answer to copy.",
+    "zh-Hans": "要结成共同战线：至少两方支持达到6，存粮不少于2，行动不少于3。这些是游戏规则，不是历史测量；照抄史书中的决定并不保证成功。"
+  },
+  "labels": {
+    "enter": {
+      "en": "Continue to the council at Chen",
+      "zh-Hans": "进入陈地议事"
+    },
+    "interlude": {
+      "en": "A playable interlude",
+      "zh-Hans": "可玩幕间"
+    },
+    "round": {
+      "en": "Council round",
+      "zh-Hans": "议事回合"
+    },
+    "close": {
+      "en": "Return to Chapter I",
+      "zh-Hans": "返回第一章"
+    },
+    "inspect": {
+      "en": "Inspect an offer",
+      "zh-Hans": "先看清这项提议"
+    },
+    "commit": {
+      "en": "Make this commitment",
+      "zh-Hans": "作出承诺"
+    },
+    "continue": {
+      "en": "Hear the next question",
+      "zh-Hans": "听下一个问题"
+    },
+    "conclude": {
+      "en": "See the coalition",
+      "zh-Hans": "查看结盟结果"
+    },
+    "response": {
+      "en": "The room answers",
+      "zh-Hans": "席间回应"
+    },
+    "pledge": {
+      "en": "Your public promise",
+      "zh-Hans": "你当众作出的承诺"
+    },
+    "memory": {
+      "en": "Earlier promises matter",
+      "zh-Hans": "前约仍在"
+    },
+    "preview": {
+      "en": "If you commit",
+      "zh-Hans": "承诺之后"
+    },
+    "need": {
+      "en": "Requires",
+      "zh-Hans": "需要"
+    },
+    "backing": {
+      "en": "Support needed: 6",
+      "zh-Hans": "支持门槛：6"
+    },
+    "history": {
+      "en": "What the sources say",
+      "zh-Hans": "史书怎么写"
+    },
+    "journal": {
+      "en": "Your council record",
+      "zh-Hans": "议事记录"
+    },
+    "retry": {
+      "en": "Reconsider this council",
+      "zh-Hans": "重新推演"
+    },
+    "confirmRetry": {
+      "en": "Replace this interlude’s progress? Chapter I is kept.",
+      "zh-Hans": "重开本幕推演？第一章存档会保留。"
+    },
+    "reset": {
+      "en": "Restart the council",
+      "zh-Hans": "重开议事"
+    },
+    "cancel": {
+      "en": "Keep this council",
+      "zh-Hans": "保留当前进度"
+    },
+    "saveError": {
+      "en": "Could not save this decision. It has not been applied; retry when storage is available.",
+      "zh-Hans": "未能保存这一决定，因此尚未执行。存储恢复后可重试。"
+    },
+    "invalidSave": {
+      "en": "This council save could not be verified. It has been preserved; explicitly restart to replace it.",
+      "zh-Hans": "无法核验本幕存档。原记录仍保留；只有确认重开才会替换。"
+    },
+    "saving": {
+      "en": "Saving the commitment…",
+      "zh-Hans": "正在保存承诺…"
+    },
+    "arrival": {
+      "en": "What you bring from Chapter I",
+      "zh-Hans": "第一章留下的局面"
+    }
+  },
+  "metrics": {
+    "grain": {
+      "title": {
+        "en": "Grain",
+        "zh-Hans": "存粮"
+      },
+      "meaning": {
+        "en": "Provisions available for the next march. Zero ends the council with an unfed army.",
+        "zh-Hans": "下一次出征可用的粮食。归零意味着军队无粮。"
+      }
+    },
+    "tempo": {
+      "title": {
+        "en": "Tempo",
+        "zh-Hans": "行动"
+      },
+      "meaning": {
+        "en": "Readiness to act beyond Chen. Holding the city is not the same as pressing the campaign.",
+        "zh-Hans": "向陈地以外行动的准备。守住一城不等于推进战事。"
+      }
+    },
+    "city": {
+      "title": {
+        "en": "Chen households",
+        "zh-Hans": "陈地乡里"
+      },
+      "meaning": {
+        "en": "A composite delegation asks who protects stores and keeps the city supplied.",
+        "zh-Hans": "重构的地方代表关心粮仓与城内供给。"
+      }
+    },
+    "allies": {
+      "title": {
+        "en": "Wider alliance",
+        "zh-Hans": "外部盟友"
+      },
+      "meaning": {
+        "en": "A game interpretation of the argument for creating more enemies of Qin, with room for allies to act.",
+        "zh-Hans": "借建立反秦同盟的主张作推演：盟友也要有自主行动的余地。"
+      }
+    },
+    "veterans": {
+      "title": {
+        "en": "The marching ranks",
+        "zh-Hans": "随军部众"
+      },
+      "meaning": {
+        "en": "A composite voice asks who feeds the people who took the risks, and who can issue a clear order.",
+        "zh-Hans": "重构的部众代表追问：谁供养冒险的人，谁能下达明确军令。"
+      }
+    }
+  },
+  "arrivals": {
+    "supplied": {
+      "title": {
+        "en": "Stores intact, a slow arrival",
+        "zh-Hans": "粮秣尚存，行程已缓"
+      },
+      "text": {
+        "en": "You ended Chapter I with at least 45 grain. The interlude converts that into deeper stores, but less immediate tempo.",
+        "zh-Hans": "第一章结束时存粮不少于45。本幕把它换算为较厚的粮储，但眼下行动较慢。"
+      },
+      "metrics": {
+        "grain": 7,
+        "tempo": 2,
+        "city": 4,
+        "allies": 3,
+        "veterans": 4
+      }
+    },
+    "pressed": {
+      "title": {
+        "en": "Pursuit close behind",
+        "zh-Hans": "追兵渐近"
+      },
+      "text": {
+        "en": "Grain ended below 45 and exposure at least 65. There is urgency in the ranks, but little food to spend.",
+        "zh-Hans": "第一章结束时存粮不足45、暴露不少于65。部众急于行动，可用的粮食却不多。"
+      },
+      "metrics": {
+        "grain": 4,
+        "tempo": 4,
+        "city": 3,
+        "allies": 3,
+        "veterans": 5
+      }
+    },
+    "divided": {
+      "title": {
+        "en": "Room to bargain",
+        "zh-Hans": "尚有议价余地"
+      },
+      "text": {
+        "en": "Neither abundant stores nor immediate pursuit defines this arrival. No group yet has a dependable majority.",
+        "zh-Hans": "此时既无丰厚粮储，也未被紧迫追击所支配。尚无一方形成稳固支持。"
+      },
+      "metrics": {
+        "grain": 6,
+        "tempo": 3,
+        "city": 4,
+        "allies": 3,
+        "veterans": 4
+      }
+    }
+  },
+  "rounds": [
+    {
+      "id": "authority",
+      "title": {
+        "en": "Who may speak for the rising?",
+        "zh-Hans": "谁能代表这场起事？"
+      },
+      "context": {
+        "en": "The local delegation wants a name to put on orders. The alliance advocates want other powers to join without kneeling. The people outside need someone to decide before nightfall.",
+        "zh-Hans": "地方代表要一个能写在命令上的名号。主张联军的人希望别的势力不必称臣也能加入。门外的部众则盼天黑之前有人拿定主意。"
+      },
+      "choices": [
+        {
+          "id": "take-crown",
+          "title": {
+            "en": "Accept the crown at Chen",
+            "zh-Hans": "在陈称王"
+          },
+          "intent": {
+            "en": "Concentrate authority. Promise that the city which gives you a throne will not become an empty storehouse.",
+            "zh-Hans": "集中号令，同时许诺：拥立你的城，不会被搬空粮仓。"
+          },
+          "response": {
+            "en": "The city delegation steps closer to the seal. An envoy folds away the names of potential allies; they will ask whose war they are joining.",
+            "zh-Hans": "地方代表向印信挪近了一步。使者收起那份可联络的名单：那些人会问，自己加入的究竟是谁的战争。"
+          },
+          "effects": {
+            "city": 3,
+            "veterans": 2,
+            "allies": -2,
+            "tempo": 1,
+            "grain": -1
+          },
+          "pledge": {
+            "en": "Protect Chen’s stores. Taking army rations by force will cost additional city support.",
+            "zh-Hans": "护住陈地粮仓。若强征军粮，将额外失去地方支持。"
+          }
+        },
+        {
+          "id": "recognize-allies",
+          "title": {
+            "en": "Offer a league of restored states",
+            "zh-Hans": "约立六国，结为同盟"
+          },
+          "intent": {
+            "en": "Give other banners a reason to fight Qin. Promise their forces room to act under their own command.",
+            "zh-Hans": "让其他旗号有理由一同反秦，许诺其部伍保有自主号令。"
+          },
+          "response": {
+            "en": "The envoys begin counting roads instead of titles. A veteran asks whether the next order will come from one camp or six.",
+            "zh-Hans": "使者开始数道路，而不再数名号。一名老卒问，下一道军令究竟出自一营，还是六营。"
+          },
+          "effects": {
+            "allies": 3,
+            "city": -1,
+            "tempo": 1,
+            "veterans": 1,
+            "grain": -1
+          },
+          "pledge": {
+            "en": "Allow allied commands. Centralizing them later costs alliance support.",
+            "zh-Hans": "容许盟军自行指挥。日后收回兵权，会付出盟友支持的代价。"
+          }
+        },
+        {
+          "id": "defer-title",
+          "title": {
+            "en": "Keep the title unsettled",
+            "zh-Hans": "暂缓名号"
+          },
+          "intent": {
+            "en": "Create a provisional council. Promise shared accounts before anyone takes a larger share.",
+            "zh-Hans": "先设临时议事之所，许诺共验粮账，不让一方独占。"
+          },
+          "response": {
+            "en": "The seal remains on the table. There is time to hear objections, but outside, the column is waiting to hear whether it marches.",
+            "zh-Hans": "印信仍放在案上。异议暂可说完，门外的队伍却还在等：今日究竟走不走。"
+          },
+          "effects": {
+            "city": 1,
+            "veterans": -1,
+            "tempo": -1,
+            "grain": 1
+          },
+          "pledge": {
+            "en": "Share the grain account. Preferential army rations will strain this promise.",
+            "zh-Hans": "共验粮账。若优先供军，将损害这项承诺。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "provisions",
+      "title": {
+        "en": "Whose grain pays for tomorrow?",
+        "zh-Hans": "明日的军粮由谁来出？"
+      },
+      "context": {
+        "en": "A storekeeper places two tally slips beside the seal: food for the column, and food for the city. The same sack appears on both lists.",
+        "zh-Hans": "管仓的人把两枚筹放在印旁：一枚算随军口粮，一枚算城中用度。同一袋粮，两边都想计入。"
+      },
+      "choices": [
+        {
+          "id": "army-rations",
+          "title": {
+            "en": "Feed the marching ranks first",
+            "zh-Hans": "先供随军部众"
+          },
+          "intent": {
+            "en": "Issue grain immediately. The army can move; the city absorbs the shortage.",
+            "zh-Hans": "立刻发粮，部众得以行动，缺口留给城内。"
+          },
+          "response": {
+            "en": "The first sacks leave under guard. Men who fought at the gate eat; household stewards count the sacks that remain.",
+            "zh-Hans": "第一批粮袋在守卫下运走。攻过城门的人吃上了饭，乡里管事则逐袋清点所剩之粮。"
+          },
+          "effects": {
+            "grain": -2,
+            "veterans": 3,
+            "city": -2,
+            "tempo": 1
+          },
+          "answers": [
+            {
+              "afterChoice": "take-crown",
+              "text": {
+                "en": "The city remembers the protection promised with your crown. Support falls again.",
+                "zh-Hans": "地方代表记得拥立时的护粮之约，支持再次下降。"
+              },
+              "effects": {
+                "city": -3
+              }
+            },
+            {
+              "afterChoice": "defer-title",
+              "text": {
+                "en": "The shared account has become an army allocation. The provisional council loses credibility.",
+                "zh-Hans": "共验粮账变成了优先配军，临时议事之约失去了一分可信。"
+              },
+              "effects": {
+                "city": -2,
+                "allies": -1
+              }
+            }
+          ]
+        },
+        {
+          "id": "joint-ledger",
+          "title": {
+            "en": "Open a shared grain account",
+            "zh-Hans": "共验粮账，分摊军食"
+          },
+          "intent": {
+            "en": "Let city stewards and camp representatives count together. Spend time securing consent.",
+            "zh-Hans": "让乡里管事与营中代表一起清点，以时间换取同意。"
+          },
+          "response": {
+            "en": "Neither side gets every sack it asked for. Both leave with a copy of the account, and someone they can hold to it.",
+            "zh-Hans": "双方都没拿到原先所求的每一袋粮，却各自带走一份账，也知道该找谁核对。"
+          },
+          "effects": {
+            "grain": -1,
+            "city": 2,
+            "veterans": 1,
+            "tempo": -1
+          }
+        },
+        {
+          "id": "buy-convoys",
+          "title": {
+            "en": "Wait for purchased convoys",
+            "zh-Hans": "等商队运粮"
+          },
+          "intent": {
+            "en": "Use the pause to bring in provisions. You gain supplies while the opportunity to march narrows.",
+            "zh-Hans": "趁停留购入粮食；存粮增加，出征的时机却在缩小。"
+          },
+          "response": {
+            "en": "Wagons begin arriving, one by one. Each arrival quiets the kitchens; each delay brings another messenger asking why the army has not moved.",
+            "zh-Hans": "粮车陆续入城。车到一辆，灶边少一分焦急；迟一日，使者便又来问军队为何不动。"
+          },
+          "effects": {
+            "grain": 3,
+            "tempo": -2,
+            "city": -1,
+            "allies": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "dispatch",
+      "title": {
+        "en": "Whose order leaves the gate?",
+        "zh-Hans": "出城后，听谁的号令？"
+      },
+      "context": {
+        "en": "The road west is open for the moment. A separate party offers to gather supporters elsewhere. The city asks how many people you intend to leave behind.",
+        "zh-Hans": "西行的道路暂时可通。另一路人马提出向别处联络响应者。城中则追问，你打算留下多少人。"
+      },
+      "choices": [
+        {
+          "id": "one-command",
+          "title": {
+            "en": "March under one command",
+            "zh-Hans": "合军西进"
+          },
+          "intent": {
+            "en": "Spend grain for speed and a clear chain of command. Partners lose room to act independently.",
+            "zh-Hans": "耗粮争速，号令归一；盟友独立行动的余地随之缩小。"
+          },
+          "response": {
+            "en": "The gate watch hears a single order, repeated down the ranks. Some allied messengers stay behind to ask what became of their instructions.",
+            "zh-Hans": "城门守卒听见一道军令沿队伍传下去。几名盟军使者却留在后面，追问先前的约定还算不算数。"
+          },
+          "effects": {
+            "grain": -2,
+            "tempo": 4,
+            "veterans": 2,
+            "allies": -1
+          },
+          "requires": {
+            "grain": 2
+          },
+          "answers": [
+            {
+              "afterChoice": "recognize-allies",
+              "text": {
+                "en": "Your offer of autonomous commands has been withdrawn. The alliance pays more than the ordinary cost of centralization.",
+                "zh-Hans": "自行指挥的许诺被收回，盟友流失超出了集中军令本身的代价。"
+              },
+              "effects": {
+                "allies": -4
+              }
+            }
+          ]
+        },
+        {
+          "id": "many-banners",
+          "title": {
+            "en": "Send independent allied columns",
+            "zh-Hans": "分遣盟军，各拓一路"
+          },
+          "intent": {
+            "en": "Spend supplies to widen the front. Accept less control over the people carrying your message.",
+            "zh-Hans": "用粮秣扩大战线，也接受传令之人不全受你控制。"
+          },
+          "response": {
+            "en": "Different banners leave by different roads. You have more possible partners—and fewer orders that can be enforced from this room.",
+            "zh-Hans": "不同旗号沿不同道路出城。可争取的伙伴变多，从这间屋里能落实的号令却变少了。"
+          },
+          "effects": {
+            "grain": -2,
+            "tempo": 2,
+            "allies": 3,
+            "veterans": -1
+          },
+          "requires": {
+            "grain": 2
+          },
+          "answers": [
+            {
+              "afterChoice": "take-crown",
+              "text": {
+                "en": "The city expected your crown to anchor protection here. The departing columns weaken that confidence.",
+                "zh-Hans": "地方原盼王号把守护留在陈地，分路远出的队伍削弱了这份信心。"
+              },
+              "effects": {
+                "city": -2
+              }
+            }
+          ]
+        },
+        {
+          "id": "hold-chen",
+          "title": {
+            "en": "Keep the force at Chen",
+            "zh-Hans": "留军固守陈地"
+          },
+          "intent": {
+            "en": "Keep the city and army close. Feed the garrison, but give up immediate outward momentum.",
+            "zh-Hans": "让城与军相互依托，供养驻军，也让出眼下向外推进的时机。"
+          },
+          "response": {
+            "en": "The watch changes, but the gate does not open. The city sleeps more easily. Outside Chen, others have time to decide without you.",
+            "zh-Hans": "守卒换了班，城门却没有为大军打开。城内这一夜睡得安稳些；陈地以外，别人也有时间自行作决定。"
+          },
+          "effects": {
+            "grain": -1,
+            "tempo": -1,
+            "city": 2,
+            "veterans": 2
+          },
+          "answers": [
+            {
+              "afterChoice": "recognize-allies",
+              "text": {
+                "en": "The promised wider front has not arrived. Waiting costs support among prospective allies.",
+                "zh-Hans": "许诺的共同战线迟迟未现，等待消磨了潜在盟友的支持。"
+              },
+              "effects": {
+                "allies": -2
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "outcomes": {
+    "common-front": {
+      "title": {
+        "en": "A coalition that can move",
+        "zh-Hans": "能动起来的共同战线"
+      },
+      "text": {
+        "en": "At least two groups will back the next step, with grain and tempo to sustain it. Agreement is a beginning, not permanent obedience: the bargain you made will need to be renewed.",
+        "zh-Hans": "至少两方愿意支持下一步，粮食与行动也足以支撑。议定只是开端，不是永久服从：今天的约，往后还得维系。"
+      }
+    },
+    "city-stronghold": {
+      "title": {
+        "en": "A city held, a campaign delayed",
+        "zh-Hans": "守住一城，缓下一局"
+      },
+      "text": {
+        "en": "Households and soldiers stand together, but the stores or tempo cannot yet carry a wider campaign. The city is safer; the initiative outside it is not yours alone.",
+        "zh-Hans": "乡里与部众暂能站在一起，粮储或行动却还不足以支持更大的战事。城内稳了一分，城外的主动便未必仍在你手中。"
+      }
+    },
+    "fragile-coalition": {
+      "title": {
+        "en": "Signatures without a common road",
+        "zh-Hans": "同案议事，未同路而行"
+      },
+      "text": {
+        "en": "Some promises have found support, but not enough backing, grain and tempo at the same time. The room has not solved who will bear the next cost. Try another bargain under the same arrival conditions.",
+        "zh-Hans": "有些许诺得到了支持，却未能同时凑齐人心、粮食与行动。下一个代价由谁承担，席间仍没有答案。可以在相同来势下换一种约法。"
+      }
+    },
+    "empty-granaries": {
+      "title": {
+        "en": "Orders cannot be eaten",
+        "zh-Hans": "军令不能充饥"
+      },
+      "text": {
+        "en": "The account has reached zero grain. Even willing supporters cannot march on a title alone. The exercise ends here; your Chapter I chronicle is safe.",
+        "zh-Hans": "账上的存粮已经归零。即使有人愿意追随，也不能只凭名号出征。本次推演到此为止，第一章纪事仍然保留。"
+      }
+    }
+  },
+  "history": {
+    "title": {
+      "en": "The disagreement recorded in the Tongjian",
+      "zh-Hans": "《通鉴》记下的分歧"
+    },
+    "account": {
+      "en": "In volume 7, under the first year of Qin Er Shi, the account has Chen’s local notables urge Chen Sheng to become king. Zhang Er and Chen Yu advise against immediately taking the title: they propose advancing west and restoring descendants of the six states to multiply Qin’s opponents. Chen Sheng does not accept their advice and takes the royal title.",
+      "zh-Hans": "《资治通鉴》卷七秦二世元年条记：陈中豪杰父老请立陈胜为楚王；张耳、陈余劝他暂勿称王，急引兵西进，遣人立六国后，以增加秦的敌手。陈胜没有采纳，遂自立为王。"
+    },
+    "distinction": {
+      "en": "The Shiji, volume 89, preserves a closely related account; these are related textual traditions, not independent eyewitnesses. The three-round bargaining, grain account, composite delegates and all alternative results here are original game fiction. No route predicts what would really have happened.",
+      "zh-Hans": "《史记》卷八十九保存了相近叙述；二者有文本承继关系，并非两份独立的目击证词。本幕三轮议价、粮账、合成人物及所有替代结局，均为原创游戏重构，不能用来断言另一种选择必会造成何种历史。"
+    },
+    "sources": [
+      {
+        "title": "《资治通鉴》卷七 · 秦纪二",
+        "locator": "秦二世元年秋七月，陈涉入陈后；「陳中豪桀父老請立涉爲楚王」至「號張楚」",
+        "url": "https://zh.wikisource.org/wiki/資治通鑑/卷007"
+      },
+      {
+        "title": "《史记》卷八十九 · 张耳陈馀列传",
+        "locator": "陈涉入陈，张耳陈馀进谏暂勿称王段",
+        "url": "https://zh.wikisource.org/wiki/史記/卷089"
+      }
+    ]
+  }
+}

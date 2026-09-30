@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "contentId": "chen-council.v1",
+  "contentSHA256": "a4b21e01d8c442869bde8da79ead2fb7c787095eb635a1fe4504ed5a87e9a945",
+  "reviewedOn": "2026-09-30",
+  "author": "SHI project, AI-assisted original bilingual game writing",
+  "reviewer": "Codex source-boundary, prose and deterministic-route self-review; not independent human review",
+  "reviewStatus": "agent-reviewed-development-only",
+  "publicationApproved": false,
+  "humanReview": "pending",
+  "rightsStatus": "project-original-prose-public-source-metadata-only",
+  "intendedUse": "Optional playable counterfactual interlude after a surviving Chapter I. Web/Android and native iOS development work; client integration is qualified separately, not submitted build 1.",
+  "historicalSpine": {
+    "work": "资治通鉴",
+    "section": "卷七，秦二世元年秋七月，陈涉入陈后的称王争议",
+    "inspection": "Read the owner's local wenyan extraction at the bounded Chen passage, lines2650–2695; distinguished main narrative from Hu Sanxing commentary. Also fetched and read the matching public Tongjian and Shiji transcription passages. No private scan or modern translation redistributed.",
+    "inspectedPublicTranscriptions": [
+      "https://ancient-china-books.github.io/zizhitongjian/OEBPS/Text/5386.html",
+      "https://wenku.github.io/shiji/zh-tw/089.html"
+    ],
+    "publicLocator": "https://zh.wikisource.org/wiki/資治通鑑/卷007",
+    "relatedTradition": "史记卷八十九，张耳陈馀列传；related narrative, not independent eyewitness corroboration"
+  },
+  "reviewFindings": [
+    "The recorded debate is kingship at Chen versus urgent western advance and restoration of the six states; not a documented three-round council.",
+    "Composite delegations, sealed offer, grain accounts, numerical thresholds, title deferral and every alternate outcome are explicitly reconstruction.",
+    "No invented speech is presented as a quotation by Chen Sheng, Zhang Er or Chen Yu.",
+    "Arrival mapping is disclosed as a game conversion from Chapter I, not a historical path guarantee.",
+    "Each authority policy has a viable common-front route; no opening Pareto-dominates the other two across the five metrics.",
+    "Promises have previewed conditional costs. Outcomes are deterministic, not forecasts of real history or autonomous historical AI.",
+    "No new image, voice, music, video, copyrighted translation or source scan is included. Human historical/prose/playtest review remains open."
+  ],
+  "clientReadiness": {
+    "webAndroidSource": "implemented; qualification recorded in the production checkpoint",
+    "nativeIOS": "implemented in development checkout; rule/save checks pass, UI qualification in progress; not a store or clean-checkout readiness claim",
+    "unityUnreal": "identical data exported only; no council runtime claim"
+  }
+}
