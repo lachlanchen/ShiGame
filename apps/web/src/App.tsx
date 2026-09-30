@@ -597,12 +597,13 @@ export function App() {
     });
   };
 
+  const EndingHeading = state.failureReason ? "h1" : "h2";
   const endingPanel = (
     <section className="ending-panel">
       <span className="ending-seal">{state.failureReason ? "止" : ending === "wildfire" ? "火" : ending === "deep-roots" ? "根" : "觀"}</span>
       <div>
         <p className="eyebrow">{state.failureReason ? translate(locale, "failed") : translate(locale, "complete")}</p>
-        <h2 id={state.failureReason ? "story-title" : undefined}>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</h2>
+        <EndingHeading id={state.failureReason ? "story-title" : undefined}>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</EndingHeading>
         <p data-testid="chapter-ending-prose">{state.failureReason ? translate(locale, state.failureReason === "captured" ? "capturedText" : "scatteredText") : translate(locale, ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText")}</p>
         {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} locale={locale} /></Suspense>}
       </div>
