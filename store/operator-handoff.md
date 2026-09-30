@@ -10,11 +10,14 @@ remain excluded. No build substitution, new upload or review withdrawal.
 
 Sent one appStoreVersionReleaseRequests POST for version
 ef1a86c7-68f4-4eb5-bc2e-e3c3d3c39e8c. Apple accepted it and readback now reports
-READY_FOR_SALE / READY_FOR_DISTRIBUTION. All173 selected territories report
-PROCESSING_TO_AVAILABLE; the first public US page probe remains HTTP404.
-This supersedes historical Apple hold instructions, but does not prove storefront
-propagation. Next step is read-only availability/listing verification, not another
-release request. New beta development remains separate from this approved build.
+READY_FOR_SALE / READY_FOR_DISTRIBUTION. Subsequent availability verification
+recorded all173 selected territories AVAILABLE in release.json. A fresh
+September30 read-only check confirms version1.0.0 remains READY_FOR_SALE /
+READY_FOR_DISTRIBUTION with downloadable true. The public US listing now loads
+with title SHI: The Shape of Power and USD0.99 pricing.
+This supersedes historical Apple hold instructions and the initial storefront
+propagation delay. Publication is complete; do not send another release request.
+New beta development remains separate from this approved build.
 
 Public destination: https://apps.apple.com/us/app/id6816377548
 Private receipt, intent, exact preflight and readbacks are in
