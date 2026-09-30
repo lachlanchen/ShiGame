@@ -1,4 +1,5 @@
 import type { Locale } from "@shi/game-core";
+import { translateGuide } from "../guide-labels";
 import { translate } from "../i18n";
 import { guideDetails } from "./guide-i18n";
 
@@ -13,20 +14,20 @@ export function FieldGuide({ locale, controllerConnected, onClose }: FieldGuideP
   return (
     <aside className="drawer guide-drawer" data-testid="guide-drawer" role="dialog" aria-modal="true" aria-labelledby="guide-title">
       <div className="drawer-head">
-        <div><span className="eyebrow">SHI · {translate(locale, "guide")}</span><h2 id="guide-title">{translate(locale, "guideTitle")}</h2></div>
+        <div><span className="eyebrow">SHI · {translate(locale, "guide")}</span><h2 id="guide-title">{translateGuide(locale, "guideTitle")}</h2></div>
         <button className="icon-button" autoFocus onClick={onClose} aria-label={translate(locale, "close")}>×</button>
       </div>
       <p className="guide-intro">{details.intro}</p>
       <ol className="guide-steps">
-        <li><span>一</span><div><h3>{translate(locale, "guideFieldTitle")}</h3><p>{translate(locale, "guideFieldText")}</p></div></li>
-        <li><span>二</span><div><h3>{translate(locale, "guideMoveTitle")}</h3><p>{details.move}</p></div></li>
-        <li><span>三</span><div><h3>{translate(locale, "guideReplyTitle")}</h3><p>{details.reply}</p></div></li>
+        <li><span>一</span><div><h3>{translateGuide(locale, "guideFieldTitle")}</h3><p>{translateGuide(locale, "guideFieldText")}</p></div></li>
+        <li><span>二</span><div><h3>{translateGuide(locale, "guideMoveTitle")}</h3><p>{details.move}</p></div></li>
+        <li><span>三</span><div><h3>{translateGuide(locale, "guideReplyTitle")}</h3><p>{details.reply}</p></div></li>
       </ol>
       <div className={`controller-callout ${controllerConnected ? "is-connected" : ""}`} aria-live="polite">
         <span>{controllerConnected ? translate(locale, "controllerReady") : translate(locale, "controllerOptional")}</span>
         <p>{translate(locale, "controllerHint")}</p>
       </div>
-      <button className="primary-button guide-continue" data-testid="guide-continue" onClick={onClose}>{translate(locale, "guideContinue")} <span>→</span></button>
+      <button className="primary-button guide-continue" data-testid="guide-continue" onClick={onClose}>{translateGuide(locale, "guideContinue")} <span>→</span></button>
     </aside>
   );
 }

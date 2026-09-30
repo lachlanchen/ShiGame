@@ -8,5 +8,14 @@ export default defineConfig({
     target: "es2022",
     sourcemap: process.env.SHI_SOURCEMAP === "1" ? "hidden" : false,
     chunkSizeWarningLimit: 800,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          // Compress the already-eager dependency graph together. Dynamic scene,
+          // font and Three.js imports retain their on-demand boundaries.
+          groups: [{ name: "initial", tags: ["$initial"] }],
+        },
+      },
+    },
   },
 });

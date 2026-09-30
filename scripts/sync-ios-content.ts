@@ -1,7 +1,8 @@
 import { copyFile, mkdir, writeFile, readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { resolve } from "node:path";
-import { ui, localeNames } from "../apps/web/src/i18n";
+import { localeNames } from "../apps/web/src/i18n";
+import { ui } from "../apps/web/src/ui-catalog";
 import { cinemaKeys, cinemaLabel } from "../apps/web/src/cinema-labels";
 import { supportedLocales } from "@shi/game-core";
 import { oppositionUi } from "../apps/web/src/opposition-i18n";

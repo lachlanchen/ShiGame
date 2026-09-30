@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
 import { supportedLocales } from "@shi/game-core";
-import { isRtl, ui } from "./i18n";
+import { isRtl } from "./i18n";
+import { ui } from "./ui-catalog";
 import { mapUi } from "./map-i18n";
 import { audioUi } from "./audio-i18n";
 import { translateSound } from "./audio-labels";
@@ -8,6 +10,12 @@ import { oppositionUi } from "./opposition-i18n";
 import { decisionUi } from "./decision-i18n";
 
 describe("interface localization", () => {
+  it("preserves every catalog string when splitting on-demand guide and ending labels", () => {
+    const canonical = Object.fromEntries(Object.entries(ui).sort().map(([locale, values]) =>
+      [locale, Object.fromEntries(Object.entries(values).sort())]));
+    expect(createHash("sha256").update(JSON.stringify(canonical)).digest("hex"))
+      .toBe("f24e3d7ef34d2f82d21677c284802139bd9a275d1d56307b70642ae7784b7243");
+  });
   it("gives each failure a distinct nonempty narrative in all eleven locales", () => {
     for (const locale of supportedLocales) {
       expect(ui[locale].capturedText.trim()).not.toBe("");

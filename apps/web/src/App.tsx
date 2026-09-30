@@ -36,6 +36,7 @@ import { gameStorage } from "./persistence";
 import { readChapterSnapshot, writeChapterSnapshot } from "./chapter-snapshot";
 
 const campaign = campaignJson as unknown as Campaign;
+const ChapterEndingProse = lazy(() => import("./components/ChapterEndingProse").then(module => ({ default: module.ChapterEndingProse })));
 const ResolvedConsequenceScene = lazy(() => import("./components/ResolvedConsequenceScene").then((module) => ({ default: module.ResolvedConsequenceScene })));
 const ThreeBackdrop = lazy(() => import("./components/ThreeBackdrop").then((module) => ({ default: module.ThreeBackdrop })));
 const ResourceRail = lazy(() => import("./components/ResourceRail"));
@@ -604,7 +605,7 @@ export function App() {
       <div>
         <p className="eyebrow">{state.failureReason ? translate(locale, "failed") : translate(locale, "complete")}</p>
         <EndingHeading id={state.failureReason ? "story-title" : undefined}>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</EndingHeading>
-        <p data-testid="chapter-ending-prose">{state.failureReason ? translate(locale, state.failureReason === "captured" ? "capturedText" : "scatteredText") : translate(locale, ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText")}</p>
+        <Suspense fallback={<p aria-busy="true" />}><ChapterEndingProse locale={locale} textKey={state.failureReason ? (state.failureReason === "captured" ? "capturedText" : "scatteredText") : ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText"} /></Suspense>
         {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} locale={locale} /></Suspense>}
       </div>
       <div className="chen-ending-actions">

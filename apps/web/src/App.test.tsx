@@ -8,7 +8,7 @@ import * as persistence from "./persistence";
 import { createInitialState, resolveChoice, type Campaign } from "@shi/game-core";
 import campaignData from "../../../content/campaigns/chapter-01-daze.json";
 import chapterFixtures from "../../../content/conformance/chapter-01-replays.v1.json";
-import { ui } from "./i18n";
+import { ui } from "./ui-catalog";
 
 vi.mock("./components/ThreeBackdrop", () => ({
   ThreeBackdrop: () => <div data-testid="three-backdrop" />,

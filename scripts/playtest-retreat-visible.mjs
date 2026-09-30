@@ -6,6 +6,8 @@ import net from "node:net";
 
 const root = resolve(import.meta.dirname, "..");
 const route = process.argv[2] ?? "together";
+const production = process.env.SHI_PLAYTEST_PRODUCTION === "1";
+if (production && route !== "captured") throw new Error("Production review currently supports only the captured opening route.");
 const storyBranch = process.argv[3] ?? "baseline";
 if (!["together", "dispersed", "remnant", "scattered", "book", "captured"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured] [baseline|partner-search|loan-search]");
 const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}`;
@@ -18,7 +20,7 @@ const out = resolve(root, ".runtime/story-review", new Date().toISOString().repl
 await mkdir(out, { recursive: true });
 const report = { status: "running", output: out, started: new Date().toISOString(), checks: [], screenshots: [], errors: [], owned: [],
   route, storyBranch, grainPromise, reception,
-  boundary: "Agent-operated visible development web route; not human acceptance, native or store verification." };
+  boundary: `Agent-operated visible ${production ? "production-bundle" : "development"} web route; not human acceptance, native or store verification.` };
 const children = [], logs = [];
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 let socket, fit;
@@ -72,7 +74,8 @@ try {
   await delay(800);
   await launch("vnc", "x11vnc", ["-display", ":121", "-listen", "127.0.0.1", "-rfbport", "5921", "-nopw", "-forever", "-nevershared"]);
   await launch("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:6121", "127.0.0.1:5921"]);
-  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], { VITE_SHI_NATIVE: "1" });
+  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: "1" });
+  report.buildMode = production ? "production-dist" : "development";
   // Existing isolated profile, but an incognito app window preserves old QA saves.
   await launch("chrome", "google-chrome", ["--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--incognito", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=9321", `--user-data-dir=${root}/.runtime/novnc/profile`, "--window-size=1600,1000", "--app=http://127.0.0.1:4173/?seed=00000000"], { DISPLAY: ":121" });
   fit = setInterval(() => { try {
