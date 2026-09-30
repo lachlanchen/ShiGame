@@ -1,6 +1,7 @@
 export * from "./types";
 export * from "./engine";
 export * from "./engagement";
+export * from "./crossing-campaign";
 export * from "./council";
 export * from "./fanyang-entry";
 export * from "./fanyang";

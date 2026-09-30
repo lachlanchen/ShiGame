@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "chapter-01-crossing-campaign-v1",
+  "deliveryStatus": "development-only",
+  "campaignId": "chapter-01-daze",
+  "engagementId": "chapter-01-broken-crossing",
+  "nodeId": "broken-crossing",
+  "effectPolicy": "replace-player-effects-retain-other-layers",
+  "campaignSha256": "0144569248b68b056d3d711ec87242a19a13eb3fbe5ede9c4a7cd6a6dd8fba58",
+  "engagementSha256": "e5e7d40076e456c4044ab92f04209095af13fa5ff9599a66601f030b15133b8c"
+}

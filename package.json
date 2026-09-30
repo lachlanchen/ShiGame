@@ -26,7 +26,7 @@
     "validate:content": "node scripts/validate-content.mjs",
     "validate:martial-sources": "node scripts/validate-martial-sources.mjs",
     "validate:martial-sources:private": "node scripts/validate-martial-sources.mjs --verify-private",
-    "validate:engagement": "vite-node scripts/validate-engagement.ts",
+    "validate:engagement": "vite-node scripts/validate-engagement.ts && vite-node scripts/validate-crossing-campaign.ts",
     "audit:fanyang-balance": "vite-node scripts/audit-fanyang-balance.ts",
     "validate:accessibility": "node scripts/validate-accessibility.mjs",
     "validate:fonts": "node scripts/validate-fonts.mjs",
