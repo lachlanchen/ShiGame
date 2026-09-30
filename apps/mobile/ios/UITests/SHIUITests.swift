@@ -291,7 +291,8 @@ final class SHIUITests: XCTestCase {
         app.launchArguments = ["-shi.locale", "en", "-shi.reduced-motion", "true"]
         app.launch(); finishChapterForCouncil(app)
         for id in ["defer-title", "joint-ledger", "one-command"] {
-            councilDecision(id, app); councilContinue(app)
+            councilDecision(id, app, expectedOutcome: id == "one-command" ? "common-front" : nil)
+            councilContinue(app)
         }
         let enter = app.buttons["fanyang-enter"]; reveal(enter, in: app); enter.tap()
         XCTAssertTrue(app.staticTexts["fanyang-title"].waitForExistence(timeout: 10))

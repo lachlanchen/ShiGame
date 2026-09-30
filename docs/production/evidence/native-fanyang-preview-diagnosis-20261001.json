@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "scope": "Diagnose and retry the native Fan Yang UI test on a separate simulator-only QA app; no store action",
+  "baseline": "ad033f5 application source; current test file differs only in the expected final council outcome",
+  "originalResult": {
+    "unitTestsPassed": 26,
+    "uiTestsFailed": 1,
+    "test": "SHIUITests/testFanyangContinuationResumeWithdrawalAndCancel()",
+    "failure": "XCTAssertFalse at SHIUITests.swift:208",
+    "cause": "The test caller omitted expectedOutcome on one-command. The helper treated nil as an assertion that no final outcome preview exists. The final council preview correctly exists; this aborts before entering Fan Yang."
+  },
+  "fix": "Pass common-front for the third council choice, preserving the existing exact forecast, saved-change and reaction assertions rather than removing the failing check.",
+  "testFileSHA256": "73a3c5b39f50803be562ac5a97612e014922db93509bde814d6462549ab9ca9b",
+  "backupSHA256": "88f492c4e0844dde716ddce6bbc889eb4a675bd5fac76afe0756a8896743b9fc",
+  "platform": "iPad Pro 11-inch (M5), iOS 27.0 simulator, Xcode 27; not physical iPad or iOS 16 compatibility evidence",
+  "retry": "XCTest reports the selected UI test passed in 168.989 seconds with zero failures, including reaction, terminate/relaunch resume, withdrawn outcome and restart cancellation. xcodebuild remains alive in post-test finalization; terminal exit and completed xcresult are not yet verified. A read-only summary probe found no Info.plist yet, consistent with an unfinished bundle, not sufficient evidence of corruption.",
+  "localValidation": "Native shared-content parity passed; intentional diff has no whitespace errors.",
+  "limits": "Does not include later viewpoint introductions, retreat scenes, localization completion or a release archive. Remote generated QA source and shared cache reused; no keychain, signing, store, physical-device or foreign-project changes."
+}
