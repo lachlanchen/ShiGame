@@ -19,6 +19,8 @@
     "validate": "npm run sync:content && npm run sync:ios && npm run validate:ios-content && npm run validate:repo && npm run validate:unreal && npm run validate:unreal-installer && npm run validate:content && npm run validate:martial-sources && npm run validate:engagement && npm run validate:conformance && npm run validate:audio && npm run validate:accessibility && npm run validate:fonts && npm --workspace @shi/game-core run typecheck && npm --workspace @shi/web run typecheck && npm --workspace @shi/game-core run test && npm --workspace @shi/web run test",
     "validate:repo": "node scripts/validate-repository.mjs && node scripts/validate-council.mjs && npm run validate:story-draft",
     "validate:story-draft": "node --test scripts/story-readthrough.test.mjs && node scripts/story-readthrough.mjs",
+    "story:read": "vite-node scripts/first-volume-readthrough.ts",
+    "validate:story-reading": "vite-node scripts/first-volume-readthrough.ts --check",
     "validate:content": "node scripts/validate-content.mjs",
     "validate:martial-sources": "node scripts/validate-martial-sources.mjs",
     "validate:martial-sources:private": "node scripts/validate-martial-sources.mjs --verify-private",
