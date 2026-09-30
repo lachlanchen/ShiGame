@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "chen-retreat-rules.v1",
+  "storyId": "chen-retreat-story-draft.v1",
+  "status": "development",
+  "publicationApproved": false,
+  "boundary": "Development strategy rules, not historical measurements or approved release content. Carry the five inherited campaign-capacity meters from Fan Yang without refilling. They represent remaining coalition capacity, not a physical northern grain store teleported to Chen. Chapter resources remain a separate historical record. Soldier backing is not a headcount.",
+  "capacitySource": "fanyang.metrics",
+  "scenes": [
+    { "id": "reserves", "choices": [
+      { "id": "keep-reserve", "requires": { "veterans": 1 }, "effects": { "grain": -1, "allies": -1 }, "reason": "Supply the agreed grain convoy but retain an escort reserve; partners receive less support than requested." },
+      { "id": "send-support", "requires": { "veterans": 2 }, "effects": { "grain": -2, "veterans": -1, "allies": 2 }, "reason": "Send provisions and detach a willing escort. Allied support improves, but the escort is no longer locally available." },
+      { "id": "verify-road", "requires": {}, "effects": { "tempo": -1, "allies": -1 }, "reason": "Verify a route at the cost of time and delayed support; no complete battlefield knowledge or extra food is created." },
+      { "id": "decline-dispatch", "requires": {}, "effects": { "allies": -1 }, "reason": "Admit that no new support can be promised. Retain existing resources but lose allied confidence; this remains possible with no supplies." }
+    ] },
+    { "id": "bad-news", "choices": [
+      { "id": "open-reception", "requires": {}, "effects": { "grain": -1, "tempo": -1, "city": 2, "veterans": -1 }, "reason": "Feed and organize arrivals, earning civil backing while stretching the guard. Their evacuation later needs extra grain." },
+      { "id": "verify-with-partners", "requires": { "allies": 2 }, "effects": { "tempo": -2, "allies": -1, "city": 1 }, "reason": "Spend time and allied goodwill arranging shared reception. A previous shared ledger reduces the verification time, not the food bill.", "answers": [
+        { "afterChoice": "joint-ledger", "effects": { "tempo": 1 }, "reason": "The Chen shared ledger lets partners check an established record instead of rebuilding it." }
+      ] },
+      { "id": "gather-own", "requires": {}, "effects": { "city": -1 }, "reason": "Do not expand reception. Existing people stay accounted for; outsiders receive no new shelter promise." }
+    ] },
+    { "id": "evacuation", "choices": [
+      { "id": "escort-households", "requires": { "veterans": 2 }, "effects": { "grain": -1, "tempo": -1, "veterans": -1, "city": 1 }, "reason": "Provision the escort and give households time to leave. Extra arrivals increase the load; a retained reserve avoids the additional assembly delay.", "answers": [
+        { "afterChoice": "keep-reserve", "effects": { "tempo": 1 }, "reason": "The retained escort is already positioned, so no extra assembly time is spent." },
+        { "afterChoice": "open-reception", "effects": { "grain": -1 }, "reason": "The people admitted at the reception shelter must also be provisioned for evacuation." }
+      ] },
+      { "id": "hold-formation", "requires": { "veterans": 2 }, "effects": { "city": -1, "allies": -1 }, "reason": "Retain an organized guard while narrowing the escort commitment. Those left behind do not become recorded rescues." },
+      { "id": "split-routes", "requires": {}, "effects": { "city": -1, "veterans": -1 }, "reason": "Avoid a single blocked column by separating groups. Mutual support weakens; a rendezvous is not a guaranteed reunion." }
+    ] },
+    { "id": "records", "choices": [
+      { "id": "divide-records", "requires": {}, "effects": { "tempo": -1, "city": 1 }, "reason": "Take time to distribute verifiable claims; civilian confidence improves. Unknown names remain unknown." },
+      { "id": "carry-records", "requires": {}, "effects": {}, "reason": "Carry the existing records without copying. The identifying records and their exposure risk remain; this costs no newly promised resources." },
+      { "id": "strip-identities", "requires": {}, "effects": { "city": -1 }, "reason": "Remove identifying information but weaken some claims to repayment. Names cannot later be reconstructed without new evidence." }
+    ] },
+    { "id": "dawn", "choices": [
+      { "id": "stay-together", "requires": { "grain": 2, "tempo": 1, "city": 4, "veterans": 2 }, "afterChoiceRequired": "escort-households", "effects": { "grain": -1, "tempo": -1 }, "ending": "together", "reason": "Sustain a rendezvous with provisions left after the first wait, civil consent and a willing guard. Earlier losses remain unresolved." },
+      { "id": "move-with-remnant", "requires": { "grain": 1, "veterans": 2 }, "effects": { "grain": -1 }, "ending": "remnant", "reason": "Provision one organized departure. This cannot summon missing people or promise food beyond that departure." },
+      { "id": "release-groups", "requires": {}, "effects": {}, "ending": "disperse", "reason": "End central command. Orderly separation needs at least one grain and backing of at least two from civilians, allies or soldiers. Otherwise the forecast is loss of cohesion, not a peaceful return home." }
+    ] }
+  ],
+  "dispersionRequirements": { "grain": 1, "anyBacking": 2 },
+  "scattered": {
+    "title": { "en": "The group comes apart", "zh-Hans": "队伍散去" },
+    "reaction": { "en": "You give the directions you can verify, but cannot supply a common departure. People begin leaving before the accounts are settled. Their routes and survival are not known; no deaths are silently invented.", "zh-Hans": "你交代了能够确认的路，却筹不出有序分行的支撑。账还没核完，已经有人离开。他们去了哪里、是否平安，尚无消息；这里不凭空判定任何人死亡。" },
+    "recovery": { "en": "Review the earlier commitments or replay from a preserved checkpoint. Continuing later must retain unresolved people and debts rather than restore the whole group.", "zh-Hans": "可回看此前的承诺，或从保留的节点重试。日后继续时必须保留未明的去向与欠账，不能把整队人自动补回。" }
+  }
+}

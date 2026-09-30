@@ -43,7 +43,8 @@
       "choices": [
         { "id": "keep-reserve", "title": "留接应队，减少这次外派", "intent": "本部留人护粮与接应。前线少得到这批人手；当面说明欠下的支援，不能同时记作已派出。", "response": [{ "speaker": "keeper", "text": "车照约送，押车的人回来。剩下这队留着接应。我在拨单上写明白。" }, { "speaker": "supply-officer", "text": "我把这句话带回去。他们还会来问你。" }, { "speaker": "narrator", "text": "军吏没有带走那张空白名册。你安排留下的人检查粮站到集合处的路。" }], "next": "bad-news" },
         { "id": "send-support", "title": "把预备队随粮车派出", "intent": "及时兑现外援，暂时失去本地接应人手。伙伴收到支援不等于保证日后能还兵还车。", "response": [{ "speaker": "keeper", "text": "一起走。到地方给个回信，别只写粮收到了，把人也点清。" }, { "speaker": "supply-officer", "text": "我让接车的人押记。能不能回来，不是我一个人说了算。" }, { "speaker": "narrator", "text": "车队出了粮站。空出来的地方很宽，你才看清还剩多少人搬袋。" }], "next": "bad-news" },
-        { "id": "verify-road", "title": "暂缓增派，先验路讯", "intent": "派本部人员核实道路与消息，支援会迟。查明一段道路并不能获得整场战争的全知视角。", "response": [{ "speaker": "keeper", "text": "先把已经备好的送走。新增的这队等验路的人回来，不许报成已经出发。" }, { "speaker": "supply-officer", "text": "若我先到，他们问起来，我就照实说。" }, { "speaker": "narrator", "text": "探路人各带一份短简离开，约定回来只报亲眼看见的路段。" }], "next": "bad-news" }
+        { "id": "verify-road", "title": "暂缓增派，先验路讯", "intent": "派本部人员核实道路与消息，支援会迟。查明一段道路并不能获得整场战争的全知视角。", "response": [{ "speaker": "keeper", "text": "新增的拨单先留着，等验路的人回来。不许报成已经出发。" }, { "speaker": "supply-officer", "text": "若我先到，他们问起来，我就照实说。" }, { "speaker": "narrator", "text": "探路人各带一份短简离开，约定回来只报亲眼看见的路段。" }], "next": "bad-news" },
+        { "id": "decline-dispatch", "title": "说明眼下不能增派，不再许诺", "intent": "保留实际余力，但让催援的伙伴失望。即使没有粮食和行动余裕，也能承认无法履约；这不会补回任何物资。", "response": [{ "speaker": "keeper", "text": "新增的这一批，眼下拨不出来。把空着的地方划掉，别带一张像是已经办妥的单子回去。" }, { "speaker": "supply-officer", "text": "我照实回。他们不会当作没听见。" }, { "speaker": "narrator", "text": "军吏收走改过的拨单。这一次没有新的车队出发，也没有添上一笔办不到的承诺。" }], "next": "bad-news" }
       ]
     },
     {
@@ -63,6 +64,7 @@
         { "when": { "reserves": "keep-reserve" }, "lines": [{ "speaker": "narrator", "text": "接应的人把伤卒扶进棚里，回来问是否还要去路口接下一拨。预留的人手开始派上用场。" }] },
         { "when": { "reserves": "send-support" }, "lines": [{ "speaker": "narrator", "text": "棚里的人问起那支押粮队。伤卒没有见过他们。已经送出的支援，此刻不能再调出来替你守路。" }] },
         { "when": { "reserves": "verify-road" }, "lines": [{ "speaker": "narrator", "text": "验路人已带回一段可走的路讯，却没有见到全部西进队伍。你把知道和不知道的分开记下。" }] },
+        { "when": { "reserves": "decline-dispatch" }, "lines": [{ "speaker": "narrator", "text": "催援的人没有带回好脸色。你没有可以宣布归来的新押粮队，只能按仍在手里的东西安排来人。" }] },
         { "when": { "han": "cooperating" }, "lines": [{ "speaker": "qin-courier", "text": "路讯我可以补。驿里谁放过人，别写进要传出去的那份。" }, { "speaker": "keeper", "text": "那就只记哪段能走，哪段是你听来的。" }] },
         { "when": { "han": "unavailable" }, "lines": [{ "speaker": "narrator", "text": "你手里的驿路抄件没有可靠的署记。本部探路人只肯为走过的那一段作证，不能把整张图都当作通路。" }] },
         { "when": { "han": "unestablished" }, "lines": [{ "speaker": "narrator", "text": "这次送来的路讯没有韩驿使的新回信。过去用过一条渠道，不等于今天仍有人替你把路验过。你让送信人指明他亲眼走过的地方。" }] }
@@ -97,6 +99,7 @@
         { "when": { "reserves": "keep-reserve" }, "lines": [{ "speaker": "rear-guard", "text": "你留下的接应队在外面。让他们先带一批走，我们断后。" }] },
         { "when": { "reserves": "send-support" }, "lines": [{ "speaker": "rear-guard", "text": "押粮的人还没回。这里的人得分开用，不能又押车又守路。" }] },
         { "when": { "reserves": "verify-road" }, "lines": [{ "speaker": "rear-guard", "text": "验过的那段还能走。出了那段，我们得再看，别叫所有车一齐挤过去。" }] },
+        { "when": { "reserves": "decline-dispatch" }, "lines": [{ "speaker": "rear-guard", "text": "别等新援了。按这里能动的人安排，留不住的东西先说明白。" }] },
         { "when": { "bad-news": "open-reception" }, "lines": [{ "speaker": "narrator", "text": "新收的伤卒也在等车。你曾指给他们这座棚，如今撤离的安排必须算上他们。" }] },
         { "when": { "bad-news": "verify-with-partners" }, "lines": [{ "speaker": "partner-steward", "text": "我们的人到路口接。但你得把分给我们的那几户说清，别两边都以为对方带了。" }] },
         { "when": { "bad-news": "gather-own" }, "lines": [{ "speaker": "narrator", "text": "本部的人已经聚到粮站。被你劝往别处的队伍不在这里，撤离清点不能把他们算作同行。" }] }

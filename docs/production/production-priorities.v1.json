@@ -14,7 +14,7 @@
   "storyDraftCheckpoint": {
     "treatment": "docs/design/FIRST_VOLUME_STORY_TREATMENT.md",
     "branchingScript": "content/story-drafts/chen-retreat.v1.json",
-    "scope": "Chinese authoring draft for acts five through eight: five scenes, fifteen decisions, twenty-nine conditional passages and three endings. Explicit Fan Yang outcomes and companion presence contexts including unestablished whereabouts; not integrated client gameplay.",
+    "scope": "Chinese authoring draft for acts five through eight: five scenes, sixteen decisions, thirty-one conditional passages and three authored orderly endings. The resource-backed rules separately distinguish a fourth, scattered outcome with its own reaction. Explicit Fan Yang outcomes and companion presence contexts including unestablished whereabouts; not integrated client gameplay.",
     "verify": "npm run validate:story-draft",
     "readExample": "node scripts/story-readthrough.mjs --read deferred absent unavailable send-support gather-own hold-formation strip-identities move-with-remnant",
     "boundary": "Exhaustive authoring graph checks do not establish resource balance, historical accuracy, human enjoyment or client playability. The draft is excluded from current fixed-path content exports."
@@ -25,5 +25,13 @@
     "verification": "packages/game-core/tests/retreat-entry.test.ts exhausts 993 Fan Yang endings across all Chen routes and all three arrival classes, plus chapter-choice, tamper, failure, revision and legacy-save checks.",
     "boundary": "Caller supplies verified canonical content hashes. No game save is written, no resource is refilled, no actual companion reunion is established and no new client scene is exposed."
   },
-  "currentNextStep": "Story first: use the replay-backed continuity entry to implement resource-backed consequences for the post-Fan-Yang scenes. Resolve council authority and message/travel chronology, then establish current companion whereabouts through authored events. Draft-only ending eligibility must not become a shortcut around actual supplies, household status or companion consent. Existing native QA and release work remain separate; no new package is shipped."
+  "rulesCheckpoint": {
+    "definition": "content/campaigns/chen-retreat.rules.v1.json",
+    "module": "packages/game-core/src/retreat.ts",
+    "scope": "Five scenes with inherited capacity, affordable grain/time costs, visible requirements, conditional shared-ledger and escort-reserve effects, additional provisioning for admitted people, and four endings. Exhausted positions retain a legal exit, not an invented peaceful reunion. Snapshots bind both rules and prose revisions and replay choices instead of trusting saved totals.",
+    "custody": "Orderly dispersion assigns remaining provisions to groups; scattering leaves custody unresolved. Neither preserves a duplicate common stockpile.",
+    "focusedVerification": "Six rules tests pass. Exhaustive checks traverse 97,065 complete resource-backed routes from 993 prior endings, verify all four outcomes, legal exits, preview/commit agreement, no automatic food/time refill, replay and source-state preservation. This proves finite rules behavior, not fun or presentation quality.",
+    "boundary": "Development rules, not a client integration or human balance approval. No resupply route is yet authored for completely exhausted entries; departure or scattering remains possible. Authoring-only readthrough does not apply these resource rules."
+  },
+  "currentNextStep": "Story first: connect the resource-backed retreat rules and canonical dialogue in a development client, showing exact costs, conditional reactions and the scattered-outcome override before confirmation. Preserve separate durable saves and prior campaign state. Resolve council authority and message/travel chronology, author a costly resupply/recovery opportunity, and establish companion whereabouts through events rather than assumptions. Existing native QA and release work remain separate; no new package is shipped."
 }
