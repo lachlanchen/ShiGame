@@ -2,6 +2,7 @@
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "IO/IoHash.h"
 
 namespace
 {
@@ -29,7 +30,7 @@ void Apply(TMap<FString, int32>& Metrics, const TMap<FString, int32>& Effects)
 }
 }
 
-bool FShiChenCouncilModel::Initialize(const FString& Json, const FString& Arrival, FString& Error)
+bool FShiChenCouncilModel::Initialize(const FString& Json, const FString& Arrival, FString& Error, const FString& EntryId)
 {
     Error = TEXT("Invalid council definition or arrival");
     TSharedPtr<FJsonObject> Root;
@@ -82,6 +83,61 @@ bool FShiChenCouncilModel::Initialize(const FString& Json, const FString& Arriva
             Choices.Add(MoveTemp(Parsed));
         }
         Next.Rounds.Add(MoveTemp(Choices));
+    }
+    const FTCHARToUTF8 Utf8(*Json);
+    // Engine-local compatibility fingerprint, not authentication or the
+    // SHA256 wire format used by other clients. The algorithm is explicit.
+    Next.DefinitionFingerprint = TEXT("blake3-160:") + LexToString(FIoHash::HashBuffer(Utf8.Get(), Utf8.Length()));
+    Next.ArrivalId = Arrival;
+    Next.ChronicleEntryId = EntryId;
+    *this = MoveTemp(Next);
+    Error.Reset();
+    return true;
+}
+
+bool FShiChenCouncilModel::ExportSaveJson(FString& Json, FString& Error) const
+{
+    Error = TEXT("Council is not bound to a chapter chronicle");
+    if (Rounds.Num() != 3 || ChronicleEntryId.IsEmpty()) return false;
+    TSharedRef<FJsonObject> Root = MakeShared<FJsonObject>();
+    Root->SetStringField(TEXT("format"), TEXT("shi.chen-council.unreal"));
+    Root->SetNumberField(TEXT("version"), 1);
+    Root->SetStringField(TEXT("definitionFingerprint"), DefinitionFingerprint);
+    Root->SetStringField(TEXT("arrival"), ArrivalId);
+    Root->SetStringField(TEXT("entryId"), ChronicleEntryId);
+    TArray<TSharedPtr<FJsonValue>> Choices;
+    for (const auto& Turn : History) Choices.Add(MakeShared<FJsonValueString>(Turn.ChoiceId));
+    Root->SetArrayField(TEXT("choices"), Choices);
+    FString Encoded;
+    if (!FJsonSerializer::Serialize(Root, TJsonWriterFactory<>::Create(&Encoded))) return false;
+    Json = MoveTemp(Encoded);
+    Error.Reset();
+    return true;
+}
+
+bool FShiChenCouncilModel::ReplaySaveJson(const FString& DefinitionJson, const FString& Arrival, const FString& EntryId,
+    const FString& Json, FString& Error)
+{
+    Error = TEXT("Council save does not match this chronicle and definition");
+    if (EntryId.IsEmpty() || Json.Len() > 1024 * 1024) return false;
+    TSharedPtr<FJsonObject> Root;
+    if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), Root) || !Root.IsValid()) return false;
+    FString Format, Fingerprint, SavedArrival, SavedEntry;
+    double Version = 0;
+    const TArray<TSharedPtr<FJsonValue>>* Choices = nullptr;
+    if (!Root->TryGetStringField(TEXT("format"), Format) || Format != TEXT("shi.chen-council.unreal")
+        || !Root->TryGetNumberField(TEXT("version"), Version) || Version != 1
+        || !Root->TryGetStringField(TEXT("definitionFingerprint"), Fingerprint)
+        || !Root->TryGetStringField(TEXT("arrival"), SavedArrival) || SavedArrival != Arrival
+        || !Root->TryGetStringField(TEXT("entryId"), SavedEntry) || SavedEntry != EntryId
+        || !Root->TryGetArrayField(TEXT("choices"), Choices) || !Choices || Choices->Num() > 3) return false;
+    FShiChenCouncilModel Next;
+    FString DefinitionError;
+    if (!Next.Initialize(DefinitionJson, Arrival, DefinitionError, EntryId) || Next.DefinitionFingerprint != Fingerprint) return false;
+    for (const auto& RawChoice : *Choices)
+    {
+        FString Id;
+        if (!RawChoice->TryGetString(Id) || !Next.Commit(Id)) return false;
     }
     *this = MoveTemp(Next);
     Error.Reset();

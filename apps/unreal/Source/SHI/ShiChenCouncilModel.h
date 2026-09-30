@@ -13,7 +13,10 @@ struct FShiChenTurn
 class FShiChenCouncilModel
 {
 public:
-    bool Initialize(const FString& DefinitionJson, const FString& Arrival, FString& Error);
+    bool Initialize(const FString& DefinitionJson, const FString& Arrival, FString& Error, const FString& EntryId = FString());
+    bool ExportSaveJson(FString& Json, FString& Error) const;
+    bool ReplaySaveJson(const FString& DefinitionJson, const FString& Arrival, const FString& EntryId,
+        const FString& Json, FString& Error);
     bool Preview(const FString& ChoiceId, FShiChenTurn& Turn) const;
     bool Commit(const FString& ChoiceId);
     TArray<FString> GetChoices() const;
@@ -34,4 +37,7 @@ private:
     TArray<TArray<FChoice>> Rounds;
     TMap<FString, int32> Metrics;
     TArray<FShiChenTurn> History;
+    FString DefinitionFingerprint;
+    FString ArrivalId;
+    FString ChronicleEntryId;
 };

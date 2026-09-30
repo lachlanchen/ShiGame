@@ -29,7 +29,9 @@ bool FShiChenCouncilConformanceTest::RunTest(const FString& Parameters)
         const auto Route = Raw->AsObject();
         FShiChenCouncilModel Model;
         FString Error;
-        if (!TestTrue(TEXT("Initialize"), Model.Initialize(Definition, Route->GetStringField(TEXT("arrival")), Error))) return false;
+        const FString Arrival = Route->GetStringField(TEXT("arrival"));
+        const FString EntryId = FString::Printf(TEXT("chronicle-%d"), Turns);
+        if (!TestTrue(TEXT("Initialize"), Model.Initialize(Definition, Arrival, Error, EntryId))) return false;
         TestFalse(TEXT("Reject wrong round"), Model.Commit(TEXT("one-command")));
         for (const auto& RawTurn : Route->GetArrayField(TEXT("turns")))
         {
@@ -47,6 +49,23 @@ bool FShiChenCouncilConformanceTest::RunTest(const FString& Parameters)
             TestTrue(TEXT("Commit"), Model.Commit(Id));
             TestTrue(TEXT("Preview equals committed totals"), Model.GetMetrics().OrderIndependentCompareEqual(Preview.After));
             TestFalse(TEXT("Duplicate commitment rejected"), Model.Commit(Id));
+            FString Saved;
+            TestTrue(TEXT("Export bound save"), Model.ExportSaveJson(Saved, Error));
+            FShiChenCouncilModel Restored;
+            TestTrue(TEXT("Replay every partial/full save"), Restored.ReplaySaveJson(Definition, Arrival, EntryId, Saved, Error));
+            TestTrue(TEXT("Replay totals"), Restored.GetMetrics().OrderIndependentCompareEqual(Model.GetMetrics()));
+            TestEqual(TEXT("Replay history length"), Restored.GetHistory().Num(), Model.GetHistory().Num());
+            TestEqual(TEXT("Replay outcome"), Restored.GetOutcome(), Model.GetOutcome());
+            for (int32 Index = 0; Index < Model.GetHistory().Num(); ++Index)
+            {
+                TestTrue(TEXT("Replay before"), Restored.GetHistory()[Index].Before.OrderIndependentCompareEqual(Model.GetHistory()[Index].Before));
+                TestTrue(TEXT("Replay after"), Restored.GetHistory()[Index].After.OrderIndependentCompareEqual(Model.GetHistory()[Index].After));
+            }
+            TestFalse(TEXT("Other chronicle rejected"), Restored.ReplaySaveJson(Definition, Arrival, EntryId + TEXT("-other"), Saved, Error));
+            TestFalse(TEXT("Changed revision rejected"), Restored.ReplaySaveJson(Definition + TEXT("\n"), Arrival, EntryId, Saved, Error));
+            FString Preserved;
+            TestTrue(TEXT("Export retained state"), Restored.ExportSaveJson(Preserved, Error));
+            TestEqual(TEXT("Failed replay leaves state unchanged"), Preserved, Saved);
             ++Turns;
         }
         TestTrue(TEXT("Completed"), Model.IsCompleted());
@@ -77,6 +96,28 @@ bool FShiChenCouncilConformanceTest::RunTest(const FString& Parameters)
     Untouched.ChoiceId = TEXT("sentinel");
     TestFalse(TEXT("Invalid preview rejected"), Pressed.Preview(TEXT("missing"), Untouched));
     TestEqual(TEXT("Failed preview preserves output"), Untouched.ChoiceId, FString(TEXT("sentinel")));
+    FString Unbound = TEXT("sentinel");
+    TestFalse(TEXT("Cannot save an unbound model"), Pressed.ExportSaveJson(Unbound, Error));
+    TestEqual(TEXT("Failed export preserves output"), Unbound, FString(TEXT("sentinel")));
+    FShiChenCouncilModel Bound;
+    TestTrue(TEXT("Initialize save negatives"), Bound.Initialize(Definition, TEXT("divided"), Error, TEXT("negative-save")));
+    TestTrue(TEXT("Commit first choice"), Bound.Commit(TEXT("defer-title")));
+    FString ValidSave;
+    TestTrue(TEXT("Encode first choice"), Bound.ExportSaveJson(ValidSave, Error));
+    TSharedPtr<FJsonObject> SavedRoot;
+    if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(ValidSave), SavedRoot)) return false;
+    SavedRoot->SetBoolField(TEXT("completed"), true);
+    SavedRoot->SetStringField(TEXT("outcome"), TEXT("common-front"));
+    FString Tampered;
+    FJsonSerializer::Serialize(SavedRoot.ToSharedRef(), TJsonWriterFactory<>::Create(&Tampered));
+    TestTrue(TEXT("Ignore cached outcome claims"), Bound.ReplaySaveJson(Definition, TEXT("divided"), TEXT("negative-save"), Tampered, Error));
+    TestFalse(TEXT("Replay computes actual completion"), Bound.IsCompleted());
+    SavedRoot->SetArrayField(TEXT("choices"), { MakeShared<FJsonValueString>(TEXT("defer-title")), MakeShared<FJsonValueString>(TEXT("defer-title")) });
+    FJsonSerializer::Serialize(SavedRoot.ToSharedRef(), TJsonWriterFactory<>::Create(&Tampered));
+    TestFalse(TEXT("Duplicate save choices rejected"), Bound.ReplaySaveJson(Definition, TEXT("divided"), TEXT("negative-save"), Tampered, Error));
+    TestFalse(TEXT("Other arrival rejected"), Bound.ReplaySaveJson(Definition, TEXT("pressed"), TEXT("negative-save"), ValidSave, Error));
+    TestFalse(TEXT("Corrupt JSON rejected"), Bound.ReplaySaveJson(Definition, TEXT("divided"), TEXT("negative-save"), TEXT("{"), Error));
+    TestEqual(TEXT("Failed imports keep original turn"), Bound.GetHistory().Num(), 1);
     return !HasAnyErrors();
 }
 #endif
