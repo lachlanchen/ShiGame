@@ -27,11 +27,23 @@ test("all four complete readings replay real campaign rules with matching closin
 
 test("default reading stays byte-identical and unsupported requests fail", () => {
   assert.match(run("--check"), /comparison passed/);
-  for (const args of [["--ending", "victory"], ["--ending"], ["--ending", "scattered", "--check"], ["--unknown"], ["--reception"], ["--reception", "invented"], ["--reception", "open-reception", "--check"], ["--ending", "together", "--ending", "remnant"]]) {
+  for (const args of [["--ending", "victory"], ["--ending"], ["--ending", "scattered", "--check"], ["--unknown"], ["--reception"], ["--reception", "invented"], ["--reception", "open-reception", "--check"], ["--ending", "together", "--ending", "remnant"], ["--courier", "--check"], ["--courier", "--courier"]]) {
     const result = spawnSync(process.execPath, [...command, ...args], { cwd: root, encoding: "utf8" });
     assert.notEqual(result.status, 0);
     assert.ok(!result.stdout.includes("# 势"), "Invalid requests must not emit a misleading reading copy");
   }
+});
+
+test("courier reading earns the later letter through recruitment and road verification", () => {
+  const text = run("--courier", "--ending", "remnant");
+  assert.equal(text, run("--courier", "--ending", "remnant"));
+  assert.ok(text.includes("verify-road → open-reception → escort-households"));
+  assert.ok(text.includes("韩驿使来信："));
+  assert.ok(text.includes("韩驿使没有跟着来"));
+  assert.ok(text.includes("没有带走一位本来就不在这里的驿使"));
+  assert.ok(text.includes("实际结果：remnant"));
+  assert.ok(!text.includes("领头的人肩上搭着一条旧布"), "Road verification does not invent Yu's reserve-dependent arrival");
+  assert.ok(!run("--ending", "remnant").includes("韩驿使来信："), "Unrecruited default history must not receive his letter");
 });
 
 test("complete readings expose reception-dependent character arcs without borrowing other branches", () => {

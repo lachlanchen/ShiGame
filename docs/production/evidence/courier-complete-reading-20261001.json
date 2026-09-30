@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: reunion route visually reviewed through dispersal",
+  "change": "Add --courier to the complete-story exporter: replay hide-the-register, turn-the-courier, families-first and root-in-villages from real seed-zero state, retain the existing council/Fan Yang route, require verify-road during retreat and search legal continuations for the requested ending.",
+  "command": "npm run story:read -- --courier --ending remnant",
+  "verification": "39160 exit0: all five reading tests pass, including deterministic courier output, witnessed letter rather than physical return, exclusion of reserve-dependent Yu arrival and rejection of --courier with --check or duplicate flags. Default reading remains byte-identical.",
+  "editorialInspection": "Read recruitment/road-report passages and the final75lines of the generated courier route. Earlier absence of a new reply precedes later delivery through the original channel; letter dates remain limited evidence; final remnant response explicitly leaves the absent courier's whereabouts unconfirmed.",
+  "actualRetreatRoute": ["verify-road", "open-reception", "escort-households", "divide-records", "move-with-remnant"],
+  "limits": ["No new character event, resource, schema or gameplay rule added.", "Read-only editorial tooling, not native or graphical qualification.", "Other complete-story human review and release gates remain open."]
+}
