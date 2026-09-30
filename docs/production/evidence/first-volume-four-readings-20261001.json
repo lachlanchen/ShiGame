@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-01",
+  "baseline": "a9d5969",
+  "previousTurnClassification": "progress: visible loan-ending route completed with evidence and cleanup",
+  "purpose": "Enable whole-story comparison of all four endings rather than reading isolated conclusions or assuming a single example represents the complete story.",
+  "implementation": "The existing read-only first-volume exporter accepts --ending together|remnant|dispersed|scattered. Each runs the actual seed-zero opening, council, envoy and retreat rules. Scattering searches legal choices in canonical order; no capacity is injected. Its actual resource outcome selects the special reaction, witnessed-event responses and record-custody ending rather than the authoring-only orderly fallback.",
+  "initialFailure": "A hand-selected send-support/open-reception/escort route was unaffordable under this reader's chapter history. Replaced that assumption with legal-path search; did not change rules or refill supplies.",
+  "verification": {
+    "tests": "scripts/first-volume-readthrough.test.mjs",
+    "result": "2 passed, 0 failed",
+    "coverage": "All four outcomes replay successfully twice with deterministic complete output; expected opening/council/envoy/conclusion/source sections; scattering excludes orderly response and marks unresolved custody; default saved reading remains exact; malformed or mismatched check requests fail without emitting a reading."
+  },
+  "review": "Inspected the generated scattered final decision, failed handoff, witnessed Yu departure, divided-records closing and historical note. Missing people are not declared dead or returned; no arbitrary repayment or inventory transfer added.",
+  "limitations": ["A comparison aid, not new gameplay content or human story approval.", "Four representative routes, not every possible branch.", "No native, GUI, media, signing or store actions in this checkpoint."],
+  "next": "Use complete alternative readings for character and pacing review; retain story-first priority."
+}

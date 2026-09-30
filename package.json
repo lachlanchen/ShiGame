@@ -20,7 +20,7 @@
     "validate:repo": "node scripts/validate-repository.mjs && node scripts/validate-council.mjs && npm run validate:story-draft",
     "validate:story-draft": "node --test scripts/story-readthrough.test.mjs && node scripts/story-readthrough.mjs",
     "story:read": "vite-node scripts/first-volume-readthrough.ts",
-    "validate:story-reading": "vite-node scripts/first-volume-readthrough.ts --check",
+    "validate:story-reading": "node --test scripts/first-volume-readthrough.test.mjs",
     "validate:content": "node scripts/validate-content.mjs",
     "validate:martial-sources": "node scripts/validate-martial-sources.mjs",
     "validate:martial-sources:private": "node scripts/validate-martial-sources.mjs --verify-private",
