@@ -13,9 +13,14 @@ const root = resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
 const endingIndex = args.indexOf("--ending");
 const ending = endingIndex >= 0 ? args[endingIndex + 1] : "together";
+const receptionIndex = args.indexOf("--reception");
+const reception = receptionIndex >= 0 ? args[receptionIndex + 1] : undefined;
+const receptions = ["gather-own", "open-reception", "verify-with-partners", "borrow-local-grain"];
+assert.ok(receptionIndex < 0 || receptions.includes(reception!), "Use --reception gather-own|open-reception|verify-with-partners|borrow-local-grain");
+for (const option of ["--ending", "--reception", "--check"]) assert.ok(args.filter(arg => arg === option).length <= 1, "Duplicate reading option");
 assert.ok(["together", "remnant", "dispersed", "scattered"].includes(ending), "Use --ending together|remnant|dispersed|scattered");
-assert.ok(args.every((arg, index) => arg === "--check" || arg === "--ending" || index === endingIndex + 1 && endingIndex >= 0), "Unknown reading option");
-assert.ok(!args.includes("--check") || ending === "together", "--check compares the saved together route only");
+assert.ok(args.every((arg, index) => ["--check", "--ending", "--reception"].includes(arg) || index === endingIndex + 1 && endingIndex >= 0 || index === receptionIndex + 1 && receptionIndex >= 0), "Unknown reading option");
+assert.ok(!args.includes("--check") || ending === "together" && reception === undefined, "--check compares the saved default route only");
 const sources = new Map<string, string>();
 function load(path: string) {
   const bytes = readFileSync(resolve(root, path));
@@ -85,17 +90,18 @@ const entry = prepareRetreatEntry({ campaign, council: councilDef, fanyang: fany
   { chapter, council: councilSave, fanyang: JSON.parse(encodeFanyangSnapshot(fanyang, sources.get(fanyangPath)!)) },
   { campaign: sources.get(chapterPath)!, council: sources.get(councilPath)!, fanyang: sources.get(fanyangPath)! });
 assert.ok(entry);
-function findScattered(state: ReturnType<typeof createRetreat>): string[] | undefined {
-  if (state.completed) return state.outcome === "scattered" ? state.history.map(turn => turn.choiceId) : undefined;
+function findRequestedRoute(state: ReturnType<typeof createRetreat>): string[] | undefined {
+  if (state.completed) return state.outcome === ending ? state.history.map(turn => turn.choiceId) : undefined;
   for (const choice of rules.scenes[state.history.length].choices) {
+    if (state.history.length === 1 && reception && choice.id !== reception) continue;
     if (!inspectRetreatChoice(rules, state, choice.id).available) continue;
-    const route = findScattered(resolveRetreat(rules, state, choice.id));
+    const route = findRequestedRoute(resolveRetreat(rules, state, choice.id));
     if (route) return route;
   }
 }
-const choices = ending === "scattered"
-  ? findScattered(createRetreat(rules, entry))
-  : ["keep-reserve", "gather-own", ending === "together" ? "escort-households" : "hold-formation", "carry-records", ending === "together" ? "stay-together" : ending === "remnant" ? "move-with-remnant" : "release-groups"];
+const choices = ending === "scattered" || reception
+  ? findRequestedRoute(createRetreat(rules, entry))
+  : ["keep-reserve", reception ?? "gather-own", ending === "together" ? "escort-households" : "hold-formation", "carry-records", ending === "together" ? "stay-together" : ending === "remnant" ? "move-with-remnant" : "release-groups"];
 assert.ok(choices, "No legal route to the requested ending from this chapter history");
 let retreat = createRetreat(rules, entry);
 for (const choice of choices) retreat = resolveRetreat(rules, retreat, choice);
@@ -128,10 +134,11 @@ add(`## ${reading.ending.title}`); lines(reading.ending.lines);
 add(reading.ending.unresolved, story.epilogue, "## 历史参照", zh(councilDef.history.account), zh(councilDef.history.distinction));
 for (const source of Object.values(story.sources) as { volume: number; anchor: string; supports: string }[]) add(`《资治通鉴》卷${source.volume}，${source.anchor}。支持范围：${source.supports}`);
 add("## 读后反馈", "哪一处让你不清楚自己在扮演谁？哪个人的要求最能理解，哪个最不像真人？哪次选择最难，哪段想跳过？结尾解决了什么，又留下了什么？你希望继续玩的原因是什么？也可以直接指出不想继续的原因。",
-  "## 文本核对", ending === "together"
+  "## 文本核对", ending === "together" && reception === undefined
     ? "本附录供制作核对，不需要读者审阅。生成命令：`npx vite-node scripts/first-volume-readthrough.ts`。校验已存读稿：同命令追加 `--check`。仅核验这一条路线，不证明其他分支或历史解释均已完成审查。"
     : `本附录供制作核对。生成命令：\`npx vite-node scripts/first-volume-readthrough.ts --ending ${ending}\`。本路线由实际规则回放验证，不补充资源；队伍散去路线按内容顺序寻找第一条合法路径，不表示最佳或唯一玩法。此输出不是默认已存读稿，不使用 --check 校验。`);
-if (ending !== "together") add(`撤离选择：${choices.join(" → ")}。实际结果：${retreat.outcome}；物资归属：${retreat.resourceCustody}。`);
+if (reception) add(`接应分支：${reception}。复现时在上述命令追加 --reception ${reception}。在本次真实继承状态下，按内容顺序寻找符合该分支与结局的第一条合法路线，不表示最佳或唯一玩法；找不到便拒绝输出，不补资源。`);
+if (ending !== "together" || reception) add(`撤离选择：${choices.join(" → ")}。实际结果：${retreat.outcome}；物资归属：${retreat.resourceCustody}。`);
 for (const [path, hash] of sources) add(`- ${path} — SHA256 ${hash}`);
 const output = text.join("\n\n") + "\n";
 if (process.argv.includes("--check")) {

@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: sourced western-defeat transition implemented",
+  "change": "Complete-story exporter accepts --reception, searches real legal retreat routes for the requested reception/ending and rejects unreachable combinations without emitting a story. Default saved reading is unchanged. This enables end-to-end editorial review of the reunion, partner search and borrowing arcs rather than isolated passages.",
+  "commands": [
+    "npm run story:read -- --reception open-reception --ending scattered",
+    "npm run story:read -- --reception verify-with-partners --ending remnant",
+    "npm run story:read -- --reception borrow-local-grain --ending together"
+  ],
+  "findings": "From the exporter's actual fixed prior history, open-reception cannot reach together. It can reach scattered with escort and a witnessed reunion. Partner verification cannot reach together or scattered here. Borrowing can reach together, remnant and dispersed but not scattered here. These are route-specific findings, not global balance claims or probabilities.",
+  "verification": "10574 exit0: four tests cover existing four endings, exact default copy, duplicate/invalid arguments, four deterministic reception arcs, token-return ordering and rejection of three unreachable combinations. Earlier fixed-route and universal-together assumptions failed tests and were replaced with constrained legal search; no resources or game rules changed.",
+  "editorialReview": "Read the resulting reunion-to-scattered ending: individual reunion survives as a witnessed event, while group dispersal remains unresolved and is not rewritten as orderly distribution.",
+  "limits": ["Read-only editorial tooling, not a new in-game choice or native/UI test.", "Search uses deterministic content order, not a best-play policy.", "Wider human story review and production gates remain open."]
+}
