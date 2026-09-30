@@ -29,6 +29,14 @@ Its game-core import resolved inside that export. This proves content generation
 without untracked source dependencies, not a fresh dependency install, a fresh
 Xcode-generated build or reproducible signing. Those remain separate gates.
 
+The subsequent committed-source checkpoint generated a new QA Xcode project from
+commit `a5aec37`, transferred hash-verified resources and built it on Apple
+Silicon with the existing SHI cache. Its iPad simulator run passed 24 unit tests
+and one complete chapter/council UI route. See the scoped
+[build receipt](../../../store/ios-committed-source-checkpoint-20260930.json).
+This does not establish signed-archive reproducibility, minimum-OS support,
+physical-device qualification or availability to TestFlight testers.
+
 ## Numbered beta archives
 
 Use `scripts/build-ios.sh` on the qualified signing Mac after syncing a frozen

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "a5aec37c10c6a3a5f7330e6dba5c5ff673dffaf2",
+  "sourceTree": "60c17ee9c38437b3e28784abd2b0258980bef257",
+  "scope": "Native iOS committed source export plus canonical generated resources; not a whole-repository clean-tree or signed-release claim.",
+  "sourceArchiveSHA256": "c8ec04b910f4d033119de5f79707a3196416c9391ec8260786ceb2fe79f81af8",
+  "generatedProjectArchiveSHA256": "970dca0fcd12fdc408a6c229e4cdd52ddf92f68d03edd8513686c51973756ba4",
+  "xcodegenVersion": "2.46.0",
+  "projectGeneratedFromCommittedSpecification": true,
+  "bundleId": "art.lazying.shi.aftermathqa",
+  "codeSigningAllowed": false,
+  "resources": {
+    "campaign.json": "445974ec77d789adc0bd54b147c924fffd1fc440668f900667b1086341a2ef0c",
+    "campaign.sha256": "5c50d15439993ae303a3af64f04a1891534093601c25ef1db6ed38bb7f0f47eb",
+    "chen-council.v1.json": "a4b21e01d8c442869bde8da79ead2fb7c787095eb635a1fe4504ed5a87e9a945",
+    "daze-village-rain-v1.png": "8db3281c0f410163c2906d08543755f64f2d825c8ab0e31c2305b7b6ca8522c0",
+    "ui.json": "127b3cbe2cfc5ca2db8519176f2e5d783e412fddc05a1bb63e331a0158fd5d08"
+  },
+  "buildCache": "Reused existing SHI DerivedData; not a from-empty-cache build.",
+  "testStatus": "Passed",
+  "xcodeVersion": "27.0",
+  "simulator": "iPad Pro 11-inch (M5), iOS 27.0, arm64",
+  "passedTests": 25,
+  "failedTests": 0,
+  "skippedTests": 0,
+  "testScope": "24 unit tests and one complete chapter/council UI route including final outcome preview, durable reaction resume and matching conclusion.",
+  "resourceHashesVerifiedAfterTransfer": true,
+  "cleanup": "No booted simulator, SHI app/test runner or xcodebuild process remains.",
+  "warnings": [
+    "One runtime priority-inversion warning; attribution and performance impact unverified.",
+    "XCTest frameworks target iOS 17 while project deployment target is 16; this iOS 27 test is not minimum-OS qualification."
+  ],
+  "uploaded": false,
+  "signedArchiveProduced": false,
+  "physicalDeviceQualified": false
+}
