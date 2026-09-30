@@ -82,7 +82,7 @@
 
 陈胜在你身旁蹲下，拿树枝划出陈县的方向：“可以直奔那里，也可以先问乡里肯不肯帮，或是遣人探探别处。总不能每条路都派同一批人。”他抹掉手上的泥：“先办哪件？”
 
-吴广拧着一只空粮袋里的雨水：“我们用明日的饭换来一支完整的队伍。下一场胜利必须喂饱这笔债，否则它会把我们吃掉。”
+吴广拧着空粮袋里的雨水，把裂开的缝口翻给你看：“人是过来了，明日的饭也用进去了。”他将袋子折好夹在腋下：“这个我找人补。你去问下一处哪里能领粮，别城门还没开，就把城里的粮算上。”
 
 最近的城墙用木门与横闩回应流言。任何最终方略都会失去一些速度，也更容易被官吏称作威胁。
 
@@ -296,6 +296,8 @@
 
 掌简人：西边没回来的队伍，我调不动。你把这里领队的人叫来，怎么走，我当面说。
 
+有人收拢车上的空袋。你想起渡河后，吴广夹着那只裂了缝的粮袋，说要找人补。死讯已经传到，眼前这趟粮却还得有人照看。
+
 门边有人把粮袋往车轮下拖。你伸手拦住，让他先拿垫车的木料。
 
 掌简人：渡口那次，粮袋填下去就没再取回来。这次还没到非用粮不可的时候。先看看轮子卡在哪里。
@@ -438,13 +440,13 @@ SHI narrative reconstruction；Chapter I authored-content register · revision 2
 
 本附录供制作核对，不需要读者审阅。生成命令：`npx vite-node scripts/first-volume-readthrough.ts`。校验已存读稿：同命令追加 `--check`。仅核验这一条路线，不证明其他分支或历史解释均已完成审查。
 
-- content/campaigns/chapter-01-daze.json — SHA256 def5198632759a4c7c75f9ef529d1835e4d9dbf3d55da275e4866cf7013727c5
+- content/campaigns/chapter-01-daze.json — SHA256 0144569248b68b056d3d711ec87242a19a13eb3fbe5ede9c4a7cd6a6dd8fba58
 
 - content/councils/chen-council.v1.json — SHA256 a4b21e01d8c442869bde8da79ead2fb7c787095eb635a1fe4504ed5a87e9a945
 
 - content/councils/fanyang-guarantee.v1.json — SHA256 7f528bfbf63dfaaf56b9828c9561e1e657edc760e3e9c135171d0bcb17d3d2e2
 
-- content/story-drafts/chen-retreat.v1.json — SHA256 5dc4c55df79826646c392fd58290c5d054cb9b1dc321b12e6ab77d0e81953d8d
+- content/story-drafts/chen-retreat.v1.json — SHA256 516216d186a1dfe328d91d1195ab50e03f72fc050343ca6085577c93346a9c2c
 
 - content/campaigns/chen-retreat.rules.v1.json — SHA256 b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867
 

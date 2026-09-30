@@ -16,6 +16,8 @@ test("all four complete readings replay real campaign rules with matching closin
     assert.ok(text.includes(`## ${title}\n`));
     assert.equal(text.includes("没有再问他们何时归队"), ending === "dispersed", "Only an actual orderly dispersal earns the release scene");
     assert.ok(text.includes("## 历史参照"));
+    assert.ok(text.indexOf("这个我找人补") < text.indexOf("吴广已遭杀害"));
+    assert.ok(text.indexOf("吴广已遭杀害") < text.indexOf("吴广夹着那只裂了缝的粮袋"));
     for (const section of ["大泽乡与渡口", "陈地议事", "范阳交涉", "陈地撤离"]) assert.ok(text.includes(`### ${section}`));
     assert.ok(text.includes("书中没有记载玩家的这些行动"));
     assert.ok(text.includes("不是史书对范阳结局的记载"));
@@ -51,6 +53,7 @@ test("courier reading earns the later letter through recruitment and road verifi
   assert.ok(text.includes("实际结果：remnant"));
   assert.ok(!text.includes("领头的人肩上搭着一条旧布"), "Road verification does not invent Yu's reserve-dependent arrival");
   assert.ok(!run("--ending", "remnant").includes("韩驿使来信："), "Unrecruited default history must not receive his letter");
+  assert.ok(!text.includes("吴广夹着那只裂了缝的粮袋"), "Families-first must not borrow the repair-the-ford encounter");
 });
 
 test("beacon reading carries pursuit into record custody without borrowing another opening", () => {
