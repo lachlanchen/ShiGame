@@ -13,6 +13,7 @@ await mkdir(target, { recursive: true });
 const source = resolve(root, "content/campaigns/chapter-01-daze.json");
 await copyFile(source, resolve(target, "campaign.json"));
 await copyFile(resolve(root, "content/councils/chen-council.v1.json"), resolve(target, "chen-council.v1.json"));
+await copyFile(resolve(root, "content/councils/fanyang-guarantee.v1.json"), resolve(target, "fanyang-guarantee.v1.json"));
 const hash = createHash("sha256").update(await readFile(source)).digest("hex");
 await writeFile(resolve(target, "campaign.sha256"), `${hash}\n`);
 const cinema = Object.fromEntries(supportedLocales.map(locale => [locale, Object.fromEntries(

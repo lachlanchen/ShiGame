@@ -20,6 +20,7 @@ const source = await readFile(resolve(root, "content/campaigns/chapter-01-daze.j
 assert(source.equals(await readFile(resolve(resource, "campaign.json"))), "Native campaign differs from the canonical campaign; run npm run sync:ios");
 assert((await readFile(resolve(root, "content/councils/chen-council.v1.json"))).equals(await readFile(resolve(resource, "chen-council.v1.json"))), "Native council differs from its shared definition");
 const hash = createHash("sha256").update(source).digest("hex");
+assert((await readFile(resolve(root, "content/councils/fanyang-guarantee.v1.json"))).equals(await readFile(resolve(resource, "fanyang-guarantee.v1.json"))), "Native Fan Yang differs from its shared definition");
 assert.equal((await readFile(resolve(resource, "campaign.sha256"), "utf8")).trim(), hash);
 const actual = JSON.parse(await readFile(resolve(resource, "ui.json"), "utf8"));
 assert.deepEqual(actual.ui, ui, "Native UI text is stale");

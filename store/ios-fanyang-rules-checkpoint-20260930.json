@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "scope": "Foundation-only Swift rules parity on arm64 macOS; not an iOS app, simulator, physical-device or release qualification",
+  "status": "passed",
+  "toolchain": "Apple Swift 6.4, swiftlang-6.4.0.34.1, arm64-apple-macosx27.0.0",
+  "inputs": {
+    "apps/mobile/ios/SHI/CampaignEngine.swift": "8e70409100e4c562362cf202480cd97793696c7713cae2f8e751d0f05a9f9b13",
+    "apps/mobile/ios/SHI/CouncilEngine.swift": "995ba26f00725b2a8e66176d6009b6a744b30f735603c4704cbbbe950315feb4",
+    "apps/mobile/ios/SHI/FanyangEngine.swift": "67fa307b3b6d7c06e46d129c0c4f4b663745931f082682f6ba47b2fee0fb8a8a",
+    "apps/mobile/ios/Tests/FanyangConformance.swift": "bf41e865c5928a90ea099b5bd8068ef87966af3c08a835728f8731df01ad9eed",
+    "content/councils/chen-council.v1.json": "a4b21e01d8c442869bde8da79ead2fb7c787095eb635a1fe4504ed5a87e9a945",
+    "content/councils/fanyang-guarantee.v1.json": "c82095174dc481a023420916ae82bbc76e169c57c1076b5bbf65ce9f97a8cf24"
+  },
+  "fixture": {
+    "generator": "scripts/fanyang-conformance.ts",
+    "sha256": "f9212a52a175c48f9ac36a9e94eb6e7fab6b0ed47877204672ef18aa6edbdc06",
+    "councilRoutes": 77,
+    "states": 1814,
+    "endings": 993,
+    "replayedTurns": 4249,
+    "rejectedInvalidActions": 5347
+  },
+  "assertions": [
+    "Canonical council and scene SHA256 match fixture digests",
+    "Every metric, turn history, outcome, available choice and planning prospect matches the TypeScript reference",
+    "Encoded/decoded chronicles replay to identical states",
+    "Wrong content revisions, unknown orders, unaffordable orders and post-completion orders are rejected"
+  ],
+  "commands": [
+    "./node_modules/.bin/vite-node scripts/fanyang-conformance.ts PRIVATE_STAGING/fixture.json",
+    "xcrun swiftc CampaignEngine.swift CouncilEngine.swift FanyangEngine.swift FanyangConformance.swift -o fanyang-parity",
+    "./fanyang-parity chen-council.v1.json fanyang-guarantee.v1.json fixture.json",
+    "npm run validate"
+  ],
+  "qualificationLimits": [
+    "Native Fan Yang session, durable file persistence and SwiftUI screens are not integrated yet",
+    "No iOS application build or deployment performed for this checkpoint",
+    "No screenshot, human playtest, signing, TestFlight upload or public release performed",
+    "Local validation passes 45 core and 128 web tests; this is independent of native GUI qualification"
+  ]
+}
