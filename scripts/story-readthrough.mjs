@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 
 const draftURL = new URL("../content/story-drafts/chen-retreat.v1.json", import.meta.url);
+const council = JSON.parse(await readFile(new URL("../content/councils/chen-council.v1.json", import.meta.url), "utf8"));
+const councilChoiceRounds = new Map(council.rounds.flatMap(round => round.choices.map(choice => [choice.id, round.id])));
 const speakers = new Set(["narrator", "keeper", "supply-officer", "yu-mu", "qin-courier",
   "wounded-soldier", "partner-steward", "rear-guard", "granary-holder"]);
 const nonempty = value => typeof value === "string" && value.trim().length > 0;
@@ -46,6 +48,15 @@ export function validateDraft(draft) {
       if (positions.has(key)) assert.ok(positions.get(key) < current, `Future knowledge: ${key}`);
     }
   };
+  const callbacks = new Set();
+  for (const callback of draft.councilCallbacks) {
+    assert.ok(positions.has(callback.sceneId), "Unknown council callback scene");
+    assert.ok(councilChoiceRounds.has(callback.afterChoice), "Unknown prior council choice");
+    const key = `${callback.sceneId}:${callback.afterChoice}`;
+    assert.ok(!callbacks.has(key), "Duplicate council callback");
+    callbacks.add(key);
+    checkLines(callback.lines);
+  }
   for (const [index, scene] of draft.scenes.entries()) {
     assert.ok(nonempty(scene.title) && nonempty(scene.setting) && nonempty(scene.transition));
     assert.ok(Number.isInteger(scene.act) && scene.act >= 5 && scene.act <= 8);
@@ -80,8 +91,11 @@ function initialFacts(draft, input) {
   return { ...input };
 }
 
-export function readRoute(draft, input, choices) {
+export function readRoute(draft, input, choices, priorCouncilChoices = []) {
   validateDraft(draft);
+  assert.ok(Array.isArray(priorCouncilChoices));
+  assert.ok(priorCouncilChoices.every(choice => councilChoiceRounds.has(choice)), "Unknown prior council choice");
+  assert.equal(new Set(priorCouncilChoices.map(choice => councilChoiceRounds.get(choice))).size, priorCouncilChoices.length, "Conflicting prior council choices");
   const facts = initialFacts(draft, input);
   let sceneId = draft.entry;
   let endingId;
@@ -92,7 +106,7 @@ export function readRoute(draft, input, choices) {
     const choice = scene.choices.find(item => item.id === choiceId);
     assert.ok(choice && matches(choice.requires, facts), `Unavailable choice: ${choiceId}`);
     transcript.push({ sceneId, title: scene.title, transition: scene.transition, setting: scene.setting,
-      lines: [...scene.lines, ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines)],
+      lines: [...scene.lines, ...draft.councilCallbacks.filter(item => item.sceneId === scene.id && priorCouncilChoices.includes(item.afterChoice)).flatMap(item => item.lines), ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines)],
       choiceId, choiceTitle: choice.title, intent: choice.intent,
       reaction: [...choice.response, ...(scene.exitLines ?? [])] });
     facts[sceneId] = choiceId;
@@ -136,17 +150,23 @@ export function auditDraft(draft) {
   assert.equal(variantsSeen.size, draft.scenes.reduce((sum, scene) => sum + scene.variants.length, 0), "Unreachable conditional dialogue");
   assert.ok(Object.values(endingCounts).every(count => count > 0), "Unreachable ending");
   return { scope: "Authoring graph only; not resource balance, save integration, historical review or shipped gameplay",
-    inputContexts: inputs.length, routes, choices: choicesSeen.size, conditionalPassages: variantsSeen.size, endings: endingCounts };
+    inputContexts: inputs.length, routes, choices: choicesSeen.size, conditionalPassages: variantsSeen.size,
+    councilCallbacks: draft.councilCallbacks.length, endings: endingCounts };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const draft = JSON.parse(await readFile(draftURL, "utf8"));
-  const args = process.argv.slice(2);
+  const rawArgs = process.argv.slice(2);
+  const councilArgs = rawArgs.filter(arg => arg.startsWith("--council="));
+  assert.ok(councilArgs.length <= 1, "Supply at most one --council=choice-id,choice-id flag");
+  const priorCouncilChoices = councilArgs.length ? councilArgs[0].slice("--council=".length).split(",") : [];
+  const args = rawArgs.filter(arg => !arg.startsWith("--council="));
+  assert.ok(!councilArgs.length || args[0] === "--read", "Council context requires --read");
   if (!args.length) console.log(JSON.stringify(auditDraft(draft), null, 2));
   else {
     assert.equal(args[0], "--read", "Usage: node scripts/story-readthrough.mjs [--read opened|withdrawn|deferred present|absent|unestablished cooperating|unavailable|unestablished choice-id ...]");
     const [, fanyang, yu, han, ...choices] = args;
-    const result = readRoute(draft, { fanyang, yu, han }, choices);
+    const result = readRoute(draft, { fanyang, yu, han }, choices, priorCouncilChoices);
     console.log(`${draft.title}\n${draft.boundary}\n`);
     for (const beat of result.transcript) {
       console.log(`${beat.title}\n${beat.setting}`);

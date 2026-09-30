@@ -32,6 +32,14 @@
     "chen-fall": { "work": "资治通鉴", "volume": 8, "anchor": "二世益遣长史司马欣至其御庄贾杀陈王以降", "supports": "陈地战局恶化与陈胜败亡；地方粮站撤离为虚构，不是掌简人亲历下城父事件。" },
     "embers": { "work": "资治通鉴", "volume": 8, "anchor": "陈王故涓人将军吕臣为苍头军至葬陈王于砀", "supports": "吕臣聚兵复陈。不证明玩家队伍参与或幸存者必然加入。" }
   },
+  "councilCallbacks": [
+    { "sceneId": "reserves", "afterChoice": "army-rations", "lines": [{ "speaker": "narrator", "text": "来领粮的乡里管事没有挤到桌前。他等军吏说完，才把上次留在城内的那份缺额指给你看。" }, { "speaker": "keeper", "text": "先供军的那一笔还在。这次拨多少，不能再说城里已经领足。" }] },
+    { "sceneId": "reserves", "afterChoice": "joint-ledger", "lines": [{ "speaker": "narrator", "text": "乡里管事带来了共验时分给他的账。他将自己的那份摊在拨粮单旁，没有先伸手去拿粮。" }, { "speaker": "keeper", "text": "按两边对得上的数算。新增的这一拨，另起一行。" }] },
+    { "sceneId": "reserves", "afterChoice": "buy-convoys", "lines": [{ "speaker": "supply-officer", "text": "上回不是等来了商队？再照原路催一趟。" }, { "speaker": "keeper", "text": "上回到的已经入过账。下一趟还没人押信回来，不能先拨出去。" }] },
+    { "sceneId": "evacuation", "afterChoice": "one-command", "lines": [{ "speaker": "rear-guard", "text": "当初出城只传一道令。这一回，还等那边的令么？" }, { "speaker": "keeper", "text": "西边没回来的队伍，我调不动。眼前这些人怎么走，我在这里说清，不冒充他们已经听见。" }] },
+    { "sceneId": "evacuation", "afterChoice": "many-banners", "lines": [{ "speaker": "rear-guard", "text": "各路都有自己的领队。你要他们到这里来，得有人把话带到。" }, { "speaker": "keeper", "text": "各走一路是先前说定的。如今谁答应接哪一段，就记哪一段；没回话的，不能替他答应。" }] },
+    { "sceneId": "evacuation", "afterChoice": "hold-chen", "lines": [{ "speaker": "rear-guard", "text": "当初说留在陈地，如今却要带人走。外面有人不肯装车。" }, { "speaker": "keeper", "text": "我去说。守路的已经退回来了，不能还拿先前的安排催他们等下去。愿不愿跟上，让他们听明白再定。" }] }
+  ],
   "scenes": [
     {
       "id": "reserves",

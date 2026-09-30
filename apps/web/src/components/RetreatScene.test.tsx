@@ -38,6 +38,26 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("remembers the replayed council's grain account and command choice in later scenes", async () => {
+    const input = props();
+    const before = JSON.stringify(input.entry);
+    const view = render(<RetreatScene {...input} />);
+    expect(view.getByTestId("retreat-council-memory").textContent).toContain("共验时分给他的账");
+    expect(view.queryByText(/上回不是等来了商队/)).toBeNull();
+    await choose(view, "decline-dispatch");
+    expect(view.queryByTestId("retreat-council-memory")).toBeNull();
+    await choose(view, "gather-own");
+    expect(view.getByTestId("retreat-council-memory").textContent).toContain("当初出城只传一道令");
+    expect(view.queryByText(/当初说留在陈地/)).toBeNull();
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const restored = render(<RetreatScene {...input} />);
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(restored.getByTestId("retreat-council-memory").textContent).toContain("当初出城只传一道令");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    expect(JSON.stringify(input.entry)).toBe(before);
+  });
+
   it("pays off reception and escort with a witnessed reunion after resume, even with identities removed", async () => {
     const input = props();
     input.entry = structuredClone(input.entry);

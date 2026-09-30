@@ -21,6 +21,28 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
   assert.equal(JSON.stringify({ draft, input, together }), before);
 });
 
+test("council promises return only in their intended scenes and never invent another prior choice", () => {
+  for (const provisions of ["army-rations", "joint-ledger", "buy-convoys"]) {
+    for (const dispatch of ["one-command", "many-banners", "hold-chen"]) {
+      const prior = ["defer-title", provisions, dispatch];
+      const before = JSON.stringify(prior);
+      const result = readRoute(draft, input, together, prior);
+      for (const callback of draft.councilCallbacks) {
+        for (const beat of result.transcript) {
+          const included = beat.lines.some(line => line.text === callback.lines[0].text);
+          assert.equal(included, callback.sceneId === beat.sceneId && prior.includes(callback.afterChoice));
+        }
+      }
+      assert.equal(JSON.stringify(prior), before);
+    }
+  }
+  assert.throws(() => readRoute(draft, input, together, ["made-up-order"]));
+  assert.throws(() => readRoute(draft, input, together, ["hold-chen", "one-command"]));
+  assert.throws(() => readRoute(draft, input, together, ["joint-ledger", "joint-ledger"]));
+  const withoutPrior = readRoute(draft, input, together);
+  assert.ok(withoutPrior.transcript.every(beat => beat.lines.every(line => !draft.councilCallbacks.some(callback => callback.lines[0].text === line.text))));
+});
+
 test("missing companions never speak; each Fan Yang outcome receives its own report", () => {
   const reports = new Set();
   for (const fanyang of draft.inputs.fanyang) {
@@ -90,7 +112,10 @@ test("authoring validation rejects unknown facts, future knowledge, bad destinat
     value => { value.scenes[0].choices[0].next = "missing"; },
     value => { value.scenes[0].choices[0].ending = "together"; },
     value => { value.scenes[0].sourceIds = ["missing-source"]; },
-    value => { value.publicationApproved = true; }
+    value => { value.publicationApproved = true; },
+    value => { value.councilCallbacks[0].afterChoice = "invented"; },
+    value => { value.councilCallbacks[0].sceneId = "missing"; },
+    value => { value.councilCallbacks.push(structuredClone(value.councilCallbacks[0])); }
   ]) {
     const copy = structuredClone(draft);
     mutate(copy);

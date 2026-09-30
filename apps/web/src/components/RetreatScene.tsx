@@ -93,6 +93,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         <button className="primary-button" data-council-action="close" onClick={onClose}>返回范阳</button></section>
       : scene && choice && preview ? <section className="chen-scene"><p className="eyebrow">{state.history.length + 1} / {story.scenes.length}</p><h3 ref={heading} tabIndex={-1}>{scene.title}</h3>
         <p>{scene.setting}</p>{lines(scene.lines)}
+        {story.councilCallbacks.filter(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)).map(callback => <div data-testid="retreat-council-memory" key={callback.afterChoice}>{lines(callback.lines)}</div>)}
         {scene.variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}
         <div className="chen-offers">{scene.choices.map((item, index) => <button key={item.id} data-retreat-choice={item.id} data-council-choice={item.id} data-council-action="offer" disabled={busy || invalid} aria-pressed={choice.id === item.id} onClick={() => setSelected(index)}>{item.title}{!inspectRetreatChoice(rules, state, item.id).available && <small>条件未满足，可查看原因</small>}</button>)}</div>
         <section className="chen-offer-detail" aria-live="polite"><h4>{choice.title}</h4><p>{choice.intent}</p><p>{explanations[choice.id]}</p>
