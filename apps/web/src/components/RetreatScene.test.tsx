@@ -38,6 +38,17 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("supplies the marker column used by the shared two-column choice layout", () => {
+    const view = render(<RetreatScene {...props()} />);
+    const choices = [...view.container.querySelectorAll("[data-retreat-choice]")];
+    expect(choices).toHaveLength(4);
+    choices.forEach((choice, index) => {
+      expect(choice.firstElementChild?.tagName).toBe("SPAN");
+      expect(choice.firstElementChild?.textContent).toBe(String.fromCharCode(65 + index));
+      expect([...choice.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())).toBe(true);
+    });
+  });
+
   it("keeps the actionable supply question after reports and prior promises in the reading order", () => {
     const view = render(<RetreatScene {...props()} />);
     const scene = view.container.querySelector(".chen-main .chen-scene")!;

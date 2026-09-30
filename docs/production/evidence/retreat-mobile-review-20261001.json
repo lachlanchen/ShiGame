@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "scope": "Agent-operated development web route, not native or release acceptance",
+  "command": "node scripts/playtest-retreat-visible.mjs",
+  "route": "Title, four opening decisions, defer-title/joint-ledger/one-command, public-safety/hold-talks/withdraw-envoy, keep-reserve/gather-own/escort-households/carry-records/stay-together",
+  "result": "Together ending reached through visible controls; Yu arrival observed; no captured browser runtime exception; four mobile horizontal-overflow checks passed.",
+  "regression": "Choice text occupied the marker column. Added the missing A–D markers; observed label width increased from 32px to 176px within a 323px button.",
+  "screenshot": {
+    "file": "retreat-mobile-choices-20261001.png",
+    "sha256": "9bafaa40a5d6038e8e7e2a39cbc29c54a3e2b3db859d3e4584d5e6659d91c9c0",
+    "origin": "Chrome capture of local SHI development UI at 390x844",
+    "review": "Visually inspected: four readable choice labels, visible selection, readable prose. Nested vertical scrolling remains; this is not final visual acceptance.",
+    "licenseStatus": "Project-generated evidence of SHI UI, not third-party or AI-generated source media",
+    "intendedUse": "Development regression evidence, not store marketing"
+  },
+  "validation": "npm run validate passed: 58 core, 172 web, 13 authoring tests; twenty focused retreat UI tests include the marker regression.",
+  "cleanup": "Owned desktop/browser/server process groups stopped; ports 4173, 5921, 6121 and 9321 verified closed.",
+  "remaining": "Other graphical branches, keyboard/reduced-motion/RTL graphical review, human narrative review, translations and native integration remain pending. No upload or public release."
+}
