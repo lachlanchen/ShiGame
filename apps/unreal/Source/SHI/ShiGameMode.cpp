@@ -29,6 +29,7 @@
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
 #include "ShiCommandScreen.h"
+#include "ShiChenCouncilScreen.h"
 #include "ShiCommandSurfacePresentationModel.h"
 #include "ShiCommandWeightPresentationModel.h"
 #include "ShiCouncilFigure.h"
@@ -174,6 +175,7 @@ void AShiGameMode::BeginPlay()
 
 void AShiGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+    ChenCouncilScreen.Reset();
     if (AudioDirector) AudioDirector->Stop();
     if (CommandScreen.IsValid() && GEngine && GEngine->GameViewport)
         GEngine->GameViewport->RemoveViewportWidgetContent(CommandScreen.ToSharedRef());
@@ -498,6 +500,7 @@ void AShiGameMode::IssueSelectedOrder()
 void AShiGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    if (ChenCouncilScreen.IsValid()) return;
     if (bCouncilSkinLookdevReview || bCouncilWetRegisterInteractionReview)
     {
         TickCamera(DeltaSeconds);
@@ -1115,8 +1118,26 @@ bool AShiGameMode::SaveChronicle(const FShiCampaignSession& SourceSession, FStri
     return true;
 }
 
+void AShiGameMode::OpenChenCouncil()
+{
+    if (ChenCouncilScreen.IsValid() || !bPersistenceEnabled || !Session.IsCompleted()
+        || !Session.GetFailureReason().IsEmpty() || IsCinematicSequenceActive()
+        || bCouncilSkinLookdevReview || bCouncilWetRegisterInteractionReview) return;
+    bRestartArmed = false;
+    ChenCouncilScreen = SNew(SShiChenCouncilScreen).Chapter(&Session).Locale(Locale)
+        .OnClose(FSimpleDelegate::CreateUObject(this, &AShiGameMode::CloseChenCouncil));
+    RefreshScreen();
+}
+
+void AShiGameMode::CloseChenCouncil()
+{
+    ChenCouncilScreen.Reset();
+    RefreshScreen();
+}
+
 void AShiGameMode::RequestNewChronicle()
 {
+    if (ChenCouncilScreen.IsValid()) return;
     if (bCouncilSkinLookdevReview || bCouncilWetRegisterInteractionReview) return;
     if (!LoadError.IsEmpty() || bEngagementOpen || IsCinematicSequenceActive()) return;
     if (!bRestartArmed)

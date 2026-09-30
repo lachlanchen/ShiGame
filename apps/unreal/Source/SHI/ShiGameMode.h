@@ -95,8 +95,12 @@ public:
     void SelectEngagementCommand(int32 Index);
     void CycleEngagementCommand(int32 Direction);
     void IssueEngagementCommand();
+    void OpenChenCouncil();
+    void CloseChenCouncil();
+    TSharedPtr<SWidget> GetChenCouncilScreen() const { return ChenCouncilScreen; }
 
 private:
+    TSharedPtr<SWidget> ChenCouncilScreen;
     FShiCampaignModel Campaign;
     FShiCampaignSession Session;
     FShiEngagementModel Engagement;

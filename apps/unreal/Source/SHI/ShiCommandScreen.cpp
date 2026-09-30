@@ -85,6 +85,7 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
         return SNew(SBorder).Padding(40)[SNew(STextBlock).Text(FText::FromString(Error))];
     }
 
+    if (Mode->GetChenCouncilScreen().IsValid()) return Mode->GetChenCouncilScreen().ToSharedRef();
     const FShiNodeData* Node = Mode->GetCurrentNode();
     if (!Node) return SNew(STextBlock).Text(FText::FromString(TEXT("Campaign node is unavailable.")));
     const FString Locale = Mode->GetLocale();
@@ -334,6 +335,12 @@ TSharedRef<SWidget> SShiCommandScreen::BuildLayout()
             ? TEXT("CHAPTER POSITION COMPLETE · YOUR CHRONICLE IS SEALED")
             : FString::Printf(TEXT("CHAPTER POSITION LOST · %s · THE CHRONICLE REMAINS REVIEWABLE"), *Mode->GetFailureReason().ToUpper());
         Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(STextBlock).Text(FText::FromString(Completion))];
+        if (Mode->GetFailureReason().IsEmpty())
+            Root->AddSlot().AutoHeight().Padding(28, 10)[SNew(SButton)
+                .IsEnabled(!Mode->IsCinematicSequenceActive()).ContentPadding(14)
+                .OnClicked_Lambda([Mode]() { Mode->OpenChenCouncil(); return FReply::Handled(); })
+                [SNew(STextBlock).Text(FText::FromString(Locale == TEXT("zh-Hans")
+                    ? TEXT("进入陈地议事") : TEXT("Continue to the council at Chen")))]];
     }
     Root->AddSlot().AutoHeight().Padding(28, 8, 28, 4)[
         SNew(SHorizontalBox)
