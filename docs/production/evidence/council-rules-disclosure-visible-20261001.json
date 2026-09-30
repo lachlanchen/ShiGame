@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-01",
+  "baselineCommit": "aba351c",
+  "previousTurn": "Progress: implemented optional rules disclosure in web and native source with 60 passing focused web tests",
+  "command": "node scripts/playtest-retreat-visible.mjs dispersed baseline",
+  "execution": 16633,
+  "exitCode": 0,
+  "checksPassed": 47,
+  "browserExceptions": 0,
+  "privateEvidenceDirectory": ".runtime/story-review/2026-09-30T22-07-38.225Z",
+  "verified": ["Rules start collapsed", "Visible summary opens rules", "Desktop Return closes the focused summary", "Opening and closing do not change the council save", "Entire title-to-dispersed route still completes", "No horizontal overflow in inspected panels"],
+  "measurement": {
+    "viewport": "390x844",
+    "metric": "First choice top minus rules summary top in the same layout",
+    "closedPixels": 840.203125,
+    "openPixels": 958.8125,
+    "differencePixels": 118.609375
+  },
+  "visualReview": {
+    "reviewer": "Codex",
+    "individuallyInspected": ["02e-council-rules-open-mobile.png", "02f-council-rules-closed-mobile.png"],
+    "findings": "Both states readable. Closed state has a visible keyboard focus outline. Historical boundary and role explanation remain outside the disclosure. First choice still requires scrolling; this is not human pacing acceptance."
+  },
+  "cleanup": {"pidsIndependentlyConfirmedAbsent": [3512045,3512146,3512147,3512148,3512149], "portsConfirmedClosed": [4173,5921,6121,9321], "currentGuiUrl": null},
+  "limits": ["Native SwiftUI compile and runtime qualification pending", "One visible web route, not all narrative routes", "No store release, physical-device test or human acceptance", "Visible-browser skill guided actual input, screenshot inspection and exact process cleanup"]
+}
