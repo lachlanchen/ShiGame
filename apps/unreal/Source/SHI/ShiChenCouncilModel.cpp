@@ -1,0 +1,130 @@
+#include "ShiChenCouncilModel.h"
+#include "Dom/JsonObject.h"
+#include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
+
+namespace
+{
+const TArray<FString> Keys = { TEXT("grain"), TEXT("tempo"), TEXT("city"), TEXT("allies"), TEXT("veterans") };
+bool ReadMetrics(const TSharedPtr<FJsonObject>& Parent, const TCHAR* Field, TMap<FString, int32>& Out, bool bOptional, bool bPositive)
+{
+    if (!Parent.IsValid()) return false;
+    if (!Parent->HasField(Field)) return bOptional;
+    const TSharedPtr<FJsonObject>* Object = nullptr;
+    if (!Parent->TryGetObjectField(Field, Object) || !Object || !Object->IsValid()) return false;
+    for (const auto& Pair : (*Object)->Values)
+    {
+        const FString Key(Pair.Key);
+        double Value = 0;
+        if (!Keys.Contains(Key) || !Pair.Value->TryGetNumber(Value) || !FMath::IsFinite(Value)
+            || Value != FMath::FloorToDouble(Value) || Value > 10 || Value < (bPositive ? 0 : -10)) return false;
+        Out.Add(Key, static_cast<int32>(Value));
+    }
+    return true;
+}
+void Apply(TMap<FString, int32>& Metrics, const TMap<FString, int32>& Effects)
+{
+    // Clamp each authored effect block in order, exactly like TypeScript/Swift.
+    for (const FString& Key : Keys) Metrics[Key] = FMath::Clamp(Metrics.FindRef(Key) + Effects.FindRef(Key), 0, 10);
+}
+}
+
+bool FShiChenCouncilModel::Initialize(const FString& Json, const FString& Arrival, FString& Error)
+{
+    Error = TEXT("Invalid council definition or arrival");
+    TSharedPtr<FJsonObject> Root;
+    if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), Root) || !Root.IsValid()) return false;
+    FString Id;
+    double Version = 0;
+    if (!Root->TryGetStringField(TEXT("id"), Id) || Id != TEXT("chen-council.v1")
+        || !Root->TryGetNumberField(TEXT("schemaVersion"), Version) || Version != 1) return false;
+    const TSharedPtr<FJsonObject>* Arrivals = nullptr;
+    const TSharedPtr<FJsonObject>* Entry = nullptr;
+    const TArray<TSharedPtr<FJsonValue>>* RawRounds = nullptr;
+    if (!Root->TryGetObjectField(TEXT("arrivals"), Arrivals) || !Arrivals || !Arrivals->IsValid()
+        || !(*Arrivals)->TryGetObjectField(Arrival, Entry) || !Entry || !Entry->IsValid()
+        || !Root->TryGetArrayField(TEXT("rounds"), RawRounds) || !RawRounds || RawRounds->Num() != 3) return false;
+    FShiChenCouncilModel Next;
+    if (!ReadMetrics(*Entry, TEXT("metrics"), Next.Metrics, false, true) || Next.Metrics.Num() != Keys.Num()) return false;
+    TSet<FString> Seen;
+    for (const auto& RawRound : *RawRounds)
+    {
+        const TSharedPtr<FJsonObject>* Round = nullptr;
+        const TArray<TSharedPtr<FJsonValue>>* RawChoices = nullptr;
+        if (!RawRound->TryGetObject(Round) || !Round || !Round->IsValid()
+            || !(*Round)->TryGetArrayField(TEXT("choices"), RawChoices) || !RawChoices || RawChoices->Num() != 3) return false;
+        const TSet<FString> Earlier = Seen;
+        TArray<FChoice> Choices;
+        for (const auto& RawChoice : *RawChoices)
+        {
+            const TSharedPtr<FJsonObject>* Choice = nullptr;
+            FChoice Parsed;
+            if (!RawChoice->TryGetObject(Choice) || !Choice || !Choice->IsValid()
+                || !(*Choice)->TryGetStringField(TEXT("id"), Parsed.Id) || Parsed.Id.IsEmpty() || Seen.Contains(Parsed.Id)
+                || !ReadMetrics(*Choice, TEXT("effects"), Parsed.Effects, false, false)
+                || !ReadMetrics(*Choice, TEXT("requires"), Parsed.Requires, true, true)) return false;
+            Seen.Add(Parsed.Id);
+            if ((*Choice)->HasField(TEXT("answers")))
+            {
+                const TArray<TSharedPtr<FJsonValue>>* Answers = nullptr;
+                if (!(*Choice)->TryGetArrayField(TEXT("answers"), Answers) || !Answers) return false;
+                for (const auto& RawAnswer : *Answers)
+                {
+                    const TSharedPtr<FJsonObject>* Answer = nullptr;
+                    FAnswer ParsedAnswer;
+                    if (!RawAnswer->TryGetObject(Answer) || !Answer || !Answer->IsValid()
+                        || !(*Answer)->TryGetStringField(TEXT("afterChoice"), ParsedAnswer.AfterChoice)
+                        || !Earlier.Contains(ParsedAnswer.AfterChoice)
+                        || !ReadMetrics(*Answer, TEXT("effects"), ParsedAnswer.Effects, false, false)) return false;
+                    Parsed.Answers.Add(MoveTemp(ParsedAnswer));
+                }
+            }
+            Choices.Add(MoveTemp(Parsed));
+        }
+        Next.Rounds.Add(MoveTemp(Choices));
+    }
+    *this = MoveTemp(Next);
+    Error.Reset();
+    return true;
+}
+
+TArray<FString> FShiChenCouncilModel::GetChoices() const
+{
+    TArray<FString> Result;
+    if (Rounds.IsValidIndex(History.Num())) for (const auto& Choice : Rounds[History.Num()]) Result.Add(Choice.Id);
+    return Result;
+}
+
+bool FShiChenCouncilModel::Preview(const FString& Id, FShiChenTurn& Turn) const
+{
+    if (!Rounds.IsValidIndex(History.Num())) return false;
+    const FChoice* Choice = Rounds[History.Num()].FindByPredicate([&](const FChoice& Item) { return Item.Id == Id; });
+    if (!Choice) return false;
+    for (const auto& Requirement : Choice->Requires) if (Metrics.FindRef(Requirement.Key) < Requirement.Value) return false;
+    FShiChenTurn Next { Id, Metrics, Metrics };
+    Apply(Next.After, Choice->Effects);
+    for (const FAnswer& Answer : Choice->Answers)
+        if (History.ContainsByPredicate([&](const FShiChenTurn& Past) { return Past.ChoiceId == Answer.AfterChoice; })) Apply(Next.After, Answer.Effects);
+    Turn = MoveTemp(Next);
+    return true;
+}
+
+bool FShiChenCouncilModel::Commit(const FString& Id)
+{
+    FShiChenTurn Turn;
+    if (!Preview(Id, Turn)) return false;
+    Metrics = Turn.After;
+    History.Add(MoveTemp(Turn));
+    return true;
+}
+
+FString FShiChenCouncilModel::GetOutcome() const
+{
+    if (!IsCompleted()) return {};
+    if (Metrics.FindRef(TEXT("grain")) <= 0) return TEXT("empty-granaries");
+    int32 Supporters = 0;
+    for (const TCHAR* Key : { TEXT("city"), TEXT("allies"), TEXT("veterans") }) if (Metrics.FindRef(Key) >= 6) ++Supporters;
+    if (Supporters >= 2 && Metrics.FindRef(TEXT("grain")) >= 2 && Metrics.FindRef(TEXT("tempo")) >= 3) return TEXT("common-front");
+    if (Metrics.FindRef(TEXT("city")) >= 6 && Metrics.FindRef(TEXT("veterans")) >= 6) return TEXT("city-stronghold");
+    return TEXT("fragile-coalition");
+}
