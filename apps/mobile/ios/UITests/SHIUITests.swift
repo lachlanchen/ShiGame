@@ -337,11 +337,20 @@ final class SHIUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-shi.locale", "en", "-shi.reduced-motion", "true"]
         app.launch(); finishChapterForCouncil(app)
+        func reviewBridge(_ scene: String, containing expected: String) {
+            let passage = app.descendants(matching: .any).matching(identifier: scene + "-viewpoint").firstMatch
+            XCTAssertTrue(passage.waitForExistence(timeout: 10))
+            reveal(passage, in: app)
+            let text = ([passage.label] + passage.descendants(matching: .staticText).allElementsBoundByIndex.map(\.label)).joined(separator: " ")
+            XCTAssertTrue(text.contains(expected), "Missing shared narrative bridge: \(scene)")
+            capture("story-bridge-" + scene)
+        }
         if app.buttons["council-retry"].exists {
             let retry = app.buttons["council-retry"]; reveal(retry, in: app); retry.tap()
             let confirm = app.buttons.matching(identifier: "council-confirm-restart").firstMatch
             XCTAssertTrue(confirm.waitForExistence(timeout: 10)); confirm.tap()
         }
+        reviewBridge("council", containing: "old claim still counts")
         for id in ["defer-title", "joint-ledger", "one-command"] {
             councilDecision(id, app, expectedOutcome: id == "one-command" ? "common-front" : nil)
             councilContinue(app)
@@ -351,6 +360,7 @@ final class SHIUITests: XCTestCase {
         reveal(app.buttons["fanyang-retry"], in: app); app.buttons["fanyang-retry"].tap()
         let resetFanyang = app.buttons.matching(identifier: "fanyang-confirm-restart").firstMatch
         XCTAssertTrue(resetFanyang.waitForExistence(timeout: 10)); resetFanyang.tap()
+        reviewBridge("fanyang", containing: "soldiers waiting here will obey him")
         for id in ["public-safety", "hold-talks", "withdraw-envoy"] {
             let offer = app.buttons["fanyang-offer-" + id]; reveal(offer, in: app); offer.tap()
             let commit = app.buttons["fanyang-commit"]; reveal(commit, in: app); XCTAssertTrue(commit.isEnabled); commit.tap()

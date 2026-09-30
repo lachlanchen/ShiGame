@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-01",
+  "sourceBaseline": "d2b1204",
+  "scope": "Native QA story route with new council and Fan Yang bridge assertions; not a release build",
+  "test": "SHIUITests/testRetreatContinuationResumeEndingAndCancel",
+  "result": { "status": "passed", "passed": 1, "failed": 0, "skipped": 0, "testSeconds": 281.842 },
+  "environment": "iPad Pro 11-inch M5 simulator, iOS 27, isolated SHI aftermath QA bundle on the shared Mac mini",
+  "execution": { "handle": 57987, "exitCode": 0, "jobs": 2, "parallelTesting": false, "collectTestDiagnostics": "never" },
+  "hashes": {
+    "uiTest": "ac68894852777e1e68d12d730ef8699b3e85e9d2ba26b8897f967eff062b5f8a",
+    "transferArchive": "7b6b4c6a3efe1376f9c666a32bae99716c545a51b2723c329558cb7ac92a4080",
+    "viewpoints": "dc4e8372e276ae214277c6f6486a9ddc4f60b94469e1c132ac87754c5f1d7e56",
+    "retreatStory": "4da5ebee6b47132e9b4db464bed460bd6d21cb30662f7c289ddae55b1352f83f"
+  },
+  "asserted": ["Council bridge text", "Fan Yang bridge text", "Saved reaction survives relaunch", "Retreat decisions and ending forecast", "Ending", "Restart cancellation"],
+  "visualReview": {
+    "privateDirectory": ".runtime/native-retreat-integration-20261001/story-bridges-review",
+    "inspected": [
+      { "file": "B2F2E4F3-40D8-44E4-95A9-CF183D9A2BEE.png", "finding": "English council bridge readable with choices below; substantial introductory scrolling remains." },
+      { "file": "A23B9216-3D12-41F8-8D4F-25F37C4C7DB3.png", "finding": "English envoy bridge readable. Fan Yang remains a sheet over the previous council scene; continuity presentation improvement remains open." },
+      { "file": "088178C8-8BE5-4AEC-915D-3A9211576886.png", "finding": "Chinese dispersed ending, 各自的归路, readable full-screen; grain 4, tempo 5, households 6, allies 1, army 3. Fiction/history boundary and unopened continuation stated." }
+    ]
+  },
+  "cleanup": "Final probe 13073 confirmed no booted simulator, xcodebuild or diagnose process; attachment copy 89419 completed successfully. No current SHI GUI runtime.",
+  "limitations": [
+    "One native simulator route, not every branch or physical-device coverage.",
+    "Internal priority-inversion warning remains in the test log; no performance sign-off.",
+    "Automated flow and agent visual review are not human story acceptance.",
+    "No signing, TestFlight, store submission or public release performed."
+  ]
+}
