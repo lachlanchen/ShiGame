@@ -159,7 +159,13 @@ try {
   const closingLine = { together: "锅边已经有人喊你吃饭", dispersed: "人分开了，账还是找你", remnant: "你把装简的囊换到身前", scattered: "你没有把无人应答的几笔勾掉" }[route];
   const memoryId = route === "scattered" ? "retreat-scattered-memory" : "retreat-ending-memory";
   check(await evaluate(`document.querySelector('[data-testid=${memoryId}]').textContent.includes(${JSON.stringify(closingLine)})`), "ending preserves centrally held records");
-  if (storyBranch === "loan-search") check(await evaluate("document.querySelector('[data-testid=retreat-debts]')?.textContent.includes('债未偿还')"), "new grain debt survives the ending");
+  if (storyBranch === "loan-search") {
+    check(await evaluate("document.querySelector('[data-testid=retreat-debts]')?.textContent.includes('债未偿还')"), "new grain debt survives the ending");
+    const loanLine = { together: "欠的不能跟着减", remnant: "消息能不能传回陈地", dispersed: "别临走才把没作保的人添上去", scattered: "没有在欠数旁写下已清" }[route];
+    check(await evaluate(`document.querySelector('[data-testid=${memoryId}]').textContent.includes(${JSON.stringify(loanLine)})`), "loan obligation receives the matching dramatic ending");
+    await evaluate(`([...document.querySelectorAll('[data-testid=${memoryId}] p')].find(e=>e.textContent.includes(${JSON.stringify(loanLine)}))).scrollIntoView({block:'center'})`);
+    await capture("05b-loan-obligation-mobile"); await layout("loan obligation");
+  }
   await evaluate("document.querySelector('[data-testid=retreat-outcome]').scrollIntoView({block:'start'})");
   await capture("06-ending-mobile"); await layout("ending");
   await click('[data-testid="retreat-outcome"] [data-council-action="close"]');

@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-01",
+  "baseline": "a69fb6a",
+  "previousTurnClassification": "progress: four conditional loan ending passages implemented and tested",
+  "command": "node scripts/playtest-retreat-visible.mjs dispersed loan-search",
+  "execution": { "handle": 56128, "exitCode": 0, "checksPassed": 36, "browserExceptions": 0 },
+  "privateEvidence": ".runtime/story-review/2026-09-30T20-21-51.381Z",
+  "storySHA256": "8d2177ca40f6bb276411386cb0fd9854ba22ba231c506ffa67915381f04254ef",
+  "route": "Seed zero; real title, opening grain tallies, council defer-title/joint-ledger/one-command, envoy public-safety/hold-talks/withdraw-envoy, retreat send-support/borrow-local-grain/hold-formation/carry-records/release-groups. No resource injection.",
+  "visualReview": {
+    "frame": "05b-loan-obligation-mobile.png",
+    "viewport": "390x844",
+    "reviewer": "development agent",
+    "finding": "Loan obligation and central record-custody dialogues appear together in the dispersed ending, readable without overlap or horizontal overflow. The ending requires vertical scrolling; this is not a cinematic-quality approval."
+  },
+  "cleanup": { "absentPids": [2813474, 2813531, 2813532, 2813533, 2813534], "closedPorts": [4173, 5921, 6121, 9321], "availableMemoryGiB": 50, "currentRuntime": null },
+  "limitations": [
+    "Only this loan ending received a new visible playthrough; other new ending passages retain unit-test coverage only.",
+    "Reload/save-failure verification remains the 39 component tests recorded in retreat-loan-ending-review-20261001.json, not a browser reload in this run.",
+    "Native graphical review, human story acceptance, localization and release remain outstanding."
+  ]
+}
