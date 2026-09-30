@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "full-route-passed-visual-review-complete-runtime-stopped",
+  "baseline": "1ffe594 application and UI test; story revision2011a21, before d29822c food callbacks",
+  "updateArchiveSHA256": "9d4b2934617f215f44adde7c7bdd0efbe2d1b6695500b0c223b13de80118f7fb",
+  "storySHA256": "3cf8778b23d966d048b4c3d546d0a628c72e28ced6da489d2df3b20458252dd3",
+  "sourceSHA256": {
+    "NativeFanyangView.swift": "8450203b4076012a5227044888be2fd31efb6bfece595d799aa01e13dc100478",
+    "NativeRetreatView.swift": "a12526254fca02b50ed4c7e241e4d391dfd7aef755809ba8a810d6f76348df83",
+    "SHIUITests.swift": "d76a21f33a71e576fd2e7fa63c13f71a21e148cb7e5e96169b200da6df1cc75d"
+  },
+  "platform": "iPad Pro11 M5, iOS27 simulator, separate unsigned SHI QA identity",
+  "result": { "xcodebuildExitCode": 0, "passed": 1, "failed": 0, "skipped": 0, "testDurationSeconds": 250.418 },
+  "checks": [
+    "Actual title/chapter/council/Fan Yang/retreat controls, without injected retreat capacity",
+    "Retreat scroll viewport at least90% app width and80% height after initial entry and reopen settle",
+    "Exact saved reaction after terminate/relaunch, all five retreat decisions, matching ending forecast",
+    "Restart cancellation preserves ending; explicit Return dismisses to saved Fan Yang outcome"
+  ],
+  "visualReview": "Inspected four exported retreat frames: original and resumed reaction, ending preview, dispersal conclusion. Full-screen presentation removes background chapters. Initial reaction and Continue fit without the earlier small-sheet clipping; conclusion includes record custody and resource ownership. Preview is scrolled so the final question, choice cards and exact forecast are visible. This admits the reading-space improvement, not final cinematic art or human enjoyment.",
+  "screenshot": { "file": "native-retreat-fullscreen-ipad-20261001.png", "sha256": "288aa7c6fc256fcae403577d85e928e80cab6ef53b6ed2e98d5351546a285b24", "origin": "XCTest attachment from SHI QA", "licenseStatus": "Project-generated native UI evidence", "intendedUse": "Development verification, not store marketing" },
+  "toolingLimits": "Simulator diagnostic collection timed out after600s after test assertions passed; xcodebuild then finalized successfully. xcresult retains an internal QoS priority-inversion warning. Neither is presented as resolved or as performance acceptance.",
+  "cleanup": "Original execution51305 exited0. Both build56443 and diagnose56913 were absent in the final probe, no booted simulators remained; explicit shutdown found the owned simulator already Shutdown. No foreign service touched.",
+  "remaining": [
+    "New food callbacks in d29822c are not included in these screenshots or native run.",
+    "Other native endings, phone/rotation/large-text/VoiceOver/physical-device tests and human story review remain open.",
+    "Source-note disclosure expansion was not asserted in this run; only its collapsed control was visually inspected.",
+    "No new store submission, release archive, deployment or media generation."
+  ]
+}
