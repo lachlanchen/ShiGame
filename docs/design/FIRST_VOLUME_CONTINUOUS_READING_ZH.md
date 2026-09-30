@@ -418,7 +418,7 @@
 
 本附录供制作核对，不需要读者审阅。生成命令：`npx vite-node scripts/first-volume-readthrough.ts`。校验已存读稿：同命令追加 `--check`。仅核验这一条路线，不证明其他分支或历史解释均已完成审查。
 
-- content/campaigns/chapter-01-daze.json — SHA256 54c7e5fc55560668823deac92c0b24d713f88cb38f4de199e68a5ba067d23ca0
+- content/campaigns/chapter-01-daze.json — SHA256 def5198632759a4c7c75f9ef529d1835e4d9dbf3d55da275e4866cf7013727c5
 
 - content/councils/chen-council.v1.json — SHA256 a4b21e01d8c442869bde8da79ead2fb7c787095eb635a1fe4504ed5a87e9a945
 

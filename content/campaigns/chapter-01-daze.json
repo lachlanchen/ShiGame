@@ -1144,7 +1144,7 @@
       "speakerId": "wu-guang",
       "title": { "en": "The beacon is now an accusation", "zh-Hans": "烽火已成檄文" },
       "context": { "en": "The relay guards have been disarmed. Nearby posts will see the missing signal at dawn. Momentum is high; recognition is not the same as allegiance.", "zh-Hans": "亭卒已被缴械。天亮后，邻亭就会察觉烽燧断绝。声势骤起，但被人看见不等于被人拥护。" },
-      "dialogue": { "en": "Wu Guang turns the captured drum on its side. “A drum tells everyone to move. It does not tell them why they should follow us after the first mile.”", "zh-Hans": "吴广把缴来的鼓侧放在地上：“鼓能叫所有人动起来，却不能告诉他们，为何走过第一里后还要跟着我们。”" },
+      "dialogue": { "en": "Wu Guang catches the drummer's wrist before he strikes. “Wait.” At the door, men with captured weapons are asking whose banner they should call out. He turns to you. “Do we give them a name to shout, or take them away quietly? Decide before they start calling out different things. If we leave without the drum, someone must go back and tell the rear.”", "zh-Hans": "吴广按住将要落下的鼓槌：“先别敲。”门口，拿到兵器的人正问该喊谁的旗号。他回头看你：“给他们一个名号，还是就这样悄悄带走？趁还没各喊各的，定下来。不敲鼓走，后队也得有人去告知。”" },
       "sourceRefs": ["shiji-48-daze", "dramatic-daze-keeper", "sunzi-1-calculation"],
       "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "field-conditions-reconstruction"],
       "conditions": [
@@ -1211,7 +1211,7 @@
       "speakerId": "qin-courier",
       "title": { "en": "A courier without a message", "zh-Hans": "没有公文的驿使" },
       "context": { "en": "Your watch catches a relay courier searching for the register. He is frightened, observant, and useful. Every way of containing knowledge creates a witness.", "zh-Hans": "守夜者抓到一名寻找名籍的驿使。他害怕、敏锐，也可能有用。每一种封锁消息的方法，都会制造一个见证人。" },
-      "dialogue": { "en": "Courier Han looks at the blank space where the register was. “A missing list is already a message. Let me choose who receives it.”", "zh-Hans": "韩驿使看着名籍原先摆放的空处：“名籍失踪，本身就是一封信。让我选它送到谁手里。”" },
+      "dialogue": { "en": "Han keeps looking at the doorway, where the watchman has not moved. “The next post is waiting for me. Keep me here and they will ask who last saw me.” He glances at the place where the register lay. “I can carry word that nothing is wrong. But if they check it later, I am the one they will find. If I do this for you, will there still be somewhere I can bring a reply?”", "zh-Hans": "韩驿使几次望向门口，守夜的人没有让开。“下一亭还等着我。把我扣在这里，他们会问最后是谁见过我。”他看了一眼原先放名籍的地方：“我能先报无事。可日后一查，找的是我。替你们办了这趟，往后带回信来，还找不找得到人？”" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
       "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "field-conditions-reconstruction"],
       "conditions": [

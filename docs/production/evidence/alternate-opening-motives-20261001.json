@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-01",
+  "priority": "Finish the story before adding cinematic assets",
+  "previousCheckpoint": "Progress: offline story-book navigation and phone readability verified in d0fc220",
+  "campaignSha256": "def5198632759a4c7c75f9ef529d1835e4d9dbf3d55da275e4866cf7013727c5",
+  "changes": [
+    "Seized-beacon dialogue: Wu Guang stops a drumbeat while armed men ask what name to call. The player must choose between a public banner and a quiet departure; the rear still needs word.",
+    "Hidden-register dialogue: Han identifies the next post's expectations, his personal exposure to a later check, and his need for continued contact. This sets up the existing earned letter without guaranteeing his return."
+  ],
+  "editorialReview": {
+    "reviewer": "Codex",
+    "languages": ["en", "zh-Hans"],
+    "historicalBoundary": "Original dramatic reconstruction under the existing fictional-cast-and-councils claim. No new claim about a recorded conversation or historical event.",
+    "continuity": "Han requests contact; the player has not yet promised it. Later correspondence still requires recruitment plus road verification. Neither text guarantees immunity, loyalty, rescue or reunion."
+  },
+  "verification": {
+    "execution": 87528,
+    "exitCode": 0,
+    "completeReadingTestsPassed": 5,
+    "offlineBookTestsPassed": 2,
+    "campaignReplayRoutes": 46,
+    "councilReplayRoutes": 77,
+    "nativeContentParity": "passed",
+    "sharedContentSync": "completed for existing clients",
+    "structuralComparison": "Deep comparison against HEAD proved only two campaign dialogue fields changed; all 46 fixture routes remained identical after excluding the campaign hash.",
+    "offlineBook": "Regenerated from actual rules and current shared text"
+  },
+  "limits": [
+    "No new playable scene or ending in this checkpoint",
+    "Fresh native compilation, installation and visual review not performed for this prose-only change",
+    "Earlier book screenshots predate this content hash and are not evidence of the revised prose",
+    "Human story acceptance and full goal completion remain open",
+    "No store, public release or paid generation action"
+  ]
+}

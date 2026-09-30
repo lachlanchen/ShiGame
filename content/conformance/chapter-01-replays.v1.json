@@ -4,7 +4,7 @@
   "campaignSchemaVersion": 7,
   "saveVersion": 6,
   "seed": 1592598566,
-  "campaignSha256": "54c7e5fc55560668823deac92c0b24d713f88cb38f4de199e68a5ba067d23ca0",
+  "campaignSha256": "def5198632759a4c7c75f9ef529d1835e4d9dbf3d55da275e4866cf7013727c5",
   "generatedBy": "scripts/generate-conformance-fixtures.ts",
   "routeCount": 46,
   "successfulRoutes": 40,

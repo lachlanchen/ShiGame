@@ -39,6 +39,8 @@ test("courier reading earns the later letter through recruitment and road verifi
   assert.equal(text, run("--courier", "--ending", "remnant"));
   assert.ok(text.includes("verify-road → open-reception → escort-households"));
   assert.ok(text.includes("韩驿使来信："));
+  assert.ok(text.includes("日后一查，找的是我"), "Recruitment must establish Han's personal exposure");
+  assert.ok(text.indexOf("往后带回信来，还找不找得到人") < text.indexOf("韩驿使来信："), "Later correspondence answers an earlier request for continued contact");
   assert.ok(text.includes("韩驿使没有跟着来"));
   assert.ok(text.includes("没有带走一位本来就不在这里的驿使"));
   assert.ok(text.includes("实际结果：remnant"));
