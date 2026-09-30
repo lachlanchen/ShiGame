@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-01",
+  "status": "chapter-conformance-and-ios-typechecks-passed",
+  "scope": "Failure-specific heading/body and suppression of next-scene narration; not UI or physical-device acceptance.",
+  "sourceCommit": "71a89c1",
+  "execution": { "transfer": 40783, "compileAndTests": 84929, "exitCode": 0 },
+  "sourceHashes": {
+    "apps/mobile/ios/SHI/SHIApp.swift": "961fca58f89169cd77a48a9b04d5a34b7e468266ee8cacca77170e2fae201e91",
+    "apps/mobile/ios/SHI/CampaignEngine.swift": "8e70409100e4c562362cf202480cd97793696c7713cae2f8e751d0f05a9f9b13",
+    "apps/mobile/ios/Tests/Conformance.swift": "8b221afebbbedba00f49b1374dcd041eed1701cdd15c9e21ad11653b72fcae0a",
+    "content/conformance/chapter-01-replays.v1.json": "4bba482dbc72bcddf6c2969d1576428e879b29fc48383d6649f1b46a2ce784d7"
+  },
+  "checks": {
+    "canonicalChapterRoutes": 46,
+    "intermediateTurns": 183,
+    "swiftAppSources": 18,
+    "target": "arm64-apple-ios16.0-simulator",
+    "productionTypecheck": "passed",
+    "retreatPreviewTypecheck": "passed",
+    "nativeContentParity": "passed: 11 UI locales, 77 cinematic labels"
+  },
+  "cleanup": "No matching compiler, xcodebuild or chapter-conformance process remained. No simulator or GUI launched. Mac swap 1.88 MiB.",
+  "remaining": "Rendered native failure heading/body, no-next-scene framing, VoiceOver, resume and retry review. No signed build, TestFlight upload or store release performed."
+}
