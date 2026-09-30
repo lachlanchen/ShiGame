@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "fanyang-entry-review.v1",
+  "sceneId": "fanyang-guarantee.v1",
+  "status": "development-handoff-only",
+  "publicationApproved": false,
+  "reviewDate": "2026-09-30",
+  "reviewer": "Codex implementation and source-boundary review; not independent historian or human playtest approval",
+  "source": {
+    "work": "資治通鑑",
+    "section": "卷七，秦紀二，秦二世皇帝元年",
+    "locator": "武臣自白馬渡河、進擊范陽；蒯徹說武信君保全范陽令徐公；後接孔鮒諫陳王勿輕秦",
+    "localReading": "Owner's ZhJpBook collection, wenyan.md lines 2695–2705; read directly for this checkpoint",
+    "rightsBoundary": "Reference metadata and original paraphrase only. No private book file, modern translation or edition annotation redistributed.",
+    "receivedAccount": "The account places Wu Chen's advance north of the river. Kuai Che argues that killing surrendering Qin officials encourages other towns to resist. Public honors and protection for the Fan Yang official are followed in the account by further surrenders.",
+    "uncertainty": "This is a later compiled historical account, not proof that a particular guarantee always produces surrender. The reported scale is not a numerical gameplay rule."
+  },
+  "sceneDesign": {
+    "viewpoint": "A reconstructed northern envoy's mandate linked to the player's Chen council, not Chen Sheng or his whole army instantly arriving at Fan Yang.",
+    "dramaticQuestion": "Can you promise safety to an enemy official and still command the soldiers who must enforce it?",
+    "opening": "Outside the closed gate, the official's messenger asks who will stop the rebel soldiers from killing him after he surrenders. A veteran asks who gave the envoy permission to protect a Qin officer.",
+    "beats": [
+      "Inspect the official's proposed surrender and hear the veteran's objection before choosing terms.",
+      "Offer immediate public protection, demand a witnessed transfer with safeguards, or decline the bargain and sustain military pressure. Each route must expose its time, supply and coalition costs before confirmation.",
+      "Face an implementation challenge from your own side. Earlier authority and dispatch promises constrain what the envoy can credibly order; a choice of words alone cannot guarantee compliance.",
+      "Resolve the gate's response and the coalition's reaction separately. A closed gate must permit withdrawal or a costly revised negotiation instead of an unexplained game-over."
+    ],
+    "strategicLens": "Credible commitment and signaling: safety has value only if the recipient expects it to survive surrender. Public protection can reassure other towns while angering allies. Conditional safeguards reduce exposure but consume time and may look like a trap.",
+    "counterfactualBoundary": "Dialogue, veteran objections, envoy viewpoint, alternatives, costs and outcomes are original dramatization. The historical surrender is one reference outcome, not the mandatory winning answer.",
+    "continuity": "Use an explicit time/location transition. Preserve the Chen ledger and dispatch decision. Do not reuse rain, costume, travel distance or character identity as established historical fact without scene review."
+  },
+  "implemented": {
+    "module": "packages/game-core/src/fanyang-entry.ts",
+    "removedBlocker": "The named Fan Yang scene can receive a deterministic identity, exact council choices, recomputed remaining metrics and conclusion tied to its originating chapter and content revision. Previously no continuation handoff contract existed.",
+    "callerRequirements": [
+      "Supply a chapter state restored and validated by the existing campaign engine, not raw untrusted save JSON.",
+      "Supply the canonical council digest from verified content, never from the player's snapshot.",
+      "Use the existing council revision migration before passing an untagged legacy save."
+    ],
+    "saveBoundary": "No writes, new save slot, chapter reset or resource refill. Forged saved council totals and conclusions are ignored and replayed from legal choices.",
+    "verification": "Core tests exhaust legal council branches after every surviving Chapter I branch at seeds 0 and 0x5eed2026, cover all three arrivals and four outcomes, check unique handoff identities and verify source-save immutability."
+  },
+  "remainingGates": [
+    "Author and review shared scene content, concrete choice effects, counterplay and recovery; no Fan Yang choice is playable yet.",
+    "Implement a revision-bound continuation save and explicit entry action without auto-choosing or replaying an order.",
+    "Integrate native iOS, Android/web and Unreal against the same rules and content.",
+    "Review presentation, localization, accessibility, offline/resume and end-to-end routes before beta delivery.",
+    "Create and audition scene-linked Musia cues and review LocalVideoGen/Blender moving imagery with rights and continuity records before shipping any media."
+  ]
+}
