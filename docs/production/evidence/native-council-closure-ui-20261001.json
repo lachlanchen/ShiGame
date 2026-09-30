@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-01",
+  "scope": "Unsigned SHIAftermathQA on iPad Pro 11-inch M5 simulator, iOS27; one complete story route",
+  "test": "SHIUITests/testRetreatContinuationResumeEndingAndCancel",
+  "result": {"execution": 79477, "exitCode": 0, "passed": 1, "failed": 0, "seconds": 312.410},
+  "archiveSha256": "c657e9efa5266014f7b52898af9935391232f6125554fd26be616ce7112e70ec",
+  "storySha256": "5dc4c55df79826646c392fd58290c5d054cb9b1dc321b12e6ab77d0e81953d8d",
+  "verified": ["Council rules initially collapsed, open on tap and disappear after closing", "Council remains at round zero while reading rules", "Updated supply-column arrival appears", "Actual opening/council/Fan Yang/retreat route survives app termination and relaunch", "Dispersed ending contains the new release-of-command passage", "Decision record shows first and last saved choices", "Restart cancellation preserves the ending and return reaches withdrawn Fan Yang"],
+  "visualReview": {
+    "reviewer": "Codex",
+    "localDirectory": ".runtime/native-council-disclosure-20261001",
+    "screenshotsIndividuallyInspected": ["5FF530AC-D695-4427-B4B9-76F98429C87C.png", "E3280E39-B275-4250-A8FE-C1843915B0E8.png", "3CC60A57-6BCA-4690-A001-D81E1AD26A5A.png"],
+    "findings": "Council collapsed and expanded states are readable with no observed overlap. All three initial offers fit in the portrait iPad framing. The Chinese ending, release exchange, custody conversation and development boundary are readable together. This does not establish human pacing acceptance or other device layouts."
+  },
+  "cleanup": "Result/export28538 and transfer31602 finished0; exact simulator shut down, no xcodebuild/swift-frontend or outstanding transfer. Shared Mac used under AgentLink identity/resource/action contract; no foreign process stopped.",
+  "limitations": ["Internal priority-inversion warning remains", "No physical-device, all-branch or store qualification", "Council tested in English; retreat remains explicitly Chinese-language development preview", "No public release, paid generation or human story acceptance"]
+}

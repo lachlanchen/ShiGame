@@ -350,7 +350,19 @@ final class SHIUITests: XCTestCase {
             let confirm = app.buttons.matching(identifier: "council-confirm-restart").firstMatch
             XCTAssertTrue(confirm.waitForExistence(timeout: 10)); confirm.tap()
         }
-        reviewBridge("council", containing: "old claim still counts")
+        let rules = app.buttons["Council rules and conditions"].firstMatch
+        reveal(rules, in: app)
+        XCTAssertTrue(rules.exists)
+        let ruleText = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Secure at least two groups")).firstMatch
+        XCTAssertFalse(ruleText.exists)
+        capture("council-rules-native-closed")
+        rules.tap()
+        XCTAssertTrue(ruleText.waitForExistence(timeout: 10))
+        capture("council-rules-native-open")
+        reveal(rules, in: app); rules.tap()
+        XCTAssertFalse(ruleText.exists)
+        XCTAssertEqual(app.descendants(matching: .any).matching(identifier: "council-progress").firstMatch.value as? String, "0")
+        reviewBridge("council", containing: "keeper enters with a supply column")
         for id in ["defer-title", "joint-ledger", "one-command"] {
             councilDecision(id, app, expectedOutcome: id == "one-command" ? "common-front" : nil)
             councilContinue(app)
@@ -416,6 +428,14 @@ final class SHIUITests: XCTestCase {
         order("release-groups"); next()
         let ending = app.staticTexts["retreat-outcome"]
         XCTAssertTrue(ending.waitForExistence(timeout: 10)); XCTAssertEqual(ending.value as? String, expected)
+        let releasePassage = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "没有再问他们何时归队")).firstMatch
+        if expected == "dispersed" {
+            XCTAssertTrue(releasePassage.waitForExistence(timeout: 10))
+            reveal(releasePassage, in: app)
+            capture("retreat-release-of-command-native")
+        } else {
+            XCTAssertFalse(releasePassage.exists)
+        }
         capture("retreat-04-native-ending")
         let record = app.buttons["回看这一路的决定"]
         XCTAssertTrue(record.waitForExistence(timeout: 10))
