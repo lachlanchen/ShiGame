@@ -22,5 +22,20 @@
     "findings": "Both states readable. Closed state has a visible keyboard focus outline. Historical boundary and role explanation remain outside the disclosure. First choice still requires scrolling; this is not human pacing acceptance."
   },
   "cleanup": {"pidsIndependentlyConfirmedAbsent": [3512045,3512146,3512147,3512148,3512149], "portsConfirmedClosed": [4173,5921,6121,9321], "currentGuiUrl": null},
-  "limits": ["Native SwiftUI compile and runtime qualification pending", "One visible web route, not all narrative routes", "No store release, physical-device test or human acceptance", "Visible-browser skill guided actual input, screenshot inspection and exact process cleanup"]
+  "nativeCompilationFollowup": {
+    "date": "2026-10-01",
+    "coordination": "AgentLink skill and protocol used to verify pinned Mac mini identity, idle compiler/simulator state and the existing SHI-owned bridge-check staging directory. No other project or release checkout changed.",
+    "transferExecution": 30893,
+    "transferExitCode": 0,
+    "sourceArchiveSha256": "e2476df3b5f96d52707b6508793cb4a57739ceafb934e24ab42acbde98b24393",
+    "archiveVerifiedBeforeExtraction": true,
+    "compileExecution": 40679,
+    "compileExitCode": 0,
+    "scope": "All 18 current SHI Swift source files, production and SHI_RETREAT_PREVIEW modes",
+    "compiler": "xcrun swiftc -typecheck, installed iPhoneSimulator27.0 SDK, arm64-apple-ios16.0-simulator target",
+    "nativeCouncilViewSha256": "5f6b819599df23f518071585cda225c7a000653070a9714e646ea6fc76e95c0b",
+    "cleanup": "Final live probe found no xcodebuild/swift-frontend process or booted simulator; swap remained 1.88 MiB.",
+    "limits": "Typechecking is not linking, installation, native layout, interaction or store qualification. No signing or simulator action performed."
+  },
+  "limits": ["Native SwiftUI runtime qualification pending; compilation follow-up recorded above", "One visible web route, not all narrative routes", "No store release, physical-device test or human acceptance", "Visible-browser skill guided actual input, screenshot inspection and exact process cleanup"]
 }
