@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createFanyang, encodeFanyangSnapshot, fanyangAnswers, fanyangCanChoose, fanyangGateChecks,
-  fanyangMetricKeys, localize, resolveFanyang, restoreFanyang,
+  fanyangMetricKeys, fanyangProspects, localize, resolveFanyang, restoreFanyang,
   type FanyangDefinition, type FanyangEntry, type FanyangState, type Locale, type LocalizedText } from "@shi/game-core";
 import raw from "../../../../content/councils/fanyang-guarantee.v1.json";
 import review from "../../../../content/research/fanyang-entry-review.v1.json";
@@ -32,6 +32,7 @@ export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onS
   const preview = choice && fanyangCanChoose(definition, state, choice) ? resolveFanyang(definition, state, choice.id) : null;
   const last = state.history.at(-1), lastChoice = last && definition.rounds[state.history.length - 1]!.choices.find(item => item.id === last.choiceId);
   const outcome = state.outcome && definition.outcomes[state.outcome];
+  const prospects = preview ? fanyangProspects(definition, preview) : [];
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
   useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [state.history.length, reading, reset]);
   const persist = async (next: FanyangState) => {
@@ -80,6 +81,12 @@ export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onS
           {choice.gateRequired && <p>{say("Requires every gate condition listed alongside this scene.", "需要满足本场景列出的全部开城条件。")}</p>}
           {fanyangAnswers(state, choice).map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{text(answer.text)}</p>)}{preview && changes(state.metrics, preview.metrics)}
           {preview?.outcome && <p data-testid="fanyang-preview" data-outcome={preview.outcome}>{say("Expected outcome", "预计结果")}: {text(definition.outcomes[preview.outcome].title)}</p>}
+          {preview && !preview.completed && <details className="chen-history" data-testid="fanyang-prospects"><summary>{say("What remains possible after this order?", "此令之后，还有哪些可能？")}</summary>
+            <p>{prospects.includes("opened")
+              ? say("At least one legal sequence can still secure surrender. Later choices and their costs matter; this order alone does not open the gate.", "至少还有一条可行路线能够受降。后续选择与代价仍然重要，此令本身并不能开城。")
+              : say("No remaining sequence in this episode can secure surrender from this position. Do not spend reserves expecting to repair every shortfall; an orderly withdrawal remains possible.", "按当前局势，本篇余下的选择已无法达成受降。不要以为再付出余粮就能补齐所有缺口；仍可有序退使。")}</p>
+            <p>{say("This checks the disclosed rules of this scene, not historical inevitability or the outcome of a future episode.", "这只检查本场景公开的规则，不代表历史必然，也不预判下一篇的结果。")}</p>
+          </details>}
           <button className="primary-button" data-council-action="commit" data-testid="fanyang-commit" disabled={!preview || invalid || busy} onClick={() => { if (choice && !invalid) void persist(resolveFanyang(definition, state, choice.id)); }}>{say(busy ? "Saving…" : "Confirm order", busy ? "保存中…" : "确认命令")} →</button>
         </section></section> : null}
     </section><aside className="chen-position" aria-label={say("Position and gate conditions", "局势与开城条件")}><h3>{say("Your position", "当前局势")}</h3>

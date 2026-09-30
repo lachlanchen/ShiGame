@@ -45,6 +45,21 @@
     "saveBoundary": "No writes, new save slot, chapter reset or resource refill. Forged saved council totals and conclusions are ignored and replayed from legal choices.",
     "verification": "Core tests exhaust legal council branches after every surviving Chapter I branch at seeds 0 and 0x5eed2026, cover all three arrivals and four outcomes, check unique handoff identities and verify source-save immutability."
   },
+  "balanceAudit": {
+    "command": "npm run audit:fanyang-balance",
+    "scope": "Exhaustive legal routes from all 77 Chen council outcomes; counts are not probabilities or human enjoyment evidence.",
+    "completedRoutes": 993,
+    "deadlocks": 0,
+    "entriesWithNoSurrenderRoute": 17,
+    "openingSurrenderReachability": {
+      "public-safety": { "availableEntries": 77, "entriesWithSurrender": 54 },
+      "witnessed-transfer": { "availableEntries": 70, "entriesWithSurrender": 45 },
+      "keep-cordon": { "availableEntries": 71, "entriesWithSurrender": 19 }
+    },
+    "recovery": "Amended guarantees rescue 25 witnessed-transfer routes and 19 cordon routes that otherwise fail the disclosed gate conditions. Withdrawal is always available at the final decision.",
+    "playerFacingChange": "Optional bilingual planning detail discloses whether any remaining legal sequence after the inspected offer can achieve surrender in this episode. It neither chooses an order nor writes a save, and explicitly distinguishes game rules from historical inevitability. Rules and content fingerprint are unchanged.",
+    "verification": "Full npm run validate:45 core and 128 web tests pass. Human balance review, graphical playtest and native-client parity remain unverified."
+  },
   "remainingGates": [
     "Human story and balance review of the development content; run a full player-facing route before calling Fan Yang playable.",
     "Visible browser playtest of desktop/mobile layouts and full chapter-to-council-to-Fan-Yang route. Local resource gate currently refuses a new GUI stack at 85% swap use; no SHI stack is running and no foreign services were stopped.",

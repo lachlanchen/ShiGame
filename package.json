@@ -22,6 +22,7 @@
     "validate:martial-sources": "node scripts/validate-martial-sources.mjs",
     "validate:martial-sources:private": "node scripts/validate-martial-sources.mjs --verify-private",
     "validate:engagement": "vite-node scripts/validate-engagement.ts",
+    "audit:fanyang-balance": "vite-node scripts/audit-fanyang-balance.ts",
     "validate:accessibility": "node scripts/validate-accessibility.mjs",
     "validate:fonts": "node scripts/validate-fonts.mjs",
     "validate:audio": "node scripts/validate-audio.mjs",

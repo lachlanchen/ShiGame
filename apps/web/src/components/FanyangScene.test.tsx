@@ -29,6 +29,14 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("Fan Yang playable continuation", () => {
+  it("shows an optional honest planning warning without making an order", () => {
+    const view = render(<FanyangScene {...props()} entry={{ ...entry, metrics: { ...entry.metrics, grain: 0 } }} />);
+    const help = view.getByTestId("fanyang-prospects");
+    fireEvent.click(help.querySelector("summary")!);
+    expect(help.textContent).toContain("No remaining sequence in this episode can secure surrender");
+    expect(localStorage.getItem(key)).toBeNull();
+    expect(view.queryByTestId("fanyang-response")).toBeNull();
+  });
   it("continues from the actual Chen ending, resolves a full route and preserves both earlier saves", async () => {
     localStorage.setItem("shi.chen-council.v1", councilSave);
     localStorage.setItem("shi.save", "chapter-sentinel");

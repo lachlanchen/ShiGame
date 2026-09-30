@@ -78,6 +78,22 @@ export function encodeFanyangSnapshot(state: FanyangState, definitionSHA256: str
     entryId: state.entryId, choices: state.history.map(turn => turn.choiceId) });
 }
 
+/** Small finite lookahead for an optional, truthful planning aid. These are
+ * possible endings, not probabilities, a chosen order, or a promise of success.
+ * No future episode is simulated and no input state is changed.
+ */
+export function fanyangProspects(definition: FanyangDefinition, state: FanyangState): FanyangOutcome[] {
+  const outcomes = new Set<FanyangOutcome>();
+  const visit = (current: FanyangState) => {
+    if (current.completed) { if (current.outcome) outcomes.add(current.outcome); return; }
+    for (const choice of definition.rounds[current.history.length]?.choices ?? []) {
+      if (fanyangCanChoose(definition, current, choice)) visit(resolveFanyang(definition, current, choice.id));
+    }
+  };
+  visit(state);
+  return (["opened", "withdrawn", "deferred"] as const).filter(outcome => outcomes.has(outcome));
+}
+
 /** Never trust saved metrics, council choices, phase or outcome. */
 export function restoreFanyang(definition: FanyangDefinition, entry: FanyangEntry, snapshot: unknown, canonicalSHA256: string): FanyangState | null {
   if (!snapshot || typeof snapshot !== "object" || Array.isArray(snapshot)

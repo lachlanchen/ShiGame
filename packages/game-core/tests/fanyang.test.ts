@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { createCouncil, councilCanChoose, resolveCouncil, createFanyang, encodeFanyangSnapshot,
-  fanyangAnswers, fanyangCanChoose, fanyangGateChecks, fanyangMetricKeys, resolveFanyang, restoreFanyang,
+  fanyangAnswers, fanyangCanChoose, fanyangGateChecks, fanyangMetricKeys, fanyangProspects, resolveFanyang, restoreFanyang,
   type CouncilDefinition, type CouncilState, type FanyangDefinition, type FanyangEntry, type FanyangState } from "../src";
 import raw from "../../../content/councils/fanyang-guarantee.v1.json";
 import chenRaw from "../../../content/councils/chen-council.v1.json";
@@ -28,6 +28,27 @@ for (const arrival of ["supplied", "pressed", "divided"] as const) {
 }
 
 describe("Fan Yang guarantee", () => {
+  it("discloses which inherited positions can still negotiate surrender, without changing a save", () => {
+    let cannotOpen = 0;
+    for (const entry of entries) {
+      const state = createFanyang(definition, entry), before = JSON.stringify(state);
+      const prospects = fanyangProspects(definition, state);
+      expect(prospects).toContain("withdrawn");
+      if (!prospects.includes("opened")) cannotOpen++;
+      if (state.metrics.grain === 0) expect(prospects).not.toContain("opened");
+      expect(JSON.stringify(state)).toBe(before);
+      const reachable = new Set<string>();
+      const visit = (current: FanyangState) => {
+        if (current.completed) { reachable.add(current.outcome!); return; }
+        for (const choice of definition.rounds[current.history.length]!.choices) {
+          if (fanyangCanChoose(definition, current, choice)) visit(resolveFanyang(definition, current, choice.id));
+        }
+      };
+      visit(state);
+      expect([...prospects].sort()).toEqual([...reachable].sort());
+    }
+    expect(cannotOpen).toBe(17);
+  });
   it("binds the development review to the exact authored scene, without release approval", () => {
     expect(review.contentSHA256).toBe(fingerprint);
     expect(review.publicationApproved).toBe(false);
