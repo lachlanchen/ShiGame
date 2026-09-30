@@ -91,7 +91,7 @@
     { "sceneId": "evacuation", "afterChoice": "families-first", "lines": [{ "speaker": "keeper", "text": "那回渡河，让家户先过，守在后面的人一直等到最后。这次若还这样走，得先给断后的人留好退路。" }, { "speaker": "rear-guard", "text": "先说在哪儿收队。我得把话传到最后一个人。" }] },
     { "sceneId": "evacuation", "afterChoice": "repair-the-ford", "lines": [{ "speaker": "narrator", "text": "门边有人把粮袋往车轮下拖。你伸手拦住，让他先拿垫车的木料。" }, { "speaker": "keeper", "text": "渡口那次，粮袋填下去就没再取回来。这次还没到非用粮不可的时候。先看看轮子卡在哪里。" }] },
     { "sceneId": "evacuation", "afterChoice": "cut-the-carts", "lines": [{ "speaker": "keeper", "text": "渡口弃过一次车，有三户折回去找东西。这次别只喊人快走，先问清谁还在车旁。" }, { "speaker": "rear-guard", "text": "我去问。问到的报回来；那三户后来去了哪里，我不知道。" }] },
-    { "sceneId": "records", "afterChoice": "read-the-names", "lines": [{ "speaker": "narrator", "text": "你摊开带出的凭记，想起雨棚里逐个念出名字的声音。那时有人答应，也有人等着听下一个。眼前有几行字还认得，却没有人来应。" }, { "speaker": "keeper", "text": "没人应的，先留着。念过他的名字，不等于知道他如今在哪里。" }] },
+    { "sceneId": "records", "afterChoice": "read-the-names", "lines": [{ "speaker": "narrator", "text": "你摊开带出的凭记，想起雨棚里逐个念出名字的声音。那时有人答应，也有人等着听下一个。眼前有几行字还认得，却没有人来应。" }, { "speaker": "keeper", "text": "没人应的，先留着。谁最后见过他们？只说见到的地方。" }] },
     { "sceneId": "records", "afterChoice": "take-the-beacon", "lines": [{ "speaker": "keeper", "text": "夺亭燧那回，我以为截住信号就能抢出时间。后来邻亭的骑卒还是找上了路。" }, { "speaker": "narrator", "text": "你把凭记翻到写着来处的一面。路能从足迹找，人的住处也能从这些字找。这一面要不要留下，得在装囊前想定。" }] },
     { "sceneId": "records", "afterChoice": "hide-the-register", "lines": [{ "speaker": "keeper", "text": "雨夜把名籍藏起来时，我只想再等一晚。现在这些领过粮、欠着粮的事，不能也藏起来就算办完。" }, { "speaker": "narrator", "text": "你把眼前带出的凭记逐份分开。新写的账与还能辨认的旧记各放一边，缺下的地方没有补字。" }] }
   ],
@@ -102,7 +102,7 @@
     { "sceneId": "reserves", "afterChoice": "army-rations", "lines": [{ "speaker": "narrator", "text": "来领粮的乡里管事没有挤到桌前。他等军吏说完，才把上次留在城内的那份缺额指给你看。" }, { "speaker": "keeper", "text": "先供军的那一笔还在。这次拨多少，不能再说城里已经领足。" }] },
     { "sceneId": "reserves", "afterChoice": "joint-ledger", "lines": [{ "speaker": "narrator", "text": "乡里管事带来了共验时分给他的账。他将自己的那份摊在拨粮单旁，没有先伸手去拿粮。" }, { "speaker": "keeper", "text": "按两边对得上的数算。新增的这一拨，另起一行。" }] },
     { "sceneId": "reserves", "afterChoice": "buy-convoys", "lines": [{ "speaker": "supply-officer", "text": "上回不是等来了商队？再照原路催一趟。" }, { "speaker": "keeper", "text": "上回到的已经入过账。下一趟还没人押信回来，不能先拨出去。" }] },
-    { "sceneId": "evacuation", "afterChoice": "one-command", "lines": [{ "speaker": "rear-guard", "text": "当初出城只传一道令。这一回，还等那边的令么？" }, { "speaker": "keeper", "text": "西边没回来的队伍，我调不动。眼前这些人怎么走，我在这里说清，不冒充他们已经听见。" }] },
+    { "sceneId": "evacuation", "afterChoice": "one-command", "lines": [{ "speaker": "rear-guard", "text": "当初出城只传一道令。这一回，还等那边的令么？" }, { "speaker": "keeper", "text": "西边没回来的队伍，我调不动。你把这里领队的人叫来，怎么走，我当面说。" }] },
     { "sceneId": "evacuation", "afterChoice": "many-banners", "lines": [{ "speaker": "rear-guard", "text": "各路都有自己的领队。你要他们到这里来，得有人把话带到。" }, { "speaker": "keeper", "text": "各走一路是先前说定的。如今谁答应接哪一段，就记哪一段；没回话的，不能替他答应。" }] },
     { "sceneId": "evacuation", "afterChoice": "hold-chen", "lines": [{ "speaker": "rear-guard", "text": "当初说留在陈地，如今却要带人走。外面有人不肯装车。" }, { "speaker": "keeper", "text": "我去说。守路的已经退回来了，不能还拿先前的安排催他们等下去。愿不愿跟上，让他们听明白再定。" }] }
   ],
@@ -153,7 +153,7 @@
       ],
       "variants": [
         { "when": { "reserves": "keep-reserve" }, "lines": [{ "speaker": "narrator", "text": "接应的人把伤卒扶进棚里，回来问是否还要去路口接下一拨。有人已经把空车掉了个头，等你的话。" }] },
-        { "when": { "reserves": "send-support" }, "lines": [{ "speaker": "narrator", "text": "棚里的人问起那支押粮队。伤卒没有见过他们。已经送出的支援，此刻不能再调出来替你守路。" }] },
+        { "when": { "reserves": "send-support" }, "lines": [{ "speaker": "narrator", "text": "棚里的人问起那支押粮队。伤卒摇头。问话的人朝门口望了一阵，又回来接着搬袋。门口仍没有押粮队的人影。" }] },
         { "when": { "reserves": "verify-road" }, "lines": [{ "speaker": "narrator", "text": "验路人已带回一段可走的路讯，却没有见到全部西进队伍。你把知道和不知道的分开记下。" }] },
         { "when": { "reserves": "decline-dispatch" }, "lines": [{ "speaker": "narrator", "text": "催援的人没有带回好脸色。你没有可以宣布归来的新押粮队，只能按仍在手里的东西安排来人。" }] },
         { "when": { "han": "cooperating" }, "lines": [{ "speaker": "qin-courier", "text": "路讯我可以补。驿里谁放过人，别写进要传出去的那份。" }, { "speaker": "keeper", "text": "那就只记哪段能走，哪段是你听来的。" }] },
@@ -197,7 +197,7 @@
         { "when": { "bad-news": "open-reception" }, "lines": [{ "speaker": "narrator", "text": "新收的伤卒扶着棚柱等车。路口接应的人认出他，朝车夫招了招手。" }] },
         { "when": { "bad-news": "verify-with-partners" }, "lines": [{ "speaker": "partner-steward", "text": "我们的人到路口接。但你得把分给我们的那几户说清，别两边都以为对方带了。" }] },
         { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "narrator", "text": "借来的粮装上车，欠契收进贴身的囊里。粮主没有跟着队伍走，他手里的那份还留在陈地。" }] },
-        { "when": { "bad-news": "gather-own" }, "lines": [{ "speaker": "narrator", "text": "本部的人已经聚到粮站。被你劝往别处的队伍不在这里，撤离清点不能把他们算作同行。" }] }
+        { "when": { "bad-news": "gather-own" }, "lines": [{ "speaker": "narrator", "text": "本部的人已经聚到粮站。有人问起被你劝往别处的队伍，你停下清点，问他后来有没有见过。那人摇头，你便把这一行空着。" }] }
       ],
       "choices": [
         { "id": "escort-households", "title": "护送家户与伤员先走", "intent": "守路者留到最后接应。保全眼前的非战斗人员，不等于所有旧日失散者都已找回。", "response": [{ "speaker": "keeper", "text": "这几车先走，到会合处停下。守路的人回来时，给他们留车位和粮，别都分完。" }, { "speaker": "rear-guard", "text": "认准最后那辆。我们跟上。" }, { "speaker": "narrator", "text": "车轮离开门槛。持械的人侧身让出通道，等最后一车过去才收队。" }, { "speaker": "narrator", "text": "转过墙角，末车的轮子陷进路边的浅沟。车夫叫车上的人别动，你和旁边两人抵住车辕，等他垫稳轮下。后面不断有人催，守路士卒横过断戈，留出推车的空处。" }, { "speaker": "rear-guard", "text": "推！别在这里散开。" }, { "speaker": "narrator", "text": "轮子重新滚动。到了能停脚的地方，你才发现掌心全是木刺。车上有人递来一块布，你接过来，先擦掉手上的泥，再去解装简的囊。" }], "next": "records" },
