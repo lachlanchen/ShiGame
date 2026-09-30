@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: native production/preview typechecks verified",
+  "sourceBaseline": "9a44cbf",
+  "execution": 86433,
+  "result": "exit0, 40 checks passed, no browser runtime exceptions",
+  "privateEvidence": ".runtime/story-review/2026-09-30T21-18-17.262Z",
+  "reviewedScreenshot": "02d-council-strategy-mobile.png",
+  "screenshotSHA256": "003612fbd49e79344a8110a58493edfd0792379f3cd18c36d786f14071c0c522",
+  "scope": "Visible isolated Chrome/noVNC development route, real pointer controls, seed zero, Chinese, 390x844 phone-sized viewport; root-in-villages explicitly selected, then council, Fan Yang and together retreat ending. No injected campaign resources or save state.",
+  "visualFinding": "New village-strategy paragraph is readable with natural wrapping and no overlap or horizontal overflow. It follows the generic bridge and precedes council introduction/choices. Choice A and part of choice B appear below the paragraph in the reviewed framing; vertical scrolling is necessary and controls were reached successfully during the run.",
+  "pacingFinding": "Viewpoint explanation plus generic bridge, strategy memory and introduction form a long lead-in. This is not final pacing acceptance. Next improvement should reduce repeated visible setup while retaining role/historical boundaries and the choice-specific memory.",
+  "otherChecks": "Completed title-to-ending route, correct selected strategy, saved evacuation response, grain-promise memory, ending custody and read-only five-choice decision record; closing restores page scrolling.",
+  "cleanup": "Owned PIDs3175024/3175098/3175099/3175100/3175101 verified gone;4173/5921/6121/9321 closed;48GiB available. No live desktop or GUI URL.",
+  "limits": ["Only village strategy visually reviewed; the other two have component-test coverage, not this screenshot.", "Not a physical device, native runtime, human acceptance or store build.", "No publication or media generation."],
+  "skill": "noVNC webapp control supplied the visible UI-only workflow and evidence capture; project resource policy required cleanup after capture."
+}

@@ -98,13 +98,17 @@ try {
   await until("document.documentElement.lang==='zh-Hans'"); await capture("01-title");
   await click('[data-testid="begin-game"]');
   await click('[data-testid="guide-continue"]');
-  for (let n = 0; n < 4; n++) { if (n === 1) await click(`[data-choice-id="${grainPromise}"]`); await click('[data-testid="commit-selected"]'); await click('[data-testid="resolution-continue"]'); }
+  for (let n = 0; n < 4; n++) { if (n === 1) await click(`[data-choice-id="${grainPromise}"]`); if (n === 3) await click('[data-choice-id="root-in-villages"]'); await click('[data-testid="commit-selected"]'); await click('[data-testid="resolution-continue"]'); }
   await click('[data-testid="council-enter"]');
   await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
   await capture("02-council-mobile"); await layout("council");
   check(await evaluate("document.querySelector('[data-testid=council-story-bridge]')?.textContent.includes('旧凭记还算不算数')"), "council transition connects food claims to authority");
   await evaluate("document.querySelector('[data-testid=council-story-bridge]').scrollIntoView({block:'center'})");
   await capture("02b-council-bridge-mobile");
+  check(await evaluate("document.querySelector('[data-testid=council-chapter-bridge]')?.dataset.choice==='root-in-villages'"), "council recalls the actual village strategy");
+  check(await evaluate("document.querySelector('[data-testid=council-chapter-bridge]')?.textContent.includes('明天有事找谁')"), "village strategy creates a concrete council question");
+  await evaluate("document.querySelector('[data-testid=council-chapter-bridge]').scrollIntoView({block:'center'})");
+  await capture("02d-council-strategy-mobile"); await layout("council strategy bridge");
   for (const id of ["defer-title", "joint-ledger", "one-command"]) { await click(`[data-council-choice="${id}"]`); await click('[data-testid="council-commit"]'); await click('[data-testid="council-continue"]'); }
   await click('[data-testid="fanyang-enter"]');
   check(await evaluate("document.querySelector('[data-testid=fanyang-story-bridge]')?.textContent.includes('哪些士卒肯听他的话')"), "envoy transition preserves uncertain local obedience");
