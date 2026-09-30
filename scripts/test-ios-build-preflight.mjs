@@ -71,3 +71,20 @@ test('rejects non-store workspace', t => {
   assert.equal(r.status, 2);
   assert.match(r.stderr, /formal store project/);
 });
+
+test('missing explicit keychain fails before signing and releases only its own lock', t => {
+  const root = fixture(t);
+  const r = run(root, { SHI_BUILD: '2', SHI_SIGNING_KEYCHAIN: join(root, 'absent.keychain-db') });
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /Signing keychain missing/);
+  assert.equal(existsSync(join(root, 'release/.shi-ios-build-lock')), false);
+  assert.equal(existsSync(join(root, 'release/SHI-1.0.0-2.xcarchive')), false);
+  assert.equal(existsSync(join(root, 'release/export-1.0.0-2')), false);
+});
+
+test('routine archive script never reads shared passwords or mutates keychain access', () => {
+  const source = readFileSync(script, 'utf8');
+  assert.doesNotMatch(source, /release-keychain\.pass|set-key-partition-list|unlock-keychain|security\s+(?:import|set-keychain-settings|default-keychain|list-keychains)/);
+  assert.match(source, /SHI_SIGNING_KEYCHAIN/);
+  assert.match(source, /OTHER_CODE_SIGN_FLAGS=--keychain \$shi_keychain/);
+});

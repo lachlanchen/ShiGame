@@ -27,11 +27,13 @@ for shi_target in "$shi_archive" "$shi_export"; do
     echo "Refusing to overwrite retained artifact: $shi_target" >&2; exit 2;
   }
 done
-shi_keychain="$HOME/Library/Keychains/landn-release.keychain-db"
-shi_password="$(< "$HOME/.config/echomind/apple/release-keychain.pass")"
-security unlock-keychain -p "$shi_password" "$shi_keychain"
-security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$shi_password" "$shi_keychain" >/dev/null
-unset shi_password
+# Signing setup belongs to the shared-host owner. A routine SHI build must not
+# read another project's password file or rewrite shared key access controls.
+# Prepare/unlock the existing keychain separately before invoking this script.
+shi_keychain="${SHI_SIGNING_KEYCHAIN:-$HOME/Library/Keychains/landn-release.keychain-db}"
+[[ -f "$shi_keychain" ]] || {
+  echo "Signing keychain missing; prepare the existing signing keychain and set SHI_SIGNING_KEYCHAIN. No signing settings were changed." >&2; exit 2;
+}
 shi_profiles="$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
 mkdir -p "$shi_profiles" "$HOME/Library/MobileDevice/Provisioning Profiles" "$shi_root/release"
 cp "$HOME/.config/shi/apple/SHI_App_Store.mobileprovision" "$shi_profiles/SHI_App_Store.mobileprovision"

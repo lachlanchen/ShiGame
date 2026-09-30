@@ -38,6 +38,13 @@ set `SHI_BUILD` to a new build number verified against App Store Connect.
 The script overrides Xcode's version settings, checks the archived bundle ID
 and version, and refuses existing archives/exports. It never uploads.
 
+Signing must already be prepared on the qualified Mac. The script uses the
+existing shared release keychain by default; `SHI_SIGNING_KEYCHAIN` may select
+another explicitly prepared keychain. It does not read shared password files,
+unlock keychains or change key access permissions. If signing cannot access the
+key, stop and coordinate with the signing-host owner rather than resetting its
+permissions. A successful source/build preflight is not proof of signing access.
+
 One `.shi-ios-build-lock` under the staging release directory protects concurrent
 invocations there; shared-host preflight must still rule out builds in other
 SHI workspaces. Failed archives remain for diagnosis. Reconcile live processes
