@@ -239,6 +239,10 @@ test("the wounded soldier's reunion needs reception and escort, not a restored i
         const result = readRoute(draft, { fanyang: "opened", yu: "unestablished", han: "unestablished" },
           ["keep-reserve", reception, evacuation, records, "release-groups"]);
         const dawn = result.transcript.at(-1).lines;
+        const searchPayoffs = draft.scenes.find(scene => scene.id === "dawn").variants.filter(variant =>
+          variant.when["bad-news"] === reception && (!variant.when.evacuation || variant.when.evacuation === evacuation));
+        assert.equal(searchPayoffs.length, 1, "Every reception/evacuation pair needs exactly one search payoff");
+        for (const line of searchPayoffs[0].lines) assert.ok(dawn.some(actual => actual.text === line.text));
         const reunion = dawn.some(line => line.speaker === "wounded-soldier" && line.text.startsWith("阿衡。"));
         assert.equal(reunion, reception === "open-reception" && evacuation === "escort-households");
         if (reunion) {

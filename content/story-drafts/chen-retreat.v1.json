@@ -239,6 +239,8 @@
         { "when": { "bad-news": "open-reception", "evacuation": "hold-formation" }, "lines": [{ "speaker": "narrator", "text": "你记得伤卒说起的那只麻绳绑着的鞋。眼前还没有这样一个人。接纳过来人，并不等于已经把每个人护送到这里；先前缩小的护送范围，如今成了必须回查的一段路。" }] },
         { "when": { "bad-news": "open-reception", "evacuation": "split-routes" }, "lines": [{ "speaker": "narrator", "text": "路口曾留过接应的人，现在各组还未会齐。你问起那个左鞋缠麻绳的人，先到的人都摇头。你记下还没问到哪一组，等下一拨消息。" }] },
         { "when": { "bad-news": "gather-own" }, "lines": [{ "speaker": "narrator", "text": "铺开问讯简时，你想起伤卒问的那句话：那他来了呢？那天你答应留下会合处，却没有答应让他一直等。你将眼下的去向写清，放在约好的地方；有没有人循着它找来，现在还不知道。" }] },
+        { "when": { "bad-news": "verify-with-partners" }, "lines": [{ "speaker": "narrator", "text": "邻部送回的短简只认出了几个人。你顺着来信看完，又翻到背面，没有阿衡的消息。先前请他们一同核人的事有了回音，却还不是伤卒等的那个答复。" }, { "speaker": "keeper", "text": "他们只问过这几处。没问到的地方留着，别把未见写成不在了。" }, { "speaker": "narrator", "text": "你把已问过的路段另记下来。下一次有人来报，不必再从头问起；那只缠着麻绳的鞋，仍要继续打听。" }] },
+        { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "narrator", "text": "核到新借的粮，你又想起伤卒攥着两份凭记的手。欠契已经有人押记，阿衡的去向却还没有一条能确认的消息。" }, { "speaker": "keeper", "text": "粮数对上了，找人的事还没对上。问讯的另放，别跟欠契一起收了。" }, { "speaker": "narrator", "text": "你在布上另留一处，记那只缠着麻绳的左鞋。记得这个特征，仍不能替任何人报一声平安。" }] },
         { "when": { "evacuation": "escort-households", "yu": "present" }, "lines": [{ "speaker": "yu-mu", "text": "这一车到了。守路的人呢？来了就让他们先坐。" }] },
         { "when": { "evacuation": "escort-households", "yu": "absent" }, "lines": [{ "speaker": "narrator", "text": "这次护送的家户到了。你另留一栏记先前失散的人，没有把两个数合在一起。" }] },
         { "when": { "evacuation": "escort-households", "yu": "unestablished" }, "lines": [{ "speaker": "narrator", "text": "你逐车问来人的名字。有人答完，又问起另一户；没人能说出他们最后走到哪里。" }] },

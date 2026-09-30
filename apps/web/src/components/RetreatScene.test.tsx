@@ -39,6 +39,35 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it.each(["verify-with-partners", "borrow-local-grain"].flatMap(reception =>
+    ["escort-households", "hold-formation", "split-routes"].map(evacuation => [reception, evacuation])))
+  ("carries the unfinished search through %s and %s without an invented reunion", async (reception, evacuation) => {
+    const input = props();
+    input.entry = structuredClone(input.entry);
+    // Presentation coverage with legal capacity, not proof of a real inherited route.
+    input.entry.fanyang.metrics = { ...input.entry.fanyang.metrics, grain: 6, tempo: 6, city: 6, allies: 6, veterans: 6 };
+    const authored = retreatStory.scenes.find(scene => scene.id === "dawn")!.variants
+      .find(variant => "bad-news" in variant.when && variant.when["bad-news"] === reception)!;
+    const before = JSON.stringify(input.entry);
+    const view = render(<RetreatScene {...input} />);
+    for (const id of ["decline-dispatch", reception, evacuation]) await choose(view, id);
+    for (const line of authored.lines) expect(view.container.textContent).not.toContain(line.text);
+    await choose(view, "strip-identities");
+    for (const line of authored.lines) expect(view.container.textContent).toContain(line.text);
+    expect(view.container.textContent).not.toContain("阿衡。我还当你走了另一条路");
+    expect(view.container.textContent).toContain("没有补写那些被去掉的名字");
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const restored = render(<RetreatScene {...input} />);
+    for (const line of authored.lines) expect(restored.container.textContent).not.toContain(line.text);
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    for (const line of authored.lines) expect(restored.container.textContent).toContain(line.text);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    expect(JSON.stringify(input.entry)).toBe(before);
+    if (reception === "borrow-local-grain") expect(restored.getByTestId("retreat-debts").textContent).toContain("欠本地粮主 2 份粮秣");
+    else expect(restored.queryByTestId("retreat-debts")).toBeNull();
+  });
+
   it.each([
     ["read-the-names", "repair-the-ford"],
     ["take-the-beacon", "cut-the-carts"],
