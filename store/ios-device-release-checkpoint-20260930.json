@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "f443d6a5be7ea3bc16bfe1aa39a28dcdbf79d960",
+  "scope": "Unsigned physical-iOS Release compilation from committed native sources, including restart re-entry fix. Not an archive export, installation or TestFlight delivery.",
+  "sourceArchiveSHA256": "fa2c602d5bed8dd7b04751768eee61d8ed8e50142c562ace3300d8e68b316e3d",
+  "generatedProjectArchiveSHA256": "686c8003f99004c2462aa18a88a84283784fe3d011e318da7906609860638801",
+  "configuration": "Release",
+  "bundleId": "art.lazying.shi",
+  "localBuildNumber": "2",
+  "buildNumberReserved": false,
+  "buildExitCode": 0,
+  "platform": "IOS",
+  "architecture": "arm64",
+  "minimumOSLoadCommand": "16.0",
+  "sdk": "27.0",
+  "executableSHA256": "c6ac2a2e26c1255d74bd4a4f5ad30eb8a2781c2a2c25c9368adf7f0a8409e090",
+  "retainedUnsignedAppTarSHA256": "276a474328b92641299a124254c7ff722e04b6f40c79f8b6ac602fffedc1c46b",
+  "bundledCampaignSHA256": "445974ec77d789adc0bd54b147c924fffd1fc440668f900667b1086341a2ef0c",
+  "bundledCouncilSHA256": "a4b21e01d8c442869bde8da79ead2fb7c787095eb635a1fe4504ed5a87e9a945",
+  "signed": false,
+  "uploaded": false,
+  "installed": false,
+  "providerReadback": "App Store Connect returned only build 1, processing VALID, on 2026-09-30. No provider writes.",
+  "signingReadiness": "Build host reports zero valid signing identities. Established signing host reports the matching distribution identity and SHI profile; no credentials copied or permissions changed.",
+  "limitations": [
+    "No signed archive or IPA produced; SDK/toolchain acceptance by App Store Connect is unverified.",
+    "Release compilation does not establish physical-device, minimum-OS or performance qualification.",
+    "Existing SHI build cache reused; not a from-empty-cache or bit-for-bit reproducibility claim."
+  ],
+  "cleanup": "No active Xcode build or booted simulator remains. Unsigned output retained outside Git."
+}
