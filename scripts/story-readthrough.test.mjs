@@ -9,10 +9,10 @@ const together = ["keep-reserve", "open-reception", "escort-households", "divide
 
 test("every authored choice, conditional passage and ending is reachable without a narrative dead end", () => {
   const result = auditDraft(draft);
-  assert.equal(result.inputContexts, 12);
+  assert.equal(result.inputContexts, 27);
   assert.equal(result.choices, 15);
-  assert.equal(result.routes, 2268);
-  assert.deepEqual(result.endings, { together: 324, remnant: 972, dispersed: 972 });
+  assert.equal(result.routes, 5103);
+  assert.deepEqual(result.endings, { together: 729, remnant: 2187, dispersed: 2187 });
 });
 
 test("reading is deterministic and does not mutate draft, inputs or choices", () => {
@@ -43,6 +43,15 @@ test("earlier decisions remain facts and select later responses without restorin
   assert.ok(result.transcript[2].lines.some(line => line.text.includes("押粮的人还没回")));
   assert.ok(result.transcript[4].lines.some(line => line.text.includes("没有补写那些被去掉的名字")));
   assert.equal(result.endingId, "remnant");
+});
+
+test("unestablished whereabouts neither conjure speakers nor assert their departure", () => {
+  const result = readRoute(draft, { fanyang: "withdrawn", yu: "unestablished", han: "unestablished" }, together);
+  const lines = result.transcript.flatMap(beat => [...beat.lines, ...beat.reaction]);
+  assert.ok(lines.every(line => !["yu-mu", "qin-courier"].includes(line.speaker)));
+  assert.ok(lines.some(line => line.text.includes("没有韩驿使的新回信")));
+  assert.ok(lines.some(line => line.text.includes("不是全部同行者的点名")));
+  assert.ok(lines.every(line => !line.text.includes("离队的家户没有回来")));
 });
 
 test("invalid, unavailable, incomplete and overlong reading routes are rejected", () => {

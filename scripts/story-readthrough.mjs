@@ -144,7 +144,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const args = process.argv.slice(2);
   if (!args.length) console.log(JSON.stringify(auditDraft(draft), null, 2));
   else {
-    assert.equal(args[0], "--read", "Usage: node scripts/story-readthrough.mjs [--read opened|withdrawn|deferred present|absent cooperating|unavailable choice-id ...]");
+    assert.equal(args[0], "--read", "Usage: node scripts/story-readthrough.mjs [--read opened|withdrawn|deferred present|absent|unestablished cooperating|unavailable|unestablished choice-id ...]");
     const [, fanyang, yu, han, ...choices] = args;
     const result = readRoute(draft, { fanyang, yu, han }, choices);
     console.log(`${draft.title}\n${draft.boundary}\n`);

@@ -1,0 +1,65 @@
+import { migrateGameState } from "./engine";
+import { prepareFanyangEntry } from "./fanyang-entry";
+import { restoreFanyang, type FanyangDefinition, type FanyangMetrics, type FanyangOutcome } from "./fanyang";
+import type { CouncilDefinition, CouncilOutcome } from "./council";
+import type { Campaign, GameState } from "./types";
+
+export interface RetreatRevisions { campaign: string; council: string; fanyang: string }
+export interface RetreatEntry {
+  version: 1;
+  sceneId: "chen-retreat-story-draft.v1";
+  id: string;
+  revisions: RetreatRevisions;
+  /** Separate historical resource scales; never sum these inventories. */
+  chapter: GameState;
+  council: { choices: string[]; outcome: CouncilOutcome };
+  fanyang: { choices: string[]; outcome: FanyangOutcome; metrics: FanyangMetrics };
+  continuity: {
+    registerOpening: "read-publicly" | "beacon-seized" | "hidden" | "unestablished";
+    crossingOrder: string | null;
+    courierRecruitedEarlier: boolean;
+    /** Prior cooperation or crossing success does not prove later presence. */
+    currentCompanionPresence: { yu: "unestablished"; han: "unestablished" };
+  };
+  readingContext: { fanyang: FanyangOutcome; yu: "unestablished"; han: "unestablished" };
+}
+
+/** Replay all three episodes. The caller verifies canonical bytes and supplies
+ * their digests; digests are revision identities, not signatures/authentication.
+ * Chapter legacy rules are preserved by migrateGameState. Council migration,
+ * if needed, must happen before this boundary. This function performs no writes,
+ * creates no resources and makes no claim that the retreat is a playable client.
+ */
+export function prepareRetreatEntry(
+  definitions: { campaign: Campaign; council: CouncilDefinition; fanyang: FanyangDefinition },
+  snapshots: { chapter: unknown; council: unknown; fanyang: unknown },
+  revisions: RetreatRevisions,
+): RetreatEntry | null {
+  if (![revisions.campaign, revisions.council, revisions.fanyang].every(value => /^[a-f0-9]{64}$/.test(value))) return null;
+  const chapter = migrateGameState(definitions.campaign, snapshots.chapter);
+  if (!chapter?.completed || chapter.failureReason) return null;
+  const origin = prepareFanyangEntry(definitions.council, chapter, snapshots.council, revisions.council);
+  if (!origin) return null;
+  const fanyang = restoreFanyang(definitions.fanyang, origin, snapshots.fanyang, revisions.fanyang);
+  if (!fanyang?.completed || !fanyang.outcome) return null;
+  const choices = fanyang.history.map(turn => turn.choiceId);
+  const opening = chapter.history.find(turn => turn.nodeId === "rain-order")?.choiceId;
+  return {
+    version: 1, sceneId: "chen-retreat-story-draft.v1",
+    id: JSON.stringify(["chen-retreat-story-draft.v1", revisions.campaign, revisions.council,
+      revisions.fanyang, origin.id, choices, chapter.legacyDecisionCount,
+      chapter.preMethodReadDecisionCount, chapter.preCommitmentDecisionCount]),
+    revisions: { ...revisions }, chapter,
+    council: { choices: [...origin.choices], outcome: origin.outcome },
+    fanyang: { choices, outcome: fanyang.outcome, metrics: { ...fanyang.metrics } },
+    continuity: {
+      registerOpening: opening === "read-the-names" ? "read-publicly"
+        : opening === "take-the-beacon" ? "beacon-seized"
+        : opening === "hide-the-register" ? "hidden" : "unestablished",
+      crossingOrder: chapter.history.find(turn => turn.nodeId === "broken-crossing")?.choiceId ?? null,
+      courierRecruitedEarlier: chapter.history.some(turn => turn.choiceId === "turn-the-courier"),
+      currentCompanionPresence: { yu: "unestablished", han: "unestablished" },
+    },
+    readingContext: { fanyang: fanyang.outcome, yu: "unestablished", han: "unestablished" },
+  };
+}
