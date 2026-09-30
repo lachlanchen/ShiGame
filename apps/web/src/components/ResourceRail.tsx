@@ -1,5 +1,6 @@
 import { resourceKeys, type Locale, type Resources } from "@shi/game-core";
 import { translate } from "../i18n";
+import "./ResourceRail.css";
 
 export function ResourceRail({ resources, locale }: { resources: Resources; locale: Locale }) {
   return (
@@ -19,3 +20,5 @@ export function ResourceRail({ resources, locale }: { resources: Resources; loca
     </section>
   );
 }
+
+export default ResourceRail;

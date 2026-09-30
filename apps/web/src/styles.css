@@ -81,16 +81,6 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 .header-select { min-width: 105px; height: 34px; padding-block: 0; font-size: .63rem; }
 
 .resource-rail { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(5, 1fr); padding: 14px 3.5vw 13px; border-bottom: 1px solid var(--line); background: rgba(27,28,23,.73); }
-.resource { padding: 0 22px; border-right: 1px solid rgba(225,211,182,.09); }
-[dir="rtl"] .resource { border-right: 0; border-left: 1px solid rgba(225,211,182,.09); }
-.resource:first-child { padding-left: 0; }
-.resource:last-child { padding-right: 0; border-right: 0; border-left: 0; }
-.resource-label { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 7px; color: #9a9a90; font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; }
-.resource-label strong { color: #d5cbb9; font-family: var(--serif); font-size: .9rem; font-weight: 500; }
-.meter { height: 2px; overflow: hidden; background: rgba(219,209,188,.09); }
-.meter span { display: block; height: 100%; background: linear-gradient(90deg, #80633b, #c6a66e); box-shadow: 0 0 7px rgba(201,164,102,.45); transition: width .6s ease; }
-.resource.danger .meter span { background: linear-gradient(90deg, #6f2d24, #bb5943); box-shadow: 0 0 7px rgba(169,67,49,.45); }
-.resource.danger .resource-label strong { color: #d78772; }
 
 .opposition-panel { position: relative; z-index: 2; display: grid; min-height: 76px; grid-template-columns: minmax(180px, .7fr) minmax(260px, 1.5fr) auto minmax(220px, 1fr); align-items: center; gap: 17px; padding: 10px 3.5vw; border-bottom: 1px solid rgba(176,108,78,.24); background: linear-gradient(90deg, rgba(105,53,39,.16), rgba(27,28,23,.82) 35%, rgba(27,28,23,.72)); }
 .opposition-identity { display: grid; gap: 4px; }
@@ -194,6 +184,11 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 .dialogue footer { display: flex; align-items: baseline; gap: 9px; color: #8f9087; font-size: .625rem; }
 .dialogue footer strong { color: #b7aa91; font-size: .62rem; font-weight: 500; }
 .dialogue footer em { padding: 2px 5px; color: #bb7d69; border: 1px solid rgba(187,125,105,.4); font-size: .6rem; font-style: normal; text-transform: uppercase; }
+.story-echo { max-width: 720px; margin: -8px 0 20px 18px; padding: 13px 16px 12px; border: 1px solid rgba(116,139,132,.24); border-left: 3px double rgba(116,139,132,.55); background: linear-gradient(100deg, rgba(71,99,91,.1), rgba(29,29,25,.08)); }
+[dir="rtl"] .story-echo { margin-right: 18px; margin-left: 0; border-right: 3px double rgba(116,139,132,.55); border-left-width: 1px; }
+.story-echo p { margin: 0 0 8px; color: #b8beb4; font-family: var(--cjk); font-size: .76rem; line-height: 1.6; }
+.story-echo footer { display: flex; flex-wrap: wrap; gap: 7px; color: #7f988f; font-size: .59rem; letter-spacing: .04em; text-transform: uppercase; }
+.story-echo footer strong { color: #9fb3ab; font-weight: 600; }
 .source-link { display: flex; min-height: 30px; align-items: center; gap: 8px; padding: 4px 0; color: #aaa89d; border: 0; background: none; font-size: .64rem; cursor: pointer; }
 .source-link:hover { color: var(--bronze-bright); }
 
@@ -479,9 +474,6 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
   .brand-button small { display: none; }
   .header-select { width: 84px; min-width: 84px; }
   .resource-rail { padding: 11px 14px; }
-  .resource { padding: 0 7px; }
-  .resource-label span { max-width: 44px; overflow: hidden; font-size: .48rem; text-overflow: ellipsis; }
-  .resource-label strong { font-size: .73rem; }
   .opposition-panel { grid-template-columns: 1fr; gap: 8px; padding: 13px 14px; }
   .opposition-panel > small { grid-template-columns: 1fr; }
   .method-read-panel { grid-template-columns: 1fr; gap: 8px; padding: 13px 14px; }
@@ -562,21 +554,17 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
 @media (forced-colors: active) {
   .three-backdrop, .title-image, .title-vignette, .game-shell::before, .map-card::before, .map-sweep { display: none !important; }
   .title-screen, .game-shell, .game-header, .resource-rail, .opposition-panel, .method-read-panel, .commitment-panel, .map-column, .story-panel, .choices-panel,
-  .choice-card, .decision-inspector, .issue-order-button, .field-signal, .dialogue, .map-intel, .drawer, .resolution-banner, .ending-panel {
+  .choice-card, .decision-inspector, .issue-order-button, .field-signal, .dialogue, .story-echo, .map-intel, .drawer, .resolution-banner, .ending-panel {
     color: CanvasText;
     background: Canvas;
     background-image: none;
   }
   .title-screen *, .game-shell * { color: CanvasText !important; }
   .game-header, .resource-rail, .opposition-panel, .method-read-panel, .commitment-panel, .game-grid, .map-column, .story-panel, .choices-panel, .choice-card, .decision-inspector, .issue-order-button,
-  .field-signal, .dialogue, .map-intel, .drawer, .resolution-banner, .ending-panel, .guide-steps li, .audio-enable, .audio-preview {
+  .field-signal, .dialogue, .story-echo, .map-intel, .drawer, .resolution-banner, .ending-panel, .guide-steps li, .audio-enable, .audio-preview {
     border-color: CanvasText;
   }
   .game-header, .drawer, .drawer-scrim { backdrop-filter: none; }
-  .meter { height: 4px; border: 1px solid CanvasText; background: Canvas; }
-  .meter span { background: Highlight; box-shadow: none; forced-color-adjust: none; }
-  .resource.danger { outline: 2px dashed CanvasText; outline-offset: -5px; }
-  .resource.danger .meter span { background: CanvasText; }
   .river, .road { stroke: CanvasText; }
   .river { stroke-width: 3.5; }
   .site-marker i { background: CanvasText; border: 1px solid CanvasText; box-shadow: none; forced-color-adjust: none; }
@@ -598,6 +586,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--bronze-bri
     border-color: CanvasText;
     background: Canvas;
   }
-  .map-intel-uncertainty, .pressure-warning, .method-choice, .commitment-establish, .commitment-forecast, .commitment-reveal, .pressure-reveal, .opposition-reveal, .method-read-reveal, .field-reveal { border-style: dashed; }
+  .map-intel-uncertainty, .pressure-warning, .method-choice, .commitment-establish, .commitment-forecast, .commitment-reveal, .story-echo, .pressure-reveal, .opposition-reveal, .method-read-reveal, .field-reveal { border-style: dashed; }
   .audio-enable input, .audio-channel input { forced-color-adjust: auto; }
 }
+.chen-ending-actions { display: grid; gap: 12px; }

@@ -1,4 +1,5 @@
 import audioJson from "./generated/chapter-01-audio.json";
+import { gameStorage } from "./persistence";
 
 export type AudioCue = "select" | "inspect" | "drawer" | "close" | "commit" | "ending" | "failure";
 export type AudioRuntimeStatus = "off" | "armed" | "starting" | "ready" | "unsupported" | "error";
@@ -25,7 +26,7 @@ const clamp = (value: unknown, fallback: number, maximum: number) =>
 
 export function readAudioPreferences(): AudioPreferences {
   try {
-    const stored = JSON.parse(localStorage.getItem(AUDIO_PREFERENCES_KEY) ?? "null") as Partial<AudioPreferences> | null;
+    const stored = JSON.parse(gameStorage.getItem(AUDIO_PREFERENCES_KEY) ?? "null") as Partial<AudioPreferences> | null;
     if (!stored) return { ...audioDefaults };
     return {
       enabled: stored.enabled === true,
@@ -38,5 +39,5 @@ export function readAudioPreferences(): AudioPreferences {
 }
 
 export function storeAudioPreferences(preferences: AudioPreferences): void {
-  localStorage.setItem(AUDIO_PREFERENCES_KEY, JSON.stringify(preferences));
+  gameStorage.setItem(AUDIO_PREFERENCES_KEY, JSON.stringify(preferences));
 }

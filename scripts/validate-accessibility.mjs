@@ -4,9 +4,11 @@ import { resolve } from "node:path";
 const root = resolve(import.meta.dirname, "..");
 const css = [
   await readFile(resolve(root, "apps/web/src/styles.css"), "utf8"),
+  await readFile(resolve(root, "apps/web/src/components/ResourceRail.css"), "utf8"),
   await readFile(resolve(root, "apps/web/src/components/CampaignHorizon.css"), "utf8"),
   await readFile(resolve(root, "apps/web/src/components/DecisionInspector.css"), "utf8"),
   await readFile(resolve(root, "apps/web/src/components/EngagementBoard.css"), "utf8"),
+  await readFile(resolve(root, "apps/web/src/components/ConsequenceScene.css"), "utf8"),
 ].join("\n");
 
 const escapePattern = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -32,6 +34,11 @@ const contrast = (foreground, background) => {
 };
 
 const contrastPairs = [
+  ["aftermath heading metadata", ".consequence-scene p.consequence-eyebrow", "color", "#171b18"],
+  ["aftermath prose", ".consequence-scene p.consequence-prose", "color", "#171b18"],
+  ["aftermath details disclosure", ".consequence-details summary", "color", "#171b18"],
+  ["aftermath film fallback", ".consequence-scene .silent-film p", "color", "#171b18"],
+  ["aftermath effect layer label", ".consequence-delta-layer h3", "color", "#171b18"],
   ["dim interface metadata", ":root", "--dim", "#11120f"],
   ["site marker", ".site-marker", "color", "#181914"],
   ["reported site marker", ".site-marker.site-reported", "color", "#181914"],

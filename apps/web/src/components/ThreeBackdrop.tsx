@@ -1,7 +1,14 @@
 import { useEffect, useRef } from "react";
+import { createSceneLoop } from "../sceneLoop";
 
-export function ThreeBackdrop({ reducedMotion }: { reducedMotion: boolean }) {
+export function ThreeBackdrop({ reducedMotion, paused = false }: { reducedMotion: boolean; paused?: boolean }) {
   const host = useRef<HTMLDivElement>(null);
+  const preferences = useRef({ reducedMotion, paused });
+  const reconcile = useRef<() => void>(() => {});
+  useEffect(() => {
+    preferences.current = { reducedMotion, paused };
+    reconcile.current();
+  }, [reducedMotion, paused]);
 
   useEffect(() => {
     if (!host.current) return;
@@ -51,30 +58,32 @@ export function ThreeBackdrop({ reducedMotion }: { reducedMotion: boolean }) {
       const rain = new THREE.Points(rainGeometry, new THREE.PointsMaterial({ color: 0xd5d8cf, size: 0.018, transparent: true, opacity: 0.28 }));
       scene.add(rain);
 
-      let frame = 0;
+      const loop = createSceneLoop((seconds) => {
+        rain.position.y -= .36 * seconds;
+        rain.position.x -= .09 * seconds;
+        if (rain.position.y < -1) rain.position.y = 1;
+        if (seconds > 0) terrain.rotation.z = Math.sin(performance.now() / 14000) * .012;
+        renderer.render(scene, camera);
+      });
       const resize = () => {
         const width = container.clientWidth;
         const height = container.clientHeight;
         renderer.setSize(width, height, false);
         camera.aspect = width / Math.max(height, 1);
         camera.updateProjectionMatrix();
+        loop.redraw();
       };
-      const render = () => {
-        if (!reducedMotion) {
-          rain.position.y -= 0.006;
-          rain.position.x -= 0.0015;
-          if (rain.position.y < -1) rain.position.y = 1;
-          terrain.rotation.z = Math.sin(performance.now() / 14000) * 0.012;
-        }
-        renderer.render(scene, camera);
-        frame = requestAnimationFrame(render);
-      };
+      const updateMode = () => loop.setMode(!preferences.current.reducedMotion && !preferences.current.paused, !document.hidden);
+      reconcile.current = updateMode;
       resize();
-      render();
+      updateMode();
       window.addEventListener("resize", resize);
+      document.addEventListener("visibilitychange", updateMode);
       cleanup = () => {
-        cancelAnimationFrame(frame);
+        reconcile.current = () => {};
+        loop.dispose();
         window.removeEventListener("resize", resize);
+        document.removeEventListener("visibilitychange", updateMode);
         geometry.dispose();
         material.dispose();
         rainGeometry.dispose();
@@ -87,7 +96,7 @@ export function ThreeBackdrop({ reducedMotion }: { reducedMotion: boolean }) {
       disposed = true;
       cleanup();
     };
-  }, [reducedMotion]);
+  }, []);
 
   return <div className="three-backdrop" ref={host} aria-hidden="true" />;
 }

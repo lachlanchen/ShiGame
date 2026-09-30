@@ -287,6 +287,18 @@
       },
       "additionalProperties": false
     },
+    "storyEcho": {
+      "type": "object",
+      "required": ["id", "claimStatus", "requiredFlag", "speakerId", "text"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "claimStatus": { "const": "dramatic-reconstruction" },
+        "requiredFlag": { "type": "string", "minLength": 1 },
+        "speakerId": { "type": "string", "minLength": 1 },
+        "text": { "$ref": "#/$defs/localizedText" }
+      },
+      "additionalProperties": false
+    },
     "requirements": {
       "type": "object",
       "properties": {
@@ -326,6 +338,7 @@
         "title": { "$ref": "#/$defs/localizedText" },
         "context": { "$ref": "#/$defs/localizedText" },
         "dialogue": { "$ref": "#/$defs/localizedText" },
+        "storyEchoes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/storyEcho" } },
         "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
         "claimRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
         "conditions": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/fieldCondition" } },

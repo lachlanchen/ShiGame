@@ -3,6 +3,7 @@
 import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
+import * as persistence from "./persistence";
 
 vi.mock("./components/ThreeBackdrop", () => ({
   ThreeBackdrop: () => <div data-testid="three-backdrop" />,
@@ -22,6 +23,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });
 
@@ -53,6 +55,174 @@ class FakeAudioContext {
 }
 
 describe("playable web shell", () => {
+  it("resumes an unread aftermath after remount and acknowledges it without replaying the order", async () => {
+    vi.stubEnv("VITE_SHI_NATIVE", "1");
+    const first = render(<App />);
+    fireEvent.click(first.getByTestId("begin-game"));
+    fireEvent.click(await first.findByTestId("commit-selected"));
+    const original = (await first.findByTestId("resolution")).textContent;
+    const saved = localStorage.getItem("shi.chapter-01.save.v6");
+    first.unmount();
+    const resumed = render(<App />);
+    expect(resumed.queryByTestId("resolution")).toBeNull();
+    const backAtTitle = new Event("shi-native-back", { cancelable: true });
+    act(() => { window.dispatchEvent(backAtTitle); });
+    expect(backAtTitle.defaultPrevented).toBe(false);
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(saved);
+    fireEvent.click(resumed.getByTestId("begin-game"));
+    expect((await resumed.findByTestId("resolution")).textContent).toBe(original);
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(saved);
+    fireEvent.click(resumed.getByTestId("commit-selected"));
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(saved);
+    fireEvent.click(resumed.getByTestId("resolution-continue"));
+    const acknowledged = JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!);
+    expect(acknowledged.history).toHaveLength(1);
+    expect(acknowledged.pendingAftermath).toBeUndefined();
+    resumed.unmount();
+    const again = render(<App />);
+    fireEvent.click(again.getByTestId("begin-game"));
+    expect(again.queryByTestId("resolution")).toBeNull();
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!)).toEqual(acknowledged);
+  });
+
+  it("does not let delayed scene-focus callbacks steal focus from a newly opened council", async () => {
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    for (let turn = 0; turn < 4; turn++) {
+      fireEvent.click(await view.findByTestId("commit-selected"));
+      const next = await view.findByTestId("resolution-continue");
+      if (turn < 3) fireEvent.click(next);
+    }
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => { frames.push(callback); return frames.length; });
+    fireEvent.click(view.getByTestId("resolution-continue"));
+    const enter = await view.findByTestId("council-enter");
+    enter.focus(); fireEvent.click(enter);
+    await view.findByTestId("chen-council");
+    for (let frame = 0; frame < 2; frame++) {
+      const current = frames.splice(0);
+      act(() => { for (const callback of current) callback(performance.now()); });
+    }
+    expect(document.activeElement?.id).toBe("chen-title");
+    expect(localStorage.getItem("shi.chen-council.v1")).toBeNull();
+  });
+
+  it.each([true, false])("keeps every council exit locked until durable save settles (success=%s)", async success => {
+    vi.stubEnv("VITE_SHI_NATIVE", "1");
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    for (let turn = 0; turn < 4; turn++) {
+      fireEvent.click(await view.findByTestId("commit-selected"));
+      fireEvent.click(await view.findByTestId("resolution-continue"));
+    }
+    const chapter = localStorage.getItem("shi.chapter-01.save.v6");
+    const enter = await view.findByTestId("council-enter");
+    enter.focus(); fireEvent.click(enter);
+    await view.findByTestId("chen-council");
+    let finish!: () => void, fail!: (error: Error) => void;
+    vi.spyOn(persistence, "flushPersistence").mockReturnValueOnce(new Promise<void>((resolve, reject) => { finish = resolve; fail = reject; })).mockResolvedValue(undefined);
+    fireEvent.click(view.getByTestId("council-commit"));
+    fireEvent.click(view.container.querySelector(".drawer-scrim")!);
+    fireEvent.keyDown(document, { key: "Escape" });
+    const back = new Event("shi-native-back", { cancelable: true });
+    act(() => { window.dispatchEvent(back); });
+    expect(back.defaultPrevented).toBe(true);
+    expect(view.getByTestId("chen-council").getAttribute("data-round")).toBe("0");
+    expect(view.queryByTestId("council-response")).toBeNull();
+    await act(async () => { if (success) finish(); else fail(new Error("device storage full")); });
+    if (success) {
+      expect(await view.findByTestId("council-response")).toBeTruthy();
+      expect(JSON.parse(localStorage.getItem("shi.chen-council.v1")!).history).toHaveLength(1);
+    } else {
+      expect(await view.findByRole("alert")).toBeTruthy();
+      expect(localStorage.getItem("shi.chen-council.v1")).toBeNull();
+    }
+    fireEvent.click(view.container.querySelector(".drawer-scrim")!);
+    expect(view.queryByTestId("chen-council")).toBeNull();
+    await waitFor(() => expect(document.activeElement).toBe(enter));
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(chapter);
+  });
+
+  it("continues a surviving chapter into a save-isolated council and traps its shortcuts", async () => {
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    for (let turn = 0; turn < 4; turn++) {
+      fireEvent.click(await view.findByTestId("commit-selected"));
+      fireEvent.click(await view.findByTestId("resolution-continue"));
+    }
+    const chapter = localStorage.getItem("shi.chapter-01.save.v6");
+    const enter = await view.findByTestId("council-enter");
+    enter.focus(); fireEvent.click(enter);
+    const council = await view.findByTestId("chen-council");
+    expect(view.getByTestId("game-stage").hasAttribute("inert")).toBe(true);
+    expect(document.activeElement?.id).toBe("chen-title");
+    const buttons = Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 }));
+    const pad = { id: "Council test controller", index: 0, connected: true, mapping: "standard", timestamp: 0, axes: [0, 0, 0, 0], buttons } as unknown as Gamepad;
+    Object.defineProperty(navigator, "getGamepads", { configurable: true, value: () => [pad] });
+    await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-controller")).toBe("connected"));
+    buttons[14]!.pressed = true; buttons[14]!.value = 1;
+    await act(() => new Promise(resolve => setTimeout(resolve, 35)));
+    buttons[14]!.pressed = false; buttons[14]!.value = 0;
+    await act(() => new Promise(resolve => setTimeout(resolve, 35)));
+    expect(document.activeElement).toBe(view.getByTestId("council-commit"));
+    expect(localStorage.getItem("shi.chen-council.v1")).toBeNull();
+    view.getByRole("heading", { name: "The council at Chen" }).focus();
+    fireEvent.keyDown(document.activeElement!, { key: "Tab", shiftKey: true });
+    expect(document.activeElement?.tagName).toBe("SUMMARY");
+    fireEvent.keyDown(document.activeElement!, { key: "Tab" });
+    expect(document.activeElement?.getAttribute("data-council-action")).toBe("close");
+    fireEvent.keyDown(window, { key: "m", altKey: true });
+    fireEvent.keyDown(window, { key: "r", altKey: true });
+    expect(view.getByTestId("chen-council")).toBe(council);
+    fireEvent.click(view.getByTestId("council-commit"));
+    await view.findByTestId("council-response");
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(chapter);
+    fireEvent.keyDown(council, { key: "Escape" });
+    await waitFor(() => expect(view.queryByTestId("chen-council")).toBeNull());
+    await waitFor(() => expect(document.activeElement).toBe(enter));
+    fireEvent.click(enter);
+    await view.findByTestId("council-response");
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(chapter);
+  });
+
+  it("holds the aftermath without extra orders, then restores the next scene and the exact saved turn", async () => {
+    const view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    const commit = await view.findByTestId("commit-selected");
+    act(() => { commit.click(); commit.click(); });
+    const result = await view.findByTestId("resolution");
+    const saved = localStorage.getItem("shi.chapter-01.save.v6");
+    expect(JSON.parse(saved!).history).toHaveLength(1);
+    expect(result.getAttribute("role")).toBe("dialog");
+    expect(view.getByTestId("game-stage").hasAttribute("inert")).toBe(true);
+    expect(view.getByTestId("game-stage").getAttribute("aria-hidden")).toBe("true");
+    expect(document.activeElement?.id).toBe("consequence-title");
+    expect(view.container.querySelector("video")).toBeNull();
+    fireEvent.keyDown(window, { key: "m", altKey: true });
+    fireEvent.keyDown(window, { key: "s", altKey: true });
+    fireEvent.click(view.getByTestId("commit-selected"));
+    expect(view.queryByTestId("map-intel")).toBeNull();
+    expect(view.queryByTestId("sources-drawer")).toBeNull();
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(saved);
+    fireEvent.click(view.getByTestId("resolution-continue"));
+    expect(view.queryByTestId("resolution")).toBeNull();
+    expect(view.getByTestId("game-stage").hasAttribute("inert")).toBe(false);
+    await waitFor(() => expect(document.activeElement).toBe(document.querySelector(".story-panel")));
+    const acknowledged = localStorage.getItem("shi.chapter-01.save.v6");
+    const { pendingAftermath, ...campaignState } = JSON.parse(saved!);
+    expect(pendingAftermath).toBe(1);
+    expect(JSON.parse(acknowledged!)).toEqual(campaignState);
+    view.unmount();
+    const resumed = render(<App />);
+    fireEvent.click(resumed.getByTestId("begin-game"));
+    expect(resumed.getByTestId("shi-app").getAttribute("data-node-id")).toBe("open-council");
+    expect(resumed.queryByTestId("resolution")).toBeNull();
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(acknowledged);
+    fireEvent.click(await resumed.findByTestId("commit-selected"));
+    expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!).history).toHaveLength(2);
+  });
+
   it("keeps sound opt-in and persists an independently mixed runtime", async () => {
     vi.stubGlobal("AudioContext", FakeAudioContext);
     const view = render(<App />);
@@ -208,7 +378,7 @@ describe("playable web shell", () => {
     expect(view.queryByTestId("sources-drawer")).toBeNull();
 
     fireEvent.keyDown(window, { key: "r", altKey: true });
-    expect(view.getByTestId("record-drawer").getAttribute("role")).toBe("dialog");
+    expect((await view.findByTestId("record-drawer")).getAttribute("role")).toBe("dialog");
   });
 
   it("inspects reported map intelligence without leaking hindsight or changing game state", async () => {
@@ -276,6 +446,9 @@ describe("playable web shell", () => {
     fireEvent.click(view.getByTestId("resolution").querySelector("button")!);
 
     await waitFor(() => expect(view.getByTestId("shi-app").getAttribute("data-method-read-id")).toBe("witness-chain"));
+    expect(view.getByTestId("story-echo").getAttribute("data-story-echo-id")).toBe("covenant-reaches-the-ford");
+    expect(view.getByTestId("story-echo").textContent).toContain("Do not let the river turn us back into a count");
+    expect(view.getByTestId("story-echo").textContent).toContain("Aunt Yu");
     expect((await view.findByTestId("commitment-panel")).textContent).toContain("Names under protection");
     expect(view.getByTestId("decision-inspector").querySelector("[data-commitment-status='kept']")?.textContent).toContain("+4 Trust");
     fireEvent.click(document.querySelector("[data-choice-id='repair-the-ford']")!);
@@ -291,6 +464,8 @@ describe("playable web shell", () => {
     fireEvent.click(document.querySelector("[data-choice-id='families-first']")!);
     expect(view.getByTestId("decision-inspector").querySelector("[data-read-hit='true']")?.textContent).toContain("+3 Exposure");
     fireEvent.click(view.getByTestId("commit-selected"));
+    expect(view.getByTestId("story-echo").getAttribute("data-story-echo-id")).toBe("households-name-the-next-road");
+    expect(view.getByTestId("story-echo").textContent).toContain("remember who held it open");
     expect(view.getByTestId("resolution").textContent).toContain("Read hits");
     expect(view.getByTestId("resolution").textContent).toContain("Repeated public commitments");
     expect(view.getByTestId("resolution").textContent).toContain("+3 Exposure");

@@ -1,4 +1,4 @@
-import type { Campaign, CampaignNode, Choice, ChoiceResolution, CommitmentSelection, FieldCondition, GameState, Locale, LocalizedText, MethodCountermeasure, MethodReadSelection, OppositionStage, PlayerCommitment, Resources, StrategicMethod } from "./types";
+import type { Campaign, CampaignNode, Choice, ChoiceResolution, CommitmentSelection, FieldCondition, GameState, Locale, LocalizedText, MethodCountermeasure, MethodReadSelection, OppositionStage, PlayerCommitment, Resources, StoryEcho, StrategicMethod } from "./types";
 import { resourceKeys } from "./types";
 
 export const currentSaveVersion = 6 as const;
@@ -130,6 +130,12 @@ export function getNode(campaign: Campaign, nodeId: string): CampaignNode {
   const node = campaign.nodes.find((candidate) => candidate.id === nodeId);
   if (!node) throw new Error(`Unknown campaign node: ${nodeId}`);
   return node;
+}
+
+export function selectStoryEcho(node: CampaignNode, state: GameState): StoryEcho | undefined {
+  const matches = (node.storyEchoes ?? []).filter((echo) => state.flags.includes(echo.requiredFlag));
+  if (matches.length > 1) throw new Error(`Multiple story echoes match ${node.id}: ${matches.map((echo) => echo.id).join(", ")}.`);
+  return matches[0];
 }
 
 export function canChoose(choice: Choice, resources: Resources): boolean {

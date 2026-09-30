@@ -1279,6 +1279,38 @@
       "title": { "en": "The ford remembers the flood", "zh-Hans": "渡口记得洪水" },
       "context": { "en": "The column reaches a damaged crossing. Scouts report patrols behind and uncertain towns ahead. Families, grain carts, and armed ranks cannot all cross at once. This is a recovery turn: reduce exposure, restore supplies, or preserve cohesion before the final commitment.", "zh-Hans": "队伍来到一处被洪水毁坏的渡口。斥候报告追兵在后，前方城邑态度不明。家户、粮车与持械队伍无法同时过河。这是一轮整顿：在最终下注前，降低暴露、补充粮草，或维系队伍。" },
       "dialogue": { "en": "Chen Sheng watches you lay three tally slips on the wet rail: people, provisions, pursuit. “The river will collect one kind of debt before sunset. Which debt will we choose?”", "zh-Hans": "陈胜看着你把三根筹片摆在湿漉漉的栏木上：人、粮、追兵。“日落前，这条河必会来收一种债。我们选择还哪一种？”" },
+      "storyEchoes": [
+        {
+          "id": "covenant-reaches-the-ford",
+          "claimStatus": "dramatic-reconstruction",
+          "requiredFlag": "public-covenant",
+          "speakerId": "yu-mu",
+          "text": {
+            "en": "Aunt Yu presses a wet thumb beside the last family name. “You made us hear one another. Do not let the river turn us back into a count.”",
+            "zh-Hans": "妪母用湿拇指按住最后一户的名字：“你让我们听见了彼此。别让这条河又把我们变回一个数目。”"
+          }
+        },
+        {
+          "id": "stolen-hour-reaches-the-ford",
+          "claimStatus": "dramatic-reconstruction",
+          "requiredFlag": "beacon-seized",
+          "speakerId": "wu-guang",
+          "text": {
+            "en": "Wu Guang listens to the patrol drums behind the rain. “We stole one hour from them. Spend it now—or admit we took the beacon only to be seen.”",
+            "zh-Hans": "吴广隔着雨听见后方巡卒的鼓声：“我们从他们手里偷来一个时辰。现在就用掉——否则便承认，夺燧只是为了让人看见。”"
+          }
+        },
+        {
+          "id": "hidden-list-reaches-the-ford",
+          "claimStatus": "dramatic-reconstruction",
+          "requiredFlag": "register-hidden",
+          "speakerId": "qin-courier",
+          "text": {
+            "en": "Courier Han studies the unmarked bank. “A hidden register is safe only while nine hundred footsteps tell no single story. This crossing will write one.”",
+            "zh-Hans": "韩驿使打量着尚无痕迹的河岸：“九百双脚还没有讲出同一个故事时，藏起的名籍才算安全。这次渡河会替它写出一个。”"
+          }
+        }
+      ],
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
       "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "schematic-campaign-map", "field-conditions-reconstruction"],
       "conditions": [
@@ -1364,6 +1396,38 @@
       "title": { "en": "Three roads, none yet history", "zh-Hans": "三条路，都还不是历史" },
       "context": { "en": "Rumor multiplies: old Chu names in the southeast, an unusual circle of companions around Pei, frightened county seats nearby. The future victors are not yet inevitable. Your first campaign ends with a doctrine, not a coronation.", "zh-Hans": "流言四起：东南有楚国旧族，沛县有一群不同寻常的伙伴，近处县城则惶恐不安。未来的胜者尚非必然。第一章以一种行动原则结束，而非加冕。" },
       "dialogue": { "en": "Chen Sheng draws no map. He places three stones in the mud. “Power is not inside a stone. It is in what the ground lets the stones do to one another. Keeper—what ground will we make?”", "zh-Hans": "陈胜没有展开地图，只在泥里放下三块石头：“势不在石中，而在地形让石头彼此如何作用。掌简人——我们要造出怎样的地？”" },
+      "storyEchoes": [
+        {
+          "id": "households-name-the-next-road",
+          "claimStatus": "dramatic-reconstruction",
+          "requiredFlag": "families-first",
+          "speakerId": "yu-mu",
+          "text": {
+            "en": "Aunt Yu counts the reed knots tied for each household. “The last family crossed because armed people waited. Whichever road we choose, remember who held it open.”",
+            "zh-Hans": "妪母数着为每户系下的芦结：“最后一户能过河，是因为持械的人等了。无论走哪条路，都别忘了是谁把路守到最后。”"
+          }
+        },
+        {
+          "id": "the-ford-debt-names-the-next-road",
+          "claimStatus": "dramatic-reconstruction",
+          "requiredFlag": "ford-braced",
+          "speakerId": "wu-guang",
+          "text": {
+            "en": "Wu Guang wrings rain from an empty grain sack. “We bought one intact column with tomorrow's meals. The next victory must feed that debt, or the debt will consume us.”",
+            "zh-Hans": "吴广拧着一只空粮袋里的雨水：“我们用明日的饭换来一支完整的队伍。下一场胜利必须喂饱这笔债，否则它会把我们吃掉。”"
+          }
+        },
+        {
+          "id": "abandoned-loads-name-the-next-road",
+          "claimStatus": "dramatic-reconstruction",
+          "requiredFlag": "carts-abandoned",
+          "speakerId": "qin-courier",
+          "text": {
+            "en": "Courier Han turns a broken axle seal in his palm. “The patrol followed our false road. The families who turned back know the true one. Enemies are not the only witnesses we create.”",
+            "zh-Hans": "韩驿使在掌中转着一块断轴封泥：“巡卒追上了假路，折返的家户却知道真路。我们制造的见证人，不只有敌人。”"
+          }
+        }
+      ],
       "sourceRefs": ["shiji-48-daze", "shiji-7-xiang", "shiji-8-liu", "hanshu-31-chen-sheng", "zztj-7-qin", "sunzi-1-calculation", "dramatic-daze-keeper"],
       "claimRefs": ["pei-response-after-daze", "kuaiji-response-after-daze", "no-future-foreknowledge", "sunzi-five-factors-design-lens", "fictional-cast-and-councils", "schematic-campaign-map", "field-conditions-reconstruction"],
       "conditions": [

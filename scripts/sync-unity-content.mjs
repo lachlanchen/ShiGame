@@ -8,12 +8,23 @@ const audioSource = resolve(root, "content/audio/chapter-01-audio.json");
 const conformanceSource = resolve(root, "content/conformance/chapter-01-replays.v1.json");
 const editionSource = resolve(root, "content/research/editions.json");
 const engagementSource = resolve(root, "content/engagements/chapter-01-broken-crossing.v1.json");
+const chenCouncilSource = resolve(root, "content/councils/chen-council.v1.json");
 const outputs = [
   resolve(root, "apps/web/src/generated/chapter-01-daze.json"),
   resolve(root, "apps/unity/Assets/StreamingAssets/chapter-01-daze.json"),
   resolve(root, "apps/unreal/Content/StreamingAssets/chapter-01-daze.json"),
 ];
 const contents = await readFile(source);
+// One authored interlude for all clients. Native/engine presentation admission
+// remains separate; copying a definition is not a claim of a native port.
+for (const target of ["apps/web/src/generated", "apps/unity/Assets/StreamingAssets", "apps/unreal/Content/StreamingAssets", "apps/mobile/ios/SHI/Resources"]) {
+  const output = resolve(root, target, "chen-council.v1.json");
+  await mkdir(dirname(output), { recursive: true });
+  await copyFile(chenCouncilSource, output);
+}
+// Web/Android persist the exact canonical revision, as native iOS already does.
+await writeFile(resolve(root, "apps/web/src/generated/chen-council.v1.sha256"),
+  `${createHash("sha256").update(await readFile(chenCouncilSource)).digest("hex")}\n`);
 const campaign = JSON.parse(contents.toString("utf8"));
 const sha256 = createHash("sha256").update(contents).digest("hex");
 

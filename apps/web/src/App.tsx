@@ -7,7 +7,6 @@ import {
   formatSeed,
   getNode,
   localize,
-  migrateGameState,
   resolveChoice,
   selectActiveCommitment,
   selectCommitmentOutcome,
@@ -15,6 +14,7 @@ import {
   selectFieldCondition,
   selectMethodRead,
   selectOppositionStage,
+  selectStoryEcho,
   supportedLocales,
   type Campaign,
   type Choice,
@@ -27,34 +27,30 @@ import {
 } from "@shi/game-core";
 import campaignJson from "./generated/chapter-01-gameplay.json";
 import { isRtl, localeNames, translate } from "./i18n";
-import { ResourceRail } from "./components/ResourceRail";
-import { ThreeBackdrop } from "./components/ThreeBackdrop";
 import { useGamepad } from "./useGamepad";
 import type { GamepadCommand } from "./gamepad";
 import { audioCaps, audioDefaults, readAudioPreferences, storeAudioPreferences, type AudioCue, type AudioPreferences, type AudioRuntimeStatus } from "./audio-types";
 import { translateSound } from "./audio-labels";
 import type { ShiAudioEngine } from "./audioEngine";
+import { gameStorage } from "./persistence";
+import { readChapterSnapshot, writeChapterSnapshot } from "./chapter-snapshot";
 
 const campaign = campaignJson as unknown as Campaign;
+const ResolvedConsequenceScene = lazy(() => import("./components/ResolvedConsequenceScene").then((module) => ({ default: module.ResolvedConsequenceScene })));
+const ThreeBackdrop = lazy(() => import("./components/ThreeBackdrop").then((module) => ({ default: module.ThreeBackdrop })));
+const ResourceRail = lazy(() => import("./components/ResourceRail"));
 const StrategicMap = lazy(() => import("./components/StrategicMap").then((module) => ({ default: module.StrategicMap })));
 const FieldGuide = lazy(() => import("./components/FieldGuide").then((module) => ({ default: module.FieldGuide })));
 const SourceLedger = lazy(() => import("./components/SourceLedger").then((module) => ({ default: module.SourceLedger })));
 const AudioSettings = lazy(() => import("./components/AudioSettings").then((module) => ({ default: module.AudioSettings })));
 const OppositionPanel = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionPanel })));
-const OppositionResolutionCopy = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionResolutionCopy })));
-const OppositionResolutionDeltas = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionResolutionDeltas })));
-const OppositionRecord = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.OppositionRecord })));
-const MethodReadResolutionCopy = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadResolutionCopy })));
-const MethodReadResolutionDeltas = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadResolutionDeltas })));
-const MethodReadRecord = lazy(() => import("./components/OppositionLayer").then((module) => ({ default: module.MethodReadRecord })));
 const CommitmentPanel = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentPanel })));
-const CommitmentResolutionCopy = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentResolutionCopy })));
-const CommitmentResolutionDeltas = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentResolutionDeltas })));
-const CommitmentRecord = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentRecord })));
 const CommitmentEndingSummary = lazy(() => import("./components/CommitmentLayer").then((module) => ({ default: module.CommitmentEndingSummary })));
 const DecisionInspector = lazy(() => import("./components/DecisionInspector").then((module) => ({ default: module.DecisionInspector })));
 const CampaignHorizon = lazy(() => import("./components/CampaignHorizon").then((module) => ({ default: module.CampaignHorizon })));
 const EngagementBoard = lazy(() => import("./components/EngagementBoard").then((module) => ({ default: module.EngagementBoard })));
+const ChenCouncil = lazy(() => import("./components/ChenCouncil").then((module) => ({ default: module.ChenCouncil })));
+const ChronicleDrawer = lazy(() => import("./components/ChronicleDrawer").then((module) => ({ default: module.ChronicleDrawer })));
 const SAVE_KEY = "shi.chapter-01.save.v6";
 const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v5", "shi.chapter-01.save.v4", "shi.chapter-01.save.v3", "shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
@@ -62,14 +58,14 @@ const LOCALE_KEY = "shi.locale";
 const MOTION_KEY = "shi.reduced-motion";
 const ONBOARDING_KEY = "shi.onboarding.field-guide.v1";
 
-function readSavedState(): GameState | null {
+function readSavedState(): ReturnType<typeof readChapterSnapshot> {
   for (const key of [SAVE_KEY, ...LEGACY_SAVE_KEYS]) {
     try {
-      const migrated = migrateGameState(campaign, JSON.parse(localStorage.getItem(key) ?? "null"));
-      if (!migrated || migrated.history.length === 0) continue;
-      localStorage.setItem(SAVE_KEY, JSON.stringify(migrated));
-      localStorage.setItem(DRAFT_SEED_KEY, String(migrated.seed));
-      for (const legacy of LEGACY_SAVE_KEYS) localStorage.removeItem(legacy);
+      const migrated = readChapterSnapshot(campaign, JSON.parse(gameStorage.getItem(key) ?? "null"));
+      if (!migrated) continue;
+      gameStorage.setItem(SAVE_KEY, writeChapterSnapshot(migrated.state, migrated.resolution));
+      gameStorage.setItem(DRAFT_SEED_KEY, String(migrated.state.seed));
+      for (const legacy of LEGACY_SAVE_KEYS) gameStorage.removeItem(legacy);
       return migrated;
     } catch {
       // Try the next known save key; malformed local data must not stop startup.
@@ -92,14 +88,14 @@ function randomSeed(): number {
 
 function initialSeed(): number {
   const requested = seedFromUrl();
-  const stored = Number.parseInt(localStorage.getItem(DRAFT_SEED_KEY) ?? "", 10);
+  const stored = Number.parseInt(gameStorage.getItem(DRAFT_SEED_KEY) ?? "", 10);
   const seed = requested ?? (Number.isInteger(stored) && stored >= 0 && stored <= 0xffffffff ? stored : randomSeed());
-  localStorage.setItem(DRAFT_SEED_KEY, String(seed));
+  gameStorage.setItem(DRAFT_SEED_KEY, String(seed));
   return seed;
 }
 
 function initialLocale(): Locale {
-  const saved = localStorage.getItem(LOCALE_KEY) as Locale | null;
+  const saved = gameStorage.getItem(LOCALE_KEY) as Locale | null;
   if (saved && supportedLocales.includes(saved)) return saved;
   const language = navigator.language.toLowerCase();
   if (language.startsWith("zh-tw") || language.startsWith("zh-hk")) return "zh-Hant";
@@ -112,15 +108,16 @@ const effectLabel = (key: ResourceKey, value: number, locale: Locale) => `${valu
 const contentDirection = (text: LocalizedText, locale: Locale): "ltr" | undefined => locale === "ar" && !text.ar ? "ltr" : undefined;
 
 export function App() {
-  const [restoredState] = useState<GameState | null>(readSavedState);
+  const [restoredState] = useState(readSavedState);
   const [locale, setLocale] = useState<Locale>(initialLocale);
-  const [state, setState] = useState<GameState>(() => restoredState ?? createInitialState(campaign, initialSeed()));
+  const [state, setState] = useState<GameState>(() => restoredState?.state ?? createInitialState(campaign, initialSeed()));
   const [screen, setScreen] = useState<"title" | "play">("title");
-  const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | "audio" | "engagement" | null>(null);
+  const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | "audio" | "engagement" | "council" | null>(null);
+  const councilSavingRef = useRef(false);
   const [mapSiteId, setMapSiteId] = useState<string | null>(null);
   const [sourceSiteId, setSourceSiteId] = useState<string | null>(null);
-  const [resolution, setResolution] = useState<ChoiceResolution | null>(null);
-  const [reducedMotion, setReducedMotion] = useState(() => localStorage.getItem(MOTION_KEY) === "true" || window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const [resolution, setResolution] = useState<ChoiceResolution | null>(() => restoredState?.resolution ?? null);
+  const [reducedMotion, setReducedMotion] = useState(() => gameStorage.getItem(MOTION_KEY) === "true" || window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [fontStatus, setFontStatus] = useState<"loading" | "ready" | "error">("loading");
   const [hasSave, setHasSave] = useState(restoredState !== null);
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState(0);
@@ -132,6 +129,7 @@ export function App() {
   const endingRestartRef = useRef<HTMLButtonElement>(null);
   const choiceRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const choiceInFlightRef = useRef(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioEngineRef = useRef<ShiAudioEngine | null>(null);
   const audioLoadingRef = useRef<Promise<void> | null>(null);
@@ -146,6 +144,8 @@ export function App() {
   const commitmentStakeholder = activeCommitment ? campaign.characters.find((character) => character.id === activeCommitment.stakeholderId)! : null;
   const answeredCommitmentRecord = [...state.history].reverse().find((record) => record.commitmentId && record.commitmentOutcomeId);
   const speaker = campaign.characters.find((character) => character.id === node.speakerId)!;
+  const storyEcho = selectStoryEcho(node, state);
+  const storyEchoSpeaker = storyEcho ? campaign.characters.find((character) => character.id === storyEcho.speakerId)! : null;
   const ending = state.completed ? deriveEnding(state) : null;
   const nodeNumber = campaign.nodes.findIndex((candidate) => candidate.id === node.id) + 1;
   const sourceSite = campaign.sites.find((site) => site.id === sourceSiteId) ?? null;
@@ -153,7 +153,7 @@ export function App() {
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = isRtl(locale) ? "rtl" : "ltr";
-    localStorage.setItem(LOCALE_KEY, locale);
+    gameStorage.setItem(LOCALE_KEY, locale);
     let current = true;
     setFontStatus("loading");
     import("./fontLoader").then(({ ensureLocaleFont }) => ensureLocaleFont(locale)).then(
@@ -167,13 +167,13 @@ export function App() {
   }, [locale]);
 
   useEffect(() => {
-    localStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
+    gameStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
     if (state.history.length > 0) {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(state));
-      for (const legacy of LEGACY_SAVE_KEYS) localStorage.removeItem(legacy);
+      gameStorage.setItem(SAVE_KEY, writeChapterSnapshot(state, resolution));
+      for (const legacy of LEGACY_SAVE_KEYS) gameStorage.removeItem(legacy);
       setHasSave(true);
     }
-  }, [state]);
+  }, [state, resolution]);
 
   useEffect(() => {
     screenRef.current = screen;
@@ -260,14 +260,16 @@ export function App() {
   };
 
   const choose = (choice: Choice) => {
-    if (resolution || drawer || !canChoose(choice, state.resources)) return;
+    if (choiceInFlightRef.current || resolution || drawer || !canChoose(choice, state.resources)) return;
     const result = resolveChoice(campaign, state, choice.id);
+    choiceInFlightRef.current = true;
     setResolution(result);
     setState(result.state);
     playAudioCue(result.state.completed ? (result.state.failureReason ? "failure" : "ending") : "commit");
   };
 
-  const openDrawer = (next: "sources" | "record" | "guide" | "audio" | "engagement") => {
+  const openDrawer = (next: "sources" | "record" | "guide" | "audio" | "engagement" | "council") => {
+    if (resolution) return;
     if (!drawer) {
       const active = document.activeElement;
       returnFocusRef.current = active instanceof HTMLElement && active !== document.body && active !== document.documentElement ? active : null;
@@ -280,23 +282,48 @@ export function App() {
     screenRef.current = "play";
     setScreen("play");
     if (audioPreferencesRef.current.enabled) playAudioCue("drawer");
-    if (!hasSave && localStorage.getItem(ONBOARDING_KEY) !== "complete") openDrawer("guide");
+    if (!hasSave && gameStorage.getItem(ONBOARDING_KEY) !== "complete") openDrawer("guide");
   };
 
   const closeTransient = () => {
-    if (drawer === "guide") localStorage.setItem(ONBOARDING_KEY, "complete");
+    // Parent-owned backdrop, native Back and global Escape must honor the same
+    // durable transaction as the council's own controls, including rollback.
+    if (drawer === "council" && councilSavingRef.current) return;
+    if (!drawer && !resolution) return;
+    if (drawer === "guide") gameStorage.setItem(ONBOARDING_KEY, "complete");
     const returnTarget = returnFocusRef.current;
     returnFocusRef.current = null;
     setDrawer(null);
     setResolution(null);
+    choiceInFlightRef.current = false;
     playAudioCue("close");
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+      if (document.querySelector("[role='dialog'][aria-modal='true']")) return;
       const story = document.querySelector<HTMLElement>(".story-panel");
       const target = returnTarget?.isConnected ? returnTarget : story;
       target?.focus({ preventScroll: true });
       if (document.activeElement !== target) story?.focus({ preventScroll: true });
     }));
   };
+
+  useEffect(() => {
+    const back = (event: Event) => {
+      // A restored reaction is pending while the title is visible, not read.
+      // Let Android minimize here without acknowledging unseen story content.
+      if (screen !== "play") return;
+      if (drawer || resolution) { event.preventDefault(); closeTransient(); }
+      else if (mapSiteId) { event.preventDefault(); setMapSiteId(null); setSourceSiteId(null); }
+      else if (screen === "play") { event.preventDefault(); setScreen("title"); }
+    };
+    const active = (event: Event) => {
+      if (!(event as CustomEvent<boolean>).detail) void audioContextRef.current?.suspend();
+      // Resume only on a player gesture, respecting iOS audio restrictions.
+    };
+    if (import.meta.env.VITE_SHI_NATIVE !== "1") return;
+    window.addEventListener("shi-native-back", back);
+    window.addEventListener("shi-native-active", active);
+    return () => { window.removeEventListener("shi-native-back", back); window.removeEventListener("shi-native-active", active); };
+  });
 
   const focusChoice = (index: number) => {
     setSelectedChoiceIndex(index);
@@ -340,6 +367,19 @@ export function App() {
       return;
     }
     if (drawer) {
+      if (drawer === "council") {
+        if (command === "back") { document.querySelector<HTMLButtonElement>("[data-council-action='close']")?.click(); return; }
+        const controls = [...document.querySelectorAll<HTMLButtonElement>("[data-council-action]:not(:disabled)")];
+        if (command === "previous" || command === "next") {
+          const current = controls.indexOf(document.activeElement as HTMLButtonElement);
+          controls[(current + (command === "previous" ? (current < 0 ? 0 : -1) : 1) + controls.length) % controls.length]?.focus();
+        } else if (command === "confirm") {
+          const active = document.activeElement;
+          if (active instanceof HTMLButtonElement && active.matches("[data-council-action]")) active.click();
+          else document.querySelector<HTMLButtonElement>("[data-council-action='continue'], [data-council-choice]")?.focus();
+        }
+        return;
+      }
       if (drawer === "engagement") {
         if (command === "back" || command === "engagement") { closeTransient(); return; }
         if (command === "previous" || command === "next") {
@@ -395,7 +435,16 @@ export function App() {
       return;
     }
     if (state.completed) {
-      if (command === "confirm") endingRestartRef.current?.click();
+      if (command === "confirm") {
+        const active = document.activeElement;
+        if (active instanceof HTMLButtonElement && active.closest(".ending-panel")) active.click();
+        else (document.querySelector<HTMLButtonElement>("[data-testid='council-enter']") ?? endingRestartRef.current)?.click();
+      }
+      if (command === "previous" || command === "next") {
+        const buttons = [...document.querySelectorAll<HTMLButtonElement>(".ending-panel button")];
+        const index = buttons.indexOf(document.activeElement as HTMLButtonElement);
+        buttons[(index + (command === "previous" ? (index < 0 ? 0 : -1) : 1) + buttons.length) % buttons.length]?.focus();
+      }
       return;
     }
     if (command === "previous") { moveChoice(-1); return; }
@@ -416,10 +465,12 @@ export function App() {
   }, [node.id]);
 
   useEffect(() => {
-    if (screen !== "play" || state.history.length === 0) return;
-    const frame = window.requestAnimationFrame(() => storyRef.current?.focus({ preventScroll: true }));
+    if (screen !== "play" || state.history.length === 0 || resolution) return;
+    const frame = window.requestAnimationFrame(() => {
+      if (!document.querySelector("[role='dialog'][aria-modal='true']")) storyRef.current?.focus({ preventScroll: true });
+    });
     return () => window.cancelAnimationFrame(frame);
-  }, [node.id, screen, state.history.length]);
+  }, [node.id, screen, state.history.length, resolution]);
 
   useLayoutEffect(() => {
     if (!drawer) return;
@@ -429,12 +480,12 @@ export function App() {
       const panel = active?.closest<HTMLElement>(".drawer[role='dialog']")
         ?? document.querySelector<HTMLElement>(".drawer[role='dialog']");
       if (!panel) { event.preventDefault(); return; }
-      const controls = [...panel.querySelectorAll<HTMLElement>("button:not(:disabled), a[href], input:not(:disabled):not([type='hidden']), select:not(:disabled), [tabindex]:not([tabindex='-1'])")]
-        .filter((element) => !element.hidden && !element.closest("[hidden], [aria-hidden='true']"));
+      const controls = [...panel.querySelectorAll<HTMLElement>("button:not(:disabled), summary, a[href], input:not(:disabled):not([type='hidden']), select:not(:disabled), [tabindex]:not([tabindex='-1'])")]
+        .filter((element) => !element.hidden && !element.closest("[hidden], [aria-hidden='true']") && (!element.closest("details:not([open])") || element.tagName === "SUMMARY"));
       if (controls.length === 0) { event.preventDefault(); panel.focus({ preventScroll: true }); return; }
       const first = controls[0]!;
       const last = controls[controls.length - 1]!;
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      if (event.shiftKey && (document.activeElement === first || !active || !controls.includes(active))) { event.preventDefault(); last.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
       else if (!panel.contains(document.activeElement)) { event.preventDefault(); first.focus(); }
     };
@@ -444,6 +495,7 @@ export function App() {
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
+      if (screen !== "play") return;
       const target = event.target;
       if (target instanceof Element && target.matches("input, textarea, select, [contenteditable='true']")) return;
       if (event.key === "Escape") {
@@ -460,6 +512,10 @@ export function App() {
         }
       }
       if (screen !== "play" || event.ctrlKey || event.metaKey) return;
+      // A consequence is a presentation-only pause. Shortcuts cannot open the
+      // next scene or issue a new order behind it; Escape/Continue dismiss it.
+      if (resolution) return;
+      if (drawer === "council") return;
       const key = event.key.toLowerCase();
       if (event.altKey && key === "s") {
         event.preventDefault();
@@ -503,14 +559,15 @@ export function App() {
   }, [drawer, mapSiteId, node, resolution, screen, state]);
 
   const clearSaves = () => {
-    localStorage.removeItem(SAVE_KEY);
-    for (const legacy of LEGACY_SAVE_KEYS) localStorage.removeItem(legacy);
+    gameStorage.removeItem(SAVE_KEY);
+    for (const legacy of LEGACY_SAVE_KEYS) gameStorage.removeItem(legacy);
   };
 
   const restart = () => {
+    choiceInFlightRef.current = false;
     clearSaves();
     setState(createInitialState(campaign, state.seed));
-    localStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
+    gameStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
     setResolution(null);
     setDrawer(null);
     setMapSiteId(null);
@@ -520,9 +577,10 @@ export function App() {
   };
 
   const newChronicle = () => {
+    choiceInFlightRef.current = false;
     clearSaves();
     const seed = randomSeed();
-    localStorage.setItem(DRAFT_SEED_KEY, String(seed));
+    gameStorage.setItem(DRAFT_SEED_KEY, String(seed));
     setState(createInitialState(campaign, seed));
     setResolution(null);
     setDrawer(null);
@@ -534,7 +592,7 @@ export function App() {
 
   const toggleMotion = () => {
     setReducedMotion((current) => {
-      localStorage.setItem(MOTION_KEY, String(!current));
+      gameStorage.setItem(MOTION_KEY, String(!current));
       return !current;
     });
   };
@@ -542,7 +600,7 @@ export function App() {
   if (screen === "title") {
     return (
       <main className="title-screen" data-testid="shi-app" data-screen="title" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
-        <ThreeBackdrop reducedMotion={reducedMotion} />
+        <Suspense fallback={<div className="three-backdrop" aria-hidden="true" />}><ThreeBackdrop reducedMotion={reducedMotion} /></Suspense>
         <div className="title-image" />
         <div className="title-vignette" />
         <header className="title-topbar">
@@ -552,7 +610,7 @@ export function App() {
           </label>
         </header>
         <section className="title-copy">
-          <p className="eyebrow">{translate(locale, "chapter")}</p>
+          <p className="eyebrow">{import.meta.env.VITE_SHI_NATIVE === "1" ? "I · DAZE" : translate(locale, "chapter")}</p>
           <div className="seal-title"><span className="hanzi">勢</span><div><h1>SHI</h1><p>{localize(campaign.title, locale).replace(/^SHI\s*[—-]\s*/i, "")}</p></div></div>
           <blockquote>{translate(locale, "opening")}</blockquote>
           <p className="title-note">{translate(locale, "openingNote")}</p>
@@ -560,6 +618,10 @@ export function App() {
             <button className="primary-button" data-testid="begin-game" ref={beginButtonRef} onClick={enterPlay}>{hasSave ? translate(locale, "continue") : translate(locale, "begin")} <span>→</span></button>
             {hasSave && <button className="text-button" onClick={newChronicle}>{translate(locale, "newGame")}</button>}
           </div>
+          {import.meta.env.VITE_SHI_NATIVE === "1" && <nav className="native-legal" aria-label={locale.startsWith("zh") ? "隐私与支持" : "Privacy and support"}>
+            <a href="https://lachlan.lazying.art/ShiGame/privacy.html" target="_blank" rel="noreferrer">{locale.startsWith("zh") ? "隐私政策" : "Privacy policy"}</a>
+            <a href="https://lachlan.lazying.art/ShiGame/support.html" target="_blank" rel="noreferrer">{locale.startsWith("zh") ? "支持" : "Support"}</a>
+          </nav>}
         </section>
         <footer className="title-footer"><span>209 BCE</span><span>DAZE VILLAGE · 大澤鄉</span>{controllerConnected && <span className="controller-status">● {translate(locale, "controllerReady")}</span>}<button data-testid="title-audio-toggle" className={audioPreferences.enabled ? "active" : ""} aria-pressed={audioPreferences.enabled} onClick={() => setAudioEnabled(!audioPreferences.enabled)}>{translateSound(locale, audioPreferences.enabled ? "on" : "off")}</button><button className={reducedMotion ? "active" : ""} onClick={toggleMotion}>{translate(locale, "reducedMotion")}</button></footer>
       </main>
@@ -568,8 +630,8 @@ export function App() {
 
   return (
     <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-opposition-stage={oppositionStage.id} data-method-read-id={methodRead.read.id} data-commitment-id={activeCommitment?.id ?? "none"} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
-      <ThreeBackdrop reducedMotion={reducedMotion} />
-      <div className="game-stage" data-testid="game-stage" inert={Boolean(drawer)}>
+      <Suspense fallback={<div className="three-backdrop" aria-hidden="true" />}><ThreeBackdrop reducedMotion={reducedMotion} paused={Boolean(drawer || resolution)} /></Suspense>
+      <div className="game-stage" data-testid="game-stage" inert={Boolean(drawer || resolution)} aria-hidden={resolution ? true : undefined}>
       <header className="game-header">
         <button className="brand-button" onClick={() => setScreen("title")} aria-label="SHI title screen"><span>勢</span><div><strong>SHI</strong><small>{localize(campaign.subtitle, locale)}</small></div></button>
         <div className="header-actions">
@@ -582,7 +644,7 @@ export function App() {
         </div>
       </header>
 
-      <ResourceRail resources={state.resources} locale={locale} />
+      <Suspense fallback={<section className="resource-rail" aria-busy="true" />}><ResourceRail resources={state.resources} locale={locale} /></Suspense>
 
       <Suspense fallback={<section className="campaign-horizon-placeholder" aria-busy="true" />}><CampaignHorizon campaign={campaign} node={node} locale={locale} /></Suspense>
 
@@ -610,31 +672,15 @@ export function App() {
             <p dir={contentDirection(node.dialogue, locale)}>{localize(node.dialogue, locale)}</p>
             <footer><strong dir={contentDirection(speaker.name, locale)}>{localize(speaker.name, locale)}</strong><span dir={contentDirection(speaker.role, locale)}>{localize(speaker.role, locale)}</span>{!speaker.historical && <em>{translate(locale, "reconstruction")}</em>}</footer>
           </blockquote>
+          {storyEcho && storyEchoSpeaker && (
+            <aside className="story-echo" data-testid="story-echo" data-story-echo-id={storyEcho.id} aria-label={translate(locale, "reconstruction")}>
+              <p dir={contentDirection(storyEcho.text, locale)}>{localize(storyEcho.text, locale)}</p>
+              <footer><strong dir={contentDirection(storyEchoSpeaker.name, locale)}>{localize(storyEchoSpeaker.name, locale)}</strong><span>{translate(locale, "reconstruction")}</span></footer>
+            </aside>
+          )}
           <button className="source-link" onClick={openNodeSources}><span>◫</span>{translate(locale, "openSources")} · {node.sourceRefs.length}</button>
         </article>
       </div>
-
-      {resolution && (
-        <div className="resolution-banner" data-testid="resolution" role="status" aria-live="polite">
-          <div className="resolution-copy">
-            <div><span>{translate(locale, "consequence")}</span><p>{localize(resolution.choice.consequence, locale)}</p></div>
-            {resolution.commitment && <Suspense fallback={null}><CommitmentResolutionCopy commitmentId={resolution.commitment.commitment.id} outcomeId={resolution.commitment.outcome.id} stakeholder={campaign.characters.find((character) => character.id === resolution.commitment!.commitment.stakeholderId)!.name} locale={locale} /></Suspense>}
-            {resolution.choice.pressure && <div className="pressure-reveal"><span>{translate(locale, "pressureResponse")}</span><p dir={contentDirection(resolution.choice.pressure.reveal, locale)}>{localize(resolution.choice.pressure.reveal, locale)}</p></div>}
-            {resolution.oppositionStage && <Suspense fallback={null}><OppositionResolutionCopy stageId={resolution.oppositionStage.id} locale={locale} /></Suspense>}
-            {resolution.methodRead && <Suspense fallback={null}><MethodReadResolutionCopy readId={resolution.methodRead.read.id} methodId={resolution.method.id} matched={resolution.methodReadMatched} locale={locale} /></Suspense>}
-            <div className="field-reveal"><span>{translate(locale, "fieldApplied")}</span><p dir={contentDirection(resolution.condition.title, locale)}>{localize(resolution.condition.title, locale)}</p></div>
-          </div>
-          <div className="resolution-deltas">
-            <div className="delta-list action-deltas">{Object.entries(resolution.playerDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
-            {resolution.commitment && <Suspense fallback={null}><CommitmentResolutionDeltas effects={resolution.commitmentDeltas} locale={locale} /></Suspense>}
-            {Object.keys(resolution.pressureDeltas).length > 0 && <div className="delta-list pressure-deltas">{Object.entries(resolution.pressureDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
-            <Suspense fallback={null}><OppositionResolutionDeltas effects={resolution.oppositionDeltas} locale={locale} /></Suspense>
-            <Suspense fallback={null}><MethodReadResolutionDeltas effects={resolution.methodReadDeltas} locale={locale} /></Suspense>
-            {Object.keys(resolution.fieldDeltas).length > 0 && <div className="delta-list field-deltas">{Object.entries(resolution.fieldDeltas).map(([key, value]) => <span className={key === "danger" ? "risk" : ""} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
-          </div>
-          <button onClick={() => setResolution(null)} aria-label={translate(locale, "close")}>×</button>
-        </div>
-      )}
 
       {!state.completed ? (
         <section className="choices-panel" inert={Boolean(resolution)}>
@@ -672,29 +718,27 @@ export function App() {
             <p>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText")}</p>
             {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} locale={locale} /></Suspense>}
           </div>
-          <button className="primary-button" ref={endingRestartRef} onClick={restart}>{translate(locale, "restart")} <span>↺</span></button>
+          <div className="chen-ending-actions">
+            {!state.failureReason && <button className="primary-button" data-testid="council-enter" onClick={() => openDrawer("council")}>{locale.startsWith("zh") ? "进入陈地议事" : "Continue to the council at Chen"} <span>→</span></button>}
+            <button className="primary-button" ref={endingRestartRef} onClick={restart}>{translate(locale, "restart")} <span>↺</span></button>
+          </div>
         </section>
       )}
       </div>
+
+      {resolution && (
+        <Suspense fallback={<div role="dialog" aria-modal="true" aria-label={translate(locale, "consequence")} aria-busy="true" style={{ position: "fixed", inset: 0, zIndex: 9, display: "grid", placeItems: "center", background: "#171b18" }}><button className="primary-button" autoFocus onClick={closeTransient}>{translate(locale, "continue")}</button></div>}>
+        <ResolvedConsequenceScene key={`${state.seed}-${state.history.length}`} campaign={campaign} resolution={resolution}
+          locale={locale} reducedMotion={reducedMotion} onContinue={closeTransient} />
+        </Suspense>
+      )}
 
       {drawer === "guide" && <Suspense fallback={null}><FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} /></Suspense>}
       {drawer === "sources" && <Suspense fallback={null}><SourceLedger campaign={campaign} locale={locale} activeIds={sourceSite?.sourceRefs ?? node.sourceRefs} activeClaimIds={sourceSite?.claimRefs ?? node.claimRefs} contextTitle={sourceSite ? localize(sourceSite.name, locale) : undefined} onClose={closeTransient} /></Suspense>}
       {drawer === "audio" && <Suspense fallback={null}><AudioSettings locale={locale} preferences={audioPreferences} status={audioStatus} onEnabledChange={setAudioEnabled} onLevelChange={setAudioLevel} onPreview={() => playAudioCue("commit")} onClose={closeTransient} /></Suspense>}
       {drawer === "engagement" && <Suspense fallback={null}><EngagementBoard key={`${node.id}-${node.choices[selectedChoiceIndex]?.id}-${activeCondition.id}`} planId={node.choices[selectedChoiceIndex]!.id} conditionId={activeCondition.id} locale={locale} onCue={playAudioCue} onClose={closeTransient} /></Suspense>}
-      {drawer === "record" && (
-        <aside className="drawer record-drawer" data-testid="record-drawer" role="dialog" aria-modal="true" aria-label={translate(locale, "record")}>
-          <div className="drawer-head"><div><span className="eyebrow">SHI</span><h2>{translate(locale, "record")}</h2></div><button className="icon-button" autoFocus onClick={closeTransient} aria-label={translate(locale, "close")}>×</button></div>
-          {state.history.length === 0 ? <p className="empty-record">{translate(locale, "historyEmpty")}</p> : (
-            <ol className="record-list">{state.history.map((record, index) => {
-              const pastNode = getNode(campaign, record.nodeId);
-              const pastChoice = pastNode.choices.find((choice) => choice.id === record.choiceId)!;
-              const pastCondition = pastNode.conditions.find((condition) => condition.id === record.conditionId)!;
-              return <li key={`${record.nodeId}-${record.choiceId}`}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{localize(pastNode.title, locale)}</small><strong>{localize(pastChoice.label, locale)}</strong><p>{localize(pastChoice.consequence, locale)}</p>{record.commitmentId && record.commitmentOutcomeId && <Suspense fallback={null}><CommitmentRecord commitmentId={record.commitmentId} outcomeId={record.commitmentOutcomeId} effects={record.commitmentEffects} locale={locale} /></Suspense>}{pastChoice.pressure && <p className="record-pressure"><b>{translate(locale, "pressureResponse")}</b>{localize(pastChoice.pressure.reveal, locale)}</p>}{record.oppositionStageId && <Suspense fallback={null}><OppositionRecord stageId={record.oppositionStageId} effects={record.oppositionEffects} locale={locale} /></Suspense>}{record.methodReadId && record.methodId && <Suspense fallback={null}><MethodReadRecord readId={record.methodReadId} methodId={record.methodId} matched={record.methodReadMatched === true} effects={record.methodReadEffects} locale={locale} /></Suspense>}<p className="record-field"><b>{translate(locale, "fieldApplied")}</b>{localize(pastCondition.title, locale)} · {Object.entries(record.conditionEffects).map(([key, value]) => effectLabel(key as ResourceKey, value ?? 0, locale)).join(" · ")}</p></div></li>;
-            })}</ol>
-          )}
-          <button className="text-button restart-button" onClick={restart}>{translate(locale, "restart")}</button>
-        </aside>
-      )}
+      {drawer === "council" && <Suspense fallback={<aside className="drawer" role="dialog" aria-modal="true" aria-label="Loading council" aria-busy="true"><button className="icon-button" autoFocus onClick={closeTransient} aria-label={translate(locale, "close")}>×</button></aside>}><ChenCouncil origin={state} locale={locale} reducedMotion={reducedMotion} onCue={playAudioCue} onClose={closeTransient} onSavingChange={saving => { councilSavingRef.current = saving; }} /></Suspense>}
+      {drawer === "record" && <Suspense fallback={null}><ChronicleDrawer campaign={campaign} state={state} locale={locale} onClose={closeTransient} onRestart={restart} /></Suspense>}
       {drawer && <button className="drawer-scrim" onClick={closeTransient} aria-label={translate(locale, "close")} />}
     </main>
   );

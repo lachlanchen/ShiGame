@@ -176,6 +176,14 @@ export interface FieldCondition {
   effects: Partial<Resources>;
 }
 
+export interface StoryEcho {
+  id: string;
+  claimStatus: "dramatic-reconstruction";
+  requiredFlag: string;
+  speakerId: string;
+  text: LocalizedText;
+}
+
 export interface Choice {
   id: string;
   methodId: string;
@@ -203,6 +211,7 @@ export interface CampaignNode {
   title: LocalizedText;
   context: LocalizedText;
   dialogue: LocalizedText;
+  storyEchoes?: StoryEcho[];
   sourceRefs: string[];
   claimRefs: string[];
   conditions: FieldCondition[];

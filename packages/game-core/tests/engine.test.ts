@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, methodReadMatches, migrateGameState, resolveChoice, selectActiveCommitment, selectEstablishedCommitment, selectFieldCondition, selectMethodRead, selectOppositionStage } from "../src";
+import { canChoose, createInitialState, deriveEnding, formatSeed, hashSeedKey, localize, methodReadMatches, migrateGameState, resolveChoice, selectActiveCommitment, selectEstablishedCommitment, selectFieldCondition, selectMethodRead, selectOppositionStage, selectStoryEcho } from "../src";
 import type { Campaign } from "../src";
 
 const campaign: Campaign = {
@@ -465,6 +465,22 @@ describe("campaign engine", () => {
 
   it("falls back to English for an untranslated locale", () => {
     expect(localize({ en: "Grain", "zh-Hans": "粮" }, "fr")).toBe("Grain");
+  });
+
+  it("selects the one authored story echo carried by prior flags", () => {
+    const node = structuredClone(campaign.nodes[0]!);
+    node.storyEchoes = [
+      { id: "public-memory", claimStatus: "dramatic-reconstruction", requiredFlag: "public", speakerId: "witness", text: { en: "The promise returns.", "zh-Hans": "承诺再次出现。" } },
+      { id: "hidden-memory", claimStatus: "dramatic-reconstruction", requiredFlag: "hidden", speakerId: "courier", text: { en: "The secret returns.", "zh-Hans": "秘密再次出现。" } },
+    ];
+    const state = createInitialState(campaign);
+    state.flags = ["hidden"];
+
+    expect(selectStoryEcho(node, state)?.id).toBe("hidden-memory");
+    state.flags = [];
+    expect(selectStoryEcho(node, state)).toBeUndefined();
+    state.flags = ["public", "hidden"];
+    expect(() => selectStoryEcho(node, state)).toThrow(/Multiple story echoes match/);
   });
 
   it("derives endings from strategic state", () => {

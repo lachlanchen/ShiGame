@@ -1,0 +1,52 @@
+.resolution-banner.consequence-scene {
+  position: fixed; inset: 0; z-index: 9; transform: none;
+  width: 100%; height: 100dvh; max-height: none; display: grid;
+  grid-template-columns: minmax(0, 1fr); place-items: center; gap: 0;
+  padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  border: 0; overflow: hidden; background: #080b0a;
+  animation: consequence-enter .28s ease-out;
+}
+.consequence-card {
+  display: flex; flex-direction: column; width: min(100%, 880px); max-height: 100%; min-height: 0;
+  border: 1px solid #575143; background: #171b18; box-shadow: 0 24px 80px #0006;
+}
+.consequence-heading { padding: 28px 36px 18px; border-bottom: 1px solid #42453b; }
+.consequence-scene p.consequence-eyebrow { color: #d2b879; font-size: .8rem; line-height: 1.6; }
+.consequence-heading h2 { margin: 14px 0 0; color: #efe7d8; font-family: var(--serif); font-weight: 500; font-size: clamp(1.4rem, 3.5vw, 2.5rem); line-height: 1.25; overflow-wrap: anywhere; }
+.consequence-heading h2:focus { outline: none; }
+.consequence-scroll { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.consequence-body { padding: 28px 36px; }
+.consequence-scene p.consequence-prose { margin: 0; color: #e4dfd1; font-size: clamp(1.08rem, 2.3vw, 1.4rem); line-height: 1.95; max-width: 60ch; overflow-wrap: anywhere; }
+.consequence-details { margin-top: 28px; border-top: 1px solid #42453b; }
+.consequence-details summary { padding: 14px 4px; min-height: 48px; color: #d2b879; cursor: pointer; line-height: 1.6; }
+.consequence-ledger { display: grid; gap: 22px; padding-block: 10px; }
+.consequence-scene .resolution-copy, .consequence-scene .resolution-copy:has(.commitment-reveal) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.consequence-scene .resolution-copy span, .consequence-scene .resolution-copy:has(.commitment-reveal) span { font-size: .8rem; line-height: 1.6; }
+.consequence-scene .resolution-copy p, .consequence-scene .resolution-copy:has(.commitment-reveal) p { color: #c6c5b9; font-size: 1rem; line-height: 1.8; overflow-wrap: anywhere; }
+.consequence-scene .resolution-deltas { margin: 0; min-width: 0; }
+.consequence-delta-layer h3 { margin: 12px 0 8px; color: #d2b879; font-size: .85rem; font-weight: 500; line-height: 1.6; }
+.consequence-scene .delta-list span { font-size: .85rem; line-height: 1.6; }
+.consequence-footer { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 18px 36px; border-top: 1px solid #42453b; }
+.consequence-footer button, .silent-film button { min-height: 48px; min-width: 48px; white-space: normal; overflow-wrap: anywhere; }
+.consequence-footer .primary-button { justify-content: space-between; gap: 24px; }
+.consequence-scene button:focus-visible, .consequence-scene summary:focus-visible { outline: 3px solid #f0cf86; outline-offset: 3px; }
+[dir="rtl"] .consequence-footer .primary-button span { transform: scaleX(-1); }
+.silent-film { margin-bottom: 24px; }
+.silent-film video { display: block; width: 100%; max-height: 45dvh; background: #090b0a; }
+.consequence-scene .silent-film p { color: #e4dfd1; font-size: 1rem; line-height: 1.6; }
+@keyframes consequence-enter { from { opacity: 0; } }
+[data-motion="reduced"].consequence-scene { animation: none; }
+@media (max-width: 600px) {
+  .resolution-banner.consequence-scene { padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); }
+  .consequence-heading { padding: 20px 18px 16px; }
+  .consequence-body { padding: 22px 18px; }
+  .consequence-footer { padding: 14px 18px; }
+  .consequence-footer .primary-button { width: 100%; }
+  .consequence-scene .resolution-copy, .consequence-scene .resolution-copy:has(.commitment-reveal) { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .resolution-banner.consequence-scene { animation: none; } }
+@media (forced-colors: active) {
+  .resolution-banner.consequence-scene, .consequence-card { background: Canvas; color: CanvasText; border: 1px solid CanvasText; }
+  .consequence-card * { border-color: CanvasText; }
+  .consequence-scene button:focus-visible, .consequence-scene summary:focus-visible { outline-color: Highlight; }
+}

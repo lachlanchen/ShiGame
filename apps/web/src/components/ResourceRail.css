@@ -1,0 +1,23 @@
+.resource { padding: 0 22px; border-right: 1px solid rgba(225,211,182,.09); }
+[dir="rtl"] .resource { border-right: 0; border-left: 1px solid rgba(225,211,182,.09); }
+.resource:first-child { padding-left: 0; }
+.resource:last-child { padding-right: 0; border-right: 0; border-left: 0; }
+.resource-label { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 7px; color: #9a9a90; font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; }
+.resource-label strong { color: #d5cbb9; font-family: var(--serif); font-size: .9rem; font-weight: 500; }
+.meter { height: 2px; overflow: hidden; background: rgba(219,209,188,.09); }
+.meter span { display: block; height: 100%; background: linear-gradient(90deg, #80633b, #c6a66e); box-shadow: 0 0 7px rgba(201,164,102,.45); transition: width .6s ease; }
+.resource.danger .meter span { background: linear-gradient(90deg, #6f2d24, #bb5943); box-shadow: 0 0 7px rgba(169,67,49,.45); }
+.resource.danger .resource-label strong { color: #d78772; }
+
+@media (max-width: 600px) {
+  .resource { padding: 0 7px; }
+  .resource-label span { max-width: 44px; overflow: hidden; font-size: .48rem; text-overflow: ellipsis; }
+  .resource-label strong { font-size: .73rem; }
+}
+
+@media (forced-colors: active) {
+  .meter { height: 4px; border: 1px solid CanvasText; background: Canvas; }
+  .meter span { background: Highlight; box-shadow: none; forced-color-adjust: none; }
+  .resource.danger { outline: 2px dashed CanvasText; outline-offset: -5px; }
+  .resource.danger .meter span { background: CanvasText; }
+}

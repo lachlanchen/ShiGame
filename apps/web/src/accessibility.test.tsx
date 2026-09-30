@@ -42,5 +42,11 @@ describe("WCAG semantic gate", () => {
     fireEvent.click(document.querySelector("[data-site-id='daze']")!);
     await view.findByTestId("map-intel");
     expect((await scan()).violations).toEqual([]);
+    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.click(await view.findByTestId("commit-selected"));
+    await view.findByTestId("resolution");
+    expect((await scan()).violations).toEqual([]);
+    fireEvent.click(view.getByText("What changed"));
+    expect((await scan()).violations).toEqual([]);
   });
 });
