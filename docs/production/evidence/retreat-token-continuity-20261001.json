@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: Fan Yang protection/accountability dialogue revised and validated",
+  "finding": "Reunion introduced in87b9146 had the wounded soldier holding both tokens, while the earlier open-reception reaction said he left his companion's token at the station. Prior selectivity tests did not catch this physical continuity error.",
+  "fix": "At reception the keeper reads the companion's token, records search clues separately and returns both originals to the soldier, who puts them away. The later voluntary return to Aheng now follows an explicit chain of possession. No extra grain is distributed.",
+  "storySHA256": "612213bd201f09c31cc7ddd59eaea7a9ba28134c58aa9be85b95b575899fdfcf",
+  "verification": {
+    "regression": "Existing36 reception/evacuation/custody combinations now require an explicit return of both originals before the witnessed reunion and reject the old leave-behind text.",
+    "tests": "14436 exit0:23authoring tests,9072authoring routes and47web retreat tests passed.38454 exit0: both complete-reading tests covering all four rule-backed endings passed.",
+    "scope": "Only the open-reception reaction changed; default reading uses gather-own, so only its provenance hash changed."
+  },
+  "sourceInspection": "Read local Tongjian volume8 lines2758–2784 while checking the wider-war transition. This fix concerns original fictional props, not a new historical claim. No private text redistributed; historical transition audit is not claimed complete.",
+  "limitations": ["No new native or visual playtest.", "Agent continuity review is not human story acceptance.", "No rule, save schema, asset, submission or release change."]
+}

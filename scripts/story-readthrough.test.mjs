@@ -345,6 +345,10 @@ test("the wounded soldier's reunion needs reception and escort, not a restored i
         const recognition = dawn.findIndex(line => line.text === "我怕你回来没得领，就一直带着。");
         assert.equal(recognition >= 0, reunion, "Personal reunion must not leak into unresolved searches");
         if (reunion) {
+          const receptionBeat = result.transcript.find(beat => beat.sceneId === "bad-news");
+          const tokenHandoff = receptionBeat.reaction.find(line => line.text.includes("把两份都推回他面前"));
+          assert.ok(tokenHandoff?.text.includes("他收好了"), "The soldier must retain both original tokens before returning Aheng's at reunion");
+          assert.ok(!receptionBeat.reaction.some(line => line.text.includes("留下同伴的凭记")), "Do not strand the reunion token at the grain station");
           assert.ok(dawn[recognition - 1].text.includes("两份凭记慢慢分开"));
           assert.ok(dawn[recognition + 1].text.includes("等他松了手"));
           assert.ok(dawn.some(line => line.text.includes("尚未凭它再领一份粮")), "Returning a token does not distribute grain twice");
