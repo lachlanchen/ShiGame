@@ -38,6 +38,22 @@ test("death reports leave a human pause before duties and the final decision res
   }
 });
 
+test("western defeat arrives as staged external news before the soldier's personal account", () => {
+  for (const dispatch of ["keep-reserve", "send-support", "verify-road", "decline-dispatch"]) {
+    const result = readRoute(draft, input, [dispatch, "open-reception", "escort-households", "carry-records", "release-groups"]);
+    const scene = result.transcript.find(beat => beat.sceneId === "bad-news");
+    const report = scene.lines[0];
+    assert.equal(report.speaker, "narrator", "The soldier is not an omniscient witness to the western campaign");
+    assert.ok(report.text.includes("隔些时日"));
+    assert.ok(report.text.indexOf("曹阳") < report.text.indexOf("渑池"));
+    assert.ok(report.text.indexOf("渑池") < report.text.indexOf("败亡"));
+    assert.ok(scene.lines[1].text.includes("伤卒把两份领取凭记"));
+    assert.ok(!scene.lines.some(line => line.text.includes("吴广已遭杀害")), "The later death report must remain a separate arrival");
+    assert.ok(scene.reaction.some(line => line.text.includes("又过了一段时日")));
+    assert.ok(draft.scenes.find(item => item.id === "bad-news").sourceIds.includes("broken-command"));
+  }
+});
+
 test("all nine opening/crossing pairs return only their own memories in the intended scenes", () => {
   assert.equal(draft.chapterCallbacks.length, 11);
   for (const opening of ["read-the-names", "take-the-beacon", "hide-the-register"]) {

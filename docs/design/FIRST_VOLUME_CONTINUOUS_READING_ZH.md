@@ -236,6 +236,8 @@
 
 后来，败归的人陆续走进粮棚。来的人说法不一，许多队伍仍没有消息。
 
+西边的消息隔些时日便来一封：先是周文退屯曹阳，后来再退渑池，最后是败亡的消息。你把几份短简按先后排开，旧拨粮单还压在下面。门外等着的，已不只是来催粮的人。
+
 伤卒把两份领取凭记放到桌上。一份是他的，另一份边角沾着干血。
 
 掌简人：另一个人呢？
@@ -422,7 +424,7 @@
 
 - content/councils/fanyang-guarantee.v1.json — SHA256 7f528bfbf63dfaaf56b9828c9561e1e657edc760e3e9c135171d0bcb17d3d2e2
 
-- content/story-drafts/chen-retreat.v1.json — SHA256 612213bd201f09c31cc7ddd59eaea7a9ba28134c58aa9be85b95b575899fdfcf
+- content/story-drafts/chen-retreat.v1.json — SHA256 1b8138e1f70892886c93de71f3b0e92f846c81ab34050f8e7e3cc713eaef6cd1
 
 - content/campaigns/chen-retreat.rules.v1.json — SHA256 b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867
 

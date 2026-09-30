@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: reunion token continuity fixed and regression-tested",
+  "sourceRead": {
+    "reference": "Owner local ZhJpBook collection, zizhi-tongjian/markdown/wenyan.md, volume8 lines2768–2783",
+    "sourceSHA256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+    "finding": "The received narrative gives Zhou Wen's retreat to Caoyang, a stay exceeding two months, a further retreat to Mianchi and defeat after more than ten days. Wu Guang's killing is narrated subsequently. Edition annotations are separate from that event sequence.",
+    "boundary": "Only original paraphrase and metadata added. The fictional station's staggered reports and exact delivery circumstances are dramatization; no source proves its delivery dates."
+  },
+  "change": "Add a brief external-war transition at the start of bad-news, before the soldier's personal testimony. Distinct reports arrive over time, moving the station from dispatching supplies to receiving displaced people. The soldier does not become an eyewitness to the whole western campaign.",
+  "storySHA256": "1b8138e1f70892886c93de71f3b0e92f846c81ab34050f8e7e3cc713eaef6cd1",
+  "verification": "19958 exit0:24story-authoring tests,9072authoring routes,47web retreat tests. New test checks all four dispatch choices, news ordering and separation from the later Wu Guang report.2649 exit0: both complete-reading tests pass across four rule-backed endings.",
+  "limits": ["No new rules, resources or local-choice attribution of historical defeat.", "Source-informed agent review, not independent historian acceptance.", "No new visual/native runtime qualification or store action."]
+}
