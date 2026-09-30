@@ -6,6 +6,7 @@ struct NativeCouncilView: View {
     @AccessibilityFocusState private var headingFocused: Bool
     @State private var selectedID = ""
     @State private var confirmRestart = false
+    @State private var showFanyang = false
     let locale: String
 
     init(origin: CampaignEngine, locale: String) {
@@ -84,6 +85,11 @@ struct NativeCouncilView: View {
         // English fallback as Arabic speech or right-to-left narrative.
         .environment(\.locale, Locale(identifier: locale)).environment(\.layoutDirection, .leftToRight)
         .tint(gold).preferredColorScheme(.dark)
+        .sheet(isPresented: $showFanyang) {
+            if let engine = session.engine, engine.completed, !session.needsRecovery {
+                NativeFanyangView(council: engine, fingerprint: session.fingerprint, locale: locale)
+            }
+        }
     }
 
     private func notice(_ message: String) -> some View {
@@ -203,6 +209,9 @@ struct NativeCouncilView: View {
             }
             Button(label("close")) { dismiss() }.buttonStyle(.borderedProminent).foregroundStyle(ink)
                 .frame(minHeight: 44).accessibilityIdentifier("council-finish")
+            Button(locale == "zh-Hans" ? "继续北行：范阳城门" : "Continue north: the gate at Fan Yang") { showFanyang = true }
+                .buttonStyle(.borderedProminent).foregroundStyle(ink).frame(minHeight: 48)
+                .disabled(session.needsRecovery).accessibilityIdentifier("fanyang-enter")
         }
     }
     private func position(_ engine: CouncilEngine) -> some View {

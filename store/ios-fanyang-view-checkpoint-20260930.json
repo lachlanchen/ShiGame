@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "status": "native-source-integrated-ios-sdk-typecheck-passed",
+  "sourceArchiveSHA256": "b158aa80f5826c9a37917a993b94ac92bca77cbd90f2e29b6aa456769d79f123",
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/NativeFanyangView.swift": "63684b80ad78f96cb29a5eb2f98aff244493e4a3084b347d4acc049e4c190b08",
+    "apps/mobile/ios/SHI/NativeCouncilView.swift": "bbb182152f091994c18de835cb281e9968359e47544be3163c8b1e44ff186bef"
+  },
+  "command": "xcrun swiftc -typecheck -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios16.0-simulator apps/mobile/ios/SHI/*.swift",
+  "exitCode": 0,
+  "diagnostics": "No compiler output",
+  "implemented": [
+    "Explicit Fan Yang sheet entry from the completed native Chen conclusion",
+    "Shared bilingual content, English prose fallback with matching LTR and locale semantics",
+    "Inspect then confirm choices, exact metric forecasts, conditional promise responses and final-outcome preview",
+    "Optional planning prospects, readable reactions, gate conditions and saved decision journal",
+    "Durable native session integration, preserved incompatible-save recovery and explicit restart/cancel alert",
+    "Dynamic text styles, scroll-to-heading and accessibility focus on scene transitions"
+  ],
+  "authoredButNotRun": "SHIUITests.testFanyangContinuationResumeWithdrawalAndCancel: full Chapter I and Chen entry, explicit QA scene restart, saved reaction across app relaunch, withdrawal outcome and cancelled restart",
+  "limits": [
+    "Type-check only: no linked iOS app build or simulator launch",
+    "UI test not compiled or executed in this checkpoint",
+    "No screenshots, native layout review, VoiceOver or physical-device qualification",
+    "No signing, TestFlight upload, review submission or public release"
+  ],
+  "localValidation": "npm run validate passed:45 core and128 web tests"
+}

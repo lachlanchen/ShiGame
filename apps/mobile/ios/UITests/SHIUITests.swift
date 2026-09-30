@@ -30,7 +30,7 @@ final class SHIUITests: XCTestCase {
     }
     func reveal(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<32 {
-            let reading = ["panel-reading", "aftermath", "council", "campaign", "title-reading"]
+            let reading = ["panel-reading", "aftermath", "fanyang-scene", "council", "campaign", "title-reading"]
                 .map { app.scrollViews[$0] }.first { $0.exists && $0.isHittable }
             let viewport = reading ?? app
             var visible = viewport.frame.intersection(app.frame)
@@ -286,6 +286,51 @@ final class SHIUITests: XCTestCase {
         XCTAssertEqual(app.buttons["chronicle-toggle"].value as? String, "4")
         app.terminate()
     }
+    func testFanyangContinuationResumeWithdrawalAndCancel() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-shi.locale", "en", "-shi.reduced-motion", "true"]
+        app.launch(); finishChapterForCouncil(app)
+        for id in ["defer-title", "joint-ledger", "one-command"] {
+            councilDecision(id, app); councilContinue(app)
+        }
+        let enter = app.buttons["fanyang-enter"]; reveal(enter, in: app); enter.tap()
+        XCTAssertTrue(app.staticTexts["fanyang-title"].waitForExistence(timeout: 10))
+        // Explicitly reset only this QA scene, retaining any incompatible test save.
+        let retry = app.buttons["fanyang-retry"]; reveal(retry, in: app); retry.tap()
+        let confirm = app.buttons.matching(identifier: "fanyang-confirm-restart").firstMatch
+        XCTAssertTrue(confirm.waitForExistence(timeout: 10)); confirm.tap()
+        func order(_ id: String) {
+            let offer = app.buttons["fanyang-offer-" + id]; reveal(offer, in: app); offer.tap()
+            let commit = app.buttons["fanyang-commit"]; reveal(commit, in: app)
+            XCTAssertTrue(commit.isEnabled); commit.tap()
+            XCTAssertTrue(app.staticTexts["fanyang-response"].waitForExistence(timeout: 10))
+        }
+        func next() {
+            let button = app.buttons["fanyang-continue"]; reveal(button, in: app); button.tap()
+        }
+        order("public-safety")
+        let reaction = app.staticTexts["fanyang-response"].label
+        capture("fanyang-01-native-reaction")
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["begin-game"].waitForExistence(timeout: 15)); app.buttons["begin-game"].tap()
+        let chen = app.buttons["council-enter"]; reveal(chen, in: app); chen.tap()
+        XCTAssertTrue(app.staticTexts["council-response"].waitForExistence(timeout: 10)); councilContinue(app)
+        reveal(app.buttons["fanyang-enter"], in: app); app.buttons["fanyang-enter"].tap()
+        XCTAssertTrue(app.staticTexts["fanyang-response"].waitForExistence(timeout: 10))
+        XCTAssertEqual(app.staticTexts["fanyang-response"].label, reaction)
+        capture("fanyang-02-native-resumed")
+        next(); order("hold-talks"); next(); order("withdraw-envoy"); next()
+        let outcome = app.staticTexts["fanyang-outcome"]
+        XCTAssertTrue(outcome.waitForExistence(timeout: 10)); XCTAssertEqual(outcome.value as? String, "withdrawn")
+        capture("fanyang-03-native-withdrawn")
+        reveal(app.buttons["fanyang-retry"], in: app); app.buttons["fanyang-retry"].tap()
+        let cancel = app.buttons.matching(identifier: "fanyang-cancel-restart").firstMatch
+        XCTAssertTrue(cancel.waitForExistence(timeout: 10)); cancel.tap()
+        XCTAssertEqual(outcome.value as? String, "withdrawn")
+        app.buttons["fanyang-close"].tap()
+        XCTAssertTrue(app.staticTexts["council-outcome"].waitForExistence(timeout: 10))
+    }
+
     func testCouncilLargestTextChineseAndArabicFallback() throws {
         continueAfterFailure = false
         for locale in ["zh-Hans", "ar"] {
