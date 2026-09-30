@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-01",
+  "baseline": "d3fc00b",
+  "previousTurnClassification": "progress: implemented and visually reviewed optional web ending decision record",
+  "change": "Native conclusion now offers the same collapsed read-only decision record. RetreatPresentation derives ordered rows, canonical scene/choice titles, shared explanations and actual changed metrics from replayed engine history. Hidden during decisions and saved reactions; no persistence or new narrative facts.",
+  "sourceHashes": {
+    "NativeRetreatView.swift": "8c227213b7c979c4c8cc4618ac137e94890ed1b931f0b1dd0796d1e1c2e0a21b",
+    "RetreatPresentation.swift": "fbd80e2e31983d3c8f69337c00fc8ef89ffed6a66b4881393b13fcf7dad754cb",
+    "RetreatPresentationChecks.swift": "8a8089cdc6f9a576b31ab3627675a4493536f5900b441fef8052f9c829fcca1c",
+    "story": "121b9fbf08604e6089fe2811ed46a8879ebde10111bb31bb0385c046484fb547"
+  },
+  "transfer": { "archiveSHA256": "1bb11415c50cc0a1fc6ec85e1000a26a7d2739244a4f39a6da299e476439ae4d", "verifiedBeforeExtraction": true },
+  "verification": {
+    "execution": 37616,
+    "exitCode": 0,
+    "typechecks": "All current SHI Swift sources, production and SHI_RETREAT_PREVIEW, arm64 iOS16 simulator target using installed SDK27",
+    "nativeExecutable": "RetreatPresentationChecks passed50 decision/reaction/ending phases across four actual outcomes. New assertions check ending-only record visibility, ordered committed IDs, exact before/after resources, changed-key filtering and byte-identical encoded save before/after projection. Existing callbacks, arrivals and saved reactions also pass against latest story."
+  },
+  "coordination": "AgentLink verified pinned Mac identity and idle SHI compiler state. Reused isolated SHI QA bridge-check stage; no simulator, signing, physical-device, foreign-service or store action. System sysdiagnosed was identified as unrelated and left untouched.",
+  "limitations": ["Not yet visually reviewed on native iPad.", "Typechecking iOS16 target does not prove an installed iOS16 runtime.", "No TestFlight upload or public release; story and overall production goal remain incomplete."]
+}

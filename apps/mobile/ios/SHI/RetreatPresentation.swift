@@ -1,5 +1,14 @@
 import Foundation
 
+struct RetreatDecisionRecord: Identifiable {
+    let id: String
+    let title: String
+    let explanation: String
+    let before: Resources
+    let after: Resources
+    var changedKeys: [String] { CouncilEngine.metricKeys.filter { before[$0] != after[$0] } }
+}
+
 /// Pure projection of the shared story and replayed decisions. No new facts,
 /// resource changes, companion recruitment or persistence in presentation code.
 struct RetreatPresentation {
@@ -55,4 +64,15 @@ struct RetreatPresentation {
         return outcome == "scattered" ? story.object("scatteredEnding") : story.object("endings").object(outcome)
     }
     var endingLines: [Record] { ending.records("lines") + variants(ending) }
+    var decisionRecord: [RetreatDecisionRecord] {
+        guard engine.completed, !reading else { return [] }
+        return engine.history.map { turn in
+            let scene = story.records("scenes").first { $0.text("id") == turn.sceneId } ?? [:]
+            let choice = scene.records("choices").first { $0.text("id") == turn.choiceId } ?? [:]
+            return RetreatDecisionRecord(id: turn.choiceId,
+                title: scene.text("title") + " · " + choice.text("title"),
+                explanation: engine.definition.object("explanationsZh").text(turn.choiceId),
+                before: turn.before, after: turn.after)
+        }
+    }
 }

@@ -151,6 +151,23 @@ struct NativeRetreatView: View {
             Text(session.story.text("epilogue")).font(.footnote)
             Text("本卷开发段落到此结束。后续尚未开放。")
             Text("物资归属：" + (engine.resourceCustody == "common" ? "现存队伍" : engine.resourceCustody == "groups" ? "分行各组，不再是公共库存" : "未明，不能重复调拨"))
+            DisclosureGroup("回看这一路的决定") {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("这里只记录已经确认的行动与当时的变化，不代表失散者已经归来，也不替你判定哪条路最好。")
+                    ForEach(presentation.decisionRecord) { record in
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(record.title).font(.headline).accessibilityAddTraits(.isHeader)
+                            Text(record.explanation).lineSpacing(5)
+                            ForEach(record.changedKeys, id: \.self) { key in
+                                Text("\(metrics[key]!): \(record.before[key, default: 0]) → \(record.after[key, default: 0])").monospacedDigit()
+                            }
+                            if record.changedKeys.isEmpty {
+                                Text("本次未改变这五项数值；已作出的承诺与记录仍然保留。")
+                            }
+                        }.accessibilityIdentifier("retreat-record-" + record.id)
+                    }
+                }.padding(.top, 8)
+            }.accessibilityIdentifier("retreat-decision-record")
             Button("返回范阳") { dismiss() }.buttonStyle(.bordered).frame(minHeight: 44)
         }
     }
