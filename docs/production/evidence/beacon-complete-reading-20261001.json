@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-01",
+  "previousCheckpoint": "Progress: 8c63372 revised alternate opening motives and verified unchanged rules",
+  "scope": "Expose the previously omitted seized-beacon opening as a complete editorial reading through the existing playable ending",
+  "command": "npm run story:read -- --beacon --ending remnant",
+  "opening": ["take-the-beacon", "extinguish-and-move", "repair-the-ford", "root-in-villages"],
+  "retreat": ["keep-reserve", "open-reception", "hold-formation", "divide-records", "move-with-remnant"],
+  "actualOutcome": "remnant",
+  "resourceCustody": "common",
+  "method": "Seed-zero real campaign, council, Fan Yang and retreat rules. Search the first legal retreat path to the requested outcome in content order; never add resources or manufacture an outcome.",
+  "editorialReview": {
+    "reviewer": "Codex",
+    "read": "Entire generated Chinese reading",
+    "findings": [
+      "Wu Guang's warning about communicating with the rear is followed by the cost of marching without drum or lamps.",
+      "Beacon pursuit returns as a concrete concern when deciding whether identifiable records should survive.",
+      "Accepting arrivals does not grant the reunion after the player narrows escort scope.",
+      "No courier letter or public roll-call memory is imported from another opening."
+    ]
+  },
+  "verification": {
+    "execution": 6120,
+    "exitCode": 0,
+    "completeReadingTestsPassed": 6,
+    "offlineBookTestsPassed": 2,
+    "bookReadings": 9,
+    "defaultReading": "Byte-identical",
+    "invalidRequests": "Duplicate beacon, mixed courier/beacon, and beacon with default-only check fail before story output"
+  },
+  "limits": ["Existing story exposed for review, not a newly implemented game scene", "Only the quiet departure beacon branch is represented", "Not exhaustive route or human narrative acceptance", "Fresh nine-route page visual review remains pending", "No store or public release action"]
+}

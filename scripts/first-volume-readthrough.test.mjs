@@ -48,6 +48,23 @@ test("courier reading earns the later letter through recruitment and road verifi
   assert.ok(!run("--ending", "remnant").includes("韩驿使来信："), "Unrecruited default history must not receive his letter");
 });
 
+test("beacon reading carries pursuit into record custody without borrowing another opening", () => {
+  const text = run("--beacon", "--ending", "remnant");
+  assert.equal(text, run("--beacon", "--ending", "remnant"));
+  assert.ok(text.includes("所选行动：夺取亭燧"));
+  assert.ok(text.includes("所选行动：熄燧潜行"));
+  assert.ok(text.includes("没有鼓声与灯火，后队两次走失"));
+  assert.ok(text.includes("夺亭燧那回，我以为截住信号就能抢出时间"));
+  assert.ok(text.includes("keep-reserve → open-reception → hold-formation → divide-records → move-with-remnant"));
+  assert.ok(text.includes("实际结果：remnant"));
+  for (const absent of ["韩驿使来信：", "想起雨棚里逐个念出名字的声音", "我怕你回来没得领"]) assert.ok(!text.includes(absent));
+  for (const args of [["--beacon", "--courier"], ["--beacon", "--beacon"], ["--beacon", "--check"]]) {
+    const result = spawnSync(process.execPath, [...command, ...args], { cwd: root, encoding: "utf8" });
+    assert.notEqual(result.status, 0);
+    assert.ok(!result.stdout.includes("# 势"));
+  }
+});
+
 test("complete readings expose reception-dependent character arcs without borrowing other branches", () => {
   for (const [reception, ending] of [["gather-own", "together"], ["open-reception", "scattered"], ["verify-with-partners", "remnant"], ["borrow-local-grain", "together"]]) {
     const text = run("--reception", reception, "--ending", ending);

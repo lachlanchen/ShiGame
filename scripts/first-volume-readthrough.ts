@@ -12,16 +12,18 @@ import { readRoute } from "./story-readthrough.mjs";
 const root = resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
 const courier = args.includes("--courier");
+const beacon = args.includes("--beacon");
+assert.ok(!(courier && beacon), "Choose one opening: --courier or --beacon");
 const endingIndex = args.indexOf("--ending");
 const ending = endingIndex >= 0 ? args[endingIndex + 1] : "together";
 const receptionIndex = args.indexOf("--reception");
 const reception = receptionIndex >= 0 ? args[receptionIndex + 1] : undefined;
 const receptions = ["gather-own", "open-reception", "verify-with-partners", "borrow-local-grain"];
 assert.ok(receptionIndex < 0 || receptions.includes(reception!), "Use --reception gather-own|open-reception|verify-with-partners|borrow-local-grain");
-for (const option of ["--ending", "--reception", "--check", "--courier"]) assert.ok(args.filter(arg => arg === option).length <= 1, "Duplicate reading option");
+for (const option of ["--ending", "--reception", "--check", "--courier", "--beacon"]) assert.ok(args.filter(arg => arg === option).length <= 1, "Duplicate reading option");
 assert.ok(["together", "remnant", "dispersed", "scattered"].includes(ending), "Use --ending together|remnant|dispersed|scattered");
-assert.ok(args.every((arg, index) => ["--check", "--ending", "--reception", "--courier"].includes(arg) || index === endingIndex + 1 && endingIndex >= 0 || index === receptionIndex + 1 && receptionIndex >= 0), "Unknown reading option");
-assert.ok(!args.includes("--check") || ending === "together" && reception === undefined && !courier, "--check compares the saved default route only");
+assert.ok(args.every((arg, index) => ["--check", "--ending", "--reception", "--courier", "--beacon"].includes(arg) || index === endingIndex + 1 && endingIndex >= 0 || index === receptionIndex + 1 && receptionIndex >= 0), "Unknown reading option");
+assert.ok(!args.includes("--check") || ending === "together" && reception === undefined && !courier && !beacon, "--check compares the saved default route only");
 const sources = new Map<string, string>();
 function load(path: string) {
   const bytes = readFileSync(resolve(root, path));
@@ -43,6 +45,7 @@ const add = (...items: string[]) => text.push(...items.filter(Boolean));
 let chapter = createInitialState(campaign, 0);
 const openingChoices = courier
   ? ["hide-the-register", "turn-the-courier", "families-first", "root-in-villages"]
+  : beacon ? ["take-the-beacon", "extinguish-and-move", "repair-the-ford", "root-in-villages"]
   : ["read-the-names", "issue-grain-tallies", "repair-the-ford", "root-in-villages"];
 for (const id of openingChoices) {
   const node = getNode(campaign, chapter.currentNodeId);
@@ -103,7 +106,7 @@ function findRequestedRoute(state: ReturnType<typeof createRetreat>): string[] |
     if (route) return route;
   }
 }
-const choices = ending === "scattered" || reception || courier
+const choices = ending === "scattered" || reception || courier || beacon
   ? findRequestedRoute(createRetreat(rules, entry))
   : ["keep-reserve", reception ?? "gather-own", ending === "together" ? "escort-households" : "hold-formation", "carry-records", ending === "together" ? "stay-together" : ending === "remnant" ? "move-with-remnant" : "release-groups"];
 assert.ok(choices, "No legal route to the requested ending from this chapter history");
@@ -138,12 +141,13 @@ add(`## ${reading.ending.title}`); lines(reading.ending.lines);
 add(reading.ending.unresolved, story.epilogue, "## 历史参照", zh(councilDef.history.account), zh(councilDef.history.distinction));
 for (const source of Object.values(story.sources) as { volume: number; anchor: string; supports: string }[]) add(`《资治通鉴》卷${source.volume}，${source.anchor}。支持范围：${source.supports}`);
 add("## 读后反馈", "哪一处让你不清楚自己在扮演谁？哪个人的要求最能理解，哪个最不像真人？哪次选择最难，哪段想跳过？结尾解决了什么，又留下了什么？你希望继续玩的原因是什么？也可以直接指出不想继续的原因。",
-  "## 文本核对", ending === "together" && reception === undefined && !courier
+  "## 文本核对", ending === "together" && reception === undefined && !courier && !beacon
     ? "本附录供制作核对，不需要读者审阅。生成命令：`npx vite-node scripts/first-volume-readthrough.ts`。校验已存读稿：同命令追加 `--check`。仅核验这一条路线，不证明其他分支或历史解释均已完成审查。"
     : `本附录供制作核对。生成命令：\`npx vite-node scripts/first-volume-readthrough.ts --ending ${ending}\`。本路线由实际规则回放验证，不补充资源；队伍散去路线按内容顺序寻找第一条合法路径，不表示最佳或唯一玩法。此输出不是默认已存读稿，不使用 --check 校验。`);
 if (reception) add(`接应分支：${reception}。复现时在上述命令追加 --reception ${reception}。在本次真实继承状态下，按内容顺序寻找符合该分支与结局的第一条合法路线，不表示最佳或唯一玩法；找不到便拒绝输出，不补资源。`);
 if (courier) add("驿使路线：复现时在上述命令追加 --courier。开篇藏名籍、争取韩驿使、家户先渡；陈地先验路讯。按实际规则寻找指定结局，不把回信当作驿使本人归队。");
-if (ending !== "together" || reception || courier) add(`撤离选择：${choices.join(" → ")}。实际结果：${retreat.outcome}；物资归属：${retreat.resourceCustody}。`);
+if (beacon) add("夺燧路线：复现时在上述命令追加 --beacon。开篇夺取亭燧、熄燧潜行、以粮袋固渡、以乡里盟约为根。按实际继承状态寻找指定结局，不把控制信号写成无人追查，也不借用公开读名或招募驿使的经历。");
+if (ending !== "together" || reception || courier || beacon) add(`撤离选择：${choices.join(" → ")}。实际结果：${retreat.outcome}；物资归属：${retreat.resourceCustody}。`);
 for (const [path, hash] of sources) add(`- ${path} — SHA256 ${hash}`);
 const output = text.join("\n\n") + "\n";
 if (process.argv.includes("--check")) {

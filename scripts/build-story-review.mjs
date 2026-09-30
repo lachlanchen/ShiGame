@@ -14,6 +14,7 @@ export const routes = [
   { id: "partners", title: "邻部的回音", note: "共同查问有了进展，但尚未找到阿衡。", args: ["--reception", "verify-with-partners", "--ending", "remnant"] },
   { id: "loan", title: "借来的粮，留下的债", note: "渡过眼前难关，不代表偿还已经办妥。", args: ["--reception", "borrow-local-grain", "--ending", "together"] },
   { id: "courier", title: "韩驿使的一封回信", note: "从开篇争取驿使到后来收到路讯；回信不等于本人归队。", args: ["--courier", "--ending", "remnant"] },
+  { id: "beacon", title: "夺燧之后，余部上路", note: "夺取亭燧后选择潜行；留下的追查痕迹，延续到撤离时如何保管凭记。", args: ["--beacon", "--ending", "remnant"] },
 ];
 export const escapeHTML = value => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 export function renderReading(markdown) {
@@ -36,7 +37,7 @@ details{border:1px solid #8a887b;border-radius:.4rem;margin:1.5rem 0;scroll-marg
 :focus-visible{outline:3px solid #755617;outline-offset:3px}.note{border-left:3px solid #82734d;padding-left:1rem}.back{display:inline-block;margin-top:1rem}
 @media print{body{background:white;color:black;font-size:12pt}nav,.back{display:none}details{break-before:page;border:0}summary{padding:0}}
 </style></head><body><main id="top"><h1>势 · 第一卷故事审阅</h1>
-<p class="note">这是八条按实际游戏规则回放的完整示例，不是八个连续章节，也不是全部可能路线。先读一条，再比较其他分支。它是开发读稿，不是发行版本或人工验收。对白及地方人物行动为原创重构；历史参照与文本校验留在各篇末尾。</p>
+<p class="note">这是 ${readings.length} 条按实际游戏规则回放的完整示例，不是连续章节，也不是全部可能路线。先读一条，再比较其他分支。它是开发读稿，不是发行版本或人工验收。对白及地方人物行动为原创重构；历史参照与文本校验留在各篇末尾。</p>
 <p>展开一篇即可阅读；各篇保留完整起因与结局。页面离线可用，不访问网络，不读写游戏存档。打印前展开希望保留的篇目。</p>
 <nav aria-label="选择故事路线">${readings.map(r => `<a href="#${r.id}">${escapeHTML(r.title)}</a>`).join("")}</nav>
 ${readings.map((r, i) => `<details id="${r.id}"${i === 0 ? " open" : ""}><summary>${escapeHTML(r.title)}</summary><article aria-label="${escapeHTML(r.title)}"><p class="note">${escapeHTML(r.note)}</p>${renderReading(r.text)}<a class="back" href="#top">返回路线目录</a></article></details>`).join("\n")}
