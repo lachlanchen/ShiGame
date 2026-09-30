@@ -208,10 +208,14 @@ bool FShiChenCouncilModel::Preview(const FString& Id, FShiChenTurn& Turn) const
     const FChoice* Choice = Rounds[History.Num()].FindByPredicate([&](const FChoice& Item) { return Item.Id == Id; });
     if (!Choice) return false;
     for (const auto& Requirement : Choice->Requires) if (Metrics.FindRef(Requirement.Key) < Requirement.Value) return false;
-    FShiChenTurn Next { Id, Metrics, Metrics };
+    FShiChenTurn Next { Id, Metrics, Metrics, {} };
     Apply(Next.After, Choice->Effects);
     for (const FAnswer& Answer : Choice->Answers)
-        if (History.ContainsByPredicate([&](const FShiChenTurn& Past) { return Past.ChoiceId == Answer.AfterChoice; })) Apply(Next.After, Answer.Effects);
+        if (History.ContainsByPredicate([&](const FShiChenTurn& Past) { return Past.ChoiceId == Answer.AfterChoice; }))
+        {
+            Apply(Next.After, Answer.Effects);
+            Next.AnsweredPromises.Add(Answer.AfterChoice);
+        }
     Turn = MoveTemp(Next);
     return true;
 }

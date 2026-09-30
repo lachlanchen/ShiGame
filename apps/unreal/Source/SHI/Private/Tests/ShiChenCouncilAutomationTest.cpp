@@ -213,6 +213,8 @@ bool FShiChenCouncilConformanceTest::RunTest(const FString& Parameters)
             {
                 TestTrue(TEXT("Replay before"), Restored.GetHistory()[Index].Before.OrderIndependentCompareEqual(Model.GetHistory()[Index].Before));
                 TestTrue(TEXT("Replay after"), Restored.GetHistory()[Index].After.OrderIndependentCompareEqual(Model.GetHistory()[Index].After));
+                TestTrue(TEXT("Replay reconstructs the original promise explanations"),
+                    Restored.GetHistory()[Index].AnsweredPromises == Model.GetHistory()[Index].AnsweredPromises);
             }
             TestFalse(TEXT("Other chronicle rejected"), Restored.ReplaySaveJson(Definition, Arrival, EntryId + TEXT("-other"), Saved, Error));
             TestFalse(TEXT("Changed revision rejected"), Restored.ReplaySaveJson(Definition + TEXT("\n"), Arrival, EntryId, Saved, Error));
@@ -233,6 +235,7 @@ bool FShiChenCouncilConformanceTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Pressed arrival"), Pressed.Initialize(Definition, TEXT("pressed"), Error));
     TestTrue(TEXT("League"), Pressed.Commit(TEXT("recognize-allies")));
     TestTrue(TEXT("Rations"), Pressed.Commit(TEXT("army-rations")));
+    TestTrue(TEXT("Unmade grain promises are not attributed to the league"), Pressed.GetHistory().Last().AnsweredPromises.IsEmpty());
     TestFalse(TEXT("Unaffordable command"), Pressed.Commit(TEXT("one-command")));
     TestEqual(TEXT("Rejection preserves history"), Pressed.GetHistory().Num(), 2);
     const auto RetainedMetrics = Pressed.GetMetrics();
@@ -271,6 +274,24 @@ bool FShiChenCouncilConformanceTest::RunTest(const FString& Parameters)
     TestFalse(TEXT("Other arrival rejected"), Bound.ReplaySaveJson(Definition, TEXT("pressed"), TEXT("negative-save"), ValidSave, Error));
     TestFalse(TEXT("Corrupt JSON rejected"), Bound.ReplaySaveJson(Definition, TEXT("divided"), TEXT("negative-save"), TEXT("{"), Error));
     TestEqual(TEXT("Failed imports keep original turn"), Bound.GetHistory().Num(), 1);
+    for (const FString& Earlier : { FString(TEXT("take-crown")), FString(TEXT("defer-title")) })
+    {
+        FShiChenCouncilModel Remembered;
+        TestTrue(TEXT("Initialize promise scenario"), Remembered.Initialize(Definition, TEXT("supplied"), Error, TEXT("promise-review")));
+        FShiChenTurn Preview;
+        TestTrue(TEXT("Opening preview"), Remembered.Preview(Earlier, Preview));
+        TestTrue(TEXT("Opening has no earlier promises"), Preview.AnsweredPromises.IsEmpty());
+        TestTrue(TEXT("Make earlier promise"), Remembered.Commit(Earlier));
+        FString BeforePreview, AfterPreview;
+        Remembered.ExportSaveJson(BeforePreview, Error);
+        TestTrue(TEXT("Inspect affected rations"), Remembered.Preview(TEXT("army-rations"), Preview));
+        TestTrue(TEXT("Preview identifies exact made promise"), Preview.AnsweredPromises == TArray<FString>{Earlier});
+        Remembered.ExportSaveJson(AfterPreview, Error);
+        TestEqual(TEXT("Explanation preview does not save or advance"), BeforePreview, AfterPreview);
+        TestTrue(TEXT("Commit affected rations"), Remembered.Commit(TEXT("army-rations")));
+        TestTrue(TEXT("Committed explanation matches preview"), Remembered.GetHistory().Last().AnsweredPromises == Preview.AnsweredPromises);
+        TestTrue(TEXT("Later turn cannot rewrite opening explanation"), Remembered.GetHistory()[0].AnsweredPromises.IsEmpty());
+    }
     return !HasAnyErrors();
 }
 #endif

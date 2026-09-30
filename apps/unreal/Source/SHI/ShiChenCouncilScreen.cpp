@@ -73,6 +73,15 @@ void SShiChenCouncilScreen::Refresh()
         Body->AddSlot().AutoHeight().Padding(0, 7)[SNew(SButton).ContentPadding(14).IsEnabled(Enabled).OnClicked(Action)
             [SNew(STextBlock).AutoWrapText(true).Font(FCoreStyle::GetDefaultFontStyle("Regular", 18)).Text(FText::FromString(Value))]];
     };
+    auto Promises = [this, &Paragraph](const TSharedPtr<FJsonObject>& Offer, const FShiChenTurn& Turn)
+    {
+        const TArray<TSharedPtr<FJsonValue>>* Answers = nullptr;
+        if (!Offer || Turn.AnsweredPromises.IsEmpty() || !Offer->TryGetArrayField(TEXT("answers"), Answers)) return;
+        Paragraph(Text(Definition->GetObjectField(TEXT("labels")), TEXT("memory")), 19);
+        for (const auto& Answer : *Answers)
+            if (Turn.AnsweredPromises.Contains(Answer->AsObject()->GetStringField(TEXT("afterChoice"))))
+                Paragraph(Text(Answer->AsObject(), TEXT("text")), 19);
+    };
     Paragraph(Text(Definition, TEXT("title")), 30);
     Paragraph(Text(Definition, TEXT("boundary")), 16);
     if (Locale != TEXT("en") && Locale != TEXT("zh-Hans")) Paragraph(TEXT("Council translation unavailable in this language; English text is shown."), 16);
@@ -98,11 +107,7 @@ void SShiChenCouncilScreen::Refresh()
             Paragraph(Text(Offer, TEXT("title")));
             Paragraph(Text(Offer, TEXT("response")));
             Paragraph(Metrics(Turn.Before) + TEXT("\n→ ") + Metrics(Turn.After), 16);
-            const TArray<TSharedPtr<FJsonValue>>* Answers = nullptr;
-            if (Offer->TryGetArrayField(TEXT("answers"), Answers)) for (const auto& Answer : *Answers)
-                for (int32 I = 0; I + 1 < Model.GetHistory().Num(); ++I)
-                    if (Model.GetHistory()[I].ChoiceId == Answer->AsObject()->GetStringField(TEXT("afterChoice")))
-                        Paragraph(Text(Answer->AsObject(), TEXT("text")));
+            Promises(Offer, Turn);
             Button(Text(Labels, Model.IsCompleted() ? TEXT("conclude") : TEXT("continue")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::Continue));
         }
         else if (Model.IsCompleted())
@@ -116,6 +121,7 @@ void SShiChenCouncilScreen::Refresh()
                 Paragraph(Text(Choice(Turn.ChoiceId), TEXT("title")));
                 Paragraph(Text(Choice(Turn.ChoiceId), TEXT("response")));
                 Paragraph(Metrics(Turn.Before) + TEXT("\n→ ") + Metrics(Turn.After), 16);
+                Promises(Choice(Turn.ChoiceId), Turn);
             }
             const auto History = Definition->GetObjectField(TEXT("history"));
             Paragraph(Text(History, TEXT("title")), 24);
@@ -141,7 +147,11 @@ void SShiChenCouncilScreen::Refresh()
                 Paragraph(Text(Offer, TEXT("pledge")));
                 FShiChenTurn Preview;
                 const bool Available = Model.Preview(Selected, Preview);
-                if (Available) Paragraph(Text(Labels, TEXT("preview")) + TEXT("\n") + Metrics(Preview.After));
+                if (Available)
+                {
+                    Paragraph(Text(Labels, TEXT("preview")) + TEXT("\n") + Metrics(Preview.After));
+                    Promises(Offer, Preview);
+                }
                 else Paragraph(Locale == TEXT("zh-Hans") ? TEXT("目前不足以作出这项承诺。") : TEXT("You cannot afford this commitment."));
                 Button(Text(Labels, TEXT("commit")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::Commit), Available);
             }

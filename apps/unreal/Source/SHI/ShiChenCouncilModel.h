@@ -9,6 +9,8 @@ struct FShiChenTurn
     FString ChoiceId;
     TMap<FString, int32> Before;
     TMap<FString, int32> After;
+    /** Earlier choice IDs whose authored answers actually affected this turn. */
+    TArray<FString> AnsweredPromises;
 };
 
 /** Deterministic shared council rules. No actor, presentation or disk authority. */
