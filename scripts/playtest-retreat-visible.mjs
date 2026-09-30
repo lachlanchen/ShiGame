@@ -7,7 +7,8 @@ import net from "node:net";
 const root = resolve(import.meta.dirname, "..");
 const route = process.argv[2] ?? "together";
 const storyBranch = process.argv[3] ?? "baseline";
-if (!["together", "dispersed", "remnant", "scattered", "book"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book] [baseline|partner-search|loan-search]");
+if (!["together", "dispersed", "remnant", "scattered", "book", "captured"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured] [baseline|partner-search|loan-search]");
+const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}`;
 const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
 const reserves = route === "scattered" || storyBranch !== "baseline" ? "send-support" : "keep-reserve";
@@ -58,10 +59,10 @@ const capture = async name => {
   const frame = await send("Page.captureScreenshot", { format: "png" });
   await writeFile(resolve(out, `${name}.png`), Buffer.from(frame.data, "base64")); report.screenshots.push(`${name}.png`);
 };
-const layout = async name => {
+const layout = async (name, modal = true) => {
   const value = await evaluate("({viewport:innerWidth,document:document.documentElement.scrollWidth,drawers:[...document.querySelectorAll('.drawer')].map(e=>({width:e.clientWidth,scroll:e.scrollWidth}))})");
   check(value.document <= value.viewport + 1 && value.drawers.every(d => d.scroll <= d.width + 1), `${name}: no horizontal overflow`);
-  check(await evaluate("getComputedStyle(document.body).overflowY==='hidden'"), `${name}: background page scrolling locked`);
+  check(await evaluate("getComputedStyle(document.body).overflowY==='hidden'") === modal, `${name}: background scrolling ${modal ? "locked for modal" : "available outside modal"}`);
 };
 try {
   for (const port of [4173, 5921, 6121, 9321]) await freePort(port);
@@ -87,7 +88,7 @@ try {
   await new Promise((yes, no) => { socket.addEventListener("open", yes, { once: true }); socket.addEventListener("error", no, { once: true }); });
   socket.addEventListener("message", e => { const m = JSON.parse(e.data); if (m.id) { const p = pending.get(m.id); pending.delete(m.id); if (p) m.error ? p.no(new Error(m.error.message)) : p.yes(m.result); } if (m.method === "Runtime.exceptionThrown") report.errors.push(m.params.exceptionDetails.text); });
   await send("Page.enable"); await send("Runtime.enable");
-  await send("Page.navigate", { url: "http://127.0.0.1:4173/?seed=00000000" });
+  await send("Page.navigate", { url: appURL });
   await until(exists('[data-testid="begin-game"]'));
   const xenv = { ...process.env, DISPLAY: ":121" };
   const windowId = execFileSync("xdotool", ["search", "--onlyvisible", "--class", "Google-chrome"], { env: xenv, encoding: "utf8" }).trim().split("\n")[0];
@@ -117,6 +118,43 @@ try {
     await until("location.hash==='#top'");
     check(true, "return link reaches route directory");
     check(await evaluate("!document.querySelector('script,iframe,img,link,form')"), "offline book has no active external content");
+  } else if (route === "captured") {
+    await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
+    await until("document.documentElement.lang==='zh-Hans'");
+    await capture("capture-title");
+    await click('[data-testid="begin-game"]');
+    await click('[data-testid="guide-continue"]');
+    for (const id of ["read-the-names", "issue-grain-tallies", "families-first", "race-for-chen"]) {
+      await click(`[data-choice-id="${id}"]`);
+      await click('[data-testid="commit-selected"]');
+      await click('[data-testid="resolution-continue"]');
+    }
+    await until(exists('[data-testid="chapter-ending-prose"]'));
+    check(await evaluate("document.querySelector('[data-testid=chapter-ending-prose]').textContent.includes('追兵喝止')"), "capture has its own closing prose");
+    check(await evaluate("document.querySelector('[data-testid=shi-app]').dataset.oppositionStage==='complete' && !document.querySelector('[data-testid=council-enter],[data-testid=commit-selected]')"), "terminal screen offers no next pursuit round or council entry");
+    const save = await evaluate("localStorage.getItem('shi.chapter-01.save.v6')");
+    const saved = JSON.parse(save);
+    check(saved.failureReason === "captured" && saved.resources.danger === 100 && saved.history.length === 4, "actual choices reach exposure-100 capture");
+    await evaluate("document.querySelector('.ending-panel').scrollIntoView({block:'center'})");
+    await capture("capture-ending-desktop"); await layout("captured desktop", false);
+    await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+    await evaluate("document.querySelector('.ending-panel').scrollIntoView({block:'center'})");
+    await capture("capture-ending-phone"); await layout("captured phone", false);
+    await click('[data-testid="record-toggle"]');
+    await until(exists('[data-testid="record-drawer"]'));
+    check(await evaluate("document.querySelectorAll('.record-list > li').length===4"), "captured chronicle retains all four decisions");
+    await capture("capture-record-phone"); await layout("captured record");
+    await click('[data-testid="record-drawer"] .icon-button');
+    check(await evaluate("localStorage.getItem('shi.chapter-01.save.v6')") === save, "reading terminal chronicle preserves save bytes");
+    await send("Page.reload");
+    await until(exists('[data-testid="begin-game"]'));
+    await click('[data-testid="begin-game"]');
+    await until(exists('[data-testid="chapter-ending-prose"]'));
+    check(await evaluate("localStorage.getItem('shi.chapter-01.save.v6')") === save, "captured reload resumes without mutation or crash");
+    await click('.ending-panel .primary-button');
+    await until(exists('[data-testid="commit-selected"]'));
+    check(await evaluate("document.querySelector('[data-testid=shi-app]').dataset.nodeId==='rain-order' && localStorage.getItem('shi.chapter-01.save.v6')===null"), "explicit retry returns to a fresh opening without an automatic command");
+    await capture("capture-retry-phone"); await layout("captured retry", false);
   } else {
   await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
   await until("document.documentElement.lang==='zh-Hans'"); await capture("01-title");
