@@ -342,7 +342,12 @@ test("the wounded soldier's reunion needs reception and escort, not a restored i
         for (const line of searchPayoffs[0].lines) assert.ok(dawn.some(actual => actual.text === line.text));
         const reunion = dawn.some(line => line.speaker === "wounded-soldier" && line.text.startsWith("阿衡。"));
         assert.equal(reunion, reception === "open-reception" && evacuation === "escort-households");
+        const recognition = dawn.findIndex(line => line.text === "我怕你回来没得领，就一直带着。");
+        assert.equal(recognition >= 0, reunion, "Personal reunion must not leak into unresolved searches");
         if (reunion) {
+          assert.ok(dawn[recognition - 1].text.includes("两份凭记慢慢分开"));
+          assert.ok(dawn[recognition + 1].text.includes("等他松了手"));
+          assert.ok(dawn.some(line => line.text.includes("尚未凭它再领一份粮")), "Returning a token does not distribute grain twice");
           assert.ok(dawn.some(line => line.text.includes("亲眼见到了人")));
           assert.ok(dawn.some(line => line.text.includes("其他失散者仍没有消息")));
         }

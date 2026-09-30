@@ -420,7 +420,7 @@
 
 - content/councils/fanyang-guarantee.v1.json — SHA256 c82095174dc481a023420916ae82bbc76e169c57c1076b5bbf65ce9f97a8cf24
 
-- content/story-drafts/chen-retreat.v1.json — SHA256 121b9fbf08604e6089fe2811ed46a8879ebde10111bb31bb0385c046484fb547
+- content/story-drafts/chen-retreat.v1.json — SHA256 1518aff82ab9467120658a984ff4b70670bde425fd50a21b19a607746813584c
 
 - content/campaigns/chen-retreat.rules.v1.json — SHA256 b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867
 

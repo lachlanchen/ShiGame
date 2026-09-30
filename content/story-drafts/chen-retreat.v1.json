@@ -242,7 +242,7 @@
       ],
       "decisionLeadIn": [{ "speaker": "rear-guard", "text": "还按原来的队么？" }],
       "variants": [
-        { "when": { "bad-news": "open-reception", "evacuation": "escort-households" }, "lines": [{ "speaker": "narrator", "text": "末车抵达时，伤卒忽然挤到车旁。一个人扶着车辕下来，左鞋还缠着麻绳。他是照路口接应者的指引找到粮棚，又跟上这趟车的。" }, { "speaker": "wounded-soldier", "text": "阿衡。我还当你走了另一条路。" }, { "speaker": "narrator", "text": "他伸手想拍同伴的肩，看到伤口，又把手挪到肘下。你给两人让出坐处。这一次是亲眼见到了人，不是从旧凭记推算出谁该回来。其他失散者仍没有消息。" }] },
+        { "when": { "bad-news": "open-reception", "evacuation": "escort-households" }, "lines": [{ "speaker": "narrator", "text": "末车抵达时，伤卒忽然挤到车旁。一个人扶着车辕下来，左鞋还缠着麻绳。他是照路口接应者的指引找到粮棚，又跟上这趟车的。" }, { "speaker": "wounded-soldier", "text": "阿衡。我还当你走了另一条路。" }, { "speaker": "narrator", "text": "他伸手想拍同伴的肩，看到伤口，又把手挪到肘下。阿衡扶着他坐下，指了指他攥紧的手：那份还给我。你的别弄丢了。" }, { "speaker": "narrator", "text": "伤卒低头，把两份凭记慢慢分开。沾着干血的那份递过去时，手还捏着一角。" }, { "speaker": "wounded-soldier", "text": "我怕你回来没得领，就一直带着。" }, { "speaker": "narrator", "text": "阿衡没有催，等他松了手，才把自己的那份贴身收好。两人挪近了一点，给刚下车的人让出地方。" }, { "speaker": "narrator", "text": "这一次是亲眼见到了人，不是从旧凭记推算出谁该回来。其他失散者仍没有消息。两人各自收着领取凭记，尚未凭它再领一份粮。" }] },
         { "when": { "bad-news": "open-reception", "evacuation": "hold-formation" }, "lines": [{ "speaker": "narrator", "text": "你记得伤卒说起的那只麻绳绑着的鞋。眼前还没有这样一个人。接纳过来人，并不等于已经把每个人护送到这里；先前缩小的护送范围，如今成了必须回查的一段路。" }] },
         { "when": { "bad-news": "open-reception", "evacuation": "split-routes" }, "lines": [{ "speaker": "narrator", "text": "路口曾留过接应的人，现在各组还未会齐。你问起那个左鞋缠麻绳的人，先到的人都摇头。你记下还没问到哪一组，等下一拨消息。" }] },
         { "when": { "bad-news": "gather-own" }, "lines": [{ "speaker": "narrator", "text": "铺开问讯简时，你想起伤卒问的那句话：那他来了呢？那天你答应留下会合处，却没有答应让他一直等。你将眼下的去向写清，放在约好的地方；有没有人循着它找来，现在还不知道。" }] },

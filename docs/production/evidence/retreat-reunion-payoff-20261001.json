@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: finalized corrected native ending UI evidence",
+  "priority": "Complete the story before expanding cinematic production",
+  "reviewScope": "Read the full 427-line default first-volume reading and the reunion branch in canonical story content.",
+  "finding": "The wounded soldier's two tokens establish a personal search, but the conditional reunion previously passed directly from recognition to explanatory narration.",
+  "change": "Give the reunion a short exchange: Aheng asks for his token, the soldier slowly separates the two and admits keeping it so his companion could claim grain. Aheng waits for him to release it. Both make room for other arrivals. No new grain distribution, casualty, journey or historical claim is introduced.",
+  "storySHA256": "1518aff82ab9467120658a984ff4b70670bde425fd50a21b19a607746813584c",
+  "review": "Agent editorial review only. Exchange follows the earlier refusal to surrender the tokens, gives the returning companion agency and preserves the unresolved search for others. Existing source boundaries remain; this is original dramatization, not a quotation or historical incident.",
+  "verification": {
+    "storyAuthoring": "23 tests passed; 9072 authoring routes audited",
+    "reunionSelectivity": "36 reception/evacuation/custody combinations check that the personal exchange appears only for open-reception plus escort-households, with token separation before the admission and voluntary release afterward",
+    "completeReadings": "2 tests passed covering all four rule-backed endings and exact saved default reading",
+    "webRetreat": "47 component tests passed"
+  },
+  "limits": [
+    "No human story acceptance or new visual/device playtest of this prose.",
+    "Prior native screenshots cover the preceding story hash, not this revision.",
+    "Default reading follows gather-own, so only its source hash changes; reunion belongs to a different branch.",
+    "No production promotion, new media, store action or claim that the complete story is finished."
+  ]
+}
