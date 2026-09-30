@@ -107,6 +107,9 @@ struct ChoiceAftermath: Identifiable {
         } catch { self.error = error.localizedDescription }
     }
     func restart() {
+        guard !committing else { return }
+        committing = true
+        defer { committing = false }
         do {
             let next = try CampaignEngine(campaign: campaign, seed: UInt32.random(in: .min ... .max))
             // Preserve an unreadable old chronicle before an explicitly confirmed reset.

@@ -89,6 +89,54 @@ import Combine
         XCTAssertEqual(try Data(contentsOf: url), bytes)
     }
 
+    func testPublishedStateObserverCannotRestartDuringCommit() throws {
+        let directory = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("chronicle.json")
+        let session = GameSession(saveURL: url, initialSeed: 0)
+        var attempted = false
+        let observation = session.$engine.dropFirst().sink { _ in
+            guard !attempted else { return }
+            attempted = true
+            session.restart()
+        }
+        defer { observation.cancel() }
+        XCTAssertTrue(session.choose("read-the-names"))
+        XCTAssertTrue(attempted)
+        let restored = GameSession(saveURL: url)
+        XCTAssertEqual(restored.engine?.seed, session.engine?.seed)
+        XCTAssertEqual(restored.engine?.history.count, 1)
+        XCTAssertEqual(restored.engine?.resources, session.engine?.resources)
+        XCTAssertEqual(restored.aftermath?.response.object("choice").text("id"), "read-the-names")
+    }
+
+    func testRestartPublicationCannotAdmitAnotherOrderOrNestedRestart() throws {
+        let directory = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("chronicle.json")
+        let session = GameSession(saveURL: url, initialSeed: 0)
+        XCTAssertTrue(session.choose("read-the-names"))
+        var attempted = false
+        var orderAccepted: Bool?
+        let observation = session.$engine.dropFirst().sink { _ in
+            guard !attempted else { return }
+            attempted = true
+            session.restart()
+            orderAccepted = session.choose("read-the-names")
+        }
+        defer { observation.cancel() }
+        session.restart()
+        XCTAssertTrue(attempted)
+        XCTAssertEqual(orderAccepted, false)
+        XCTAssertNil(session.aftermath)
+        XCTAssertEqual(session.engine?.history.count, 0)
+        let restored = GameSession(saveURL: url)
+        XCTAssertEqual(restored.engine?.history.count, 0)
+        XCTAssertEqual(restored.engine?.seed, session.engine?.seed)
+        XCTAssertEqual(restored.engine?.resources, session.engine?.resources)
+        XCTAssertNil(restored.aftermath)
+    }
+
     func testLegacySaveDoesNotInventUnreadSceneOrRewriteItself() throws {
         let directory = try temporaryDirectory()
         defer { try? FileManager.default.removeItem(at: directory) }

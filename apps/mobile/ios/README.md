@@ -74,6 +74,13 @@ decision is invalid and preserved for recovery. This is presentation metadata,
 not another source of campaign rules or cached consequences. Older clients may
 ignore it; downgrade preserves choices but does not promise unread-scene state.
 
+Commit, acknowledgement and restart share a synchronous re-entry guard. A
+published-state observer cannot restart while an order is being saved/published,
+or issue an order from inside restart publication. Regression coverage compares
+the live session with a new session restored from disk, including seed, choices,
+resources and pending reaction. This protects against inconsistent save and UI
+state; it does not replace the normal explicit restart confirmation.
+
 From the repository root, refresh and check the bundled content before copying
 sources to an isolated Mac development checkout:
 
