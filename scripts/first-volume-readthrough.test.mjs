@@ -85,6 +85,9 @@ test("all Fan Yang outcomes survive into complete retreat readings without confl
     assert.ok(text.includes(`实际结果：${outcome}`));
     assert.ok(text.includes("实际结果：remnant"));
     assert.ok(text.includes(report));
+    assert.ok(text.includes("谁卸车，谁带他们找粮"), "The local cost must be concrete before the reserve choice");
+    assert.ok(text.includes("别让我到了那边才发现少了"), "The officer must voice the cost of withholding support");
+    assert.ok(text.indexOf("别让我到了那边才发现少了") < text.indexOf("所选行动：留接应队"));
     for (const other of Object.values(reports).filter(value => value !== report)) assert.ok(!text.includes(other));
     if (outcome === "opened") assert.ok(text.includes("public-safety → guarded-escort → accept-transfer"));
     if (outcome === "deferred") {

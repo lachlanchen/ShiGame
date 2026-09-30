@@ -264,6 +264,8 @@ describe("retreat development scene", () => {
     const scene = view.container.querySelector(".chen-main .chen-scene")!;
     const prose = [...scene.querySelectorAll("p.chen-prose")].map(node => node.textContent);
     expect(prose.at(-1)).toContain("今天能不能一起走");
+    expect(prose.some(text => text?.includes("谁卸车，谁带他们找粮"))).toBe(true);
+    expect(prose.some(text => text?.includes("别让我到了那边才发现少了"))).toBe(true);
     expect(prose.findIndex(text => text?.includes("使者平安回去了"))).toBeLessThan(prose.findIndex(text => text?.includes("共验时分给他的账")));
     expect(view.getByTestId("retreat-commit")).toBeTruthy();
     expect(localStorage.getItem(retreatSaveKey)).toBeNull();

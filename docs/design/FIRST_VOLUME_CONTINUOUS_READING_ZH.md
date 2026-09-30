@@ -220,6 +220,14 @@
 
 掌简人：按两边对得上的数算。新增的这一拨，另起一行。
 
+催粮军吏：这次催的是人，不只是粮车。
+
+掌简人：都跟你走了，下一拨到这里，谁卸车，谁带他们找粮？
+
+催粮军吏：留在这里能接人，我知道。可他们让我回来要的，就是这队人。你要留几个，就当面说几个，别让我到了那边才发现少了。
+
+他把笔放在拨单旁，等你答话。院里有人抬着粮袋经过，叫门边的人让一让。你把空着的押送一栏转到自己面前。
+
 催粮军吏：西边催得急。你留在这里的人，今天能不能一起走？
 
 所选行动：留接应队，减少这次外派
@@ -446,7 +454,7 @@ SHI narrative reconstruction；Chapter I authored-content register · revision 2
 
 - content/councils/fanyang-guarantee.v1.json — SHA256 7f528bfbf63dfaaf56b9828c9561e1e657edc760e3e9c135171d0bcb17d3d2e2
 
-- content/story-drafts/chen-retreat.v1.json — SHA256 af992dc08d84ac322773fa1ed1ffe7c856eae302fce34868f6c48e37cb9024bc
+- content/story-drafts/chen-retreat.v1.json — SHA256 52f1b19756001b39d8ce2600140d45b332524754eedde649258e2972ac54e036
 
 - content/campaigns/chen-retreat.rules.v1.json — SHA256 b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867
 

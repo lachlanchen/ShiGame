@@ -8,9 +8,10 @@
     "rulesSHA256": "b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867",
     "previousStorySHA256": [
       "516216d186a1dfe328d91d1195ab50e03f72fc050343ca6085577c93346a9c2c",
-      "759474096e96ab8af7dcfcaaf73f4a96d82eb7aba94c4578af0f6e257fef886d"
+      "759474096e96ab8af7dcfcaaf73f4a96d82eb7aba94c4578af0f6e257fef886d",
+      "af992dc08d84ac322773fa1ed1ffe7c856eae302fce34868f6c48e37cb9024bc"
     ],
-    "review": "Reviewed prose-only revisions: escort finale callback and this compatibility metadata. No choice, condition, rule, witnessed event, custody or entry change. Replay against unchanged rules and exact entry; never trust saved totals or accept an unlisted revision."
+    "review": "Reviewed prose-only revisions: escort finale callback, reserve decision dialogue and compatibility metadata. No choice, condition, rule, witnessed event, custody or entry change. Replay against unchanged rules and exact entry; never trust saved totals or accept an unlisted revision."
   },
   "title": "陈地余火",
   "viewpoint": {
@@ -130,7 +131,13 @@
         { "speaker": "keeper", "text": "先让他喝。文书在这里。" },
         { "speaker": "narrator", "text": "军吏把另一张拨粮单摊开。车数填好了，押送的人还空着。" }
       ],
-      "decisionLeadIn": [{ "speaker": "supply-officer", "text": "西边催得急。你留在这里的人，今天能不能一起走？" }],
+      "decisionLeadIn": [
+        { "speaker": "supply-officer", "text": "这次催的是人，不只是粮车。" },
+        { "speaker": "keeper", "text": "都跟你走了，下一拨到这里，谁卸车，谁带他们找粮？" },
+        { "speaker": "supply-officer", "text": "留在这里能接人，我知道。可他们让我回来要的，就是这队人。你要留几个，就当面说几个，别让我到了那边才发现少了。" },
+        { "speaker": "narrator", "text": "他把笔放在拨单旁，等你答话。院里有人抬着粮袋经过，叫门边的人让一让。你把空着的押送一栏转到自己面前。" },
+        { "speaker": "supply-officer", "text": "西边催得急。你留在这里的人，今天能不能一起走？" }
+      ],
       "variants": [
         { "when": { "fanyang": "opened" }, "lines": [{ "speaker": "keeper", "text": "范阳受降了。这封信只说到交接，没说给我们送粮。" }, { "speaker": "supply-officer", "text": "我也没等他们的粮。我等的是你的人。" }] },
         { "when": { "fanyang": "withdrawn" }, "lines": [{ "speaker": "keeper", "text": "没开城。使者平安回去了，我们的人也撤了。" }, { "speaker": "supply-officer", "text": "那就别把北边的粮写进来。眼下只有这些车。" }] },
