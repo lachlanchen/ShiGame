@@ -27,7 +27,8 @@
       "Upgrade route: first decision was made under build3; not a fresh full route entirely under build4",
       "Council entry verified on4; full three-round council completion previously verified on3",
       "Provider version-code reconciliation, AAB processing and internal distribution still pending",
-      "Mixed tracked and inherited uncommitted source manifest, not a clean reproducible commit; App integration remains in overlapping dirty files",
+      "Packaging used a mixed tracked/uncommitted source manifest, not a clean reproducible commit. Web integration subsequently checkpointed in ea48997; native platform sources still require reconciliation",
+      "Post-build source review added title-screen Back/Escape guards to preserve an unseen restored reaction. Those guards pass regression tests but are not in this APK; replacement build and device verification required before distribution",
       "Existing lint warnings and generated arithmetic-only Gradle unit test remain"
     ],
     "uploaded": false
