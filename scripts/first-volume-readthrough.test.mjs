@@ -14,6 +14,7 @@ test("all four complete readings replay real campaign rules with matching closin
     assert.ok(text.includes("## 陈地议事"));
     assert.ok(text.includes("## 范阳：谁来保他不死"));
     assert.ok(text.includes(`## ${title}\n`));
+    assert.equal(text.includes("没有再问他们何时归队"), ending === "dispersed", "Only an actual orderly dispersal earns the release scene");
     assert.ok(text.includes("## 历史参照"));
     assert.equal(text, run("--ending", ending), "Readthrough must be deterministic");
     if (ending === "scattered") {

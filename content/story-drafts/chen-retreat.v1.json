@@ -290,7 +290,7 @@
     },
     "dispersed": {
       "title": "各自的归路",
-      "lines": [{ "speaker": "narrator", "text": "有人留在路边等同伴，有人领清自己那份便先走。各组商量着不同的去处，话声渐渐分远。" }],
+      "lines": [{ "speaker": "narrator", "text": "有人留在路边等同伴，有人领清自己那份便先走。各组商量着不同的去处，话声渐渐分远。" }, { "speaker": "narrator", "text": "一个人背好行李，还站着等你发话。他指了指岔路，那边有人在等他。" }, { "speaker": "keeper", "text": "去处和同行的人，都说好了？" }, { "speaker": "narrator", "text": "他点点头。你侧身让开，他才走过去。你看着他们会到一处，重新蹲回凭记旁，没有再问他们何时归队。" }],
       "variants": [
         { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "rear-guard", "text": "分完这些，借的那笔算谁的？" }, { "speaker": "keeper", "text": "欠契怎么写，还怎么算。别临走才把没作保的人添上去。" }, { "speaker": "narrator", "text": "你将新借的那笔单独指给面前的人看。分的是眼下的粮，不是让各组替你重新认下一份欠契。" }] },
         { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "几份凭记已经分在各组手里。临走前，拿简的人彼此问清日后到哪里找。你听着，把自己那份卷好，没有再伸手收回他们的。" }] },

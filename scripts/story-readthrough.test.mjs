@@ -160,6 +160,21 @@ test("each evacuation order has its own physical withdrawal before sorting recor
   }
 });
 
+test("orderly dispersal relinquishes command without borrowing the chaotic ending", () => {
+  for (const records of ["divide-records", "carry-records", "strip-identities"]) {
+    for (const evacuation of ["escort-households", "hold-formation", "split-routes"]) {
+      const result = readRoute(draft, input, ["keep-reserve", "gather-own", evacuation, records, "release-groups"]);
+      const text = result.ending.lines.map(line => line.text).join("\n");
+      assert.ok(text.includes("还站着等你发话"));
+      assert.ok(text.includes("没有再问他们何时归队"));
+      assert.ok(text.indexOf("去处和同行的人，都说好了") < text.indexOf("你侧身让开"));
+    }
+  }
+  for (const other of [draft.endings.together, draft.endings.remnant, draft.scatteredEnding]) {
+    assert.ok(other.lines.every(line => !line.text.includes("没有再问他们何时归队")));
+  }
+});
+
 test("all nine ending memories preserve the chosen record custody without inventing carts or handoffs", () => {
   for (const records of ["divide-records", "carry-records", "strip-identities"]) {
     for (const end of ["stay-together", "move-with-remnant", "release-groups"]) {
