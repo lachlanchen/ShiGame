@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: council pacing shortened and visibly reviewed",
+  "source": "Local Tongjian volume7, wenyan.md lines2693–2703 read directly; source hash and paraphrase boundaries recorded in fanyang-entry-review.v1.json. No private source file or annotation copied into the repository.",
+  "change": "Original bilingual terms exchange now opposes the incentive for other towns to surrender with local accountability. The public-safety reaction explicitly protects life without declaring innocence and retains uncertain soldier obedience.",
+  "contentSHA256": "7f528bfbf63dfaaf56b9828c9561e1e657edc760e3e9c135171d0bcb17d3d2e2",
+  "invariants": "Deep comparison against parent proved only first-round context and public-safety response changed. No choices, conditions, effects, endings or extra historical event added.",
+  "verification": {
+    "initial": "28823 failed two App continuation tests;63655 failed review hash binding after passing both reading tests. The stale review hash supplied by FanyangScene caused the revision mismatch, not changed gameplay rules.",
+    "repair": "Updated the exact content-review hash with a dated source readback and bounded editorial review; release approval remains false.",
+    "final": "19735 exit0: seven core tests including exhaustive legal continuations of77council routes;27web tests including both complete chapter-to-retreat routes passed.",
+    "readingAndExports": "Both complete-reading tests passed; native shared-resource synchronization/parity passed before hash-record repair. No native executable or screenshot of revised prose is claimed."
+  },
+  "limits": ["Agent source/editorial review, not independent historian or human approval.", "Hash-bound older scene saves remain subject to existing mismatch protections; no migration bypass added.", "No new visible/device playtest, media, submission or release."]
+}

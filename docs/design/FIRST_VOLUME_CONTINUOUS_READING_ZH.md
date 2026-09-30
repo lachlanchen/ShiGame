@@ -156,13 +156,13 @@
 
 ### 你肯答应什么
 
-使者要一句能带回城头的话。老卒也在等你开口。你的许诺能比军队更早传到下一座城，失信的消息也是。
+使者指向来路：‘降了也活不成，下一座城谁还肯给你开门？’老卒打断他：‘那城里要找他算账的人呢？’两个人都等着你答。
 
 所选行动：当众许诺保全
 
 以你的名义保徐公性命。城中能稍安心，愤怒的士卒却得接受一桩未曾参与的交易。
 
-使者逐字复述你的话。老卒望向卫队：‘那就说清楚，这是谁的命令。’
+你说：‘我许的是保全性命，不是替他认清白。’使者把这句话复述一遍，才转向城头。老卒望向卫队：‘那就说清楚，这是谁的命令。我可没替每个人答应。’
 
 ### 谁来守住这句话
 
@@ -420,7 +420,7 @@
 
 - content/councils/chen-council.v1.json — SHA256 a4b21e01d8c442869bde8da79ead2fb7c787095eb635a1fe4504ed5a87e9a945
 
-- content/councils/fanyang-guarantee.v1.json — SHA256 c82095174dc481a023420916ae82bbc76e169c57c1076b5bbf65ce9f97a8cf24
+- content/councils/fanyang-guarantee.v1.json — SHA256 7f528bfbf63dfaaf56b9828c9561e1e657edc760e3e9c135171d0bcb17d3d2e2
 
 - content/story-drafts/chen-retreat.v1.json — SHA256 1518aff82ab9467120658a984ff4b70670bde425fd50a21b19a607746813584c
 

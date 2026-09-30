@@ -3,9 +3,14 @@
   "id": "fanyang-entry-review.v1",
   "sceneId": "fanyang-guarantee.v1",
   "status": "development-web-integrated-visual-and-native-review-pending",
-  "contentSHA256": "c82095174dc481a023420916ae82bbc76e169c57c1076b5bbf65ce9f97a8cf24",
+  "contentSHA256": "7f528bfbf63dfaaf56b9828c9561e1e657edc760e3e9c135171d0bcb17d3d2e2",
   "publicationApproved": false,
-  "reviewDate": "2026-09-30",
+  "reviewDate": "2026-10-01",
+  "dialogueFollowup": {
+    "sourceReadback": "Re-read local wenyan.md lines2693–2703, SHA2568c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17. Main account distinguishes killing Qin officials from publicly honoring/protecting Xu; phonetic and geographical annotations are not dialogue evidence.",
+    "change": "Opening terms now confront the incentive for future towns to surrender with the town's desire for accountability. Public-safety response distinguishes protection of life from innocence, while the veteran refuses to promise every soldier's compliance.",
+    "boundary": "All new dialogue and the veteran's objection are original reconstruction. No trial mechanic, automatic pardon, honors, additional surrender or resource effect is introduced. Older implementation and remaining-gate paragraphs below retain their original checkpoint scope; this follow-up is not new device or human acceptance."
+  },
   "reviewer": "Codex implementation and source-boundary review; not independent historian or human playtest approval",
   "source": {
     "work": "資治通鑑",
