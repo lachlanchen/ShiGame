@@ -10,6 +10,7 @@
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Styling/CoreStyle.h"
+#include "InputCoreTypes.h"
 
 void SShiChenCouncilScreen::Construct(const FArguments& Args)
 {
@@ -62,16 +63,19 @@ FString SShiChenCouncilScreen::Metrics(const TMap<FString, int32>& Values) const
 
 void SShiChenCouncilScreen::Refresh()
 {
+    PreferredFocus.Reset();
     TSharedRef<SVerticalBox> Body = SNew(SVerticalBox);
     auto Paragraph = [&Body](const FString& Value, int32 Size = 19)
     {
         if (!Value.IsEmpty()) Body->AddSlot().AutoHeight().Padding(0, 8)[SNew(STextBlock).AutoWrapText(true)
             .ColorAndOpacity(FLinearColor(0.94f, 0.91f, 0.83f)).Font(FCoreStyle::GetDefaultFontStyle("Regular", Size)).Text(FText::FromString(Value))];
     };
-    auto Button = [&Body](const FString& Value, FOnClicked Action, bool Enabled = true)
+    auto Button = [this, &Body](const FString& Value, FOnClicked Action, bool Enabled = true, bool PreferFocus = false)
     {
-        Body->AddSlot().AutoHeight().Padding(0, 7)[SNew(SButton).ContentPadding(14).IsEnabled(Enabled).OnClicked(Action)
-            [SNew(STextBlock).AutoWrapText(true).Font(FCoreStyle::GetDefaultFontStyle("Regular", 18)).Text(FText::FromString(Value))]];
+        const auto Widget = SNew(SButton).ContentPadding(14).IsEnabled(Enabled).OnClicked(Action)
+            [SNew(STextBlock).AutoWrapText(true).Font(FCoreStyle::GetDefaultFontStyle("Regular", 18)).Text(FText::FromString(Value))];
+        Body->AddSlot().AutoHeight().Padding(0, 7)[Widget];
+        if (Enabled && (!PreferredFocus || PreferFocus)) PreferredFocus = Widget;
     };
     auto Promises = [this, &Paragraph](const TSharedPtr<FJsonObject>& Offer, const FShiChenTurn& Turn)
     {
@@ -97,7 +101,7 @@ void SShiChenCouncilScreen::Refresh()
         {
             Paragraph(Text(Labels, TEXT("confirmRetry")), 25);
             Button(Text(Labels, TEXT("reset")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::ConfirmRestart));
-            Button(Text(Labels, TEXT("cancel")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::CancelRestart));
+            Button(Text(Labels, TEXT("cancel")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::CancelRestart), true, true);
         }
         else if (bResponse)
         {
@@ -156,7 +160,7 @@ void SShiChenCouncilScreen::Refresh()
             Paragraph(Text(Round, TEXT("title")), 25);
             Paragraph(Text(Round, TEXT("context")));
             for (const auto& Id : Model.GetChoices())
-                Button(Text(Choice(Id), TEXT("title")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::Select, Id));
+                Button(Text(Choice(Id), TEXT("title")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::Select, Id), true, Id == Selected);
             if (!Selected.IsEmpty())
             {
                 const auto Offer = Choice(Selected);
@@ -177,33 +181,54 @@ void SShiChenCouncilScreen::Refresh()
     Button(Locale == TEXT("zh-Hans") ? TEXT("返回第一章") : TEXT("Return to Chapter I"), FOnClicked::CreateLambda([this]() { Close.ExecuteIfBound(); return FReply::Handled(); }));
     ChildSlot[SNew(SBorder).Padding(32).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
         .BorderBackgroundColor(FLinearColor(0.025f, 0.03f, 0.025f, 0.98f))
-        [SNew(SScrollBox) + SScrollBox::Slot()[Body]]];
+        [SNew(SScrollBox).ScrollWhenFocusChanges(EScrollWhenFocusChanges::InstantScroll)
+            .NavigationDestination(EDescendantScrollDestination::Center)
+            + SScrollBox::Slot()[Body]]];
+}
+
+FReply SShiChenCouncilScreen::FocusReply()
+{
+    // Let the player read the ending before Tab scrolls to its footer actions.
+    if (Session.GetModel().IsCompleted() && !bResponse && !Session.IsRestartArmed())
+        return FReply::Handled().SetUserFocus(AsShared(), EFocusCause::SetDirectly);
+    return PreferredFocus ? FReply::Handled().SetUserFocus(PreferredFocus.ToSharedRef(), EFocusCause::Navigation) : FReply::Handled();
+}
+
+FReply SShiChenCouncilScreen::OnKeyDown(const FGeometry& Geometry, const FKeyEvent& Event)
+{
+    if (Event.GetKey() != EKeys::Escape) return SCompoundWidget::OnKeyDown(Geometry, Event);
+    // A held Back key must not cancel a prompt and then immediately leave the scene.
+    if (Event.IsRepeat()) return FReply::Handled();
+    if (Session.IsRestartArmed()) return CancelRestart();
+    if (!Selected.IsEmpty()) { Selected.Reset(); Refresh(); return FocusReply(); }
+    Close.ExecuteIfBound();
+    return FReply::Handled();
 }
 
 FReply SShiChenCouncilScreen::Select(FString Id)
 {
-    Selected = MoveTemp(Id); Refresh(); return FReply::Handled();
+    Selected = MoveTemp(Id); Refresh(); return FocusReply();
 }
 FReply SShiChenCouncilScreen::Commit()
 {
     if (Session.Commit(Selected, Error)) { Selected.Reset(); bResponse = true; }
-    Refresh(); return FReply::Handled();
+    Refresh(); return FocusReply();
 }
 FReply SShiChenCouncilScreen::Continue()
 {
-    bResponse = false; Refresh(); return FReply::Handled();
+    bResponse = false; Refresh(); return FocusReply();
 }
 
 FReply SShiChenCouncilScreen::ArmRestart()
 {
-    Session.ArmRestart(); Error.Reset(); Refresh(); return FReply::Handled();
+    Session.ArmRestart(); Error.Reset(); Refresh(); return FocusReply();
 }
 FReply SShiChenCouncilScreen::ConfirmRestart()
 {
     if (Session.ConfirmRestart(Error)) { Selected.Reset(); bResponse = false; }
-    Refresh(); return FReply::Handled();
+    Refresh(); return FocusReply();
 }
 FReply SShiChenCouncilScreen::CancelRestart()
 {
-    Session.CancelRestart(); Error.Reset(); Refresh(); return FReply::Handled();
+    Session.CancelRestart(); Error.Reset(); Refresh(); return FocusReply();
 }
