@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 
+class FShiCampaignSession;
+
 struct FShiChenTurn
 {
     FString ChoiceId;
@@ -13,6 +15,10 @@ struct FShiChenTurn
 class FShiChenCouncilModel
 {
 public:
+    /** Gameplay entry: only a surviving, completed chapter may continue. */
+    bool InitializeFromChapter(const FString& DefinitionJson, const FShiCampaignSession& Chapter, FString& Error);
+    bool ReplayFromChapter(const FString& DefinitionJson, const FShiCampaignSession& Chapter,
+        const FString& Json, FString& Error);
     bool Initialize(const FString& DefinitionJson, const FString& Arrival, FString& Error, const FString& EntryId = FString());
     bool ExportSaveJson(FString& Json, FString& Error) const;
     bool ReplaySaveJson(const FString& DefinitionJson, const FString& Arrival, const FString& EntryId,

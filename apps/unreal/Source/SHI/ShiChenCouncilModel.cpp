@@ -1,4 +1,5 @@
 #include "ShiChenCouncilModel.h"
+#include "ShiCampaignSession.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -6,6 +7,43 @@
 
 namespace
 {
+bool ChapterEntry(const FShiCampaignSession& Chapter, FString& Arrival, FString& Entry, FString& Error)
+{
+    Error = TEXT("Council requires a surviving completed chapter");
+    if (!Chapter.GetCampaign() || !Chapter.IsCompleted() || !Chapter.GetFailureReason().IsEmpty()
+        || Chapter.GetHistory().IsEmpty()) return false;
+    // Length-prefixed fields avoid delimiter collisions. Sort maps/sets so replay
+    // insertion order cannot change this engine-local chronicle identity.
+    FString Identity = TEXT("shi.chen-entry.v1:");
+    auto Add = [&Identity](const FString& Value) { Identity += FString::Printf(TEXT("%d:"), Value.Len()) + Value; };
+    Add(Chapter.GetCampaign()->Id);
+    Add(FString::Printf(TEXT("%u"), Chapter.GetSeed()));
+    Add(Chapter.GetCurrentNodeId());
+    Add(Chapter.GetActiveCommitmentId());
+    Add(FString::FromInt(Chapter.GetHistory().Num()));
+    for (const auto& Turn : Chapter.GetHistory())
+    {
+        Add(Turn.NodeId); Add(Turn.ChoiceId); Add(Turn.ConditionId);
+        Add(Turn.OppositionStageId); Add(Turn.MethodId); Add(Turn.MethodReadId);
+        Add(Turn.bMethodReadMatched ? TEXT("1") : TEXT("0"));
+        Add(Turn.CommitmentId); Add(Turn.CommitmentOutcomeId);
+    }
+    TArray<FString> ResourceKeys;
+    Chapter.GetResources().GetKeys(ResourceKeys);
+    ResourceKeys.Sort();
+    Add(FString::FromInt(ResourceKeys.Num()));
+    for (const auto& Key : ResourceKeys) { Add(Key); Add(FString::FromInt(Chapter.GetResources().FindRef(Key))); }
+    TArray<FString> Flags = Chapter.GetFlags();
+    Flags.Sort();
+    Add(FString::FromInt(Flags.Num()));
+    for (const auto& Flag : Flags) Add(Flag);
+    FTCHARToUTF8 Utf8(*Identity);
+    Entry = TEXT("chapter-blake3-160:") + LexToString(FIoHash::HashBuffer(Utf8.Get(), Utf8.Length()));
+    Arrival = Chapter.GetResources().FindRef(TEXT("grain")) >= 45 ? TEXT("supplied")
+        : Chapter.GetResources().FindRef(TEXT("danger")) >= 65 ? TEXT("pressed") : TEXT("divided");
+    Error.Reset();
+    return true;
+}
 const TArray<FString> Keys = { TEXT("grain"), TEXT("tempo"), TEXT("city"), TEXT("allies"), TEXT("veterans") };
 bool ReadMetrics(const TSharedPtr<FJsonObject>& Parent, const TCHAR* Field, TMap<FString, int32>& Out, bool bOptional, bool bPositive)
 {
@@ -28,6 +66,19 @@ void Apply(TMap<FString, int32>& Metrics, const TMap<FString, int32>& Effects)
     // Clamp each authored effect block in order, exactly like TypeScript/Swift.
     for (const FString& Key : Keys) Metrics[Key] = FMath::Clamp(Metrics.FindRef(Key) + Effects.FindRef(Key), 0, 10);
 }
+}
+
+bool FShiChenCouncilModel::InitializeFromChapter(const FString& Json, const FShiCampaignSession& Chapter, FString& Error)
+{
+    FString Arrival, Entry;
+    return ChapterEntry(Chapter, Arrival, Entry, Error) && Initialize(Json, Arrival, Error, Entry);
+}
+
+bool FShiChenCouncilModel::ReplayFromChapter(const FString& Definition, const FShiCampaignSession& Chapter,
+    const FString& Json, FString& Error)
+{
+    FString Arrival, Entry;
+    return ChapterEntry(Chapter, Arrival, Entry, Error) && ReplaySaveJson(Definition, Arrival, Entry, Json, Error);
 }
 
 bool FShiChenCouncilModel::Initialize(const FString& Json, const FString& Arrival, FString& Error, const FString& EntryId)

@@ -6,6 +6,84 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "ShiChenCouncilModel.h"
+#include "ShiCampaignSession.h"
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiChenChapterEntryTest, "SHI.ChenCouncil.ChapterEntry",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiChenChapterEntryTest::RunTest(const FString& Parameters)
+{
+    FString Definition, Fixture, Error;
+    FShiCampaignModel Campaign;
+    if (!Campaign.LoadCanonical(Error)
+        || !FFileHelper::LoadFileToString(Definition, *(FPaths::ProjectContentDir() / TEXT("StreamingAssets/chen-council.v1.json")))
+        || !FFileHelper::LoadFileToString(Fixture, *(FPaths::ProjectDir() / TEXT("../../content/conformance/chapter-01-replays.v1.json"))))
+    { AddError(TEXT("Missing chapter/council fixtures: ") + Error); return false; }
+    TSharedPtr<FJsonObject> Root;
+    if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Fixture), Root)) return false;
+    FShiChenCouncilModel Council;
+    TestTrue(TEXT("Retained council"), Council.Initialize(Definition, TEXT("divided"), Error, TEXT("retained")));
+    TestTrue(TEXT("Retained decision"), Council.Commit(TEXT("defer-title")));
+    FString Retained;
+    Council.ExportSaveJson(Retained, Error);
+    FShiCampaignSession Uninitialized;
+    TestFalse(TEXT("Uninitialized chapter rejected"), Council.InitializeFromChapter(Definition, Uninitialized, Error));
+    TSet<FString> Entries;
+    int32 Survivors = 0, Failures = 0;
+    for (const auto& Raw : Root->GetArrayField(TEXT("routes")))
+    {
+        FShiCampaignSession Chapter;
+        Chapter.Initialize(Campaign, static_cast<uint32>(Root->GetNumberField(TEXT("seed"))));
+        TestFalse(TEXT("Unfinished chapter rejected"), Council.InitializeFromChapter(Definition, Chapter, Error));
+        for (const auto& RawTurn : Raw->AsObject()->GetArrayField(TEXT("turns")))
+        {
+            FShiResolutionResult Resolution;
+            if (!TestTrue(TEXT("Chapter choice resolves"), Chapter.ResolveChoice(RawTurn->AsObject()->GetStringField(TEXT("choiceId")), Resolution, Error))) return false;
+        }
+        FString Before, After;
+        TestTrue(TEXT("Chapter export"), Chapter.ExportSaveJson(Before, Error));
+        const bool Eligible = Chapter.IsCompleted() && Chapter.GetFailureReason().IsEmpty();
+        FShiChenCouncilModel Next;
+        TestEqual(TEXT("Entry follows chapter survival"), Next.InitializeFromChapter(Definition, Chapter, Error), Eligible);
+        if (!Eligible)
+        {
+            ++Failures;
+            TestFalse(TEXT("Failed chapter preserves existing council"), Council.InitializeFromChapter(Definition, Chapter, Error));
+            TestFalse(TEXT("Failed chapter cannot restore council"), Council.ReplayFromChapter(Definition, Chapter, Retained, Error));
+        }
+        else
+        {
+            ++Survivors;
+            FString Save;
+            TestTrue(TEXT("Chapter-bound export"), Next.ExportSaveJson(Save, Error));
+            TSharedPtr<FJsonObject> Saved;
+            if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Save), Saved)) return false;
+            const FString Entry = Saved->GetStringField(TEXT("entryId"));
+            TestFalse(TEXT("Distinct route identity"), Entries.Contains(Entry));
+            Entries.Add(Entry);
+            const FString Arrival = Chapter.GetResources().FindRef(TEXT("grain")) >= 45 ? TEXT("supplied")
+                : Chapter.GetResources().FindRef(TEXT("danger")) >= 65 ? TEXT("pressed") : TEXT("divided");
+            TestEqual(TEXT("Shared arrival thresholds"), Saved->GetStringField(TEXT("arrival")), Arrival);
+            TestTrue(TEXT("Council decision"), Next.Commit(TEXT("defer-title")));
+            Next.ExportSaveJson(Save, Error);
+            FShiCampaignSession Replayed;
+            TestTrue(TEXT("Restore actual chapter"), Replayed.ReplaySaveJson(Campaign, Before, Error));
+            FShiChenCouncilModel Restored;
+            TestTrue(TEXT("Chapter replay preserves council identity"), Restored.ReplayFromChapter(Definition, Replayed, Save, Error));
+            TestEqual(TEXT("Council decision restored"), Restored.GetHistory().Num(), 1);
+            TestFalse(TEXT("Foreign entry rejected"), Restored.ReplayFromChapter(Definition, Replayed, Retained, Error));
+            TestEqual(TEXT("Bad replay retains decision"), Restored.GetHistory().Num(), 1);
+        }
+        TestTrue(TEXT("Chapter still exportable"), Chapter.ExportSaveJson(After, Error));
+        TestEqual(TEXT("Council never mutates chapter"), After, Before);
+        FString Preserved;
+        Council.ExportSaveJson(Preserved, Error);
+        TestEqual(TEXT("Rejected entry preserves council"), Preserved, Retained);
+    }
+    TestTrue(TEXT("Survivor coverage"), Survivors > 0);
+    TestTrue(TEXT("Failure coverage"), Failures > 0);
+    return !HasAnyErrors();
+}
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiChenCouncilConformanceTest, "SHI.ChenCouncil.SharedRoutes",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
