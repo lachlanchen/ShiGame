@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: courier complete reading added and tested",
+  "deliverable": ".runtime/story-book/index.html",
+  "rebuild": "npm run story:book",
+  "verification": "11309 exit0: two tests passed, then generated196KiB offline HTML and per-route SHA256 manifest. Tests invoke all eight real-rule exports, check complete historical/provenance sections, deterministic rendering, internal navigation targets, selected arc presence and HTML escaping.",
+  "routes": ["together", "remnant", "dispersed", "scattered", "reunion", "partners", "loan", "courier"],
+  "design": "One responsive single-file page with native keyboard-operable disclosure controls, print styling, one route initially expanded and clear original-dramatization/development boundaries. No scripts, remote assets, server, game-save access or required network.",
+  "privacy": "Generated output is ignored by Git; only generator/tests and receipt are tracked. Content comes exclusively from the canonical editorial exports, not private books.",
+  "limits": ["Structural DOM verification only; new review-page layout has not been visually qualified.", "This is a reading companion, not a playable build, exhaustive route atlas or human acceptance.", "No store or publication action."]
+}
