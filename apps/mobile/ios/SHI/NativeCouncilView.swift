@@ -32,7 +32,12 @@ struct NativeCouncilView: View {
                         Text(text(session.definition, "boundary")).font(.footnote).lineSpacing(4)
                         if let engine = session.engine {
                             progress(engine)
-                            Text(text(session.definition, "objective")).font(.subheadline).lineSpacing(4)
+                            DisclosureGroup {
+                                Text(text(session.definition, "objective")).font(.subheadline).lineSpacing(4)
+                            } label: {
+                                Text(locale == "zh-Hans" ? "议事规则与条件" : "Council rules and conditions")
+                            }
+                            .accessibilityIdentifier("council-rules")
                             if session.needsRecovery { notice(label("invalidSave")) }
                             else if session.error != nil { notice(label("saveError")) }
                             if let response = session.response { responseView(engine, response) }

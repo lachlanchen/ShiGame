@@ -135,7 +135,10 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
     </header>
     <p className="chen-boundary">{text(definition.boundary)}</p>
     <ol className="chen-progress" aria-label={label("round")}>{definition.rounds.map((item, index) => <li key={item.id} aria-current={!reading && index === state.history.length ? "step" : undefined} className={index < state.history.length ? "done" : ""}><span>{index < state.history.length ? "✓" : `0${index + 1}`}</span>{text(item.title)}</li>)}</ol>
-    <p className="chen-objective">{text(definition.objective)}</p>
+    <details className="chen-history" data-testid="council-rules">
+      <summary>{text({ en: "Council rules and conditions", "zh-Hans": "议事规则与条件" })}</summary>
+      <p className="chen-objective">{text(definition.objective)}</p>
+    </details>
     <div className="chen-layout">
       <section className="chen-main">
         {invalid && <p role="alert" className="chen-error">{label("invalidSave")}</p>}

@@ -24,6 +24,22 @@ const props = () => ({ origin: origin(), locale: "en" as const, reducedMotion: f
 afterEach(() => { cleanup(); localStorage.clear(); vi.restoreAllMocks(); });
 
 describe("Chen council presentation", () => {
+  it.each(["en", "zh-Hans"] as const)("keeps rules available without interrupting the opening or writing a choice (%s)", locale => {
+    const view = render(<ChenCouncil {...props()} locale={locale} />);
+    const rules = view.getByTestId("council-rules") as HTMLDetailsElement;
+    expect(rules.open).toBe(false);
+    expect(rules.textContent).toContain(councilData.objective[locale]);
+    expect(view.getByTestId("council-viewpoint").closest("details")).toBeNull();
+    expect(view.container.querySelector(".chen-boundary")?.closest("details")).toBeNull();
+    const before = JSON.stringify(localStorage);
+    fireEvent.click(rules.querySelector("summary")!);
+    expect(rules.open).toBe(true);
+    fireEvent.click(rules.querySelector("summary")!);
+    expect(rules.open).toBe(false);
+    expect(JSON.stringify(localStorage)).toBe(before);
+    expect(view.getByTestId("chen-council").dataset.round).toBe("0");
+    expect(view.getByTestId("council-commit")).toBeTruthy();
+  });
   for (const locale of ["en", "zh-Hans"] as const) {
     it.each(viewpoints.scenes.council.chapterBridges)(`carries $afterChoice into the council from real history (${locale})`, memory => {
       let chapter = createInitialState(campaign, 0);
