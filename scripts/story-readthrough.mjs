@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 
 const draftURL = new URL("../content/story-drafts/chen-retreat.v1.json", import.meta.url);
 const speakers = new Set(["narrator", "keeper", "supply-officer", "yu-mu", "qin-courier",
-  "wounded-soldier", "partner-steward", "rear-guard"]);
+  "wounded-soldier", "partner-steward", "rear-guard", "granary-holder"]);
 const nonempty = value => typeof value === "string" && value.trim().length > 0;
 const matches = (condition, facts) => Object.entries(condition ?? {}).every(([key, value]) => facts[key] === value);
 

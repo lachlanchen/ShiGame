@@ -14,6 +14,7 @@
     "open-reception": "付粮安顿来人，花时间组织接应。民间更愿意合作，守路者却要分担更多工作；护送这批人撤离还需额外粮秣。",
     "verify-with-partners": "花时间与诸部情面，共同核人和安排接应。若陈县已经实行共账，核验可以更快；作过承诺不等于凭空借到车辆。",
     "gather-own": "不再扩大粮食与接应负担。但新来的人只能另寻去处，民间支持会下降。",
+    "borrow-local-grain": "向本地粮主借入两份粮秣，花一份行动余裕办交接，并付出诸部与民间支持。需要有人肯作保；粮主保留欠契，改写名籍或分行都不会把债抹掉。粮秣超过八份时不接受这笔借入，避免超过容量后仍欠足额。",
     "escort-households": "拨粮护送家户，把时间让给走得慢的人。军中承担断后压力，民间支持提高；先前的留队与收容安排会改变本次支出。",
     "hold-formation": "需要仍肯维持队形的士卒。保存集中护路的能力，缩小护送范围；民间与诸部会追问没有带走的人。",
     "split-routes": "分组可以避开一处堵塞，也会减弱相互照应与军中支持。约定会合，不表示所有人已经安全抵达。",
@@ -41,6 +42,7 @@
       { "id": "verify-with-partners", "requires": { "allies": 2 }, "effects": { "tempo": -2, "allies": -1, "city": 1 }, "reason": "Spend time and allied goodwill arranging shared reception. A previous shared ledger reduces the verification time, not the food bill.", "answers": [
         { "afterChoice": "joint-ledger", "effects": { "tempo": 1 }, "reason": "The Chen shared ledger lets partners check an established record instead of rebuilding it." }
       ] },
+      { "id": "borrow-local-grain", "requires": { "allies": 3, "city": 2 }, "maximum": { "grain": 8 }, "effects": { "grain": 2, "tempo": -1, "allies": -2, "city": -1 }, "debt": { "id": "local-grain-loan", "creditor": "local-granary", "grain": 2 }, "reason": "A fictional local granary lends two units of grain capacity in return for a recorded claim, time to hand over supplies, and coalition guarantees. The creditor holds a separate copy; the debt survives identity removal and group dispersal. This one-time decision cannot be repeated as a farming loop." },
       { "id": "gather-own", "requires": {}, "effects": { "city": -1 }, "reason": "Do not expand reception. Existing people stay accounted for; outsiders receive no new shelter promise." }
     ] },
     { "id": "evacuation", "choices": [

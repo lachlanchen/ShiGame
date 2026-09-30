@@ -4,9 +4,12 @@ import type { LocalizedText } from "./types";
 
 export type RetreatOutcome = "together" | "remnant" | "dispersed" | "scattered";
 type Effects = Partial<CouncilMetrics>;
+export interface RetreatDebt { id: string; creditor: string; grain: number }
 export interface RetreatRuleChoice {
   id: string; requires: Effects; effects: Effects; reason: string;
   afterChoiceRequired?: string;
+  maximum?: Effects;
+  debt?: RetreatDebt;
   answers?: { afterChoice: string; effects: Effects; reason: string }[];
   ending?: "together" | "remnant" | "disperse";
 }
@@ -21,6 +24,7 @@ export interface RetreatState {
   priorChoices: string[];
   history: { sceneId: string; choiceId: string; before: CouncilMetrics; after: CouncilMetrics }[];
   resourceCustody: "common" | "groups" | "unresolved";
+  debts: RetreatDebt[];
   completed: boolean; outcome?: RetreatOutcome;
 }
 
@@ -31,7 +35,7 @@ export function createRetreat(definition: RetreatDefinition, entry: RetreatEntry
   if (!councilMetricKeys.every(key => Number.isInteger(metrics[key]) && metrics[key] >= 0 && metrics[key] <= 10)) throw new Error("Invalid inherited capacity");
   return { version: 1, definitionId: definition.id, entryId: entry.id, metrics,
     priorChoices: [...entry.chapter.history.map(turn => turn.choiceId), ...entry.council.choices, ...entry.fanyang.choices],
-    history: [], resourceCustody: "common", completed: false };
+    history: [], debts: [], resourceCustody: "common", completed: false };
 }
 
 function pastChoices(state: RetreatState) { return [...state.priorChoices, ...state.history.map(turn => turn.choiceId)]; }
@@ -56,7 +60,10 @@ export function inspectRetreatChoice(definition: RetreatDefinition, state: Retre
     return { key, value: state.metrics[key], required, met: state.metrics[key] >= required };
   });
   const prerequisiteMet = !choice.afterChoiceRequired || past.includes(choice.afterChoiceRequired);
-  const available = prerequisiteMet && checks.every(check => check.met);
+  const maximumChecks = councilMetricKeys.filter(key => choice.maximum?.[key] !== undefined)
+    .map(key => ({ key, value: state.metrics[key], maximum: choice.maximum![key]!, met: state.metrics[key] <= choice.maximum![key]! }));
+  const debtAvailable = !choice.debt || !state.debts.some(debt => debt.id === choice.debt!.id);
+  const available = prerequisiteMet && debtAvailable && checks.every(check => check.met) && maximumChecks.every(check => check.met);
   const after = Object.fromEntries(councilMetricKeys.map(key => [key, Math.max(0, Math.min(10, state.metrics[key] + (effects[key] ?? 0)))])) as CouncilMetrics;
   let outcome: RetreatOutcome | undefined;
   if (available && choice.ending) {
@@ -66,7 +73,8 @@ export function inspectRetreatChoice(definition: RetreatDefinition, state: Retre
         ? "dispersed" : "scattered"
       : choice.ending;
   }
-  return { choice, answers, effects, checks, prerequisiteMet, available,
+  return { choice, answers, effects, checks, maximumChecks, prerequisiteMet, debtAvailable, available,
+    newDebt: available && choice.debt ? { ...choice.debt } : undefined,
     // Unavailable previews must not advertise clamped unaffordable spending.
     after: available ? after : null, outcome,
     reactionOverride: outcome === "scattered" ? definition.scattered.reaction : undefined };
@@ -80,6 +88,7 @@ export function resolveRetreat(definition: RetreatDefinition, state: RetreatStat
   const completed = history.length === definition.scenes.length;
   if (completed !== Boolean(preview.outcome)) throw new Error("Retreat ending contract mismatch");
   return { ...state, metrics: { ...preview.after }, history, completed,
+    debts: [...state.debts.map(debt => ({ ...debt })), ...(preview.newDebt ? [{ ...preview.newDebt }] : [])],
     resourceCustody: preview.outcome === "dispersed" ? "groups" : preview.outcome === "scattered" ? "unresolved" : "common",
     ...(preview.outcome ? { outcome: preview.outcome } : {}) };
 }

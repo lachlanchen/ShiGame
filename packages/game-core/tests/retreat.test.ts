@@ -67,15 +67,18 @@ describe("resource-backed retreat rules", () => {
     expect(Object.values(rulesRaw.explanationsZh).every(text => text.length > 0)).toBe(true);
   });
 
-  it("exhausts legal retreat routes from 993 real prior endings with no dead ends or refills", () => {
+  it("exhausts legal retreat routes from 993 real prior endings without dead ends or unaccounted resupply", () => {
     expect(entries).toHaveLength(993);
     const outcomes = new Set<string>();
+    const recoveredEmptyEntries = new Set<string>();
     let paths = 0;
     for (const entry of entries) {
       const entryBefore = JSON.stringify(entry);
       const walk = (state: RetreatState) => {
         if (state.completed) {
           paths++; outcomes.add(state.outcome!);
+          if (entry.fanyang.metrics.grain === 0 && state.outcome !== "scattered"
+            && state.history.some(turn => turn.choiceId === "borrow-local-grain")) recoveredEmptyEntries.add(entry.id);
           expect(restoreRetreat(rules, entry, JSON.parse(encodeRetreatSnapshot(state, rulesHash, storyHash)), rulesHash, storyHash)).toEqual(state);
           expect(() => resolveRetreat(rules, state, "release-groups")).toThrow();
           return;
@@ -88,7 +91,9 @@ describe("resource-backed retreat rules", () => {
           const next = resolveRetreat(rules, state, option.choice.id);
           expect(next.metrics).toEqual(option.after);
           expect(next.outcome).toBe(option.outcome);
-          expect(next.metrics.grain).toBeLessThanOrEqual(state.metrics.grain);
+          expect(next.metrics.grain).toBeLessThanOrEqual(state.metrics.grain + (option.newDebt?.grain ?? 0));
+          expect(next.debts.length).toBe(state.debts.length + (option.newDebt ? 1 : 0));
+          if (option.newDebt) expect(next.metrics.grain - state.metrics.grain).toBe(option.newDebt.grain);
           expect(next.metrics.tempo).toBeLessThanOrEqual(state.metrics.tempo);
           for (const key of councilMetricKeys) expect(next.metrics[key]).toBeGreaterThanOrEqual(0);
           walk(next);
@@ -102,7 +107,8 @@ describe("resource-backed retreat rules", () => {
     }
     expect(paths).toBeGreaterThan(993);
     expect([...outcomes].sort()).toEqual(["dispersed", "remnant", "scattered", "together"]);
-    console.info(`Retreat exhaustive audit: ${entries.length} inherited entries, ${paths} complete routes, four outcomes, no narrative dead ends.`);
+    expect(recoveredEmptyEntries.size).toBeGreaterThan(0);
+    console.info(`Retreat exhaustive audit: ${entries.length} inherited entries, ${paths} complete routes, ${recoveredEmptyEntries.size} actual grain-empty entries with a loan-supported recovery, four outcomes, no narrative dead ends.`);
   }, 45_000);
 
   it("discloses a depleted campaign's exit as scattering, not an invented orderly reunion", () => {
@@ -139,6 +145,43 @@ describe("resource-backed retreat rules", () => {
     const ending = follow(capacity(10), ["decline-dispatch", "gather-own", "split-routes", "carry-records", "release-groups"]);
     expect(ending.outcome).toBe("dispersed");
     expect(ending.resourceCustody).toBe("groups");
+  });
+
+  it("recovers a grain-empty but supported position by taking a debt that survives identity removal and dispersal", () => {
+    const entry = capacity(6);
+    entry.fanyang.metrics.grain = 0;
+    let state = follow(entry, ["decline-dispatch"]);
+    const before = JSON.stringify(state);
+    const offer = inspectRetreatChoice(rules, state, "borrow-local-grain");
+    expect(offer.available).toBe(true);
+    expect(offer.newDebt).toEqual({ id: "local-grain-loan", creditor: "local-granary", grain: 2 });
+    expect(JSON.stringify(state)).toBe(before);
+    state = resolveRetreat(rules, state, "borrow-local-grain");
+    expect(state.metrics).toEqual({ grain: 2, tempo: 5, city: 5, allies: 3, veterans: 6 });
+    expect(state.debts).toEqual([offer.newDebt]);
+    expect(() => resolveRetreat(rules, state, "borrow-local-grain")).toThrow();
+    for (const choice of ["split-routes", "strip-identities", "release-groups"]) state = resolveRetreat(rules, state, choice);
+    expect(state.outcome).toBe("dispersed");
+    expect(state.resourceCustody).toBe("groups");
+    expect(state.debts).toEqual([offer.newDebt]);
+    const snapshot = JSON.parse(encodeRetreatSnapshot(state, rulesHash, storyHash));
+    expect(snapshot).not.toHaveProperty("debts");
+    expect(restoreRetreat(rules, entry, { ...snapshot, debts: [], metrics: { grain: 10 } }, rulesHash, storyHash)).toEqual(state);
+    const noLoan = follow(entry, ["decline-dispatch", "gather-own", "split-routes", "strip-identities", "release-groups"]);
+    expect(noLoan.outcome).toBe("scattered");
+  });
+
+  it("requires guarantors and handover time, and never incurs a full debt for a clipped grain delivery", () => {
+    for (const entry of [capacity(0), capacity(10)]) {
+      const state = follow(entry, ["decline-dispatch"]);
+      const preview = inspectRetreatChoice(rules, state, "borrow-local-grain");
+      expect(preview.available).toBe(false);
+      expect(preview.newDebt).toBeUndefined();
+      expect(preview.after).toBeNull();
+      expect(() => resolveRetreat(rules, state, "borrow-local-grain")).toThrow();
+    }
+    const entry = capacity(6); entry.fanyang.metrics.tempo = 0;
+    expect(inspectRetreatChoice(rules, follow(entry, ["decline-dispatch"]), "borrow-local-grain").available).toBe(false);
   });
 
   it("binds replay to both story and rules revisions and ignores fabricated totals", () => {

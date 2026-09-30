@@ -10,9 +10,9 @@ const together = ["keep-reserve", "open-reception", "escort-households", "divide
 test("every authored choice, conditional passage and ending is reachable without a narrative dead end", () => {
   const result = auditDraft(draft);
   assert.equal(result.inputContexts, 27);
-  assert.equal(result.choices, 16);
-  assert.equal(result.routes, 6804);
-  assert.deepEqual(result.endings, { together: 972, remnant: 2916, dispersed: 2916 });
+  assert.equal(result.choices, 17);
+  assert.equal(result.routes, 9072);
+  assert.deepEqual(result.endings, { together: 1296, remnant: 3888, dispersed: 3888 });
 });
 
 test("reading is deterministic and does not mutate draft, inputs or choices", () => {

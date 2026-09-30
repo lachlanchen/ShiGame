@@ -60,7 +60,9 @@
         { "speaker": "keeper", "text": "另一个人呢？" },
         { "speaker": "wounded-soldier", "text": "过了沟就没见着。我找过了。" },
         { "speaker": "narrator", "text": "你刚伸手，他便把两份凭记都攥回去。旁边执戈的人朝前挪了一步。" },
-        { "speaker": "keeper", "text": "先退开。他不把这东西交给我，也能喝水。" }
+        { "speaker": "keeper", "text": "先退开。他不把这东西交给我，也能喝水。" },
+        { "speaker": "narrator", "text": "门外的粮主看了看棚里的人，仍没有把带来的契简放下。" },
+        { "speaker": "granary-holder", "text": "我那里还能借出一些。不是送。得有人作保，交接也要办清。" }
       ],
       "variants": [
         { "when": { "reserves": "keep-reserve" }, "lines": [{ "speaker": "narrator", "text": "接应的人把伤卒扶进棚里，回来问是否还要去路口接下一拨。预留的人手开始派上用场。" }] },
@@ -74,6 +76,7 @@
       "choices": [
         { "id": "open-reception", "title": "公开已核实的败讯，接纳来人", "intent": "组织路口接应，新增食宿与护送负担。只报已经核实的事，不宣布所有军队覆没。", "response": [{ "speaker": "keeper", "text": "把空棚清出来。路口留两个人，告诉后来的人往这里走。谁的名字没对上，先记失散。" }, { "speaker": "wounded-soldier", "text": "那一份先别销。他还可能来。" }, { "speaker": "narrator", "text": "他松开手，留下同伴的凭记。新来的队伍还在增长，锅里的粮不会因此变多。" }], "next": "evacuation" },
         { "id": "verify-with-partners", "title": "请邻部共同核实与分担", "intent": "让伙伴一起核人、分派接应，时间会过去，也可能有人只肯接自己认识的队伍。", "response": [{ "speaker": "keeper", "text": "把各部的管事请来，先说各自见到了谁。今夜能接几人，也一并说清。" }, { "speaker": "partner-steward", "text": "我带两个人来认。车我不能先答应，得回去问。" }, { "speaker": "narrator", "text": "你给伤卒留了位置，没有把一句愿意商量记成已经借到车辆。" }], "next": "evacuation" },
+        { "id": "borrow-local-grain", "title": "请人作保，向本地粮主借粮", "intent": "用剩余的时间与诸部情面换眼前的粮。乡里会担心日后的偿还压到自己身上，粮主也要留下可追索的欠契；这不是白得的补给。", "response": [{ "speaker": "keeper", "text": "粮先点清，欠的另立一份。找不到的旧账，不拿来抵这笔。" }, { "speaker": "granary-holder", "text": "我留一份。你们换了旗、分了队，也得有人来认。" }, { "speaker": "keeper", "text": "写明白，由我经手。别把没答应的人填进去。" }, { "speaker": "narrator", "text": "几位作保的人到场验粮。交接办完，才有人把袋口重新扎紧，搬入棚里。粮补上了，欠契也留下了。" }], "next": "evacuation" },
         { "id": "gather-own", "title": "先收拢本部，不再扩大接应", "intent": "守住眼前能够照顾的人，停止承诺接纳更多队伍；后来的失散者需要另找去处。", "response": [{ "speaker": "keeper", "text": "棚里的人留下。再来的人，把我们知道的路告诉他们，别再许这里有空位。" }, { "speaker": "wounded-soldier", "text": "那他来了呢？" }, { "speaker": "keeper", "text": "留下会合的地方。我不能让你在这里一直等。" }], "next": "evacuation" }
       ],
       "exitLines": [
@@ -105,6 +108,7 @@
         { "when": { "reserves": "decline-dispatch" }, "lines": [{ "speaker": "rear-guard", "text": "别等新援了。按这里能动的人安排，留不住的东西先说明白。" }] },
         { "when": { "bad-news": "open-reception" }, "lines": [{ "speaker": "narrator", "text": "新收的伤卒也在等车。你曾指给他们这座棚，如今撤离的安排必须算上他们。" }] },
         { "when": { "bad-news": "verify-with-partners" }, "lines": [{ "speaker": "partner-steward", "text": "我们的人到路口接。但你得把分给我们的那几户说清，别两边都以为对方带了。" }] },
+        { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "narrator", "text": "借来的粮装上车，欠契收进贴身的囊里。粮主没有跟着队伍走，他手里的那份还留在陈地。" }] },
         { "when": { "bad-news": "gather-own" }, "lines": [{ "speaker": "narrator", "text": "本部的人已经聚到粮站。被你劝往别处的队伍不在这里，撤离清点不能把他们算作同行。" }] }
       ],
       "choices": [
@@ -125,7 +129,9 @@
         { "speaker": "rear-guard", "text": "这些若被搜走，能找到多少人？" },
         { "speaker": "keeper", "text": "有些能。可全没了，谁欠谁，也就只剩嘴说。" }
       ],
-      "variants": [],
+      "variants": [
+        { "when": { "bad-news": "borrow-local-grain" }, "lines": [{ "speaker": "keeper", "text": "新借的粮另记。那一份粮主也有，不能混在别人的名籍里处理。" }] }
+      ],
       "choices": [
         { "id": "divide-records", "title": "请各组分持必要的凭记", "intent": "用时间核对与分交，减少一次丢失全部的风险。只抄仍可确认的事项，不补写未知者姓名。", "response": [{ "speaker": "keeper", "text": "各组留自己的。双方说得清的才抄，认不出的空着。" }, { "speaker": "narrator", "text": "你让拿简的人当面复述一遍，再把各份分别裹好。仍有几笔没有找到能作证的人。" }], "next": "dawn" },
         { "id": "carry-records", "title": "由掌简人保管现有凭记", "intent": "不再停留抄分，保留追查和偿还的凭据；集中保管也集中暴露风险，后续不能当作没有名录。", "response": [{ "speaker": "keeper", "text": "先都放我这里。到了再一笔一笔核。谁来问，也先来找我。" }, { "speaker": "narrator", "text": "绳结收紧，简装进随身的囊里。你的承诺和能辨认的名字仍绑在一起。" }], "next": "dawn" },

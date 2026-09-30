@@ -131,6 +131,39 @@ describe("retreat development scene", () => {
     expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe("scattered");
   });
 
+  it("saves borrowed grain and its debt together, rolls back failure, and preserves the debt after resume and dispersal", async () => {
+    const supported = structuredClone(entry);
+    for (const key of ["tempo", "city", "allies", "veterans"] as const) supported.fanyang.metrics[key] = 6;
+    supported.fanyang.metrics.grain = 0;
+    const input = { ...props(), entry: supported };
+    let view = render(<RetreatScene {...input} />);
+    await choose(view, "decline-dispatch");
+    const before = localStorage.getItem(retreatSaveKey);
+    fireEvent.click(view.container.querySelector('[data-retreat-choice="borrow-local-grain"]')!);
+    expect(view.getByTestId("retreat-debt-preview").textContent).toContain("2 份粮秣");
+    expect(view.queryByTestId("retreat-debts")).toBeNull();
+    expect(localStorage.getItem(retreatSaveKey)).toBe(before);
+    vi.spyOn(persistence, "flushPersistence").mockRejectedValueOnce(new Error("loan save failed")).mockResolvedValue(undefined);
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    await view.findByRole("alert");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(before);
+    expect(view.queryByTestId("retreat-debts")).toBeNull();
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    await view.findByTestId("retreat-response");
+    expect(view.getByTestId("retreat-debts").textContent).toContain("欠本地粮主 2 份粮秣");
+    const saved = localStorage.getItem(retreatSaveKey);
+    expect(JSON.parse(saved!).choices).toEqual(["decline-dispatch", "borrow-local-grain"]);
+    view.unmount();
+    view = render(<RetreatScene {...input} />);
+    expect(view.getByTestId("retreat-response").textContent).toContain("粮补上了，欠契也留下了");
+    expect(view.getByTestId("retreat-debts").querySelectorAll("p")).toHaveLength(1);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    fireEvent.click(within(view.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    for (const id of ["split-routes", "strip-identities", "release-groups"]) await choose(view, id);
+    expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe("dispersed");
+    expect(view.getByTestId("retreat-debts").textContent).toContain("分行不表示免责");
+  });
+
   it("has a named Chinese dialog, keyboard focus wrapping and no automatic semantic violations", async () => {
     const view = render(<RetreatScene {...props()} />);
     expect(view.getByRole("dialog").getAttribute("lang")).toBe("zh-Hans");
