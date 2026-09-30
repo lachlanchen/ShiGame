@@ -106,6 +106,13 @@ try {
   await click('[data-testid="retreat-enter"]'); await until(exists('[data-testid="retreat-commit"]'));
   await capture("03-retreat-mobile"); await layout("retreat opening");
   for (const id of [reserves, reception, evacuation, "carry-records"]) {
+    if (id === "carry-records") {
+      const memory = await evaluate("document.querySelector('[data-testid=retreat-chapter-memory]')?.textContent ?? ''");
+      check(memory.includes("当初凭券取粮时") && memory.includes("谁还找得到你"), "opening grain promise returns as a custody dilemma");
+      check(!memory.includes("一处灶火只献一釜"), "unselected voluntary contribution is not remembered as fact");
+      await evaluate("document.querySelector('[data-testid=retreat-chapter-memory]').scrollIntoView({block:'start'})");
+      await capture("04b-grain-promise-mobile"); await layout("grain promise");
+    }
     await click(`[data-retreat-choice="${id}"]`);
     if (id === reserves) {
       await capture("03b-retreat-choice-mobile");
