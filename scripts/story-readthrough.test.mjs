@@ -22,6 +22,22 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
   assert.equal(JSON.stringify({ draft, input, together }), before);
 });
 
+test("death reports leave a human pause before duties and the final decision resume", () => {
+  for (const reception of ["open-reception", "verify-with-partners", "borrow-local-grain", "gather-own"]) {
+    const result = readRoute(draft, input, ["keep-reserve", reception, "escort-households", "carry-records", "stay-together"]);
+    const badNews = result.transcript.find(beat => beat.sceneId === "bad-news");
+    const report = badNews.reaction.findIndex(line => line.text.includes("吴广已遭杀害"));
+    const pause = badNews.reaction.findIndex(line => line.text.includes("话停在半截"));
+    const question = badNews.reaction.findIndex(line => line.text === "这上面的安排，还算么？");
+    assert.ok(report >= 0 && pause === report + 1 && question > pause);
+    const dawn = result.transcript.find(beat => beat.sceneId === "dawn");
+    assert.ok(dawn.lines[0].text.includes("陈胜败亡"));
+    assert.ok(dawn.lines[1].text.includes("被风掀起的简"));
+    assert.equal(dawn.lines.at(-1).text, "还按原来的队么？");
+    assert.equal(result.endingId, "together");
+  }
+});
+
 test("all nine opening/crossing pairs return only their own memories in the intended scenes", () => {
   assert.equal(draft.chapterCallbacks.length, 8);
   for (const opening of ["read-the-names", "take-the-beacon", "hide-the-register"]) {
