@@ -16,6 +16,10 @@ test("all four complete readings replay real campaign rules with matching closin
     assert.ok(text.includes(`## ${title}\n`));
     assert.equal(text.includes("没有再问他们何时归队"), ending === "dispersed", "Only an actual orderly dispersal earns the release scene");
     assert.ok(text.includes("## 历史参照"));
+    for (const section of ["大泽乡与渡口", "陈地议事", "范阳交涉", "陈地撤离"]) assert.ok(text.includes(`### ${section}`));
+    assert.ok(text.includes("书中没有记载玩家的这些行动"));
+    assert.ok(text.includes("不是史书对范阳结局的记载"));
+    assert.match(text, /content\/research\/fanyang-entry-review\.v1\.json — SHA256 [a-f0-9]{64}/);
     assert.equal(text, run("--ending", ending), "Readthrough must be deterministic");
     if (ending === "scattered") {
       assert.ok(text.includes("物资归属：unresolved"));

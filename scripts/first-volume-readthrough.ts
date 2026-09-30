@@ -49,6 +49,7 @@ const campaign = load(chapterPath), councilDef = load(councilPath), fanyangDef =
 const story = load("content/story-drafts/chen-retreat.v1.json");
 const rules = load("content/campaigns/chen-retreat.rules.v1.json");
 const viewpoints = load("content/presentation/viewpoints.v1.json");
+const fanyangResearch = load("content/research/fanyang-entry-review.v1.json");
 const zh = (value: Record<string, string>) => { assert.ok(value?.["zh-Hans"]); return value["zh-Hans"]; };
 const text: string[] = ["# 势 第一卷连续读稿 草案",
   "这是一条从大泽乡到陈地撤离的完整示例路线，供审阅人物、转折和结尾。它不是唯一故事，也不是最优攻略。请选择你愿意质疑的地方，不必认同这里替读者选定的行动。",
@@ -160,7 +161,17 @@ for (const beat of reading.transcript) {
   add(`所选行动：${beat.choiceTitle}`, beat.intent); lines(beat.reaction);
 }
 add(`## ${reading.ending.title}`); lines(reading.ending.lines);
-add(reading.ending.unresolved, story.epilogue, "## 历史参照", zh(councilDef.history.account), zh(councilDef.history.distinction));
+add(reading.ending.unresolved, story.epilogue, "## 历史参照", "### 大泽乡与渡口");
+for (const id of ["zztj-7-qin", "shiji-48-daze", "dramatic-daze-keeper"]) {
+  const source = campaign.sources.find((item: { id: string }) => item.id === id);
+  assert.ok(source, `Missing opening source: ${id}`);
+  add(`${source.work}；${source.locator}。${zh(source.note)}`);
+}
+add("《资治通鉴》卷七记述遇雨失期、陈胜吴广起事及进据陈地。这里采用传世叙事作为处境，不把其中的刑罚说法当作已独立证实的普遍秦律。掌简人、妪母、韩驿使及读名、亭燧、渡口救援与凭记安排均为戏剧重构；书中没有记载玩家的这些行动。",
+  "### 陈地议事", zh(councilDef.history.account), zh(councilDef.history.distinction),
+  "### 范阳交涉", `${fanyangResearch.source.work}；${fanyangResearch.source.section}；${fanyangResearch.source.locator}。`,
+  "传世记载中，蒯彻劝武臣以保护和礼遇范阳令徐公来降低其他城邑抵抗的动机。这不是对徐公无罪的判定，也不能证明任何保证都会带来投降。使者视角、老卒异议、三轮交涉和不同结局是原创重构；游戏里的撤回或未决不是史书对范阳结局的记载。",
+  "### 陈地撤离");
 for (const source of Object.values(story.sources) as { volume: number; anchor: string; supports: string }[]) add(`《资治通鉴》卷${source.volume}，${source.anchor}。支持范围：${source.supports}`);
 add("## 读后反馈", "哪一处让你不清楚自己在扮演谁？哪个人的要求最能理解，哪个最不像真人？哪次选择最难，哪段想跳过？结尾解决了什么，又留下了什么？你希望继续玩的原因是什么？也可以直接指出不想继续的原因。",
   "## 文本核对", ending === "together" && reception === undefined && !courier && !beacon && fanyangIndex < 0 && councilIndex < 0
