@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import raw from "../../../content/councils/chen-council.v1.json";
 import campaignRaw from "../../../content/campaigns/chapter-01-daze.json";
-import { canChoose, getNode, councilAnswers, councilCanChoose, councilEntry, councilMetricKeys, createCouncil, createInitialState, resolveChoice, resolveCouncil, restoreCouncil,
+import { canChoose, getNode, councilAnswers, councilCanChoose, councilEntry, councilMetricKeys, councilOutcome, councilReadiness, createCouncil, createInitialState, resolveChoice, resolveCouncil, restoreCouncil,
   type Campaign, type CouncilArrival, type CouncilDefinition, type CouncilState } from "../src";
 
 const definition = raw as CouncilDefinition;
@@ -9,6 +9,26 @@ const start = (arrival: CouncilArrival = "divided") => createCouncil(definition,
 const play = (choices: string[], arrival: CouncilArrival = "divided") => choices.reduce((state, choice) => resolveCouncil(definition, state, choice), start(arrival));
 
 describe("Chen council", () => {
+  it("explains every possible bounded outcome without changing the original thresholds", () => {
+    for (let grain = 0; grain <= 10; grain++) for (let tempo = 0; tempo <= 10; tempo++)
+      for (let city = 0; city <= 10; city++) for (let allies = 0; allies <= 10; allies++)
+        for (let veterans = 0; veterans <= 10; veterans++) {
+          const metrics = { grain, tempo, city, allies, veterans };
+          const count = [city, allies, veterans].filter(n => n >= 6).length;
+          const expected = grain === 0 ? "empty-granaries" : count >= 2 && grain >= 2 && tempo >= 3 ? "common-front"
+            : city >= 6 && veterans >= 6 ? "city-stronghold" : "fragile-coalition";
+          const readiness = councilReadiness(metrics);
+          if (councilOutcome(metrics) !== expected || readiness.checks.every(c => c.met) !== (expected === "common-front")
+            || readiness.supporters.length !== count) throw new Error(JSON.stringify(metrics));
+        }
+    const metrics = { grain: 1, tempo: 2, city: 6, allies: 5, veterans: 6 };
+    expect(councilReadiness(metrics)).toEqual({ supporters: ["city", "veterans"], checks: [
+      { id: "support", value: 2, required: 2, met: true },
+      { id: "grain", value: 1, required: 2, met: false },
+      { id: "tempo", value: 2, required: 3, met: false },
+    ] });
+    expect(metrics).toEqual({ grain: 1, tempo: 2, city: 6, allies: 5, veterans: 6 });
+  });
   it("exhausts every legal route, has no deadlocks, and replays every result", () => {
     const original = JSON.stringify(definition);
     const outcomes = new Set<string>();

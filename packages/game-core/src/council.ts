@@ -69,10 +69,22 @@ export function councilCanChoose(state: CouncilState, choice: CouncilChoice): bo
   return !state.completed && councilMetricKeys.every(key => state.metrics[key] >= (choice.requires?.[key] ?? 0));
 }
 
+/** Visible requirements for a common front, evaluated from the resolved totals. */
+export function councilReadiness(metrics: CouncilMetrics) {
+  const supporters = (["city", "allies", "veterans"] as const).filter(key => metrics[key] >= 6);
+  return {
+    supporters,
+    checks: [
+      { id: "support" as const, value: supporters.length, required: 2 },
+      { id: "grain" as const, value: metrics.grain, required: 2 },
+      { id: "tempo" as const, value: metrics.tempo, required: 3 },
+    ].map(check => ({ ...check, met: check.value >= check.required })),
+  };
+}
+
 export function councilOutcome(metrics: CouncilMetrics): CouncilOutcome {
   if (metrics.grain <= 0) return "empty-granaries";
-  const supporters = [metrics.city, metrics.allies, metrics.veterans].filter(value => value >= 6).length;
-  if (supporters >= 2 && metrics.grain >= 2 && metrics.tempo >= 3) return "common-front";
+  if (councilReadiness(metrics).checks.every(check => check.met)) return "common-front";
   if (metrics.city >= 6 && metrics.veterans >= 6) return "city-stronghold";
   return "fragile-coalition";
 }
