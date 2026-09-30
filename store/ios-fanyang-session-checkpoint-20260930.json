@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "status": "passed-native-session-command-line-checks",
+  "scope": "Foundation/Combine save session compiled and exercised on arm64 macOS; not an iOS UI or physical file-protection qualification",
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/FanyangSession.swift": "b556374438064f933eb3f23f3515acebc8f5b96653066bf85fde773bcebdb918",
+    "apps/mobile/ios/Tests/FanyangSessionChecks.swift": "12d8be8f502eb4c77451346da1c28ddf329817d983cbd3f27135be5e21ddcc03"
+  },
+  "rulesBaseline": "ios-fanyang-rules-checkpoint-20260930.json",
+  "passedScenarios": [
+    "Opening does not write a save",
+    "Full route, unread-reaction restore, stale acknowledgment, duplicate and completed-order rejection",
+    "Failed atomic write publishes no order; retry writes one order",
+    "Failed restart preserves disk, decision and unread reaction",
+    "Corrupt save is backed up before explicitly requested recovery",
+    "Foreign council and changed content revision are preserved without overwrite",
+    "Missing definition cannot create or reset a save",
+    "Published state follows disk write; observer-triggered choose/restart cannot reenter the transaction",
+    "Originating council remains unchanged"
+  ],
+  "compile": "xcrun swiftc CampaignEngine.swift CouncilEngine.swift FanyangEngine.swift FanyangSession.swift FanyangSessionChecks.swift -o fanyang-session-checks",
+  "run": "./fanyang-session-checks chen-council.v1.json fanyang-guarantee.v1.json UNUSED_TEST_DIRECTORY",
+  "exitCode": 0,
+  "testData": "Only newly created synthetic saves were written. Incompatible test-save bytes were preserved in a backup; no user saves or installed apps were accessed.",
+  "remaining": [
+    "Implement and connect native SwiftUI presentation",
+    "Compile and test an iOS application on simulator and supported physical devices",
+    "Verify iOS lifecycle and device file-protection behavior",
+    "Resolve signing access and qualify a separate TestFlight candidate"
+  ],
+  "storeActions": "None"
+}
