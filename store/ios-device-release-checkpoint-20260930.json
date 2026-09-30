@@ -13,6 +13,20 @@
   "architecture": "arm64",
   "minimumOSLoadCommand": "16.0",
   "sdk": "27.0",
+  "toolchainPolicyVerifiedOn": "2026-09-30",
+  "toolchainPolicySource": "https://developer.apple.com/help/app-store-connect/release-notes/",
+  "toolchainPolicy": "Apple's September 14, 2026 release note accepts Xcode 27/iOS 27.0 builds for App Store and internal/external TestFlight testing. This is not acceptance of this particular package.",
+  "unsignedArchiveCreated": true,
+  "unsignedArchiveTransportSHA256": "1a9af5efbb694a2d9626a8edabb6312bff9a611fb69a18eb0942b9069c52dee4",
+  "exportAttempt": {
+    "status": "failed-at-codesign",
+    "exitCode": 70,
+    "error": "errSecInternalComponent",
+    "readOnlyKeychainProbe": "SecKeychainCopySettings: User interaction is not allowed",
+    "ipaProduced": false,
+    "keychainPermissionsChanged": false,
+    "nextAction": "Coordinate unlocking/authorizing the existing signing keychain on its owner host, then retry export to a new output path. Do not recreate or revoke identities, copy private keys, or reset shared access controls."
+  },
   "executableSHA256": "c6ac2a2e26c1255d74bd4a4f5ad30eb8a2781c2a2c25c9368adf7f0a8409e090",
   "retainedUnsignedAppTarSHA256": "276a474328b92641299a124254c7ff722e04b6f40c79f8b6ac602fffedc1c46b",
   "bundledCampaignSHA256": "445974ec77d789adc0bd54b147c924fffd1fc440668f900667b1086341a2ef0c",
@@ -23,7 +37,7 @@
   "providerReadback": "App Store Connect returned only build 1, processing VALID, on 2026-09-30. No provider writes.",
   "signingReadiness": "Build host reports zero valid signing identities. Established signing host reports the matching distribution identity and SHI profile; no credentials copied or permissions changed.",
   "limitations": [
-    "No signed archive or IPA produced; SDK/toolchain acceptance by App Store Connect is unverified.",
+    "No signed archive or IPA produced; acceptance of this particular package by App Store Connect remains unverified.",
     "Release compilation does not establish physical-device, minimum-OS or performance qualification.",
     "Existing SHI build cache reused; not a from-empty-cache or bit-for-bit reproducibility claim."
   ],
