@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-01",
+  "scope": "Native Swift command-line engine and session verification on the shared Mac; not simulator UI, physical device, signing or store acceptance.",
+  "status": "passed",
+  "execution": { "transfer": 38764, "tests": 5051, "exitCode": 0 },
+  "archiveSHA256": "2cecae3b459f7c6d8426617b01f5bc072b703e1e340caf4967a25de09b0df7e8",
+  "fingerprints": {
+    "apps/mobile/ios/SHI/RetreatEngine.swift": "ecfb76170589142f7d6045ea1924291625cb599090fb31aa09b4ef7f6ae230ee",
+    "apps/mobile/ios/SHI/RetreatSession.swift": "554093cbd1ee3d114e6f1be228a10a2d06f448fdf7c3b3739376046430bc86d0",
+    "apps/mobile/ios/Tests/RetreatConformance.swift": "fd3f87e17f425953a5380c1a487e98fb2dd367ad78ba875cc3941348b25d31cc",
+    "apps/mobile/ios/Tests/RetreatSessionChecks.swift": "31153cf507571b201397a5efeb92bb1f132bc576bcc4aedb97d72e9768de94a9",
+    "content/story-drafts/chen-retreat.v1.json": "af992dc08d84ac322773fa1ed1ffe7c856eae302fce34868f6c48e37cb9024bc",
+    "generatedFixture": "8acbebc50a672ff1ee515aa458c84f3a3cd893d2a5c9362149c5d13fd01e7ebe"
+  },
+  "referenceCommand": "npx vite-node scripts/retreat-conformance.ts .runtime/native-prose-compatibility-20261001/fixtures.json",
+  "compilation": "Installed xcrun swiftc; serial compilation of CampaignEngine, CouncilEngine, FanyangEngine, RetreatEntry, RetreatEngine and RetreatConformance; then same engine files plus RetreatSession and RetreatSessionChecks.",
+  "conformance": { "inheritedFanyangEntries": 18, "states": 4908, "endings": 2691, "rejectedOperations": 11702, "limit": "One real chapter/council baseline, not every campaign origin." },
+  "sessionChecksPassed": 10,
+  "verified": [
+    "Each reviewed old prose fingerprint resumes the same history and unread reaction without rewriting its saved bytes.",
+    "The next confirmed order writes the current story fingerprint and appends exactly one legal choice.",
+    "Rules, entry and unlisted story mismatches remain rejected without overwriting progress.",
+    "Failed loan save, retry, failed restart, corruption backup, missing-content rejection and transaction reentrancy checks pass."
+  ],
+  "cleanup": "Final probe found no Swift compiler, conformance/session executable or xcodebuild process. Mac swap remained 1.88 MiB. No GUI was launched; other projects and existing simulator services were untouched.",
+  "remaining": "Full iOS application/UI migration exercise and human story review remain separate gates. Website and store builds were not changed by these checks."
+}
