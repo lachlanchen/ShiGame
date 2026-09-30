@@ -164,10 +164,11 @@ struct NativeRetreatView: View {
                             if record.changedKeys.isEmpty {
                                 Text("本次未改变这五项数值；已作出的承诺与记录仍然保留。")
                             }
-                        }.accessibilityIdentifier("retreat-record-" + record.id)
+                        }.accessibilityElement(children: .contain)
+                            .accessibilityIdentifier("retreat-record-" + record.id)
                     }
                 }.padding(.top, 8)
-            }.accessibilityIdentifier("retreat-decision-record")
+            }
             Button("返回范阳") { dismiss() }.buttonStyle(.bordered).frame(minHeight: 44)
         }
     }

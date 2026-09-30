@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-01",
+  "baseline": "218a872",
+  "previousTurnClassification": "progress: native record implemented, typechecked and Foundation-tested",
+  "test": "SHIUITests/testRetreatContinuationResumeEndingAndCancel",
+  "result": { "execution": 22361, "exitCode": 65, "passed": 0, "failed": 1, "testSeconds": 289.691 },
+  "archiveSHA256": "23a22284299a17a50c1eac898ec45c1b2bf094d23d109ad00cec7fef87e9264a",
+  "diagnosis": "Reached ending and tapped disclosure. Failure accessibility hierarchy contains canonical first-row heading, explanation and subsequent row contents, all identified as retreat-decision-record rather than their assigned row IDs. New first-row lookup therefore failed; this is not a passing UI run.",
+  "fix": "Remove the DisclosureGroup parent identifier that propagates to descendants, make each row an explicit children-contain accessibility element, and locate the disclosure by its visible Chinese button label.",
+  "fixedSourceHashes": {
+    "NativeRetreatView.swift": "3bcc1fdeca1d6b951fab9d77b0ca36956370da3cc5825bf22f7fc054d23fe3bd",
+    "SHIUITests.swift": "42ce83cb8e0f167c114f273982604fd11fb7187d43c3a2d2c00ed5153e58e8a4"
+  },
+  "verification": "Scoped diff check passed. Fix has not yet been compiled or rerun; prior successful compilation does not verify it.",
+  "evidence": "Remote decision-record-ipad.xcresult finalized; exported failure hierarchy B2422858-6273-4D08-9D19-948E04561901.txt read. Video transfer still active at handoff; no completed screenshot review claimed.",
+  "cleanup": "Final result probe confirmed simulator Shutdown; no new test launched. Evidence transfer is separate and remains tracked in private runtime handoff.",
+  "limitations": ["Internal priority-inversion warning remains.", "Native visual acceptance and restart-cancel checks after the failing step remain unverified.", "No signing, store submission or public release."],
+  "next": "Finish the existing evidence transfer, inspect the recording, then compile and rerun the corrected row accessibility check without duplicating an active job."
+}

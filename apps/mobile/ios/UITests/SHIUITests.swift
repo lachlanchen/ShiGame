@@ -417,6 +417,19 @@ final class SHIUITests: XCTestCase {
         let ending = app.staticTexts["retreat-outcome"]
         XCTAssertTrue(ending.waitForExistence(timeout: 10)); XCTAssertEqual(ending.value as? String, expected)
         capture("retreat-04-native-ending")
+        let record = app.buttons["回看这一路的决定"]
+        XCTAssertTrue(record.waitForExistence(timeout: 10))
+        let firstRecord = app.descendants(matching: .any).matching(identifier: "retreat-record-decline-dispatch").firstMatch
+        XCTAssertFalse(firstRecord.exists)
+        reveal(record, in: app); record.tap()
+        XCTAssertTrue(firstRecord.waitForExistence(timeout: 10))
+        reveal(firstRecord, in: app)
+        capture("retreat-05-native-decision-record")
+        let lastRecord = app.descendants(matching: .any).matching(identifier: "retreat-record-release-groups").firstMatch
+        reveal(lastRecord, in: app); XCTAssertTrue(lastRecord.exists)
+        capture("retreat-06-native-decision-record-last")
+        reveal(record, in: app); record.tap()
+        XCTAssertEqual(ending.value as? String, expected)
         reveal(app.buttons["retreat-retry"], in: app); app.buttons["retreat-retry"].tap()
         let cancel = app.buttons.matching(identifier: "retreat-cancel-restart").firstMatch
         XCTAssertTrue(cancel.waitForExistence(timeout: 10)); cancel.tap()
