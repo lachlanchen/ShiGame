@@ -22,6 +22,26 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
   assert.equal(JSON.stringify({ draft, input, together }), before);
 });
 
+test("all nine ending memories preserve the chosen record custody without inventing carts or handoffs", () => {
+  for (const records of ["divide-records", "carry-records", "strip-identities"]) {
+    for (const end of ["stay-together", "move-with-remnant", "release-groups"]) {
+      const result = readRoute(draft, input, ["keep-reserve", "gather-own", "escort-households", records, end]);
+      const authored = draft.endings[result.endingId];
+      const applicable = authored.variants.filter(variant => variant.when.records === records);
+      assert.equal(applicable.length, 1);
+      assert.deepEqual(result.ending.lines, [...authored.lines, ...applicable[0].lines]);
+      for (const other of authored.variants.filter(variant => variant.when.records !== records)) {
+        assert.ok(other.lines.every(line => !result.ending.lines.some(actual => actual.text === line.text)));
+      }
+    }
+  }
+  const onFoot = readRoute(draft, input, ["keep-reserve", "gather-own", "hold-formation", "carry-records", "move-with-remnant"]);
+  assert.ok(onFoot.ending.lines.every(line => !line.text.includes("车")));
+  const invalid = structuredClone(draft);
+  invalid.endings.remnant.variants[0].when.records = "invented-records";
+  assert.throws(() => validateDraft(invalid), /Unknown fact/);
+});
+
 test("the opening finishes the northern report before council reminders and ends on the actionable question", () => {
   for (const fanyang of draft.inputs.fanyang) {
     const result = readRoute(draft, { ...input, fanyang }, together, ["take-crown", "joint-ledger", "hold-chen"]);

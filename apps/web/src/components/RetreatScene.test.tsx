@@ -11,6 +11,7 @@ import councilRaw from "../../../../content/councils/chen-council.v1.json";
 import fanyangRaw from "../../../../content/councils/fanyang-guarantee.v1.json";
 import councilHash from "../generated/chen-council.v1.sha256?raw";
 import fanyangReview from "../../../../content/research/fanyang-entry-review.v1.json";
+import retreatStory from "../../../../content/story-drafts/chen-retreat.v1.json";
 import { encodeCouncilSnapshot } from "../council-snapshot";
 import * as persistence from "../persistence";
 import { ChenCouncil } from "./ChenCouncil";
@@ -38,6 +39,34 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it.each(["divide-records", "carry-records", "strip-identities"])("keeps %s custody in all three orderly endings and after resume", async records => {
+    for (const [decision, outcome] of [["stay-together", "together"], ["move-with-remnant", "remnant"], ["release-groups", "dispersed"]] as const) {
+      localStorage.clear();
+      const input = props();
+      input.entry = structuredClone(input.entry);
+      // Presentation boundary fixture: ample capacity, not evidence of a real entry route.
+      input.entry.fanyang.metrics = { ...input.entry.fanyang.metrics, grain: 8, tempo: 8, city: 8, allies: 8, veterans: 8 };
+      const view = render(<RetreatScene {...input} />);
+      for (const id of ["keep-reserve", "gather-own", "escort-households", records, decision]) await choose(view, id);
+      expect(view.getByTestId("retreat-outcome").dataset.outcome).toBe(outcome);
+      const variants = retreatStory.endings[outcome].variants;
+      const expected = variants.find(variant => variant.when.records === records)!;
+      const memory = view.getByTestId("retreat-ending-memory");
+      for (const line of expected.lines) expect(memory.textContent).toContain(line.text);
+      for (const other of variants.filter(variant => variant !== expected)) {
+        for (const line of other.lines) expect(memory.textContent).not.toContain(line.text);
+      }
+      const saved = localStorage.getItem(retreatSaveKey);
+      const prose = memory.textContent;
+      view.unmount();
+      const restored = render(<RetreatScene {...input} />);
+      fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+      expect(restored.getByTestId("retreat-ending-memory").textContent).toBe(prose);
+      expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+      restored.unmount();
+    }
+  });
+
   it("supplies the marker column used by the shared two-column choice layout", () => {
     const view = render(<RetreatScene {...props()} />);
     const choices = [...view.container.querySelectorAll("[data-retreat-choice]")];
@@ -283,6 +312,8 @@ describe("retreat development scene", () => {
     expect(response.textContent).not.toContain("愿结伴的结伴");
     fireEvent.click(within(response).getByRole("button", { name: /继续/ }));
     expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe("scattered");
+    expect(view.queryByTestId("retreat-ending-memory")).toBeNull();
+    expect(view.getByTestId("retreat-outcome").textContent).not.toContain("人分开了，账还是找你");
   });
 
   it("saves borrowed grain and its debt together, rolls back failure, and preserves the debt after resume and dispersal", async () => {

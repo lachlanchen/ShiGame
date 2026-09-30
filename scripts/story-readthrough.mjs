@@ -100,6 +100,10 @@ export function validateDraft(draft) {
   for (const ending of Object.values(draft.endings)) {
     assert.ok(nonempty(ending.title) && nonempty(ending.unresolved));
     checkLines(ending.lines);
+    for (const variant of ending.variants) {
+      checkCondition(variant.when, draft.scenes.length);
+      checkLines(variant.lines);
+    }
   }
   return draft;
 }
@@ -140,7 +144,9 @@ export function readRoute(draft, input, choices, priorCouncilChoices = [], prior
     endingId = choice.ending;
   }
   assert.ok(endingId && !sceneId, "Incomplete reading route");
-  return { facts, transcript, endingId, ending: draft.endings[endingId], witnessedEvents };
+  const ending = draft.endings[endingId];
+  return { facts, transcript, endingId, ending: { ...ending,
+    lines: [...ending.lines, ...ending.variants.filter(variant => matches(variant.when, facts)).flatMap(variant => variant.lines)] }, witnessedEvents };
 }
 
 export function auditDraft(draft) {

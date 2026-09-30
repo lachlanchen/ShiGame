@@ -248,9 +248,36 @@
     }
   ],
   "endings": {
-    "together": { "title": "仍可同行", "lines": [{ "speaker": "narrator", "text": "锅重新支起来。先到的人把车挪开，给后来者留下停靠的地方。掌简人开始核今日的粮，不再等一枚远方的印。" }], "unresolved": "先前失散者与未偿欠账继续存在；正式版必须以真实余粮决定等待能力，不能默认全员归来。" },
-    "remnant": { "title": "余部上路", "lines": [{ "speaker": "narrator", "text": "第一辆车动了，后面的队伍慢慢跟上。有人还肯听你的安排，有人只是需要同走这一段。会合处留下了下一站的消息，没有留下一个必能兑现的归期。" }], "unresolved": "持械力量和关系须由实际状态继承。未完成的接应与补偿不因转移清零。" },
-    "dispersed": { "title": "各自的归路", "lines": [{ "speaker": "narrator", "text": "几份凭记交到不同的人手里。有人留在路边等同伴，有人先走。直到最后一组离开，掌简人才把空下的布卷好。" }], "unresolved": "这里分交的是仍然持有或新作的可确认凭记，不是复原已去掉的身份名录。人手全散或物资全无时不可冒充此有序结局。" }
+    "together": {
+      "title": "仍可同行",
+      "lines": [{ "speaker": "narrator", "text": "锅重新支起来。先到的人把车挪开，给后来者留下停靠的地方。掌简人开始核今日的粮，不再等一枚远方的印。" }],
+      "variants": [
+        { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "核到一笔领粮，另一组的人取出自己的凭记，蹲到你身旁。两份对不上，你们便各自留着，没有急着把其中一份涂掉。" }] },
+        { "when": { "records": "carry-records" }, "lines": [{ "speaker": "narrator", "text": "来核账的人在你面前坐下。你把囊口解开，先让他认自己的那一笔。锅边已经有人喊你吃饭，你答了一声，还没有起身。" }] },
+        { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "有人指着匿名欠账问，这笔该算给谁。你请他去找当时在场的人，把那一格留空。简上少了可供追索的姓名，锅边却仍有人等着一个答复。" }] }
+      ],
+      "unresolved": "先前失散者与未偿欠账继续存在；等待能力由实际余粮决定，不能默认全员归来。"
+    },
+    "remnant": {
+      "title": "余部上路",
+      "lines": [{ "speaker": "narrator", "text": "前面的人起身，后面的队伍慢慢跟上。有人还肯听你的安排，有人只是需要同走这一段。会合处留下了下一站的消息，没有留下一个必能兑现的归期。" }],
+      "variants": [
+        { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "有人问凭记由谁带，你指了指分别收好的几包。拿简的人各自应了一声。走出几步，你回头数的是人，不再只是自己身上的行囊。" }] },
+        { "when": { "records": "carry-records" }, "lines": [{ "speaker": "narrator", "text": "你把装简的囊换到身前。后面有人追问到了哪里能找你，你停下来，把下一处问讯的地方又说了一遍。说完才重新跟上队伍。" }] },
+        { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "收拾时，手指碰到削去名字的地方。你将匿名欠账包好，带着它上路。前头有人招呼快走，你没有回去补那几个字。" }] }
+      ],
+      "unresolved": "持械力量和关系须由实际状态继承。未完成的接应与补偿不因转移清零。"
+    },
+    "dispersed": {
+      "title": "各自的归路",
+      "lines": [{ "speaker": "narrator", "text": "有人留在路边等同伴，有人领清自己那份便先走。各组商量着不同的去处，话声渐渐分远。你没有再喊集合。" }],
+      "variants": [
+        { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "几份凭记已经分在各组手里。临走前，拿简的人彼此问清日后到哪里找。你听着，把自己那份卷好，没有再伸手收回他们的。" }] },
+        { "when": { "records": "carry-records" }, "lines": [{ "speaker": "rear-guard", "text": "人分开了，账还是找你？" }, { "speaker": "keeper", "text": "简还在我这里。要核的，趁现在来。以后到哪里问，我留下话。" }, { "speaker": "narrator", "text": "你把收了一半的囊重新打开。已经背起行李的人中，有一个又坐了下来。" }] },
+        { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "离开前，有人想替另一组认一笔欠账。你问他当时是否在场，他摇了摇头。那一笔仍旧空着。你收起匿名的简，没有叫他猜一个名字。" }] }
+      ],
+      "unresolved": "分行分配的是实际剩余物资；凭记保管方式仍按先前决定，不复原已去掉的身份。人手全散或物资全无时不可冒充此有序结局。"
+    }
   },
   "epilogue": "史书所记，陈胜败亡后，吕臣曾聚兵复取陈地。反秦之事没有在此结束。本卷虚构队伍的去向由上面的选择收束，不声称他们参与了吕臣的行动。",
   "remainingGates": [
