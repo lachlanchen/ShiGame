@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: conditional reunion payoff implemented and tested",
+  "priority": "Story completion and readable character motivations before additional media",
+  "change": "Revised four opening dialogue exchanges in English and Simplified Chinese: the register keeper's responsibility, Aunt Yu's terms for approaching households, Chen Sheng's crossing instructions and the immediate strategic alternatives. Replace abstract speeches with concrete requests and physical actions while retaining the existing player choices.",
+  "campaignSHA256": "54c7e5fc55560668823deac92c0b24d713f88cb38f4de199e68a5ba067d23ca0",
+  "review": "Agent editorial review of all four exchanges in context. Dialogue remains original dramatization under existing claim/source boundaries; no new historical claim or quotation. No claim of human narrative acceptance.",
+  "invariants": [
+    "Deep comparison against parent confirmed exactly four node dialogue fields changed and no other campaign data changed.",
+    "Regenerated fixed-seed conformance fixture deep-equals its parent after removing campaignSha256: all 46 replay routes unchanged.",
+    "Shared export synchronization includes native iOS, web, Unity and Unreal content; no client-specific alternate prose added."
+  ],
+  "verification": {
+    "initialValidation": "Execution31858 failed on stale conformance campaign hash; not counted as a pass.",
+    "repair": "Regenerated fixture with the existing generator, verified hash-only difference, synchronized exports again.",
+    "fullValidation": "Execution77305 exit0: npm run validate; 23 story-authoring, 58 core and 199 web tests passed, including 117671 legal retreat routes from 993 inherited entries.",
+    "continuousReadings": "Execution11735 exit0: both tests passed, covering all four rule-backed ending readings and exact default copy.",
+    "scopedDiff": "Passed for campaign, campaign hash, conformance fixture and reading copy."
+  },
+  "limits": [
+    "No new rendered layout, physical-device, performance or human story acceptance.",
+    "Content hash changes; hash-bound development snapshots retain their existing mismatch guards. No new migration or compatibility bypass is claimed.",
+    "English and Simplified Chinese dialogue edited; other-language editorial acceptance remains open.",
+    "Store artifacts and submitted builds unchanged. No publication or new media generation."
+  ]
+}

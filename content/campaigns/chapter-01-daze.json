@@ -991,8 +991,8 @@
         "zh-Hans": "九百戍卒被暴雨阻在大泽乡，赴渔阳的期限正在逾越。传世记载称“失期，法皆斩”，其法律是否一概如此执行仍有争论。在本作的重构中，你掌握着湿透的名籍——它让众人在国家眼中可被计算。"
       },
       "dialogue": {
-        "en": "“If the register reaches the next post, we are nine hundred isolated offenders. If it does not, what are we?” Chen Sheng does not raise his voice. Rain answers for him on the roof tiles.",
-        "zh-Hans": "“名籍若送到下一亭，我们便是九百个各自待罪的人。名籍若送不到——我们又是什么？”陈胜没有高声。雨点替他敲着屋瓦。"
+        "en": "Chen Sheng moves the register away from a leak. “You keep the names. If the next post asks who is missing, what will you tell them?” Someone at the door leans in to listen. Chen lowers his voice. “Before you answer, think who will have to stand behind it.”",
+        "zh-Hans": "陈胜把名籍往不漏雨的地方挪了挪：“名字是你管的。下一亭问起少了谁，你怎么答？”门边有人探头听。他把声音压低：“先想好。你答了，得有人跟你一起认。”"
       },
       "sourceRefs": ["shiji-48-daze", "hanshu-31-chen-sheng", "zztj-7-qin", "dramatic-daze-keeper"],
       "claimRefs": ["daze-chronology-seventh-month", "daze-nine-hundred-yuyang", "daze-rain-road-delay", "daze-delay-penalty-account", "daze-chen-wu-tunzhang", "daze-qi-geography", "fictional-cast-and-councils", "schematic-campaign-map", "field-conditions-reconstruction"],
@@ -1077,7 +1077,7 @@
       "speakerId": "yu-mu",
       "title": { "en": "A covenant must eat", "zh-Hans": "盟约也要吃饭" },
       "context": { "en": "Public trust has given the camp a voice. It has not given it supplies. Villagers have hidden grain from tax collectors and bandits alike.", "zh-Hans": "公开结盟让营地有了共同声音，却没有凭空生出粮食。乡民把存粮藏着，既防税吏，也防盗寇。" },
-      "dialogue": { "en": "Aunt Yu puts an empty scoop beside your register. “A just cause can still empty an unjustly full granary. Tell us the rule before hunger writes it for you.”", "zh-Hans": "妪母把一只空斗放在名籍旁：“义军也能掏空一座不义的粮仓。趁饥饿还没替你定规矩，先把规矩说清楚。”" },
+      "dialogue": { "en": "Aunt Yu puts an empty scoop beside the register, keeping her hand on it. “I can go and ask them to open up. But tell me what to say: are you borrowing, asking for a gift, or taking it? They will still have to eat after you leave.”", "zh-Hans": "妪母把一只空斗放在名籍旁，手还按着斗沿：“我可以去叫门。可你得让我说清楚，是借，是请他们给，还是来拿的？你们走了，人家也得吃饭。”" },
       "sourceRefs": ["dramatic-daze-keeper", "sunzi-1-calculation"],
       "claimRefs": ["sunzi-five-factors-design-lens", "fictional-cast-and-councils", "field-conditions-reconstruction"],
       "conditions": [
@@ -1278,7 +1278,7 @@
       "speakerId": "chen-sheng",
       "title": { "en": "The ford remembers the flood", "zh-Hans": "渡口记得洪水" },
       "context": { "en": "The column reaches a damaged crossing. Scouts report patrols behind and uncertain towns ahead. Families, grain carts, and armed ranks cannot all cross at once. This is a recovery turn: reduce exposure, restore supplies, or preserve cohesion before the final commitment.", "zh-Hans": "队伍来到一处被洪水毁坏的渡口。斥候报告追兵在后，前方城邑态度不明。家户、粮车与持械队伍无法同时过河。这是一轮整顿：在最终下注前，降低暴露、补充粮草，或维系队伍。" },
-      "dialogue": { "en": "Chen Sheng watches you lay three tally slips on the wet rail: people, provisions, pursuit. “The river will collect one kind of debt before sunset. Which debt will we choose?”", "zh-Hans": "陈胜看着你把三根筹片摆在湿漉漉的栏木上：人、粮、追兵。“日落前，这条河必会来收一种债。我们选择还哪一种？”" },
+      "dialogue": { "en": "Chen Sheng braces a hand against the wet rail and looks back at the carts. “If we all crowd onto it, no one gets across. Tell me what goes first, and who stays on this bank. I will go and tell them.”", "zh-Hans": "陈胜扶住湿滑的栏木，回头看了一眼粮车：“一起挤上去，谁也过不了。你说先过什么，谁留在这边。我去把话传下去。”" },
       "storyEchoes": [
         {
           "id": "covenant-reaches-the-ford",
@@ -1395,7 +1395,7 @@
       "speakerId": "chen-sheng",
       "title": { "en": "Three roads, none yet history", "zh-Hans": "三条路，都还不是历史" },
       "context": { "en": "Rumor multiplies: old Chu names in the southeast, an unusual circle of companions around Pei, frightened county seats nearby. The future victors are not yet inevitable. Your first campaign ends with a doctrine, not a coronation.", "zh-Hans": "流言四起：东南有楚国旧族，沛县有一群不同寻常的伙伴，近处县城则惶恐不安。未来的胜者尚非必然。第一章以一种行动原则结束，而非加冕。" },
-      "dialogue": { "en": "Chen Sheng draws no map. He places three stones in the mud. “Power is not inside a stone. It is in what the ground lets the stones do to one another. Keeper—what ground will we make?”", "zh-Hans": "陈胜没有展开地图，只在泥里放下三块石头：“势不在石中，而在地形让石头彼此如何作用。掌简人——我们要造出怎样的地？”" },
+      "dialogue": { "en": "Chen Sheng crouches beside you and marks the direction of Chen in the mud. “We can go straight there, first ask the villages for support, or send people to sound out the other roads. We cannot put the same people on every road.” He brushes the mud from his hand. “Which do we do first?”", "zh-Hans": "陈胜在你身旁蹲下，拿树枝划出陈县的方向：“可以直奔那里，也可以先问乡里肯不肯帮，或是遣人探探别处。总不能每条路都派同一批人。”他抹掉手上的泥：“先办哪件？”" },
       "storyEchoes": [
         {
           "id": "households-name-the-next-road",
