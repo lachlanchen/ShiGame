@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+shi_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 shi_root="${SHI_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 shi_version="${SHI_VERSION:-1.0.0}"
 shi_build="${SHI_BUILD:?Set SHI_BUILD to a new provider-verified build number}"
@@ -13,6 +14,10 @@ shi_lock="$shi_root/.runtime/.shi-android-build-lock"
 mkdir "$shi_lock" 2>/dev/null || { echo "SHI Android build lock exists; reconcile the active job" >&2; exit 2; }
 trap 'rmdir "$shi_lock"' EXIT
 shi_output="$shi_root/.runtime/android-release-$shi_version-$shi_build"
+[[ ! -e "$shi_output" && ! -L "$shi_output" ]] || { echo "Refusing existing Android output: $shi_output" >&2; exit 2; }
+# Inspect the result before credentials, payload generation or output reservation.
+# This does not replace process/tmux/port ownership checks by the operator.
+node "$shi_script_dir/check-workstation-resources.mjs"
 # Atomic reservation also refuses partial attempts and symlinks. Never overwrite
 # the retained build1 outputs under app/build or a prior numbered candidate.
 mkdir "$shi_output" 2>/dev/null || { echo "Refusing existing Android output: $shi_output" >&2; exit 2; }

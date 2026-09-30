@@ -15,8 +15,8 @@ function fixture(t) {
   writeFileSync(join(root, 'apps/mobile/android/gradlew'), 'fixture');
   return root;
 }
-function run(root, build, version = '1.0.0') {
-  const env = { ...process.env, SHI_ROOT: root, SHI_VERSION: version };
+function run(root, build, version = '1.0.0', overrides = {}) {
+  const env = { ...process.env, ...overrides, SHI_ROOT: root, SHI_VERSION: version };
   delete env.SHI_BUILD;
   if (build !== undefined) env.SHI_BUILD = build;
   return spawnSync('bash', [script], { env, encoding: 'utf8', timeout: 5000 });
@@ -48,4 +48,15 @@ test('foreign active lock is preserved', t => {
   assert.match(run(root, '2').stderr, /reconcile the active job/);
   assert.equal(existsSync(lock), true);
   assert.equal(existsSync(join(root, '.runtime/android-release-1.0.0-2')), false);
+});
+test('resource refusal happens before credentials and output reservation', t => {
+  const root = fixture(t);
+  const bin = join(root, 'bin'); mkdirSync(bin);
+  writeFileSync(join(bin, 'node'), '#!/bin/sh\necho "fixture: SHI heavy work held" >&2\nexit 2\n', { mode: 0o755 });
+  const result = run(root, '5', '1.0.0', { PATH: `${bin}:${process.env.PATH}`, SHI_ANDROID_KEYSTORE_PASSWORD: '' });
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /SHI heavy work held/);
+  assert.doesNotMatch(result.stderr, /upload-keystore.password/);
+  assert.equal(existsSync(join(root, '.runtime/android-release-1.0.0-5')), false);
+  assert.equal(existsSync(join(root, '.runtime/.shi-android-build-lock')), false);
 });

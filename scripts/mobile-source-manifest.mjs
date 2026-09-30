@@ -8,7 +8,7 @@ const scopes = ['apps/mobile', 'apps/web/src', 'apps/web/index.html',
   'content', 'assets/mobile', 'assets/art', 'assets/audio', 'assets/provenance',
   'package.json', 'package-lock.json', 'capacitor.config.json',
   'scripts/sync-ios-content.ts', 'scripts/sync-unity-content.mjs',
-  'scripts/build-ios.sh', 'scripts/build-android.sh'];
+  'scripts/build-ios.sh', 'scripts/build-android.sh', 'scripts/check-workstation-resources.mjs'];
 const paths = [...new Set(execFileSync('git', ['ls-files', '-co',
   '--exclude-standard', '-z', '--', ...scopes], { encoding: 'utf8' })
   .split('\0').filter(Boolean))].sort();
