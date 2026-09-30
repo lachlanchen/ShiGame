@@ -12,6 +12,7 @@ const answerExplanations: Record<string, string> = rawRules.answerExplanationsZh
 export const retreatSaveKey = "shi.dev.chen-retreat.v1";
 const metrics = { grain: "粮秣", tempo: "行动余裕", city: "民间支持", allies: "诸部支持", veterans: "军中支持" };
 const speakers: Record<string, string> = { keeper: "掌简人", "supply-officer": "催粮军吏", "yu-mu": "妪母", "qin-courier": "韩驿使", "wounded-soldier": "伤卒", "partner-steward": "邻部管事", "rear-guard": "守路士卒", "granary-holder": "粮主" };
+speakers["han-letter"] = "韩驿使来简";
 const lines = (items: { speaker: string; text: string }[]) => items.map((line, index) => <p className="chen-prose" key={index}>{speakers[line.speaker] && <strong>{speakers[line.speaker]}： </strong>}{line.text}</p>);
 const outcomeTitle = (outcome: RetreatState["outcome"]) => outcome === "scattered" ? rules.scattered.title["zh-Hans"] : outcome ? story.endings[outcome].title : "";
 
@@ -44,7 +45,8 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
   const witnessed = story.witnessedEvents.filter(event =>
     (state.history.length > story.scenes.findIndex(scene => scene.id === event.sceneId)
       || (!reading && state.history.length === story.scenes.findIndex(scene => scene.id === event.sceneId)))
-    && Object.entries(event.when).every(([key, value]) => facts[key] === value));
+    && Object.entries(event.when).every(([key, value]) => facts[key] === value)
+    && (!event.priorChapterChoice || entry.chapter.history.some(turn => turn.choiceId === event.priorChapterChoice)));
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
   useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [state.history.length, reading, reset]);
   const persist = async (next: RetreatState) => {
@@ -89,6 +91,10 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       : reading && lastChoice && lastScene ? <section className="chen-scene" data-testid="retreat-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{lastChoice.title}</h3>
         {state.outcome === "scattered" ? <p className="chen-prose">{rules.scattered.reaction["zh-Hans"]}</p> : lines(lastChoice.response)}
         {state.outcome && witnessed.map(event => <div data-testid="retreat-companion-answer" key={event.id}>{lines(event.endingResponses[state.outcome!])}</div>)}
+        {last && witnessed.map(event => {
+          const replies = event.decisionResponses as Record<string, { speaker: string; text: string }[]> | undefined;
+          return replies?.[last.choiceId] ? <div data-testid="retreat-letter-answer" key={event.id}>{lines(replies[last.choiceId]!)}</div> : null;
+        })}
         {lastPreview?.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{answerExplanations[answer.afterChoice]}</p>)}
         {last && <div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{last.before[key]} → {last.after[key]}</b></span>)}</div>}
         {lines((lastScene as typeof lastScene & { exitLines?: { speaker: string; text: string }[] }).exitLines ?? [])}
@@ -118,7 +124,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         </section></section> : null}
     </section><aside className="chen-position" aria-label="当前局势"><h3>当前局势</h3><ul className="chen-metrics">{councilMetricKeys.map(key => <li key={key}><span>{metrics[key]}</span><span>{state.metrics[key]} / 10</span></li>)}</ul>
       {state.debts.length > 0 && <section data-testid="retreat-debts"><h3>未偿之约</h3>{state.debts.map(debt => <p key={debt.id}>欠本地粮主 {debt.grain} 份粮秣；债未偿还，粮主另持欠契。分行不表示免责。</p>)}</section>}
-      {witnessed.length > 0 && <section data-testid="retreat-observations"><h3>已见之人</h3>{witnessed.map(event => <p key={event.id}>{event.observation}</p>)}</section>}
+      {witnessed.length > 0 && <section data-testid="retreat-observations"><h3>已核实的往来</h3>{witnessed.map(event => <p key={event.id}>{event.observation}</p>)}</section>}
     </aside></div>
     <details className="chen-history"><summary>史料与开发说明</summary><p>{(reading ? lastScene : scene)?.transition}</p>
       <p>{story.viewpoint.historyBoundary}</p>

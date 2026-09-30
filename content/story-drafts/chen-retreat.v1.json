@@ -39,6 +39,31 @@
   },
   "witnessedEvents": [
     {
+      "id": "han-route-reply",
+      "sceneId": "records",
+      "priorChapterChoice": "turn-the-courier",
+      "when": { "han": "unestablished", "reserves": "verify-road" },
+      "observation": "收到韩驿使经原有渠道转来的路讯，只证明这份回信；他没有在场，所述路段不保证此刻仍可通行。",
+      "lines": [
+        { "speaker": "narrator", "text": "守路士卒把一份短简交给你。撤出时有人赶到后队，说是验路的人托原先的传信渠道带回来的。韩驿使没有跟着来。" },
+        { "speaker": "han-letter", "text": "你问的那段，昨日有人走过。今日的我不能押记。旧亭还在问当初缺的印验，送简人的住处别写上去。" },
+        { "speaker": "keeper", "text": "他肯回这一封，已经把旧事又翻出来了。" },
+        { "speaker": "rear-guard", "text": "还让他送下一封么？" },
+        { "speaker": "keeper", "text": "先别替他答应。把这份路讯的日期留好，谁去问路，也别拿昨天的信当今天的通行凭。" }
+      ],
+      "decisionResponses": {
+        "divide-records": [{ "speaker": "narrator", "text": "分给各组的是路段与日期，没有抄送简人的住处。多一组能核对消息，也多一份需要妥善保管的抄件。" }],
+        "carry-records": [{ "speaker": "keeper", "text": "这封也由我带。有人要追问来处，先找我，不要把送简人推出去。" }],
+        "strip-identities": [{ "speaker": "narrator", "text": "可追查到人的记号被去掉，路段和日期另留。日后若要核实这封信，只靠这份匿名抄件已不够。" }]
+      },
+      "endingResponses": {
+        "together": [{ "speaker": "keeper", "text": "会合处留一个收信的人。韩驿使若再回信，先记是哪天的；若不回，也别替他编一句平安。" }],
+        "remnant": [{ "speaker": "narrator", "text": "队伍带走了路讯，却没有带走一位本来就不在这里的驿使。下一段路仍需重新问。" }],
+        "dispersed": [{ "speaker": "keeper", "text": "各组问各自的路。韩驿使只回过这一封，别拿他的名字再许别人什么。" }],
+        "scattered": [{ "speaker": "narrator", "text": "那封旧路讯没有变成一条能把所有人领回来的路。韩驿使此后是否收到消息，仍不得而知。" }]
+      }
+    },
+    {
       "id": "yu-rendezvous-arrival",
       "sceneId": "dawn",
       "when": { "yu": "unestablished", "reserves": "keep-reserve", "evacuation": "escort-households" },

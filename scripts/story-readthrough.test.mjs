@@ -12,7 +12,7 @@ test("every authored choice, conditional passage and ending is reachable without
   assert.equal(result.inputContexts, 27);
   assert.equal(result.choices, 17);
   assert.equal(result.routes, 9072);
-  assert.equal(result.witnessedEvents, 1);
+  assert.equal(result.witnessedEvents, 2);
   assert.deepEqual(result.endings, { together: 1296, remnant: 3888, dispersed: 3888 });
 });
 
@@ -104,7 +104,26 @@ test("Yu receives a different answer for each authored orderly ending without pr
     answers.add(reaction.find(line => line.speaker === "yu-mu").text);
   }
   assert.equal(answers.size, 3);
-  assert.ok(draft.witnessedEvents[0].endingResponses.scattered.some(line => line.text.includes("此后的去向仍须另问")));
+  assert.ok(draft.witnessedEvents.find(event => event.id === "yu-rendezvous-arrival").endingResponses.scattered.some(line => line.text.includes("此后的去向仍须另问")));
+});
+
+test("Han replies only through an established channel after road verification, without appearing in person", () => {
+  for (const prior of [[], ["turn-the-courier"], ["release-oldest"]]) {
+    for (const reserve of ["keep-reserve", "verify-road", "send-support", "decline-dispatch"]) {
+      const result = readRoute(draft, { fanyang: "opened", yu: "unestablished", han: "unestablished" },
+        [reserve, "gather-own", "split-routes", "strip-identities", "release-groups"], [], prior);
+      const expected = prior.includes("turn-the-courier") && reserve === "verify-road";
+      assert.equal(result.witnessedEvents.includes("han-route-reply"), expected);
+      assert.equal(result.transcript.some(beat => beat.lines.some(line => line.speaker === "han-letter")), expected);
+      assert.ok(result.transcript.every(beat => beat.lines.every(line => line.speaker !== "qin-courier")));
+      if (expected) {
+        assert.ok(result.transcript[3].reaction.some(line => line.text.includes("匿名抄件已不够")));
+        assert.ok(result.transcript[4].reaction.some(line => line.text.includes("别拿他的名字")));
+      }
+    }
+  }
+  assert.throws(() => readRoute(draft, input, together, [], ["invented"]));
+  assert.throws(() => readRoute(draft, input, together, [], ["turn-the-courier", "release-oldest"]));
 });
 
 test("invalid, unavailable, incomplete and overlong reading routes are rejected", () => {

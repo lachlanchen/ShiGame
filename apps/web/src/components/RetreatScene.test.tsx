@@ -38,6 +38,51 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it.each([true, false])("uses the prior courier choice for Han's letter without inventing his physical presence (recruited=%s)", async recruited => {
+    const input = props();
+    let priorChapter = createInitialState(definitions.campaign, 0);
+    while (!priorChapter.completed) {
+      const node = getNode(definitions.campaign, priorChapter.currentNodeId);
+      const preferred = node.id === "rain-order" ? "hide-the-register" : node.id === "shadow-council" ? recruited ? "turn-the-courier" : "release-oldest" : undefined;
+      priorChapter = resolveChoice(definitions.campaign, priorChapter, preferred ?? node.choices.find(choice => canChoose(choice, priorChapter.resources))!.id).state;
+    }
+    let priorCouncil = createCouncil(definitions.council, councilEntry(priorChapter)!);
+    for (const choice of ["defer-title", "joint-ledger", "one-command"]) priorCouncil = resolveCouncil(definitions.council, priorCouncil, choice);
+    const savedCouncil = JSON.parse(encodeCouncilSnapshot(priorCouncil, councilHash.trim()));
+    const priorFanyangEntry = prepareFanyangEntry(definitions.council, priorChapter, savedCouncil, councilHash.trim())!;
+    let priorFanyang = createFanyang(definitions.fanyang, priorFanyangEntry);
+    for (const choice of ["public-safety", "hold-talks", "withdraw-envoy"]) priorFanyang = resolveFanyang(definitions.fanyang, priorFanyang, choice);
+    input.entry = prepareRetreatEntry(definitions, { chapter: priorChapter, council: savedCouncil,
+      fanyang: JSON.parse(encodeFanyangSnapshot(priorFanyang, fanyangReview.contentSHA256)) },
+      { campaign: "a".repeat(64), council: councilHash.trim(), fanyang: fanyangReview.contentSHA256 })!;
+    expect(input.entry.continuity.courierRecruitedEarlier).toBe(recruited);
+    // Capacity boundary fixture after an actual prior-choice replay.
+    input.entry.fanyang.metrics = { ...input.entry.fanyang.metrics, grain: 8, tempo: 8, city: 8, allies: 8, veterans: 8 };
+    const view = render(<RetreatScene {...input} />);
+    for (const id of ["verify-road", "gather-own", "split-routes"]) await choose(view, id);
+    if (!recruited) {
+      expect(view.queryByText(/韩驿使来简/)).toBeNull();
+      expect(view.queryByTestId("retreat-observations")).toBeNull();
+      return;
+    }
+    expect(view.getByTestId("retreat-witnessed-arrival").textContent).toContain("韩驿使没有跟着来");
+    expect(view.getByTestId("retreat-observations").textContent).toContain("不保证此刻仍可通行");
+    fireEvent.click(view.container.querySelector('[data-retreat-choice="strip-identities"]')!);
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    await view.findByTestId("retreat-response");
+    expect(view.getByTestId("retreat-letter-answer").textContent).toContain("匿名抄件已不够");
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const restored = render(<RetreatScene {...input} />);
+    expect(restored.getByTestId("retreat-letter-answer").textContent).toContain("匿名抄件已不够");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    fireEvent.click(restored.container.querySelector('[data-retreat-choice="release-groups"]')!);
+    fireEvent.click(restored.getByTestId("retreat-commit"));
+    await restored.findByTestId("retreat-response");
+    expect(restored.getByTestId("retreat-companion-answer").textContent).toContain("别拿他的名字");
+  });
+
   it("witnesses Yu only after a saved escort and preserves the limited observation across resume and dispersal", async () => {
     const input = props();
     input.entry = structuredClone(input.entry);
