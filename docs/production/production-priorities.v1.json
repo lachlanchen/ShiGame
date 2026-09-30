@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "updatedOn": "2026-09-30",
+  "authority": "Owner directions in the current SHI thread",
+  "priority": "Complete the playable story first, before high-resolution cinematic polish.",
+  "storyGate": "Connect the opening, crossing and Chen council with consequences and an earned conclusion, then integrate the authored continuation episode by episode. Rules or prose alone do not count as a complete playable story.",
+  "localVideoGenFirstPass": {
+    "instruction": "Use the fastest suitable low-resolution generation first.",
+    "purpose": "Check shot order, story comprehension, pacing and character continuity with inexpensive preview footage.",
+    "settings": "Select from the actual installed model's supported fast/low-resolution presets after inspecting LocalVideoGen. Do not invent a resolution or promise an unmeasured runtime.",
+    "promotionGate": "Generate higher-resolution replacements only after the story and edit work; do not block narrative development on final media.",
+    "unchangedConstraints": "Verify commercial rights, review every output, preserve consistent character references, avoid paid generation without explicit confirmation, and permit at most one SHI heavy generation/build job at a time."
+  },
+  "currentNextStep": "Integrate Fan Yang's shared rules and bilingual scene into a save-safe playable client continuation; core rules are implemented but no Fan Yang client scene is shipped."
+}

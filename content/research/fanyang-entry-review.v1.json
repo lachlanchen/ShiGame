@@ -2,7 +2,8 @@
   "schemaVersion": 1,
   "id": "fanyang-entry-review.v1",
   "sceneId": "fanyang-guarantee.v1",
-  "status": "development-handoff-only",
+  "status": "development-rules-reviewed-client-integration-pending",
+  "contentSHA256": "c82095174dc481a023420916ae82bbc76e169c57c1076b5bbf65ce9f97a8cf24",
   "publicationApproved": false,
   "reviewDate": "2026-09-30",
   "reviewer": "Codex implementation and source-boundary review; not independent historian or human playtest approval",
@@ -30,7 +31,9 @@
     "continuity": "Use an explicit time/location transition. Preserve the Chen ledger and dispatch decision. Do not reuse rain, costume, travel distance or character identity as established historical fact without scene review."
   },
   "implemented": {
-    "module": "packages/game-core/src/fanyang-entry.ts",
+    "module": "packages/game-core/src/fanyang-entry.ts; packages/game-core/src/fanyang.ts",
+    "content": "content/councils/fanyang-guarantee.v1.json",
+    "rulesCheckpoint": "Three authored bilingual decision rounds, nine choices, disclosed gate requirements, two conditional Chen-promise responses, three conclusions, preview/commit parity and content-revision-bound replay. Core tests exhaust every legal continuation of all 77 Chen council routes, including empty-granary withdrawal. No client exposes this scene yet.",
     "removedBlocker": "The named Fan Yang scene can receive a deterministic identity, exact council choices, recomputed remaining metrics and conclusion tied to its originating chapter and content revision. Previously no continuation handoff contract existed.",
     "callerRequirements": [
       "Supply a chapter state restored and validated by the existing campaign engine, not raw untrusted save JSON.",
@@ -41,8 +44,8 @@
     "verification": "Core tests exhaust legal council branches after every surviving Chapter I branch at seeds 0 and 0x5eed2026, cover all three arrivals and four outcomes, check unique handoff identities and verify source-save immutability."
   },
   "remainingGates": [
-    "Author and review shared scene content, concrete choice effects, counterplay and recovery; no Fan Yang choice is playable yet.",
-    "Implement a revision-bound continuation save and explicit entry action without auto-choosing or replaying an order.",
+    "Human story and balance review of the development content; run a full player-facing route before calling Fan Yang playable.",
+    "Integrate the revision-bound continuation snapshot with durable client persistence and an explicit entry action without auto-choosing or replaying an order.",
     "Integrate native iOS, Android/web and Unreal against the same rules and content.",
     "Review presentation, localization, accessibility, offline/resume and end-to-end routes before beta delivery.",
     "Create and audition scene-linked Musia cues and review LocalVideoGen/Blender moving imagery with rights and continuity records before shipping any media."

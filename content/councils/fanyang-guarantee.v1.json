@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "fanyang-guarantee.v1",
+  "title": { "en": "Fan Yang: The Price of Safety", "zh-Hans": "范阳：谁来保他不死" },
+  "boundary": { "en": "Development scene · Reconstructed northern envoy viewpoint, after Chen. Dialogue and alternatives are dramatization inspired by Tongjian, volume 7; these meters are game abstractions, not historical measurements.", "zh-Hans": "开发场景 · 陈县议事后的北方使者视角，为戏剧重构。参考《资治通鉴》卷七，对白与分支均为创作；数值是游戏抽象，并非史实测量。" },
+  "introduction": { "en": "Later, outside Fan Yang. You carry the council's mandate, not its entire army. The gates remain barred. Xu's messenger steps away from the wall: ‘If he surrenders, who keeps your soldiers from killing him?’ Beside you, a veteran folds his arms. ‘And who said we would protect him?’", "zh-Hans": "后来，范阳城外。你带来的是陈县的议事决议，不是整支大军。城门仍闭着。徐公的使者走离城墙，问：‘他若出城，谁能拦住你们的兵，不杀他？’身旁的老卒抱起双臂：‘又是谁答应替他挡刀的？’" },
+  "initialAssurance": 2,
+  "gateRequirements": { "assurance": 6, "city": 3, "veterans": 3, "grain": 1 },
+  "metrics": {
+    "grain": { "en": "Grain", "zh-Hans": "粮秣" },
+    "tempo": { "en": "Time to act", "zh-Hans": "行动余裕" },
+    "city": { "en": "Civil backing", "zh-Hans": "民间支持" },
+    "allies": { "en": "Allied backing", "zh-Hans": "诸部支持" },
+    "veterans": { "en": "Soldiers' backing", "zh-Hans": "军中支持" },
+    "assurance": { "en": "Credible protection", "zh-Hans": "保全可信度" }
+  },
+  "rounds": [
+    {
+      "id": "terms",
+      "title": { "en": "What will you promise?", "zh-Hans": "你肯答应什么" },
+      "context": { "en": "The messenger asks for terms he can repeat on the wall. The veteran wants to hear them too. A promise can reach the next town before your army does; so can news that you broke it.", "zh-Hans": "使者要一句能带回城头的话。老卒也在等你开口。你的许诺能比军队更早传到下一座城，失信的消息也是。" },
+      "choices": [
+        { "id": "public-safety", "title": { "en": "Promise public protection", "zh-Hans": "当众许诺保全" }, "intent": { "en": "Put your name behind Xu's safety. Reassure the town, but ask angry soldiers to accept a bargain they did not make.", "zh-Hans": "以你的名义保徐公性命。城中能稍安心，愤怒的士卒却得接受一桩未曾参与的交易。" }, "response": { "en": "The messenger repeats your words carefully. The veteran looks at your escort. ‘Then tell them whose order this is.’", "zh-Hans": "使者逐字复述你的话。老卒望向卫队：‘那就说清楚，这是谁的命令。’" }, "effects": { "assurance": 4, "city": 1, "veterans": -2 } },
+        { "id": "witnessed-transfer", "title": { "en": "Negotiate a witnessed transfer", "zh-Hans": "请双方见证交接" }, "intent": { "en": "Separate surrender from a private pardon: record the terms with local witnesses. It takes time, but gives allies a part in the agreement.", "zh-Hans": "不把投降变成私下赦免，请本地见证人记下条件。此举费时，却让诸部有份参与。" }, "response": { "en": "The messenger asks whom you will bring. For the first time, the veteran answers him instead of you: ‘Someone who will still be here when you leave.’", "zh-Hans": "使者问你准备请谁来。老卒第一次替你接了话：‘得是你们走后，还留在这里的人。’" }, "requires": { "tempo": 1 }, "effects": { "assurance": 2, "tempo": -1, "allies": 1 } },
+        { "id": "keep-cordon", "title": { "en": "Keep pressure on the gate", "zh-Hans": "维持围城，不先许诺" }, "intent": { "en": "Keep the troops together without granting protection. Maintaining the cordon consumes food and leaves Xu afraid to surrender.", "zh-Hans": "不先答应保全，以围城维系军心。但围城要吃粮，徐公仍不敢出降。" }, "response": { "en": "The messenger returns to the gate without an answer. Your soldiers settle into position. A grain carrier asks how long they must stay.", "zh-Hans": "使者空手回到城门。士卒各就其位，运粮人问：‘还要守多久？’" }, "requires": { "grain": 1 }, "effects": { "assurance": -1, "grain": -1, "tempo": 1, "veterans": 1, "city": -1 } }
+      ]
+    },
+    {
+      "id": "enforcement",
+      "title": { "en": "Who will keep the promise?", "zh-Hans": "谁来守住这句话" },
+      "context": { "en": "A shield strikes the road behind you. Soldiers have gathered around the veteran. Xu's messenger waits between them and the gate. Words are no longer enough: someone must take responsibility for what happens next.", "zh-Hans": "身后有人把盾顿在路上。士卒聚到老卒周围，使者站在他们与城门之间等候。现在光说不够了，总得有人担起接下来发生的事。" },
+      "choices": [
+        { "id": "guarded-escort", "title": { "en": "Assign a disciplined escort", "zh-Hans": "派卫队护送" }, "intent": { "en": "Feed and detach soldiers to enforce the terms. If Chen promised allied autonomy, imposing your own escort costs extra allied support.", "zh-Hans": "拨粮调兵，让卫队执行约定。若在陈县已许诸部自主，此时强派自己的卫队，还会损失诸部支持。" }, "response": { "en": "The escort forms a lane. The veteran steps aside, but does not salute. The messenger watches to see whether the formation holds.", "zh-Hans": "卫队列开一条通道。老卒让了路，却没有行礼。使者盯着队列，看有没有人擅自离位。" }, "requires": { "grain": 1, "veterans": 3 }, "effects": { "assurance": 3, "grain": -1, "veterans": -1 }, "answers": [{ "afterChoice": "recognize-allies", "text": { "en": "Your Chen pledge gave the allies their own commands. Their captains resent an escort imposed without their consent.", "zh-Hans": "你在陈县许过诸部各领其军。如今未经商议便强派卫队，各部将领不肯替你背书。" }, "effects": { "allies": -2 } }] },
+        { "id": "joint-witnesses", "title": { "en": "Let allies and townspeople witness it", "zh-Hans": "请诸部与乡人共同作保" }, "intent": { "en": "Spend time and allied goodwill on a public agreement. Keeping Chen's shared-ledger promise gives this procedure extra credibility.", "zh-Hans": "用时间和诸部情面换一份公开约定。若陈县已立共账，此举与前约相合，更容易让人信服。" }, "response": { "en": "Names are read aloud. The veteran asks the witnesses to remain until the transfer is over. This time, the messenger waits for their answer.", "zh-Hans": "作保人的名字被逐个念出。老卒要求他们留到交接结束。这一次，使者等的是他们的答复。" }, "requires": { "tempo": 1, "allies": 3 }, "effects": { "assurance": 2, "tempo": -1, "allies": -1, "city": 1 }, "answers": [{ "afterChoice": "joint-ledger", "text": { "en": "The shared ledger from Chen already makes authority visible. The witnesses can use the same procedure here.", "zh-Hans": "陈县的共账已有众人可查的规矩，见证人可以照此办理，不必再空口相争。" }, "effects": { "assurance": 1 } }] },
+        { "id": "hold-talks", "title": { "en": "Hold the line and keep talking", "zh-Hans": "稳住队伍，继续交涉" }, "intent": { "en": "Make no new demand on exhausted supplies or allies. No extra protection is established; the gate may remain closed.", "zh-Hans": "不再向疲惫的粮队与诸部索取。但并未增添任何保全措施，城门可能仍不会开。" }, "response": { "en": "You tell both sides to stay where they are. No one advances. The messenger asks whether that is all you can offer.", "zh-Hans": "你叫双方都留在原处。没有人前进。使者问：‘能做的，就这些了吗？’" }, "effects": {} }
+      ]
+    },
+    {
+      "id": "gate",
+      "title": { "en": "The gate's answer", "zh-Hans": "城门前的答复" },
+      "context": { "en": "Xu needs credible protection, civilians willing to accept the bargain, soldiers willing to enforce it, and food to sustain them. The conditions below show whether your arrangement holds. You can still leave without forcing a battle.", "zh-Hans": "徐公要看保全是否可信，百姓是否肯接受，士卒是否肯执行，粮食是否还能支撑。下面列出的条件决定这份约定能否成立。你仍可退兵，不必强行开战。" },
+      "choices": [
+        { "id": "accept-transfer", "title": { "en": "Accept the surrender", "zh-Hans": "依约受降" }, "intent": { "en": "Proceed only when every disclosed condition is met. Your soldiers enter under the agreed protection, not a licence to plunder.", "zh-Hans": "只有公开条件全部满足才交接。士卒依约入城，并不因此获得劫掠的许可。" }, "response": { "en": "The bar is lifted. You send the agreed party forward and keep the rest outside. The promise has survived its first test; other towns have yet to judge it.", "zh-Hans": "门闩抬起。你让约定的人先行，其余留在城外。许诺经住了第一关，别的城邑还会继续看。" }, "effects": {}, "gateRequired": true, "resolution": "enter" },
+        { "id": "amend-guarantee", "title": { "en": "Spend the reserve on stronger terms", "zh-Hans": "用余粮与时间补强约定" }, "intent": { "en": "Pay one grain and two time for two more protection, losing one soldiers' backing. Preview the result: stronger wording cannot repair every political weakness.", "zh-Hans": "付出一份粮秣、两份行动余裕，换两份保全可信度，军中支持减一。先看结果：更强的约定也补不了所有裂痕。" }, "response": { "en": "You send back amended terms. The veteran counts the provisions you have committed. The messenger checks the arrangement once more before returning to Xu.", "zh-Hans": "你送回补订的条件。老卒清点你许出的粮食，使者重新核对安排，才回去禀报徐公。" }, "requires": { "grain": 2, "tempo": 2 }, "effects": { "grain": -1, "tempo": -2, "assurance": 2, "veterans": -1 }, "resolution": "revise" },
+        { "id": "withdraw-envoy", "title": { "en": "Withdraw without breaking the promise", "zh-Hans": "依约退使，不强求开城" }, "intent": { "en": "Leave the gate closed and keep your remaining resources. You gain no town, but do not turn a failed negotiation into a massacre.", "zh-Hans": "城门不必开，余下的资源也不再耗费。你未得一城，却没有把谈判失败变成杀戮。" }, "response": { "en": "You call the messenger back long enough to say the offer has ended, not his safe passage. Then your party leaves. The gate closes behind him.", "zh-Hans": "你叫住使者，只交代一句：这次交涉到此为止，放他平安回城的约定仍算数。随后你带人离开，城门在他身后合上。" }, "effects": {}, "resolution": "withdraw" }
+      ]
+    }
+  ],
+  "outcomes": {
+    "opened": { "title": { "en": "A gate opened by an enforceable promise", "zh-Hans": "约定有人守，城门才肯开" }, "text": { "en": "The surrender is accepted. Protection, civil consent, soldiers and supplies all held together here. The next town will hear what you did, but its answer is not decided yet.", "zh-Hans": "受降完成。保全、民意、军心与粮秣在此处暂时合拢。下一座城会听说你的做法，但它如何答复，还没有定。" } },
+    "withdrawn": { "title": { "en": "An orderly withdrawal", "zh-Hans": "退而未散" }, "text": { "en": "Fan Yang remains outside your control. You retain the remaining resources and a record of keeping safe conduct. This is a recoverable setback, not the end of the campaign.", "zh-Hans": "范阳仍不在你掌握之中。你保住余力，也留下了一次守信放行的记录。这是可以补救的受挫，不是故事的终点。" } },
+    "deferred": { "title": { "en": "The new terms are still not enough", "zh-Hans": "补订的约定仍未成立" }, "text": { "en": "At least one disclosed condition remains unmet. The gate stays closed; your party returns with the remaining resources and the cost of the revised offer recorded. More promises alone cannot substitute for support.", "zh-Hans": "至少一项公开条件仍未满足。城门没有开，使团带着余力返回，补订条件的代价已记入账中。多作许诺，不能代替真实的支持。" } }
+  }
+}
