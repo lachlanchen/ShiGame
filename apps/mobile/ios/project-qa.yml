@@ -3,8 +3,14 @@ include: project.yml
 name: SHIAftermathQA
 targets:
   SHI:
+    sources:
+      - path: ../../../content/campaigns/chen-retreat.rules.v1.json
+        buildPhase: resources
+      - path: ../../../content/story-drafts/chen-retreat.v1.json
+        buildPhase: resources
     settings:
       base:
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHI_RETREAT_PREVIEW"
         PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.aftermathqa
         INFOPLIST_KEY_CFBundleDisplayName: SHI QA
         CODE_SIGNING_ALLOWED: NO
@@ -16,5 +22,6 @@ targets:
   SHIUITests:
     settings:
       base:
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHI_RETREAT_PREVIEW"
         PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.aftermathqa.uitests
         CODE_SIGNING_ALLOWED: NO

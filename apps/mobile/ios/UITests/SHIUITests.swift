@@ -30,7 +30,7 @@ final class SHIUITests: XCTestCase {
     }
     func reveal(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<32 {
-            let reading = ["panel-reading", "aftermath", "fanyang-scene", "council", "campaign", "title-reading"]
+            let reading = ["panel-reading", "aftermath", "retreat-scene", "fanyang-scene", "council", "campaign", "title-reading"]
                 .map { app.scrollViews[$0] }.first { $0.exists && $0.isHittable }
             let viewport = reading ?? app
             var visible = viewport.frame.intersection(app.frame)
@@ -331,6 +331,84 @@ final class SHIUITests: XCTestCase {
         app.buttons["fanyang-close"].tap()
         XCTAssertTrue(app.staticTexts["council-outcome"].waitForExistence(timeout: 10))
     }
+
+    #if SHI_RETREAT_PREVIEW
+    func testRetreatContinuationResumeEndingAndCancel() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-shi.locale", "en", "-shi.reduced-motion", "true"]
+        app.launch(); finishChapterForCouncil(app)
+        if app.buttons["council-retry"].exists {
+            let retry = app.buttons["council-retry"]; reveal(retry, in: app); retry.tap()
+            let confirm = app.buttons.matching(identifier: "council-confirm-restart").firstMatch
+            XCTAssertTrue(confirm.waitForExistence(timeout: 10)); confirm.tap()
+        }
+        for id in ["defer-title", "joint-ledger", "one-command"] {
+            councilDecision(id, app, expectedOutcome: id == "one-command" ? "common-front" : nil)
+            councilContinue(app)
+        }
+        let fanyang = app.buttons["fanyang-enter"]; reveal(fanyang, in: app); fanyang.tap()
+        XCTAssertTrue(app.staticTexts["fanyang-title"].waitForExistence(timeout: 10))
+        reveal(app.buttons["fanyang-retry"], in: app); app.buttons["fanyang-retry"].tap()
+        let resetFanyang = app.buttons.matching(identifier: "fanyang-confirm-restart").firstMatch
+        XCTAssertTrue(resetFanyang.waitForExistence(timeout: 10)); resetFanyang.tap()
+        for id in ["public-safety", "hold-talks", "withdraw-envoy"] {
+            let offer = app.buttons["fanyang-offer-" + id]; reveal(offer, in: app); offer.tap()
+            let commit = app.buttons["fanyang-commit"]; reveal(commit, in: app); XCTAssertTrue(commit.isEnabled); commit.tap()
+            XCTAssertTrue(app.staticTexts["fanyang-response"].waitForExistence(timeout: 10))
+            let next = app.buttons["fanyang-continue"]; reveal(next, in: app); next.tap()
+        }
+        func enterRetreat() {
+            let enter = app.buttons["retreat-enter"]; reveal(enter, in: app); XCTAssertTrue(enter.exists); enter.tap()
+            XCTAssertTrue(app.scrollViews["retreat-scene"].waitForExistence(timeout: 10))
+        }
+        func reaction() -> XCUIElement { app.descendants(matching: .any).matching(identifier: "retreat-response").firstMatch }
+        func order(_ id: String) {
+            let offer = app.buttons["retreat-offer-" + id]; reveal(offer, in: app); offer.tap()
+            let commit = app.buttons["retreat-commit"]; reveal(commit, in: app); XCTAssertTrue(commit.isEnabled); commit.tap()
+            XCTAssertTrue(reaction().waitForExistence(timeout: 10)); XCTAssertFalse(app.buttons["retreat-commit"].exists)
+        }
+        func next() { let button = app.buttons["retreat-continue"]; reveal(button, in: app); button.tap() }
+        enterRetreat()
+        reveal(app.buttons["retreat-retry"], in: app); app.buttons["retreat-retry"].tap()
+        let reset = app.buttons.matching(identifier: "retreat-confirm-restart").firstMatch
+        XCTAssertTrue(reset.waitForExistence(timeout: 10)); reset.tap()
+        order("decline-dispatch")
+        let original = reaction().descendants(matching: .staticText).allElementsBoundByIndex.map(\.label)
+        XCTAssertFalse(original.isEmpty)
+        capture("retreat-01-native-reaction")
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["begin-game"].waitForExistence(timeout: 15)); app.buttons["begin-game"].tap()
+        XCTAssertEqual(app.buttons["chronicle-toggle"].value as? String, "4")
+        reveal(app.buttons["council-enter"], in: app); app.buttons["council-enter"].tap()
+        XCTAssertTrue(app.staticTexts["council-response"].waitForExistence(timeout: 10)); councilContinue(app)
+        reveal(app.buttons["fanyang-enter"], in: app); app.buttons["fanyang-enter"].tap()
+        XCTAssertTrue(app.staticTexts["fanyang-response"].waitForExistence(timeout: 10))
+        reveal(app.buttons["fanyang-continue"], in: app); app.buttons["fanyang-continue"].tap()
+        enterRetreat()
+        XCTAssertTrue(reaction().waitForExistence(timeout: 10))
+        XCTAssertEqual(reaction().descendants(matching: .staticText).allElementsBoundByIndex.map(\.label), original)
+        capture("retreat-02-native-resumed")
+        next()
+        for id in ["gather-own", "split-routes", "carry-records"] { order(id); next() }
+        let release = app.buttons["retreat-offer-release-groups"]; reveal(release, in: app); release.tap()
+        let preview = app.staticTexts["retreat-preview"]; reveal(preview, in: app)
+        let expected = try XCTUnwrap(preview.value as? String)
+        XCTAssertTrue(["dispersed", "scattered"].contains(expected))
+        capture("retreat-03-native-ending-preview")
+        order("release-groups"); next()
+        let ending = app.staticTexts["retreat-outcome"]
+        XCTAssertTrue(ending.waitForExistence(timeout: 10)); XCTAssertEqual(ending.value as? String, expected)
+        capture("retreat-04-native-ending")
+        reveal(app.buttons["retreat-retry"], in: app); app.buttons["retreat-retry"].tap()
+        let cancel = app.buttons.matching(identifier: "retreat-cancel-restart").firstMatch
+        XCTAssertTrue(cancel.waitForExistence(timeout: 10)); cancel.tap()
+        XCTAssertEqual(ending.value as? String, expected)
+        app.buttons["retreat-close"].tap()
+        XCTAssertTrue(app.staticTexts["fanyang-outcome"].waitForExistence(timeout: 10))
+        XCTAssertEqual(app.staticTexts["fanyang-outcome"].value as? String, "withdrawn")
+    }
+
+    #endif
 
     func testCouncilLargestTextChineseAndArabicFallback() throws {
         continueAfterFailure = false

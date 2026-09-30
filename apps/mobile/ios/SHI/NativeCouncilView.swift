@@ -8,9 +8,12 @@ struct NativeCouncilView: View {
     @State private var confirmRestart = false
     @State private var showFanyang = false
     let locale: String
+    private let origin: CampaignEngine
+    private let campaignFingerprint: String
 
-    init(origin: CampaignEngine, locale: String) {
+    init(origin: CampaignEngine, locale: String, campaignFingerprint: String = "") {
         _session = StateObject(wrappedValue: CouncilSession(origin: origin))
+        self.origin = origin; self.campaignFingerprint = campaignFingerprint
         self.locale = locale == "zh-Hans" ? "zh-Hans" : "en"
     }
     private func text(_ record: Record, _ key: String) -> String { record.localized(key, locale) }
@@ -87,7 +90,8 @@ struct NativeCouncilView: View {
         .tint(gold).preferredColorScheme(.dark)
         .sheet(isPresented: $showFanyang) {
             if let engine = session.engine, engine.completed, !session.needsRecovery {
-                NativeFanyangView(council: engine, fingerprint: session.fingerprint, locale: locale)
+                NativeFanyangView(council: engine, fingerprint: session.fingerprint, locale: locale,
+                    chapter: origin, campaignFingerprint: campaignFingerprint)
             }
         }
     }

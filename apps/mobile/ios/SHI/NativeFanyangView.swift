@@ -6,11 +6,25 @@ struct NativeFanyangView: View {
     @AccessibilityFocusState private var headingFocused: Bool
     @State private var selectedID = ""
     @State private var confirmRestart = false
+    @State private var showRetreat = false
     let locale: String
+    private let chapter: CampaignEngine?
+    private let council: CouncilEngine
+    private let campaignFingerprint: String
+    private let councilFingerprint: String
 
-    init(council: CouncilEngine, fingerprint: String, locale: String) {
+    init(council: CouncilEngine, fingerprint: String, locale: String, chapter: CampaignEngine? = nil, campaignFingerprint: String = "") {
         _session = StateObject(wrappedValue: FanyangSession(council: council, councilFingerprint: fingerprint))
+        self.council = council; self.chapter = chapter
+        self.campaignFingerprint = campaignFingerprint; self.councilFingerprint = fingerprint
         self.locale = locale == "zh-Hans" ? "zh-Hans" : "en"
+    }
+    private var retreatEntry: RetreatEntry? {
+        guard RetreatPreviewContent.rules != nil, RetreatPreviewContent.story != nil,
+              !session.needsRecovery, session.response == nil,
+              let chapter, let fanyang = session.engine, fanyang.completed else { return nil }
+        return try? RetreatEntry(chapter: chapter, council: council, fanyang: fanyang,
+            campaignFingerprint: campaignFingerprint, councilFingerprint: councilFingerprint, fanyangFingerprint: session.fingerprint)
     }
     private func say(_ en: String, _ zh: String) -> String { locale == "zh-Hans" ? zh : en }
     private func text(_ record: Record, _ key: String) -> String { record.localized(key, locale) }
@@ -61,6 +75,11 @@ struct NativeFanyangView: View {
             }
         }.environment(\.locale, Locale(identifier: locale)).environment(\.layoutDirection, .leftToRight)
             .tint(gold).preferredColorScheme(.dark)
+            .sheet(isPresented: $showRetreat) {
+                if let entry = retreatEntry {
+                    NativeRetreatView(entry: entry, rulesData: RetreatPreviewContent.rules, storyData: RetreatPreviewContent.story)
+                }
+            }
     }
     private func notice(_ value: String) -> some View {
         Text(value).padding(16).background(Color.red.opacity(0.16), in: RoundedRectangle(cornerRadius: 12)).accessibilityIdentifier("fanyang-error")
@@ -141,7 +160,13 @@ struct NativeFanyangView: View {
         return VStack(alignment: .leading, spacing: 20) {
             Text(text(record, "title")).font(.title).accessibilityAddTraits(.isHeader).accessibilityIdentifier("fanyang-outcome").accessibilityValue(outcome)
             Text(text(record, "text")).font(.title3).lineSpacing(7)
-            Text(say("This development episode ends here. Your decisions are saved; the next episode is not available yet.", "本开发篇章到此结束。选择已保存，下一篇尚未开放。"))
+            if retreatEntry != nil {
+                Text(say("Your decisions are saved. Continue as the keeper in Chen. This QA story preview is in Simplified Chinese.", "选择已保存。回到陈地，继续掌简人的故事。此 QA 故事试玩目前仅有简体中文。"))
+                Button(say("Continue in Chen · development preview", "回到陈地 · 开发试玩")) { showRetreat = true }
+                    .buttonStyle(.borderedProminent).foregroundStyle(ink).frame(minHeight: 48).accessibilityIdentifier("retreat-enter")
+            } else {
+                Text(say("This development episode ends here. Your decisions are saved; the next episode is not available yet.", "本开发篇章到此结束。选择已保存，下一篇尚未开放。"))
+            }
             Button(say("Return to Chen", "返回陈县议事")) { dismiss() }.buttonStyle(.bordered).frame(minHeight: 44)
         }
     }

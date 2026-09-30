@@ -201,7 +201,7 @@ struct CampaignView: View {
                 Button(t("restart"), role: .destructive) { session.restart(); playing = true }.accessibilityIdentifier("confirm-restart")
             }
             .fullScreenCover(isPresented: $showingCouncil) {
-                if let origin = session.engine { NativeCouncilView(origin: origin, locale: locale) }
+                if let origin = session.engine { NativeCouncilView(origin: origin, locale: locale, campaignFingerprint: session.fingerprint) }
             }
             .alert("SHI", isPresented: Binding(get: { session.error != nil && !session.needsRecovery }, set: { if !$0 { session.error = nil } })) {
                 Button("OK") { session.error = nil }

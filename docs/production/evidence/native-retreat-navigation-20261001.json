@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "xctest-assertions-passed-result-finalization-pending",
+  "baseline": "83408a0 plus the navigation, preview gating and test sources in this checkpoint",
+  "scope": "Connect the existing opening, crossing, Chen council and Fan Yang to the five-scene shared retreat story in the separate native QA app. No production content promotion or store action.",
+  "sourceArchiveSHA256": "d80e72fc4f6b3703d2f7c01049517a9e153d829a085be0274957cb8986154c40",
+  "sourceOverlaySHA256": "71d8c857913a61dc5c480de3c438314af55f8a086ba9e9ea438c56d91a6bc99d",
+  "generatedQAProjectSHA256": "dd41e023c5d04f13c1beafec36efe18a5cb22d0041905d14e0e0f77e40be0d41",
+  "transferVerification": "Base sources and final overlay were hash-verified before extraction on both staging Macs. Generated v2 project archive matched before the sole simulator run. Existing XcodeGen, SDK and SHI build cache reused.",
+  "boundaries": [
+    "Retreat loading requires both SHI_RETREAT_PREVIEW compilation and exact art.lazying.shi.aftermathqa identity.",
+    "QA project includes canonical rules/story resources directly; production resources and project specification remain unchanged.",
+    "Both generated PBX projects inspected: inherited sources/resources retained, draft resources and preview condition absent from production Debug/Release.",
+    "Entry uses actual chapter, council and Fan Yang engines and fingerprints; unread reactions and incompatible saves do not expose continuation."
+  ],
+  "checks": {
+    "iosTypecheck": "All SHI Swift files passed with and without the QA condition, arm64 iOS16 simulator target against SDK27; not an iOS16 runtime test.",
+    "executableGateChecks": "Both compiled CLI variants passed: exact QA identity accepted only with QA condition; production, nil and foreign identities rejected.",
+    "generatedProjects": "scripts/validate-ios-qa-project.mjs passed on actual QA and production PBX JSON exports.",
+    "localValidation": "npm run validate exited0, including shared native parity, 58 core, 189 web and18 authoring tests. Intentional diff whitespace check passed; inherited Unreal config blank-line warnings remain untouched.",
+    "nativeUnitTests": "XCTest log reports27 tests passed, zero failures, including hosted draft resource/identity checks.",
+    "nativeUITest": "testRetreatContinuationResumeEndingAndCancel passed in348.136 seconds. Real controls traversed title/chapter/council/Fan Yang/retreat, exact saved reaction after terminate/relaunch, all five retreat decisions, ending forecast agreement, restart cancellation and return to Fan Yang.",
+    "finalResult": "xcodebuild is still finalizing. Initial xcresult inspection lacked Info.plist; this is not treated as corruption or final success. Await terminal status and export final attachments before closing the test checkpoint."
+  },
+  "review": {
+    "platform": "iPad Pro11 M5, iOS27 simulator; unsigned separate QA identity",
+    "liveFrame": "Inspected a live native screenshot at the records decision: readable Chinese choices, explanation and metric changes in the scrollable sheet. Controls below the viewport require scrolling; the completed test reached them. Not a complete attachment or accessibility review.",
+    "storyReadthrough": "Read the shared decline-dispatch/gather-own/split-routes/carry-records/release-groups route with defer-title/joint-ledger/one-command context. Prior promises, limited reception, unresolved missing people, split-party uncertainty and retained record custody remain explicit through the ending. Author self-review only; no prose or historical claims changed."
+  },
+  "cleanup": "Test teardown terminated the QA application. Sole owned xcodebuild wrapper will shut down its exact simulator on terminal return. Final process and shutdown verification still pending; private runtime handoff identifies the active execution. No foreign service stopped.",
+  "limits": [
+    "One native graphical route, not all endings, phone layouts, VoiceOver, physical devices or human enjoyment acceptance.",
+    "Chinese retreat development text only; translations and release approval remain outstanding.",
+    "Full story completion is not claimed: human narrative review, remaining branch presentation, cross-client delivery and wider campaign continuation remain necessary.",
+    "No new media generation, paid action, store submission, release archive or public deployment."
+  ]
+}

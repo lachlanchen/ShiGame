@@ -134,7 +134,8 @@ struct NativeRetreatView: View {
     private func reaction(_ engine: RetreatEngine, _ presentation: RetreatPresentation, _ response: RetreatResponse) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             Text(presentation.lastChoice.text("title")).font(.title2).accessibilityAddTraits(.isHeader)
-            VStack(alignment: .leading, spacing: 16) { prose(presentation.responseLines) }.accessibilityIdentifier("retreat-response")
+            VStack(alignment: .leading, spacing: 16) { prose(presentation.responseLines) }
+                .accessibilityElement(children: .contain).accessibilityIdentifier("retreat-response")
             changes(engine.history[response.index].before, engine.history[response.index].after)
             Button("继续") { session.continueResponse(response.id) }.buttonStyle(.borderedProminent).foregroundStyle(ink)
                 .frame(minHeight: 48).accessibilityIdentifier("retreat-continue")

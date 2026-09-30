@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
@@ -10,6 +10,15 @@ import { translateCommitment } from "../apps/web/src/commitment-i18n";
 
 const root = resolve(import.meta.dirname, "..");
 const resource = resolve(root, "apps/mobile/ios/SHI/Resources");
+// This draft is only copied by the separate QA project, never sync:ios.
+const productionSpec = await readFile(resolve(root, "apps/mobile/ios/project.yml"), "utf8");
+const qaSpec = await readFile(resolve(root, "apps/mobile/ios/project-qa.yml"), "utf8");
+assert(!productionSpec.includes("SHI_RETREAT_PREVIEW") && !productionSpec.includes("chen-retreat"), "Retreat preview leaked into the production project");
+for (const filename of ["chen-retreat.rules.v1.json", "chen-retreat.v1.json"]) {
+  assert(!(await readdir(resource)).includes(filename), `Draft ${filename} must not enter production Resources`);
+  assert(qaSpec.includes(filename), `QA project is missing ${filename}`);
+}
+assert(qaSpec.includes("SHI_RETREAT_PREVIEW"), "QA retreat condition missing");
 const viewpoints = await readFile(resolve(root, "content/presentation/viewpoints.v1.json"));
 assert(viewpoints.equals(await readFile(resolve(resource, "viewpoints.v1.json"))), "Native viewpoint presentation differs from shared prose");
 const viewpointData = JSON.parse(viewpoints.toString());
