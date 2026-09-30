@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "standalone-view-typechecked-presentation-tests-passed",
+  "baseline": "74ccc45 plus the source hashes below",
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/RetreatPresentation.swift": "3b71e227a46a971a3d12489585f4008500e5d45bbeddd9c77b95e22f0c3cbef4",
+    "apps/mobile/ios/SHI/NativeRetreatView.swift": "a9ae004233633692055ea614f0464251d620de5014ee097e9643f4c46277c98d",
+    "apps/mobile/ios/Tests/RetreatPresentationChecks.swift": "ffd78f74de4915c181249ccc744dc1cdc2a8593e1008fb3b52f82859277e89d4"
+  },
+  "swiftSourceArchiveSHA256": "b4f3d7548fcb07c45e0624fd73a18aabce69b9ecdf9f328562f55b5ef38cd9b8",
+  "transferVerification": "Source archive matched before extraction; standalone test source matched before compilation. Existing canonical inputs reused from native-retreat-rules-20261001.json staging.",
+  "typecheck": {
+    "exitCode": 0,
+    "target": "arm64-apple-ios16.0-simulator",
+    "sdk": "iPhoneSimulator27.0.sdk",
+    "scope": "All current SHI Swift sources, including new standalone view, presentation projection and save session. Typecheck only, not an installed build or proof of iOS16 runtime compatibility."
+  },
+  "presentationChecks": {
+    "exitCode": 0,
+    "phaseSamples": 50,
+    "outcomes": ["together", "remnant", "dispersed", "scattered"],
+    "scope": "Four legal full retreat routes from a real chapter/council/Fan Yang baseline, plus recruited/non-recruited Han routes. Check scoped chapter/council callbacks, no dawn arrival in the preceding saved reaction, conditional Han letter and reply, scattering response override, custody-specific ending prose and deterministic reaction replay. Not exhaustive presentation parity with web or all narrative variations."
+  },
+  "implemented": [
+    "Shared JSON scene text, variants, chapter/council callbacks and witnessed-event timing",
+    "Inspectable choices, requirements, maximums, conditional costs, exact metric preview and outcome forecast",
+    "Saved reaction before continuation; separate four-outcome conclusion and debt/custody information",
+    "Recovery warning, explicit restart confirmation, scroll reset, accessibility identifiers and Chinese locale declaration",
+    "Historical/development notes remain separate from scene prose"
+  ],
+  "localChecks": ["npm run validate:ios-content", "npm run validate:repo"],
+  "limits": [
+    "Standalone view has no navigation entry yet; QA-only content delivery and Fan Yang continuation wiring are next.",
+    "No screenshot, simulator UI run, VoiceOver, physical-device, layout or human enjoyment acceptance claimed.",
+    "Chinese development text only. No draft resources added to the production bundle; no store build or submission changed.",
+    "AgentLink kept remote work in an isolated source/test directory using the existing SDK; no GUI launched."
+  ]
+}
