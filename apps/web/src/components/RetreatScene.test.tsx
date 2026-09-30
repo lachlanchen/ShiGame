@@ -80,16 +80,17 @@ describe("retreat development scene", () => {
   });
 
   it.each([
-    ["read-the-names", "repair-the-ford"],
-    ["take-the-beacon", "cut-the-carts"],
-    ["hide-the-register", "families-first"],
-  ])("recalls replay-verified %s and %s without changing saves or inventing other memories", async (opening, crossing) => {
+    ["read-the-names", "repair-the-ford", "issue-grain-tallies"],
+    ["read-the-names", "repair-the-ford", "voluntary-pots"],
+    ["take-the-beacon", "cut-the-carts", "extinguish-and-move"],
+    ["hide-the-register", "families-first", "turn-the-courier"],
+  ])("recalls replay-verified %s, %s and %s without changing saves or inventing other memories", async (opening, crossing, organization) => {
     const input = props();
     let priorChapter = createInitialState(definitions.campaign, 0);
     while (!priorChapter.completed) {
       const node = getNode(definitions.campaign, priorChapter.currentNodeId);
       const preferred = node.id === "rain-order" ? opening : node.id === "broken-crossing" ? crossing
-        : node.id === "fire-council" ? "extinguish-and-move" : undefined;
+        : node.timeIndex === 1 ? organization : undefined;
       priorChapter = resolveChoice(definitions.campaign, priorChapter,
         preferred ?? node.choices.find(choice => canChoose(choice, priorChapter.resources))!.id).state;
     }
@@ -109,21 +110,22 @@ describe("retreat development scene", () => {
     expect(view.queryByTestId("retreat-chapter-memory")).toBeNull();
     await choose(view, "decline-dispatch");
     await choose(view, "gather-own");
-    const assertMemory = (current: ReturnType<typeof render>, selected: string) => {
+    const assertMemory = (current: ReturnType<typeof render>, sceneId: string) => {
       const memory = current.getByTestId("retreat-chapter-memory");
       for (const callback of retreatStory.chapterCallbacks) {
-        for (const line of callback.lines) expect(memory.textContent?.includes(line.text)).toBe(callback.afterChoice === selected);
+        for (const line of callback.lines) expect(memory.textContent?.includes(line.text)).toBe(
+          callback.sceneId === sceneId && [opening, crossing, organization].includes(callback.afterChoice));
       }
     };
-    assertMemory(view, crossing);
+    assertMemory(view, "evacuation");
     await choose(view, "split-routes");
-    assertMemory(view, opening);
+    assertMemory(view, "records");
     const saved = localStorage.getItem(retreatSaveKey);
     view.unmount();
     const restored = render(<RetreatScene {...input} />);
     expect(restored.queryByTestId("retreat-chapter-memory")).toBeNull();
     fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
-    assertMemory(restored, opening);
+    assertMemory(restored, "records");
     expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
     expect(JSON.stringify(input.entry)).toBe(originalEntry);
   });

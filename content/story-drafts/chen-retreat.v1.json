@@ -86,6 +86,8 @@
     }
   ],
   "chapterCallbacks": [
+    { "sceneId": "records", "afterChoice": "issue-grain-tallies", "lines": [{ "speaker": "keeper", "text": "当初凭券取粮时，乡老是一笔笔记下才开的窖。还没核清的旧券，别和已经领过的混在一起。" }, { "speaker": "rear-guard", "text": "你能留下凭记。人若各走各的，谁还找得到你？" }] },
+    { "sceneId": "records", "afterChoice": "voluntary-pots", "lines": [{ "speaker": "keeper", "text": "最初说好一处灶火只献一釜。那是自愿给的，别改写成他们还欠我们。" }, { "speaker": "rear-guard", "text": "后来另立的约呢？" }, { "speaker": "keeper", "text": "照那份约核。不能把两回事混着算。" }] },
     { "sceneId": "evacuation", "afterChoice": "families-first", "lines": [{ "speaker": "keeper", "text": "那回渡河，让家户先过，守在后面的人一直等到最后。这次若还这样走，得先给断后的人留好退路。" }, { "speaker": "rear-guard", "text": "先说在哪儿收队。我得把话传到最后一个人。" }] },
     { "sceneId": "evacuation", "afterChoice": "repair-the-ford", "lines": [{ "speaker": "narrator", "text": "门边有人把粮袋往车轮下拖。你伸手拦住，让他先拿垫车的木料。" }, { "speaker": "keeper", "text": "渡口那次，粮袋填下去就没再取回来。这次还没到非用粮不可的时候。先看看轮子卡在哪里。" }] },
     { "sceneId": "evacuation", "afterChoice": "cut-the-carts", "lines": [{ "speaker": "keeper", "text": "渡口弃过一次车，有三户折回去找东西。这次别只喊人快走，先问清谁还在车旁。" }, { "speaker": "rear-guard", "text": "我去问。问到的报回来；那三户后来去了哪里，我不知道。" }] },

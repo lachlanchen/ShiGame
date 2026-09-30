@@ -23,7 +23,7 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
 });
 
 test("all nine opening/crossing pairs return only their own memories in the intended scenes", () => {
-  assert.equal(draft.chapterCallbacks.length, 6);
+  assert.equal(draft.chapterCallbacks.length, 8);
   for (const opening of ["read-the-names", "take-the-beacon", "hide-the-register"]) {
     for (const crossing of ["families-first", "repair-the-ford", "cut-the-carts"]) {
       const prior = [opening, crossing];
@@ -44,6 +44,26 @@ test("all nine opening/crossing pairs return only their own memories in the inte
   const unknown = readRoute(draft, input, together);
   for (const callback of draft.chapterCallbacks) {
     assert.ok(unknown.transcript.every(beat => callback.lines.every(line => !beat.lines.some(actual => actual.text === line.text))));
+  }
+});
+
+test("the original grain bargain returns at records without changing the selected custody or ending", () => {
+  for (const bargain of ["issue-grain-tallies", "voluntary-pots"]) {
+    for (const records of ["divide-records", "carry-records", "strip-identities"]) {
+      for (const end of ["stay-together", "move-with-remnant", "release-groups"]) {
+        const choices = ["keep-reserve", "gather-own", "escort-households", records, end];
+        const baseline = readRoute(draft, input, choices);
+        const result = readRoute(draft, input, choices, [], ["read-the-names", bargain]);
+        for (const callback of draft.chapterCallbacks.filter(item => ["issue-grain-tallies", "voluntary-pots"].includes(item.afterChoice))) {
+          for (const beat of result.transcript) {
+            for (const line of callback.lines) assert.equal(beat.lines.some(actual => actual.text === line.text),
+              beat.sceneId === "records" && callback.afterChoice === bargain);
+          }
+        }
+        assert.deepEqual(result.ending, baseline.ending);
+        assert.deepEqual(result.transcript.map(beat => beat.reaction), baseline.transcript.map(beat => beat.reaction));
+      }
+    }
   }
 });
 
