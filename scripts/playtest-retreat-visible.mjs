@@ -133,6 +133,11 @@ try {
       check(report.choiceGeometry.labelStart >= report.choiceGeometry.markerEnd && report.choiceGeometry.textColumnWidth > report.choiceGeometry.buttonWidth / 2, "retreat choice uses a readable text column");
     }
     await click('[data-testid="retreat-commit"]');
+    if (id === "open-reception") {
+      check(await evaluate("document.querySelector('[data-testid=retreat-response]').textContent.includes('把两份都推回他面前')"), "soldier retains both tokens after reception");
+      await evaluate("([...document.querySelectorAll('[data-testid=retreat-response] p')].find(e=>e.textContent.includes('把两份都推回他面前'))).scrollIntoView({block:'center'})");
+      await capture("03c-token-return-mobile"); await layout("token return");
+    }
     if (id === evacuation) {
       const expected = evacuation === "escort-households" ? "掌心全是木刺" : "墙角以里";
       check(await evaluate(`document.querySelector('[data-testid=retreat-response]').textContent.includes(${JSON.stringify(expected)})`), "saved evacuation presents its matching physical aftermath");
@@ -148,6 +153,12 @@ try {
     await capture("04c-search-follow-up-mobile"); await layout("search follow-up");
   }
   const yuArrives = reserves === "keep-reserve" && evacuation === "escort-households";
+  if (reception === "open-reception" && evacuation === "escort-households") {
+    check(await evaluate("document.querySelector('[data-testid=retreat-scene]').textContent.includes('我怕你回来没得领，就一直带着')"), "reunion pays off the retained companion token");
+    check(await evaluate("document.querySelector('[data-testid=retreat-scene]').textContent.includes('尚未凭它再领一份粮')"), "reunion does not claim duplicate grain distribution");
+    await evaluate("([...document.querySelectorAll('[data-testid=retreat-scene] p')].find(e=>e.textContent.includes('我怕你回来没得领'))).scrollIntoView({block:'center'})");
+    await capture("04d-reunion-mobile"); await layout("reunion");
+  }
   check(await evaluate(exists('[data-testid="retreat-witnessed-arrival"]')) === yuArrives, "Yu presence matches the actual escort decision");
   if (yuArrives) {
     await evaluate("document.querySelector('[data-testid=retreat-witnessed-arrival]').scrollIntoView({block:'start'})");

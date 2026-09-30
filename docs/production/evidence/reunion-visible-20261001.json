@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-01",
+  "previousTurnClassification": "progress: complete reception branch reading tool implemented",
+  "baseline": "41e0121",
+  "execution": 28304,
+  "result": "exit0,45checks passed,no browser exceptions",
+  "scope": "Real UI title-to-scattered route in isolated visible Chrome,390x844 Chinese phone-size viewport. send-support/open-reception/escort-households/carry-records/release-groups; no injected resources or saves.",
+  "privateEvidence": ".runtime/story-review/2026-09-30T21-33-28.237Z",
+  "reviewed": [
+    {
+      "file": "03c-token-return-mobile.png",
+      "sha256": "4ef04c94beabe67d8c2dbdf818b31ba91585c9564b7352aafb480f3e2dcf5e96",
+      "finding": "Reception response explicitly returns both tokens to the soldier; readable wrapping, no overlap. Actual resource changes remain visible separately."
+    },
+    {
+      "file": "04d-reunion-mobile.png",
+      "sha256": "359351abdfeb85c9a6eaff1344e9271b932d185fedf6ecb02b6e95023f9310f0",
+      "finding": "Reunion, voluntary token return and unchanged uncertainty about other people are readable. No duplicate grain distribution claimed."
+    },
+    {
+      "file": "04b-scattering-warning-mobile.png",
+      "finding": "Before commitment, unavailable stay/move options are marked and the selected release option explains insufficient resources lead to scattering, not orderly homecoming. Grain displays0to0."
+    }
+  ],
+  "cleanup": "ExactPIDs3277660/3277784/3277785/3277786/3277787 verified gone;4173/5921/6121/9321 closed. No live GUI or outstanding job.",
+  "limits": ["Agent visual review, not human playtest acceptance.", "Not a native or physical-device run.", "No release, signing, paid generation or store action."],
+  "skill": "noVNC webapp control used for observable UI-only play and evidence capture; project cleanup policy applied afterward."
+}
