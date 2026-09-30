@@ -22,6 +22,20 @@ test("reading is deterministic and does not mutate draft, inputs or choices", ()
   assert.equal(JSON.stringify({ draft, input, together }), before);
 });
 
+test("each evacuation order has its own physical withdrawal before sorting records", () => {
+  const evacuationScene = draft.scenes.find(scene => scene.id === "evacuation");
+  for (const choice of evacuationScene.choices) {
+    const result = readRoute(draft, input, ["keep-reserve", "gather-own", choice.id, "carry-records", "release-groups"]);
+    const retreat = result.transcript.find(beat => beat.sceneId === "evacuation");
+    assert.deepEqual(retreat.reaction, choice.response);
+    assert.equal(result.transcript[result.transcript.indexOf(retreat) + 1].sceneId, "records");
+    assert.ok(retreat.reaction.length >= 6);
+    for (const other of evacuationScene.choices.filter(candidate => candidate.id !== choice.id)) {
+      assert.ok(other.response.slice(3).every(line => !retreat.reaction.some(actual => actual.text === line.text)));
+    }
+  }
+});
+
 test("all nine ending memories preserve the chosen record custody without inventing carts or handoffs", () => {
   for (const records of ["divide-records", "carry-records", "strip-identities"]) {
     for (const end of ["stay-together", "move-with-remnant", "release-groups"]) {

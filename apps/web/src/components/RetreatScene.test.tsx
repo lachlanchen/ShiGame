@@ -39,6 +39,33 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it.each(["escort-households", "hold-formation", "split-routes"])("shows the saved %s withdrawal before the records scene and preserves it on resume", async evacuation => {
+    const input = props();
+    input.entry = structuredClone(input.entry);
+    input.entry.fanyang.metrics = { ...input.entry.fanyang.metrics, grain: 8, tempo: 8, city: 8, allies: 8, veterans: 8 };
+    const view = render(<RetreatScene {...input} />);
+    await choose(view, "keep-reserve");
+    await choose(view, "gather-own");
+    const authored = retreatStory.scenes.find(scene => scene.id === "evacuation")!;
+    const selected = authored.choices.find(choice => choice.id === evacuation)!;
+    for (const line of selected.response.slice(3)) expect(view.container.textContent).not.toContain(line.text);
+    fireEvent.click(view.container.querySelector(`[data-retreat-choice="${evacuation}"]`)!);
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    const response = await view.findByTestId("retreat-response");
+    for (const line of selected.response) expect(response.textContent).toContain(line.text);
+    for (const other of authored.choices.filter(choice => choice.id !== evacuation)) {
+      for (const line of other.response.slice(3)) expect(response.textContent).not.toContain(line.text);
+    }
+    const saved = localStorage.getItem(retreatSaveKey);
+    view.unmount();
+    const restored = render(<RetreatScene {...input} />);
+    for (const line of selected.response) expect(restored.getByTestId("retreat-response").textContent).toContain(line.text);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(restored.getByRole("heading", { name: "带走什么凭据" })).toBeTruthy();
+    expect(restored.queryByTestId("retreat-response")).toBeNull();
+  });
+
   it.each(["divide-records", "carry-records", "strip-identities"])("keeps %s custody in all three orderly endings and after resume", async records => {
     for (const [decision, outcome] of [["stay-together", "together"], ["move-with-remnant", "remnant"], ["release-groups", "dispersed"]] as const) {
       localStorage.clear();
