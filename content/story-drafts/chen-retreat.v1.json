@@ -24,6 +24,7 @@
       "id": "reserves",
       "act": 5,
       "title": "两份消息",
+      "setting": "陈地，收发粮秣的院落。北方的文书辗转抵达，西边的催援也到了。",
       "sourceIds": ["qin-response"],
       "transition": "陈地，北方交涉之后。视角回到掌简人。使团的文书辗转抵达；送信人与范阳使者并非同一人。两份文书的成文和抵达时间分别待历史校对，不用一条精确日期制造同时发生的错觉。",
       "lines": [
@@ -51,6 +52,7 @@
       "id": "bad-news",
       "act": 6,
       "title": "把手松开",
+      "setting": "后来，败归的人陆续走进粮棚。来的人说法不一，许多队伍仍没有消息。",
       "sourceIds": ["broken-command"],
       "transition": "后来，西路败兵陆续抵达。此时仅能确认亲见的局部战况；吴广死讯在本场之后经另一条消息核实，不由眼前伤卒一次讲完。",
       "lines": [
@@ -84,6 +86,7 @@
       "id": "evacuation",
       "act": 7,
       "title": "粮站最后一趟",
+      "setting": "秦军逼近陈地。粮站开始撤离，守路的队伍已经后退。",
       "sourceIds": ["chen-fall"],
       "transition": "再后来，陈地战局恶化。本场是虚构粮站的撤离，不让掌简人代替陈胜指挥全部战场。",
       "lines": [
@@ -114,6 +117,7 @@
       "id": "records",
       "act": 7,
       "title": "带走什么凭据",
+      "setting": "出城后，队伍短暂停下。掌简人整理带出来的凭记。",
       "sourceIds": ["chen-fall"],
       "transition": "本部出城后的短暂停歇。本场只处理撤离时带出的现有凭记，不复原开篇失落或毁损的名籍。",
       "lines": [
@@ -132,6 +136,7 @@
       "id": "dawn",
       "act": 8,
       "title": "天亮以后",
+      "setting": "临时落脚处。队伍休整了一段时日，陆续核实来信，也等待还没有抵达的人。",
       "sourceIds": ["chen-fall", "embers"],
       "transition": "抵达临时落脚处，经过休整与消息核实后。不是撤离当夜便全知远方发生的一切。",
       "lines": [
@@ -149,9 +154,9 @@
         { "when": { "records": "strip-identities" }, "lines": [{ "speaker": "narrator", "text": "匿名欠账还在。有人能当面作证，也有几笔暂时找不到该交给谁。你没有补写那些被去掉的名字。" }] }
       ],
       "choices": [
-        { "id": "stay-together", "title": "守住会合处，重整同行的队伍", "requires": { "evacuation": "escort-households" }, "intent": "本读稿仅在集中护送路线展示此尾声。正式规则还须检查剩余粮食、接应能力和伙伴意愿；不能只凭最后这句话得到团圆。", "response": [{ "speaker": "keeper", "text": "先把来了的人安顿下。余下的粮点清，再定还能等多久。未到的人，继续留消息。" }], "ending": "together" },
+        { "id": "stay-together", "title": "守住会合处，重整同行的队伍", "requires": { "evacuation": "escort-households" }, "intent": "安顿已护送到达的人，留粮等待后续。需要能守住会合处的队伍与愿意留下的家户；未到的人仍要继续寻找。", "response": [{ "speaker": "keeper", "text": "先把来了的人安顿下。余下的粮点清，再定还能等多久。未到的人，继续留消息。" }], "ending": "together" },
         { "id": "move-with-remnant", "title": "带已聚起的人继续转移", "intent": "带眼前的人走，留下真实去向与未偿责任。没有抵达的人仍是失散，不在结局自动归队。", "response": [{ "speaker": "keeper", "text": "把去向留在这里。能走的人跟上，欠的粮和没找回的人，一并记着。" }, { "speaker": "rear-guard", "text": "谁来接后面的人？" }, { "speaker": "keeper", "text": "先安排联络。做不到回接，就别写成已经答应。" }], "ending": "remnant" },
-        { "id": "release-groups", "title": "交代清楚，让各组自行选择去处", "intent": "结束统一编队，按现存物资分配并交代责任。不是把失控溃散改名为自愿解散；灾难状态需要正式规则另行处理。", "response": [{ "speaker": "keeper", "text": "愿结伴的结伴。先把能分的分清，不能还的留凭，别让人以为走了便一笔勾销。" }, { "speaker": "narrator", "text": "有人仍站在原处，也有人开始问别组要往哪里走。你等他们说完，没有再喊集合。" }], "ending": "dispersed" }
+        { "id": "release-groups", "title": "交代清楚，让各组自行选择去处", "intent": "结束统一编队，按现存物资分配并交代责任。若粮食或支持不足，人们可能等不及分配便各自离开；先看清预计结果。", "response": [{ "speaker": "keeper", "text": "愿结伴的结伴。先把能分的分清，不能还的留凭，别让人以为走了便一笔勾销。" }, { "speaker": "narrator", "text": "有人仍站在原处，也有人开始问别组要往哪里走。你等他们说完，没有再喊集合。" }], "ending": "dispersed" }
       ]
     }
   ],

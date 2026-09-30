@@ -38,6 +38,17 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("keeps authoring caveats in optional notes and explains the active choice in Chinese", () => {
+    const view = render(<RetreatScene {...props()} />);
+    expect(view.getByText("陈地，收发粮秣的院落。北方的文书辗转抵达，西边的催援也到了。")).toBeTruthy();
+    expect(view.getByText(/付出一份粮秣，把答应的粮车送出/)).toBeTruthy();
+    expect(view.container.querySelector(".chen-main")?.textContent).not.toContain("成文和抵达时间分别待历史校对");
+    const notes = view.getByText("史料与开发说明").closest("details")!;
+    expect(notes.open).toBe(false);
+    expect(notes.textContent).toContain("成文和抵达时间分别待历史校对");
+    expect(view.queryByText("Supply the agreed grain convoy but retain an escort reserve; partners receive less support than requested.")).toBeNull();
+  });
+
   it("plays five decisions to an ending without touching previous episode saves", async () => {
     localStorage.setItem("shi.chen-council.v1", councilSnapshot);
     localStorage.setItem("shi.fanyang-guarantee.v1", fanyangSnapshot);

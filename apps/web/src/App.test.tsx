@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
+import { webcrypto } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import * as persistence from "./persistence";
@@ -55,7 +56,8 @@ class FakeAudioContext {
 }
 
 describe("playable web shell", () => {
-  it.each([true, false])("carries a full chapter through Chen to Fan Yang and guards parent exits while saving (success=%s)", async success => {
+  it.each([true, false])("plays title through Chen, Fan Yang and a retreat ending with resume and guarded saves (success=%s)", async success => {
+    vi.stubGlobal("crypto", webcrypto);
     vi.stubEnv("VITE_SHI_NATIVE", "1");
     let view = render(<App />);
     fireEvent.click(view.getByTestId("begin-game"));
@@ -145,7 +147,73 @@ describe("playable web shell", () => {
     expect(localStorage.getItem("shi.fanyang-guarantee.v1")).toBe(final);
     expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(chapter);
     expect(localStorage.getItem("shi.chen-council.v1")).toBe(chen);
-  });
+
+    fireEvent.click(view.getByTestId("retreat-enter"));
+    const retreat = await view.findByTestId("retreat-scene");
+    const retreatKey = "shi.dev.chen-retreat.v1";
+    expect(view.getByTestId("game-stage").hasAttribute("inert")).toBe(true);
+    const retreatClose = retreat.querySelector<HTMLButtonElement>("[data-council-action='close']")!;
+    const retreatRetry = retreat.querySelector<HTMLButtonElement>("[data-council-action='retry']")!;
+    retreatClose.focus(); fireEvent.keyDown(retreatClose, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(retreatRetry);
+    fireEvent.keyDown(retreatRetry, { key: "Tab" });
+    expect(document.activeElement).toBe(retreatClose);
+    fireEvent.keyDown(window, { key: "m", altKey: true });
+    fireEvent.keyDown(window, { key: "r", altKey: true });
+    expect(view.getByTestId("retreat-scene")).toBe(retreat);
+    retreat.querySelector<HTMLElement>("h3[tabindex]")!.focus();
+    await press(0);
+    expect(document.activeElement?.getAttribute("data-retreat-choice")).toBe("keep-reserve");
+    await press(15); await press(0);
+    expect(retreat.querySelector('[data-retreat-choice="send-support"]')?.getAttribute("aria-pressed")).toBe("true");
+    expect(localStorage.getItem(retreatKey)).toBeNull();
+    const firstRetreatChoice = success ? "keep-reserve" : "decline-dispatch";
+    fireEvent.click(retreat.querySelector(`[data-retreat-choice="${firstRetreatChoice}"]`)!);
+    let finishRetreat!: () => void, failRetreat!: (error: Error) => void;
+    vi.mocked(persistence.flushPersistence).mockReturnValueOnce(new Promise<void>((resolve, reject) => { finishRetreat = resolve; failRetreat = reject; }));
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    fireEvent.click(view.container.querySelector(".drawer-scrim")!);
+    fireEvent.keyDown(document, { key: "Escape" });
+    const retreatBack = new Event("shi-native-back", { cancelable: true });
+    act(() => { window.dispatchEvent(retreatBack); });
+    expect(retreatBack.defaultPrevented).toBe(true);
+    expect(view.getByTestId("retreat-scene")).toBe(retreat);
+    expect(view.queryByTestId("retreat-response")).toBeNull();
+    expect(JSON.parse(localStorage.getItem(retreatKey)!).choices).toEqual([firstRetreatChoice]);
+    await act(async () => { if (success) finishRetreat(); else failRetreat(new Error("retreat write failure")); });
+    if (!success) {
+      await view.findByRole("alert");
+      expect(localStorage.getItem(retreatKey)).toBeNull();
+      fireEvent.click(view.getByTestId("retreat-commit"));
+    }
+    const reaction = (await view.findByTestId("retreat-response")).textContent;
+    const retreatSave = localStorage.getItem(retreatKey);
+    view.unmount();
+    view = render(<App />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    fireEvent.click(await view.findByTestId("council-enter"));
+    fireEvent.click(await view.findByTestId("council-continue"));
+    fireEvent.click(view.getByTestId("fanyang-enter"));
+    fireEvent.click((await view.findByTestId("fanyang-response")).querySelector("button")!);
+    fireEvent.click(view.getByTestId("retreat-enter"));
+    expect((await view.findByTestId("retreat-response")).textContent).toBe(reaction);
+    expect(localStorage.getItem(retreatKey)).toBe(retreatSave);
+    fireEvent.click(view.getByTestId("retreat-response").querySelector("button")!);
+    const remaining = success ? ["gather-own", "escort-households", "carry-records", "stay-together"]
+      : ["gather-own", "split-routes", "carry-records", "release-groups"];
+    for (const id of remaining) {
+      fireEvent.click(view.container.querySelector(`[data-retreat-choice="${id}"]`)!);
+      expect((view.getByTestId("retreat-commit") as HTMLButtonElement).disabled).toBe(false);
+      fireEvent.click(view.getByTestId("retreat-commit"));
+      fireEvent.click((await view.findByTestId("retreat-response")).querySelector("button")!);
+    }
+    expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe(success ? "together" : "dispersed");
+    expect(JSON.parse(localStorage.getItem(retreatKey)!).choices).toEqual([firstRetreatChoice, ...remaining]);
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(chapter);
+    expect(localStorage.getItem("shi.chen-council.v1")).toBe(chen);
+    expect(localStorage.getItem("shi.fanyang-guarantee.v1")).toBe(final);
+  }, 15_000);
 
   it("resumes an unread aftermath after remount and acknowledges it without replaying the order", async () => {
     vi.stubEnv("VITE_SHI_NATIVE", "1");

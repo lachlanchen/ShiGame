@@ -62,6 +62,9 @@ describe("resource-backed retreat rules", () => {
     expect(story.publicationApproved).toBe(false);
     expect(rules.scenes.map(scene => [scene.id, scene.choices.map(choice => choice.id)]))
       .toEqual(story.scenes.map(scene => [scene.id, scene.choices.map(choice => choice.id)]));
+    expect(Object.keys(rulesRaw.explanationsZh).sort()).toEqual(rules.scenes.flatMap(scene => scene.choices.map(choice => choice.id)).sort());
+    expect(Object.keys(rulesRaw.answerExplanationsZh).sort()).toEqual([...new Set(rules.scenes.flatMap(scene => scene.choices.flatMap(choice => (choice.answers ?? []).map(answer => answer.afterChoice))))].sort());
+    expect(Object.values(rulesRaw.explanationsZh).every(text => text.length > 0)).toBe(true);
   });
 
   it("exhausts legal retreat routes from 993 real prior endings with no dead ends or refills", () => {

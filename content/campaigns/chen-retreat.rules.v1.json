@@ -6,6 +6,29 @@
   "publicationApproved": false,
   "boundary": "Development strategy rules, not historical measurements or approved release content. Carry the five inherited campaign-capacity meters from Fan Yang without refilling. They represent remaining coalition capacity, not a physical northern grain store teleported to Chen. Chapter resources remain a separate historical record. Soldier backing is not a headcount.",
   "capacitySource": "fanyang.metrics",
+  "explanationsZh": {
+    "keep-reserve": "付出一份粮秣，把答应的粮车送出，接应队留在本地。前线少得人手，诸部支持下降；撤离护送时可以省下集结时间。",
+    "send-support": "付出两份粮秣并调出护送力量，换取诸部支持。本地军中支持减少；伙伴收到支援，并不保证能及时归还人手。",
+    "verify-road": "花一份行动余裕核实路讯。支援因等待而推迟，诸部支持下降；不会因此得到额外粮食。",
+    "decline-dispatch": "不再支出粮秣或时间，也不增添办不到的承诺。催援的伙伴会失望，诸部支持下降。",
+    "open-reception": "付粮安顿来人，花时间组织接应。民间更愿意合作，守路者却要分担更多工作；护送这批人撤离还需额外粮秣。",
+    "verify-with-partners": "花时间与诸部情面，共同核人和安排接应。若陈县已经实行共账，核验可以更快；作过承诺不等于凭空借到车辆。",
+    "gather-own": "不再扩大粮食与接应负担。但新来的人只能另寻去处，民间支持会下降。",
+    "escort-households": "拨粮护送家户，把时间让给走得慢的人。军中承担断后压力，民间支持提高；先前的留队与收容安排会改变本次支出。",
+    "hold-formation": "需要仍肯维持队形的士卒。保存集中护路的能力，缩小护送范围；民间与诸部会追问没有带走的人。",
+    "split-routes": "分组可以避开一处堵塞，也会减弱相互照应与军中支持。约定会合，不表示所有人已经安全抵达。",
+    "divide-records": "用一份行动余裕核对和分交凭记，换取民间信任。不能确认的姓名与欠账仍需留待查证。",
+    "carry-records": "不花额外时间抄分，带走现有凭记。姓名与追查风险仍在；谁来核账，也仍须找掌简人。",
+    "strip-identities": "去掉可追查身份，也会让部分欠账更难证明，民间支持下降。日后不能凭空恢复被去掉的姓名。",
+    "stay-together": "付出一份粮秣和一份行动余裕开始等待。至少要再留一份粮，并有家户同意与士卒护守；这不会自动找回旧日失散者。",
+    "move-with-remnant": "需要愿意继续护路的士卒，付出一份粮秣供这一次出发。没有到齐的人和未偿的欠账，仍跟着你走。",
+    "release-groups": "有序分行至少需要一份粮秣，并有民间、诸部或军中任一方达到两份支持。不足时仍能停止统领，但队伍会散去，不是一次安排妥当的归乡。"
+  },
+  "answerExplanationsZh": {
+    "joint-ledger": "陈县共账已有可查的记录，邻部不必从头核验，本次少花一份行动余裕。",
+    "keep-reserve": "留下的接应队已在位置上，本次护送不再额外消耗集结时间。",
+    "open-reception": "先前接纳的人也在等护送；本次需要多拨一份粮秣，不能只在收容时算上他们。"
+  },
   "scenes": [
     { "id": "reserves", "choices": [
       { "id": "keep-reserve", "requires": { "veterans": 1 }, "effects": { "grain": -1, "allies": -1 }, "reason": "Supply the agreed grain convoy but retain an escort reserve; partners receive less support than requested." },

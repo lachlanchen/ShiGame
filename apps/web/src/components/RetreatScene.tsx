@@ -7,6 +7,8 @@ import { flushPersistence, gameStorage } from "../persistence";
 import "./ChenCouncil.css";
 
 const rules = rawRules as RetreatDefinition;
+const explanations: Record<string, string> = rawRules.explanationsZh;
+const answerExplanations: Record<string, string> = rawRules.answerExplanationsZh;
 export const retreatSaveKey = "shi.dev.chen-retreat.v1";
 const metrics = { grain: "粮秣", tempo: "行动余裕", city: "民间支持", allies: "诸部支持", veterans: "军中支持" };
 const speakers: Record<string, string> = { keeper: "掌简人", "supply-officer": "催粮军吏", "yu-mu": "妪母", "qin-courier": "韩驿使", "wounded-soldier": "伤卒", "partner-steward": "邻部管事", "rear-guard": "守路士卒" };
@@ -69,32 +71,32 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       }
     }}>
     <header className="chen-header"><h2 id="retreat-title">{story.title}</h2><button className="icon-button" data-council-action="close" aria-label="返回范阳" disabled={busy} onClick={() => { if (!transaction.current) onClose(); }}>×</button></header>
-    <p className="chen-boundary">开发试玩 · 简体中文剧本，部分规则说明暂用英语。<span lang="en"> Development preview: Chinese story, English rule explanations. Not a release build.</span></p>
+    <p className="chen-boundary">开发试玩 · 简体中文。<span lang="en"> Chinese-language development preview. Not a release build.</span></p>
     <p className="chen-boundary">参考《资治通鉴》卷七、卷八。对白、地方行动与分支结局均为原创戏剧重构，并非史书记载。</p>
     <p className="chen-boundary">粮秣与支持数值承接已完成的议事，表示剩余组织能力，不表示北方粮仓搬到陈地。人物当前去向尚未确认，不凭旧日合作假定重逢。</p>
     {invalid && <p role="alert" className="chen-error">存档损坏、来自另一段经历或内容已改版。原存档保留；明确重开前不能提交命令。</p>}
     {error && <p role="alert" className="chen-error">未能保存，命令尚未确认。请恢复存储后重试。</p>}
-    <div className="chen-layout"><main className="chen-main">
+    <div className="chen-layout"><section className="chen-main">
       {reset ? <section className="chen-scene"><h3 ref={heading} tabIndex={-1}>替换本段开发存档？此前章节不变。</h3>
         <button className="primary-button" disabled={busy} data-council-action="reset" onClick={() => void persist(createRetreat(rules, entry))}>确认重开</button>
         <button className="text-button" disabled={busy} data-council-action="cancel" onClick={() => setReset(false)}>取消</button></section>
       : reading && lastChoice && lastScene ? <section className="chen-scene" data-testid="retreat-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{lastChoice.title}</h3>
         {state.outcome === "scattered" ? <p className="chen-prose">{rules.scattered.reaction["zh-Hans"]}</p> : lines(lastChoice.response)}
-        {lastPreview?.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice} lang="en">{answer.reason}</p>)}
+        {lastPreview?.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{answerExplanations[answer.afterChoice]}</p>)}
         {last && <div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{last.before[key]} → {last.after[key]}</b></span>)}</div>}
         {lines((lastScene as typeof lastScene & { exitLines?: { speaker: string; text: string }[] }).exitLines ?? [])}
         <button className="primary-button" data-council-action="continue" onClick={() => setReading(false)}>继续 →</button></section>
       : state.completed && state.outcome ? <section className="chen-scene" data-testid="retreat-outcome" data-outcome={state.outcome} aria-live="polite"><h3 ref={heading} tabIndex={-1}>{outcomeTitle(state.outcome)}</h3>
-        {state.outcome === "scattered" ? <><p>{rules.scattered.reaction["zh-Hans"]}</p><p>{rules.scattered.recovery["zh-Hans"]}</p></> : <>{lines(story.endings[state.outcome].lines)}<p>{story.endings[state.outcome].unresolved}</p></>}
+        {state.outcome === "scattered" ? <><p>{rules.scattered.reaction["zh-Hans"]}</p><p>{rules.scattered.recovery["zh-Hans"]}</p></> : lines(story.endings[state.outcome].lines)}
         <p>{story.epilogue}</p><p>本卷开发段落到此结束。后续尚未开放。</p>
         <p>物资归属：{state.resourceCustody === "common" ? "现存队伍" : state.resourceCustody === "groups" ? "分行各组，不再是公共库存" : "未明，不能重复调拨"}</p>
         <button className="primary-button" data-council-action="close" onClick={onClose}>返回范阳</button></section>
       : scene && choice && preview ? <section className="chen-scene"><p className="eyebrow">{state.history.length + 1} / {story.scenes.length}</p><h3 ref={heading} tabIndex={-1}>{scene.title}</h3>
-        <p>{scene.transition}</p>{lines(scene.lines)}
+        <p>{scene.setting}</p>{lines(scene.lines)}
         {scene.variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}
         <div className="chen-offers">{scene.choices.map((item, index) => <button key={item.id} data-retreat-choice={item.id} data-council-choice={item.id} data-council-action="offer" disabled={busy || invalid} aria-pressed={choice.id === item.id} onClick={() => setSelected(index)}>{item.title}{!inspectRetreatChoice(rules, state, item.id).available && <small>条件未满足，可查看原因</small>}</button>)}</div>
-        <section className="chen-offer-detail" aria-live="polite"><h4>{choice.title}</h4><p>{choice.intent}</p><p lang="en">{preview.choice.reason}</p>
-          {preview.answers.map(answer => <p className="chen-promise-answer" lang="en" key={answer.afterChoice}>{answer.reason}</p>)}
+        <section className="chen-offer-detail" aria-live="polite"><h4>{choice.title}</h4><p>{choice.intent}</p><p>{explanations[choice.id]}</p>
+          {preview.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{answerExplanations[answer.afterChoice]}</p>)}
           {!preview.prerequisiteMet && <p>需要先完成家户护送。</p>}
           <ul>{preview.checks.filter(check => check.required > 0).map(check => <li key={check.key}>{metrics[check.key]}：{check.value} / 需要 {check.required} {check.met ? "✓" : "不足"}</li>)}</ul>
           {preview.after && <div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{state.metrics[key]} → {preview.after![key]}</b></span>)}</div>}
@@ -102,7 +104,11 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
           {preview.reactionOverride && <p>{preview.reactionOverride["zh-Hans"]}</p>}
           <button className="primary-button" data-council-action="commit" data-testid="retreat-commit" disabled={busy || invalid || !preview.available} onClick={() => { if (!invalid) void persist(resolveRetreat(rules, state, choice.id)); }}>{busy ? "保存中…" : "确认命令"} →</button>
         </section></section> : null}
-    </main><aside className="chen-position" aria-label="当前局势"><h3>当前局势</h3><ul className="chen-metrics">{councilMetricKeys.map(key => <li key={key}><span>{metrics[key]}</span><span>{state.metrics[key]} / 10</span></li>)}</ul></aside></div>
+    </section><aside className="chen-position" aria-label="当前局势"><h3>当前局势</h3><ul className="chen-metrics">{councilMetricKeys.map(key => <li key={key}><span>{metrics[key]}</span><span>{state.metrics[key]} / 10</span></li>)}</ul></aside></div>
+    <details className="chen-history"><summary>史料与开发说明</summary><p>{(reading ? lastScene : scene)?.transition}</p>
+      {(reading ? lastScene : scene)?.sourceIds.map(id => { const source = story.sources[id as keyof typeof story.sources]; return <p key={id}>{source.work}卷{source.volume} · {source.anchor}。{source.supports}</p>; })}
+      {state.completed && state.outcome && state.outcome !== "scattered" && <p>{story.endings[state.outcome].unresolved}</p>}
+      <p>{story.boundary}</p></details>
     {!reset && <button className="text-button" data-council-action="retry" disabled={busy} onClick={() => setReset(true)}>重开本段…</button>}
   </section>;
 }

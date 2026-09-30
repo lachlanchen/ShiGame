@@ -47,7 +47,7 @@ export function validateDraft(draft) {
     }
   };
   for (const [index, scene] of draft.scenes.entries()) {
-    assert.ok(nonempty(scene.title) && nonempty(scene.transition));
+    assert.ok(nonempty(scene.title) && nonempty(scene.setting) && nonempty(scene.transition));
     assert.ok(Number.isInteger(scene.act) && scene.act >= 5 && scene.act <= 8);
     if (index) assert.ok(scene.act >= draft.scenes[index - 1].act, "Act moves backward");
     assert.ok(scene.sourceIds.length > 0);
@@ -91,7 +91,7 @@ export function readRoute(draft, input, choices) {
     const scene = draft.scenes.find(item => item.id === sceneId);
     const choice = scene.choices.find(item => item.id === choiceId);
     assert.ok(choice && matches(choice.requires, facts), `Unavailable choice: ${choiceId}`);
-    transcript.push({ sceneId, title: scene.title, transition: scene.transition,
+    transcript.push({ sceneId, title: scene.title, transition: scene.transition, setting: scene.setting,
       lines: [...scene.lines, ...scene.variants.filter(item => matches(item.when, facts)).flatMap(item => item.lines)],
       choiceId, choiceTitle: choice.title, intent: choice.intent,
       reaction: [...choice.response, ...(scene.exitLines ?? [])] });
@@ -149,7 +149,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const result = readRoute(draft, { fanyang, yu, han }, choices);
     console.log(`${draft.title}\n${draft.boundary}\n`);
     for (const beat of result.transcript) {
-      console.log(`${beat.title}\n${beat.transition}`);
+      console.log(`${beat.title}\n${beat.setting}`);
       for (const line of beat.lines) console.log(`${line.speaker}: ${line.text}`);
       console.log(`选择：${beat.choiceTitle}\n${beat.intent}`);
       for (const line of beat.reaction) console.log(`${line.speaker}: ${line.text}`);
