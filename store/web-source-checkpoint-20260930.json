@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "commit": "5965fc05035d6f3021363acee3bb821d806a3642",
+  "scope": "Committed web/core source isolation and production bundle, not deployment or a signed Android build",
+  "method": "Git archive of committed inputs; shared installed third-party dependencies; @shi workspace links resolve to exported source",
+  "results": {
+    "coreTests": 34,
+    "webTests": 105,
+    "coreTypecheck": "passed",
+    "webTypecheck": "passed",
+    "webProductionBuild": "passed",
+    "webBuildBudgets": "passed",
+    "initialJavaScriptGzipKiB": 98.42,
+    "initialJavaScriptLimitKiB": 100,
+    "initialCssGzipKiB": 11.81,
+    "deployMiB": 26.93
+  },
+  "change": "Move historical source metadata from startup gameplay payload to the on-demand source ledger. Canonical source entries and node references remain unchanged and are tested for exact parity.",
+  "limitations": [
+    "Not a fresh npm installation or full-repository clean-build claim",
+    "No new browser visual playtest or physical-device test in this checkpoint",
+    "Existing signed Android build4 does not include this optimization or the title navigation guard",
+    "Native iOS and cinematic/engine work remain unfinished; no new upload or public release"
+  ]
+}
