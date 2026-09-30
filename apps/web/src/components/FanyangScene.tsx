@@ -9,9 +9,10 @@ import "./ChenCouncil.css";
 const definition = raw as FanyangDefinition, fingerprint = review.contentSHA256;
 const key = "shi.fanyang-guarantee.v1";
 
-export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onSavingChange }: {
+export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onSavingChange, onContinue }: {
   entry: FanyangEntry; locale: Locale; reducedMotion: boolean; onClose: () => void;
   onCue: (cue: "select" | "commit" | "ending") => void; onSavingChange?: (saving: boolean) => void;
+  onContinue?: (snapshot: string) => void;
 }) {
   const [{ initial, damaged }] = useState(() => {
     const initial = createFanyang(definition, entry);
@@ -71,7 +72,8 @@ export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onS
         {fanyangAnswers(state, lastChoice).map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{text(answer.text)}</p>)}{changes(last.before, last.after)}
         <button className="primary-button" data-council-action="continue" onClick={() => setReading(false)}>{say("Continue", "继续")} →</button></section>
       : outcome ? <section className="chen-scene" data-testid="fanyang-outcome" data-outcome={state.outcome} aria-live="polite"><h3 ref={heading} tabIndex={-1}>{text(outcome.title)}</h3><p className="chen-prose">{text(outcome.text)}</p>
-        <p>{say("This development episode ends here. Your decisions are saved; the next episode is not available yet.", "本开发篇章到此结束。选择已保存，下一篇尚未开放。")}</p>
+        <p>{onContinue ? say("Your decisions are saved. A Chinese-only development preview continues the story in Chen; it is not release-approved.", "选择已保存。可进入陈地后续的中文开发试玩，尚未通过发行审核。") : say("This development episode ends here. Your decisions are saved; the next episode is not available yet.", "本开发篇章到此结束。选择已保存，下一篇尚未开放。")}</p>
+        {onContinue && <button className="primary-button" data-council-action="continue" data-testid="retreat-enter" onClick={() => onContinue(encodeFanyangSnapshot(state, fingerprint))}>{say("Continue in Chen · development preview", "回到陈地 · 开发试玩")} →</button>}
         <button className="primary-button" data-council-action="close" onClick={onClose}>{say("Return to Chen", "返回陈县议事")}</button></section>
       : round && choice ? <section className="chen-scene"><p className="eyebrow">{state.history.length + 1} / {definition.rounds.length}</p><h3 ref={heading} tabIndex={-1}>{text(round.title)}</h3>
         {state.history.length === 0 && <p className="chen-prose">{text(definition.introduction)}</p>}<p className="chen-prose">{text(round.context)}</p>

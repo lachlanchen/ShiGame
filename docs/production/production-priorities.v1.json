@@ -14,7 +14,7 @@
   "storyDraftCheckpoint": {
     "treatment": "docs/design/FIRST_VOLUME_STORY_TREATMENT.md",
     "branchingScript": "content/story-drafts/chen-retreat.v1.json",
-    "scope": "Chinese authoring draft for acts five through eight: five scenes, sixteen decisions, thirty-one conditional passages and three authored orderly endings. The resource-backed rules separately distinguish a fourth, scattered outcome with its own reaction. Explicit Fan Yang outcomes and companion presence contexts including unestablished whereabouts; not integrated client gameplay.",
+    "scope": "Chinese development draft for acts five through eight: five scenes, sixteen decisions, thirty-one conditional passages and three authored orderly endings. Resource-backed rules distinguish a fourth, scattered outcome with its own reaction. Connected to the development-only web interface; not release-qualified.",
     "verify": "npm run validate:story-draft",
     "readExample": "node scripts/story-readthrough.mjs --read deferred absent unavailable send-support gather-own hold-formation strip-identities move-with-remnant",
     "boundary": "Exhaustive authoring graph checks do not establish resource balance, historical accuracy, human enjoyment or client playability. The draft is excluded from current fixed-path content exports."
@@ -23,7 +23,7 @@
     "module": "packages/game-core/src/retreat-entry.ts",
     "scope": "Replays chapter, Chen and Fan Yang snapshots before preparing the retreat story entry. Keeps resource scales separate, preserves earlier orders and rejects unfinished, failed or incompatible prior episodes. Historical cooperation does not establish later physical presence.",
     "verification": "packages/game-core/tests/retreat-entry.test.ts exhausts 993 Fan Yang endings across all Chen routes and all three arrival classes, plus chapter-choice, tamper, failure, revision and legacy-save checks.",
-    "boundary": "Caller supplies verified canonical content hashes. No game save is written, no resource is refilled, no actual companion reunion is established and no new client scene is exposed."
+    "boundary": "Caller supplies verified canonical content hashes. The handoff itself writes no save, refills no resource and establishes no companion reunion. The development web loader now computes hashes from actual canonical bytes before calling it."
   },
   "rulesCheckpoint": {
     "definition": "content/campaigns/chen-retreat.rules.v1.json",
@@ -31,7 +31,14 @@
     "scope": "Five scenes with inherited capacity, affordable grain/time costs, visible requirements, conditional shared-ledger and escort-reserve effects, additional provisioning for admitted people, and four endings. Exhausted positions retain a legal exit, not an invented peaceful reunion. Snapshots bind both rules and prose revisions and replay choices instead of trusting saved totals.",
     "custody": "Orderly dispersion assigns remaining provisions to groups; scattering leaves custody unresolved. Neither preserves a duplicate common stockpile.",
     "focusedVerification": "Six rules tests pass. Exhaustive checks traverse 97,065 complete resource-backed routes from 993 prior endings, verify all four outcomes, legal exits, preview/commit agreement, no automatic food/time refill, replay and source-state preservation. This proves finite rules behavior, not fun or presentation quality.",
-    "boundary": "Development rules, not a client integration or human balance approval. No resupply route is yet authored for completely exhausted entries; departure or scattering remains possible. Authoring-only readthrough does not apply these resource rules."
+    "boundary": "Development rules, now connected to a development-only web screen but not human balance-approved. No resupply route is yet authored for completely exhausted entries; departure or scattering remains possible. Authoring-only command-line readthrough does not apply these resource rules."
   },
-  "currentNextStep": "Story first: connect the resource-backed retreat rules and canonical dialogue in a development client, showing exact costs, conditional reactions and the scattered-outcome override before confirmation. Preserve separate durable saves and prior campaign state. Resolve council authority and message/travel chronology, author a costly resupply/recovery opportunity, and establish companion whereabouts through events rather than assumptions. Existing native QA and release work remain separate; no new package is shipped."
+  "webDevelopmentCheckpoint": {
+    "entry": "Development server only: complete Chen and Fan Yang, then choose Continue in Chen · development preview.",
+    "implementation": "RetreatPreview lazily hashes canonical source bytes and replays prior episodes. RetreatScene joins dialogue to the resource rules, previews exact costs and outcomes, saves before displaying reactions, preserves old episode saves, replays a saved reaction on reopen, and requires explicit reset for incompatible data.",
+    "saveKey": "shi.dev.chen-retreat.v1",
+    "verification": "Eight DOM tests cover a five-order ending, reaction resume, pending-write locks, save rollback/retry, incompatible-save preservation/reset, scattered-reaction override, keyboard and automated semantic checks, and entry through the actual Chen/Fan Yang components. Full npm run build passes; production bundle validation rejects development retreat identifiers.",
+    "limits": "Not graphical-browser, physical-device, native iOS, packaged Android, Unreal or human story acceptance. UI prose is Chinese with explicitly marked English rule explanations. Local resources: about 51 GiB available RAM, swap about 76%; no owned obsolete GUI found, no new GUI stack launched."
+  },
+  "currentNextStep": "Story first: test the full title-to-ending development route and visually review it when the shared-workstation gate permits. Resolve council authority and message/travel chronology, author a costly resupply/recovery opportunity, and establish companion whereabouts through events rather than assumptions. Add complete translations and native client integration before beta delivery. Existing release work remains separate; no new package is shipped."
 }

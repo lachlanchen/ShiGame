@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { councilAnswers, councilCanChoose, councilEntry, councilMetricKeys, councilReadiness, createCouncil, localize, prepareFanyangEntry, resolveCouncil, restoreCouncil,
   type CouncilDefinition, type CouncilRecord, type CouncilState, type GameState, type Locale } from "@shi/game-core";
 import data from "../generated/chen-council.v1.json";
@@ -7,6 +7,7 @@ import { flushPersistence, gameStorage } from "../persistence";
 import { councilSnapshotMatchesRevision, encodeCouncilSnapshot } from "../council-snapshot";
 import "./ChenCouncil.css";
 import { FanyangScene } from "./FanyangScene";
+const RetreatPreview = import.meta.env.DEV ? lazy(() => import("./RetreatPreview").then(module => ({ default: module.RetreatPreview }))) : null;
 
 const definition = data as CouncilDefinition;
 const fingerprint = rawFingerprint.trim();
@@ -49,6 +50,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
   const [error, setError] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [showFanyang, setShowFanyang] = useState(false);
+  const [retreatSnapshot, setRetreatSnapshot] = useState<string | null>(null);
   const transaction = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const sceneHeading = useRef<HTMLHeadingElement>(null);
@@ -110,8 +112,13 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
 
   const continuation = !invalid && state.completed
     ? prepareFanyangEntry(definition, origin, { ...state, definitionSHA256: fingerprint }, fingerprint) : null;
+  if (retreatSnapshot && continuation && RetreatPreview) return <Suspense fallback={<section className="drawer chen-council" role="dialog" aria-modal="true" aria-label="Loading retreat preview"><p role="status">Loading story preview…</p><button autoFocus className="primary-button" data-council-action="close" onClick={() => setRetreatSnapshot(null)}>Back</button></section>}>
+    <RetreatPreview origin={origin} councilSnapshot={encodeCouncilSnapshot(state, fingerprint)} fanyangSnapshot={retreatSnapshot}
+      reducedMotion={reducedMotion} onClose={() => setRetreatSnapshot(null)} onSavingChange={onSavingChange} />
+  </Suspense>;
   if (showFanyang && continuation) return <FanyangScene entry={continuation} locale={locale} reducedMotion={reducedMotion}
-    onCue={onCue} onClose={() => setShowFanyang(false)} onSavingChange={onSavingChange} />;
+    onCue={onCue} onClose={() => setShowFanyang(false)} onSavingChange={onSavingChange}
+    onContinue={RetreatPreview ? setRetreatSnapshot : undefined} />;
 
   return <aside className="drawer chen-council" data-testid="chen-council" data-round={state.history.length}
     data-arrival={entry.arrival} data-reading={reading} data-completed={state.completed} data-motion={reducedMotion ? "reduced" : "full"}
