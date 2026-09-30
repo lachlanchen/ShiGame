@@ -76,6 +76,31 @@ describe("playable web shell", () => {
     const saved = JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!);
     expect(saved.history).toEqual(state.history);
     expect(saved.resources).toEqual(state.resources);
+    const terminalSave = localStorage.getItem("shi.chapter-01.save.v6");
+    fireEvent.click(view.getByTestId("record-toggle"));
+    const record = await view.findByTestId("record-drawer");
+    expect(record.querySelectorAll(".record-list > li")).toHaveLength(route.choiceIds.length);
+    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.click(view.getByTestId("sources-toggle"));
+    expect(await view.findByTestId("sources-drawer")).toBeTruthy();
+    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.click(view.container.querySelector("[data-site-id]")!);
+    expect(await view.findByTestId("map-intel")).toBeTruthy();
+    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.keyDown(window, { key: "1", shiftKey: true });
+    fireEvent.keyDown(window, { key: "Enter" });
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(terminalSave);
+    expect(view.queryByTestId("commit-selected")).toBeNull();
+    fireEvent.click(view.getByRole("button", { name: new RegExp(ui[locale].restart) }));
+    expect(view.queryByTestId("chapter-ending-prose")).toBeNull();
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBeNull();
+    expect(localStorage.getItem("shi.chapter-01.seed.v1")).toBe(String(state.seed));
+    expect(view.getByTestId("shi-app").getAttribute("data-node-id")).toBe(campaign.startNodeId);
+    fireEvent.click(await view.findByTestId("commit-selected"));
+    const restarted = JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!);
+    const expected = resolveChoice(campaign, createInitialState(campaign, state.seed), "read-the-names").state;
+    expect(restarted.history).toEqual(expected.history);
+    expect(restarted.resources).toEqual(expected.resources);
   });
 
   it("reaches capture through real controls without evaluating another pursuit round", async () => {
