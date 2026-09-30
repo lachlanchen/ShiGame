@@ -119,6 +119,26 @@ test("the opening finishes the northern report before council reminders and ends
   }
 });
 
+test("the final decision follows arrivals and account reports instead of interrupting them", () => {
+  const scene = draft.scenes.find(scene => scene.id === "dawn");
+  assert.deepEqual(scene.decisionLeadIn, [{ speaker: "rear-guard", text: "还按原来的队么？" }]);
+  for (const yu of draft.inputs.yu) {
+    for (const reception of ["open-reception", "gather-own", "verify-with-partners", "borrow-local-grain"]) {
+      for (const evacuation of ["escort-households", "hold-formation", "split-routes"]) {
+        for (const records of ["divide-records", "carry-records", "strip-identities"]) {
+          const result = readRoute(draft, { ...input, yu }, ["keep-reserve", reception, evacuation, records, "release-groups"]);
+          const dawn = result.transcript.find(beat => beat.sceneId === "dawn");
+          assert.deepEqual(dawn.lines.at(-1), scene.decisionLeadIn[0]);
+          assert.equal(dawn.lines.filter(line => line.text === scene.decisionLeadIn[0].text).length, 1);
+          const custody = scene.variants.find(variant => variant.when.records === records).lines;
+          assert.ok(custody.every(line => dawn.lines.findIndex(actual => actual.text === line.text) < dawn.lines.length - 1));
+          assert.equal([...dawn.reaction, ...result.ending.lines].filter(line => line.text.includes("没有再喊集合")).length, 1);
+        }
+      }
+    }
+  }
+});
+
 test("council promises return only in their intended scenes and never invent another prior choice", () => {
   for (const authority of ["take-crown", "recognize-allies", "defer-title"]) {
   for (const provisions of ["army-rations", "joint-ledger", "buy-convoys"]) {

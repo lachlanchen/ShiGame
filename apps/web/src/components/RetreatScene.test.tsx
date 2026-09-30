@@ -54,6 +54,16 @@ describe("retreat development scene", () => {
     for (const line of authored.lines) expect(view.container.textContent).not.toContain(line.text);
     await choose(view, "strip-identities");
     for (const line of authored.lines) expect(view.container.textContent).toContain(line.text);
+    const assertDecisionOrder = (current: ReturnType<typeof render>) => {
+      const prompt = current.getByText("还按原来的队么？", { exact: false });
+      for (const line of authored.lines) {
+        const report = current.getByText(line.text, { exact: false });
+        expect(report.compareDocumentPosition(prompt) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      }
+      const firstChoice = current.container.querySelector("[data-retreat-choice]")!;
+      expect(prompt.compareDocumentPosition(firstChoice) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    };
+    assertDecisionOrder(view);
     expect(view.container.textContent).not.toContain("阿衡。我还当你走了另一条路");
     expect(view.container.textContent).toContain("没有补写那些被去掉的名字");
     const saved = localStorage.getItem(retreatSaveKey);
@@ -62,6 +72,7 @@ describe("retreat development scene", () => {
     for (const line of authored.lines) expect(restored.container.textContent).not.toContain(line.text);
     fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
     for (const line of authored.lines) expect(restored.container.textContent).toContain(line.text);
+    assertDecisionOrder(restored);
     expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
     expect(JSON.stringify(input.entry)).toBe(before);
     if (reception === "borrow-local-grain") expect(restored.getByTestId("retreat-debts").textContent).toContain("欠本地粮主 2 份粮秣");

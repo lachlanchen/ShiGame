@@ -231,9 +231,9 @@
       "sourceIds": ["chen-fall", "embers"],
       "transition": "抵达临时落脚处，经过休整与消息核实后。卷八记陈胜往汝阴，回程至下城父遇害；掌简人没有亲历该事，也不把城外撤离之夜写作死亡消息抵达之日。阿衡的个体遭遇为本剧新发生的虚构事件，不是旧名籍证明全员归来。",
       "lines": [
-        { "speaker": "narrator", "text": "陈胜败亡的消息终于得到核实。没有人再来催交那张旧拨粮单。眼前等着的，还是吃饭、找人和往哪里走。" },
-        { "speaker": "rear-guard", "text": "还按原来的队么？" }
+        { "speaker": "narrator", "text": "陈胜败亡的消息终于得到核实。没有人再来催交那张旧拨粮单。眼前等着的，还是吃饭、找人和往哪里走。" }
       ],
+      "decisionLeadIn": [{ "speaker": "rear-guard", "text": "还按原来的队么？" }],
       "variants": [
         { "when": { "bad-news": "open-reception", "evacuation": "escort-households" }, "lines": [{ "speaker": "narrator", "text": "末车抵达时，伤卒忽然挤到车旁。一个人扶着车辕下来，左鞋还缠着麻绳。他是照路口接应者的指引找到粮棚，又跟上这趟车的。" }, { "speaker": "wounded-soldier", "text": "阿衡。我还当你走了另一条路。" }, { "speaker": "narrator", "text": "他伸手想拍同伴的肩，看到伤口，又把手挪到肘下。你给两人让出坐处。这一次是亲眼见到了人，不是从旧凭记推算出谁该回来。其他失散者仍没有消息。" }] },
         { "when": { "bad-news": "open-reception", "evacuation": "hold-formation" }, "lines": [{ "speaker": "narrator", "text": "你记得伤卒说起的那只麻绳绑着的鞋。眼前还没有这样一个人。接纳过来人，并不等于已经把每个人护送到这里；先前缩小的护送范围，如今成了必须回查的一段路。" }] },
@@ -280,7 +280,7 @@
     },
     "dispersed": {
       "title": "各自的归路",
-      "lines": [{ "speaker": "narrator", "text": "有人留在路边等同伴，有人领清自己那份便先走。各组商量着不同的去处，话声渐渐分远。你没有再喊集合。" }],
+      "lines": [{ "speaker": "narrator", "text": "有人留在路边等同伴，有人领清自己那份便先走。各组商量着不同的去处，话声渐渐分远。" }],
       "variants": [
         { "when": { "records": "divide-records" }, "lines": [{ "speaker": "narrator", "text": "几份凭记已经分在各组手里。临走前，拿简的人彼此问清日后到哪里找。你听着，把自己那份卷好，没有再伸手收回他们的。" }] },
         { "when": { "records": "carry-records" }, "lines": [{ "speaker": "rear-guard", "text": "人分开了，账还是找你？" }, { "speaker": "keeper", "text": "简还在我这里。要核的，趁现在来。以后到哪里问，我留下话。" }, { "speaker": "narrator", "text": "你把收了一半的囊重新打开。已经背起行李的人中，有一个又坐了下来。" }] },
