@@ -5,7 +5,10 @@
   "createdOn": "2026-09-30",
   "scope": "Internal beta candidate only; not uploaded or approved for public release",
   "android": {
-    "status": "signed-local-candidate-awaiting-runtime-upgrade-qa",
+    "status": "held-after-mobile-visual-review-do-not-upload",
+    "upgradeQA": "API34 isolated emulator: installed over build1 without clearing data; all four journal decisions, seed954EF34F, Deep Roots ending and resources34/67/9/91/60 preserved. First council decision defer-title survived force-stop/relaunch with matching reaction and metric deltas.",
+    "distributionBlockers": ["Mobile ending action container squeezes text into narrow column", "Council commit leaves reaction above viewport"],
+    "fixState": "Source fixes applied;16 council tests and86 web tests pass with typecheck. Not present in these immutable candidate2 artifacts; rebuild and rendered verification required.",
     "applicationId": "art.lazying.shi",
     "versionCode": 2,
     "minSDK": 24,
@@ -18,7 +21,7 @@
     "sourceUnchangedDuringBuild": true,
     "retainedBuild1Unchanged": true,
     "qualification": ["full repository validation", "85 web tests", "release compilation and packaging", "release lint completed", "APK identity/version/signature"],
-    "limitations": ["Gradle unit test is generated arithmetic smoke only", "lint warnings include manifest order, extraction rules, tooling versions and unused resources", "installed upgrade and save preservation untested for this artifact", "AAB provider processing and live version-code reconciliation pending"],
+    "limitations": ["Gradle unit test is generated arithmetic smoke only", "lint warnings include manifest order, extraction rules, tooling versions and unused resources", "Upgrade evidence covers one completed chapter and first council decision on API34 emulator, not physical devices or every route", "AAB provider processing and live version-code reconciliation pending"],
     "uploaded": false
   },
   "apple": {
