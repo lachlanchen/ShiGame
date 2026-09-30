@@ -9,6 +9,7 @@ import { ChenCouncil } from "./ChenCouncil";
 import * as persistence from "../persistence";
 import rawFingerprint from "../generated/chen-council.v1.sha256?raw";
 import rawCouncilData from "../generated/chen-council.v1.json";
+import { supportedLocales } from "@shi/game-core";
 
 const councilData = rawCouncilData as CouncilDefinition;
 
@@ -22,6 +23,32 @@ const props = () => ({ origin: origin(), locale: "en" as const, reducedMotion: f
 afterEach(() => { cleanup(); localStorage.clear(); vi.restoreAllMocks(); });
 
 describe("Chen council presentation", () => {
+  it.each(supportedLocales)("previews final coalition consequences without saving an order (%s)", async locale => {
+    const input = { ...props(), locale };
+    let state = createCouncil(councilData, councilEntry(input.origin)!);
+    state = resolveCouncil(councilData, state, "defer-title");
+    state = resolveCouncil(councilData, state, "joint-ledger");
+    const saved = encodeCouncilSnapshot(state, rawFingerprint.trim());
+    localStorage.setItem("shi.chen-council.v1", saved);
+    const view = render(<ChenCouncil {...input} />);
+    expect(view.queryByTestId("council-outcome-preview")).toBeNull();
+    fireEvent.click(view.getByTestId("council-continue"));
+    let expected = state;
+    for (const choice of councilData.rounds[2]!.choices) {
+      if (!councilCanChoose(state, choice)) continue;
+      fireEvent.click(view.container.querySelector(`[data-council-choice="${choice.id}"]`)!);
+      expected = resolveCouncil(councilData, state, choice.id);
+      const preview = view.getByTestId("council-outcome-preview");
+      expect(preview.getAttribute("data-outcome")).toBe(expected.outcome);
+      const title = councilData.outcomes[expected.outcome!].title;
+      expect(preview.textContent).toContain(title[locale] ?? title.en);
+      expect(localStorage.getItem("shi.chen-council.v1")).toBe(saved);
+    }
+    fireEvent.click(view.getByTestId("council-commit"));
+    await view.findByTestId("council-response");
+    fireEvent.click(view.getByTestId("council-continue"));
+    expect(view.getByTestId("council-outcome").getAttribute("data-outcome")).toBe(expected.outcome);
+  });
   it("brings the saved reaction and next question into view without a new decision", async () => {
     const descriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollIntoView");
     const scroll = vi.fn();

@@ -160,6 +160,9 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
               const delta = preview.metrics[metric] - state.metrics[metric];
               return <span key={metric}>{text(definition.metrics[metric].title)} <b>{state.metrics[metric]} → {preview.metrics[metric]}</b> ({delta > 0 ? "+" : ""}{delta})</span>;
             })}</div>}
+            {preview?.completed && preview.outcome && <p className="chen-promise-answer" data-testid="council-outcome-preview" data-outcome={preview.outcome}>
+              {label("preview")}: <strong>{text(definition.outcomes[preview.outcome].title)}</strong>
+            </p>}
             <button className="primary-button" data-council-action="commit" data-testid="council-commit" disabled={!available || busy || invalid} onClick={() => { if (choice && !invalid) void persist(resolveCouncil(definition, state, choice.id)); }}>{label(busy ? "saving" : "commit")} →</button>
           </section>
         </section> : null}

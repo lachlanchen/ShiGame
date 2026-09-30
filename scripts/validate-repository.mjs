@@ -52,10 +52,11 @@ const parsedCampaign = JSON.parse(sourceCampaign.toString("utf8"));
 const webGameplay = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-gameplay.json"), "utf8"));
 const webHorizon = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-horizon.json"), "utf8"));
 const webClaims = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-claims.json"), "utf8"));
+const webSources = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-sources.json"), "utf8"));
 const webOpposition = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-opposition.json"), "utf8"));
 const webCommitments = JSON.parse(await readFile(resolve(root, "apps/web/src/generated/chapter-01-commitments.json"), "utf8"));
-if (JSON.stringify({ ...webGameplay, acts: webHorizon, claims: webClaims, commitments: webCommitments, opposition: webOpposition }) !== JSON.stringify(parsedCampaign))
-  errors.push("generated web gameplay/horizon/claim/commitment/opposition slices do not reconstruct the canonical campaign");
+if (JSON.stringify({ ...webGameplay, acts: webHorizon, claims: webClaims, sources: webSources, commitments: webCommitments, opposition: webOpposition }) !== JSON.stringify(parsedCampaign))
+  errors.push("generated web gameplay/horizon/claim/source/commitment/opposition slices do not reconstruct the canonical campaign");
 const sourceAudio = await readFile(resolve(root, "content/audio/chapter-01-audio.json"));
 for (const relative of [
   "apps/web/src/generated/chapter-01-audio.json",
