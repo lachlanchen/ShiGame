@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "foundation-cli-conformance-passed",
+  "compiler": "Apple Swift6.4 (swiftlang-6.4.0.34.1), arm64-apple-macosx27.0.0",
+  "cleanup": "CLI exited0; subsequent process probe found no Swift frontend, retreat-conformance or xcodebuild process. No GUI/simulator was launched. Shared services untouched under the AgentLink action contract.",
+  "baseline": "6896f3b plus the source hashes below",
+  "scope": "Native Swift retreat rules compiled and executed on the shared Mac mini. Not an iOS app, simulator or device playtest.",
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/RetreatEngine.swift": "aa785ecf5190edfb037bb9a9c8cda64b09759e38a92e39a9923279723625630e",
+    "apps/mobile/ios/Tests/RetreatConformance.swift": "323f899f5ab218cf5692325b5afcb688d598f3abe2335c8c9f6b9b7e2b193b8b",
+    "scripts/retreat-conformance.ts": "bd3186f4df5dbe12ce8925a7003355154df0fae575c5c705e6aaea849518cc0c",
+    "content/campaigns/chen-retreat.rules.v1.json": "b02342829c05edef8b90831d67ecfe77fb11efdf5981dd86a01b01d20a3c4867",
+    "content/story-drafts/chen-retreat.v1.json": "aec1bb906307300940b3365b00381e3a544ce7d51d3460e34bc62e38cea5a254"
+  },
+  "fixtureSHA256": "37876867b19437e318bc91e4254ad9b20c723bca0b3bf77579bee3f72ae77952",
+  "transfer": "All twelve source/input files matched local SHA256 after the transfer exited0, before compilation.",
+  "referenceCommand": "npx vite-node scripts/retreat-conformance.ts .runtime/native-retreat-rules-20261001/fixtures.json",
+  "compileCommand": "xcrun swiftc CampaignEngine.swift CouncilEngine.swift FanyangEngine.swift RetreatEntry.swift RetreatEngine.swift RetreatConformance.swift -o retreat-conformance",
+  "runCommand": "./retreat-conformance chapter-01-daze.json chen-council.v1.json fanyang-guarantee.v1.json chen-retreat.rules.v1.json chen-retreat.v1.json fixtures.json",
+  "result": {
+    "exitCode": 0,
+    "chapterSeed": 0,
+    "chapterChoices": ["read-the-names", "issue-grain-tallies", "repair-the-ford", "root-in-villages"],
+    "councilChoices": ["defer-title", "joint-ledger", "one-command"],
+    "fanyangEntries": 18,
+    "retreatStates": 4908,
+    "retreatEndings": 2691,
+    "rejectedOperations": 6794,
+    "outcomes": ["dispersed", "remnant", "scattered", "together"],
+    "checks": ["input content hashes", "exact metrics and turn history", "affordability and conditional aggregated effects", "preview and commit agreement", "debt creation and persistence", "resource custody", "serialized choice replay", "stale story revision rejection", "invalid digest rejection", "unknown and unavailable order rejection", "preview leaves source history unchanged"]
+  },
+  "limits": [
+    "One real chapter/council baseline with all eighteen subsequent Fan Yang routes; not all 993 prior entries or every synthetic resource boundary.",
+    "No native durable file session or retreat reading/choice interface yet. No story data promoted into the production iOS bundle.",
+    "No human balance, story, media, localization or release approval. No signing, store submission or public deployment."
+  ]
+}
