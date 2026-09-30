@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "scope": "Foundation-only Swift handoff prerequisite for the native retreat scene; not a playable retreat screen",
+  "source": "apps/mobile/ios/SHI/RetreatEntry.swift",
+  "checks": "apps/mobile/ios/Tests/RetreatEntryChecks.swift",
+  "compile": "xcrun swiftc CampaignEngine.swift CouncilEngine.swift FanyangEngine.swift RetreatEntry.swift RetreatEntryChecks.swift -o retreat-entry-checks",
+  "run": "./retreat-entry-checks chapter-01-daze.json chen-council.v1.json fanyang-guarantee.v1.json",
+  "result": "Compiled and passed on the existing Mac toolchain: 18 real Fan Yang continuations from one completed chapter/council, all three Fan Yang outcomes, 55 invalid handoffs rejected. Checks cover exact inherited five-meter capacity without assurance, original prior choices, unknown companion presence, opening/crossing continuity, deterministic distinct identities, foreign chapter/revision rejection and no input mutation.",
+  "entrySHA256": "a396e124491755d15915c53a705242ed37feb56354f5493d6018012639eb4243",
+  "checksSHA256": "a9b5872804dce0af28b811c444b15d12e8865cb3f61ec84f681979b75632baa7",
+  "transferReview": "All five Swift sources and three canonical JSON hashes matched after transfer. An initial invocation was mistakenly started before JSON transfer completed and failed parsing empty input. After transfer completion and hash verification, a fresh compile/run passed. No game data or expected results were altered to repair the harness sequencing error.",
+  "boundaries": "No new resource allocation, save write, character reunion, chapter UI or production content export. Digests bind revisions after callers verify canonical bytes; they are not signatures. Native identity is platform-local, not a web-save interchange format. Exhaustive cross-engine handoff parity, all opening branches, native retreat rules/session/UI and device playtest remain pending."
+}
