@@ -4,6 +4,31 @@ SwiftUI presentation, SceneKit schematic map and Foundation campaign rules.
 No embedded browser. The canonical narrative remains in `content/campaigns`
 and `content/councils`; SwiftUI does not maintain a separate translation/story.
 
+## Source preparation
+
+The native project specifications, privacy manifest, export options and reviewed
+app icon are versioned. Generated Xcode projects, bundled resource copies,
+provisioning profiles and archives are not. From a source checkout with the
+locked Node dependencies installed, run:
+
+```bash
+npm run sync:ios
+npm run validate:ios-content
+```
+
+The exporter creates `SHI/Resources` from canonical campaign/council data,
+shared UI strings and reviewed title art. Validation checks exact data, text,
+title-art and icon parity. Then generate `project.yml` for the formal app or
+`project-qa.yml` for the separate unsigned simulator app using XcodeGen on a Mac.
+The checked-in build number is not a release reservation; numbered beta archives
+must use the explicit provider-verified build number described below.
+
+The September 30 source-export check succeeded outside the working tree, using
+only selected staged source files and shared installed third-party dependencies.
+Its game-core import resolved inside that export. This proves content generation
+without untracked source dependencies, not a fresh dependency install, a fresh
+Xcode-generated build or reproducible signing. Those remain separate gates.
+
 ## Numbered beta archives
 
 Use `scripts/build-ios.sh` on the qualified signing Mac after syncing a frozen

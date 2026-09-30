@@ -1,0 +1,62 @@
+name: SHI
+options:
+  bundleIdPrefix: art.lazying
+settings:
+  base:
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+    SWIFT_VERSION: "5.9"
+    DEVELOPMENT_TEAM: Q8M2S2FY77
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  SHI:
+    type: application
+    platform: iOS
+    sources: [SHI]
+    info:
+      path: SHI-Info.plist
+      properties:
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: SHI
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  SHIUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.uitests
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: SHI
+  SHITests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [UnitTests]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SHI.app/SHI"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+    dependencies:
+      - target: SHI
+schemes:
+  SHI:
+    build:
+      targets:
+        SHI: all
+        SHIUITests: [test]
+        SHITests: [test]
+    test:
+      targets: [SHITests, SHIUITests]

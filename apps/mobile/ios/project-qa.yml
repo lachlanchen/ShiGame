@@ -1,0 +1,20 @@
+# Separate simulator-only app identity. Never archive or submit this project.
+include: project.yml
+name: SHIAftermathQA
+targets:
+  SHI:
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.aftermathqa
+        INFOPLIST_KEY_CFBundleDisplayName: SHI QA
+        CODE_SIGNING_ALLOWED: NO
+  SHITests:
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.aftermathqa.tests
+        CODE_SIGNING_ALLOWED: NO
+  SHIUITests:
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.aftermathqa.uitests
+        CODE_SIGNING_ALLOWED: NO
