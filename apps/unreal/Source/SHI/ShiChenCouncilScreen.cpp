@@ -84,7 +84,13 @@ void SShiChenCouncilScreen::Refresh()
         Paragraph(Text(Definition->GetObjectField(TEXT("arrivals"))->GetObjectField(Arrival), TEXT("title")), 19);
         Paragraph(Metrics(Model.GetMetrics()));
         Paragraph(Text(Definition, TEXT("objective")), 16);
-        if (bResponse)
+        if (Session.IsRestartArmed())
+        {
+            Paragraph(Text(Labels, TEXT("confirmRetry")), 25);
+            Button(Text(Labels, TEXT("reset")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::ConfirmRestart));
+            Button(Text(Labels, TEXT("cancel")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::CancelRestart));
+        }
+        else if (bResponse)
         {
             const auto& Turn = Model.GetHistory().Last();
             const auto Offer = Choice(Turn.ChoiceId);
@@ -117,6 +123,7 @@ void SShiChenCouncilScreen::Refresh()
             Paragraph(Text(History, TEXT("distinction")), 16);
             for (const auto& Source : History->GetArrayField(TEXT("sources")))
                 Paragraph(Source->AsObject()->GetStringField(TEXT("title")) + TEXT(" · ") + Source->AsObject()->GetStringField(TEXT("locator")), 16);
+            Button(Text(Labels, TEXT("retry")), FOnClicked::CreateSP(this, &SShiChenCouncilScreen::ArmRestart));
         }
         else
         {
@@ -158,4 +165,18 @@ FReply SShiChenCouncilScreen::Commit()
 FReply SShiChenCouncilScreen::Continue()
 {
     bResponse = false; Refresh(); return FReply::Handled();
+}
+
+FReply SShiChenCouncilScreen::ArmRestart()
+{
+    Session.ArmRestart(); Error.Reset(); Refresh(); return FReply::Handled();
+}
+FReply SShiChenCouncilScreen::ConfirmRestart()
+{
+    if (Session.ConfirmRestart(Error)) { Selected.Reset(); bResponse = false; }
+    Refresh(); return FReply::Handled();
+}
+FReply SShiChenCouncilScreen::CancelRestart()
+{
+    Session.CancelRestart(); Error.Reset(); Refresh(); return FReply::Handled();
 }

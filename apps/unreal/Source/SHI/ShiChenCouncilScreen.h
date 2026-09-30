@@ -26,4 +26,7 @@ private:
     FReply Select(FString Id);
     FReply Commit();
     FReply Continue();
+    FReply ArmRestart();
+    FReply ConfirmRestart();
+    FReply CancelRestart();
 };
