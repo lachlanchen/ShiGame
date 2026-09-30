@@ -75,7 +75,7 @@ struct NativeFanyangView: View {
             }
         }.environment(\.locale, Locale(identifier: locale)).environment(\.layoutDirection, .leftToRight)
             .tint(gold).preferredColorScheme(.dark)
-            .sheet(isPresented: $showRetreat) {
+            .fullScreenCover(isPresented: $showRetreat) {
                 if let entry = retreatEntry {
                     NativeRetreatView(entry: entry, rulesData: RetreatPreviewContent.rules, storyData: RetreatPreviewContent.story)
                 }

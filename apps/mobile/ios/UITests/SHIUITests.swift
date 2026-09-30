@@ -360,6 +360,14 @@ final class SHIUITests: XCTestCase {
         func enterRetreat() {
             let enter = app.buttons["retreat-enter"]; reveal(enter, in: app); XCTAssertTrue(enter.exists); enter.tap()
             XCTAssertTrue(app.scrollViews["retreat-scene"].waitForExistence(timeout: 10))
+            // Wait for presentation geometry rather than measuring a moving cover.
+            let reader = app.scrollViews["retreat-scene"]
+            let fullReadingArea = NSPredicate { _, _ in
+                let visible = reader.frame.intersection(app.frame)
+                return visible.width >= app.frame.width * 0.9 && visible.height >= app.frame.height * 0.8
+            }
+            expectation(for: fullReadingArea, evaluatedWith: reader)
+            waitForExpectations(timeout: 10)
         }
         func reaction() -> XCUIElement { app.descendants(matching: .any).matching(identifier: "retreat-response").firstMatch }
         func order(_ id: String) {

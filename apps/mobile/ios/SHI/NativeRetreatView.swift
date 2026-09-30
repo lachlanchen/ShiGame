@@ -29,8 +29,7 @@ struct NativeRetreatView: View {
                     VStack(alignment: .leading, spacing: 22) {
                         Text(session.story.text("title")).font(.system(.largeTitle, design: .serif))
                             .accessibilityAddTraits(.isHeader).accessibilityFocused($headingFocused).id("retreat-top")
-                        Text("开发试玩 · 简体中文。Chinese-language development preview. Not a release build.").font(.footnote)
-                        Text("参考《资治通鉴》卷七、卷八。对白、地方行动与分支结局均为原创戏剧重构。粮秣与支持数值承接议事所得的组织能力，不表示北方粮仓搬到了陈地。").font(.footnote).lineSpacing(4)
+                        Text("开发试玩 · 简体中文 · 原创戏剧重构。Chinese-language development preview. Not a release build.").font(.footnote)
                         if let engine = session.engine {
                             let presentation = RetreatPresentation(story: session.story, engine: engine, reading: session.response != nil)
                             if session.needsRecovery { notice("存档不兼容或已损坏，原文件已保留。确认重开前不能提交命令，此前章节不变。") }
@@ -40,6 +39,8 @@ struct NativeRetreatView: View {
                             else { decision(engine, presentation) }
                             position(engine, presentation)
                             DisclosureGroup("史料与开发说明") {
+                                Text("参考《资治通鉴》卷七、卷八。对白、地方行动与分支结局均为原创戏剧重构。粮秣与支持数值承接议事所得的组织能力，不表示北方粮仓搬到了陈地。")
+                                    .lineSpacing(4).accessibilityIdentifier("retreat-source-boundary")
                                 Text(presentation.scene.text("transition")).lineSpacing(5)
                                 Text(session.story.object("viewpoint").text("historyBoundary")).lineSpacing(5)
                                 ForEach(presentation.scene.strings("sourceIds"), id: \.self) { id in
@@ -48,7 +49,7 @@ struct NativeRetreatView: View {
                                 }
                                 if engine.completed { Text(presentation.ending.text("unresolved")) }
                                 Text(session.story.text("boundary"))
-                            }.font(.footnote)
+                            }.font(.footnote).accessibilityIdentifier("retreat-source-notes")
                             Button("重开本段…") { confirmRestart = true }.buttonStyle(.bordered)
                                 .frame(minHeight: 44).accessibilityIdentifier("retreat-retry")
                         } else { notice("无法打开本段故事。已有存档未被改动。") }
