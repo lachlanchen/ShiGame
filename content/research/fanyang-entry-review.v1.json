@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "fanyang-entry-review.v1",
   "sceneId": "fanyang-guarantee.v1",
-  "status": "development-rules-reviewed-client-integration-pending",
+  "status": "development-web-integrated-visual-and-native-review-pending",
   "contentSHA256": "c82095174dc481a023420916ae82bbc76e169c57c1076b5bbf65ce9f97a8cf24",
   "publicationApproved": false,
   "reviewDate": "2026-09-30",
@@ -33,7 +33,8 @@
   "implemented": {
     "module": "packages/game-core/src/fanyang-entry.ts; packages/game-core/src/fanyang.ts",
     "content": "content/councils/fanyang-guarantee.v1.json",
-    "rulesCheckpoint": "Three authored bilingual decision rounds, nine choices, disclosed gate requirements, two conditional Chen-promise responses, three conclusions, preview/commit parity and content-revision-bound replay. Core tests exhaust every legal continuation of all 77 Chen council routes, including empty-granary withdrawal. No client exposes this scene yet.",
+    "rulesCheckpoint": "Three authored bilingual decision rounds, nine choices, disclosed gate requirements, two conditional Chen-promise responses, three conclusions, preview/commit parity and content-revision-bound replay. Core tests exhaust every legal continuation of all 77 Chen council routes, including empty-granary withdrawal.",
+    "clientCheckpoint": "Web/Android-shared React source now exposes an explicit continuation after the Chen conclusion. Separate durable-first save, replayed reactions, exact forecasts, failed-save rollback/retry and confirmed scene reset are implemented. Eight UI tests cover a full surrender route through Chen, withdrawal, remount, deferred durability, failed save, incompatible-save preservation and accessibility semantics in English, Simplified Chinese and English fallback for Arabic. This is DOM-level evidence, not packaged Android, native iOS, Unreal or visible browser qualification.",
     "removedBlocker": "The named Fan Yang scene can receive a deterministic identity, exact council choices, recomputed remaining metrics and conclusion tied to its originating chapter and content revision. Previously no continuation handoff contract existed.",
     "callerRequirements": [
       "Supply a chapter state restored and validated by the existing campaign engine, not raw untrusted save JSON.",
@@ -45,8 +46,8 @@
   },
   "remainingGates": [
     "Human story and balance review of the development content; run a full player-facing route before calling Fan Yang playable.",
-    "Integrate the revision-bound continuation snapshot with durable client persistence and an explicit entry action without auto-choosing or replaying an order.",
-    "Integrate native iOS, Android/web and Unreal against the same rules and content.",
+    "Visible browser playtest of desktop/mobile layouts and full chapter-to-council-to-Fan-Yang route. Local resource gate currently refuses a new GUI stack at 85% swap use; no SHI stack is running and no foreign services were stopped.",
+    "Integrate native iOS and Unreal against the same rules and content; qualify a packaged Android build separately from shared React source tests.",
     "Review presentation, localization, accessibility, offline/resume and end-to-end routes before beta delivery.",
     "Create and audition scene-linked Musia cues and review LocalVideoGen/Blender moving imagery with rights and continuity records before shipping any media."
   ]

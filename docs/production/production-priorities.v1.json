@@ -11,5 +11,5 @@
     "promotionGate": "Generate higher-resolution replacements only after the story and edit work; do not block narrative development on final media.",
     "unchangedConstraints": "Verify commercial rights, review every output, preserve consistent character references, avoid paid generation without explicit confirmation, and permit at most one SHI heavy generation/build job at a time."
   },
-  "currentNextStep": "Integrate Fan Yang's shared rules and bilingual scene into a save-safe playable client continuation; core rules are implemented but no Fan Yang client scene is shipped."
+  "currentNextStep": "Fan Yang is connected to the Chen ending in the web/Android-shared React source. Complete visible full-story playtests when the resource gate permits, integrate native iOS and Unreal, and review story and balance before beta delivery. No new package is shipped."
 }

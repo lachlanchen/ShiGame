@@ -1,11 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { councilAnswers, councilCanChoose, councilEntry, councilMetricKeys, councilReadiness, createCouncil, localize, resolveCouncil, restoreCouncil,
+import { councilAnswers, councilCanChoose, councilEntry, councilMetricKeys, councilReadiness, createCouncil, localize, prepareFanyangEntry, resolveCouncil, restoreCouncil,
   type CouncilDefinition, type CouncilRecord, type CouncilState, type GameState, type Locale } from "@shi/game-core";
 import data from "../generated/chen-council.v1.json";
 import rawFingerprint from "../generated/chen-council.v1.sha256?raw";
 import { flushPersistence, gameStorage } from "../persistence";
 import { councilSnapshotMatchesRevision, encodeCouncilSnapshot } from "../council-snapshot";
 import "./ChenCouncil.css";
+import { FanyangScene } from "./FanyangScene";
 
 const definition = data as CouncilDefinition;
 const fingerprint = rawFingerprint.trim();
@@ -47,6 +48,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [showFanyang, setShowFanyang] = useState(false);
   const transaction = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const sceneHeading = useRef<HTMLHeadingElement>(null);
@@ -77,7 +79,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
     target?.focus({ preventScroll: true });
     target?.scrollIntoView?.({ block: "start", behavior: "instant" });
     presented.current = true;
-  }, [state.history.length, reading, confirmReset]);
+  }, [state.history.length, reading, confirmReset, showFanyang]);
 
   const persist = async (next: CouncilState) => {
     if (transaction.current) return;
@@ -105,6 +107,11 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
       if (alive.current) setBusy(false);
     }
   };
+
+  const continuation = !invalid && state.completed
+    ? prepareFanyangEntry(definition, origin, { ...state, definitionSHA256: fingerprint }, fingerprint) : null;
+  if (showFanyang && continuation) return <FanyangScene entry={continuation} locale={locale} reducedMotion={reducedMotion}
+    onCue={onCue} onClose={() => setShowFanyang(false)} onSavingChange={onSavingChange} />;
 
   return <aside className="drawer chen-council" data-testid="chen-council" data-round={state.history.length}
     data-arrival={entry.arrival} data-reading={reading} data-completed={state.completed} data-motion={reducedMotion ? "reduced" : "full"}
@@ -146,6 +153,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
               {text(definition.metrics[metric].title)}: {state.metrics[metric]} {readiness.supporters.includes(metric) ? "≥" : "<"} 6
             </li>)}</ul>
           </section>
+          {continuation && <button className="primary-button" data-council-action="continue" data-testid="fanyang-enter" onClick={() => setShowFanyang(true)}>{text({ en: "Continue north: the gate at Fan Yang", "zh-Hans": "继续北行：范阳城门" })} →</button>}
           <div className="chen-actions"><button className="primary-button" data-council-action="close" onClick={onClose}>{label("close")}</button><button className="text-button" data-council-action="retry" onClick={() => setConfirmReset(true)}>{label("retry")}</button></div>
         </section> : round && choice ? <section className="chen-scene" key={round.id}>
           <p className="eyebrow">{label("round")} · {state.history.length + 1} / 3</p><h3 ref={sceneHeading} tabIndex={-1}>{text(round.title)}</h3>
