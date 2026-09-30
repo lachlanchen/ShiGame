@@ -4,6 +4,18 @@
 
 class FShiCampaignSession;
 
+struct FShiChenReadiness
+{
+    TArray<FString> Supporters;
+    int32 Grain = 0;
+    int32 Tempo = 0;
+    static constexpr int32 SupportThreshold = 6;
+    static constexpr int32 RequiredGroups = 2;
+    static constexpr int32 RequiredGrain = 2;
+    static constexpr int32 RequiredTempo = 3;
+    bool IsReady() const { return Supporters.Num() >= RequiredGroups && Grain >= RequiredGrain && Tempo >= RequiredTempo; }
+};
+
 struct FShiChenTurn
 {
     FString ChoiceId;
@@ -32,6 +44,8 @@ public:
     const TArray<FShiChenTurn>& GetHistory() const { return History; }
     bool IsCompleted() const { return Rounds.Num() == 3 && History.Num() == Rounds.Num(); }
     FString GetOutcome() const;
+    /** Derived explanation, never persisted as an alternative source of truth. */
+    static FShiChenReadiness EvaluateReadiness(const TMap<FString, int32>& Values);
 
 private:
     struct FAnswer { FString AfterChoice; TMap<FString, int32> Effects; };

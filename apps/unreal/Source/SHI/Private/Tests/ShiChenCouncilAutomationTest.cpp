@@ -294,4 +294,32 @@ bool FShiChenCouncilConformanceTest::RunTest(const FString& Parameters)
     }
     return !HasAnyErrors();
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiChenReadinessTest, "SHI.ChenCouncil.Readiness",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FShiChenReadinessTest::RunTest(const FString& Parameters)
+{
+    int32 Cases = 0;
+    for (int32 Grain = 0; Grain <= 10; ++Grain)
+    for (int32 Tempo = 0; Tempo <= 10; ++Tempo)
+    for (int32 City = 0; City <= 10; ++City)
+    for (int32 Allies = 0; Allies <= 10; ++Allies)
+    for (int32 Veterans = 0; Veterans <= 10; ++Veterans)
+    {
+        const TMap<FString, int32> Values = {{TEXT("grain"), Grain}, {TEXT("tempo"), Tempo},
+            {TEXT("city"), City}, {TEXT("allies"), Allies}, {TEXT("veterans"), Veterans}};
+        const auto Result = FShiChenCouncilModel::EvaluateReadiness(Values);
+        const int32 Groups = (City >= 6 ? 1 : 0) + (Allies >= 6 ? 1 : 0) + (Veterans >= 6 ? 1 : 0);
+        if (Result.Grain != Grain || Result.Tempo != Tempo || Result.Supporters.Num() != Groups
+            || Result.Supporters.Contains(TEXT("city")) != (City >= 6)
+            || Result.Supporters.Contains(TEXT("allies")) != (Allies >= 6)
+            || Result.Supporters.Contains(TEXT("veterans")) != (Veterans >= 6)
+            || Result.IsReady() != (Groups >= 2 && Grain >= 2 && Tempo >= 3))
+        { AddError(TEXT("Readiness diverged from shared council thresholds")); return false; }
+        ++Cases;
+    }
+    TestEqual(TEXT("Every bounded metric combination checked"), Cases, 161051);
+    TestFalse(TEXT("Missing metrics cannot qualify"), FShiChenCouncilModel::EvaluateReadiness({}).IsReady());
+    return !HasAnyErrors();
+}
 #endif

@@ -229,13 +229,21 @@ bool FShiChenCouncilModel::Commit(const FString& Id)
     return true;
 }
 
+FShiChenReadiness FShiChenCouncilModel::EvaluateReadiness(const TMap<FString, int32>& Values)
+{
+    FShiChenReadiness Result;
+    Result.Grain = Values.FindRef(TEXT("grain"));
+    Result.Tempo = Values.FindRef(TEXT("tempo"));
+    for (const TCHAR* Key : { TEXT("city"), TEXT("allies"), TEXT("veterans") })
+        if (Values.FindRef(Key) >= FShiChenReadiness::SupportThreshold) Result.Supporters.Add(Key);
+    return Result;
+}
+
 FString FShiChenCouncilModel::GetOutcome() const
 {
     if (!IsCompleted()) return {};
     if (Metrics.FindRef(TEXT("grain")) <= 0) return TEXT("empty-granaries");
-    int32 Supporters = 0;
-    for (const TCHAR* Key : { TEXT("city"), TEXT("allies"), TEXT("veterans") }) if (Metrics.FindRef(Key) >= 6) ++Supporters;
-    if (Supporters >= 2 && Metrics.FindRef(TEXT("grain")) >= 2 && Metrics.FindRef(TEXT("tempo")) >= 3) return TEXT("common-front");
+    if (EvaluateReadiness(Metrics).IsReady()) return TEXT("common-front");
     if (Metrics.FindRef(TEXT("city")) >= 6 && Metrics.FindRef(TEXT("veterans")) >= 6) return TEXT("city-stronghold");
     return TEXT("fragile-coalition");
 }

@@ -115,6 +115,23 @@ void SShiChenCouncilScreen::Refresh()
             const auto Outcome = Definition->GetObjectField(TEXT("outcomes"))->GetObjectField(Model.GetOutcome());
             Paragraph(Text(Outcome, TEXT("title")), 25);
             Paragraph(Text(Outcome, TEXT("text")));
+            const auto Readiness = FShiChenCouncilModel::EvaluateReadiness(Model.GetMetrics());
+            Paragraph(Locale == TEXT("zh-Hans") ? TEXT("共同出兵的条件") : TEXT("What a common front needs"), 24);
+            auto Requirement = [this, &Paragraph](const FString& Title, int32 Value, int32 Required)
+            {
+                const bool Met = Value >= Required;
+                const FString Status = Locale == TEXT("zh-Hans")
+                    ? (Met ? TEXT("已满足") : TEXT("尚不足")) : (Met ? TEXT("Met") : TEXT("Not yet"));
+                Paragraph(FString::Printf(TEXT("%s — %s: %d %s %d"), *Status, *Title, Value,
+                    Met ? TEXT("≥") : TEXT("<"), Required), 19);
+            };
+            Requirement(Locale == TEXT("zh-Hans") ? TEXT("支持达到6的群体") : TEXT("Groups with at least 6 support"),
+                Readiness.Supporters.Num(), FShiChenReadiness::RequiredGroups);
+            const auto MetricLabels = Definition->GetObjectField(TEXT("metrics"));
+            Requirement(Text(MetricLabels->GetObjectField(TEXT("grain")), TEXT("title")), Readiness.Grain, FShiChenReadiness::RequiredGrain);
+            Requirement(Text(MetricLabels->GetObjectField(TEXT("tempo")), TEXT("title")), Readiness.Tempo, FShiChenReadiness::RequiredTempo);
+            for (const TCHAR* Key : {TEXT("city"), TEXT("allies"), TEXT("veterans")})
+                Requirement(Text(MetricLabels->GetObjectField(Key), TEXT("title")), Model.GetMetrics().FindRef(Key), FShiChenReadiness::SupportThreshold);
             Paragraph(Text(Labels, TEXT("journal")), 24);
             for (const auto& Turn : Model.GetHistory())
             {
