@@ -154,6 +154,14 @@ production1, pricing and markets were unchanged. Obtain Play-delivered device
 and player feedback next; iOS signing remains separate. Do not treat build8 route
 evidence as a fresh build9 run or silently widen this beta to gated story content.
 
+The [Fan Yang recovery successor](FANYANG_SAVE_RECOVERY_20261002.md) now turns
+an incompatible earlier-branch record into a focused choice to return or
+explicitly restart, rather than scrolling past the warning to disabled orders.
+Production-web review passes four complete routes, preserved/cancelled records,
+legal withdrawal/surrender, narrow layouts and Escape. This source fix is not
+in distributed Android9; batch it into a later qualified candidate. It changes
+presentation, not historical claims, rules or saved narrative truth.
+
 Maintain native SwiftUI iOS, Android, web and the existing Unreal client with
 shared narrative/rules. Use the shared Macs, iPad and Mi 10 Pro when their
 specific build/device test is needed, serially under resource/coordination

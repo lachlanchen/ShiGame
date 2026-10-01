@@ -174,14 +174,60 @@ describe("Fan Yang playable continuation", () => {
     localStorage.setItem(key, '{"version":99}');
     const view = render(<FanyangScene {...props()} />);
     expect(view.getByRole("alert")).toBeTruthy();
-    expect((view.getByTestId("fanyang-commit") as HTMLButtonElement).disabled).toBe(true);
+    expect(view.queryByTestId("fanyang-commit")).toBeNull();
+    expect(document.activeElement).toBe(within(view.getByTestId("fanyang-save-recovery")).getByRole("heading"));
+    expect(view.container.querySelector(".chen-position")).toBeNull();
     fireEvent.click(view.getByRole("button", { name: "Restart this scene…" }));
     fireEvent.click(view.getByRole("button", { name: "Cancel" }));
     expect(localStorage.getItem(key)).toBe('{"version":99}');
+    expect(document.activeElement).toBe(within(view.getByTestId("fanyang-save-recovery")).getByRole("heading"));
     fireEvent.click(view.getByRole("button", { name: "Restart this scene…" }));
     fireEvent.click(view.getByRole("button", { name: "Restart Fan Yang" }));
     await waitFor(() => expect(view.queryByRole("alert")).toBeNull());
     expect(JSON.parse(localStorage.getItem(key)!).choices).toEqual([]);
+    expect(view.queryByTestId("fanyang-save-recovery")).toBeNull();
+    expect(view.getByTestId("fanyang-commit")).toBeTruthy();
+  });
+
+  it("preserves a real other-council record through return, cancel and failed replacement", async () => {
+    const input = props();
+    let view = render(<FanyangScene {...input} />);
+    await choose(view, "public-safety");
+    const saved = localStorage.getItem(key);
+    view.unmount();
+    let changed = createCouncil(chen, councilEntry(origin)!);
+    for (const id of ["take-crown", "army-rations", "one-command"]) changed = resolveCouncil(chen, changed, id);
+    const changedSave = encodeCouncilSnapshot(changed, chenHash.trim());
+    localStorage.setItem("shi.chen-council.v1", changedSave);
+    localStorage.setItem("shi.save", "chapter-sentinel");
+    const changedEntry = prepareFanyangEntry(chen, origin, JSON.parse(changedSave), chenHash.trim())!;
+    view = render(<FanyangScene {...input} entry={changedEntry} />);
+    const recovery = view.getByTestId("fanyang-save-recovery");
+    fireEvent.click(within(recovery).getByRole("button", { name: "Return to Chen" }));
+    expect(input.onClose).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem(key)).toBe(saved);
+    fireEvent.click(view.getByRole("button", { name: "Restart this scene…" }));
+    fireEvent.click(view.getByRole("button", { name: "Cancel" }));
+    expect(localStorage.getItem(key)).toBe(saved);
+    vi.spyOn(persistence, "flushPersistence").mockRejectedValueOnce(new Error("storage unavailable")).mockResolvedValue(undefined);
+    fireEvent.click(view.getByRole("button", { name: "Restart this scene…" }));
+    fireEvent.click(view.getByRole("button", { name: "Restart Fan Yang" }));
+    await view.findByText(/Could not save/);
+    expect(localStorage.getItem(key)).toBe(saved);
+    expect(view.queryByTestId("fanyang-commit")).toBeNull();
+    fireEvent.click(view.getByRole("button", { name: "Restart Fan Yang" }));
+    await view.findByTestId("fanyang-commit");
+    expect(JSON.parse(localStorage.getItem(key)!).choices).toEqual([]);
+    expect(localStorage.getItem("shi.chen-council.v1")).toBe(changedSave);
+    expect(localStorage.getItem("shi.save")).toBe("chapter-sentinel");
+  });
+
+  it.each(["en", "zh-Hans", "ar"] as const)("keeps recovery accessible with honest language fallback (%s)", async locale => {
+    localStorage.setItem(key, '{"version":99}');
+    const view = render(<FanyangScene {...props()} locale={locale} />);
+    expect(view.getByRole("dialog").getAttribute("lang")).toBe(locale === "zh-Hans" ? "zh-Hans" : "en");
+    expect((await axe.run(view.container, { rules: { "color-contrast": { enabled: false } } })).violations).toEqual([]);
+    expect(localStorage.getItem(key)).toBe('{"version":99}');
   });
 
   it.each(["en", "zh-Hans", "ar"] as const)("has accessible semantics and honest prose fallback (%s)", async locale => {

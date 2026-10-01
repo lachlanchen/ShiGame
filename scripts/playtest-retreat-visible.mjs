@@ -132,7 +132,7 @@ try {
   check(!liveDisplay, "SHI display is unoccupied");
   await launch("xvfb", "Xvfb", [":121", "-screen", "0", "1600x1000x24", "-nolisten", "tcp"]);
   await delay(800);
-  await launch("vnc", "x11vnc", ["-display", ":121", "-listen", "127.0.0.1", "-rfbport", "5921", "-nopw", "-forever", "-nevershared"]);
+  await launch("vnc", "x11vnc", ["-display", ":121", "-listen", "127.0.0.1", "-no6", "-rfbport", "5921", "-nopw", "-forever", "-nevershared"]);
   await launch("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:6121", "127.0.0.1:5921"]);
   await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", ...(internalDist ? ["--outDir", internalDist] : []), "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1", VITE_SHI_PRIVATE_SCORE_AUDITION: scoreAudition ? "1" : "0", VITE_SHI_PRIVATE_COUNCIL_FILM: councilFilm ? "1" : "0", VITE_SHI_PRIVATE_RAIN_SCENE: rainCinema ? "1" : "0" });
   report.buildMode = production ? "production-dist" : "development";
@@ -147,6 +147,9 @@ try {
   for (let n = 0; n < 80 && !target; n++) { try { target = (await fetch("http://127.0.0.1:9321/json").then(r => r.json())).find(t => t.type === "page"); } catch {} await delay(200); }
   check(target, "dedicated Chrome page available");
   check((await fetch("http://127.0.0.1:6121/vnc.html")).ok, "full noVNC viewer reachable");
+  report.listeners = execFileSync("ss", ["-H", "-ltn"], { encoding: "utf8" }).trim().split("\n")
+    .map(line => line.trim().split(/\s+/)[3]).filter(address => /:(4173|5921|6121|9321)$/.test(address ?? ""));
+  check(report.listeners.length === 4 && report.listeners.every(address => address.startsWith("127.0.0.1:")), "all four review services bind only IPv4 loopback, with no wildcard IPv6 listener");
   socket = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((yes, no) => { socket.addEventListener("open", yes, { once: true }); socket.addEventListener("error", no, { once: true }); });
   socket.addEventListener("message", e => { const m = JSON.parse(e.data); if (m.id) { const p = pending.get(m.id); pending.delete(m.id); if (p) m.error ? p.no(new Error(m.error.message)) : p.yes(m.result); } if (m.method === "Runtime.exceptionThrown") report.errors.push(m.params.exceptionDetails.text); });
@@ -192,7 +195,7 @@ try {
   report.windowGeometry = execFileSync("xdotool", ["getwindowgeometry", "--shell", windowId], { env: xenv, encoding: "utf8" });
   check(/WIDTH=1600\b/.test(report.windowGeometry) && /HEIGHT=1000\b/.test(report.windowGeometry), "Chrome window fits the dedicated desktop");
   if (route === "scene-arrival" || route === "interlude-arrival") {
-    const configs = [{ locale: "en", width: 390, reduced: false }, { locale: "zh-Hans", width: 320, reduced: true }, route === "interlude-arrival" ? { locale: "en", width: 1280, reduced: false } : { locale: "ar", width: 390, reduced: false }];
+    const configs = [{ locale: "en", width: 390, reduced: false }, { locale: "zh-Hans", width: 320, reduced: true }, route === "interlude-arrival" ? { locale: "en", width: 1280, reduced: false } : { locale: "ar", width: 390, reduced: false }, ...(route === "interlude-arrival" ? [{ locale: "ar", width: 390, reduced: false }] : [])];
     for (const [index, config] of configs.entries()) {
       await send("Emulation.setDeviceMetricsOverride", { width: config.width, height: 844, deviceScaleFactor: 1, mobile: false });
       await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: config.reduced ? "reduce" : "no-preference" }] });
@@ -239,7 +242,9 @@ try {
         };
         await click('[data-testid="council-enter"]');
         if (index > 0) { await click('[data-testid="chen-council"] [data-council-action="retry"]'); await click('[data-testid="chen-council"] [data-council-action="reset"]'); }
-        for (const [turn, id] of ['take-crown', 'army-rations', 'one-command'].entries()) {
+        const alternateCouncil = index % 2 === 1;
+        const councilOrders = alternateCouncil ? ['defer-title', 'joint-ledger', 'many-banners'] : ['take-crown', 'army-rations', 'one-command'];
+        for (const [turn, id] of councilOrders.entries()) {
           await click(`[data-council-choice="${id}"]`); await click('[data-testid="council-commit"]');
           await until(exists('[data-testid="council-response"]'));
           await arrival(`chen-response-${turn}`);
@@ -248,16 +253,49 @@ try {
           check(await evaluate("localStorage.getItem('shi.chen-council.v1')") === saved, `${prefix}/${turn}: acknowledging council response preserves saved decision`);
           if (turn === 0) await capture(`${prefix}-chen-question`);
         }
+        const councilSave = await evaluate("localStorage.getItem('shi.chen-council.v1')");
+        const previousFanyang = await evaluate("localStorage.getItem('shi.fanyang-guarantee.v1')");
         await click('[data-testid="fanyang-enter"]');
-        if (index > 0) { await click('[data-testid="fanyang-scene"] [data-council-action="retry"]'); await click('[data-testid="fanyang-scene"] [data-council-action="reset"]'); }
+        if (index > 0) {
+          await until(exists('[data-testid="fanyang-save-recovery"]'));
+          await arrival('fanyang-recovery');
+          check(await evaluate("document.querySelector('[data-testid=fanyang-save-recovery]').contains(document.activeElement) && !document.querySelector('[data-testid=fanyang-commit]') && !document.querySelector('.chen-position')"), `${prefix}: blocked record has a focused recovery screen, not a misleading order`);
+          check(await evaluate("(()=>{const r=document.querySelector('[data-testid=fanyang-save-recovery] [data-council-action=retry]').getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight})()"), `${prefix}: restart is visible without hunting below disabled orders`);
+          await capture(`${prefix}-save-recovery`);
+          await click('[data-testid="fanyang-scene"] [data-council-action="retry"]');
+          await arrival('fanyang-reset-confirmation');
+          await click('[data-testid="fanyang-scene"] [data-council-action="cancel"]');
+          await arrival('fanyang-recovery-cancelled');
+          check(await evaluate("localStorage.getItem('shi.fanyang-guarantee.v1')") === previousFanyang, `${prefix}: cancelling replacement preserves exact earlier record`);
+          await click('[data-testid="fanyang-save-recovery"] [data-council-action="close"]');
+          await click('[data-testid="fanyang-enter"]');
+          await until(exists('[data-testid="fanyang-save-recovery"]'));
+          check(await evaluate("localStorage.getItem('shi.fanyang-guarantee.v1')") === previousFanyang, `${prefix}: returning and reopening do not replace earlier record`);
+          await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
+          await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
+          await until("!document.querySelector('[data-testid=fanyang-scene]')");
+          check(await evaluate("localStorage.getItem('shi.fanyang-guarantee.v1')") === previousFanyang, `${prefix}: Escape returns safely without replacing the record`);
+          await click('[data-testid="fanyang-enter"]');
+          await click('[data-testid="fanyang-scene"] [data-council-action="retry"]');
+          await click('[data-testid="fanyang-scene"] [data-council-action="reset"]');
+          await until(exists('[data-testid="fanyang-commit"]'));
+          check(await evaluate("JSON.parse(localStorage.getItem('shi.fanyang-guarantee.v1')).choices.length===0"), `${prefix}: confirmed restart opens a new empty record`);
+          check(await evaluate("localStorage.getItem('shi.chen-council.v1')") === councilSave, `${prefix}: replacement preserves the current council`);
+        }
         await arrival('fanyang-entry');
-        for (const [turn, id] of ['public-safety', 'guarded-escort', 'accept-transfer'].entries()) {
+        const envoyOrders = alternateCouncil ? ['public-safety', 'joint-witnesses', 'withdraw-envoy'] : ['public-safety', 'guarded-escort', 'accept-transfer'];
+        for (const [turn, id] of envoyOrders.entries()) {
+          if (alternateCouncil && turn === 2) {
+            await click('[data-fanyang-choice="accept-transfer"]');
+            check(await evaluate("document.querySelector('[data-testid=fanyang-commit]').disabled"), `${prefix}: insufficient soldiers block surrender despite strong civilian protection`);
+          }
           await click(`[data-fanyang-choice="${id}"]`); await click('[data-testid="fanyang-commit"]');
           await until(exists('[data-testid="fanyang-response"]')); await arrival(`fanyang-response-${turn}`);
           const saved = await evaluate("localStorage.getItem('shi.fanyang-guarantee.v1')");
           await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); await arrival(`fanyang-question-${turn}`);
           check(await evaluate("localStorage.getItem('shi.fanyang-guarantee.v1')") === saved, `${prefix}/${turn}: acknowledging envoy response preserves saved decision`);
         }
+        check(await evaluate("document.querySelector('[data-testid=fanyang-outcome]').dataset.outcome") === (alternateCouncil ? 'withdrawn' : 'opened'), `${prefix}: restored continuation reaches its actual legal ending`);
         await capture(`${prefix}-ending`);
         check(await evaluate("localStorage.getItem('shi.chapter-01.save.v6')") === chapter, `${prefix}: interludes preserve chapter save`);
       }
