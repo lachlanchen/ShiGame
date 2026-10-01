@@ -5,7 +5,7 @@ import { createInitialState, resolveChoice, councilEntry, createCouncil, resolve
   createFanyang, resolveFanyang, encodeFanyangSnapshot, prepareRetreatEntry, createRetreat, resolveRetreat,
   encodeRetreatSnapshot, prepareRefugeEntry, createRefuge, inspectRefugeChoice, resolveRefuge,
   encodeRefugeSnapshot, restoreRefuge, type Campaign, type CouncilDefinition, type FanyangDefinition,
-  type RetreatDefinition, type MorningDefinition, resolveMorning, restoreMorning, encodeMorningSnapshot } from "../src";
+  type RetreatDefinition, type MorningDefinition, resolveMorning, restoreMorning, encodeMorningSnapshot, prepareRefugeContactEntry } from "../src";
 import campaignRaw from "../../../content/campaigns/chapter-01-daze.json";
 import councilRaw from "../../../content/councils/chen-council.v1.json";
 import fanyangRaw from "../../../content/councils/fanyang-guarantee.v1.json";
@@ -45,6 +45,29 @@ const routes = [
 ] as const;
 
 describe("shelter continuation boundary", () => {
+  it.each(["carry-records", "divide-records", "strip-identities"] as const)("preserves %s into both contact locations using old identifier-only saves", records => {
+    const { entry } = route(["send-support", "borrow-local-grain", "hold-formation", records, "move-with-remnant"]);
+    expect(entry).not.toBeNull();
+    const night = resolveRefuge(createRefuge(entry!), "offer-labour");
+    // This is the exact existing v1 wire shape: no new records field is needed.
+    const oldNight = { version: 1, entryId: entry!.id, definitionSHA256: refugeHash, order: "offer-labour" };
+    expect(JSON.parse(encodeRefugeSnapshot(night, refugeHash))).toEqual(oldNight);
+    for (const order of ["repair-roof", "follow-witness"] as const) {
+      const dawn = resolveMorning(morning, night, order);
+      const oldMorning = { version: 1, entryId: dawn.entryId, order, definitionSHA256: morningHash, nightSHA256: refugeHash };
+      expect(JSON.parse(encodeMorningSnapshot(dawn, morningHash, refugeHash))).toEqual(oldMorning);
+      const contact = prepareRefugeContactEntry(morning, entry!, oldNight, oldMorning, refugeHash, morningHash)!;
+      expect(contact.records).toBe(records);
+      expect(contact.debts.length).toBeGreaterThan(0);
+      expect(contact.localContact).toBe(order === "repair-roof" ? "holds-word" : "refused");
+      const otherNight = { ...oldNight, order: "sleep-outside" };
+      expect(prepareRefugeContactEntry(morning, entry!, otherNight, oldMorning, refugeHash, morningHash)).toBeNull();
+      // Mutating a downstream copy cannot alter either historical entry.
+      contact.debts[0]!.grain = 999;
+      expect(night.debts[0]!.grain).not.toBe(999);
+      expect(entry!.debts[0]!.grain).not.toBe(999);
+    }
+  });
   it.each(routes)("carries the actual %s ending into shelter without reunions or replenishment", (outcome, orders) => {
     const { retreat, snapshot, entry } = route([...orders]);
     expect(retreat.outcome).toBe(outcome); expect(entry).not.toBeNull();
@@ -57,6 +80,7 @@ describe("shelter continuation boundary", () => {
     for (const order of ["offer-grain", "offer-labour", "sleep-outside"] as const) {
       if (!inspectRefugeChoice(initial, order).available) { expect(() => resolveRefuge(initial, order)).toThrow(); continue; }
       const result = resolveRefuge(initial, order);
+      expect(result.records).toBe(entry!.records);
       expect(result.debts).toEqual(retreat.debts);
       expect(result.commonGrain).toBe(initial.commonGrain - (order === "offer-grain" ? 1 : 0));
       expect(result.personalObligation).toBe(order === "offer-labour" ? "morning-repair" : null);
@@ -69,7 +93,26 @@ describe("shelter continuation boundary", () => {
         expect(dawn.lead).toBe(action === "repair-roof" ? "departed" : "with-witness");
         expect(dawn.commonGrain).toBe(result.commonGrain);
         expect(dawn.debts).toEqual(result.debts);
+        expect(dawn.records).toBe(entry!.records);
         const saved = JSON.parse(encodeMorningSnapshot(dawn, morningHash, refugeHash));
+        const nightSaved = JSON.parse(encodeRefugeSnapshot(result, refugeHash));
+        const contact = prepareRefugeContactEntry(morning, entry!, nightSaved, saved, refugeHash, morningHash)!;
+        expect(contact.location).toBe(action === "repair-roof" ? "household" : "river-approach");
+        expect(contact.promise).toBe(dawn.promise);
+        expect(contact.localContact).toBe(dawn.contact);
+        expect(contact.records).toBe(entry!.records);
+        expect(contact.identityEvidence).toBe(entry!.records === "carry-records" ? "held-records" : entry!.records === "divide-records" ? "distributed-records" : "anonymized");
+        expect(contact.commonGrain).toBe(result.commonGrain);
+        expect(contact.debts).toEqual(retreat.debts);
+        expect(contact.companionPresence).toBe("unestablished");
+        expect(contact.messageDelivery).toBe("not-entrusted");
+        expect(contact.witnessAccount).toBe("not-questioned");
+        expect(prepareRefugeContactEntry(morning, entry!, { ...nightSaved, records: "carry-records" },
+          { ...saved, records: "carry-records", commonGrain: 999, companionPresence: "arrived", messageDelivery: "delivered" }, refugeHash, morningHash)).toEqual(contact);
+        expect(prepareRefugeContactEntry(morning, entry!, { ...nightSaved, order: null }, saved, refugeHash, morningHash)).toBeNull();
+        expect(prepareRefugeContactEntry(morning, entry!, nightSaved, { ...saved, entryId: "foreign" }, refugeHash, morningHash)).toBeNull();
+        expect(prepareRefugeContactEntry(morning, entry!, nightSaved, saved, "0".repeat(64), morningHash)).toBeNull();
+        expect(prepareRefugeContactEntry(morning, entry!, nightSaved, saved, refugeHash, "0".repeat(64))).toBeNull();
         expect(restoreMorning(morning, result, { ...saved, commonGrain: 999, promise: "kept", debts: [] }, morningHash, refugeHash)).toEqual(dawn);
         expect(restoreMorning(morning, result, saved, "0".repeat(64), refugeHash)).toBeNull();
         expect(restoreMorning(morning, result, saved, morningHash, "0".repeat(64))).toBeNull();

@@ -41,6 +41,7 @@ export interface RefugeState {
   commonGrain: number;
   debts: RetreatDebt[];
   order: RefugeOrder | null;
+  records: RefugeEntry["records"];
   shelter: "undecided" | "under-eaves" | "outside";
   personalObligation: "morning-repair" | null;
   rested: boolean;
@@ -48,7 +49,7 @@ export interface RefugeState {
 
 export function createRefuge(entry: RefugeEntry): RefugeState {
   return { version: 1, entryId: entry.id, commonGrain: entry.spendableCommonGrain,
-    debts: entry.debts.map(debt => ({ ...debt })), order: null, shelter: "undecided",
+    debts: entry.debts.map(debt => ({ ...debt })), order: null, records: entry.records, shelter: "undecided",
     personalObligation: null, rested: false };
 }
 

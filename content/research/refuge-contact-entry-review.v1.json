@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-contact-entry-review.v1",
+  "reviewDate": "2026-10-01",
+  "decision": "continuation-boundary-engineering-only",
+  "publicationApproved": false,
+  "namedScene": "Householder message or river witness encounter after the morning decision",
+  "blockerRemoved": "Retreat retained the records decision, but shelter and morning states dropped it. A later encounter could not reliably distinguish centrally held, distributed and anonymized evidence without reaching back around the shared continuation state.",
+  "changes": [
+    "Carry the actual records choice through shelter and morning state, reconstructing it from the verified retreat entry.",
+    "Prepare contact-scene input by restoring both the confirmed night and morning, including their content revisions and matching branch identity.",
+    "Preserve current grain, debts, kept or broken promise, householder availability and chosen destination.",
+    "Keep message entrustment, witness questioning and companion presence explicitly unestablished. Neither an opportunity to communicate nor old records establish a reunion."
+  ],
+  "recordInterpretation": {
+    "carry-records": "Existing identifying records are held centrally; neither every missing person nor every name is thereby known.",
+    "divide-records": "Necessary records were distributed to groups. Do not assume all copies are now back in the keeper's hands.",
+    "strip-identities": "Identifying information was removed. New testimony may establish new facts later, but old names must not be reconstructed from the anonymous accounts."
+  },
+  "sourceBoundary": "These interpretations follow the existing retreat records choices and original dramatic continuity. No new historical claim or source-book excerpt is added.",
+  "saveCompatibility": "Both existing identifier-only v1 save shapes and story hashes are unchanged. New state fields derive from earlier confirmed choices; injected resource, identity and delivery fields in snapshots are not authoritative.",
+  "verification": {
+    "repository": "npm run validate exited 0, including 83 core tests and 341 web tests.",
+    "focused": "Ten core refuge tests pass, including all three record modes entering both contact destinations with old-format snapshots, four retreat outcomes, stale/foreign branch rejection, downstream mutation isolation and unchanged debt. Sixty-seven morning/retreat web component tests pass; core and web typechecking pass.",
+    "visualScope": "No UI, dialogue, media or layout changed in this checkpoint; no new visual acceptance claimed and no GUI runtime launched."
+  },
+  "remaining": [
+    "Implement the actual contact decision and matching response; this checkpoint does not make the next encounter playable.",
+    "Offer a useful non-identifying path for every record mode, without treating anonymization as irreversible defeat.",
+    "Make disclosure benefits and risks clear before confirmation; do not grant delivered messages, corroborated testimony or reunions before they happen.",
+    "Native and Unreal continuation parity, human playtest feedback and final cinematic assets remain open."
+  ]
+}

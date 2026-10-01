@@ -18,6 +18,7 @@ export interface MorningState {
   lead: MorningLead;
   commonGrain: number;
   debts: RefugeState["debts"];
+  records: RefugeState["records"];
 }
 export function morningEntryId(night: RefugeState): string {
   if (!night.order) throw new Error("Shelter decision required before morning");
@@ -30,7 +31,7 @@ export function resolveMorning(definition: MorningDefinition, night: RefugeState
   const owed = night.personalObligation === "morning-repair";
   return { entryId, order, promise: owed ? choice.effects.promiseIfOwed : "none",
     contact: owed ? choice.effects.contactIfOwed ?? choice.effects.contact : choice.effects.contact,
-    lead: choice.effects.lead, commonGrain: night.commonGrain, debts: night.debts.map(debt => ({ ...debt })) };
+    lead: choice.effects.lead, commonGrain: night.commonGrain, debts: night.debts.map(debt => ({ ...debt })), records: night.records };
 }
 export function encodeMorningSnapshot(state: MorningState, definitionHash: string, nightHash: string): string {
   if (![definitionHash, nightHash].every(hash => /^[a-f0-9]{64}$/.test(hash))) throw new Error("Invalid morning revision");
