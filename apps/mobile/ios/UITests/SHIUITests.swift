@@ -448,6 +448,28 @@ final class SHIUITests: XCTestCase {
         let lastRecord = app.descendants(matching: .any).matching(identifier: "retreat-record-release-groups").firstMatch
         reveal(lastRecord, in: app); XCTAssertTrue(lastRecord.exists)
         capture("retreat-06-native-decision-record-last")
+        let replay = app.buttons["retreat-rewind-carry-records"]
+        reveal(replay, in: app); replay.tap()
+        let replayCancel = app.buttons.matching(identifier: "retreat-rewind-cancel").firstMatch
+        XCTAssertTrue(replayCancel.waitForExistence(timeout: 10))
+        capture("retreat-07-native-replay-confirmation")
+        replayCancel.tap()
+        XCTAssertEqual(ending.value as? String, expected)
+        reveal(replay, in: app); replay.tap()
+        let replayConfirm = app.buttons.matching(identifier: "retreat-rewind-confirm").firstMatch
+        XCTAssertTrue(replayConfirm.waitForExistence(timeout: 10)); replayConfirm.tap()
+        XCTAssertTrue(app.buttons["retreat-commit"].waitForExistence(timeout: 10))
+        XCTAssertFalse(reaction().exists)
+        order("strip-identities"); next()
+        order("release-groups"); next()
+        XCTAssertTrue(ending.waitForExistence(timeout: 10))
+        XCTAssertEqual(ending.value as? String, expected)
+        capture("retreat-08-native-replayed-ending")
+        reveal(record, in: app); record.tap()
+        let changedRecord = app.descendants(matching: .any).matching(identifier: "retreat-record-strip-identities").firstMatch
+        reveal(changedRecord, in: app); XCTAssertTrue(changedRecord.exists)
+        XCTAssertFalse(app.descendants(matching: .any).matching(identifier: "retreat-record-carry-records").firstMatch.exists)
+        capture("retreat-09-native-replayed-record")
         reveal(record, in: app); record.tap()
         XCTAssertEqual(ending.value as? String, expected)
         reveal(app.buttons["retreat-retry"], in: app); app.buttons["retreat-retry"].tap()
