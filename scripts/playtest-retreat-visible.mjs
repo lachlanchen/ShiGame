@@ -449,7 +449,17 @@ try {
     await evaluate("document.querySelector('[data-testid=retreat-witnessed-arrival]').scrollIntoView({block:'start'})");
     await capture("04-yu-arrival-mobile"); await layout("Yu arrival");
   }
-  await click(`[data-retreat-choice="${finalChoice}"]`);
+  if (route === "dispersed") {
+    const savedBeforeInspection = await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')");
+    await click('[data-retreat-choice="stay-together"]');
+    await until(exists('[data-testid="retreat-available-alternatives"]'));
+    check(await evaluate("document.querySelector('[data-testid=retreat-commit]').disabled && !document.querySelector('[data-retreat-alternative=stay-together]')"), "blocked collective waiting cannot be issued or offered as feasible");
+    await evaluate("document.querySelector('[data-testid=retreat-available-alternatives]').scrollIntoView({block:'center',behavior:'instant'})");
+    await capture("retreat-alternatives-phone"); await layout("retreat alternatives phone");
+    await click('[data-retreat-alternative="release-groups"]');
+    check(await evaluate("document.activeElement?.dataset.retreatChoice === 'release-groups' && !document.querySelector('[data-testid=retreat-available-alternatives]')"), "alternative inspection selects the command and preserves keyboard focus");
+    check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeInspection, "inspecting feasible retreat alternatives does not write a decision");
+  } else await click(`[data-retreat-choice="${finalChoice}"]`);
   check(await evaluate(`document.querySelector('[data-testid=retreat-preview]')?.dataset.outcome===${JSON.stringify(route)}`), "final outcome disclosed before commitment");
   if (route === "scattered") await capture("04b-scattering-warning-mobile");
   await click('[data-testid="retreat-commit"]');
