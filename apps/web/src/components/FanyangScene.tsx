@@ -7,6 +7,7 @@ import raw from "../../../../content/councils/fanyang-guarantee.v1.json";
 import review from "../../../../content/research/fanyang-entry-review.v1.json";
 import { flushPersistence, gameStorage } from "../persistence";
 import "./ChenCouncil.css";
+import { cinemaLabel } from "../cinema-labels";
 const definition = raw as FanyangDefinition, fingerprint = review.contentSHA256;
 
 export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onSavingChange, onContinue, saveNamespace }: {
@@ -66,12 +67,13 @@ export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onS
     <p className="chen-boundary">{text(definition.boundary)}</p>
     {invalid && <p className="chen-error" role="alert">{say("This save is damaged, belongs to another council, or uses different content. It is preserved. Explicitly restart this scene to replace it; Chen is unchanged.", "存档损坏、属于另一场议事，或内容版本不同。原存档已保留，只有明确重开本场景才会替换；陈县存档不变。")}</p>}
     {error && <p className="chen-error" role="alert">{say("Could not save. The order is not confirmed. Retry when storage is available.", "未能保存，命令尚未确认。存储恢复后请重试。")}</p>}
-    <div className="chen-layout"><section className="chen-main">
+    <div className={`chen-layout${reading && !reset ? " chen-reading-layout" : ""}`}><section className="chen-main">
       {reset ? <section className="chen-scene"><h3 ref={heading} tabIndex={-1}>{say("Replace this Fan Yang save? Chen will remain unchanged.", "替换范阳存档？陈县议事不会改变。")}</h3>
         <button className="primary-button" data-council-action="reset" disabled={busy} onClick={() => void persist(createFanyang(definition, entry))}>{say("Restart Fan Yang", "重开范阳")}</button>
         <button className="text-button" data-council-action="cancel" disabled={busy} onClick={() => setReset(false)}>{say("Cancel", "取消")}</button></section>
-      : reading && lastChoice && last ? <section className="chen-scene" data-testid="fanyang-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{text(lastChoice.title)}</h3><p className="chen-prose">{text(lastChoice.response)}</p>
-        {fanyangAnswers(state, lastChoice).map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{text(answer.text)}</p>)}{changes(last.before, last.after)}
+      : reading && lastChoice && last ? <section className="chen-scene chen-response" data-testid="fanyang-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{text(lastChoice.title)}</h3><p className="chen-prose">{text(lastChoice.response)}</p>
+        {fanyangAnswers(state, lastChoice).map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{text(answer.text)}</p>)}
+        <details className="chen-history" data-testid="fanyang-response-changes"><summary>{cinemaLabel(locale, "changes")}</summary>{changes(last.before, last.after)}</details>
         <button className="primary-button" data-council-action="continue" onClick={() => setReading(false)}>{say("Continue", "继续")} →</button></section>
       : outcome ? <section className="chen-scene" data-testid="fanyang-outcome" data-outcome={state.outcome} aria-live="polite"><h3 ref={heading} tabIndex={-1}>{text(outcome.title)}</h3><p className="chen-prose">{text(outcome.text)}</p>
         <p>{onContinue ? say("Your decisions are saved. A Chinese-only development preview continues the story in Chen; it is not release-approved.", "选择已保存。可进入陈地后续的中文开发试玩，尚未通过发行审核。") : say("This development episode ends here. Your decisions are saved; the next episode is not available yet.", "本开发篇章到此结束。选择已保存，下一篇尚未开放。")}</p>
@@ -93,9 +95,9 @@ export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onS
           </details>}
           <button className="primary-button" data-council-action="commit" data-testid="fanyang-commit" disabled={!preview || invalid || busy} onClick={() => { if (choice && !invalid) void persist(resolveFanyang(definition, state, choice.id)); }}>{say(busy ? "Saving…" : "Confirm order", busy ? "保存中…" : "确认命令")} →</button>
         </section></section> : null}
-    </section><aside className="chen-position" aria-label={say("Position and gate conditions", "局势与开城条件")}><h3>{say("Your position", "当前局势")}</h3>
+    </section>{(!reading || reset) && <aside className="chen-position" aria-label={say("Position and gate conditions", "局势与开城条件")}><h3>{say("Your position", "当前局势")}</h3>
       <ul className="chen-metrics">{fanyangMetricKeys.map(metric => <li key={metric}><span>{text(definition.metrics[metric])}</span><span>{state.metrics[metric]} / 10</span></li>)}</ul>
-      <h3>{say("Conditions for surrender", "受降条件")}</h3><ul>{fanyangGateChecks(definition, state).map(check => <li key={check.key}>{check.met ? "✓" : "—"} {text(definition.metrics[check.key])}: {check.value} {check.met ? "≥" : "<"} {check.required}</li>)}</ul></aside></div>
+      <h3>{say("Conditions for surrender", "受降条件")}</h3><ul>{fanyangGateChecks(definition, state).map(check => <li key={check.key}>{check.met ? "✓" : "—"} {text(definition.metrics[check.key])}: {check.value} {check.met ? "≥" : "<"} {check.required}</li>)}</ul></aside>}</div>
     {state.history.length > 0 && <details className="chen-history" data-testid="fanyang-journal"><summary>{say("Your decisions at Fan Yang", "范阳决策记录")}</summary><ol>
       {state.history.map((turn, index) => {
         const past = definition.rounds[index]!.choices.find(item => item.id === turn.choiceId)!;

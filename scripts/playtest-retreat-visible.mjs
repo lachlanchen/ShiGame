@@ -250,7 +250,26 @@ try {
       }
       await click('[data-testid="fanyang-enter"]');
       for (const id of ["public-safety", "guarded-escort", "accept-transfer"]) {
-        await click(`[data-fanyang-choice="${id}"]`); await click('[data-testid="fanyang-commit"]'); await click('[data-testid="fanyang-response"] [data-council-action="continue"]');
+        await click(`[data-fanyang-choice="${id}"]`); await click('[data-testid="fanyang-commit"]');
+        if (id === "public-safety") {
+          const fanyangKey = `${key}.fanyang-guarantee.v1`;
+          const bytes = await evaluate(`localStorage.getItem('${fanyangKey}')`);
+          const response = await evaluate("document.querySelector('[data-testid=fanyang-response] .chen-prose').textContent");
+          check(await evaluate("!document.querySelector('[data-testid=fanyang-response-changes]').open && !document.querySelector('.chen-position')"), "Fan Yang reply leads without competing accounting");
+          await capture("crossing-fanyang-response-desktop"); await layout("Fan Yang reply desktop");
+          await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+          await capture("crossing-fanyang-response-phone"); await layout("Fan Yang reply phone");
+          await click('[data-testid="fanyang-response-changes"] summary');
+          check(await evaluate("document.querySelector('[data-testid=fanyang-response-changes]').open") && await evaluate(`localStorage.getItem('${fanyangKey}')`) === bytes, "reading Fan Yang accounting does not save an order");
+          await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+          await click('[data-testid="council-enter"]'); await click('[data-testid="council-continue"]'); await click('[data-testid="fanyang-enter"]');
+          await until(exists('[data-testid="fanyang-response"]'));
+          check(await evaluate("document.querySelector('[data-testid=fanyang-response] .chen-prose').textContent") === response && await evaluate(`localStorage.getItem('${fanyangKey}')`) === bytes, "Fan Yang cold resume retains reaction and exact saved bytes");
+          check(await evaluate("!document.querySelector('[data-testid=fanyang-response-changes]').open"), "Fan Yang resume restores a quiet reply");
+          await capture("crossing-fanyang-response-resumed-phone");
+          await send("Emulation.clearDeviceMetricsOverride");
+        }
+        await click('[data-testid="fanyang-response"] [data-council-action="continue"]');
       }
       await click('[data-testid="retreat-enter"]'); await until(exists('[data-testid="retreat-scene"]'));
       await capture("crossing-retreat-desktop"); await layout("retreat after crossing");

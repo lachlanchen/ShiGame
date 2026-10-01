@@ -10,6 +10,9 @@ import { encodeCouncilSnapshot } from "../council-snapshot";
 import * as persistence from "../persistence";
 import { ChenCouncil } from "./ChenCouncil";
 import { FanyangScene } from "./FanyangScene";
+import { supportedLocales, type FanyangDefinition } from "@shi/game-core";
+import { cinemaLabel } from "../cinema-labels";
+import fanyangRaw from "../../../../content/councils/fanyang-guarantee.v1.json";
 
 const campaign = campaignRaw as Campaign, chen = chenRaw as CouncilDefinition;
 let origin = createInitialState(campaign, 0);
@@ -29,6 +32,56 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("Fan Yang playable continuation", () => {
+  it.each(["en", "zh-Hans"] as const)("keeps Chen's shared-ledger callback in the main reply (%s)", async locale => {
+    // The default one-command route spends allied support. Use a real council
+    // route that leaves this witness procedure affordable, not invented metrics.
+    let alliedCouncil = createCouncil(chen, councilEntry(origin)!);
+    for (const id of ["defer-title", "joint-ledger", "many-banners"]) alliedCouncil = resolveCouncil(chen, alliedCouncil, id);
+    const alliedEntry = prepareFanyangEntry(chen, origin, JSON.parse(encodeCouncilSnapshot(alliedCouncil, chenHash.trim())), chenHash.trim())!;
+    const input = { ...props(), locale, entry: alliedEntry };
+    let view = render(<FanyangScene {...input} />);
+    fireEvent.click(view.container.querySelector('[data-fanyang-choice="public-safety"]')!);
+    fireEvent.click(view.getByTestId("fanyang-commit"));
+    await view.findByTestId("fanyang-response");
+    fireEvent.click(view.getByTestId("fanyang-response").querySelector("button")!);
+    fireEvent.click(view.container.querySelector('[data-fanyang-choice="joint-witnesses"]')!);
+    fireEvent.click(view.getByTestId("fanyang-commit"));
+    await view.findByTestId("fanyang-response");
+    const answer = (fanyangRaw as FanyangDefinition).rounds[1]!.choices.find(c => c.id === "joint-witnesses")!.answers![0]!.text[locale]!;
+    expect(within(view.getByTestId("fanyang-response")).getByText(answer).closest("details")).toBeNull();
+    expect((view.getByTestId("fanyang-response-changes") as HTMLDetailsElement).open).toBe(false);
+    const saved = localStorage.getItem(key);
+    expect(JSON.parse(saved!).choices).toEqual(["public-safety", "joint-witnesses"]);
+    view.unmount();
+    view = render(<FanyangScene {...input} />);
+    expect(within(view.getByTestId("fanyang-response")).getByText(answer).closest("details")).toBeNull();
+    expect(localStorage.getItem(key)).toBe(saved);
+  });
+  it.each(supportedLocales)("presents the saved reply before accounting, without losing conditions or resume (%s)", async locale => {
+    const input = { ...props(), locale };
+    let view = render(<FanyangScene {...input} />);
+    fireEvent.click(view.getByTestId("fanyang-commit"));
+    await view.findByTestId("fanyang-response");
+    const saved = localStorage.getItem(key);
+    const response = view.getByTestId("fanyang-response");
+    const changes = view.getByTestId("fanyang-response-changes") as HTMLDetailsElement;
+    expect(changes.open).toBe(false);
+    expect(changes.querySelector("summary")?.textContent).toBe(cinemaLabel(locale, "changes"));
+    expect(response.querySelector(".chen-prose")?.closest("details")).toBeNull();
+    expect(changes.querySelectorAll(".chen-preview > span")).toHaveLength(Object.keys(fanyangRaw.metrics).length);
+    expect(view.container.querySelector(".chen-position")).toBeNull();
+    fireEvent.click(changes.querySelector("summary")!);
+    expect(changes.open).toBe(true);
+    expect(localStorage.getItem(key)).toBe(saved);
+    view.unmount();
+    view = render(<FanyangScene {...input} />);
+    expect((view.getByTestId("fanyang-response-changes") as HTMLDetailsElement).open).toBe(false);
+    expect(localStorage.getItem(key)).toBe(saved);
+    fireEvent.click(view.getByTestId("fanyang-response").querySelector("button")!);
+    expect(view.container.querySelector(".chen-position")).not.toBeNull();
+    expect(localStorage.getItem(key)).toBe(saved);
+    expect(input.onCue).toHaveBeenCalledTimes(1);
+  });
   it("introduces the envoy once before negotiation without transporting the Chen households", async () => {
     const view = render(<FanyangScene {...props()} />);
     expect(view.getByTestId("fanyang-viewpoint").textContent).toContain("have not travelled here with the camera");
@@ -134,6 +187,9 @@ describe("Fan Yang playable continuation", () => {
   it.each(["en", "zh-Hans", "ar"] as const)("has accessible semantics and honest prose fallback (%s)", async locale => {
     const view = render(<FanyangScene {...props()} locale={locale} />);
     expect(view.getByRole("dialog").getAttribute("lang")).toBe(locale === "zh-Hans" ? "zh-Hans" : "en");
+    expect((await axe.run(view.container, { rules: { "color-contrast": { enabled: false } } })).violations).toEqual([]);
+    fireEvent.click(view.getByTestId("fanyang-commit"));
+    await view.findByTestId("fanyang-response");
     expect((await axe.run(view.container, { rules: { "color-contrast": { enabled: false } } })).violations).toEqual([]);
   });
 });

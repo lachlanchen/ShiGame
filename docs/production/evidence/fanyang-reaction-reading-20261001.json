@@ -1,0 +1,25 @@
+{
+  "status": "verified-development-web-presentation-not-release-acceptance",
+  "privateEvidence": ".runtime/story-review/2026-10-01T02-09-01.740Z",
+  "statusSha256": "8ea78121a0843c6f26203f454e960ca2c509939f19432cb030073679b6da3281",
+  "componentSha256": "ffc17b2f5ab7031bf275c0844f889cf5379aca2397b19e5c04ff01bf42e64561",
+  "playtestSha256": "0f289177c74a4ecdf72b9dd03f2ac6055aff89f067572cdebe7adfa92ef91888",
+  "reviewedScreenshots": {
+    "crossing-fanyang-response-desktop.png": "b88689c8758a00012e8388f7eed1355db51646f537456e82d44e6eaa5085e64a",
+    "crossing-fanyang-response-phone.png": "093273f893f423e652c9c5738030a5266261df02b30109c7ec444ab5b62b0db8"
+  },
+  "resumedPhoneScreenshotSha256": "093273f893f423e652c9c5738030a5266261df02b30109c7ec444ab5b62b0db8",
+  "checksPassed": 69,
+  "screenshotsCaptured": 23,
+  "browserExceptions": 0,
+  "webTestsPassed": 303,
+  "fanyangTestsPassed": 23,
+  "webTypecheck": "passed",
+  "productionBuildBudgets": "passed",
+  "coldResume": ["crossing", "council response", "Fan Yang response", "retreat response"],
+  "releaseSaveSlotsUnchanged": true,
+  "rulesOrContentChanged": false,
+  "ownedRuntimeStopped": true,
+  "currentNoVncUrl": null,
+  "notProven": ["human emotional acceptance", "physical devices", "native SwiftUI parity", "audiovisual asset acceptance", "public deployment"]
+}
