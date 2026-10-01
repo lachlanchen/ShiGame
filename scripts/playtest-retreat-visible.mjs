@@ -14,15 +14,17 @@ const isCrossing = route === "crossing" || route === "crossing-v2";
 const revisedCrossing = route === "crossing-v2";
 const scoreAudition = process.env.SHI_PLAYTEST_SCORE === "1";
 const councilFilm = process.env.SHI_PLAYTEST_COUNCIL_FILM === "1";
+const rainCinema = process.env.SHI_PLAYTEST_RAIN_CINEMA === "1";
 const morningOrder = process.env.SHI_PLAYTEST_MORNING;
 const contactOrder = process.env.SHI_PLAYTEST_CONTACT;
 if (contactOrder && (!morningOrder || !["leave-route", "leave-record", "ask-unprompted", "show-record"].includes(contactOrder))) throw new Error("Contact review requires morning and a known contact choice.");
 if (morningOrder && (!["repair-roof", "follow-witness"].includes(morningOrder) || process.env.SHI_PLAYTEST_REFUGE !== "1")) throw new Error("Morning review requires refuge and a known morning choice.");
 if (councilFilm && (!revisedCrossing || production)) throw new Error("Private council film requires the development crossing-v2 route.");
+if (rainCinema && (!revisedCrossing || production || scoreAudition)) throw new Error("Rain cinema requires development crossing-v2 and no separate score overlay.");
 if (scoreAudition && (!revisedCrossing || production)) throw new Error("Private score review requires the development crossing-v2 route.");
 const aftermath = revisedCrossing ? JSON.parse(await readFile(resolve(root, "content/engagements/chapter-01-crossing-aftermath.v2.json"), "utf8")) : null;
 const councilMetricCount = Object.keys(JSON.parse(await readFile(resolve(root, "content/councils/chen-council.v1.json"), "utf8")).metrics).length;
-const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}${scoreAudition ? "&score=audition" : ""}${councilFilm ? "&councilFilm=review" : ""}`;
+const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}${scoreAudition ? "&score=audition" : ""}${councilFilm ? "&councilFilm=review" : ""}${rainCinema ? "&cinema=rain-review" : ""}`;
 const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
 const reserves = route === "scattered" || storyBranch !== "baseline" ? "send-support" : "keep-reserve";
@@ -89,7 +91,7 @@ try {
   await delay(800);
   await launch("vnc", "x11vnc", ["-display", ":121", "-listen", "127.0.0.1", "-rfbport", "5921", "-nopw", "-forever", "-nevershared"]);
   await launch("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:6121", "127.0.0.1:5921"]);
-  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1", VITE_SHI_PRIVATE_SCORE_AUDITION: scoreAudition ? "1" : "0", VITE_SHI_PRIVATE_COUNCIL_FILM: councilFilm ? "1" : "0" });
+  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1", VITE_SHI_PRIVATE_SCORE_AUDITION: scoreAudition ? "1" : "0", VITE_SHI_PRIVATE_COUNCIL_FILM: councilFilm ? "1" : "0", VITE_SHI_PRIVATE_RAIN_SCENE: rainCinema ? "1" : "0" });
   report.buildMode = production ? "production-dist" : "development";
   // Existing isolated profile, but an incognito app window preserves old QA saves.
   await launch("chrome", "google-chrome", ["--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--incognito", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=9321", `--user-data-dir=${root}/.runtime/novnc/profile`, "--window-size=1600,1000", "--app=http://127.0.0.1:4173/?seed=00000000"], { DISPLAY: ":121" });
@@ -158,9 +160,56 @@ try {
     await capture("crossing-title-desktop");
     await click('[data-testid="begin-game"]');
     await click('[data-testid="guide-continue"]');
+    if (rainCinema) {
+      await until(exists('[data-testid="private-rain-scene"] video'));
+      const saveBefore = await evaluate("localStorage.getItem('shi.development.crossing-campaign.v2')");
+      check(await evaluate("(()=>{const v=document.querySelector('[data-testid=private-rain-scene] video');return v.paused&&v.muted&&v.currentTime===0&&!v.autoplay&&v.preload==='none'})()"), "opening image and choices do not autoplay music or motion");
+      await click('[data-film-action="sound"]');
+      await click('[data-film-action="play"]');
+      await until("document.querySelector('[data-testid=private-rain-scene] video').currentTime>0.5");
+      report.rainCinema = await evaluate("(()=>{const v=document.querySelector('[data-testid=private-rain-scene] video');return {duration:v.duration,width:v.videoWidth,height:v.videoHeight,currentTime:v.currentTime,muted:v.muted,volume:v.volume}})()");
+      check(report.rainCinema.duration === 16 && report.rainCinema.width === 1920 && report.rainCinema.height === 1080 && !report.rainCinema.muted, "actual scored animatic decodes after explicit sound and play gestures");
+      await capture("rain-cinema-playing-desktop"); await layout("rain cinema desktop", false);
+      await click('[data-testid="sources-toggle"]');
+      await until("document.querySelector('[data-testid=private-rain-scene] video').paused");
+      await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
+      await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
+      await until("!document.querySelector('.drawer')");
+      check(await evaluate("document.querySelector('[data-testid=private-rain-scene] video').paused"), "opening and closing evidence pauses the soundtrack without resuming");
+      await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+      await click('[data-film-action="play"]');
+      await until("!document.querySelector('[data-testid=private-rain-scene] video').paused");
+      await capture("rain-cinema-playing-phone"); await layout("rain cinema phone", false);
+      await click('[data-film-action="skip"]');
+      check(await evaluate("document.querySelector('[data-testid=scene-film]').dataset.playback==='skipped'&&document.querySelector('[data-testid=private-rain-scene] video').paused"), "skip stops the scored scene");
+      check(await evaluate("localStorage.getItem('shi.development.crossing-campaign.v2')") === saveBefore, "cinema play, sound, pause and skip leave the actual decision ledger byte-identical");
+      await capture("rain-cinema-skipped-phone");
+      await click('.brand-button');
+      await click('.title-footer button:last-child');
+      await evaluate("(()=>{const e=document.querySelector('select');e.value='ar';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
+      await until("document.documentElement.lang==='ar'");
+      await click('[data-testid="begin-game"]');
+      await until(exists('[data-testid="private-rain-scene"] img'));
+      check(await evaluate("!document.querySelector('[data-testid=private-rain-scene] video')&&document.documentElement.dir==='rtl'&&/[\\u0600-\\u06ff]/.test(document.querySelector('[data-testid=private-rain-scene] img').alt)"), "reduced motion has a static Arabic description and no moving media");
+      await evaluate("document.querySelector('[data-testid=private-rain-scene]').scrollIntoView({block:'center',behavior:'instant'})");
+      await capture("rain-cinema-reduced-arabic-phone"); await layout("rain cinema reduced Arabic", false);
+      await click('.brand-button');
+      await click('.title-footer button:last-child');
+      await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
+      await click('[data-testid="begin-game"]');
+      await until(exists('[data-testid="private-rain-scene"] video'));
+      check(await evaluate("document.querySelector('[data-testid=private-rain-scene] video').paused&&document.querySelector('[data-testid=private-rain-scene] video').muted"), "returning to the opening requires fresh play and sound gestures");
+      check(await evaluate("localStorage.getItem('shi.development.crossing-campaign.v2')") === saveBefore, "motion and language changes preserve the opening ledger");
+      await send("Emulation.clearDeviceMetricsOverride");
+    }
     for (const id of ["read-the-names", "issue-grain-tallies"]) {
       await click(`[data-choice-id="${id}"]`);
       await click('[data-testid="commit-selected"]');
+      if (rainCinema && id === "read-the-names") {
+        check(!await evaluate(exists('[data-testid="private-rain-scene"]')), "saving the chosen order removes the introductory soundtrack before its reaction");
+        const saved = JSON.parse(await evaluate("localStorage.getItem('shi.development.crossing-campaign.v2')"));
+        check(saved.ledger.events.filter(event => event.kind === "decision" && event.choiceId === "read-the-names").length === 1, "the first actual decision is saved exactly once after watching and skipping");
+      }
       await click('[data-testid="resolution-continue"]');
     }
     check(await evaluate("document.querySelector('[data-testid=shi-app]').dataset.nodeId==='broken-crossing' && !document.querySelector('.choice-card .effects')"), "crossing does not disclose obsolete fixed abstract costs");

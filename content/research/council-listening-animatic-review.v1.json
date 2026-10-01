@@ -23,7 +23,7 @@
     "route": "Existing local Musia ACE candidate B, seed 926102; no new music generation claimed",
     "sourceSHA256": "f99feef979fa87a07d9bdc041d676ee34708663009045b8b3230d2a601aee8e1",
     "edit": "First 16 seconds, gain 0.4, one-second fade in, final three-second fade out. All six candidates and original masters retained.",
-    "review": "Source signal health passed; full listening, unintended vocal/similarity review and commercial admission remain open. Not a dialogue mix or an approved loop."
+    "review": "Source signal health passed. Encoded 16-second edit measured -23.3 LUFS integrated and -9.0 dBFS true peak; browser playback volume is 0.7. Full listening, unintended vocal/similarity review and commercial admission remain open. Not a dialogue mix or an approved loop."
   },
   "video": {
     "file": "council-listening-animatic-v1.mp4",
@@ -31,12 +31,25 @@
     "verification": "ffprobe confirms both streams and 16-second duration; full FFmpeg decode exits 0 without errors.",
     "format": "1920x1080, 24 fps, 16 seconds, H.264 and stereo 48 kHz AAC",
     "method": "FFmpeg 2.5-percent camera push over generated still, with existing Musia cue",
-    "boundary": "Not character animation, not a Blender render, not LocalVideoGen output. Source still is smaller than delivery raster; 1080p encoding does not add source detail. No game integration or user acceptance claimed."
+    "boundary": "Not character animation, not a Blender render, not LocalVideoGen output. Source still is smaller than delivery raster; 1080p encoding does not add source detail. Integrated only in a gated development web scene; production and native clients do not include the candidate. Human acceptance remains open."
+  },
+  "developmentIntegration": {
+    "scene": "rain-order only, before a choice; removed on saved resolution or departure",
+    "gate": "DEV, non-native, VITE_SHI_PRIVATE_RAIN_SCENE=1 and cinema=rain-review; fixed hash-checked loopback media endpoints",
+    "behavior": "Explicit play and sound; pause behind history/other drawers or in background; no automatic resume; skip; descriptive VTT and static reduced-motion alternative in all eleven supported locales. Gamepad confirm honors focused film controls without issuing a choice.",
+    "browserEvidence": {
+      "statusSHA256": "1d7d5be7d1bf734d87c8617b6c57a029c243ff0094b719d06567b2b6aa804345",
+      "result": "92 checks and 29 captures passed, no runtime exceptions. Actual scored file decoded at 1920x1080/16 seconds. Phone, desktop and reduced-motion Arabic screenshots inspected. Full route continued through crossing, Chen, Fan Yang and retreat with cold resumes; old save slots unchanged.",
+      "scope": "One agent-operated development route, not human listening, all-branch acceptance, native/device or store evidence. Arabic scene description and controls are translated; existing narrative still has English fallbacks."
+    },
+    "automatedChecks": "Full validation: 83 core and 376 web tests, typechecks and production bundle budgets passed. Initial JS 99.46 KiB within 100 KiB budget. Private review endpoint/asset strings absent from production JavaScript.",
+    "cleanup": "Dedicated browser/Vite/Xvfb/VNC processes and ports stopped after evidence capture. No active review runtime retained."
   },
   "next": [
     "Replace animatic with controlled breathing, gaze and listening animation without changing face or costume.",
     "Use one owned local render job; shared ComfyUI is not a SHI-owned runtime. LocalVideoGen service port 8190 was not listening during this checkpoint.",
     "Resolve model territory and release rights before choosing a LocalVideoGen production route; repository notes flag H3 limitations.",
-    "Review full-speed motion and sound together, then wire a development-only scene with skip, reduced-motion and save-state tests."
+    "Review natural character motion and sound together before promoting footage beyond this development animatic; retain skip, reduced-motion and save-state behavior.",
+    "Prepare native SwiftUI and Android scene players after asset admission, with installed-device and offline/resume review."
   ]
 }

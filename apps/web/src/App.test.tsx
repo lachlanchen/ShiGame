@@ -9,6 +9,7 @@ import { createInitialState, resolveChoice, type Campaign } from "@shi/game-core
 import campaignData from "../../../content/campaigns/chapter-01-daze.json";
 import chapterFixtures from "../../../content/conformance/chapter-01-replays.v1.json";
 import { ui } from "./ui-catalog";
+import { SceneFilm } from "./components/SceneFilm";
 
 vi.mock("./components/ThreeBackdrop", () => ({
   ThreeBackdrop: () => <div data-testid="three-backdrop" />,
@@ -506,6 +507,34 @@ describe("playable web shell", () => {
     expect(document.activeElement).toBe(replayedGuide.querySelector(".icon-button"));
     fireEvent.click(view.getByTestId("guide-continue"));
     await waitFor(() => expect(document.activeElement).toBe(guideToggle));
+  });
+
+  it("uses gamepad confirm for focused film controls without committing the selected order", async () => {
+    vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue();
+    vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => undefined);
+    const buttons = Array.from({ length: 16 }, () => ({ pressed: false, touched: false, value: 0 }));
+    const pad = { id: "Scene controller", index: 0, connected: true, mapping: "standard", timestamp: 0, axes: [0, 0, 0, 0], buttons } as unknown as Gamepad;
+    Object.defineProperty(navigator, "getGamepads", { configurable: true, value: () => [pad] });
+    const confirm = async () => {
+      buttons[0]!.pressed = true; buttons[0]!.value = 1;
+      await act(() => new Promise(resolve => setTimeout(resolve, 35)));
+      buttons[0]!.pressed = false; buttons[0]!.value = 0;
+      await act(() => new Promise(resolve => setTimeout(resolve, 35)));
+    };
+    const view = render(<><App /><SceneFilm locale="en" soundtrack asset={{ src: "/test-only.mp4", captions: { src: "/test-only.vtt", language: "en", label: "Description" } }} /></>);
+    fireEvent.click(view.getByTestId("begin-game"));
+    await waitFor(() => expect(view.getByTestId("shi-app").dataset.controller).toBe("connected"));
+    const before = localStorage.getItem("shi.chapter-01.save.v6");
+    view.getByRole("button", { name: "Play scene" }).focus();
+    await confirm();
+    expect(HTMLMediaElement.prototype.play).toHaveBeenCalledOnce();
+    view.getByRole("button", { name: "Skip scene" }).focus();
+    await confirm();
+    expect(view.getByTestId("scene-film").dataset.playback).toBe("skipped");
+    await confirm(); // Focus is now the film's finished status, not a choice.
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe(before);
+    expect(view.getByTestId("shi-app").dataset.nodeId).toBe("rain-order");
+    expect(view.queryByTestId("resolution")).toBeNull();
   });
 
   it("navigates and commits through the standard Gamepad API surface", async () => {

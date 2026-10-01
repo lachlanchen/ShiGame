@@ -39,6 +39,9 @@ import { EndingText } from "./components/EndingText";
 import type { DevelopmentCrossingDriver } from "./development-crossing";
 
 const campaign = campaignJson as unknown as Campaign;
+const PrivateRainScene = import.meta.env.DEV && import.meta.env.VITE_SHI_NATIVE !== "1" && import.meta.env.VITE_SHI_PRIVATE_RAIN_SCENE === "1"
+  && new URLSearchParams(window.location.search).get("cinema") === "rain-review"
+  ? lazy(() => import("./components/PrivateRainScene").then(module => ({ default: module.PrivateRainScene }))) : null;
 const ResolvedConsequenceScene = lazy(() => import("./components/ResolvedConsequenceScene").then((module) => ({ default: module.ResolvedConsequenceScene })));
 const ThreeBackdrop = lazy(() => import("./components/ThreeBackdrop").then((module) => ({ default: module.ThreeBackdrop })));
 const ResourceRail = lazy(() => import("./components/ResourceRail"));
@@ -482,6 +485,11 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
     if (command === "previous") { moveChoice(-1); return; }
     if (command === "next") { moveChoice(1); return; }
     if (command === "confirm") {
+      const focused = document.activeElement;
+      if (focused instanceof HTMLElement && focused.closest("[data-testid='scene-film']")) {
+        if (focused instanceof HTMLButtonElement && !focused.disabled) focused.click();
+        return;
+      }
       const choice = node.choices[selectedChoiceIndex];
       if (choice && canChoose(choice, state.resources)) choose(choice);
     }
@@ -727,6 +735,9 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
             <div className="story-number"><span>{String(nodeNumber).padStart(2, "0")}</span><i /></div>
             <p className="date-line" dir={contentDirection(node.dateLabel, locale)}>{localize(node.dateLabel, locale)}</p>
             <h1 id="story-title" dir={contentDirection(node.title, locale)}>{localize(node.title, locale)}</h1>
+            {PrivateRainScene && node.id === "rain-order" && !resolution && <Suspense fallback={null}>
+              <PrivateRainScene locale={locale} reducedMotion={reducedMotion} active={!drawer} description={localize(speaker.name, locale)} />
+            </Suspense>}
             <p className="context" dir={contentDirection(node.context, locale)}>{localize(node.context, locale)}</p>
             <section className="field-signal" data-testid="field-signal" aria-label={translate(locale, "fieldSignal")}>
               <div className="field-signal-head"><span>{translate(locale, "fieldSignal")} · {translate(locale, "reconstruction")}</span><code>{translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</code></div>

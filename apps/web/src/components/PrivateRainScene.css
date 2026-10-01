@@ -1,0 +1,8 @@
+.rain-scene { margin: 20px 0; }
+.rain-scene video, .rain-scene img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 5px; background: #121916; }
+.rain-scene figcaption { font: 12px/1.6 var(--sans); color: var(--muted); margin-block-start: 8px; }
+.rain-scene .silent-film { display: flex; flex-wrap: wrap; gap: 8px; }
+.rain-scene .silent-film video { flex: 0 0 100%; }
+.rain-scene .text-button { min-height: 44px; padding: 8px 12px; }
+.rain-scene [role="status"] { margin-block: 8px; }
+.rain-scene :focus-visible { outline: 3px solid #f0cf86; outline-offset: 3px; }

@@ -3,10 +3,12 @@ import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import { privateScoreServer } from "./private-score-server";
 import { privateCouncilFilmServer } from "./private-council-film-server";
+import { privateRainSceneServer } from "./private-rain-scene-server";
 
 export default defineConfig({
   plugins: [react(), privateScoreServer(process.env.VITE_SHI_PRIVATE_SCORE_AUDITION === "1", fileURLToPath(new URL("../..", import.meta.url))),
-    privateCouncilFilmServer(process.env.VITE_SHI_PRIVATE_COUNCIL_FILM === "1", fileURLToPath(new URL("../..", import.meta.url)))],
+    privateCouncilFilmServer(process.env.VITE_SHI_PRIVATE_COUNCIL_FILM === "1", fileURLToPath(new URL("../..", import.meta.url))),
+    privateRainSceneServer(process.env.VITE_SHI_PRIVATE_RAIN_SCENE === "1", fileURLToPath(new URL("../..", import.meta.url)))],
   base: process.env.SHI_BASE_PATH ?? "/",
   build: {
     target: "es2022",
