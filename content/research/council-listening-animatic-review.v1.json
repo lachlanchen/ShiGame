@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "council-listening-animatic-review.v1",
+  "reviewDate": "2026-10-01",
+  "status": "private-scene-fit-animatic-not-shipping",
+  "publicationApproved": false,
+  "scene": "Daze rain shelter, listening before the existing name-register decision. Not the later Chen city council.",
+  "story": {
+    "source": "content/campaigns/chapter-01-daze.json",
+    "intent": "Hold on Chen listening before the player answers who will share responsibility for the register. Do not reveal or imply a choice before the player makes it.",
+    "historicalBoundary": "Original dramatic performance and fictional casting. Rain and delayed conscription follow the campaign's cited received narrative; this exact shelter, face and exchange are not attested history.",
+    "integrationContract": "Optional skippable introduction, never block choices on download or playback. Static fallback for reduced motion. Persist the actual choice before its reaction; never use this neutral listening shot as proof of a particular outcome."
+  },
+  "image": {
+    "file": "chen-council-listening-v1.png",
+    "sha256": "a7b05dee15757880ee77b79642a3dd9e1d6e7f1e9004f9e14ca5a27e1239c23a",
+    "generator": "Built-in Codex image generation; checkpoint and seed not exposed",
+    "input": "Original chen-sheng-neutral-v1.png identity anchor, not an intermediate relit image",
+    "promptRecord": "Private scene package image-prompt.txt",
+    "agentReview": "Retained as composition and lighting candidate. Broad cheekbones, eye spacing, tied hair and sparse beard remain recognizably related to the anchor. Shelter separates dry face from wet exterior. Shoulder beads are conspicuous; exact costume, weather continuity and blind identity recognition remain unapproved."
+  },
+  "music": {
+    "route": "Existing local Musia ACE candidate B, seed 926102; no new music generation claimed",
+    "sourceSHA256": "f99feef979fa87a07d9bdc041d676ee34708663009045b8b3230d2a601aee8e1",
+    "edit": "First 16 seconds, gain 0.4, one-second fade in, final three-second fade out. All six candidates and original masters retained.",
+    "review": "Source signal health passed; full listening, unintended vocal/similarity review and commercial admission remain open. Not a dialogue mix or an approved loop."
+  },
+  "video": {
+    "file": "council-listening-animatic-v1.mp4",
+    "sha256": "56c4bcc2b57fece9ee9feb76ea02767c047576d24f6c5a85da14c3d09015450e",
+    "verification": "ffprobe confirms both streams and 16-second duration; full FFmpeg decode exits 0 without errors.",
+    "format": "1920x1080, 24 fps, 16 seconds, H.264 and stereo 48 kHz AAC",
+    "method": "FFmpeg 2.5-percent camera push over generated still, with existing Musia cue",
+    "boundary": "Not character animation, not a Blender render, not LocalVideoGen output. Source still is smaller than delivery raster; 1080p encoding does not add source detail. No game integration or user acceptance claimed."
+  },
+  "next": [
+    "Replace animatic with controlled breathing, gaze and listening animation without changing face or costume.",
+    "Use one owned local render job; shared ComfyUI is not a SHI-owned runtime. LocalVideoGen service port 8190 was not listening during this checkpoint.",
+    "Resolve model territory and release rights before choosing a LocalVideoGen production route; repository notes flag H3 limitations.",
+    "Review full-speed motion and sound together, then wire a development-only scene with skip, reduced-motion and save-state tests."
+  ]
+}
