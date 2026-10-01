@@ -216,3 +216,10 @@ media. No audio, store build or public deployment was changed.
 
 All owned Blender/encoding jobs are terminal.56GiB available RAM, swap56/71GiB
 at postcheck. No SHI GUI/noVNC stack, obsolete owned runtime or foreign cleanup.
+
+## Follow-up: trim ownership
+
+The [torso-owned trim checkpoint](COUNCIL_TORSO_TRIM_20261001.md) fixes waist
+anchors accidentally attached to sleeves, with independent 121-frame checks
+and a rendered preview. Strap clipping and final visual approval remain open;
+the follow-up does not change this cloth qualification or admit a game asset.
