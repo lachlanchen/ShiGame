@@ -271,6 +271,11 @@ describe("retreat development scene", () => {
       const view = render(<RetreatScene {...input} />);
       for (const id of ["keep-reserve", "gather-own", "escort-households", records, decision]) await choose(view, id);
       expect(view.getByTestId("retreat-outcome").dataset.outcome).toBe(outcome);
+      expect(view.container.querySelector('[data-retreat-source="chen-fall"]')?.textContent).toContain("第2791–2793行");
+      expect(view.container.querySelector('[data-retreat-source="embers"]')?.textContent).toContain("第2799–2799行");
+      const sourceSave = localStorage.getItem(retreatSaveKey);
+      fireEvent.click(within(view.getByTestId("retreat-source-panel")).getByText("史料与开发说明"));
+      expect(localStorage.getItem(retreatSaveKey)).toBe(sourceSave);
       const variants = retreatStory.endings[outcome].variants;
       const expected = variants.find(variant => variant.when.records === records)!;
       const memory = view.getByTestId("retreat-ending-memory");

@@ -43,6 +43,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
   const scene = story.scenes[state.history.length], choice = scene?.choices[selected] ?? scene?.choices[0];
   const preview = choice ? inspectRetreatChoice(rules, state, choice.id) : null;
   const last = state.history.at(-1), lastScene = last && story.scenes.find(item => item.id === last.sceneId);
+  const evidenceScene = reading || state.completed ? lastScene : scene;
   const lastChoice = lastScene?.choices.find(item => item.id === last?.choiceId);
   const beforeLast = last ? state.history.slice(0, -1).reduce((current, turn) => resolveRetreat(rules, current, turn.choiceId), createRetreat(rules, entry)) : null;
   const lastPreview = last && beforeLast ? inspectRetreatChoice(rules, beforeLast, last.choiceId) : null;
@@ -157,9 +158,9 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       {state.debts.length > 0 && <section data-testid="retreat-debts"><h3>未偿之约</h3>{state.debts.map(debt => <p key={debt.id}>欠本地粮主 {debt.grain} 份粮秣；债未偿还，粮主另持欠契。分行不表示免责。</p>)}</section>}
       {witnessed.length > 0 && <section data-testid="retreat-observations"><h3>已核实的往来</h3>{witnessed.map(event => <p key={event.id}>{event.observation}</p>)}</section>}
     </aside>}</div>
-    <details className="chen-history"><summary>史料与开发说明</summary><p>{(reading ? lastScene : scene)?.transition}</p>
+    <details className="chen-history" data-testid="retreat-source-panel"><summary>史料与开发说明</summary><p>{evidenceScene?.transition}</p>
       <p>{story.viewpoint.historyBoundary}</p>
-      {(reading ? lastScene : scene)?.sourceIds.map(id => { const source = story.sources[id as keyof typeof story.sources]; const location = sourceLocations.locations[id as keyof typeof sourceLocations.locations]; return <p key={id} data-retreat-source={id}>{source.work}卷{source.volume} · {source.anchor}。{source.supports}{location && <small> 本地对读定位：第{location.startLine}–{location.endLine}行。</small>}</p>; })}
+      {evidenceScene?.sourceIds.map(id => { const source = story.sources[id as keyof typeof story.sources]; const location = sourceLocations.locations[id as keyof typeof sourceLocations.locations]; return <p key={id} data-retreat-source={id}>{source.work}卷{source.volume} · {source.anchor}。{source.supports}{location && <small> 本地对读定位：第{location.startLine}–{location.endLine}行。</small>}</p>; })}
       <p>{sourceLocations.boundaryZh}</p>
       {state.completed && state.outcome && state.outcome !== "scattered" && <p>{story.endings[state.outcome].unresolved}</p>}
       {state.completed && state.outcome === "scattered" && <p>{story.scatteredEnding.unresolved}</p>}
