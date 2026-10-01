@@ -67,6 +67,8 @@ def main():
         assert sha(Path(__file__).with_name("build-council-pattern-garment-study.py")) == receipt["independentPattern"]["authorSHA256"]
     if receipt.get("gussetTransition"):
         assert sha(Path(__file__).with_name("build-council-gusset-garment-study.py")) == receipt["gussetTransition"]["authorSHA256"]
+    if receipt.get("transitionEaseFit"):
+        assert sha(Path(__file__).with_name("build-council-fitted-gusset-study.py")) == receipt["transitionEaseFit"]["authorSHA256"]
     cloth_receipt = receipt.get("clothSimulation")
     pin_group = "SHI_ClothPins" if cloth_receipt else None
     if cloth_receipt:

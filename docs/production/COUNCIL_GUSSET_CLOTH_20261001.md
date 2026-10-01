@@ -151,3 +151,68 @@ the no-pre-roll/stiffness15 settings but produce new source hashes.
 
 All owned jobs are terminal, with no GUI or noVNC launched.54GiB RAM available,
 swap56/71GiB at postcheck; other projects and inherited dirty work untouched.
+
+## Rest-ease correction: sampled engineering checks pass
+
+`scripts/build-council-fitted-gusset-study.py` changes only the144 transition
+vertices, reducing radial ease about each ring centre by a tapered maximum5mm.
+It does not project onto the body, change weights/topology, alter the original
+gesture or change the816 retained distal sleeve vertices. The parent recipes
+are unchanged and their hashes remain in the layered receipt. The checker
+also verifies the new fit wrapper's source hash.
+
+Pattern builder17602 exit0 produced a fresh source and four inspected stills.
+They retain the known skin exposure before cloth simulation; this unbaked
+candidate is not admitted or independently collision-qualified. Cloth
+builder11320 exit0 then baked151 frames with the30-frame stationary pre-roll
+and original compression stiffness15, not the ineffective30-stiffness variant.
+All four resulting cloth stills were inspected.
+
+Checker78714 reopened the fitted cloth and completed with **exit0**:
+
+- Minimum sampled body clearance**+5.685mm** over all121 visible frames.
+- Maximum edge change factor**2.557**, below the unchanged3× gate.
+- Minimum face area0.000005055m², above the unchanged lower bound.
+- Body basis/influences/morphs and distal binds unchanged; all53 original bone
+  poses match exactly after the explicit visible-frame mapping, error0.
+-151 cache files hash-verified; reopened pre-roll holds the original first pose.
+- Single manifold surface, boundaries32/32/24/24.
+
+This resolves the previously identified **sampled contact/compression engineering
+blocker** for the council offering gesture. It does not prove exact triangle
+or self-collision safety, historical dress, acting, final likeness or cinematic
+quality. Collar and waist trims still intersect/detach, and the workbench
+materials are not a finished costume. **No game/movie admission yet.**
+
+Fitted source `.runtime/council-fitted-gusset-20261001-v1`; fitted bake
+`.runtime/council-fitted-cloth-20261001-v1`:
+
+- Fit wrapper: `128aa8795fc535c8dac319f69e86660bc9d2dc97d523b3234fcf24086b702c55`
+- Checker: `873dca54780282f4678e220a63a2129b5aef20891b5eef516f630a5d18b949e3`
+- Unbaked blend: `476278ea31424ca6ccc026a01d61a9bde37a603899be51feda6201b6d6a2eb26`
+- Baked blend: `85d99af3e36a48e83b685b1ef598229dbb5c218611b47b0a068a1cbde8257164`
+- Passing report: `fd694e5e43d9c5ac3770fe3d62b2007f8c2fbeb5e4ee0bafd336b090539e177e`
+
+## Full motion preview produced, not yet accepted
+
+`scripts/render-council-cloth-motion-review.py` requires the passing report,
+its current checker hash, matching input blend and every cache hash. Renderer
+99296 exit0 rendered **all121 visible frames** from the reopened bake, without
+changing action, solver or input file. Its frame receipt records every PNG hash.
+Serial ffmpeg encoder77577 exit0 produced a private silent1280×720 H.264 preview,
+30fps/121 frames/4.033333s, verified by ffprobe. A13-frame overview sampling
+frames1/11/…/121 was inspected; collar/waist mismatch remains apparent.
+
+Preview: `.runtime/council-fitted-cloth-20261001-v1/motion-review/council-cloth-motion.mp4`.
+
+- Renderer: `a006f759a585ea76df3e05af00e57f0a1e0f64c7f57db5ff906b9832ee9ef19a`
+- Frame receipt: `3ef55707eeb9ffaeed819d004432b81486efd6fc29537f864184a37bca31f99e`
+- MP4: `1a4f176046a4d90455e9df096f5f6418ce9dd30450bf1767b95d1a404c8abd5b`
+
+Producing the movie and viewing sampled stills is **not** continuous playback
+or human motion acceptance. Next solve trim attachment and inspect continuous
+motion, then refine materials and period costume before integrating council
+media. No audio, store build or public deployment was changed.
+
+All owned Blender/encoding jobs are terminal.56GiB available RAM, swap56/71GiB
+at postcheck. No SHI GUI/noVNC stack, obsolete owned runtime or foreign cleanup.
