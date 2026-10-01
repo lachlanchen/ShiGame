@@ -57,6 +57,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
   const [showFanyang, setShowFanyang] = useState(false);
   const [retreatSnapshot, setRetreatSnapshot] = useState<string | null>(null);
   const transaction = useRef(false);
+  const header = useRef<HTMLElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const sceneHeading = useRef<HTMLHeadingElement>(null);
   const presented = useRef(false);
@@ -84,7 +85,10 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
   useLayoutEffect(() => {
     const target = presented.current || reading || confirmReset ? sceneHeading.current ?? heading.current : heading.current;
     target?.focus({ preventScroll: true });
-    target?.scrollIntoView?.({ block: "start", behavior: "instant" });
+    // Keep the interlude label and return control visible on arrival. Focusing
+    // only the title must not scroll the earlier header controls off a phone.
+    const scrollTarget = target === heading.current ? header.current ?? target : target;
+    scrollTarget?.scrollIntoView?.({ block: "start", behavior: "instant" });
     presented.current = true;
   }, [state.history.length, reading, confirmReset, showFanyang]);
 
@@ -133,7 +137,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
       if (event.altKey || event.key === "Escape") event.stopPropagation();
       if (event.key === "Escape" && !transaction.current) onClose();
     }}>
-    <header className="chen-header">
+    <header className="chen-header" ref={header}>
       <div><p className="eyebrow">{label("interlude")} · 209 BCE</p><h2 id="chen-title" ref={heading} tabIndex={-1}>{text(definition.title)}</h2></div>
       <button className="icon-button" data-council-action="close" disabled={busy} onClick={onClose} aria-label={label("close")}>×</button>
     </header>

@@ -25,6 +25,28 @@ const props = () => ({ origin: origin(), locale: "en" as const, reducedMotion: f
 afterEach(() => { cleanup(); localStorage.clear(); vi.restoreAllMocks(); });
 
 describe("Chen council presentation", () => {
+  it.each([
+    ["en", false], ["en", true], ["zh-Hans", false], ["zh-Hans", true],
+  ] as const)("scrolls the entire arrival header into view while focusing its title (%s, reduced=%s)", (locale, reducedMotion) => {
+    const descriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollIntoView");
+    const scroll = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: scroll });
+    try {
+      const input = { ...props(), locale, reducedMotion };
+      const view = render(<ChenCouncil {...input} />);
+      const heading = view.getByRole("heading", { level: 2 });
+      const header = heading.closest("header")!;
+      expect(document.activeElement).toBe(heading);
+      expect(scroll.mock.instances.at(-1)).toBe(header);
+      expect(header.contains(view.container.querySelector('[data-council-action="close"]'))).toBe(true);
+      expect(scroll).toHaveBeenLastCalledWith({ block: "start", behavior: "instant" });
+      expect(localStorage.getItem("shi.chen-council.v1")).toBeNull();
+      expect(input.onCue).not.toHaveBeenCalled();
+    } finally {
+      if (descriptor) Object.defineProperty(HTMLElement.prototype, "scrollIntoView", descriptor);
+      else Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
+    }
+  });
   it.each(supportedLocales)("keeps the saved reaction primary and changes optional, including cold resume (%s)", async locale => {
     const input = { ...props(), locale };
     const view = render(<ChenCouncil {...input} />);
