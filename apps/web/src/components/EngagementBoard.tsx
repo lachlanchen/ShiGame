@@ -17,6 +17,7 @@ import { translate } from "../i18n";
 import { engagementMetricLabels, engagementOrderLabels, translateEngagement } from "../engagement-i18n";
 import "./EngagementBoard.css";
 import { CrossingField } from "./CrossingField";
+import { CrossingEstablishing } from "./CrossingEstablishing";
 
 const definition = rawDefinition as EngagementDefinition;
 const contentDirection = (text: LocalizedText, locale: Locale): "ltr" | undefined => locale === "ar" && !text.ar ? "ltr" : undefined;
@@ -98,6 +99,7 @@ export function EngagementBoard({ planId, conditionId, locale, onCue, onClose, c
 
     <p className="engagement-boundary">{campaignSession?.labels.boundary ?? translateEngagement(locale, "boundary")}</p>
     {saveError && <p role="alert" className="engagement-boundary">{saveError}</p>}
+    {state.history.length === 0 && !state.completed && <CrossingEstablishing locale={locale} />}
     {campaignSession && state.history.length === 0 && <button type="button" className="text-button" data-testid="cancel-crossing-plan" onClick={campaignSession.onCancel}>{campaignSession.labels.cancel}</button>}
 
     <section className="engagement-briefing" aria-label={translateEngagement(locale, "objective")}>

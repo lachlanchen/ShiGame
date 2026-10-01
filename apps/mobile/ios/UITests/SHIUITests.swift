@@ -251,6 +251,27 @@ final class SHIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["council-outcome"].waitForExistence(timeout: 10))
         capture("crossing-07-chen-conclusion")
     }
+    func testCrossingEstablishingStillFollowsOrderState() throws {
+        let app = XCUIApplication(); startCrossing(app)
+        for id in ["read-the-names", "issue-grain-tallies"] { issueCrossing(id, app); continueCrossing(app) }
+        issueCrossing("families-first", app)
+        let image = app.images["crossing-establishing-image"]
+        XCTAssertTrue(image.waitForExistence(timeout: 10)); reveal(image, in: app)
+        capture("crossing-establishing-native-before-order")
+        let fieldKeys = ["crossingProgress", "rearCohesion", "pursuitClosure"]
+        let original = fieldKeys.map { app.staticTexts["crossing-field-" + $0].label }
+        app.terminate(); app.launch()
+        XCTAssertTrue(image.waitForExistence(timeout: 15))
+        XCTAssertEqual(fieldKeys.map { app.staticTexts["crossing-field-" + $0].label }, original)
+        issueCrossing("screen-through-reeds", app); continueCrossing(app)
+        XCTAssertFalse(image.exists, "An establishing still must not impersonate a saved result")
+        XCTAssertTrue(app.staticTexts["crossing-field-crossingProgress"].label.contains("33/100"))
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.staticTexts["crossing-field-crossingProgress"].waitForExistence(timeout: 15))
+        XCTAssertFalse(image.exists)
+        XCTAssertTrue(app.staticTexts["crossing-field-crossingProgress"].label.contains("33/100"))
+        capture("crossing-establishing-native-after-order")
+    }
     #endif
     func testNativeCampaignAndDurableResume() throws {
         continueAfterFailure = false

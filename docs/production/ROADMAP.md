@@ -85,6 +85,12 @@ crossing-to-Chen route passed with cold resumes; Arabic geography and reduced
 motion were checked on Web. This is a reviewed tactical schematic, not a new
 story episode, historical map or final cinematic animation.
 
+The next [establishing image](CROSSING_ESTABLISHING_IMAGE_20261002.md) connects
+reviewed project art to the pre-order crossing in Web and native QA. It retains
+the existing setting and removes unsupported people/fire events; actual saved
+commands, not the image, determine the following state. It is a still, not a
+replacement for the character animation and music/video gates.
+
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release
 saves, explicit versioned progression, honest previews, matching personal

@@ -1,0 +1,40 @@
+{
+  "assetId": "broken-crossing-establishing-v1",
+  "createdAt": "2026-10-02",
+  "generator": "Codex built-in image generation",
+  "generationMode": "precise-object-edit of existing project environment",
+  "input": {
+    "file": "assets/art/lookdev/broken-crossing-command-space-v1.png",
+    "sha256": "0f5d0d148f2d11f3926cdfbfeca83e3f8aaa04bda0bacee662efc6814cb6066b",
+    "role": "edit target; retain environment, framing, materials and light"
+  },
+  "output": {
+    "file": "assets/art/scenes/broken-crossing-establishing-v1.png",
+    "sha256": "818adf019c61fed70903cd860c0586d29eee4419ad7f5e59af40ee15b0ff6f62",
+    "width": 1672,
+    "height": 941
+  },
+  "delivery": {
+    "file": "assets/art/scenes/broken-crossing-establishing-v1.jpg",
+    "sha256": "5a9d55515adca1158699c207aa39af5e7b0ed2f9d92238776cbbc76aeeffd935",
+    "conversion": "ffmpeg -i source.png -frames:v 1 -q:v 2 -threads 1 delivery.jpg; encoding only, no crop, resize or creative edits"
+  },
+  "rightsStatus": "Project-generated derivative of project-generated art; repository copyright policy applies. No private scan, modern translation or external artist image supplied.",
+  "reviewStatus": "agent-approved-pre-alpha-establishing-still",
+  "reviewer": "Codex visual and narrative-continuity review; not independent human acceptance",
+  "intendedUse": ["Web crossing pre-order scenery", "isolated native crossing QA pre-order scenery"],
+  "review": {
+    "sourceAndDeliveryViewed": true,
+    "peopleRemoved": true,
+    "distantBurningSettlementRemoved": true,
+    "foregroundLampAndGeographyPreserved": true,
+    "noVisibleTextWatermarkOrNewObjects": true,
+    "noOutcomeOrSurvivorClaim": true,
+    "historicalSpecialistApproval": false,
+    "finalCinematicApproval": false,
+    "humanPlaytestApproval": false
+  },
+  "historicalBoundary": "Tongjian volume 7 supplies rain and disrupted travel as circumstances. The owner collection's wenyan extraction lines 2650–2695 was reread. This particular crossing, shelter, table and construction are game reconstruction, not a quoted or surveyed historical scene. Main text and commentary remain distinct; no source pages are redistributed.",
+  "constraints": ["Only before the first crossing order", "Never a success, defeat or character-reaction image", "No action, timer or save callback", "Missing media must leave the game playable", "No new close character identity", "Not final marketing art or proof of historical construction"],
+  "prompt": "Use case: precise-object-edit. Asset type: cinematic establishing still for the SHI historical game, before any crossing orders. Edit the supplied existing SHI crossing environment while preserving its camera, framing, river geometry, broken timber crossing, reed shelter, command table, cord, wooden slips, stones, clay disk, low earthenware oil lamp, tactile realism and subdued blue-black/warm-lamp palette. Make only these narrative-neutralizing changes: remove every distant human silhouette; remove the burning settlement and all distant fires from the right horizon, replacing just that small region with natural rain haze and low vegetation continuous with the banks. Keep the foreground lamp burning. Preserve wet surfaces and readable shadow detail. This is a fictional late-Qin crossing atmosphere, not a historical map and not a victory/defeat scene. No new people, boats, carts, weapons, buildings or props. No writing, glyphs, UI, logos, watermark or fantasy elements. Retain the cinematic wide composition and high detail."
+}

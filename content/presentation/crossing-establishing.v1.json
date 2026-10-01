@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "crossing-establishing-v1",
+  "claimStatus": "dramatic-reconstruction",
+  "showWhen": "before-first-crossing-order",
+  "image": "broken-crossing-establishing-v1.jpg",
+  "width": 1672,
+  "height": 941,
+  "labels": {
+    "en": { "caption": "The crossing, before orders · illustrated setting", "alt": "A lamp lights a command table beneath a reed shelter; damaged timbers lead into the rain-swollen river. No people or outcome are depicted." },
+    "zh-Hans": { "caption": "下令前的渡口 · 场景绘制", "alt": "苇棚下，油灯照着案上的木简与绳线；残损的木渡伸向雨后涨起的河水。画面不呈现人物去向或行动结果。" },
+    "zh-Hant": { "caption": "下令前的渡口 · 場景繪製", "alt": "葦棚下，油燈照著案上的木簡與繩線；殘損的木渡伸向雨後漲起的河水。畫面不呈現人物去向或行動結果。" },
+    "ja": { "caption": "命令前の渡し場 · 場面イラスト", "alt": "葦の屋根の下で灯火が指揮卓を照らす。壊れた木の渡り道が雨で増水した川へ延びる。人物や行動の結果は描かれていない。" },
+    "ko": { "caption": "명령 전의 나루 · 장면 삽화", "alt": "갈대 지붕 아래 등잔이 지휘 탁자를 비추고, 부서진 목조 통로가 비로 불어난 강으로 이어진다. 인물이나 행동의 결과는 묘사하지 않는다." },
+    "vi": { "caption": "Bến sông trước khi ra lệnh · Minh họa bối cảnh", "alt": "Đèn soi bàn chỉ huy dưới mái sậy; những thanh gỗ hỏng dẫn ra dòng sông dâng sau mưa. Không thể hiện con người hay kết quả hành động." },
+    "ar": { "caption": "المعبر قبل إصدار الأوامر · مشهد توضيحي", "alt": "مصباح يضيء طاولة القيادة تحت سقف من القصب؛ أخشاب متضررة تمتد نحو النهر المرتفع بفعل المطر. لا يصوّر المشهد أشخاصًا أو نتيجة للأحداث." },
+    "fr": { "caption": "Le passage avant les ordres · Illustration", "alt": "Une lampe éclaire la table de commandement sous un abri de roseaux ; des bois endommagés avancent dans la rivière gonflée par la pluie. Aucun personnage ni résultat n’est représenté." },
+    "es": { "caption": "El cruce antes de las órdenes · Ilustración", "alt": "Una lámpara ilumina la mesa de mando bajo un cobertizo de juncos; maderos dañados se adentran en el río crecido por la lluvia. No se representan personas ni resultados." },
+    "ru": { "caption": "Переправа до приказов · Иллюстрация", "alt": "Лампа освещает командный стол под тростниковым навесом; повреждённый деревянный настил уходит в реку, разлившуюся после дождя. Люди и исход событий не изображены." },
+    "de": { "caption": "Der Übergang vor den Befehlen · Szenenillustration", "alt": "Eine Lampe beleuchtet den Kommandotisch unter einem Schilfdach; beschädigte Holzbalken führen in den vom Regen angeschwollenen Fluss. Weder Personen noch Handlungsergebnisse sind dargestellt." }
+  }
+}

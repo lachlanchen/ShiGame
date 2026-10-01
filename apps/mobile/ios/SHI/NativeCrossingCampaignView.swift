@@ -167,6 +167,7 @@ struct NativeCrossingCampaignView: View {
             reactionView(reaction, state: state)
         } else if let battle = state.engagement {
             heading(text(session.content.engagement, "title"))
+            if battle.history.isEmpty && !battle.completed { NativeCrossingEstablishing(locale: locale) }
             if let field = CrossingFieldPresentation.bundled {
                 NativeCrossingField(definition: field, metrics: battle.metrics, labels: labels, locale: locale,
                                     reducedMotion: reducedMotion || manualReducedMotion)

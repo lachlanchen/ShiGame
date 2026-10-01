@@ -156,7 +156,7 @@ try {
     socket.addEventListener("message", event => {
       const message = JSON.parse(event.data);
       if (message.method === "Network.requestWillBeSent" && /\/three\.module-.*\.js/.test(message.params.request.url)) report.graphicsRequests.push(message.params.request.url);
-      if (graphicsReview === "unavailable" && message.method === "Fetch.requestPaused") {
+      if (graphicsReview === "unavailable" && message.method === "Fetch.requestPaused" && message.params.resourceType !== "Image") {
         void send("Fetch.failRequest", { requestId: message.params.requestId, errorReason: "Failed" }).catch(error => report.errors.push(error.message));
       }
     });
@@ -376,6 +376,9 @@ try {
     await capture("crossing-command-desktop"); await layout("crossing desktop");
     await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
     await capture("crossing-command-phone"); await layout("crossing phone");
+    await until("(()=>{const e=document.querySelector('[data-testid=crossing-establishing] img');return e?.complete&&e.naturalWidth===1672})()");
+    await evaluate("document.querySelector('[data-testid=crossing-establishing]').scrollIntoView({block:'center',behavior:'instant'})");
+    await capture("crossing-establishing-phone"); await layout("crossing establishing still");
     const key = internalDirectory ? "shi.internal.crossing-campaign.v2" : `shi.development.crossing-campaign.v${revisedCrossing ? 2 : 1}`;
     const beforeOrder = JSON.parse(await evaluate(`localStorage.getItem('${key}')`));
     const fieldPosition = await evaluate("document.querySelector('[data-field-progress]')?.getAttribute('data-field-progress')");
@@ -399,11 +402,33 @@ try {
     await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
     check(await evaluate("getComputedStyle(document.querySelector('.crossing-field-marker')).transitionDuration==='0s'"), "schematic movement honors reduced motion");
     await send("Emulation.setEmulatedMedia", { features: graphicsReview === "reduced" ? [{ name: "prefers-reduced-motion", value: "reduce" }] : [] });
+    // Fail only this optional image at the network layer. The real saved
+    // pre-order scene must reopen and accept the next order without it.
+    const stillURL = await evaluate("document.querySelector('[data-testid=crossing-establishing] img').currentSrc");
+    await send("Network.enable");
+    await send("Network.setCacheDisabled", { cacheDisabled: true });
+    // In Vite development the same path with ?import is a JavaScript module.
+    // Intercept Image requests only, never the module which renders the UI.
+    socket.addEventListener("message", event => {
+      const message = JSON.parse(event.data);
+      if (message.method === "Fetch.requestPaused" && message.params.resourceType === "Image") {
+        void send("Fetch.failRequest", { requestId: message.params.requestId, errorReason: "Failed" }).catch(error => report.errors.push(error.message));
+      }
+    });
+    await send("Fetch.enable", { patterns: [{ urlPattern: stillURL, resourceType: "Image", requestStage: "Request" },
+      ...(graphicsReview === "unavailable" ? [{ urlPattern: "*three.module-*.js*", requestStage: "Request" }] : [])] });
+    await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+    await until("!!document.querySelector('[data-testid=engagement-board]')&&!document.querySelector('[data-testid=crossing-establishing]')");
+    check(await evaluate(`localStorage.getItem('${key}')`) === fieldSave, "failed scenery download preserves the pre-order save");
+    await capture("crossing-establishing-unavailable-phone"); await layout("crossing without optional scenery");
     await click(`[data-engagement-command="${crossingExpectation.commands[0]}"]`);
+    if (graphicsReview === "unavailable") await send("Fetch.enable", { patterns: [{ urlPattern: "*three.module-*.js*", requestStage: "Request" }] });
+    else await send("Fetch.disable");
     await until("document.querySelector('[data-testid=engagement-board]').dataset.pulseIndex==='1'");
     const afterOrder = await evaluate(`localStorage.getItem('${key}')`);
     const committedFieldPosition = await evaluate("document.querySelector('[data-field-progress]').getAttribute('data-field-progress')");
     check(committedFieldPosition !== fieldPosition, "committed command changes the schematic progress index");
+    check(!await evaluate("!!document.querySelector('[data-testid=crossing-establishing]')"), "pre-order still cannot impersonate a committed outcome");
     await evaluate("document.querySelector('[data-testid=crossing-field]').scrollIntoView({block:'center',behavior:'instant'})");
     await capture("crossing-field-after-phone");
     check(JSON.parse(afterOrder).ledger.events.length === beforeOrder.ledger.events.length + 1, "one pointer-issued field order is saved exactly once");
@@ -419,6 +444,7 @@ try {
     await until("document.querySelector('[data-testid=engagement-board]')?.dataset.pulseIndex==='1'");
     check(await evaluate(`localStorage.getItem('${key}')`) === afterOrder, "cold resume preserves the saved first order");
     check(await evaluate("document.querySelector('[data-field-progress]').getAttribute('data-field-progress')") === committedFieldPosition, "cold resume reconstructs the same schematic without another order");
+    check(!await evaluate("!!document.querySelector('[data-testid=crossing-establishing]')"), "cold resume does not restore a stale pre-order still");
     if (scoreAudition) {
       await until(exists('[data-testid="private-score-audition"]'));
       check(await evaluate("document.querySelector('[data-testid=private-score-audition]').dataset.status==='idle'"), "reload does not automatically resume the private soundtrack");
