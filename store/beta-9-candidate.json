@@ -20,7 +20,7 @@
     }
   },
   "android": {
-    "status": "signed-upgrade-and-offline-route-qualified-not-uploaded",
+    "status": "available-to-existing-internal-testers",
     "applicationId": "art.lazying.shi",
     "versionCode": 9,
     "sourceCommit": "bbe8615752979debb2388a93210bda8c3381022e",
@@ -31,7 +31,23 @@
     "apkSHA256": "7efc33d3d97a48f27370a34d7ce0e14fd3c6fcc66edc60a3e020667222044857",
     "aabSHA256": "94791e485de9b26d9b520f7ce4cd9bd9de7884024967b83484f3de1f4556dbc9",
     "signerCertificateSHA256": "3ce089f4f9f7da11355ecace697bfade9377f9159fff14f4529b5b090a3032c8",
-    "uploaded": false,
+    "uploaded": true,
+    "distribution": {
+      "track": "internal",
+      "trackId": "4701512710674115784",
+      "releaseId": "2",
+      "releaseName": "1.0.0 (9) - Continuity internal",
+      "uploadAttemptAtUTC": "2026-10-01T21:53:27.897Z",
+      "confirmedAtUTC": "2026-10-01T21:58:40.974Z",
+      "availabilityVerifiedAtUTC": "2026-10-01T21:59:36.434Z",
+      "providerStatus": "Available to internal testers",
+      "versionCodeCount": 1,
+      "testerScope": "Existing SHI Internal Owner list; one user; membership unchanged",
+      "joinURL": "https://play.google.com/apps/internaltest/4701512710674115784",
+      "productionChanged": false,
+      "priceOrTerritoriesChanged": false,
+      "playDeliveredDeviceInstallVerified": false
+    },
     "qualification": [
       "Signed release unit/lint, APK/AAB, identity, certificate and unchanged source inventory checks passed",
       "API34 in-place 8-to-9 upgrade preserved original install timestamp, chapter ending, commitment, seed and resources",
@@ -47,13 +63,13 @@
       "Upgraded route completed the remaining three chapter orders, cold-restored its ending and all four unique journal decisions, then entered a fresh Chen council; six assertions passed and three screenshots inspected"
     ],
     "limitations": [
-      "Not uploaded or available to internal testers",
+      "Provider availability verified; owner installation and Play-delivered device upgrade remain to be observed",
       "Fresh exact9 route is one English API34 path; prior build8 route and blocked-offer evidence remain separate",
       "Direct1-to9 qualification uses retained locally signed APKs; Play-delivered signing chain and physical-device upgrade are not claimed",
       "Release1's transient consequence overlay is not migrated as unread; its committed decision and journal consequence are preserved",
       "Physical-device, human playtest and broader localization/performance qualification remain",
       "No new music/video admitted; development-only crossing/retreat/refuge remain excluded",
-      "Reconcile live provider and internal-track state before upload; no production-track change authorized by this receipt"
+      "Exact9 uploaded once and distributed only to the existing internal track; do not repeat upload or promote to production under this receipt"
     ]
   }
 }

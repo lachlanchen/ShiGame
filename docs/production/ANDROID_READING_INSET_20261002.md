@@ -1,6 +1,6 @@
 # Android 9: readable interlude arrivals and saved continuation
 
-Signed Android **1.0.0 (9)** carries the [reading-inset correction](INTERLUDE_READING_INSET_20261002.md) from clean source `bbe8615752979debb2388a93210bda8c3381022e`. It is a locally qualified candidate, **not an uploaded beta**. Immutable artifact/source identifiers are in [the candidate receipt](../../store/beta-9-candidate.json).
+Signed Android **1.0.0 (9)** carries the [reading-inset correction](INTERLUDE_READING_INSET_20261002.md) from clean source `bbe8615752979debb2388a93210bda8c3381022e`. Google Play now reports it **available to the existing internal testers**. Immutable artifact/source identifiers and the distribution receipt are in [the candidate receipt](../../store/beta-9-candidate.json). The qualification chronology below records the earlier pre-upload state.
 
 ## What was tested
 
@@ -59,3 +59,11 @@ The remaining three ordersâ€”grain tallies, households first, village covenantsâ
 Read-only provider checks during this checkpoint recorded only uploaded build1 at `2026-10-01T21:39:15.194Z` and an active Internal testing track at `21:40:30.929Z`, with `1.0.0 (1) - Chapter I internal` available to internal testers. No upload, tester-list change, track edit or promotion was performed. Recheck before writing; build numbers are not reserved by viewing them.
 
 This closes direct retained-APK upgrade qualification, not Play-delivered re-signing or physical-device acceptance. Initial incomplete UI dumps were rejected and retried against the same running app; no blank/stale capture was accepted. The exact emulator was stopped after capture; its saved upgraded route is retained. Next distribute the qualified candidate only under the existing internal-beta scope, with tester membership and final provider state verified, then use that delivered build for physical-device feedback. Public production remains build1.
+
+## Distributed to the existing internal testers
+
+On October 2 (Hong Kong), the exact retained AAB was uploaded once, with its SHA256 rechecked against the receipt. The existing SHI owner list was the only selected tester list, containing one user. No tester membership, production track, pricing or markets were changed. The preview reported **Ready to release**, version9 only, with no supported-device losses. The scoped internal-release confirmation was accepted at `2026-10-01T21:58:40.974Z`.
+
+At `2026-10-01T21:59:36.434Z`, live Console readback and the inspected screenshot showed **1.0.0 (9) - Continuity internal**, **Available to internal testers**, one version code. Raw Console evidence stays private. [Join the existing internal test](https://play.google.com/apps/internaltest/4701512710674115784) using the already-authorized tester account; store propagation may take time. Do not uninstall first when checking retained progress.
+
+Test the update from build1, Continue, offline play, close/reopen, and the consequences of shared grain accounts versus army-first promises across Chen and Fan Yang. Report the chosen route and where motivation, costs or continuation become unclear. This build remains text-heavy with long scrolling panels. It includes no new music/video or gated crossing/retreat/refuge revisions. Provider availability does not establish a Play-delivered physical-device upgrade or human enjoyment. iOS/TestFlight was not updated in this checkpoint; its signing authorization remains independent.

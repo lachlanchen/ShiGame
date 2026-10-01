@@ -53,6 +53,14 @@
     "internalTesters": 1,
     "internalTestURL": "https://play.google.com/apps/internaltest/4701512710674115784",
     "internalReleasedAt": "2026-09-26T19:11:00+08:00",
+    "currentInternalRelease": {
+      "versionCode": 9,
+      "name": "1.0.0 (9) - Continuity internal",
+      "status": "Available to internal testers",
+      "verifiedAtUTC": "2026-10-01T21:59:36.434Z",
+      "receipt": "store/beta-9-candidate.json",
+      "note": "Existing owner-only track; production artifacts and versionCode above remain build1. This is provider availability, not a verified Play-delivered device installation."
+    },
     "lastVerifiedOn": "2026-10-02",
     "closedTrackId": "4699576659646836490",
     "closedReviewSubmittedAt": "2026-09-26T11:18:08Z",
@@ -61,7 +69,7 @@
     "publishingOverviewReadyChanges": 0,
     "closedTerritoryCount": 169,
     "productionTerritoryCount": 169,
-    "productionState": "2026-10-02 live Console readback: release 1.0.0 (1) - Chapter I Available on Google Play, released Oct2 02:31 HKT, one version code, 169 target countries. Public US listing HTTP200 with exact app name and USD0.99 InStock offer. No newer development build was uploaded.",
+    "productionState": "2026-10-02 launch readback: release 1.0.0 (1) - Chapter I Available on Google Play, released Oct2 02:31 HKT, one version code, 169 target countries. Public US listing HTTP200 with exact app name and USD0.99 InStock offer. Subsequent build9 distribution is internal-only; production was not changed.",
     "productionTrackId": "4698739578429753044",
     "productionReleaseId": "1",
     "productionReleaseName": "1.0.0 (1) - Chapter I",

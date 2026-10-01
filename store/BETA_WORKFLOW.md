@@ -51,7 +51,19 @@ on September30; new betas do not inherit public-release authorization.
   install. Use the existing TestFlight app/group and the internal Play link in
   release.json. Preserve a private detailed operator log without credentials.
 
-## Next candidate
+## Current checkpoint — October 2, 2026
+
+Android **1.0.0 (9) - Continuity internal** is now available to the existing
+owner-only internal group, verified in Play Console after the exact qualified
+AAB upload. [Receipt](beta-9-candidate.json) and
+[test notes](../docs/production/ANDROID_READING_INSET_20261002.md#distributed-to-the-existing-internal-testers)
+separate local upgrade/offline qualification from provider availability and
+still-pending Play-delivered physical-device feedback. Production remains1;
+no tester, price or market changes. TestFlight remains a separate signing gate;
+no iOS upgrade was uploaded in this checkpoint. Preserve all retained artifacts
+and reconcile live state before preparing a successor. Do not reuse build9.
+
+## Historical September 30 candidate preparation
 
 Prepare the accumulated saved-consequence, lifecycle and Chen council work as
 the next mobile beta. Build2 is only a tentative next number until live provider
