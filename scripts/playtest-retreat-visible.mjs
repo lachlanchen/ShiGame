@@ -520,6 +520,22 @@ try {
   check(await evaluate(`document.querySelector(${JSON.stringify(recallSelector)}).textContent`) === remembered, "cold reload preserves exact recalled response");
   check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "recall, sources and reload preserve saved decisions byte for byte");
   await capture("06e-restored-response-mobile"); await layout("restored response");
+  if (route === "dispersed" && storyBranch === "baseline") {
+    const upstream = await evaluate("[localStorage.getItem('shi.chen-council.v1'),localStorage.getItem('shi.fanyang-guarantee.v1')]");
+    await click('[data-retreat-rewind="evacuation"]');
+    check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "opening checkpoint confirmation preserves original ending");
+    await capture("07-replay-confirmation-mobile"); await layout("replay confirmation");
+    await click('[data-testid="retreat-rewind-confirm"]'); await until(exists('[data-testid="retreat-commit"]'));
+    check(await evaluate("JSON.parse(localStorage.getItem('shi.dev.chen-retreat.v1')).choices.join(',')") === `${reserves},${reception}`, "checkpoint retains only the two earlier orders");
+    for (const id of ["escort-households", "carry-records", "stay-together"]) {
+      await click(`[data-retreat-choice="${id}"]`); await click('[data-testid="retreat-commit"]');
+      await click('[data-testid="retreat-response"] [data-council-action="continue"]');
+    }
+    check(await evaluate("document.querySelector('[data-testid=retreat-outcome]').dataset.outcome==='together'"), "reconsidered evacuation reaches a different earned ending");
+    check(JSON.stringify(await evaluate("[localStorage.getItem('shi.chen-council.v1'),localStorage.getItem('shi.fanyang-guarantee.v1')]")) === JSON.stringify(upstream), "replaying retreat preserves council and Fan Yang saves");
+    await capture("08-replayed-together-mobile"); await layout("replayed ending");
+    await click('[data-testid="retreat-decision-record"] summary');
+  }
   await click('[data-testid="retreat-decision-record"] summary');
   await click('[data-testid="retreat-outcome"] [data-council-action="close"]');
   await click('[data-testid="fanyang-scene"] [data-council-action="close"]');

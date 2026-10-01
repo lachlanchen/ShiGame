@@ -38,6 +38,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
   const [state, setState] = useState(initial), [invalid, setInvalid] = useState(damaged);
   const [selected, setSelected] = useState(0), [reading, setReading] = useState(initial.history.length > 0);
   const [busy, setBusy] = useState(false), [error, setError] = useState(false), [reset, setReset] = useState(false);
+  const [rewindIndex, setRewindIndex] = useState<number | null>(null);
   const transaction = useRef(false), alive = useRef(true), heading = useRef<HTMLHeadingElement>(null);
   const offerButtons = useRef(new Map<string, HTMLButtonElement>());
   const scene = story.scenes[state.history.length], choice = scene?.choices[selected] ?? scene?.choices[0];
@@ -56,8 +57,8 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     && Object.entries(event.when).every(([key, value]) => facts[key] === value)
     && (!event.priorChapterChoice || entry.chapter.history.some(turn => turn.choiceId === event.priorChapterChoice)));
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
-  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [state.history.length, reading, reset]);
-  const persist = async (next: RetreatState) => {
+  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [state.history.length, reading, reset, rewindIndex]);
+  const persist = async (next: RetreatState, showResponse = true) => {
     if (transaction.current) return;
     transaction.current = true; setBusy(true); setError(false); onSavingChange?.(true);
     let previous: string | null = null, wrote = false;
@@ -65,7 +66,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       previous = gameStorage.getItem(saveKey);
       gameStorage.setItem(saveKey, encodeRetreatSnapshot(next, rulesHash, storyHash)); wrote = true;
       await flushPersistence();
-      if (alive.current) { setState(next); setSelected(0); setReading(next.history.length > 0); setInvalid(false); setReset(false); setRevisionNotice(false); }
+      if (alive.current) { setState(next); setSelected(0); setReading(showResponse && next.history.length > 0); setInvalid(false); setReset(false); setRewindIndex(null); setRevisionNotice(false); }
     } catch {
       if (wrote) try {
         if (previous === null) gameStorage.removeItem(saveKey); else gameStorage.setItem(saveKey, previous);
@@ -94,7 +95,15 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     {revisionNotice && <p role="status" className="chen-boundary" data-testid="retreat-prose-revision">故事文字已修订，你的决定与物资不变。正在按原进度阅读新版文字；确认下一项行动后才会更新存档版本。</p>}
     {error && <p role="alert" className="chen-error">未能保存，命令尚未确认。请恢复存储后重试。</p>}
     <div className={`chen-layout${reading && !reset ? " chen-reading-layout" : ""}`}><section className="chen-main">
-      {reset ? <section className="chen-scene"><h3 ref={heading} tabIndex={-1}>替换本段开发存档？此前章节不变。</h3>
+      {rewindIndex !== null ? <section className="chen-scene" data-testid="retreat-rewind-confirmation">
+        <h3 ref={heading} tabIndex={-1}>回到「{story.scenes[rewindIndex]!.title}」下令之前？</h3>
+        <p>这是重试另一条分支，不是故事中的时光倒流。确认后将替换本段存档，移除这道命令及其后的决定和结局；更早的决定、当时的物资与未偿之约按原记录恢复。此前章节、陈县议事与范阳不变。原结局不会另存。</p>
+        <button className="primary-button" data-testid="retreat-rewind-confirm" disabled={busy} onClick={() => {
+          const checkpoint = state.history.slice(0, rewindIndex).reduce((current, turn) => resolveRetreat(rules, current, turn.choiceId), createRetreat(rules, entry));
+          void persist(checkpoint, false);
+        }}>{busy ? "保存中…" : "确认替换，重试此处"}</button>
+        <button className="text-button" disabled={busy} onClick={() => { setRewindIndex(null); setError(false); }}>取消，保留原结局</button>
+      </section> : reset ? <section className="chen-scene"><h3 ref={heading} tabIndex={-1}>替换本段开发存档？此前章节不变。</h3>
         <button className="primary-button" disabled={busy} data-council-action="reset" onClick={() => void persist(createRetreat(rules, entry))}>确认重开</button>
         <button className="text-button" disabled={busy} data-council-action="cancel" onClick={() => setReset(false)}>取消</button></section>
       : reading && lastChoice && lastScene ? <section className="chen-scene chen-response" data-testid="retreat-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{lastChoice.title}</h3>
@@ -128,6 +137,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
               <ul>{councilMetricKeys.filter(key => turn.before[key] !== turn.after[key]).map(key =>
                 <li key={key}>{metrics[key]}：{turn.before[key]} → {turn.after[key]}</li>)}</ul>
               {councilMetricKeys.every(key => turn.before[key] === turn.after[key]) && <p>本次未改变这五项数值；已作出的承诺与记录仍然保留。</p>}
+              <button className="text-button" data-retreat-rewind={turn.sceneId} disabled={busy || invalid} onClick={() => setRewindIndex(state.history.indexOf(turn))}>从这道命令之前重试…</button>
             </li>;
           })}</ol>
         </details>
@@ -169,6 +179,6 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       {state.completed && state.outcome && state.outcome !== "scattered" && <p>{story.endings[state.outcome].unresolved}</p>}
       {state.completed && state.outcome === "scattered" && <p>{story.scatteredEnding.unresolved}</p>}
       <p>{story.boundary}</p></details>
-    {!reset && <button className="text-button" data-council-action="retry" disabled={busy} onClick={() => setReset(true)}>重开本段…</button>}
+    {!reset && rewindIndex === null && <button className="text-button" data-council-action="retry" disabled={busy} onClick={() => setReset(true)}>重开本段…</button>}
   </section>;
 }

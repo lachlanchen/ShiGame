@@ -40,6 +40,62 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("replays a namespaced checkpoint without forgiving the grain loan or touching the legacy slot", async () => {
+    const input = props();
+    input.entry = structuredClone(input.entry);
+    input.entry.fanyang.metrics = { ...input.entry.fanyang.metrics, grain: 5, tempo: 6, city: 6, allies: 6, veterans: 6 };
+    const key = "shi.replay-test.chen-retreat.v1";
+    localStorage.setItem(retreatSaveKey, "untouched older edition");
+    const view = render(<RetreatScene {...input} saveNamespace="shi.replay-test" />);
+    for (const id of ["decline-dispatch", "borrow-local-grain", "split-routes"]) await choose(view, id);
+    const checkpoint = localStorage.getItem(key);
+    for (const id of ["carry-records", "release-groups"]) await choose(view, id);
+    fireEvent.click(within(view.getByTestId("retreat-decision-record")).getByText("回看这一路的决定"));
+    fireEvent.click(view.container.querySelector('[data-retreat-rewind="records"]')!);
+    fireEvent.click(view.getByTestId("retreat-rewind-confirm"));
+    await view.findByTestId("retreat-commit");
+    expect(localStorage.getItem(key)).toBe(checkpoint);
+    expect(view.getByTestId("retreat-debts").textContent).toContain("欠本地粮主 2 份粮秣");
+    expect(localStorage.getItem(retreatSaveKey)).toBe("untouched older edition");
+  });
+  it.each([0, 2, 4])("confirms replay before order %s, preserves earlier chapters and resumes the rebuilt checkpoint", async index => {
+    const input = props();
+    let view = render(<RetreatScene {...input} />);
+    localStorage.setItem("shi.chen-council.v1", councilSnapshot);
+    localStorage.setItem("shi.fanyang-guarantee.v1", fanyangSnapshot);
+    const orders = ["decline-dispatch", "gather-own", "split-routes", "carry-records", "release-groups"];
+    for (const id of orders) await choose(view, id);
+    const original = localStorage.getItem(retreatSaveKey);
+    const openReplay = () => {
+      fireEvent.click(within(view.getByTestId("retreat-decision-record")).getByText("回看这一路的决定"));
+      fireEvent.click(view.container.querySelector(`[data-retreat-rewind="${retreatStory.scenes[index]!.id}"]`)!);
+    };
+    openReplay();
+    expect(view.getByTestId("retreat-rewind-confirmation").textContent).toContain("原结局不会另存");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(original);
+    fireEvent.click(view.getByRole("button", { name: "取消，保留原结局" }));
+    expect(view.getByTestId("retreat-outcome")).toBeTruthy();
+    expect(localStorage.getItem(retreatSaveKey)).toBe(original);
+    openReplay();
+    vi.spyOn(persistence, "flushPersistence").mockRejectedValueOnce(new Error("checkpoint save failed")).mockResolvedValue(undefined);
+    fireEvent.click(view.getByTestId("retreat-rewind-confirm"));
+    await view.findByRole("alert");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(original);
+    expect(view.getByTestId("retreat-rewind-confirmation")).toBeTruthy();
+    fireEvent.click(view.getByTestId("retreat-rewind-confirm"));
+    await view.findByTestId("retreat-commit");
+    expect(view.queryByTestId("retreat-response")).toBeNull();
+    expect(JSON.parse(localStorage.getItem(retreatSaveKey)!).choices).toEqual(orders.slice(0, index));
+    expect(localStorage.getItem("shi.chen-council.v1")).toBe(councilSnapshot);
+    expect(localStorage.getItem("shi.fanyang-guarantee.v1")).toBe(fanyangSnapshot);
+    const checkpoint = localStorage.getItem(retreatSaveKey);
+    view.unmount(); view = render(<RetreatScene {...input} />);
+    if (index > 0) fireEvent.click(within(view.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(localStorage.getItem(retreatSaveKey)).toBe(checkpoint);
+    for (const id of orders.slice(index)) await choose(view, id);
+    expect(view.getByTestId("retreat-outcome").dataset.outcome).toBe("dispersed");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(original);
+  });
   it("covers every retreat source with a matching volume and valid local range", () => {
     expect(retreatSources.referenceSHA256).toBe(retreatStory.sourceReadback.sha256);
     expect(Object.keys(retreatSources.locations).sort()).toEqual(Object.keys(retreatStory.sources).sort());
