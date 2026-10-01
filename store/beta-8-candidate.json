@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "candidateBuild": 8,
+  "createdOn": "2026-10-02",
+  "scope": "Signed Android scene-arrival correction; retained-save upgrade and fresh chapter qualification",
+  "providerPreflight": {
+    "checkedAtUTC": "2026-10-01T20:29:05.117Z",
+    "readOnly": true,
+    "surface": "All app bundles",
+    "uploadedVersionCodes": [1],
+    "bundlePagination": "1 - 1 of 1",
+    "numberReserved": false
+  },
+  "android": {
+    "status": "signed-scene-arrival-qualified-not-uploaded",
+    "applicationId": "art.lazying.shi",
+    "versionCode": 8,
+    "sourceCommit": "cee416f452f4883fd8be75a35c8304cc00c565c2",
+    "sourceCleanAtBuild": true,
+    "sourceSetSHA256": "fb003110765b24b6ea694d8bf6268f0388358791c2620b65d02c7ea5156c0bc8",
+    "sourceFiles": 348,
+    "sourceUnchangedDuringBuild": true,
+    "apkSHA256": "098a8b33da2720528cccbeb556104eae418042a199b8a0aaa9aeaa03b51e19fd",
+    "aabSHA256": "47bba65d8f48e9b8c3d4ce80e4c025c6fb9b7b07e8e518e7f7b6ed72edd42b55",
+    "signerCertificateSHA256": "3ce089f4f9f7da11355ecace697bfade9377f9159fff14f4529b5b090a3032c8",
+    "uploaded": false,
+    "qualification": [
+      "Signed release unit/lint, APK/AAB, identity, certificate and unchanged source inventory checks passed",
+      "API34 in-place 7-to-8 upgrade preserved original install timestamp, ending, commitment, seed and resources",
+      "Fresh all8 four-order chapter reached Deep Roots with kept promise; all four Continue arrivals showed heading without corrective scrolling",
+      "Cold launch preserved fresh ending, seed and resources; Chen entry showed its return control",
+      "Eight assertion groups passed; six signed-app screenshots visually reviewed"
+    ],
+    "limitations": [
+      "Not uploaded or available to internal testers",
+      "Complete council/Fan Yang and unavailable-offer control checks on exact8 remain",
+      "Prior release1-to-7 upgrade evidence is separate; direct release1-to-8 and Play-delivered upgrades are not claimed",
+      "Physical-device, human playtest and broader localization/performance qualification remain",
+      "No new music/video admitted; development-only crossing/retreat/refuge remain excluded",
+      "Reconcile live provider state before upload; no production-track change authorized by this receipt"
+    ]
+  }
+}

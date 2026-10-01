@@ -71,3 +71,50 @@ them in cleanup. The reviewed run's ports were closed afterward. The Android tes
 emulator was also stopped; its save remains retained. This checkpoint is a source
 and production-web correction. A successor signed Android artifact, upgrade
 verification and actual mobile arrival review are still required before upload.
+
+## Signed Android successor 8
+
+The follow-up built version 1.0.0 (8) from clean commit
+`cee416f452f4883fd8be75a35c8304cc00c565c2`. Release unit/lint, APK/AAB generation,
+package identity and signing checks passed; the 348-file source inventory was
+unchanged across the build. Full source validation previously passed 497 tests
+at this commit, and both its GitHub CI and Pages runs completed successfully.
+The Android packaging command itself is not a rerun of those 497 tests.
+Immutable artifact details are in [the candidate receipt](../../store/beta-8-candidate.json).
+
+On the retained API34 upgrade emulator, `adb install -r` changed 7 to 8 without
+uninstalling or clearing data. The first-install timestamp stayed unchanged.
+Seed `034BFA58`, Watchful Strategist, the kept concealment promise and all five
+resources remained intact. Continue brought that ending into view.
+
+A normal **New chronicle** then started seed `26DADE69`. Four actual UI orders—
+read names, issue grain tallies, send households first, root in village covenants—
+reached Deep Roots with the protection promise kept. Immediately after each
+response's Continue, fresh accessibility bounds and screenshots showed the next
+story heading or ending **without corrective scrolling**. Final resources were
+52 grain / 100 trust / 18 momentum / 100 people / 97 exposure. A force-stop and
+cold launch retained the ending, seed and resources. Chen entry showed its return
+control in view. Eight recorded assertion groups passed.
+
+Reviewed signed-app captures:
+
+- [Restored pre-upgrade ending](evidence/android-beta8-restored-20261002.png)
+- [Grain scene arrival](evidence/android-beta8-arrival1-20261002.png)
+- [Crossing scene arrival](evidence/android-beta8-arrival2-20261002.png)
+- [Final decision arrival](evidence/android-beta8-arrival3-20261002.png)
+- [Fresh ending arrival](evidence/android-beta8-arrival4-20261002.png)
+- [Chen entry](evidence/android-beta8-council-20261002.png)
+
+These are captured SHI UI evidence, reviewed for this fix, not newly admitted game
+art. Initial emulator boot/app readiness probes were not accepted as review
+frames; one failed UI-dump process was discarded rather than reusing stale XML.
+The emulator was stopped after evidence capture; its completed save is retained.
+
+Build 8 is **not uploaded**. This checkpoint qualifies signed Android scene
+arrival, 7-to-8 retained-save upgrade, a fresh opening route and cold recovery.
+It does not establish physical-device acceptance, a Play-delivered signing-chain
+upgrade, a complete council/Fan Yang route on 8, or human cinematic acceptance.
+The earlier release1-to-7 upgrade and council/offline evidence remain separately
+scoped to 7; do not relabel them as tests of 8. Finish the remaining beta gates
+and reconcile provider state before distributing this exact candidate. No new
+historical claims, dialogue, media or save schema were introduced here.
