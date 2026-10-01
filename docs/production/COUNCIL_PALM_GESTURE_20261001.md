@@ -17,4 +17,8 @@ The source carrier SHA remains `feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe7
 
 ## Admission boundary and next work
 
+### Temporal curve follow-up
+
+The local artifact suite now has six passing tests. It independently checks every requested roll against the specified cubic envelope, not only the four phase endpoints. Measured peak roll speed is 134.8°/s; finite-difference peak acceleration is 504°/s² at 30 source frames/s. Diagnostic bounds are 140°/s and 600°/s², respectively. These are bounds for this authored study, not biological or historical standards. Negative tests inject a mid-gesture snap and movement during settle, hold and return; all are rejected even though endpoint checks alone would accept them. The existing per-frame evaluated-pose error and render hashes remain separately checked. This closes a numerical continuity gap; it does not replace viewing the complete motion or checking cloth/skin deformation.
+
 This advances the named keeper/council animation, but remains private engineering footage. The original finger spread, rigid sleeves, simplified costume, facial performance and absence of narrative staging still prevent shipping admission. The game continues serving the previously pinned private study; no automatic replacement, media provenance approval, native export, store submission or public release occurred. Next: relax finger articulation and review the complete motion and sleeve deformation, then stage the matching saved-consequence reaction before replacing the review film.

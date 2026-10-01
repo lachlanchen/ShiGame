@@ -21,6 +21,17 @@ function checkWrist(samples) {
   assert.equal(samples[60].rollDegrees, 90);
   assert.equal(samples[100].rollDegrees, 0);
   assert.equal(samples[120].rollDegrees, 0);
+  const keys = [[1, 0], [16, 0], [46, 90], [61, 90], [101, 0], [121, 0]];
+  for (const sample of samples) {
+    const index = keys.findIndex(([frame], i) => i < keys.length - 1 && sample.frame >= frame && sample.frame <= keys[i + 1][0]);
+    const [a, start] = keys[index], [b, end] = keys[index + 1];
+    const t = (sample.frame - a) / (b - a);
+    const expected = start + (end - start) * t * t * (3 - 2 * t);
+    assert.ok(Math.abs(sample.rollDegrees - expected) < 1e-8, `unexpected wrist curve at ${sample.frame}`);
+  }
+  const speeds = samples.slice(1).map((sample, i) => (sample.rollDegrees - samples[i].rollDegrees) * 30);
+  assert.ok(Math.max(...speeds.map(Math.abs)) <= 140, "wrist speed exceeds the authored study bound");
+  assert.ok(Math.max(...speeds.slice(1).map((speed, i) => Math.abs(speed - speeds[i]) * 30)) <= 600, "wrist acceleration exceeds the authored study bound");
 }
 
 test("palm gesture retains every requested wrist pose and returns to rest", () => checkWrist(receipt.wristChecks));
@@ -46,6 +57,18 @@ test("wrist checks reject lost edits, drift and nonfinite values", () => {
   for (const patch of [{ rotationErrorRadians: 1 }, { originDriftMetres: 0.01 }, { rollDegrees: NaN }]) {
     const samples = structuredClone(receipt.wristChecks);
     Object.assign(samples[45], patch);
+    assert.throws(() => checkWrist(samples));
+  }
+});
+test("wrist checks reject a mid-gesture snap even when phase endpoints are correct", () => {
+  const samples = structuredClone(receipt.wristChecks);
+  samples[30].rollDegrees = 90;
+  assert.throws(() => checkWrist(samples));
+});
+test("wrist checks reject unrequested movement during settle and hold", () => {
+  for (const index of [8, 50, 110]) {
+    const samples = structuredClone(receipt.wristChecks);
+    samples[index].rollDegrees += samples[index].rollDegrees === 90 ? -1 : 1;
     assert.throws(() => checkWrist(samples));
   }
 });
