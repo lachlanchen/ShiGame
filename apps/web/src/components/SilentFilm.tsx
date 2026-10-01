@@ -12,12 +12,16 @@ export interface SilentFilmAsset {
 
 export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: Locale }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const finishedRef = useRef<HTMLParagraphElement>(null);
   const requestRef = useRef(0);
   const wantedRef = useRef(false);
   const mountedRef = useRef(true);
   const nativeActiveRef = useRef(true);
   const pageActiveRef = useRef(true);
   const [status, setStatus] = useState<"ready" | "starting" | "playing" | "paused" | "ended" | "skipped" | "unavailable">("ready");
+  useEffect(() => {
+    if (status === "skipped") finishedRef.current?.focus({ preventScroll: true });
+  }, [status]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -99,7 +103,7 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
         <track kind="captions" src={asset.captions.src} srcLang={asset.captions.language} label={asset.captions.label} default />
       </video>
       {status === "ended" || status === "skipped" || status === "unavailable" ? (
-        <p role="status">{cinemaLabel(locale, status === "unavailable" ? "unavailable" : "finished")}</p>
+        <p ref={finishedRef} tabIndex={-1} role="status">{cinemaLabel(locale, status === "unavailable" ? "unavailable" : "finished")}</p>
       ) : (
         <><button className="text-button" onClick={() => {
           if (status === "playing" || status === "starting") { wantedRef.current = false; requestRef.current += 1; videoRef.current?.pause(); setStatus("paused"); }

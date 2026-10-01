@@ -17,6 +17,7 @@ describe("silent film playback intent", () => {
     const view = render(<SilentFilm asset={asset} locale="en" />);
     fireEvent.click(view.getByRole("button", { name: "Skip scene" }));
     expect(view.getByTestId("silent-film").dataset.playback).toBe("skipped");
+    expect(document.activeElement).toBe(view.getByRole("status"));
     expect(view.queryByRole("button", { name: "Play scene" })).toBeNull();
     expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
     expect(save).not.toHaveBeenCalled();
