@@ -77,6 +77,63 @@ Private receipt lists the exact hashed source scope and every output artifact;
 the browser harness checks the inventory/hashes before launch. Private paths and
 runtime status are recorded in the ignored handoff rather than distribution data.
 
+## Follow-up: alternate fates and optional graphics
+
+The October 1 follow-up qualifies two more complete compiled routes, not new
+story content. With the same opening promise, grain choice and families-first
+plan, the three field commands produce different human consequences:
+
+| Field orders | Outcome / promise | Grain / trust / momentum / people / danger at Chen |
+| --- | --- | --- |
+| Screen reeds, repair landing, hold for last household | Costly crossing / strained | 48 / 83 / 11 / 97 / 96 |
+| Brace approach, reinforce rear, staggered withdrawal | Fighting withdrawal / strained | 49 / 80 / 7 / 93 / 90 |
+| Screen reeds, repair landing, release reserve | Orderly crossing / kept | 51 / 91 / 15 / 100 / 87 |
+
+These representative seed-zero routes have supplied Chen arrivals and reach the
+Fan Yang conclusion through the selected council/guarantee choices. This does
+not mean every order survives: a separately replayed seed-one broken-rear route
+ends in capture. That terminal route has not yet received compiled-browser
+qualification. The promise reactions, chronology and numerical outcomes are
+existing dramatized content, not new claims from the historical text.
+
+Reduced-motion mode now keeps the existing static art without requesting Three
+or allocating its decorative GPU context. Failed Three downloads or WebGL
+initialization leave the chapter playable, with partial setup cleaned up rather
+than an unhandled rejection. Three new component regressions cover reduced
+motion, unavailable WebGL and enabling motion. Full validation passes 83 core
+and 386 web tests.
+
+The updated candidate's withdrawal/reduced-motion and orderly/failed-renderer
+routes each passed 68 visible-browser checks with no runtime exceptions. The
+first made zero Three download requests over the whole route, including reloads;
+the second completed despite five deliberately failed renderer requests. Title,
+matching personal-reaction and final phone screenshots were visually reviewed.
+The normal-motion costly route also passed 66 checks on the updated candidate:
+202 checks across these three final runs, 60 captured screens and no runtime
+exceptions. Nine representative final-run screenshots were visually inspected;
+this is not a claim that every captured frame received visual acceptance.
+The normal public rebuild remains within its unchanged budgets at 99.85 KiB
+initial JS, 11.89 KiB CSS and 26.99 MiB deployed, with draft/private markers absent.
+No additional music, generated video, character asset or store build is admitted.
+
+Startup evidence now includes required asynchronous App/driver modules. With a
+warm local desktop browser and HTTP cache disabled, the baseline sampled
+1,148,153 decoded script bytes and 3,041,693 completed resource-transfer bytes
+when Begin and required fonts were ready. Reduced motion sampled 424,229 and
+2,858,265 respectively. The missing renderer accounts for about 724 KB decoded
+JavaScript / 183 KB transfer; this is not a mobile startup-speed benchmark. The
+2.4 MB title PNG still dominates this sample and needs a separately reviewed
+delivery optimization. Future lazy content is not counted in these startup totals.
+
+Current qualified source-inventory SHA-256:
+`c24f35f6909c1db5e000b5b7b0afe9e74783abcbd9a125da81c34757624ea006`.
+Current artifact-inventory SHA-256:
+`d69ac43b867f79aaed85775ce9791290f801c71d57068291392940f2745d56d6`.
+The earlier candidate hashes above remain historical evidence, not overwritten
+receipts. New harness options are `SHI_PLAYTEST_CROSSING_SCENARIO=withdrawal`
+or `orderly` and `SHI_PLAYTEST_GRAPHICS=reduced` or `unavailable`; these alternate
+reviews require the isolated compiled candidate.
+
 ## Reproduce and next gate
 
 After shared-workstation preflight, run `npm run build:internal-crossing`. It

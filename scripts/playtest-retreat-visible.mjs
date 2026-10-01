@@ -41,6 +41,16 @@ if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "cros
 if (route === "consequence-loading" && !production) throw new Error("Consequence loading review requires the production bundle.");
 const isCrossing = route === "crossing" || route === "crossing-v2";
 const revisedCrossing = route === "crossing-v2";
+const crossingScenario = process.env.SHI_PLAYTEST_CROSSING_SCENARIO ?? "costly";
+const crossingScenarios = {
+  costly: { commands: ["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"], outcome: "costly-crossing", promise: "strained", resources: "48,83,11,97,96" },
+  withdrawal: { commands: ["brace-the-approach", "reinforce-the-rear", "staggered-withdrawal"], outcome: "fighting-withdrawal", promise: "strained", resources: "49,80,7,93,90" },
+  orderly: { commands: ["screen-through-reeds", "repair-the-landing", "release-the-reserve"], outcome: "orderly-crossing", promise: "kept", resources: "51,91,15,100,87" },
+};
+if (!Object.hasOwn(crossingScenarios, crossingScenario) || (crossingScenario !== "costly" && !internalDirectory)) throw new Error("Alternate crossing scenarios require the compiled internal candidate.");
+const crossingExpectation = crossingScenarios[crossingScenario];
+const graphicsReview = process.env.SHI_PLAYTEST_GRAPHICS ?? "normal";
+if (!["normal", "reduced", "unavailable"].includes(graphicsReview) || (graphicsReview !== "normal" && !internalDirectory)) throw new Error("Graphics fault review requires the compiled internal candidate.");
 const scoreAudition = process.env.SHI_PLAYTEST_SCORE === "1";
 const councilFilm = process.env.SHI_PLAYTEST_COUNCIL_FILM === "1";
 const rainCinema = process.env.SHI_PLAYTEST_RAIN_CINEMA === "1";
@@ -62,7 +72,7 @@ const finalChoice = route === "together" ? "stay-together" : route === "remnant"
 const out = resolve(root, ".runtime/story-review", new Date().toISOString().replaceAll(":", "-"));
 await mkdir(out, { recursive: true });
 const report = { status: "running", output: out, started: new Date().toISOString(), checks: [], screenshots: [], errors: [], owned: [],
-  route, storyBranch, grainPromise, reception,
+  route, storyBranch, grainPromise, reception, ...(isCrossing ? { crossingScenario } : {}), graphicsReview,
   boundary: `Agent-operated visible ${production ? "production-bundle" : "development"} web route; not human acceptance, native or store verification.` };
 const children = [], logs = [];
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -137,8 +147,41 @@ try {
   await new Promise((yes, no) => { socket.addEventListener("open", yes, { once: true }); socket.addEventListener("error", no, { once: true }); });
   socket.addEventListener("message", e => { const m = JSON.parse(e.data); if (m.id) { const p = pending.get(m.id); pending.delete(m.id); if (p) m.error ? p.no(new Error(m.error.message)) : p.yes(m.result); } if (m.method === "Runtime.exceptionThrown") report.errors.push(m.params.exceptionDetails.text); });
   await send("Page.enable"); await send("Runtime.enable");
+  if (internalDirectory) {
+    await send("Network.enable");
+    await send("Network.setCacheDisabled", { cacheDisabled: true });
+    report.graphicsRequests = [];
+    socket.addEventListener("message", event => {
+      const message = JSON.parse(event.data);
+      if (message.method === "Network.requestWillBeSent" && /\/three\.module-.*\.js/.test(message.params.request.url)) report.graphicsRequests.push(message.params.request.url);
+      if (graphicsReview === "unavailable" && message.method === "Fetch.requestPaused") {
+        void send("Fetch.failRequest", { requestId: message.params.requestId, errorReason: "Failed" }).catch(error => report.errors.push(error.message));
+      }
+    });
+    if (graphicsReview === "reduced") await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+    if (graphicsReview === "unavailable") await send("Fetch.enable", { patterns: [{ urlPattern: "*three.module-*.js*", requestStage: "Request" }] });
+  }
   await send("Page.navigate", { url: appURL });
   await until(exists('[data-testid="begin-game"]'));
+  if (internalDirectory) {
+    await until("document.querySelector('[data-testid=shi-app]').dataset.fontStatus==='ready'");
+    report.startup = await evaluate(`(() => {
+      const sampledAtMs = performance.now();
+      const resources = performance.getEntriesByType('resource').filter(entry => entry.responseEnd > 0 && entry.responseEnd <= sampledAtMs)
+        .map(entry => ({ path: new URL(entry.name).pathname, type: entry.initiatorType, encodedBytes: entry.encodedBodySize,
+          decodedBytes: entry.decodedBodySize, transferBytes: entry.transferSize, responseEndMs: entry.responseEnd }));
+      return { boundary: 'Local desktop, cache disabled, warm browser; sampled when Begin is present and required fonts are ready. Not physical-device startup or all future lazy content.',
+        sampledAtMs, navigation: performance.getEntriesByType('navigation')[0]?.toJSON(), resources,
+        scriptDecodedBytes: resources.filter(entry => entry.path.endsWith('.js')).reduce((sum, entry) => sum + entry.decodedBytes, 0),
+        completedTransferBytes: resources.reduce((sum, entry) => sum + entry.transferBytes, 0) };
+    })()`);
+    check(report.startup.resources.some(entry => /\/App-.*\.js$/.test(entry.path))
+      && report.startup.resources.some(entry => /\/development-crossing-.*\.js$/.test(entry.path)), "startup measurement includes required App and crossing driver, not entry alone");
+    if (graphicsReview !== "normal") {
+      await until(`document.querySelector('.three-backdrop')?.dataset.renderer===${JSON.stringify(graphicsReview === "reduced" ? "static" : "unavailable")}`);
+      check(!await evaluate("!!document.querySelector('.three-backdrop canvas')"), "static title remains playable without a decorative GPU canvas");
+    }
+  }
   const xenv = { ...process.env, DISPLAY: ":121" };
   const windowId = execFileSync("xdotool", ["search", "--onlyvisible", "--class", "Google-chrome"], { env: xenv, encoding: "utf8" }).trim().split("\n")[0];
   execFileSync("xdotool", ["windowmove", "--sync", windowId, "0", "0", "windowsize", "--sync", windowId, "1600", "1000"], { env: xenv });
@@ -333,7 +376,7 @@ try {
     await capture("crossing-command-phone"); await layout("crossing phone");
     const key = internalDirectory ? "shi.internal.crossing-campaign.v2" : `shi.development.crossing-campaign.v${revisedCrossing ? 2 : 1}`;
     const beforeOrder = JSON.parse(await evaluate(`localStorage.getItem('${key}')`));
-    await click('[data-engagement-command="screen-through-reeds"]');
+    await click(`[data-engagement-command="${crossingExpectation.commands[0]}"]`);
     await until("document.querySelector('[data-testid=engagement-board]').dataset.pulseIndex==='1'");
     const afterOrder = await evaluate(`localStorage.getItem('${key}')`);
     check(JSON.parse(afterOrder).ledger.events.length === beforeOrder.ledger.events.length + 1, "one pointer-issued field order is saved exactly once");
@@ -357,10 +400,10 @@ try {
       await click('[data-testid="private-score-audition"] summary');
       check(await evaluate(`localStorage.getItem('${key}')`) === afterOrder, "explicit score replay does not issue another field command");
     }
-    for (const command of ["repair-the-landing", "hold-for-the-last-household"]) await click(`[data-engagement-command="${command}"]`);
+    for (const command of crossingExpectation.commands.slice(1)) await click(`[data-engagement-command="${command}"]`);
     await until(exists('[data-testid="engagement-outcome"]'));
     check(await evaluate("document.querySelector('[data-testid=shi-app]').dataset.nodeId==='broken-crossing'"), "completed battle waits for explicit campaign commit");
-    const outcome = revisedCrossing ? aftermath.outcomes["costly-crossing"].reaction["zh-Hans"] : await evaluate("document.querySelector('.engagement-outcome > p').textContent");
+    const outcome = revisedCrossing ? aftermath.outcomes[crossingExpectation.outcome].reaction["zh-Hans"] : await evaluate("document.querySelector('.engagement-outcome > p').textContent");
     await capture("crossing-outcome-phone"); await layout("crossing outcome");
     await click('[data-testid="engagement-return"]');
     await until(exists('[data-testid="resolution"]'));
@@ -373,8 +416,8 @@ try {
       check(await evaluate("document.querySelector('[data-testid=commitment-resolution]').closest('details')===null && document.querySelectorAll('[data-testid=commitment-resolution]').length===1"), "personal promise reaction is visible without opening statistical details");
       await capture("crossing-personal-reaction-phone"); await layout("personal reaction phone");
       await click('[data-testid="resolution-details"] summary');
-      check(await evaluate("document.querySelector('[data-testid=commitment-resolution]').dataset.commitmentStatus==='strained'"), "costly protection is strained, not automatically kept");
-      check(await evaluate(`document.querySelector('[data-testid=commitment-resolution]').textContent.includes(${JSON.stringify(aftermath.commitments["names-under-protection"].strained.response["zh-Hans"])})`), "the affected character answers the actual promise judgment");
+      check(await evaluate(`document.querySelector('[data-testid=commitment-resolution]').dataset.commitmentStatus===${JSON.stringify(crossingExpectation.promise)}`), `${crossingExpectation.outcome}: protection promise is ${crossingExpectation.promise}`);
+      check(await evaluate(`document.querySelector('[data-testid=commitment-resolution]').textContent.includes(${JSON.stringify(aftermath.commitments["names-under-protection"][crossingExpectation.promise].response["zh-Hans"])})`), "the affected character answers the actual promise judgment");
       await capture("crossing-promise-phone"); await layout("actual promise reaction");
       await click('[data-testid="resolution-details"] summary');
     }
@@ -391,8 +434,8 @@ try {
     await click('[data-choice-id="root-in-villages"]');
     await click('[data-testid="commit-selected"]'); await click('[data-testid="resolution-continue"]');
     await click('[data-testid="council-enter"]'); await until(exists('[data-testid="chen-council"]'));
-    check(await evaluate(`[...document.querySelectorAll('.resource-rail [role=meter]')].map(e=>Number(e.getAttribute('aria-valuenow'))).join(',')==='${revisedCrossing ? "48,83,11,97,96" : "48,89,10,97,96"}'`), "visible final resources match the independently replayed representative route");
-    check(await evaluate("document.querySelector('[data-testid=chen-council]').dataset.arrival==='supplied'"), "grain-48 route produces the expected supplied Chen arrival despite high pursuit");
+    check(await evaluate(`[...document.querySelectorAll('.resource-rail [role=meter]')].map(e=>Number(e.getAttribute('aria-valuenow'))).join(',')==='${revisedCrossing ? crossingExpectation.resources : "48,89,10,97,96"}'`), "visible final resources match the independently replayed representative route");
+    check(await evaluate("document.querySelector('[data-testid=chen-council]').dataset.arrival==='supplied'"), "surviving route produces the expected supplied Chen arrival despite high pursuit");
     check(await evaluate("localStorage.getItem('shi.chapter-01.save.v6')") === releaseBefore, "integrated playthrough never writes the release chapter save");
     await capture("crossing-chen-phone"); await layout("Chen after crossing");
     await send("Emulation.clearDeviceMetricsOverride"); await capture("crossing-chen-desktop"); await layout("Chen desktop");
@@ -805,6 +848,8 @@ try {
   await until("!document.querySelector('.drawer')");
   check(await evaluate("getComputedStyle(document.body).overflowY!=='hidden'"), "background page scrolling restored after closing story");
   }
+  if (graphicsReview === "reduced") check(report.graphicsRequests.length === 0, "entire reduced-motion route makes no Three renderer download request");
+  if (graphicsReview === "unavailable") check(report.graphicsRequests.length > 0, "actual optional renderer requests failed while the route remained playable");
   check(report.errors.length === 0, "no browser runtime exceptions"); report.status = "passed";
 } catch (error) {
   report.status = "failed"; report.failure = error.stack;

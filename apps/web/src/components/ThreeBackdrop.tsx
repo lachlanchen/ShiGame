@@ -11,10 +11,18 @@ export function ThreeBackdrop({ reducedMotion, paused = false }: { reducedMotion
   }, [reducedMotion, paused]);
 
   useEffect(() => {
-    if (!host.current) return;
+    // The static art and CSS remain underneath. Reduced motion should not
+    // download a renderer or allocate a GPU context just to draw one frame.
+    if (!host.current || reducedMotion) return;
     const container = host.current;
     let disposed = false;
-    let cleanup = () => {};
+    let ownedReconcile: (() => void) | undefined;
+    const disposers: Array<() => void> = [];
+    const cleanup = () => {
+      if (reconcile.current === ownedReconcile) reconcile.current = () => {};
+      for (const dispose of disposers.splice(0).reverse()) dispose();
+    };
+    container.dataset.renderer = "loading";
     void (async () => {
       const THREE = await import("three");
       if (disposed) return;
@@ -24,10 +32,12 @@ export function ThreeBackdrop({ reducedMotion, paused = false }: { reducedMotion
       camera.lookAt(0, 0, 0);
 
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
+      disposers.push(() => { renderer.dispose(); renderer.domElement.remove(); });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       container.appendChild(renderer.domElement);
 
       const geometry = new THREE.PlaneGeometry(14, 9, 30, 20);
+      disposers.push(() => geometry.dispose());
       const positions = geometry.getAttribute("position") as import("three").BufferAttribute;
       for (let index = 0; index < positions.count; index += 1) {
         const x = positions.getX(index);
@@ -43,11 +53,13 @@ export function ThreeBackdrop({ reducedMotion, paused = false }: { reducedMotion
         opacity: 0.075,
         blending: THREE.AdditiveBlending,
       });
+      disposers.push(() => material.dispose());
       const terrain = new THREE.Mesh(geometry, material);
       terrain.position.set(0, -1.5, -1.5);
       scene.add(terrain);
 
       const rainGeometry = new THREE.BufferGeometry();
+      disposers.push(() => rainGeometry.dispose());
       const points = new Float32Array(360 * 3);
       for (let index = 0; index < 360; index += 1) {
         points[index * 3] = (Math.random() - 0.5) * 15;
@@ -56,6 +68,7 @@ export function ThreeBackdrop({ reducedMotion, paused = false }: { reducedMotion
       }
       rainGeometry.setAttribute("position", new THREE.BufferAttribute(points, 3));
       const rain = new THREE.Points(rainGeometry, new THREE.PointsMaterial({ color: 0xd5d8cf, size: 0.018, transparent: true, opacity: 0.28 }));
+      disposers.push(() => (rain.material as import("three").Material).dispose());
       scene.add(rain);
 
       const loop = createSceneLoop((seconds) => {
@@ -65,6 +78,7 @@ export function ThreeBackdrop({ reducedMotion, paused = false }: { reducedMotion
         if (seconds > 0) terrain.rotation.z = Math.sin(performance.now() / 14000) * .012;
         renderer.render(scene, camera);
       });
+      disposers.push(() => loop.dispose());
       const resize = () => {
         const width = container.clientWidth;
         const height = container.clientHeight;
@@ -74,29 +88,28 @@ export function ThreeBackdrop({ reducedMotion, paused = false }: { reducedMotion
         loop.redraw();
       };
       const updateMode = () => loop.setMode(!preferences.current.reducedMotion && !preferences.current.paused, !document.hidden);
+      ownedReconcile = updateMode;
       reconcile.current = updateMode;
       resize();
       updateMode();
       window.addEventListener("resize", resize);
       document.addEventListener("visibilitychange", updateMode);
-      cleanup = () => {
-        reconcile.current = () => {};
-        loop.dispose();
+      disposers.push(() => {
         window.removeEventListener("resize", resize);
         document.removeEventListener("visibilitychange", updateMode);
-        geometry.dispose();
-        material.dispose();
-        rainGeometry.dispose();
-        (rain.material as import("three").Material).dispose();
-        renderer.dispose();
-        renderer.domElement.remove();
-      };
-    })();
+      });
+      container.dataset.renderer = "ready";
+    })().catch(() => {
+      // Optional atmosphere must not turn an unavailable download or WebGL
+      // context into an unhandled rejection in an otherwise playable chapter.
+      cleanup();
+      if (!disposed) container.dataset.renderer = "unavailable";
+    });
     return () => {
       disposed = true;
       cleanup();
     };
-  }, []);
+  }, [reducedMotion]);
 
-  return <div className="three-backdrop" ref={host} aria-hidden="true" />;
+  return <div className="three-backdrop" ref={host} aria-hidden="true" data-renderer={reducedMotion ? "static" : undefined} />;
 }

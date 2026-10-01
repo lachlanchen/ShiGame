@@ -24,8 +24,11 @@ parity. Do not describe these development routes as the distributed game.
 Follow-up: the [internal crossing candidate](INTERNAL_CROSSING_CANDIDATE_20261001.md)
 now builds separately in production mode and passes one complete visible route
 through the crossing, Chen and Fan Yang with isolated saves. It is not a public
-rollout or mobile beta; alternate-route, native, device and human review gates
-remain open. The later retreat/refuge draft remains excluded.
+rollout or mobile beta. Follow-up compiled withdrawal and orderly routes now
+reach the conclusion with their own personal reactions and resource totals,
+including reduced-motion and failed-graphics-download reviews. Terminal loss,
+native parity, physical-device and human review gates remain open. The later
+retreat/refuge draft remains excluded.
 
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release
