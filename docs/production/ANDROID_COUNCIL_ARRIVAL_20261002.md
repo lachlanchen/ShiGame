@@ -106,3 +106,33 @@ disabled, and the exact owned emulator stopped. Its ports were confirmed closed.
 This advances the signed offline continuation/lifecycle gate. A fresh Chapter I
 route, distributed-build-1 upgrade, remaining navigation/source checks, physical
 devices and human feedback are still required. No store upload occurred.
+
+## Subsequent source and navigation checks: passed
+
+Candidate 7 was reopened on the same retained API 34 installation, without
+reinstalling, clearing storage or making new strategic choices. Actual Android
+Back dismissed the source ledger and the council overlay; Escape dismissed Chen
+and returned from Fan Yang to Chen. Android Back from Fan Yang closes the parent
+council overlay, rather than following Escape's one-level return. Both paths
+preserved progress. A second Back from Chapter I returned to the title screen.
+
+The council response XML matched exactly after Escape and reopening. The Fan
+Yang response XML also matched exactly after backing out and returning through
+Chen. Chapter seed, ending and resource labels remained unchanged; acknowledging
+the restored response reached the same guaranteed surrender and final metrics.
+
+The source ledger's Tongjian volume 7 locator was reached by scrolling. Chen's
+expanded history section showed the recorded dispute over taking the royal
+title, its precise Tongjian locator, the related Shiji account and the explicit
+fiction boundary for bargaining and alternative results. This verifies in-app
+access and presentation, not a new historical-source review. External edition
+links were not opened. The [history-panel capture](evidence/android-beta7-history-panel-20261002.png)
+was visually inspected; SHA-256:
+`7c4c695279f58438e9093268beb0b2ac5d90e5c45f53e3afc056fd5951ceeaad`.
+
+The emulator reported airplane mode enabled on this later boot, despite the
+earlier shutdown's disabled readback. This session made no network-setting
+changes; do not infer that the earlier restoration persisted across reboot.
+The owned emulator was stopped and its ports verified closed after capture.
+Fresh Chapter I, unavailable-order commit guards, distributed-build-1 upgrade,
+physical devices and human feedback remain open. No new build or upload occurred.
