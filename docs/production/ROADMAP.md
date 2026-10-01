@@ -70,6 +70,14 @@ bytes and unchanged replay expectations are reconstructed before admission;
 passed. Actual signed app/container upgrades and physical-device tests remain
 open; legacy saves are not silently converted into tactical histories.
 
+The [installed-container follow-up](NATIVE_INSTALLED_UPGRADE_20261001.md) now
+verifies a real historical-source UI save surviving in-place simulator
+installation, unread-scene restoration, four decisions and cold resume. Both UI
+phases passed; corrected post-test path readback passed separately. This narrows
+the upgrade gap but is not the retained signed App Store binary or a physical
+device. Continue signed-beta qualification and reviewed scene media; do not
+count another harness checkpoint as a new playable story beat.
+
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release
 saves, explicit versioned progression, honest previews, matching personal

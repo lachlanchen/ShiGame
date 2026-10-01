@@ -48,6 +48,26 @@ manifest with `npm run validate:ios-content`; on Mac also run
 `bash scripts/test-native-save-compatibility.sh`. The unit suites are
 `SHITests/ReleasedChronicleUpgradeTests` and `SHITests/AftermathTests`.
 
+For an installed-container check, use `project-upgrade-qa.yml` in two isolated
+source stages: the historical source and the candidate. It keeps the production
+app's rules/UI flags but uses only `art.lazying.shi.upgradeqa`, with signing off.
+`SHI_UPGRADE_QA` compiles the two upgrade phases only in the test target. Generate
+both projects with XcodeGen, coordinate one stopped SHI-owned simulator, then run:
+
+```bash
+bash scripts/test-ios-installed-upgrade.sh HISTORICAL_ROOT CANDIDATE_ROOT SHI_SIMULATOR_UDID
+```
+
+The historical UI creates an unread decision. The script builds and installs
+the candidate without uninstalling, compares the data-container path and saved
+bytes before launching it, then resumes through four decisions and a cold
+relaunch. Fresh result bundles and private save copies remain under `.runtime`;
+the exact owned simulator is shut down on exit. Baseline/candidate fingerprints
+are deliberately pinned to the reviewed prose-only transition. This is not a
+general migration tool or permission to install over the owner's store app.
+Reconstructed historical-source simulation is distinct from retained signed
+binary, TestFlight, physical-device and production-upgrade qualification.
+
 Use `scripts/build-ios.sh` on the qualified signing Mac after syncing a frozen
 source snapshot and generated resources into an isolated SHI staging directory.
 Set `SHI_ROOT` to that directory, `SHI_VERSION` (default1.0.0), and explicitly

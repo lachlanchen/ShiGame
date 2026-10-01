@@ -1,0 +1,22 @@
+# Simulator-only in-place upgrade check. Never sign, archive or upload this app.
+# Both historical and candidate builds use this identity, never the owner's app.
+include: project.yml
+name: SHIUpgradeQA
+targets:
+  SHI:
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.upgradeqa
+        INFOPLIST_KEY_CFBundleDisplayName: SHI Upgrade QA
+        CODE_SIGNING_ALLOWED: NO
+  SHITests:
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.upgradeqa.tests
+        CODE_SIGNING_ALLOWED: NO
+  SHIUITests:
+    settings:
+      base:
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHI_UPGRADE_QA"
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.upgradeqa.uitests
+        CODE_SIGNING_ALLOWED: NO
