@@ -1,0 +1,29 @@
+# Isolated simulator-only crossing app. Never sign, archive or submit this spec.
+include: project.yml
+name: SHICrossingQA
+targets:
+  SHI:
+    sources:
+      - path: ../../../content/engagements/chapter-01-broken-crossing.v1.json
+        buildPhase: resources
+      - path: ../../../content/engagements/chapter-01-crossing-campaign.rules.v2.json
+        buildPhase: resources
+      - path: ../../../content/engagements/chapter-01-crossing-aftermath.v2.json
+        buildPhase: resources
+    settings:
+      base:
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHI_CROSSING_PREVIEW"
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.crossingqa
+        INFOPLIST_KEY_CFBundleDisplayName: SHI Crossing QA
+        CODE_SIGNING_ALLOWED: NO
+  SHITests:
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.crossingqa.tests
+        CODE_SIGNING_ALLOWED: NO
+  SHIUITests:
+    settings:
+      base:
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHI_CROSSING_PREVIEW"
+        PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.crossingqa.uitests
+        CODE_SIGNING_ALLOWED: NO

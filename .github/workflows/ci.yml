@@ -20,6 +20,8 @@ jobs:
         run: bash scripts/test-native-crossing-campaign.sh
       - name: Typecheck native app production and preview configurations
         run: bash scripts/typecheck-native-ios.sh
+      - name: Check durable crossing session and council identity
+        run: bash scripts/test-native-crossing-session.sh
 
   web-and-content:
     runs-on: ubuntu-latest

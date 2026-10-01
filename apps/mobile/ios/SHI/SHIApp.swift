@@ -123,7 +123,12 @@ struct ChoiceAftermath: Identifiable {
 
 @main struct SHIApp: App {
     @StateObject private var session = GameSession()
-    var body: some Scene { WindowGroup { CampaignView().environmentObject(session).preferredColorScheme(.dark) } }
+    var body: some Scene {
+        WindowGroup {
+            if CrossingPreviewContent.enabled { NativeCrossingPreviewRoot().preferredColorScheme(.dark) }
+            else { CampaignView().environmentObject(session).preferredColorScheme(.dark) }
+        }
+    }
 }
 
 let ink = Color(red: 0.065, green: 0.078, blue: 0.07)

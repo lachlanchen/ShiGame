@@ -194,10 +194,48 @@ validation compares decompressed canonical content rather than compressor
 versions. The Mac runner also checks the existing 46 chapter routes. See the
 [campaign ledger evidence](../../../docs/production/evidence/native-crossing-ledger-20261001.json).
 
-Still required: atomic session/replay persistence, SwiftUI command controls, durable
-crossing-to-Chen handoff, simulator/device playtests and qualified beta packaging.
-This tactical CLI/typecheck milestone is not an installed playable crossing,
-native campaign parity, cinematic review or TestFlight update.
+## Playable crossing QA
+
+The separate `project-crossing-qa.yml` now provides a native opening → three-order
+crossing → personal consequence → chapter ending → Chen route. Generate it with
+XcodeGen to create `SHICrossingQA.xcodeproj`. It is unsigned and simulator-only:
+both `SHI_CROSSING_PREVIEW` and bundle `art.lazying.shi.crossingqa` are required.
+Never archive, sign or upload this specification. The formal app keeps its
+existing root screen and excludes the three development crossing resources.
+
+`CrossingCampaignSession` atomically saves the replayable ledger and unread
+reaction before publishing either. A separate development save preserves the
+released chronicle. Failed writes leave the current scene in place; corrupt
+saves require confirmed backup/restart. Failed crossings can be reconsidered
+only after confirmation, preserving the opening and field conditions. Council
+save identity includes the rules hash and full tactical history, so two
+different crossings cannot silently share a council continuation.
+
+```bash
+npm run sync:ios
+npm run validate:ios-content
+# On the verified Mac, serially:
+bash scripts/test-native-crossing-session.sh
+bash scripts/typecheck-native-ios.sh
+cd apps/mobile/ios
+xcodegen generate --spec project-crossing-qa.yml
+```
+
+Use the resource/ownership checks above and a fresh result bundle for the
+explicit SHI-owned simulator. Select
+`-only-testing:SHIUITests/SHIUITests/testCrossingCampaignColdResumeAndChen`
+with the crossing project; the ordinary app's UI tests target its different
+root screen. The October 1 iPad simulator test completed the route and resumed
+three times, including an unread field response and council response. All eight
+captured screens received an agent visual review. See the
+[checkpoint and remaining gates](../../../docs/production/NATIVE_CROSSING_PLAYABLE_20261001.md).
+
+This preview supports English and Simplified Chinese, with explicit English
+fallback elsewhere. Shared metric labels retain all eleven translations, but
+this does not qualify eleven-language UI coverage. Phone/large-type/Chinese
+visual checks, failed-route UI, physical devices, retained-save upgrades, signing
+and beta distribution remain separate gates. The presentation remains primarily
+text and a schematic map, not approved cinematic art or music.
 
 ## Chen council
 

@@ -7,6 +7,7 @@ import { cinemaKeys, cinemaLabel } from "../apps/web/src/cinema-labels";
 import { supportedLocales } from "@shi/game-core";
 import { oppositionUi } from "../apps/web/src/opposition-i18n";
 import { translateCommitment } from "../apps/web/src/commitment-i18n";
+import { engagementMetricLabels } from "../apps/web/src/engagement-i18n";
 
 const root = resolve(import.meta.dirname, "..");
 const target = resolve(root, "apps/mobile/ios/SHI/Resources");
@@ -22,6 +23,6 @@ const cinema = Object.fromEntries(supportedLocales.map(locale => [locale, Object
   (Object.keys(cinemaKeys) as Array<keyof typeof cinemaKeys>).map(key => [key, cinemaLabel(locale, key)]),
 )]));
 const commitment = Object.fromEntries(supportedLocales.map(locale => [locale, { answer: translateCommitment(locale, "answer") }]));
-await writeFile(resolve(target, "ui.json"), JSON.stringify({ ui, localeNames, cinema, opposition: oppositionUi, commitment }));
+await writeFile(resolve(target, "ui.json"), JSON.stringify({ ui, localeNames, cinema, opposition: oppositionUi, commitment, engagementMetrics: engagementMetricLabels }));
 await copyFile(resolve(root, "assets/art/keyart/daze-village-rain-v1.png"), resolve(target, "daze-village-rain-v1.png"));
 console.log(`Native iOS campaign + existing UI translations synchronized: ${hash}`);

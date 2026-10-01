@@ -8,8 +8,9 @@ struct CouncilEntry: Codable, Equatable {
         guard origin.completed, origin.failure == nil, !origin.history.isEmpty else { return nil }
         // Platform-local save identity, not an interchange claim with web storage.
         // Bind to the complete source route and resources, never just its seed.
-        let identity: [Any] = [origin.campaign.text("id"), origin.seed,
+        var identity: [Any] = [origin.campaign.text("id"), origin.seed,
             origin.history.map { [$0.text("nodeId"), $0.text("choiceId"), $0.text("conditionId")] }, origin.resources]
+        if let tacticalIdentity = origin.continuationIdentity { identity.append(tacticalIdentity) }
         guard let data = try? JSONSerialization.data(withJSONObject: identity, options: [.sortedKeys]),
               let id = String(data: data, encoding: .utf8) else { return nil }
         let arrival = origin.resources["grain", default: 0] >= 45 ? "supplied"

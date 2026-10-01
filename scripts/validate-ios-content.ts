@@ -8,12 +8,20 @@ import { ui } from "../apps/web/src/ui-catalog";
 import { cinemaKeys, cinemaLabel } from "../apps/web/src/cinema-labels";
 import { oppositionUi } from "../apps/web/src/opposition-i18n";
 import { translateCommitment } from "../apps/web/src/commitment-i18n";
+import { engagementMetricLabels } from "../apps/web/src/engagement-i18n";
 
 const root = resolve(import.meta.dirname, "..");
 const resource = resolve(root, "apps/mobile/ios/SHI/Resources");
 // This draft is only copied by the separate QA project, never sync:ios.
 const productionSpec = await readFile(resolve(root, "apps/mobile/ios/project.yml"), "utf8");
 const qaSpec = await readFile(resolve(root, "apps/mobile/ios/project-qa.yml"), "utf8");
+const crossingSpec = await readFile(resolve(root, "apps/mobile/ios/project-crossing-qa.yml"), "utf8");
+assert(!productionSpec.includes("SHI_CROSSING_PREVIEW") && !qaSpec.includes("SHI_CROSSING_PREVIEW"), "Crossing flag leaked outside its isolated project");
+assert(crossingSpec.includes("SHI_CROSSING_PREVIEW") && crossingSpec.includes("art.lazying.shi.crossingqa") && crossingSpec.includes("CODE_SIGNING_ALLOWED: NO"));
+for (const filename of ["chapter-01-broken-crossing.v1.json", "chapter-01-crossing-campaign.rules.v2.json", "chapter-01-crossing-aftermath.v2.json"]) {
+  assert(!(await readdir(resource)).includes(filename), `Crossing draft ${filename} must not enter production Resources`);
+  assert(crossingSpec.includes(filename), `Crossing QA project is missing ${filename}`);
+}
 assert(!productionSpec.includes("SHI_RETREAT_PREVIEW") && !productionSpec.includes("chen-retreat"), "Retreat preview leaked into the production project");
 for (const filename of ["chen-retreat.rules.v1.json", "chen-retreat.v1.json"]) {
   assert(!(await readdir(resource)).includes(filename), `Draft ${filename} must not enter production Resources`);
@@ -46,6 +54,7 @@ const hash = createHash("sha256").update(source).digest("hex");
 assert((await readFile(resolve(root, "content/councils/fanyang-guarantee.v1.json"))).equals(await readFile(resolve(resource, "fanyang-guarantee.v1.json"))), "Native Fan Yang differs from its shared definition");
 assert.equal((await readFile(resolve(resource, "campaign.sha256"), "utf8")).trim(), hash);
 const actual = JSON.parse(await readFile(resolve(resource, "ui.json"), "utf8"));
+assert.deepEqual(actual.engagementMetrics, engagementMetricLabels, "Native crossing metric labels drifted");
 assert.deepEqual(actual.ui, ui, "Native UI text is stale");
 assert.deepEqual(actual.localeNames, localeNames);
 assert.deepEqual(actual.opposition, oppositionUi);

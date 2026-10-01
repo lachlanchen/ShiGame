@@ -30,7 +30,7 @@ final class SHIUITests: XCTestCase {
     }
     func reveal(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<32 {
-            let reading = ["panel-reading", "aftermath", "refuge-scene", "retreat-scene", "fanyang-scene", "council", "campaign", "title-reading"]
+            let reading = ["crossing-order-reading", "crossing-reading", "panel-reading", "aftermath", "refuge-scene", "retreat-scene", "fanyang-scene", "council", "campaign", "title-reading"]
                 .map { app.scrollViews[$0] }.first { $0.exists && $0.isHittable }
             let viewport = reading ?? app
             var visible = viewport.frame.intersection(app.frame)
@@ -73,6 +73,67 @@ final class SHIUITests: XCTestCase {
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
+
+    #if SHI_CROSSING_PREVIEW
+    func testCrossingCampaignColdResumeAndChen() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-shi.locale", "en", "-shi.reduced-motion", "true"]
+        app.launchEnvironment["SHI_CROSSING_SEED"] = "0"
+        app.launch()
+        XCTAssertTrue(app.buttons["crossing-new-game"].waitForExistence(timeout: 20))
+        app.buttons["crossing-new-game"].tap()
+        let reset = app.buttons.matching(identifier: "crossing-confirm-restart").firstMatch
+        XCTAssertTrue(reset.waitForExistence(timeout: 10)); reset.tap()
+        func issue(_ id: String) {
+            let choice = app.buttons["crossing-order-" + id]
+            XCTAssertTrue(choice.waitForExistence(timeout: 10)); reveal(choice, in: app); choice.tap()
+            let commit = app.buttons["crossing-issue-order"]
+            // Fixed sibling footer, not part of the scrollable reading area.
+            XCTAssertTrue(commit.waitForExistence(timeout: 10)); XCTAssertTrue(commit.isHittable); commit.tap()
+        }
+        func readReaction() {
+            let next = app.buttons["crossing-reaction-continue"]
+            XCTAssertTrue(next.waitForExistence(timeout: 10)); XCTAssertTrue(next.isHittable); next.tap()
+        }
+        capture("crossing-01-opening")
+        issue("read-the-names"); readReaction()
+        issue("issue-grain-tallies"); readReaction()
+        issue("families-first")
+        XCTAssertTrue(app.staticTexts["crossing-pulse"].waitForExistence(timeout: 10))
+        capture("crossing-02-first-orders")
+        issue("screen-through-reeds")
+        XCTAssertTrue(app.buttons["crossing-reaction-continue"].waitForExistence(timeout: 10))
+        let orderTitle = app.staticTexts["crossing-scene-title"].label
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["crossing-reaction-continue"].waitForExistence(timeout: 15))
+        XCTAssertEqual(app.staticTexts["crossing-scene-title"].label, orderTitle)
+        capture("crossing-03-field-response-resumed"); readReaction()
+        issue("repair-the-landing"); readReaction()
+        issue("hold-for-the-last-household"); readReaction()
+        let finish = app.buttons["crossing-finish"]
+        XCTAssertTrue(finish.waitForExistence(timeout: 10)); reveal(finish, in: app); finish.tap()
+        XCTAssertTrue(app.buttons["crossing-reaction-continue"].waitForExistence(timeout: 10))
+        capture("crossing-04-personal-consequence")
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["crossing-reaction-continue"].waitForExistence(timeout: 15)); readReaction()
+        issue("root-in-villages"); readReaction()
+        let council = app.buttons["crossing-council-enter"]
+        XCTAssertTrue(council.waitForExistence(timeout: 10)); reveal(council, in: app)
+        capture("crossing-05-conclusion"); council.tap()
+        XCTAssertTrue(app.staticTexts["council-title"].waitForExistence(timeout: 10))
+        let first = councilDecision("defer-title", app)
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["crossing-council-enter"].waitForExistence(timeout: 15))
+        reveal(app.buttons["crossing-council-enter"], in: app); app.buttons["crossing-council-enter"].tap()
+        XCTAssertTrue(app.staticTexts["council-response"].waitForExistence(timeout: 10))
+        assertSavedChanges(first, prefix: "council-response", app)
+        capture("crossing-06-chen-resumed"); councilContinue(app)
+        _ = councilDecision("joint-ledger", app); councilContinue(app)
+        _ = councilDecision("one-command", app, expectedOutcome: "common-front"); councilContinue(app)
+        XCTAssertTrue(app.staticTexts["council-outcome"].waitForExistence(timeout: 10))
+        capture("crossing-07-chen-conclusion")
+    }
+    #endif
     func testNativeCampaignAndDurableResume() throws {
         continueAfterFailure = false
         let app = XCUIApplication()

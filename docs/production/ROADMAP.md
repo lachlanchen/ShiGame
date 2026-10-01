@@ -46,6 +46,18 @@ chapter behavior remains unchanged. This closes the consequence-rule blocker;
 atomic native session persistence and SwiftUI controls are still required before
 an installed crossing-to-Chen playtest or beta can be qualified.
 
+Playable follow-up: the [isolated native crossing QA](NATIVE_CROSSING_PLAYABLE_20261001.md)
+now adds atomic session persistence, field-order controls, matching unread
+reactions and ledger-bound Chen continuation. One complete iPad simulator route
+passed with three app relaunches; eight captures were visually inspected.
+Foundation checks cover eight outcome/failure categories and 64 cold-resumed
+events. This advances the installed simulator-playability gate, not production
+admission, physical-device qualification, human enjoyment or cinematic quality.
+The next native checks are narrow/large-type layouts, failed-route recovery and
+Chinese UI before signed-candidate qualification. Keep reviewed scene imagery
+and motion tied to this working sequence; its text-heavy layout is not the final
+movie-like experience.
+
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release
 saves, explicit versioned progression, honest previews, matching personal

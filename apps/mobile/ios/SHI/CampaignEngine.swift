@@ -30,6 +30,9 @@ struct CampaignEngine {
     private(set) var flags: Set<String> = []
     private(set) var completed = false
     private(set) var failure: String?
+    // Absent for the released choices-only chronicle. A tactical ledger adds
+    // its complete source identity before a downstream council can use it.
+    private(set) var continuationIdentity: String?
 
     init(campaign: Record, seed: UInt32) throws {
         guard campaign.int("schemaVersion") == 7,
@@ -160,6 +163,11 @@ struct CampaignEngine {
         var next = try CampaignEngine(campaign: definition, seed: seed)
         next.nodeID = nodeID; next.resources = resources; next.history = history
         next.flags = flags; next.completed = completed; next.failure = failure
+        next.continuationIdentity = continuationIdentity
         return next
+    }
+
+    func bindingContinuationIdentity(_ identity: String) -> CampaignEngine {
+        var next = self; next.continuationIdentity = identity; return next
     }
 }

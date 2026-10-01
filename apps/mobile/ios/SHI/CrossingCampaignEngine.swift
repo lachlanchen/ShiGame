@@ -8,6 +8,7 @@ struct CrossingCampaignContent {
     let engagement: Record
     let rules: Record
     let aftermath: Record
+    let fingerprint: String
 
     init(campaignData: Data, engagementData: Data, rulesData: Data, aftermathData: Data) throws {
         func object(_ data: Data) throws -> Record {
@@ -19,6 +20,7 @@ struct CrossingCampaignContent {
         func hash(_ data: Data) -> String { SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() }
         campaign = try object(campaignData); engagement = try object(engagementData)
         rules = try object(rulesData); aftermath = try object(aftermathData)
+        fingerprint = hash(rulesData)
         guard rules.int("schemaVersion") == 2, rules.text("effectPolicy") == "outcome-aware-crossing",
               rules.text("deliveryStatus") == "development-only",
               rules.text("campaignSha256") == hash(campaignData), rules.text("engagementSha256") == hash(engagementData),
@@ -194,6 +196,9 @@ struct CrossingCampaignEngine {
         default: throw CampaignError.invalid("Unknown crossing event.")
         }
         events.append(event)
+        let identity = try JSONSerialization.data(withJSONObject: ["rules": content.fingerprint, "ledger": save], options: [.sortedKeys])
+        let digest = SHA256.hash(data: identity).map { String(format: "%02x", $0) }.joined()
+        engine = engine.bindingContinuationIdentity("crossing-v2-" + digest)
     }
 
     private mutating func resolve(_ id: String, definition: Record) throws -> Record {

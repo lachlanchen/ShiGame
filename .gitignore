@@ -91,4 +91,5 @@ apps/mobile/ios/**/DerivedData/
 apps/mobile/ios/SHI/Resources/
 apps/mobile/ios/SHI.xcodeproj/
 apps/mobile/ios/SHIAftermathQA.xcodeproj/
+apps/mobile/ios/SHICrossingQA.xcodeproj/
 apps/mobile/ios/SHI-Info.plist

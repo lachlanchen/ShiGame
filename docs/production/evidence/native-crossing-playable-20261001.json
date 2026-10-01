@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-01",
+  "status": "isolated-native-ipad-simulator-route-passed-not-beta-admission",
+  "baseCommit": "4b215ad269513c20b1f07d287b92efe6482ebcf9",
+  "toolchain": "Xcode 26.3 / Apple Swift 6.2.4, x86_64 Mac, Swift 5 language mode",
+  "ui": {
+    "project": "SHICrossingQA",
+    "bundle": "art.lazying.shi.crossingqa",
+    "device": "iPad Pro 13-inch (M4) simulator",
+    "os": "iOS 26.3.1 (23D8133)",
+    "architecture": "x86_64",
+    "test": "SHIUITests/testCrossingCampaignColdResumeAndChen",
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "relaunches": 3,
+    "capturesReviewed": 8,
+    "reviewer": "Codex agent visual inspection; not owner or external human playtest",
+    "route": ["read-the-names", "issue-grain-tallies", "families-first", "screen-through-reeds", "repair-the-landing", "hold-for-the-last-household", "finish-crossing", "root-in-villages", "defer-title", "joint-ledger", "one-command"],
+    "chapterResources": { "grain": 48, "trust": 83, "momentum": 11, "people": 97, "danger": 96 },
+    "councilOutcome": "common-front",
+    "review": "Readable wrapping and visible controls in eight captures; partial crossing reaction does not claim every household arrived. Still text-heavy with schematic map, not cinematic acceptance.",
+    "firstAttempt": "Failed: test scroll helper tried to reveal a fixed Confirm footer inside the reading scroll view. Corrected test checks footer hittability. No rule or fixture changed."
+  },
+  "regressions": {
+    "sessionGroups": 5,
+    "outcomeFailureRoutes": 8,
+    "eventColdResumes": 64,
+    "councilRoutes": 77,
+    "councilTurns": 231,
+    "coreWebTests": 473,
+    "typechecks": ["production", "SHI_RETREAT_PREVIEW", "SHI_CROSSING_PREVIEW"],
+    "generatedProjectIsolation": "Actual XcodeGen PBX source/resource lists, preview flags, bundle IDs and unsigned settings passed",
+    "previewGates": "Both compiled production and crossing modes require the exact isolated bundle identity",
+    "saveChecks": ["write before publish", "write and acknowledgement failure preserve state", "stale phase and reentry rejection", "plan cancellation before first order only", "confirmed failure replay preserves opening and seed", "different tactical histories isolate council saves", "corrupt saves preserved and backed up before confirmed reset", "released save sentinel unchanged"]
+  },
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/CrossingCampaignSession.swift": "88f8fbe2aa3f8887e48e04347a39858e6086cb85848a966cc31daf11fee1cff8",
+    "apps/mobile/ios/SHI/CrossingPreviewContent.swift": "8b2691ecf2a88996af0b926c784d32b38ce85ea433b84133e68ab87cf658bdbd",
+    "apps/mobile/ios/SHI/NativeCrossingCampaignView.swift": "bd27cc17799684c5a920b63cf721ebbfe442fe5615d6feb3d6c296bf0d23f03e",
+    "apps/mobile/ios/SHI/CampaignEngine.swift": "ed77b1c368c5a486e342ff56d3518cc920b8cf943174b8e91720319cd1f64510",
+    "apps/mobile/ios/SHI/CouncilEngine.swift": "a97b97ddddeeb38558561e492fc04095f82b72d0218efd1ac46241a194bfc144",
+    "apps/mobile/ios/SHI/CrossingCampaignEngine.swift": "4029b9c96c44c7835f05795aca94ad030c6600ba28b73da4639e056d884e9e08",
+    "apps/mobile/ios/UITests/SHIUITests.swift": "af4920a6e7d9f05a6611132b6ab9cd36ee2ae722a84008cd7439b023f619fdca",
+    "scripts/test-native-crossing-session.sh": "f177c54eac31eafa9deea05f161979e358efde76e8142412aa8788a54f908869"
+  },
+  "screenshots": [
+    {
+      "path": "docs/production/evidence/native-crossing-orders-ipad-20261001.png",
+      "sha256": "fda6a230268c5e6da6145b0bac4870c7e195215f42057b35eb77fb5484618219",
+      "source": "Unmodified Xcode attachment crossing-02-first-orders",
+      "reviewStatus": "agent-reviewed-documentation-only",
+      "licenseStatus": "SHI project rights; no new reuse license",
+      "intendedUse": "Simulator QA evidence, not game art"
+    },
+    {
+      "path": "docs/production/evidence/native-crossing-consequence-ipad-20261001.png",
+      "sha256": "2c7c1d71da5d4de0a0f02dcabea442550c1a25e2733a43c3cdca9f3669841df0",
+      "source": "Unmodified Xcode attachment crossing-04-personal-consequence",
+      "reviewStatus": "agent-reviewed-documentation-only",
+      "licenseStatus": "SHI project rights; no new reuse license",
+      "intendedUse": "Simulator QA evidence, not game art"
+    }
+  ],
+  "verifiedArchiveSHA256": [
+    "3ee6bb607dda912e7bb0c8756ad1dbfa389b79c8aa8b9b7a39a541ddae159e57",
+    "7b9b56c5334cc6d18448ac89f541368fd3f1b21ef8a9d8e005b5c2927c82ca0e"
+  ],
+  "boundaries": [
+    "Only one end-to-end iPad UI route; Foundation category coverage is not exhaustive UI coverage",
+    "English screenshot review; Simplified Chinese exists but is not visually qualified here; explicit English fallback for other locales",
+    "Phone, large type, rotation, failed-route UI, physical-device and human playtests remain open",
+    "No production resource admission, released-save migration, signing, beta upload or public store action",
+    "No new historical prose, rules rebalance, media admission or commercial-rights change",
+    "Owned simulator shut down after capture; no SHI GUI/noVNC retained"
+  ]
+}
