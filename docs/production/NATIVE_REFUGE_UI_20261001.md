@@ -184,3 +184,67 @@ sync/parity, repository/source contracts, story readthrough, Unreal project and
 installer contracts, engagement/conformance, audio/accessibility/fonts,
 TypeScript checks and both regression suites. This validates contracts and
 tested behavior, not an Unreal rendered playtest or store-ready mobile build.
+
+## River branch and cold-resume qualification history
+
+The full-route UI test now also explicitly restarts only the refuge continuation,
+keeps the actual prior stripped-record retreat, chooses labour → follow witness
+→ unprompted account, and verifies the broken promise and unavailable record
+disclosure. Household actions and entrusted-message status must not appear on
+the river branch. A process termination/relaunch then re-enters the saved earlier
+chapters and compares the river reaction text exactly before continuing to the
+conclusion. This tests real persisted navigation, not a seeded shortcut.
+
+Test-only overlay SHA:
+`bb056f0f99094edb405c2bf8cc6f866b8e05daffc5b4b4acfca2a5c338e27bd4`.
+The sole successor uses fresh `refuge-ipad-4.xcresult`/log and the same owned
+simulator/cache. The app sources and shared story/rules are unchanged from the
+accepted v3 checkpoint. Test execution, cold-resume acceptance and the new four
+river captures are pending; the added assertions are not yet passing evidence.
+
+V4 was deliberately cancelled after source inspection found a test-navigation
+mistake: cold launch replays the retreat's saved last reaction, so Continue must
+be pressed before its conclusion/refuge entry appears. `RetreatSession` and
+`NativeRetreatView` directly establish this behavior; it is not an app defect.
+The exact owned Xcode PID received SIGINT; original handle finished exit75.
+The revised test asserts that reaction, continues, and verifies the unchanged
+retreat ending before opening refuge. V4 is not counted as a passing or completed
+river qualification. Its log/result remain preserved; no app-source changes.
+
+After verifying the cancelled wrapper/compiler absent and no booted simulator,
+the revised test-only overlay was hash-checked and extracted. SHA:
+`b0dd2fa03200b6a80dd9522eb7f22b615e41fcb46ba06e2e749921ddc313afd2`.
+Sole successor `refuge-ipad-5.xcresult`/log is pending; do not count the local
+navigation correction as a verified cold-resume fix until execution and review.
+
+## V5 accepted river/cold-resume development checkpoint
+
+Final result exit0: **two passed tests, zero failures/skips**, full expanded UI
+route477.111 seconds. The exact saved river reaction text survived process
+termination/relaunch and navigation through the persisted earlier chapters.
+The earlier retreat ending and chapter decision count remained unchanged.
+The stripped-record option stayed disabled; household orders/message labels
+were absent on the river branch. The QoS warning remains an open investigation.
+
+Agent viewed the four new unaltered PNG captures: broken promise, unprompted
+testimony, cold-resumed testimony and river conclusion. All are readable on the
+tested iPad portrait layout. Broken trust and the householder's refusal remain
+visible. The testimony explicitly remains unverified, with no companion name
+invented and no claimed reunion. The post-relaunch reaction matches its prior
+rendered content. This qualifies **only this actual river route**, not held-record
+disclosure, all native endings, phone/large text or assistive technology.
+
+Summary SHA:
+`b9e98432851e9c5cb87d71e58137fd352ee39fa676d39be65045a9b66493e16b`.
+Selected transfer SHA matched before local extraction:
+`9dc4ad44ce055d1a290bf2ac0629dfc182e342d6b9efd0800cdc1b60f8c8cd07`.
+Capture hashes, in promise/testimony/resumed/conclusion order:
+
+- `c6bd1019798ce16378ecfca73520e36002e393af9fbeb2d02e2117af841f90f1`
+- `953bffd503032d8a43a15c3f73cb137bff3954bc416da075b9b5e519e30446ee`
+- `de0287aa175c18d9419bc8a44433b427f06d927b3abe1f2abc6499b8eab84b14`
+- `52e52241e4197ea29a45ab4956f06657b1e3223bb8894cabc70986047ece8af1`
+
+The exact simulator was shut down; wrapper/compiler processes are absent and
+swap remains1.88MiB. Original result/recording retained on the owning Mac. No
+store upload, public push, paid generation or physical-device operation occurred.

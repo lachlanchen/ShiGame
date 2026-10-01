@@ -29,8 +29,33 @@
     { "scene": "reopened-conclusion", "sha256": "8a6660685d88e806a8e54ee88e8ac8668a2e913e17f1ac9b0efd35de09699dec", "agentViewed": true }
   ],
   "localRegression": { "coreTestsPassed": 83, "webTestsPassed": 376, "generatedProjectBoundaryPassed": true },
+  "riverColdResumeQualification": {
+    "scope": "Actual stripped-record retreat; labour/follow-witness/ask-unprompted; restart confined to refuge; process cold-relaunch",
+    "sourceOverlaySha256": "b0dd2fa03200b6a80dd9522eb7f22b615e41fcb46ba06e2e749921ddc313afd2",
+    "exitCode": 0,
+    "passedTests": 2,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "uiRouteSeconds": 477.111,
+    "summarySha256": "b9e98432851e9c5cb87d71e58137fd352ee39fa676d39be65045a9b66493e16b",
+    "selectedEvidenceTransferSha256": "9dc4ad44ce055d1a290bf2ac0629dfc182e342d6b9efd0800cdc1b60f8c8cd07",
+    "savedReactionTextPreserved": true,
+    "priorRetreatEndingPreserved": true,
+    "strippedRecordDisclosureUnavailable": true,
+    "householdActionsAndMessageStatusAbsent": true,
+    "simulatorShutdownVerified": true,
+    "ownedBuildProcessesAbsentVerified": true,
+    "runtimeWarning": "Internal QoS priority inversion; performance investigation remains open",
+    "captures": [
+      { "scene": "broken-promise", "sha256": "c6bd1019798ce16378ecfca73520e36002e393af9fbeb2d02e2117af841f90f1", "agentViewed": true },
+      { "scene": "unprompted-testimony", "sha256": "953bffd503032d8a43a15c3f73cb137bff3954bc416da075b9b5e519e30446ee", "agentViewed": true },
+      { "scene": "cold-resumed-testimony", "sha256": "de0287aa175c18d9419bc8a44433b427f06d927b3abe1f2abc6499b8eab84b14", "agentViewed": true },
+      { "scene": "river-conclusion", "sha256": "52e52241e4197ea29a45ab4956f06657b1e3223bb8894cabc70986047ece8af1", "agentViewed": true }
+    ],
+    "supersededRun": "V4 deliberately cancelled after source review identified missing Continue on restored retreat reaction; not an app failure or qualified route"
+  },
   "openGates": [
-    "River-route native UI",
+    "Held-record disclosure branches in native UI",
     "Phone and large-text layouts",
     "Physical-device and assistive-technology testing",
     "Localization beyond Chinese development scenes",

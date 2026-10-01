@@ -509,6 +509,52 @@ final class SHIUITests: XCTestCase {
         reveal(complete, in: app); XCTAssertTrue(complete.exists)
         XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "具体话语尚未托付")).firstMatch.exists)
         capture("refuge-04-native-resumed-conclusion")
+
+        // Replay only this continuation, then follow the other lead. All earlier
+        // chapter and record-custody decisions remain the same actual save.
+        reveal(app.buttons["refuge-restart"], in: app); app.buttons["refuge-restart"].tap()
+        let resetRefuge = app.buttons.matching(identifier: "refuge-confirm-restart").firstMatch
+        XCTAssertTrue(resetRefuge.waitForExistence(timeout: 10)); resetRefuge.tap()
+        refugeOrder("offer-labour"); refugeNext()
+        refugeOrder("follow-witness")
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "补漏之约已失信")).firstMatch.exists)
+        capture("refuge-05-native-broken-promise"); refugeNext()
+        XCTAssertFalse(app.buttons["refuge-offer-leave-route"].exists)
+        XCTAssertFalse(app.buttons["refuge-offer-leave-record"].exists)
+        let showRecord = app.buttons["refuge-offer-show-record"]
+        reveal(showRecord, in: app); XCTAssertTrue(showRecord.exists); XCTAssertFalse(showRecord.isEnabled)
+        refugeOrder("ask-unprompted")
+        let riverReaction = app.descendants(matching: .any).matching(identifier: "refuge-response").firstMatch
+        let savedRiverLines = riverReaction.descendants(matching: .staticText).allElementsBoundByIndex.map(\.label)
+        XCTAssertFalse(savedRiverLines.isEmpty)
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "取得未受凭记提示的陈述")).firstMatch.exists)
+        XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "已托付去处口信")).firstMatch.exists)
+        capture("refuge-06-native-independent-account")
+
+        // Cold launch must reread the saved river response, not manufacture a
+        // reunion, replay the previous household choice, or commit another order.
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["begin-game"].waitForExistence(timeout: 15)); app.buttons["begin-game"].tap()
+        XCTAssertEqual(app.buttons["chronicle-toggle"].value as? String, "4")
+        reveal(app.buttons["council-enter"], in: app); app.buttons["council-enter"].tap()
+        XCTAssertTrue(app.staticTexts["council-response"].waitForExistence(timeout: 10)); councilContinue(app)
+        reveal(app.buttons["fanyang-enter"], in: app); app.buttons["fanyang-enter"].tap()
+        XCTAssertTrue(app.staticTexts["fanyang-response"].waitForExistence(timeout: 10))
+        reveal(app.buttons["fanyang-continue"], in: app); app.buttons["fanyang-continue"].tap()
+        enterRetreat()
+        XCTAssertTrue(reaction().waitForExistence(timeout: 10))
+        next()
+        XCTAssertTrue(ending.waitForExistence(timeout: 10))
+        XCTAssertEqual(ending.value as? String, expected)
+        reveal(refuge, in: app); refuge.tap()
+        XCTAssertTrue(riverReaction.waitForExistence(timeout: 10))
+        XCTAssertEqual(riverReaction.descendants(matching: .staticText).allElementsBoundByIndex.map(\.label), savedRiverLines)
+        XCTAssertFalse(app.buttons["refuge-commit"].exists)
+        capture("refuge-07-native-cold-resumed-account")
+        refugeNext(); reveal(complete, in: app); XCTAssertTrue(complete.exists)
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "屋主拒绝再替你应承")).firstMatch.exists)
+        XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "已托付去处口信")).firstMatch.exists)
+        capture("refuge-08-native-river-conclusion")
         app.buttons["refuge-close"].tap()
         app.buttons["retreat-close"].tap()
         XCTAssertTrue(app.staticTexts["fanyang-outcome"].waitForExistence(timeout: 10))
