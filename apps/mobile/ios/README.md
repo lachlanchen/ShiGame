@@ -236,8 +236,10 @@ this does not qualify eleven-language UI coverage. A subsequent
 [phone checkpoint](../../../docs/production/NATIVE_CROSSING_PHONE_20261001.md)
 verified a full phone route, Chinese large-type/rotation and failed-route
 cancel/relaunch/replay across scoped simulator runs. Reactions show committed
-before/after metrics, and the record retains actual field orders. Smaller widths,
-physical devices, retained-save upgrades, signing and beta distribution remain
+before/after metrics, and the record retains actual field orders. The subsequent
+[iPhone SE check](../../../docs/production/NATIVE_CROSSING_SMALL_PHONE_20261001.md)
+passes all three tests on one binary and fixes the translucent-toolbar overlap.
+Physical devices, retained-save upgrades, signing and beta distribution remain
 separate gates. The presentation remains primarily
 text and a schematic map, not approved cinematic art or music.
 

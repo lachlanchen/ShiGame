@@ -57,6 +57,10 @@ the translucent top toolbar, which remains a presentation-polish issue. This is
 not final visual approval of the entire app. Existing iPad evidence belongs to
 the preceding checkpoint, not this edited presentation.
 
+Follow-up: the [small-phone checkpoint](NATIVE_CROSSING_SMALL_PHONE_20261001.md)
+fixes the toolbar overlap and runs all three crossing tests on the same iPhone SE
+simulator binary. This does not retroactively broaden this report's evidence.
+
 ![Opaque replay confirmation](evidence/native-crossing-replay-phone-20261001.png)
 
 ![Committed order feedback](evidence/native-crossing-feedback-phone-20261001.png)

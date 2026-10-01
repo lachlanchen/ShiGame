@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-01",
+  "status": "small-phone-simulator-route-passed-not-beta-admission",
+  "baseCommit": "7ec0d589ec16b2c2eac383a1edbabcfa0a69e143",
+  "toolchain": "Xcode 26.3 / Swift 6.2.4, x86_64 Mac",
+  "device": "iPhone SE (3rd generation) simulator, iOS 26.3.1 (23D8133), x86_64",
+  "portraitViewportPoints": [375, 667],
+  "portraitCapturePixels": [750, 1334],
+  "bundle": "art.lazying.shi.crossingqa",
+  "typechecks": ["production", "SHI_RETREAT_PREVIEW", "SHI_CROSSING_PREVIEW"],
+  "ui": {
+    "sameBinary": true,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "tests": [
+      "SHIUITests/testCrossingCampaignColdResumeAndChen",
+      "SHIUITests/testCrossingChineseLargeTextAndRotation",
+      "SHIUITests/testCrossingPhoneFailureReplayAndRecord"
+    ],
+    "captures": 18,
+    "capturesVisuallyInspected": 6,
+    "reviewer": "Codex agent, not owner or external human playtest",
+    "visualResult": "Opaque toolbar masks scrolling record prose; replay actions readable; Chinese AX XXXL wraps with reachable fixed actions in portrait/landscape"
+  },
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/NativeCrossingCampaignView.swift": "d5bcefe91f0e2ecec41bb5ca1664e4f8bfb8ad9252d3e83c64bf46774a5251c9",
+    "apps/mobile/ios/UITests/SHIUITests.swift": "6fcf0f15df368a70fc63b631a73c64cff5bb147f6bc7a2ad7caff682c9a0c212"
+  },
+  "verifiedArchiveSHA256": "f6d8aea265f0cbad1335ffc9663783de035422cc5b5871a9e7147d1f2b36cc40",
+  "screenshots": [
+    {
+      "path": "docs/production/evidence/native-crossing-record-se-20261001.png",
+      "sha256": "09b4a1a962d2006d9eaf455b255f087defda430e142fb495ca59df5184233fce",
+      "source": "Unmodified Xcode attachment crossing-phone-revised-field-record",
+      "reviewStatus": "agent-reviewed-documentation-only",
+      "licenseStatus": "SHI project rights; no new reuse license",
+      "intendedUse": "Simulator QA evidence, not game art"
+    },
+    {
+      "path": "docs/production/evidence/native-crossing-large-zh-se-20261001.png",
+      "sha256": "082ef0ab767c5ad432e6a5abd8eb8d0857d62137cd66e490ab193640dc2cef2e",
+      "source": "Unmodified Xcode attachment crossing-phone-zh-large-landscape-reaction",
+      "reviewStatus": "agent-reviewed-documentation-only",
+      "licenseStatus": "SHI project rights; no new reuse license",
+      "intendedUse": "Simulator QA evidence, not game art"
+    }
+  ],
+  "boundaries": [
+    "Not exhaustive device, locale, Dynamic Type or orientation coverage",
+    "Not physical-device performance, VoiceOver, minimum-OS or human enjoyment qualification",
+    "No rule, narrative, save-format, media or production-flag changes",
+    "No signing, beta upload, public store action or released-save upgrade test",
+    "Single owned simulator was shut down; build and test runner verified absent"
+  ]
+}

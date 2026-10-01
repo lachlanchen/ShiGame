@@ -56,7 +56,9 @@ admission, physical-device qualification, human enjoyment or cinematic quality.
 The subsequent [phone recovery checkpoint](NATIVE_CROSSING_PHONE_20261001.md)
 passes a full phone route, Chinese large-type/rotation and failed-route recovery
 in scoped simulator runs. It adds before/after feedback and actual order recall.
-Smaller widths, toolbar polish, physical devices and retained-save upgrades
+The [small-phone follow-up](NATIVE_CROSSING_SMALL_PHONE_20261001.md) fixes toolbar
+overlap and passes all three tests on one iPhone SE simulator binary, including
+Chinese accessibility XXXL/rotation. Physical devices and retained-save upgrades
 remain before signed-candidate qualification. Keep reviewed scene imagery
 and motion tied to this working sequence; its text-heavy layout is not the final
 movie-like experience.

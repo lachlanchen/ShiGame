@@ -97,6 +97,8 @@ struct NativeCrossingCampaignView: View {
                 }
             }
             .background(ink).foregroundStyle(parchment).tint(gold)
+            .toolbarBackground(ink, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Picker("Language", selection: $language) { Text("English").tag("en"); Text("中文").tag("zh-Hans") }.pickerStyle(.menu)
@@ -120,6 +122,8 @@ struct NativeCrossingCampaignView: View {
                         }.buttonStyle(.borderedProminent).foregroundStyle(ink).frame(minHeight: 44).padding(24)
                             .accessibilityIdentifier("crossing-issue-order")
                     }.background(ink).foregroundStyle(parchment).tint(gold)
+                    .toolbarBackground(ink, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
                     .toolbar { Button(t("close")) { selection = nil } }
                 }
             }
