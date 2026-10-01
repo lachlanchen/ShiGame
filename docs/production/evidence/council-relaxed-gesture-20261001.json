@@ -1,0 +1,32 @@
+{
+  "status": "private-pose-study-reviewed-static-not-admitted",
+  "scene": "Daze/Chen council performance",
+  "sourceSha256": "feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743",
+  "poseAuthorSha256": "1524b304c284d3c5f039bb1fafc5775a5753c309c08e72ffb5ee76135a1fc0c3",
+  "rendererSha256": "a9500894208ffbd000788716c9ee2127f30dedd994e15c2cfba2a76178c22b02",
+  "validatorSha256": "32ff68be096706ced604061c0620ceb612711d42cb98b0c2014ed6a90ca0d5dc",
+  "privateOutput": ".runtime/council-relaxed-gesture-20261001-v2",
+  "receiptSha256": "f75c29118ddf6370b26bbb0ce27783fa241df86f56b027fda340ea279303c97b",
+  "movieSha256": "ef86dc9babb6e073949b2285a75bd4cc82703cae8eef55a422b42fe476819345",
+  "contactSheetSha256": "7cb3f2b6ef5a889e4d588d995fd0ea62fe274467059a00b12e065b3a74941d22",
+  "peakFrameSha256": "7a83f2a690dd2fa5a5067993e113fa0ae70ae0db32a130730e5cf65440d0853e",
+  "verified": {
+    "skeletonBones": 53,
+    "sourceSamples": 121,
+    "framesDecoded": 48,
+    "durationSeconds": 4,
+    "rootAndFeetMatchBaselineToleranceMetres": 0.000001,
+    "footDisplacementMetres": 0,
+    "handTravelMetres": 0.32683478158134827,
+    "maximumSampledHandSpeedMetresPerSecond": 0.558566286557787,
+    "localArtifactTestsPassed": 8,
+    "rendererExitCode": 0,
+    "validatorExitCode": 0,
+    "retainedRuntime": false
+  },
+  "reviewScope": "Static initial/peak comparisons and eight-frame contact sheet; not temporal human review",
+  "remaining": ["wrist/finger silhouette", "costume deformation", "mesh contact", "facial acting", "temporal review", "council staging", "game integration"],
+  "sourceOverwritten": false,
+  "publicAssetAdmitted": false,
+  "gameRulesOrSavesChanged": false
+}
