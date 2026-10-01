@@ -136,3 +136,49 @@ changes; do not infer that the earlier restoration persisted across reboot.
 The owned emulator was stopped and its ports verified closed after capture.
 Fresh Chapter I, unavailable-order commit guards, distributed-build-1 upgrade,
 physical devices and human feedback remain open. No new build or upload occurred.
+
+## Retained release-1 APK upgrade: passed
+
+A separate SHI API 34 test device reused the installed system image and left
+the earlier offline-route test save untouched. The retained original APK
+(`ae70607f1efb7cf3a4ef3c27aaafcac12d8ebdfe5d04a1e51ff0fa484c48f653`)
+was installed as version 1. A real UI playthrough began with seed `1C808CEF`
+and **Read every name aloud**. After its consequence appeared, the app was
+force-stopped and the exact signed candidate 7 installed with `adb install -r`.
+No uninstall or data clear occurred. The original installation timestamp stayed
+unchanged, and the signer matched the candidate receipt.
+
+Candidate 7 retained the seed, protection commitment and resources
+41 grain / 54 trust / 28 momentum / 67 people / 58 exposure. The journal retained
+the original order, consequence and pressure account. The release-1 response
+panel did not reopen as an unread panel; this result proves decision continuity,
+not migration of that transient panel's reading state.
+
+The same campaign then continued through **Issue redeemable grain tallies**,
+**Send households across first** and **Root the movement in village covenants**.
+It reached Deep Roots with the protection promise kept, resources
+52 / 100 / 18 / 100 / 97, and a usable first-round Chen council. A cold launch
+preserved that ending and resources. Each of the four choices appeared exactly
+once in the restored journal. Six assertion groups checked these captures and
+the retained artifact hashes; this is one upgrade route, not six playthroughs.
+
+The [restored journal](evidence/android-beta7-upgrade-journal-20261002.png) and
+[reached ending](evidence/android-beta7-upgrade-ending-20261002.png) were visually
+reviewed. Their SHA-256 values are respectively
+`81d08f5ed8973479dc6483701e97f8d2ba196f00d1572dff03c41356895feabe` and
+`eb51eaf979db9ea2d24a11bc2a9ea46167b069407a9f15a378874a03731e0d68`.
+The phone presentation remains text-heavy and requires substantial scrolling
+through strategic details; improve that hierarchy in a subsequent source
+checkpoint without hiding choice costs or changing this frozen package.
+
+One early UI capture returned a null accessibility root. It was excluded and
+recaptured; the private capture/tap helpers now require a successful fresh dump
+before reading it, preventing reuse of stale XML. Initial blank loading captures
+are also not acceptance evidence. The exact emulator was stopped, its execution
+handle ended successfully and its ports were closed. Both test-device saves and
+the original packages remain retained.
+
+This closes the **retained signed APK** save-upgrade check only. Google Play's
+delivered signing chain, a fresh route entirely on candidate 7, unavailable-order
+commit guards, physical devices and human feedback remain unproven. No new
+build, store upload, historical claim or media asset was introduced.

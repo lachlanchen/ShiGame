@@ -33,12 +33,14 @@
       "Exact retained signed APK played three Chen decisions and three Fan Yang decisions offline on API34, reaching the previewed guaranteed surrender",
       "Cold-restored unread council and final Fan Yang response/expanded-change UI XML matched byte-for-byte; chapter seed, ending and resource labels remained unchanged",
       "Council replay cancellation preserved text and accessible descriptions; broken-promise response and final six metrics checked; three route screenshots visually inspected",
-      "Signed API34 Back/Escape navigation and source-ledger access passed; council and Fan Yang response XML matched after returning; Tongjian history-panel screenshot visually reviewed"
+      "Signed API34 Back/Escape navigation and source-ledger access passed; council and Fan Yang response XML matched after returning; Tongjian history-panel screenshot visually reviewed",
+      "Retained original signed release1 APK upgraded in-place to7 on a separate API34 test device; original seed, first choice, commitment, resource values and journal survived",
+      "Upgraded campaign completed its remaining three decisions, reached Deep Roots with kept commitment and Chen entry, and retained four unique journal decisions after cold launch"
     ],
     "limitations": [
       "Fresh Chapter I-to-ending route remains; completed continuation and navigation checks began from a retained Chapter I save",
       "Unavailable offers were visibly marked but not selected in this device run; their commit-control gate was not exercised",
-      "This is not a distributed build1 or Play-signing upgrade test",
+      "Retained signed release1 APK upgrade passed; this is not a Google Play-delivered signing-chain or physical-device upgrade test, nor migration of release1's transient unread panel",
       "Physical-device and human playtest qualification remain",
       "Development-only crossing, retreat/refuge and unreviewed media remain excluded",
       "Reconcile live provider state before any upload; production remains build1"

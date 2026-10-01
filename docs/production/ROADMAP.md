@@ -131,8 +131,11 @@ preserves the retained chronicle across candidate upgrades and keeps Chen's
 return control visible on entry. Candidate 7 has a focused signed-runtime pass,
 and subsequently passed an offline Chen-to-Fan-Yang route with two cold-restored
 responses and preserved chapter state. This is not full beta qualification or
-an upload. Continue fresh Chapter I, distributed-save and physical-device checks
-using the retained exact artifacts.
+an upload. The retained signed release-1 APK subsequently upgraded to candidate
+7 without losing its first decision, and the campaign reached its ending and
+Chen entry. Continue a fresh route entirely on 7, Play-delivered upgrade and
+physical-device checks using the retained exact artifacts. The phone route also
+needs less scrolling through strategic detail, without concealing order costs.
 
 Maintain native SwiftUI iOS, Android, web and the existing Unreal client with
 shared narrative/rules. Use the shared Macs, iPad and Mi 10 Pro when their
