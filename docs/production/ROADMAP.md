@@ -133,9 +133,12 @@ and subsequently passed an offline Chen-to-Fan-Yang route with two cold-restored
 responses and preserved chapter state. This is not full beta qualification or
 an upload. The retained signed release-1 APK subsequently upgraded to candidate
 7 without losing its first decision, and the campaign reached its ending and
-Chen entry. Continue a fresh route entirely on 7, Play-delivered upgrade and
-physical-device checks using the retained exact artifacts. The phone route also
-needs less scrolling through strategic detail, without concealing order costs.
+Chen entry. A fresh alternate route on 7 then exposed a
+[next-story arrival defect](SCENE_ARRIVAL_20261002.md); candidate 7 is held.
+The source correction passed production-web review but requires a successor
+signed Android build and on-device verification before distribution. Play-delivered
+upgrade and physical-device checks remain. The phone route also needs less
+scrolling through strategic detail, without concealing order costs.
 
 Maintain native SwiftUI iOS, Android, web and the existing Unreal client with
 shared narrative/rules. Use the shared Macs, iPad and Mi 10 Pro when their

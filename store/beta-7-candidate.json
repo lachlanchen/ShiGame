@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "candidateBuild": 7,
   "createdOn": "2026-10-02",
-  "scope": "Signed Android candidate; retained-save upgrades and offline Chen-to-Fan-Yang continuation passed; full beta qualification pending",
+  "scope": "Signed Android candidate held for next-scene scroll continuity; retained-save, offline continuation and fresh campaign evidence retained",
   "providerPreflight": {
     "readOnly": true,
     "uploadedVersionCodes": [1],
@@ -13,7 +13,7 @@
     "numberReserved": false
   },
   "android": {
-    "status": "signed-partially-runtime-qualified-not-uploaded",
+    "status": "held-next-story-offscreen-after-response-not-uploaded",
     "applicationId": "art.lazying.shi",
     "versionCode": 7,
     "sourceCommit": "17d1dad2da0e46f9199f30be68863e019af35c46",
@@ -35,10 +35,11 @@
       "Council replay cancellation preserved text and accessible descriptions; broken-promise response and final six metrics checked; three route screenshots visually inspected",
       "Signed API34 Back/Escape navigation and source-ledger access passed; council and Fan Yang response XML matched after returning; Tongjian history-panel screenshot visually reviewed",
       "Retained original signed release1 APK upgraded in-place to7 on a separate API34 test device; original seed, first choice, commitment, resource values and journal survived",
-      "Upgraded campaign completed its remaining three decisions, reached Deep Roots with kept commitment and Chen entry, and retained four unique journal decisions after cold launch"
+      "Upgraded campaign completed its remaining three decisions, reached Deep Roots with kept commitment and Chen entry, and retained four unique journal decisions after cold launch",
+      "Fresh all7 concealment/courier/carts/envoys route reached Watchful Strategist with kept commitment, but exposed a scene-arrival scroll defect"
     ],
     "limitations": [
-      "Fresh Chapter I-to-ending route remains; completed continuation and navigation checks began from a retained Chapter I save",
+      "HOLD: Continue can leave the next story above the viewport; corrected source needs a successor signed build and actual Android verification",
       "Unavailable offers were visibly marked but not selected in this device run; their commit-control gate was not exercised",
       "Retained signed release1 APK upgrade passed; this is not a Google Play-delivered signing-chain or physical-device upgrade test, nor migration of release1's transient unread panel",
       "Physical-device and human playtest qualification remain",

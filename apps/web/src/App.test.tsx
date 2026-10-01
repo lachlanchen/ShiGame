@@ -317,6 +317,28 @@ describe("playable web shell", () => {
     expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!)).toEqual(acknowledged);
   });
 
+  it.each(["en", "zh-Hans"].flatMap(locale => [false, true].map(reduced => ({ locale, reduced }))))(
+    "brings each next scene and the ending into view after reading ($locale, reduced=$reduced)", async ({ locale, reduced }) => {
+      localStorage.setItem("shi.locale", locale);
+      localStorage.setItem("shi.reduced-motion", String(reduced));
+      const view = render(<App />);
+      fireEvent.click(view.getByTestId("begin-game"));
+      for (let turn = 0; turn < 4; turn++) {
+        fireEvent.click(await view.findByTestId("commit-selected"));
+        const next = await view.findByTestId("resolution-continue");
+        const target = view.container.querySelector<HTMLElement>(turn === 3 ? ".ending-panel" : ".story-panel")!;
+        const scroll = vi.fn();
+        Object.defineProperty(target, "scrollIntoView", { configurable: true, value: scroll });
+        const saved = JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!);
+        expect(saved.history).toHaveLength(turn + 1);
+        expect(scroll).not.toHaveBeenCalled();
+        fireEvent.click(next);
+        await waitFor(() => expect(scroll).toHaveBeenCalledWith({ block: "start", behavior: "instant" }));
+        expect(document.activeElement).toBe(target);
+        expect(JSON.parse(localStorage.getItem("shi.chapter-01.save.v6")!).history).toEqual(saved.history);
+      }
+    });
+
   it("does not let delayed scene-focus callbacks steal focus from a newly opened council", async () => {
     const view = render(<App />);
     fireEvent.click(view.getByTestId("begin-game"));
@@ -326,6 +348,8 @@ describe("playable web shell", () => {
       if (turn < 3) fireEvent.click(next);
     }
     const frames: FrameRequestCallback[] = [];
+    const endingScroll = vi.fn();
+    Object.defineProperty(view.container.querySelector(".ending-panel")!, "scrollIntoView", { configurable: true, value: endingScroll });
     vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => { frames.push(callback); return frames.length; });
     fireEvent.click(view.getByTestId("resolution-continue"));
     const enter = await view.findByTestId("council-enter");
@@ -336,6 +360,7 @@ describe("playable web shell", () => {
       act(() => { for (const callback of current) callback(performance.now()); });
     }
     expect(document.activeElement?.id).toBe("chen-title");
+    expect(endingScroll).not.toHaveBeenCalled();
     expect(localStorage.getItem("shi.chen-council.v1")).toBeNull();
   });
 

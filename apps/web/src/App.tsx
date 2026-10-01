@@ -137,6 +137,7 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
   const [audioStatus, setAudioStatus] = useState<AudioRuntimeStatus>(() => readAudioPreferences().enabled ? "armed" : "off");
   const [lastAudioCue, setLastAudioCue] = useState<AudioCue | "none">("none");
   const storyRef = useRef<HTMLElement>(null);
+  const endingRef = useRef<HTMLElement>(null);
   const beginButtonRef = useRef<HTMLButtonElement>(null);
   const endingRestartRef = useRef<HTMLButtonElement>(null);
   const choiceRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -335,6 +336,9 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
     setResolution(null);
     choiceInFlightRef.current = false;
     playAudioCue("close");
+    // Acknowledging a consequence arrives at new story content. Its dedicated
+    // arrival effect owns focus/scroll; restoring the old order would skip it.
+    if (resolution) return;
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
       if (document.querySelector("[role='dialog'][aria-modal='true']")) return;
       const story = document.querySelector<HTMLElement>(".story-panel");
@@ -510,10 +514,17 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
   useEffect(() => {
     if (screen !== "play" || state.history.length === 0 || resolution) return;
     const frame = window.requestAnimationFrame(() => {
-      if (!document.querySelector("[role='dialog'][aria-modal='true']")) storyRef.current?.focus({ preventScroll: true });
+      if (document.querySelector("[role='dialog'][aria-modal='true']")) return;
+      // Defeat replaces the story article itself; retain its established
+      // accessible focus target. Successful endings sit below the last scene.
+      const target = state.completed && !state.failureReason ? endingRef.current : storyRef.current;
+      target?.focus({ preventScroll: true });
+      // Phone orders sit far below the story. Preserve the reading sequence,
+      // not the previous page offset; instant also respects reduced motion.
+      target?.scrollIntoView?.({ block: "start", behavior: "instant" });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [node.id, screen, state.history.length, resolution]);
+  }, [node.id, screen, state.history.length, state.completed, state.failureReason, resolution]);
 
   useLayoutEffect(() => {
     if (!drawer) return;
@@ -656,11 +667,11 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
 
   const EndingHeading = state.failureReason ? "h1" : "h2";
   const endingPanel = (
-    <section className="ending-panel">
+    <section className="ending-panel" ref={endingRef} tabIndex={-1} aria-labelledby={state.failureReason ? "story-title" : "chapter-ending-title"}>
       <span className="ending-seal">{state.failureReason ? "止" : ending === "wildfire" ? "火" : ending === "deep-roots" ? "根" : "觀"}</span>
       <div>
         <p className="eyebrow">{state.failureReason ? translate(locale, "failed") : translate(locale, "complete")}</p>
-        <EndingHeading id={state.failureReason ? "story-title" : undefined}>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</EndingHeading>
+        <EndingHeading id={state.failureReason ? "story-title" : "chapter-ending-title"}>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</EndingHeading>
         <EndingText locale={locale} textKey={state.failureReason ? (state.failureReason === "captured" ? "capturedText" : "scatteredText") : ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText"} />
         {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} outcomeOverride={crossingDriver?.getCrossingCommitment()?.outcome} locale={locale} /></Suspense>}
       </div>

@@ -10,7 +10,7 @@ const route = process.argv[2] ?? "together";
 const production = process.env.SHI_PLAYTEST_PRODUCTION === "1";
 const internalDirectory = process.env.SHI_PLAYTEST_INTERNAL_CROSSING_DIR;
 if (internalDirectory && (!production || route !== "crossing-v2")) throw new Error("Internal candidate review requires production crossing-v2.");
-if (production && !["captured", "consequence-loading", ...(internalDirectory ? ["crossing-v2"] : [])].includes(route)) throw new Error("Unsupported production review route.");
+if (production && !["captured", "consequence-loading", "scene-arrival", ...(internalDirectory ? ["crossing-v2"] : [])].includes(route)) throw new Error("Unsupported production review route.");
 let internalDist;
 if (internalDirectory) {
   const candidate = resolve(internalDirectory);
@@ -37,7 +37,7 @@ if (internalDirectory) {
   }
 }
 const storyBranch = process.argv[3] ?? "baseline";
-if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "crossing", "crossing-v2", "consequence-loading"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured|crossing|crossing-v2|consequence-loading] [baseline|partner-search|loan-search]");
+if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "crossing", "crossing-v2", "consequence-loading", "scene-arrival"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured|crossing|crossing-v2|consequence-loading|scene-arrival] [baseline|partner-search|loan-search]");
 if (route === "consequence-loading" && !production) throw new Error("Consequence loading review requires the production bundle.");
 const isCrossing = route === "crossing" || route === "crossing-v2";
 const revisedCrossing = route === "crossing-v2";
@@ -191,7 +191,41 @@ try {
   execFileSync("xdotool", ["windowmove", "--sync", windowId, "0", "0", "windowsize", "--sync", windowId, "1600", "1000"], { env: xenv });
   report.windowGeometry = execFileSync("xdotool", ["getwindowgeometry", "--shell", windowId], { env: xenv, encoding: "utf8" });
   check(/WIDTH=1600\b/.test(report.windowGeometry) && /HEIGHT=1000\b/.test(report.windowGeometry), "Chrome window fits the dedicated desktop");
-  if (route === "consequence-loading") {
+  if (route === "scene-arrival") {
+    for (const [index, config] of [{ locale: "en", width: 390, reduced: false }, { locale: "zh-Hans", width: 320, reduced: true }, { locale: "ar", width: 390, reduced: false }].entries()) {
+      await send("Emulation.setDeviceMetricsOverride", { width: config.width, height: 844, deviceScaleFactor: 1, mobile: false });
+      await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: config.reduced ? "reduce" : "no-preference" }] });
+      await send("Page.navigate", { url: appURL });
+      await until(exists('[data-testid="begin-game"]'));
+      await evaluate(`(()=>{const select=document.querySelector('select');select.value=${JSON.stringify(config.locale)};select.dispatchEvent(new Event('change',{bubbles:true}))})()`);
+      await until(`document.documentElement.lang===${JSON.stringify(config.locale)}`);
+      check(await evaluate(`document.querySelector('[data-testid=shi-app]').dataset.motion===${JSON.stringify(config.reduced ? "reduced" : "full")}`), `${config.locale}: motion preference applied`);
+      await click('[data-testid="begin-game"]');
+      // First-launch guide is lazy; wait for its control instead of sampling
+      // before it mounts and then trying to click the inert order underneath.
+      if (index === 0) await click('[data-testid="guide-continue"]');
+      // Restart the same deterministic seed through the UI, never replace saves
+      // with fixtures. The prior route's ending is retained until this action.
+      if (index > 0) await click('.chen-ending-actions > button:last-child');
+      for (let turn = 0; turn < 4; turn++) {
+        await click('[data-testid="commit-selected"]');
+        await until(exists('[data-testid="resolution-continue"]'));
+        const before = await evaluate("JSON.parse(localStorage.getItem('shi.chapter-01.save.v6'))");
+        check(before.history.length === turn + 1, `${config.locale}/${turn}: exactly one order saved`);
+        await click('[data-testid="resolution-continue"]');
+        const selector = turn === 3 ? '.ending-panel' : '.story-panel';
+        const heading = turn === 3 ? '#chapter-ending-title' : '#story-title';
+        await until(`document.activeElement===document.querySelector(${JSON.stringify(selector)})`);
+        await evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+        const geometry = await evaluate(`(()=>{const r=document.querySelector(${JSON.stringify(heading)}).getBoundingClientRect();return {top:r.top,bottom:r.bottom,height:innerHeight,scrollY}})()`);
+        check(geometry.top >= -1 && geometry.bottom <= geometry.height, `${config.locale}/${turn}: next heading visible without corrective scrolling`);
+        const after = await evaluate("JSON.parse(localStorage.getItem('shi.chapter-01.save.v6'))");
+        check(JSON.stringify(after.history) === JSON.stringify(before.history) && !after.pendingAftermath, `${config.locale}/${turn}: arrival preserves the committed history`);
+        await layout(`${config.locale}/${turn} arrival`, false);
+        if (turn === 0 || turn === 3) await capture(`scene-arrival-${config.locale}-${turn === 0 ? 'story' : 'ending'}`);
+      }
+    }
+  } else if (route === "consequence-loading") {
     const readerLocale = process.env.SHI_PLAYTEST_LOCALE ?? "en";
     if (!["en", "ar", "zh-Hans"].includes(readerLocale)) throw new Error("Unsupported consequence review locale");
     report.locale = readerLocale;
