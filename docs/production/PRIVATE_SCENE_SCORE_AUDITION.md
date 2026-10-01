@@ -18,7 +18,7 @@ The separate visible review harness supports:
 SHI_PLAYTEST_SCORE=1 node scripts/playtest-retreat-visible.mjs crossing-v2
 ```
 
-Before running it, apply the shared-workstation preflight and single-stack policy. That new music-enabled harness branch has not yet been run or visually accepted.
+Before running it, apply the shared-workstation preflight and single-stack policy. The music-enabled branch now has one complete passing development route; see the review below.
 
 ## Identity and behavior
 
@@ -36,6 +36,18 @@ Fourteen focused tests pass, including isolation, hash rejection, pause during d
 
 An actual bounded loopback Vite request returned the exact 1,081,197-byte MP3, audio/mpeg, no-store, and expected SHA-256; a request for another private file returned 404. ffprobe reports 45.024 seconds. The server was then terminated and its port verified absent. This verifies delivery, not audible scene quality or real-browser playback.
 
-Visible/audio review was deferred: shared swap reached 69–70/71 GiB despite 63–66 GiB available RAM, and no obsolete SHI runtime existed to reclaim. No other project was interrupted. LocalVideoGen Studio8190 was also confirmed offline; no new model or media-generation job was launched.
+The initial GUI review was deferred when shared swap reached 69–70/71 GiB despite 63–66 GiB available RAM. A subsequent bounded browser-only review used one stack, with no obsolete SHI runtime to reclaim and no model/cook/editor work. No other project was interrupted. LocalVideoGen Studio8190 was confirmed offline; no new model or media-generation job was launched.
 
 The current official [XL Turbo model card](https://huggingface.co/ACE-Step/acestep-v15-xl-turbo) identifies MIT licensing and states that generated music may be used commercially; the [ACE-Step code license](https://github.com/ace-step/ACE-Step-1.5/blob/main/LICENSE) is recorded separately. These are upstream statements, not an assurance about every generated output or all pipeline dependencies. Final admission still needs pinned component/license review, full listening for unwanted voice or similarity, motif and rain/dialogue scene-fit review, and human acceptance. Do not mark the cue shipped or approved yet.
+
+## Real-browser repair and review
+
+The first real play attempt exposed a CSP mismatch: blob media was blocked by the existing `media-src 'self'`. The player now uses the same-origin fixed endpoint after its client hash check; the server independently verifies the same pinned hash for every subsequent media request. Production CSP was not broadened.
+
+Two subsequent phone checks exposed review-overlay collisions with differently placed crossing and chronicle close buttons. A development-only 64px toolbar strip now reserves space above drawers and aftermath dialogs. The music control remains available without hiding the tested close/continue controls. Its layout class is removed on unmount. Volume changes during loading and delayed play promises after Pause are covered by regression tests.
+
+Final visible run: `.runtime/story-review/2026-10-01T01-34-06.594Z`, 58 passing checks, 18 screenshots and no browser exceptions. Chrome reports duration45 seconds, loopfalse, volume0.2, pausedfalse and advancing currentTime. The same player survives scene transitions; reload starts silent, and explicit replay leaves the saved field command unchanged. The route completes crossing → Chen → Fan Yang → retreat together ending with resume and preserved old saves. Playing-desktop, crossing-phone and primary-reaction-phone screenshots were inspected.
+
+This is browser decoding/playback and layout evidence, not verification of physical speakers or a full listening pass. Soundtrack emotional fit and admission remain open. Exact owned children and ports were verified absent after cleanup. Evidence summary: `docs/production/evidence/private-score-playback-web-20261001.json`.
+
+After the repairs, all 278 web tests, web TypeScript checks and production build/budget checks pass. The private score remains excluded from the production bundle.

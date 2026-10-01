@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "scope": "One real-pointer development music-enabled crossing-to-retreat route. Browser decoding/playback and layout only; not audible speaker, human listening, artistic, licensing or release admission.",
+  "started": "2026-10-01T01:34:06.595Z",
+  "finished": "2026-10-01T01:34:42.506Z",
+  "checksPassed": 58,
+  "screenshotsCaptured": 18,
+  "browserExceptions": [],
+  "runtimeEvidence": ".runtime/story-review/2026-10-01T01-34-06.594Z",
+  "statusSHA256": "05125f4edb0ba92c86ab3be6bacc2b06c759d7dbb176726a7593f8900570d538",
+  "score": {
+    "candidate": "B",
+    "seed": 926102,
+    "previewSHA256": "7d28d185acd999637b19fd9eb0eb1bec778eff9f17c9507fff92519643cdada4",
+    "browserPlayback": { "duration": 45, "loop": false, "volume": 0.2, "currentTime": 0.358617, "paused": false },
+    "humanListeningApproved": false,
+    "releaseApproved": false
+  },
+  "repairs": ["Same-origin playback complies with unchanged production CSP", "Reserved private toolbar avoids tested modal-control collisions", "Latest volume wins during loading", "Late media promise cannot undo Pause"],
+  "reviewedScreenshotsSHA256": {
+    "score-audition-playing-desktop.png": "40e10795b041e2e5091207356ce475e7d81aa6fa5cd9fb221685b652f22bab00",
+    "crossing-command-phone.png": "e44bc1ea2a1b63b16fc9e86c85652d579d0a8b2cb25cb818191ccf2d367baae9",
+    "crossing-personal-reaction-phone.png": "fe18ce47e0e1160cddad7b0a18836dab3f38b16908633eb5d94509184849662e"
+  },
+  "sourcesSHA256": {
+    "apps/web/src/components/PrivateScoreAudition.tsx": "d31f36fb53fe04e2f4ae9f80fb0811aa14366681901a9849ec4b20796705a9c0",
+    "apps/web/src/components/PrivateScoreAudition.css": "b5e2a317f3eaffad345a4b3bacbc1cbdacf6499b654a5c1ee1f939ee673db20e"
+  },
+  "cleanup": "Owned children and ports4173/5921/6121/9321 verified absent; no retained SHI GUI stack."
+}

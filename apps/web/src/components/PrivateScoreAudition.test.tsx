@@ -29,7 +29,11 @@ describe("private scene score audition", () => {
     fireEvent.ended(player);
     expect(view.getByTestId("private-score-audition").dataset.status).toBe("ended");
     expect(player.play).toHaveBeenCalledTimes(1);
-    view.unmount(); expect(URL.revokeObjectURL).toHaveBeenCalledWith("blob:test-cue");
+    expect(player.getAttribute("src")).toBe("/__shi_private_score__/candidate-b.mp3");
+    expect(URL.createObjectURL).not.toHaveBeenCalled();
+    expect(document.body.classList.contains("score-review-active")).toBe(true);
+    view.unmount(); expect(player.getAttribute("src")).toBeNull();
+    expect(document.body.classList.contains("score-review-active")).toBe(false);
   });
   it.each(["bad-hash", "missing", "play-rejected"])("keeps the game independent when %s fails", async failure => {
     if (failure === "bad-hash") vi.mocked(crypto.subtle.digest).mockResolvedValue(new ArrayBuffer(32));
@@ -61,6 +65,26 @@ describe("private scene score audition", () => {
     finish({ ok: true, arrayBuffer: async () => new ArrayBuffer(16) } as Response);
     await waitFor(() => expect(crypto.subtle.digest).toHaveBeenCalled());
     expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+    expect(view.getByTestId("private-score-audition").dataset.status).toBe("paused");
+  });
+  it("uses the latest audition level if it is changed while the recording loads", async () => {
+    let finish!: (value: Response) => void;
+    vi.mocked(fetch).mockReturnValue(new Promise(resolve => { finish = resolve; }));
+    const view = render(<PrivateScoreAudition />);
+    fireEvent.click(view.getByText("Play / 播放"));
+    fireEvent.change(view.getByRole("slider"), { target: { value: "0.1" } });
+    finish({ ok: true, arrayBuffer: async () => new ArrayBuffer(16) } as Response);
+    await waitFor(() => expect(view.getByTestId("private-score-audition").dataset.status).toBe("playing"));
+    expect(view.container.querySelector("audio")!.volume).toBe(0.1);
+  });
+  it("does not undo a pause when a delayed media play promise resolves", async () => {
+    let finish!: () => void;
+    vi.mocked(HTMLMediaElement.prototype.play).mockReturnValue(new Promise(resolve => { finish = resolve; }));
+    const view = render(<PrivateScoreAudition />);
+    fireEvent.click(view.getByText("Play / 播放"));
+    await waitFor(() => expect(HTMLMediaElement.prototype.play).toHaveBeenCalled());
+    fireEvent.click(view.getByText("Pause / 暂停")); finish();
+    await waitFor(() => expect(HTMLMediaElement.prototype.pause).toHaveBeenCalledTimes(2));
     expect(view.getByTestId("private-score-audition").dataset.status).toBe("paused");
   });
 });

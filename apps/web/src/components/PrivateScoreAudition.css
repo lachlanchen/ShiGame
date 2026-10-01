@@ -1,5 +1,13 @@
+.score-review-active { padding-block-start: 64px; }
+.score-review-active::before { content: ""; position: fixed; inset: 0 0 auto; height: 64px; background: #171b18; z-index: 19; }
+.score-review-active .drawer, .score-review-active .drawer-scrim { top: 64px; }
+.score-review-active .resolution-banner.consequence-scene { top: 64px; height: calc(100dvh - 64px); }
 .private-score-audition { position: fixed; z-index: 20; inset-block-start: 8px; inset-inline-end: 8px; width: min(340px, calc(100vw - 16px)); max-height: calc(100dvh - 16px); overflow: auto; background: #171b18; color: #e4dfd1; border: 1px solid #575143; padding: 8px 12px; font: 14px/1.6 var(--sans); }
 .private-score-audition summary { cursor: pointer; min-height: 44px; display: list-item; padding-block: 10px; color: #d2b879; }
+.private-score-audition:not([open]) { width: 44px; padding: 0; overflow: hidden; }
+.private-score-audition:not([open]) summary { padding: 10px 0; list-style: none; text-align: center; }
+.private-score-audition:not([open]) .audition-label { display: none; }
+.private-score-audition[open] .audition-icon { display: none; }
 .private-score-audition p { margin: 10px 0; }
 .private-score-audition button { min-height: 44px; padding: 8px 12px; margin-inline-end: 8px; }
 .private-score-audition input { width: 100%; min-height: 44px; }
