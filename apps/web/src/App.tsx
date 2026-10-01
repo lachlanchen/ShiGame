@@ -114,7 +114,7 @@ const effectLabel = (key: ResourceKey, value: number, locale: Locale) => `${valu
 const contentDirection = (text: LocalizedText, locale: Locale): "ltr" | undefined => locale === "ar" && !text.ar ? "ltr" : undefined;
 
 export function App({ developmentCrossing }: { developmentCrossing?: DevelopmentCrossingDriver } = {}) {
-  const crossingDriver = import.meta.env.DEV ? developmentCrossing : undefined;
+  const crossingDriver = import.meta.env.DEV || import.meta.env.MODE === "internal-crossing" ? developmentCrossing : undefined;
   const [restoredState] = useState(() => crossingDriver ? crossingDriver.restore() : readSavedState());
   const [locale, setLocale] = useState<Locale>(initialLocale);
   const [state, setState] = useState<GameState>(() => restoredState?.state ?? (crossingDriver ? crossingDriver.initialize(initialSeed()) : createInitialState(campaign, initialSeed())));

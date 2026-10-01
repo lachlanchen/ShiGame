@@ -14,6 +14,7 @@
     "build:android": "bash scripts/build-android.sh",
     "dev": "npm run sync:content && npm --workspace @shi/web run dev -- --host 127.0.0.1",
     "build": "npm run validate && npm --workspace @shi/web run build && npm run validate:web-build",
+    "build:internal-crossing": "node scripts/build-internal-crossing.mjs",
     "test": "npm run sync:content && npm run validate:content && npm run validate:audio && npm --workspace @shi/game-core run test && npm --workspace @shi/web run test",
     "typecheck": "npm run sync:content && npm --workspace @shi/game-core run typecheck && npm --workspace @shi/web run typecheck",
     "validate": "npm run sync:content && npm run sync:ios && npm run validate:ios-content && npm run validate:repo && npm run validate:unreal && npm run validate:unreal-installer && npm run validate:content && npm run validate:martial-sources && npm run validate:engagement && npm run validate:conformance && npm run validate:audio && npm run validate:accessibility && npm run validate:fonts && npm --workspace @shi/game-core run typecheck && npm --workspace @shi/web run typecheck && npm --workspace @shi/game-core run test && npm --workspace @shi/web run test",

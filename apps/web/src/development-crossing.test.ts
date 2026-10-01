@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { availableEngagementCommands, getNode, type Campaign, type EngagementDefinition } from "@shi/game-core";
 import campaignJson from "../../../content/campaigns/chapter-01-daze.json";
 import engagementJson from "../../../content/engagements/chapter-01-broken-crossing.v1.json";
-import { createDevelopmentCrossingDriver, DEVELOPMENT_CROSSING_KEY, DEVELOPMENT_CROSSING_V2_KEY } from "./development-crossing";
+import { createDevelopmentCrossingDriver, DEVELOPMENT_CROSSING_KEY, DEVELOPMENT_CROSSING_V2_KEY, INTERNAL_CROSSING_V2_KEY } from "./development-crossing";
 
 const campaign = campaignJson as Campaign;
 const definition = engagementJson as EngagementDefinition;
@@ -20,6 +20,34 @@ function crossing(driver: ReturnType<typeof createDevelopmentCrossingDriver>) {
 }
 
 describe("development crossing durable browser adapter", () => {
+  it("keeps an internal revision-2 route isolated from released and development campaigns", () => {
+    const keys = [legacyKey, DEVELOPMENT_CROSSING_KEY, DEVELOPMENT_CROSSING_V2_KEY, "shi.chen-council.v1", "shi.fanyang-guarantee.v1"];
+    for (const key of keys) localStorage.setItem(key, `preserve ${key}`);
+    let driver = createDevelopmentCrossingDriver(localStorage, 2, "internal");
+    crossing(driver);
+    for (const commandId of ["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"]) driver.commit({ kind: "crossing-command", commandId });
+    const result = driver.commit({ kind: "finish-crossing" });
+    driver = createDevelopmentCrossingDriver(localStorage, 2, "internal");
+    expect(driver.restore()!.resolution).toEqual(result.lastResolution);
+    expect(driver.getCrossingCommitment()!.outcome.status).toBe("strained");
+    expect(driver.interludeNamespace).toBe(INTERNAL_CROSSING_V2_KEY);
+    expect(driver.labels("en").status).toContain("not a store release");
+    expect(driver.labels("zh-Hans").status).toContain("非商店发行版");
+    driver.acknowledge();
+    driver.commit({ kind: "decision", choiceId: "root-in-villages" });
+    for (const key of keys) expect(localStorage.getItem(key)).toBe(`preserve ${key}`);
+    expect(() => createDevelopmentCrossingDriver(localStorage, 1, "internal")).toThrow(/revision 2/);
+  });
+
+  it("preserves a malformed internal save rather than adopting a development campaign", () => {
+    localStorage.setItem(INTERNAL_CROSSING_V2_KEY, "malformed owner data");
+    localStorage.setItem(DEVELOPMENT_CROSSING_V2_KEY, "separate development progress");
+    expect(() => createDevelopmentCrossingDriver(localStorage, 2, "internal")).toThrow();
+    expect(localStorage.getItem(INTERNAL_CROSSING_V2_KEY)).toBe("malformed owner data");
+    expect(localStorage.getItem(DEVELOPMENT_CROSSING_V2_KEY)).toBe("separate development progress");
+    expect(localStorage.getItem(legacyKey)).toBe("owner's original save");
+  });
+
   it("keeps the revised personal reaction and promise judgment through reload without changing older chapter saves", () => {
     localStorage.setItem(DEVELOPMENT_CROSSING_KEY, "owner's first-edition save");
     let driver = createDevelopmentCrossingDriver(localStorage, 2);

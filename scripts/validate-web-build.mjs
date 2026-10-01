@@ -4,7 +4,10 @@ import { extname, relative, resolve } from "node:path";
 import { initialAssets } from "./web-build-assets.mjs";
 
 const root = resolve(import.meta.dirname, "..");
-const dist = resolve(root, "apps/web/dist");
+const internal = process.argv[2] === "--internal-crossing" && process.argv.length === 4;
+if (process.argv.length !== 2 && !internal) throw new Error("Usage: validate-web-build.mjs [--internal-crossing PRIVATE_DIST]");
+const dist = internal ? resolve(process.argv[3]) : resolve(root, "apps/web/dist");
+if (internal && !dist.startsWith(resolve(root, ".runtime") + "/")) throw new Error("Internal candidate must remain below SHI .runtime.");
 
 const limits = {
   initialJavaScriptGzip: 100 * 1024,
@@ -44,6 +47,7 @@ const gzipBytes = async (path) => gzipSync(await readFile(path)).byteLength;
 
 const indexPath = resolve(dist, "index.html");
 const html = await readFile(indexPath, "utf8").catch(() => fail("apps/web/dist/index.html is missing; run the web build first."));
+if (html.includes('name="shi-build-channel" content="internal-crossing-v2"') !== internal) fail("build channel does not match the requested validation boundary");
 const { scripts: scriptUrls, styles: cssUrls, javascript: initialJavaScriptUrls } = initialAssets(html);
 if (scriptUrls.length !== 1) fail(`expected one initial module script, found ${scriptUrls.length}.`);
 if (cssUrls.length !== 1) fail(`expected one initial stylesheet, found ${cssUrls.length}.`);
@@ -66,14 +70,19 @@ const records = await Promise.all(files.map(async (path) => ({
   extension: extname(path),
 })));
 const deploymentRecords = records.filter((record) => record.extension !== ".map");
-// Unreviewed retreat and the new crossing ledger remain development-only.
+// Only the isolated internal candidate admits the revised crossing. Private
+// media and the later retreat draft remain excluded in both build channels.
+const crossingMarkers = ["shi.development.crossing-campaign.v1", "chapter-01-crossing-campaign-v1", "shi.development.crossing-campaign.v2", "chapter-01-crossing-campaign-v2", "chapter-01-crossing-aftermath-v2", "shi.internal.crossing-campaign.v2"];
+const seenCrossingMarkers = new Set();
 for (const record of deploymentRecords.filter(record => [".js", ".json", ".html"].includes(record.extension))) {
   const contents = await readFile(record.path, "utf8");
   if (contents.includes("149d0d7bf2974bc17693852a4207613eec88ea0cd09351cafdded96267b7daad")) fail(`private palm study leaked into production: ${record.relative}`);
-  for (const marker of ["shi.dev.chen-retreat.v1", "chen-retreat-story-draft.v1", "chen-retreat-rules.v1", "shi.development.crossing-campaign.v1", "chapter-01-crossing-campaign-v1", "shi.development.crossing-campaign.v2", "chapter-01-crossing-campaign-v2", "chapter-01-crossing-aftermath-v2", "__shi_private_score__", "7d28d185acd999637b19fd9eb0eb1bec778eff9f17c9507fff92519643cdada4", "__shi_private_council_film__", "ef86dc9babb6e073949b2285a75bd4cc82703cae8eef55a422b42fe476819345"]) {
+  for (const marker of crossingMarkers) if (contents.includes(marker)) seenCrossingMarkers.add(marker);
+  for (const marker of ["shi.dev.chen-retreat.v1", "chen-retreat-story-draft.v1", "chen-retreat-rules.v1", "__shi_private_score__", "7d28d185acd999637b19fd9eb0eb1bec778eff9f17c9507fff92519643cdada4", "__shi_private_council_film__", "__shi_private_rain_scene__", "ef86dc9babb6e073949b2285a75bd4cc82703cae8eef55a422b42fe476819345", ...(internal ? [] : crossingMarkers)]) {
     if (contents.includes(marker)) fail(`development story/rules leaked into production: ${record.relative}`);
   }
 }
+if (internal && !["shi.internal.crossing-campaign.v2", "chapter-01-crossing-campaign-v2", "chapter-01-crossing-aftermath-v2"].every(marker => seenCrossingMarkers.has(marker))) fail("internal candidate is missing its authoritative crossing rules or save namespace");
 const deployBytes = deploymentRecords.reduce((sum, record) => sum + record.bytes, 0);
 const sourceMapBytes = records.filter((record) => record.extension === ".map").reduce((sum, record) => sum + record.bytes, 0);
 assertAtMost("deployable artifact", deployBytes, limits.deployBytes, mib);

@@ -24,6 +24,8 @@ jobs:
           sudo apt-get install --yes --no-install-recommends ffmpeg
       - run: npm ci
       - run: npm run build
+      - name: Validate isolated internal crossing candidate without publishing it
+        run: npm run build:internal-crossing
       - uses: actions/upload-artifact@v7
         with:
           name: shi-web-dist

@@ -13,6 +13,7 @@ const campaign = campaignJson as Campaign;
 const definition = engagementJson as EngagementDefinition;
 export const DEVELOPMENT_CROSSING_KEY = "shi.development.crossing-campaign.v1";
 export const DEVELOPMENT_CROSSING_V2_KEY = "shi.development.crossing-campaign.v2";
+export const INTERNAL_CROSSING_V2_KEY = "shi.internal.crossing-campaign.v2";
 
 interface Snapshot {
   snapshotVersion: 1;
@@ -20,10 +21,11 @@ interface Snapshot {
   pendingEventIndex: number | null;
 }
 
-export function createDevelopmentCrossingDriver(storage: Pick<Storage, "getItem" | "setItem">, revision: 1 | 2 = 1) {
+export function createDevelopmentCrossingDriver(storage: Pick<Storage, "getItem" | "setItem">, revision: 1 | 2 = 1, channel: "development" | "internal" = "development") {
+  if (channel === "internal" && revision !== 2) throw new Error("Internal crossing requires revision 2.");
   const rules = (revision === 1 ? rulesJson : rulesV2Json) as CrossingCampaignRules;
   const aftermath = revision === 2 ? aftermathJson as CrossingAftermath : undefined;
-  const key = revision === 1 ? DEVELOPMENT_CROSSING_KEY : DEVELOPMENT_CROSSING_V2_KEY;
+  const key = channel === "internal" ? INTERNAL_CROSSING_V2_KEY : revision === 1 ? DEVELOPMENT_CROSSING_KEY : DEVELOPMENT_CROSSING_V2_KEY;
   let current: CrossingCampaignReplay | null = null;
   let pendingEventIndex: number | null = null;
   const raw = storage.getItem(key);
@@ -71,7 +73,7 @@ export function createDevelopmentCrossingDriver(storage: Pick<Storage, "getItem"
         }) };
     },
     getCrossingCommitment: () => current?.crossingResolutions.at(-1)?.commitment,
-    interludeNamespace: `shi.development.crossing-campaign.v${revision}`,
+    interludeNamespace: key,
     getRetreatCrossing: () => ({ definition, rules, aftermath, save: JSON.parse(JSON.stringify(requireCurrent().save)) as CrossingCampaignReplay["save"] }),
     hasSave: () => Boolean(current?.save.events.length),
     commit(event: CrossingCampaignEvent) {
@@ -93,7 +95,8 @@ export function createDevelopmentCrossingDriver(storage: Pick<Storage, "getItem"
     labels(locale: Locale) {
       const chinese = locale.startsWith("zh");
       return {
-        status: chinese ? `开发试玩${revision} · 战场命令会影响后续` : `Development playthrough ${revision} · field orders affect what follows`,
+        status: channel === "internal" ? chinese ? "内部试玩2 · 渡河命令影响陈县议事 · 非商店发行版" : "Internal playthrough 2 · crossing orders affect Chen · not a store release"
+          : chinese ? `开发试玩${revision} · 战场命令会影响后续` : `Development playthrough ${revision} · field orders affect what follows`,
         boundary: chinese ? "这是可改变局部命运的虚构渡河场景。每道命令都会保存；关闭后可继续，但已发出的命令不能撤回。旧版存档独立保留。" : "This reconstructed crossing can change local outcomes. Each order is saved. Close and resume without undoing issued orders. Existing release saves remain separate.",
         cost: chinese ? "渡河的实际代价取决于接下来的三道战场命令；不是下面旧版抽象方案的固定数值。" : "The crossing's actual cost depends on the next three field orders, not the old abstract plan's fixed values.",
         begin: chinese ? "进入渡河指挥" : "Take command of the crossing",

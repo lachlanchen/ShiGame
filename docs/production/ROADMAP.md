@@ -14,12 +14,18 @@ costume studies. Preserve the wider cinematic/history ambition and all open
 quality gates. Patient development means coherent reviewed increments, not a
 fixed deadline or a promise of unattended daily work.
 
-Current source audit: the released web route reaches Chen and Fan Yang. The
+At the recap source audit, the released web route reaches Chen and Fan Yang. The
 revised crossing ledger is selected only in development (`main.tsx`/`App.tsx`),
 and retreat/refuge continuation is gated in `ChenCouncil.tsx`. Production
 validation deliberately excludes their markers. Native iOS has separate gated
 retreat work; its current chapter does not yet prove revised crossing-ledger
 parity. Do not describe these development routes as the distributed game.
+
+Follow-up: the [internal crossing candidate](INTERNAL_CROSSING_CANDIDATE_20261001.md)
+now builds separately in production mode and passes one complete visible route
+through the crossing, Chen and Fan Yang with isolated saves. It is not a public
+rollout or mobile beta; alternate-route, native, device and human review gates
+remain open. The later retreat/refuge draft remains excluded.
 
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release

@@ -1,13 +1,41 @@
 // Own one isolated visible desktop; preserve evidence, terminate exact children.
 import { spawn, execFileSync } from "node:child_process";
-import { mkdir, writeFile, open, readFile } from "node:fs/promises";
+import { mkdir, writeFile, open, readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import net from "node:net";
+import { createHash } from "node:crypto";
 
 const root = resolve(import.meta.dirname, "..");
 const route = process.argv[2] ?? "together";
 const production = process.env.SHI_PLAYTEST_PRODUCTION === "1";
-if (production && !["captured", "consequence-loading"].includes(route)) throw new Error("Production review supports captured and consequence-loading routes.");
+const internalDirectory = process.env.SHI_PLAYTEST_INTERNAL_CROSSING_DIR;
+if (internalDirectory && (!production || route !== "crossing-v2")) throw new Error("Internal candidate review requires production crossing-v2.");
+if (production && !["captured", "consequence-loading", ...(internalDirectory ? ["crossing-v2"] : [])].includes(route)) throw new Error("Unsupported production review route.");
+let internalDist;
+if (internalDirectory) {
+  const candidate = resolve(internalDirectory);
+  if (!candidate.startsWith(resolve(root, ".runtime") + "/")) throw new Error("Candidate must be below SHI .runtime.");
+  const receipt = JSON.parse(await readFile(resolve(candidate, "receipt.json"), "utf8"));
+  if (receipt.status !== "built-not-playtest-qualified" || receipt.channel !== "internal-crossing-v2") throw new Error("Unknown internal candidate receipt.");
+  internalDist = resolve(candidate, "dist");
+  const inventory = async directory => {
+    const paths = [];
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const path = resolve(directory, entry.name);
+      if (entry.isDirectory()) paths.push(...await inventory(path));
+      else if (entry.isFile()) paths.push(path.slice(internalDist.length + 1));
+      else throw new Error("Unexpected candidate link: " + path);
+    }
+    return paths.sort();
+  };
+  if (JSON.stringify(await inventory(internalDist)) !== JSON.stringify(receipt.artifacts.map(item => item.file).sort())
+    || createHash("sha256").update(JSON.stringify(receipt.artifacts)).digest("hex") !== receipt.artifactTreeSHA256) throw new Error("Candidate inventory changed.");
+  execFileSync(process.execPath, ["scripts/validate-web-build.mjs", "--internal-crossing", internalDist], { cwd: root, stdio: "pipe" });
+  for (const artifact of receipt.artifacts) {
+    const path = resolve(internalDist, artifact.file);
+    if (!path.startsWith(internalDist + "/") || createHash("sha256").update(await readFile(path)).digest("hex") !== artifact.sha256) throw new Error("Candidate artifact changed: " + artifact.file);
+  }
+}
 const storyBranch = process.argv[3] ?? "baseline";
 if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "crossing", "crossing-v2", "consequence-loading"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured|crossing|crossing-v2|consequence-loading] [baseline|partner-search|loan-search]");
 if (route === "consequence-loading" && !production) throw new Error("Consequence loading review requires the production bundle.");
@@ -92,8 +120,9 @@ try {
   await delay(800);
   await launch("vnc", "x11vnc", ["-display", ":121", "-listen", "127.0.0.1", "-rfbport", "5921", "-nopw", "-forever", "-nevershared"]);
   await launch("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:6121", "127.0.0.1:5921"]);
-  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1", VITE_SHI_PRIVATE_SCORE_AUDITION: scoreAudition ? "1" : "0", VITE_SHI_PRIVATE_COUNCIL_FILM: councilFilm ? "1" : "0", VITE_SHI_PRIVATE_RAIN_SCENE: rainCinema ? "1" : "0" });
+  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", ...(internalDist ? ["--outDir", internalDist] : []), "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1", VITE_SHI_PRIVATE_SCORE_AUDITION: scoreAudition ? "1" : "0", VITE_SHI_PRIVATE_COUNCIL_FILM: councilFilm ? "1" : "0", VITE_SHI_PRIVATE_RAIN_SCENE: rainCinema ? "1" : "0" });
   report.buildMode = production ? "production-dist" : "development";
+  if (internalDirectory) report.internalCandidate = internalDirectory;
   // Existing isolated profile, but an incognito app window preserves old QA saves.
   await launch("chrome", "google-chrome", ["--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--incognito", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=9321", `--user-data-dir=${process.env.SHI_BROWSER_PROFILE ?? `${root}/.runtime/novnc/profile`}`, "--window-size=1600,1000", "--app=http://127.0.0.1:4173/?seed=00000000"], { DISPLAY: ":121" });
   fit = setInterval(() => { try {
@@ -221,11 +250,12 @@ try {
     check(true, "return link reaches route directory");
     check(await evaluate("!document.querySelector('script,iframe,img,link,form')"), "offline book has no active external content");
   } else if (isCrossing) {
+    if (internalDirectory) check(await evaluate("document.querySelector('meta[name=shi-build-channel]')?.content==='internal-crossing-v2' && document.title==='SHI · Internal Crossing 2'"), "production-built internal entry is visibly distinguished from release");
     await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
     await until("document.documentElement.lang==='zh-Hans'");
     check(await evaluate("document.querySelector('[data-testid=crossing-development-notice]').textContent.includes('旧版存档独立保留')"), "development rules and release-save boundary are disclosed");
     const releaseBefore = await evaluate("localStorage.getItem('shi.chapter-01.save.v6')");
-    const olderKeys = ["shi.chen-council.v1", "shi.fanyang-guarantee.v1", "shi.dev.chen-retreat.v1", "shi.development.crossing-campaign.v1"];
+    const olderKeys = ["shi.chen-council.v1", "shi.fanyang-guarantee.v1", "shi.dev.chen-retreat.v1", "shi.development.crossing-campaign.v1", ...(internalDirectory ? ["shi.development.crossing-campaign.v2"] : [])];
     const olderBytes = revisedCrossing ? await evaluate(`Object.fromEntries(${JSON.stringify(olderKeys)}.map(key=>[key,localStorage.getItem(key)]))`) : null;
     if (scoreAudition) {
       await until(exists('[data-testid="private-score-audition"]'));
@@ -301,7 +331,7 @@ try {
     await capture("crossing-command-desktop"); await layout("crossing desktop");
     await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
     await capture("crossing-command-phone"); await layout("crossing phone");
-    const key = `shi.development.crossing-campaign.v${revisedCrossing ? 2 : 1}`;
+    const key = internalDirectory ? "shi.internal.crossing-campaign.v2" : `shi.development.crossing-campaign.v${revisedCrossing ? 2 : 1}`;
     const beforeOrder = JSON.parse(await evaluate(`localStorage.getItem('${key}')`));
     await click('[data-engagement-command="screen-through-reeds"]');
     await until("document.querySelector('[data-testid=engagement-board]').dataset.pulseIndex==='1'");
@@ -433,6 +463,7 @@ try {
         }
         await click('[data-testid="fanyang-response"] [data-council-action="continue"]');
       }
+      if (!internalDirectory) {
       await click('[data-testid="retreat-enter"]'); await until(exists('[data-testid="retreat-scene"]'));
       await capture("crossing-retreat-desktop"); await layout("retreat after crossing");
       await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
@@ -465,6 +496,14 @@ try {
       check(await evaluate(`JSON.parse(localStorage.getItem('${retreatKey}')).choices.length===5`), "five retreat choices are committed once in the edition-owned save");
       await capture("crossing-ending-phone"); await layout("crossing volume ending");
       await send("Emulation.clearDeviceMetricsOverride"); await capture("crossing-ending-desktop"); await layout("crossing ending desktop");
+      } else {
+        check(!await evaluate(exists('[data-testid="retreat-enter"]')), "unreviewed retreat remains excluded from the internal production candidate");
+        check(await evaluate(`Object.fromEntries(${JSON.stringify(olderKeys)}.map(key=>[key,localStorage.getItem(key)]))`).then(value=>JSON.stringify(value)===JSON.stringify(olderBytes)), "released and development interlude slots remain unchanged");
+        check(await evaluate(`JSON.parse(localStorage.getItem('${key}.chen-council.v1')).history.length===3 && JSON.parse(localStorage.getItem('${key}.fanyang-guarantee.v1')).choices.length===3`), "internal route completes all council and Fan Yang decisions exactly once");
+        await capture("internal-crossing-ending-desktop"); await layout("internal ending desktop");
+        await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+        await capture("internal-crossing-ending-phone"); await layout("internal ending phone");
+      }
     }
   } else if (route === "captured") {
     await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
