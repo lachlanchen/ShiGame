@@ -7,6 +7,7 @@ struct NativeRetreatView: View {
     @AccessibilityFocusState private var headingFocused: Bool
     @State private var selectedID = ""
     @State private var confirmRestart = false
+    @State private var replayChoice: String?
     private let metrics = ["grain": "粮秣", "tempo": "行动余裕", "city": "民间支持", "allies": "诸部支持", "veterans": "军中支持"]
     private let speakers = ["keeper": "掌简人", "supply-officer": "催粮军吏", "yu-mu": "妪母", "qin-courier": "韩驿使", "wounded-soldier": "伤卒", "partner-steward": "邻部管事", "rear-guard": "守路士卒", "granary-holder": "粮主", "han-letter": "韩驿使来简"]
 
@@ -73,6 +74,15 @@ struct NativeRetreatView: View {
                 .alert("替换本段开发存档？此前章节不变。", isPresented: $confirmRestart) {
                     Button("确认重开", role: .destructive) { session.restart() }.accessibilityIdentifier("retreat-confirm-restart")
                     Button("取消", role: .cancel) { }.accessibilityIdentifier("retreat-cancel-restart")
+                }
+                .alert("回到这道命令之前？", isPresented: Binding(get: { replayChoice != nil }, set: { if !$0 { replayChoice = nil } }), presenting: replayChoice) { id in
+                    Button("确认替换，重试此处", role: .destructive) { session.rewind(before: id) }
+                        .accessibilityIdentifier("retreat-rewind-confirm")
+                    Button("取消，保留原结局", role: .cancel) { }
+                        .accessibilityIdentifier("retreat-rewind-cancel")
+                } message: { id in
+                    let title = session.story.records("scenes").flatMap { $0.records("choices") }.first { $0.text("id") == id }?.text("title") ?? id
+                    Text("返回「\(title)」之前。这是重试分支，不是故事中的时光倒流。确认将替换本段存档，移除此命令及其后的决定与结局；更早的决定、当时的物资与未偿之约按原记录恢复。此前章节、陈县议事与范阳不变。原结局不会另存。")
                 }
         }.environment(\.locale, Locale(identifier: "zh-Hans")).environment(\.layoutDirection, .leftToRight)
             .tint(gold).preferredColorScheme(.dark)
@@ -187,6 +197,9 @@ struct NativeRetreatView: View {
                             if record.changedKeys.isEmpty {
                                 Text("本次未改变这五项数值；已作出的承诺与记录仍然保留。")
                             }
+                            Button("从这道命令之前重试…") { replayChoice = record.id }
+                                .frame(minHeight: 44).disabled(session.needsRecovery)
+                                .accessibilityIdentifier("retreat-rewind-" + record.id)
                         }.accessibilityElement(children: .contain)
                             .accessibilityIdentifier("retreat-record-" + record.id)
                     }

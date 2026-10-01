@@ -88,6 +88,45 @@ import CryptoKit
         precondition(!complete.choose("release-groups"))
         pass("five decisions, loan debt, unread reaction, resume and completed-order lock")
 
+        let endingBytes = try Data(contentsOf: complete.saveURL)
+        let replayOrders = complete.engine!.history.map(\.choiceId)
+        for index in replayOrders.indices {
+            let url = root.appendingPathComponent("checkpoint-\(index).json")
+            try endingBytes.write(to: url)
+            var failReplay = true
+            let replay = RetreatSession(entry: entry, rulesData: rulesData, storyData: storyData, saveURL: url) { bytes, destination in
+                if failReplay { throw CocoaError(.fileWriteOutOfSpace) }
+                try bytes.write(to: destination, options: .atomic)
+            }
+            precondition(!replay.rewind(before: replayOrders[index]), "Read the saved reaction first")
+            replay.continueResponse(replay.response!.id)
+            precondition(!replay.rewind(before: "invented-order"))
+            try unchanged(url, endingBytes)
+            precondition(!replay.rewind(before: replayOrders[index]))
+            precondition(replay.engine!.history == complete.engine!.history && replay.engine!.debts == complete.engine!.debts)
+            try unchanged(url, endingBytes)
+            failReplay = false
+            let subscription = replay.$engine.dropFirst().sink { _ in
+                precondition(!replay.rewind(before: replayOrders[index]) && !replay.restart())
+            }
+            precondition(replay.rewind(before: replayOrders[index]))
+            subscription.cancel()
+            precondition(replay.response == nil && replay.error == nil && !replay.engine!.completed)
+            precondition(!replay.rewind(before: replayOrders[index]), "Duplicate or stale confirmation cannot rewind again")
+            var expected = try RetreatEngine(definition: replay.definition, entry: entry)
+            for id in replayOrders.prefix(index) { try expected.choose(id) }
+            precondition(replay.engine!.history == expected.history && replay.engine!.metrics == expected.metrics && replay.engine!.debts == expected.debts)
+            let restored = session("checkpoint-\(index).json")
+            precondition(!restored.needsRecovery && restored.engine!.history == expected.history && restored.engine!.debts == expected.debts)
+            if let response = restored.response { restored.continueResponse(response.id) }
+            for id in replayOrders.dropFirst(index) {
+                precondition(restored.choose(id)); restored.continueResponse(restored.response!.id)
+            }
+            precondition(restored.engine!.history == complete.engine!.history && restored.engine!.debts == complete.engine!.debts)
+        }
+        try unchanged(complete.saveURL, endingBytes)
+        pass("all five checkpoints preserve earlier debt and resources, reject stale calls, survive failed writes and replay after reload")
+
         var failing = false
         let failed = RetreatSession(entry: entry, rulesData: rulesData, storyData: storyData, saveURL: root.appendingPathComponent("failed.json")) { bytes, url in
             if failing { throw CocoaError(.fileWriteOutOfSpace) }

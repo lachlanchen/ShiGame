@@ -83,6 +83,22 @@ struct RetreatResponse: Identifiable {
         guard !committing, response?.id == id else { return }
         response = nil
     }
+    /// Call only after explicit replacement confirmation. Rebuild from the
+    /// original entry; never reuse ending resources or forgive earlier debts.
+    @discardableResult func rewind(before choiceID: String) -> Bool {
+        guard !committing, !needsRecovery, response == nil, let current = engine,
+              current.completed,
+              let index = current.history.firstIndex(where: { $0.choiceId == choiceID }) else { return false }
+        committing = true
+        defer { committing = false }
+        do {
+            var next = try RetreatEngine(definition: definition, entry: entry)
+            for turn in current.history.prefix(index) { try next.choose(turn.choiceId) }
+            try persist(next)
+            engine = next; response = nil; error = nil
+            return true
+        } catch { self.error = error.localizedDescription; return false }
+    }
     /// UI must obtain explicit restart confirmation. Never silently overwrite
     /// incompatible progress; backup failure also prevents replacement.
     @discardableResult func restart() -> Bool {
