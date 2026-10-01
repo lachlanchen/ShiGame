@@ -53,8 +53,11 @@ passed with three app relaunches; eight captures were visually inspected.
 Foundation checks cover eight outcome/failure categories and 64 cold-resumed
 events. This advances the installed simulator-playability gate, not production
 admission, physical-device qualification, human enjoyment or cinematic quality.
-The next native checks are narrow/large-type layouts, failed-route recovery and
-Chinese UI before signed-candidate qualification. Keep reviewed scene imagery
+The subsequent [phone recovery checkpoint](NATIVE_CROSSING_PHONE_20261001.md)
+passes a full phone route, Chinese large-type/rotation and failed-route recovery
+in scoped simulator runs. It adds before/after feedback and actual order recall.
+Smaller widths, toolbar polish, physical devices and retained-save upgrades
+remain before signed-candidate qualification. Keep reviewed scene imagery
 and motion tied to this working sequence; its text-heavy layout is not the final
 movie-like experience.
 

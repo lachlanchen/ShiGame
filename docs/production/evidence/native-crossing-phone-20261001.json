@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-01",
+  "status": "development-phone-recovery-passed-not-beta-admission",
+  "baseCommit": "49a1958371a53e15adcb4bc1552159fcc452becf",
+  "toolchain": "Xcode 26.3 / Swift 6.2.4, x86_64 Mac",
+  "device": "iPhone 17 Pro Max simulator, iOS 26.3.1 (23D8133), x86_64, 440x956 logical portrait",
+  "bundle": "art.lazying.shi.crossingqa",
+  "iterations": [
+    {"run": 1, "passed": 2, "failed": 1, "scope": "Full opening-to-Chen and Chinese large-type/rotation passed; replay popover lacked explicit cancel"},
+    {"run": 2, "passed": 1, "failed": 1, "scope": "Chinese passed; replay state assertions passed, record lookup failed because parent accessibility identifier overrode children. Alert screenshot rejected for translucent overlap"},
+    {"run": 3, "passed": 1, "failed": 0, "scope": "Full retry and revised-record route passed after identifier fix; still intermediate alert"},
+    {"run": 4, "passed": 1, "failed": 0, "skipped": 0, "scope": "Final opaque sheet: cancel, cold resume, confirmed replay, exact opening resources, cold resume, different orders, surviving ending and corrected field record"}
+  ],
+  "finalTypechecks": ["production", "SHI_RETREAT_PREVIEW", "SHI_CROSSING_PREVIEW"],
+  "localValidation": "npm run build passed full validation, core/web tests and web deployment budgets; README structural check passed",
+  "finalSourceSHA256": {
+    "apps/mobile/ios/SHI/NativeCrossingCampaignView.swift": "ec9e26ed6b1684fd6941a743867522f949a83a41e0c8ac2df7e704da4d521741",
+    "apps/mobile/ios/UITests/SHIUITests.swift": "6fcf0f15df368a70fc63b631a73c64cff5bb147f6bc7a2ad7caff682c9a0c212"
+  },
+  "finalVerifiedArchiveSHA256": "84cd47168b3beddc9f6b4b4f61c65739d8c7bce374ab85f5263888c6fe849846",
+  "visualReview": {
+    "reviewer": "Codex agent; not owner or human playtest",
+    "finalCapturesInspected": 5,
+    "acceptedScope": "Opaque confirmation, readable committed metric changes, correct revised order record",
+    "remainingIssue": "Expanded record scrolls beneath translucent top toolbar; not final cinematic/UI acceptance"
+  },
+  "screenshots": [
+    {
+      "path": "docs/production/evidence/native-crossing-replay-phone-20261001.png",
+      "sha256": "f39a3b641d96e926727bb0ef6ec566b0071c56f67991537806965dcd4f7361fa",
+      "source": "Unmodified run4 Xcode attachment crossing-phone-replay-confirm",
+      "reviewStatus": "agent-reviewed-documentation-only",
+      "licenseStatus": "SHI project rights; no new reuse license",
+      "intendedUse": "Simulator QA evidence, not game art"
+    },
+    {
+      "path": "docs/production/evidence/native-crossing-feedback-phone-20261001.png",
+      "sha256": "44877c9d3b63fa70d549d7995a4139fc5bd9bdc25f9a3a21ad39b144a700eaf8",
+      "source": "Unmodified run4 Xcode attachment crossing-phone-order-change",
+      "reviewStatus": "agent-reviewed-documentation-only",
+      "licenseStatus": "SHI project rights; no new reuse license",
+      "intendedUse": "Simulator QA evidence, not game art"
+    }
+  ],
+  "boundaries": [
+    "Final binary ran retry-only; full Chen and Chinese checks belong to earlier iterations",
+    "Not physical-device, smallest-phone, VoiceOver or eleven-language UI qualification",
+    "No new historical prose, rule rebalance, save format, released-save migration or media admission",
+    "No signing, TestFlight, Play internal upload or public store release",
+    "Both owned simulators shut down; build and runner absent after final run"
+  ]
+}

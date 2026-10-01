@@ -232,9 +232,13 @@ captured screens received an agent visual review. See the
 
 This preview supports English and Simplified Chinese, with explicit English
 fallback elsewhere. Shared metric labels retain all eleven translations, but
-this does not qualify eleven-language UI coverage. Phone/large-type/Chinese
-visual checks, failed-route UI, physical devices, retained-save upgrades, signing
-and beta distribution remain separate gates. The presentation remains primarily
+this does not qualify eleven-language UI coverage. A subsequent
+[phone checkpoint](../../../docs/production/NATIVE_CROSSING_PHONE_20261001.md)
+verified a full phone route, Chinese large-type/rotation and failed-route
+cancel/relaunch/replay across scoped simulator runs. Reactions show committed
+before/after metrics, and the record retains actual field orders. Smaller widths,
+physical devices, retained-save upgrades, signing and beta distribution remain
+separate gates. The presentation remains primarily
 text and a schematic map, not approved cinematic art or music.
 
 ## Chen council

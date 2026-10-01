@@ -72,13 +72,16 @@ struct NativeCrossingCampaignView: View {
                                     }
                                 }.accessibilityIdentifier("crossing-sources")
                                 DisclosureGroup(t("record")) {
-                                    ForEach(Array(state.engine.history.enumerated()), id: \.offset) { index, turn in
-                                        let node = session.content.campaign.records("nodes").first { $0.text("id") == turn.text("nodeId") } ?? [:]
-                                        let choice = node.records("choices").first { $0.text("id") == turn.text("choiceId") } ?? [:]
-                                        Text("\(index + 1) · " + text(choice, "label")).font(.headline)
-                                        metrics(turn["after"] as? Resources ?? [:], keys: resourceKeys, tactical: false)
-                                    }
-                                }.accessibilityIdentifier("crossing-record")
+                                    VStack(alignment: .leading, spacing: 16) {
+                                        ForEach(Array(state.engine.history.enumerated()), id: \.offset) { index, turn in
+                                            let node = session.content.campaign.records("nodes").first { $0.text("id") == turn.text("nodeId") } ?? [:]
+                                            let choice = node.records("choices").first { $0.text("id") == turn.text("choiceId") } ?? [:]
+                                            Text("\(index + 1) · " + text(choice, "label")).font(.headline)
+                                            metrics(turn["after"] as? Resources ?? [:], keys: resourceKeys, tactical: false)
+                                        }
+                                        fieldRecord(state)
+                                    }.frame(maxWidth: .infinity, alignment: .leading)
+                                }
                             }
                         }.padding(24).frame(maxWidth: 820, alignment: .leading).frame(maxWidth: .infinity)
                     }.accessibilityIdentifier("crossing-reading")
@@ -87,7 +90,7 @@ struct NativeCrossingCampaignView: View {
                     }
                 }
                 if let reaction = session.reaction, !session.needsRecovery {
-                    Button(t("continue")) { _ = session.continueReaction(reaction.id) }
+                    Button(copy("Continue", "继续")) { _ = session.continueReaction(reaction.id) }
                         .buttonStyle(.borderedProminent).foregroundStyle(ink)
                         .frame(minHeight: 44).padding(20).frame(maxWidth: .infinity)
                         .accessibilityIdentifier("crossing-reaction-continue")
@@ -125,11 +128,27 @@ struct NativeCrossingCampaignView: View {
                     _ = session.restart(confirmed: true, seed: 0, phase: confirmationPhase)
                 }.accessibilityIdentifier("crossing-confirm-restart")
             } message: { Text(copy("This replaces only the development crossing save. Unreadable saves are backed up first.", "只替换开发版渡河存档。无法读取的存档会先行备份。")) }
-            .confirmationDialog(copy("Reconsider the crossing?", "重新考虑渡河？"), isPresented: $confirmReplay, titleVisibility: .visible) {
-                Button(copy("Replay from the crossing", "从渡河处重试"), role: .destructive) {
-                    _ = session.reconsiderFailure(confirmed: true, phase: confirmationPhase)
-                }.accessibilityIdentifier("crossing-confirm-replay")
-            } message: { Text(copy("Replace this failed attempt, keeping the opening and the same field conditions.", "替换这次失败的尝试，保留开局选择与相同的战场条件。")) }
+            .sheet(isPresented: $confirmReplay) {
+                VStack(alignment: .leading, spacing: 0) {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 24) {
+                            Text(copy("Reconsider the crossing?", "重新考虑渡河？")).font(.system(.largeTitle, design: .serif))
+                                .accessibilityAddTraits(.isHeader)
+                            Text(copy("Replace this failed attempt, keeping the opening and the same field conditions.", "替换这次失败的尝试，保留开局选择与相同的战场条件。"))
+                                .lineSpacing(6)
+                            if let error = session.error { Text(error).foregroundStyle(.orange) }
+                        }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    VStack(spacing: 16) {
+                        Button(copy("Keep this attempt", "保留这次尝试")) { confirmReplay = false }
+                            .buttonStyle(.bordered).frame(minHeight: 44).accessibilityIdentifier("crossing-cancel-replay")
+                        Button(copy("Replay from the crossing", "从渡河处重试")) {
+                            if session.reconsiderFailure(confirmed: true, phase: confirmationPhase) { confirmReplay = false }
+                        }.buttonStyle(.borderedProminent).foregroundStyle(ink).frame(minHeight: 44)
+                            .accessibilityIdentifier("crossing-confirm-replay")
+                    }.padding(24).frame(maxWidth: .infinity)
+                }.background(ink.ignoresSafeArea()).foregroundStyle(parchment).tint(gold)
+            }
             .fullScreenCover(isPresented: $showingCouncil) {
                 if let state = session.state, session.councilEntry != nil {
                     NativeCouncilView(origin: state.engine, locale: locale, campaignFingerprint: session.content.rules.text("campaignSha256"))
@@ -226,28 +245,49 @@ struct NativeCrossingCampaignView: View {
                 .padding(20).frame(maxWidth: .infinity, alignment: .leading).background(gold.opacity(0.08), in: RoundedRectangle(cornerRadius: 16))
         }.buttonStyle(.plain).frame(minHeight: 44).accessibilityIdentifier("crossing-order-" + id)
     }
-    private func metrics(_ values: Resources, keys: [String], tactical: Bool) -> some View {
+    private func metrics(_ values: Resources, keys: [String], tactical: Bool, before: Resources? = nil) -> some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 125))], alignment: .leading, spacing: 14) {
             ForEach(keys, id: \.self) { key in
+                let name = tactical ? metricName(key) : t(key)
+                let value = values[key, default: 0]
+                let displayed = before.map { "\($0[key, default: 0]) → \(value)" } ?? "\(value)"
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(tactical ? metricName(key) : t(key)).font(.caption).foregroundStyle(gold)
-                    Text("\(values[key, default: 0])").font(.title2.monospacedDigit())
-                }.accessibilityElement(children: .combine)
+                    Text(name).font(.caption).foregroundStyle(gold).accessibilityHidden(true)
+                    Text(displayed).font(.title2.monospacedDigit()).fixedSize(horizontal: false, vertical: true)
+                        .accessibilityLabel(name + ": " + displayed).accessibilityIdentifier("crossing-metric-" + key)
+                }
             }
         }.padding(18).background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 14))
+    }
+    @ViewBuilder private func fieldRecord(_ state: CrossingCampaignEngine) -> some View {
+        let attempts = state.crossings + (state.engagement.map { [$0] } ?? [])
+        ForEach(Array(attempts.enumerated()), id: \.offset) { _, attempt in
+            let plan = session.content.engagement.records("plans").first { $0.text("id") == attempt.planID } ?? [:]
+            Text(text(plan, "title")).font(.title3)
+            ForEach(Array(attempt.history.enumerated()), id: \.offset) { index, turn in
+                let command = session.content.engagement.records("commands").first { $0.text("id") == turn.text("commandId") } ?? [:]
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("\(index + 1) · " + text(command, "title")).font(.headline)
+                        .accessibilityIdentifier("crossing-record-order-" + turn.text("commandId"))
+                    Text(text(command.object("response"), "reveal")).lineSpacing(5)
+                }.padding(.vertical, 8)
+            }
+        }
     }
     @ViewBuilder private func reactionView(_ reaction: CrossingReaction, state: CrossingCampaignEngine) -> some View {
         if reaction.kind == "crossing-command" {
             heading(text(reaction.record.object("command"), "title"))
             Text(text(reaction.record.object("response"), "reveal")).font(.title3).lineSpacing(8)
-            metrics(state.engagement?.metrics ?? [:], keys: EngagementEngine.metricKeys, tactical: true)
+            metrics(state.engagement?.metrics ?? [:], keys: EngagementEngine.metricKeys, tactical: true,
+                    before: reaction.record.object("turn")["before"] as? Resources)
         } else {
             let choice = reaction.record.object("choice")
             heading(text(choice, "label"))
             Text(text(choice, "consequence")).font(.system(.title3, design: .serif)).lineSpacing(8)
             if !reaction.record.object("outcome").isEmpty { Text(text(reaction.record.object("outcome"), "response")).lineSpacing(6) }
             Text(text(choice.object("pressure"), "reveal")).lineSpacing(6)
-            metrics(state.engine.resources, keys: resourceKeys, tactical: false)
+            metrics(state.engine.resources, keys: resourceKeys, tactical: false,
+                    before: state.engine.history.last?["before"] as? Resources)
         }
         Text(t("reconstruction")).font(.caption).foregroundStyle(gold)
     }

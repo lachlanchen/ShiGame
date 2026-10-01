@@ -75,6 +75,109 @@ final class SHIUITests: XCTestCase {
     }
 
     #if SHI_CROSSING_PREVIEW
+    func startCrossing(_ app: XCUIApplication, locale: String = "en", large: Bool = false) {
+        app.launchArguments = ["-shi.locale", locale, "-shi.reduced-motion", "true"]
+        if large { app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"] }
+        app.launchEnvironment["SHI_CROSSING_SEED"] = "0"
+        app.launch()
+        XCTAssertTrue(app.buttons["crossing-new-game"].waitForExistence(timeout: 20))
+        app.buttons["crossing-new-game"].tap()
+        let reset = app.buttons.matching(identifier: "crossing-confirm-restart").firstMatch
+        XCTAssertTrue(reset.waitForExistence(timeout: 10)); reset.tap()
+    }
+    func issueCrossing(_ id: String, _ app: XCUIApplication) {
+        let choice = app.buttons["crossing-order-" + id]
+        XCTAssertTrue(choice.waitForExistence(timeout: 10)); reveal(choice, in: app); choice.tap()
+        let commit = app.buttons["crossing-issue-order"]
+        XCTAssertTrue(commit.waitForExistence(timeout: 10)); XCTAssertTrue(commit.isHittable); commit.tap()
+    }
+    func continueCrossing(_ app: XCUIApplication) {
+        let next = app.buttons["crossing-reaction-continue"]
+        XCTAssertTrue(next.waitForExistence(timeout: 10)); XCTAssertTrue(next.isHittable); next.tap()
+    }
+    func finishCrossing(_ app: XCUIApplication) {
+        let finish = app.buttons["crossing-finish"]
+        XCTAssertTrue(finish.waitForExistence(timeout: 10)); reveal(finish, in: app); finish.tap()
+        continueCrossing(app)
+    }
+    func crossingResourceLabels(_ app: XCUIApplication) -> [String] {
+        ["grain", "trust", "momentum", "people", "danger"].map { app.staticTexts["crossing-metric-" + $0].label }
+    }
+    func testCrossingPhoneFailureReplayAndRecord() throws {
+        let app = XCUIApplication(); startCrossing(app)
+        for id in ["read-the-names", "issue-grain-tallies"] { issueCrossing(id, app); continueCrossing(app) }
+        let original = crossingResourceLabels(app)
+        XCTAssertTrue(original.allSatisfy { !$0.isEmpty })
+        issueCrossing("families-first", app)
+        for id in ["screen-through-reeds", "reinforce-the-rear", "hold-for-the-last-household"] {
+            issueCrossing(id, app); continueCrossing(app)
+        }
+        finishCrossing(app)
+        issueCrossing("race-for-chen", app); continueCrossing(app)
+        let replay = app.buttons["crossing-replay"]
+        XCTAssertTrue(replay.waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["crossing-council-enter"].exists)
+        let failed = crossingResourceLabels(app)
+        capture("crossing-phone-failed")
+        reveal(replay, in: app); replay.tap()
+        let cancel = app.buttons.matching(identifier: "crossing-cancel-replay").firstMatch
+        XCTAssertTrue(cancel.waitForExistence(timeout: 10)); cancel.tap()
+        XCTAssertEqual(crossingResourceLabels(app), failed)
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["crossing-replay"].waitForExistence(timeout: 15))
+        XCTAssertEqual(crossingResourceLabels(app), failed)
+        let retry = app.buttons["crossing-replay"]; reveal(retry, in: app); retry.tap()
+        let confirm = app.buttons.matching(identifier: "crossing-confirm-replay").firstMatch
+        XCTAssertTrue(confirm.waitForExistence(timeout: 10)); capture("crossing-phone-replay-confirm"); confirm.tap()
+        XCTAssertTrue(app.buttons["crossing-order-families-first"].waitForExistence(timeout: 10))
+        XCTAssertEqual(crossingResourceLabels(app), original)
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["crossing-order-families-first"].waitForExistence(timeout: 15))
+        XCTAssertEqual(crossingResourceLabels(app), original)
+        capture("crossing-phone-replay-restored")
+        issueCrossing("families-first", app)
+        for id in ["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"] {
+            issueCrossing(id, app)
+            if id == "screen-through-reeds" {
+                XCTAssertTrue(app.staticTexts["crossing-metric-crossingProgress"].label.contains("23 → 33"))
+                capture("crossing-phone-order-change")
+            }
+            continueCrossing(app)
+        }
+        finishCrossing(app)
+        issueCrossing("root-in-villages", app); continueCrossing(app)
+        XCTAssertTrue(app.buttons["crossing-council-enter"].waitForExistence(timeout: 10))
+        // A parent DisclosureGroup identifier overrides its descendants' IDs
+        // on iOS 26. Locate its observed English label; order IDs stay distinct.
+        let record = app.buttons["Record"]; reveal(record, in: app); record.tap()
+        let repaired = app.staticTexts["crossing-record-order-repair-the-landing"]
+        XCTAssertTrue(repaired.waitForExistence(timeout: 10)); reveal(repaired, in: app)
+        XCTAssertFalse(app.staticTexts["crossing-record-order-reinforce-the-rear"].exists)
+        capture("crossing-phone-revised-field-record")
+    }
+    func testCrossingChineseLargeTextAndRotation() throws {
+        let app = XCUIApplication(); startCrossing(app, locale: "zh-Hans", large: true)
+        let choice = app.buttons["crossing-order-read-the-names"]
+        XCTAssertTrue(choice.waitForExistence(timeout: 10)); reveal(choice, in: app)
+        capture("crossing-phone-zh-large-choice"); choice.tap()
+        let commit = app.buttons["crossing-issue-order"]
+        XCTAssertTrue(commit.waitForExistence(timeout: 10)); XCTAssertTrue(commit.isHittable)
+        capture("crossing-phone-zh-large-preview")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertTrue(commit.isHittable); capture("crossing-phone-zh-large-landscape-preview")
+        commit.tap()
+        let next = app.buttons["crossing-reaction-continue"]
+        XCTAssertTrue(next.waitForExistence(timeout: 10)); XCTAssertTrue(next.isHittable)
+        capture("crossing-phone-zh-large-landscape-reaction")
+        XCUIDevice.shared.orientation = .portrait
+        let trust = app.staticTexts["crossing-metric-trust"]
+        reveal(trust, in: app); XCTAssertTrue(trust.label.contains("38 → 54"))
+        capture("crossing-phone-zh-large-change")
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["crossing-reaction-continue"].waitForExistence(timeout: 15))
+        continueCrossing(app)
+        XCTAssertTrue(app.buttons["crossing-order-issue-grain-tallies"].waitForExistence(timeout: 10))
+    }
     func testCrossingCampaignColdResumeAndChen() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-shi.locale", "en", "-shi.reduced-motion", "true"]
