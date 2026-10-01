@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "candidateBuild": 9,
+  "createdOn": "2026-10-02",
+  "scope": "Signed Android interlude reading-inset correction; retained-save upgrade and fresh Chen replay",
+  "providerPreflight": {
+    "checkedAtUTC": "2026-10-01T21:09:28.960Z",
+    "readOnly": true,
+    "surface": "All app bundles",
+    "uploadedVersionCodes": [1],
+    "bundlePagination": "1 - 1 of 1",
+    "numberReserved": false
+  },
+  "android": {
+    "status": "signed-inset-upgrade-qualified-not-uploaded",
+    "applicationId": "art.lazying.shi",
+    "versionCode": 9,
+    "sourceCommit": "bbe8615752979debb2388a93210bda8c3381022e",
+    "sourceCleanAtBuild": true,
+    "sourceSetSHA256": "767e4ced2f4a0398cae05753ee118408cab20a9a49f17213eb80ae26eee9aac9",
+    "sourceFiles": 348,
+    "sourceUnchangedDuringBuild": true,
+    "apkSHA256": "7efc33d3d97a48f27370a34d7ce0e14fd3c6fcc66edc60a3e020667222044857",
+    "aabSHA256": "94791e485de9b26d9b520f7ce4cd9bd9de7884024967b83484f3de1f4556dbc9",
+    "signerCertificateSHA256": "3ce089f4f9f7da11355ecace697bfade9377f9159fff14f4529b5b090a3032c8",
+    "uploaded": false,
+    "qualification": [
+      "Signed release unit/lint, APK/AAB, identity, certificate and unchanged source inventory checks passed",
+      "API34 in-place 8-to-9 upgrade preserved original install timestamp, chapter ending, commitment, seed and resources",
+      "Saved Chen and Fan Yang endings restored; Fan Yang outcome and all six displayed resources matched build8",
+      "Five measured interlude headings are fully inside the Android content viewport with reading inset",
+      "Fresh three-order Chen replay retained the broken-protection-pledge response; final unread response survived force-stop and cold launch unchanged",
+      "Nine focused assertion groups passed; four representative signed-app screenshots visually inspected"
+    ],
+    "limitations": [
+      "Not uploaded or available to internal testers",
+      "Fresh full chapter and Fan Yang route evidence belongs to build8, not build9",
+      "Direct release1-to-9 and Play-delivered upgrades are not claimed",
+      "Physical-device, human playtest and broader localization/performance qualification remain",
+      "No new music/video admitted; development-only crossing/retreat/refuge remain excluded",
+      "Reconcile live provider and internal-track state before upload; no production-track change authorized by this receipt"
+    ]
+  }
+}

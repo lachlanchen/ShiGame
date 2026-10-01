@@ -140,6 +140,15 @@ signed Android build and on-device verification before distribution. Play-delive
 upgrade and physical-device checks remain. The phone route also needs less
 scrolling through strategic detail, without concealing order costs.
 
+Follow-up: signed8 passed the corrected chapter arrivals and offline council/
+Fan Yang continuation, but exposed clipped interlude headings. The source inset
+fix passed three-layout production review. [Signed9](ANDROID_READING_INSET_20261002.md)
+now preserves the 8-to-9 saved route and verifies readable headings, a fresh
+three-order Chen replay and cold-restored response. Neither candidate has been
+uploaded. Finish exact9 complete-route/upgrade qualification and current-track
+reconciliation before the existing-group beta; do not treat build8 route evidence
+as a fresh build9 run or silently widen the release to gated story content.
+
 Maintain native SwiftUI iOS, Android, web and the existing Unreal client with
 shared narrative/rules. Use the shared Macs, iPad and Mi 10 Pro when their
 specific build/device test is needed, serially under resource/coordination

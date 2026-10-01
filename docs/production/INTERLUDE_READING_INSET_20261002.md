@@ -50,3 +50,8 @@ The one owned browser/desktop stack was stopped after capture. This is a source
 and production-web correction, not a signed successor, beta upload or full-game
 completion. Keep Android8's separate offline/upgrade evidence intact; qualify
 the next numbered mobile artifact before claiming this correction on Android.
+
+Follow-up: [signed Android9 qualification](ANDROID_READING_INSET_20261002.md)
+now verifies the correction on an installed API34 app, with in-place save
+preservation and a cold-restored newly committed council response. It has not
+been uploaded; Android8's evidence and limitations remain unchanged.
