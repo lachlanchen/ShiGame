@@ -59,6 +59,8 @@ def main():
     assert sha(source) == receipt["sourceSHA256"] == "feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743"
     assert sha(output / "garment-study.blend") == receipt["blendSHA256"]
     assert sha(Path(__file__).with_name("build-council-connected-garment-study.py")) == receipt["builderSHA256"]
+    if receipt.get("activeRestShapeFit"):
+        assert sha(Path(__file__).with_name("build-council-morphed-garment-study.py")) == receipt["activeRestShapeFit"]["authorSHA256"]
     for capture in receipt["rendered"]: assert sha(output / capture["file"]) == capture["sha256"]
     path = Path(__file__).with_name("build-council-continuous-sleeve-study.py")
     spec = importlib.util.spec_from_file_location("shi_garment_baseline", path)
@@ -68,6 +70,7 @@ def main():
     rig = bpy.data.objects["SK_SHI_keeper_Rig"]; body = bpy.data.objects["SKM_SHI_keeper_Body"]
     body_basis = [tuple(v.co) for v in body.data.vertices]
     body_weights = [[(g.group, g.weight) for g in v.groups] for v in body.data.vertices]
+    body_shapes = [(key.name, key.value, [tuple(v.co) for v in key.data]) for key in body.data.shape_keys.key_blocks]
     author.author(rig, bpy.context.scene)
     baseline = []
     for frame in range(1, 122):
@@ -83,6 +86,7 @@ def main():
     obj = bpy.data.objects["SKM_SHI_keeper_ConnectedGarmentStudy"]
     assert body_basis == [tuple(v.co) for v in body.data.vertices]
     assert body_weights == [[(g.group, g.weight) for g in v.groups] for v in body.data.vertices]
+    assert body_shapes == [(key.name, key.value, [tuple(v.co) for v in key.data]) for key in body.data.shape_keys.key_blocks]
     assert len(rig.data.bones) == 53 and not body.hide_render, "Never mask body to conceal penetration"
     for start, sleeve in zip((len(obj.data.vertices) - 816, len(obj.data.vertices) - 408), retained):
         for v, (point, weights) in zip(obj.data.vertices[start:start + 408], sleeve):
@@ -132,6 +136,7 @@ def main():
     report = {"status": "sampled-connected-garment-checks-passed" if accepted else "rejected-connected-garment",
               "checkerSHA256": sha(Path(__file__)), "blendSHA256": receipt["blendSHA256"],
               "bodyBasisAndWeightsUnchanged": True, "distalSleeveBasisAndWeightsUnchanged": True,
+              "bodyShapeKeyValuesAndCoordinatesUnchanged": True,
               "maximumBoneMatrixError": pose_error, "boundaryLoops": loops, "frames": 121,
               "minimumSampledBodyClearanceMetres": minimum_clearance, "maximumEdgeLengthChangeFactor": maximum_edge,
               "minimumFaceAreaSquareMetres": minimum_area, "worstClearance": worst, "worstEdge": worst_edge, "samples": samples,

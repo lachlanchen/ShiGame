@@ -72,3 +72,46 @@ model generation or store/publication action. Post-check no SHI Blender process
 remained;56GiB available RAM,57/71GiB swap. The high shared swap was observed;
 no obsolete SHI-owned runtime was present and no other project's service was
 stopped. Original source and all rejected evidence are preserved.
+
+## Active-rest-shape correction, v2
+
+Inspection found nine source shape-key blocks, including the basis, with eight
+active keys. The first connected recipe fitted the unmorphed basis while the
+visible body used those active morphs. Evaluated rest vertices differ from the
+basis by up to62.08mm—larger than the18mm shell offset. The body already uses
+dual-quaternion skinning, so a linear-versus-DQ mismatch was not the cause.
+
+`scripts/build-council-morphed-garment-study.py` now supplies the actual evaluated
+rest shape to the unchanged connected recipe. It checks identical vertex/face
+topology and vertex influence data, temporarily uses that mesh for fitting, and
+restores the original body datablock and pose mode in `finally` before save and
+render. No morph value, body vertex, skeleton or gesture is edited. This is not
+nearest-surface projection, body masking or changing the character to fit cloth.
+
+Actual v2 carrier:2,669 vertices/2,652 faces,38 vertices per armhole. The independent
+checker now compares **all body shape-key values and coordinates** in addition
+to its previous basis, influence, distal sleeve and121-frame/53-bone checks.
+All those preservation checks pass. The candidate still rejects with exit1:
+
+- Minimum sampled clearance**−13.98mm**, worst frame75, vertex1167.
+- Maximum edge change factor**3.360**, worst frame46 at armpit edge119–120.
+- Four boundary loops56/50/24/24; one connected surface, no collapsed rest edges.
+
+The correction reduced stretching from7.179× to3.360× but did not clear the3×
+bound or remove penetration. Agent inspected all four v2 renders: the armpit
+opening is smaller, but the shell remains too anatomical/tight and trims still
+do not follow it as convincing cloth. **Do not admit this candidate.** V1 and
+its original reports are preserved; the extended checker also rechecked v1
+into a fresh shape-regression report with the same numerical rejection.
+
+V2 files remain in `.runtime/council-connected-garment-20261001-v2`:
+
+- Morph-fit builder: `7b9214b1d66f8f5f45988cb72b27c31ebbe01f4ecb50250e7d3b5b3b10a60c67`
+- Extended checker: `0c04f61381689c628793810347df83ca6943bcde763493fd1de7cb832d49ee8a`
+- Blend: `a80111ddacad7775953df8d3b45f67e2211d346bcfdf59584a5166c9f887a2db`
+- Report: `f5f385aebe5083c9c290c7b4d1c30d3e06f094597a1aa90f03352ae5dec87c67`
+
+Fit against the active rest body in subsequent pattern work. The remaining task
+is cloth allowance and the underarm weight transition, with the same collision/
+strain limits and a convincing silhouette—not more basis-shape shells or a
+relaxed acceptance threshold. No new historical, cinematic or release claim.
