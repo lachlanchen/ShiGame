@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-native-parity-review.v1",
+  "reviewDate": "2026-10-01",
+  "decision": "native-rule-model-engineering-only",
+  "publicationApproved": false,
+  "namedBlockerRemoved": "Native SwiftUI continuation required a deterministic shelter/morning/contact engine consuming the same rules as the web. Shelter parameters were previously TypeScript-only.",
+  "sharedRules": {
+    "path": "content/campaigns/refuge.rules.v1.json",
+    "sha256": "37a8f40658f72e75c39bf07d1f241b336f4c6349050136016d1d83b4d94f9599",
+    "compatibility": "Exact extraction of existing v1 costs, shelter, obligation and rest outcomes. Existing web story hashes and identifier-only saves are unchanged. A test pins this immutable rule revision; rebalancing requires an explicit new rule/save revision and migration.",
+    "morningAndContact": "Both implementations consume the existing versioned story/effect definitions; no Swift copy of dialogue or outcome data."
+  },
+  "nativeModel": {
+    "source": "apps/mobile/ios/SHI/RefugeContinuationEngine.swift",
+    "entry": "Requires a completed replay-verified native retreat, preserving actual grain custody, debts and record mode.",
+    "chronicle": "Native-specific branch identity, exact six-content fingerprint set and ordered choice IDs. Restore replays choices and rejects foreign, stale, incomplete-entry or invalid-action paths. Native identifiers are not claimed to be web-save interchange IDs.",
+    "releaseBoundary": "No continuation resources added to the production bundle, no SwiftUI screen wired, no signing or store action. Pure source-model addition only."
+  },
+  "verification": {
+    "generator": "scripts/refuge-conformance.ts",
+    "swiftChecker": "apps/mobile/ios/Tests/RefugeContinuationConformance.swift",
+    "sourceArchiveSHA256": "c49cc5f02341af9bde0fa1fab074eaa2a2fd4a14b3b4d8347d487b59d53bd156",
+    "host": "Owner-authorized shared Mac mini, pinned SSH, Xcode 27.0 build 27A266a; scoped source stage and existing toolchain, no duplicate SDK.",
+    "result": "Swift compile and conformance execution exited 0: 64 states, four actual retreat endings, three record modes, 712 rejected operations; summaries, available actions, previews and encoded/decoded replay agree.",
+    "scope": "One real opening/council/Fan Yang baseline with four retreat routes and all their legal continuation actions. Not all possible campaign histories; not native UI, simulator, device or human acceptance.",
+    "additionalChecks": "iOS 16 arm64 model typecheck passed. Full validation passed: 83 core and 349 web tests. Production web build and bundle budgets passed."
+  },
+  "remaining": [
+    "Wire QA-gated content loading, durable native session storage and SwiftUI shelter/morning/contact views.",
+    "Test full native routes, accessibility and restart behavior on simulator and actual devices before any TestFlight submission.",
+    "Preserve the production content gate and keep incomplete narrative/media outside release builds."
+  ]
+}

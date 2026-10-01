@@ -1,5 +1,6 @@
 import { restoreRetreat, type RetreatDebt, type RetreatDefinition, type RetreatOutcome } from "./retreat";
 import type { RetreatEntry } from "./retreat-entry";
+import sharedRules from "../../../content/campaigns/refuge.rules.v1.json";
 
 /** Development continuation boundary. Only a fully replayed retreat may enter. */
 export interface RefugeEntry {
@@ -54,10 +55,11 @@ export function createRefuge(entry: RefugeEntry): RefugeState {
 }
 
 export function inspectRefugeChoice(state: RefugeState, order: RefugeOrder) {
-  if (!["offer-grain", "offer-labour", "sleep-outside"].includes(order)) throw new Error("Unknown shelter order");
-  return { available: state.order === null && (order !== "offer-grain" || state.commonGrain >= 1),
-    grainCost: order === "offer-grain" ? 1 : 0,
-    personalObligation: order === "offer-labour" ? "morning-repair" as const : null };
+  const choice = sharedRules.choices.find(choice => choice.id === order);
+  if (!choice) throw new Error("Unknown shelter order");
+  return { available: state.order === null && state.commonGrain >= choice.grainCost,
+    grainCost: choice.grainCost, shelter: choice.shelter as RefugeState["shelter"], rested: choice.rested,
+    personalObligation: choice.personalObligation as RefugeState["personalObligation"] };
 }
 
 export function resolveRefuge(state: RefugeState, order: RefugeOrder): RefugeState {
@@ -65,9 +67,9 @@ export function resolveRefuge(state: RefugeState, order: RefugeOrder): RefugeSta
   if (!preview.available) throw new Error("Unavailable shelter order");
   return { ...state, debts: state.debts.map(debt => ({ ...debt })), order,
     commonGrain: state.commonGrain - preview.grainCost,
-    shelter: order === "sleep-outside" ? "outside" : "under-eaves",
+    shelter: preview.shelter,
     personalObligation: preview.personalObligation,
-    rested: order === "offer-grain" };
+    rested: preview.rested };
 }
 
 /** Identifier-only save; resource balances are always reconstructed. */

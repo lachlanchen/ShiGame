@@ -159,6 +159,9 @@ describe("shelter continuation boundary", () => {
   });
   it("keeps the authored scene private, source-bounded and matched to executable orders", () => {
     expect(draft.publicationApproved).toBe(false);
+    // Existing v1 saves assume this immutable rule revision. Rebalancing must
+    // create a new rule/save revision, not silently change legacy outcomes.
+    expect(hash("campaigns/refuge.rules.v1.json")).toBe("37a8f40658f72e75c39bf07d1f241b336f4c6349050136016d1d83b4d94f9599");
     expect(draft.choices.map(choice => choice.id)).toEqual(["offer-grain", "offer-labour", "sleep-outside"]);
     expect(draft.choices.every(choice => choice.response.length >= 2)).toBe(true);
     expect(draft.sourceReadback.volume).toBe(8);

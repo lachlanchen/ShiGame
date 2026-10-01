@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-rules.v1",
+  "storyId": "refuge.v1",
+  "compatibility": "Frozen rules for existing v1 shelter saves. Changes require a new rule/save revision and explicit migration, not silent rebalance.",
+  "choices": [
+    { "id": "offer-grain", "grainCost": 1, "shelter": "under-eaves", "personalObligation": null, "rested": true },
+    { "id": "offer-labour", "grainCost": 0, "shelter": "under-eaves", "personalObligation": "morning-repair", "rested": false },
+    { "id": "sleep-outside", "grainCost": 0, "shelter": "outside", "personalObligation": null, "rested": false }
+  ]
+}
