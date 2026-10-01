@@ -10,7 +10,7 @@ const route = process.argv[2] ?? "together";
 const production = process.env.SHI_PLAYTEST_PRODUCTION === "1";
 const internalDirectory = process.env.SHI_PLAYTEST_INTERNAL_CROSSING_DIR;
 if (internalDirectory && (!production || route !== "crossing-v2")) throw new Error("Internal candidate review requires production crossing-v2.");
-if (production && !["captured", "consequence-loading", "scene-arrival", ...(internalDirectory ? ["crossing-v2"] : [])].includes(route)) throw new Error("Unsupported production review route.");
+if (production && !["captured", "consequence-loading", "scene-arrival", "interlude-arrival", ...(internalDirectory ? ["crossing-v2"] : [])].includes(route)) throw new Error("Unsupported production review route.");
 let internalDist;
 if (internalDirectory) {
   const candidate = resolve(internalDirectory);
@@ -37,7 +37,7 @@ if (internalDirectory) {
   }
 }
 const storyBranch = process.argv[3] ?? "baseline";
-if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "crossing", "crossing-v2", "consequence-loading", "scene-arrival"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured|crossing|crossing-v2|consequence-loading|scene-arrival] [baseline|partner-search|loan-search]");
+if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "crossing", "crossing-v2", "consequence-loading", "scene-arrival", "interlude-arrival"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Unknown review route or story branch");
 if (route === "consequence-loading" && !production) throw new Error("Consequence loading review requires the production bundle.");
 const isCrossing = route === "crossing" || route === "crossing-v2";
 const revisedCrossing = route === "crossing-v2";
@@ -191,8 +191,9 @@ try {
   execFileSync("xdotool", ["windowmove", "--sync", windowId, "0", "0", "windowsize", "--sync", windowId, "1600", "1000"], { env: xenv });
   report.windowGeometry = execFileSync("xdotool", ["getwindowgeometry", "--shell", windowId], { env: xenv, encoding: "utf8" });
   check(/WIDTH=1600\b/.test(report.windowGeometry) && /HEIGHT=1000\b/.test(report.windowGeometry), "Chrome window fits the dedicated desktop");
-  if (route === "scene-arrival") {
-    for (const [index, config] of [{ locale: "en", width: 390, reduced: false }, { locale: "zh-Hans", width: 320, reduced: true }, { locale: "ar", width: 390, reduced: false }].entries()) {
+  if (route === "scene-arrival" || route === "interlude-arrival") {
+    const configs = [{ locale: "en", width: 390, reduced: false }, { locale: "zh-Hans", width: 320, reduced: true }, route === "interlude-arrival" ? { locale: "en", width: 1280, reduced: false } : { locale: "ar", width: 390, reduced: false }];
+    for (const [index, config] of configs.entries()) {
       await send("Emulation.setDeviceMetricsOverride", { width: config.width, height: 844, deviceScaleFactor: 1, mobile: false });
       await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: config.reduced ? "reduce" : "no-preference" }] });
       await send("Page.navigate", { url: appURL });
@@ -223,6 +224,42 @@ try {
         check(JSON.stringify(after.history) === JSON.stringify(before.history) && !after.pendingAftermath, `${config.locale}/${turn}: arrival preserves the committed history`);
         await layout(`${config.locale}/${turn} arrival`, false);
         if (turn === 0 || turn === 3) await capture(`scene-arrival-${config.locale}-${turn === 0 ? 'story' : 'ending'}`);
+      }
+      if (route === "interlude-arrival") {
+        const prefix = `interlude-${config.locale}-${config.width}`;
+        const chapter = await evaluate("localStorage.getItem('shi.chapter-01.save.v6')");
+        const arrival = async name => {
+          // Let the authored 280ms movement finish. Do not correct the scroll.
+          await delay(400);
+          const geometry = await evaluate("(()=>{const e=document.activeElement,r=e.getBoundingClientRect(),d=e.closest('.drawer')?.getBoundingClientRect();return {tag:e.tagName,top:r.top,bottom:r.bottom,edge:d?.top??0,height:innerHeight,text:e.textContent}})()");
+          (report.arrivals ??= []).push({ name: `${prefix}-${name}`, ...geometry });
+          if (!(geometry.tag === 'H3' && geometry.top >= geometry.edge + 8 && geometry.bottom <= geometry.height)) await capture(`${prefix}-${name}-failed`);
+          check(geometry.tag === 'H3' && geometry.top >= geometry.edge + 8 && geometry.bottom <= geometry.height, `${prefix}/${name}: focused heading has reading inset after animation`);
+          await layout(`${prefix}/${name}`);
+        };
+        await click('[data-testid="council-enter"]');
+        if (index > 0) { await click('[data-testid="chen-council"] [data-council-action="retry"]'); await click('[data-testid="chen-council"] [data-council-action="reset"]'); }
+        for (const [turn, id] of ['take-crown', 'army-rations', 'one-command'].entries()) {
+          await click(`[data-council-choice="${id}"]`); await click('[data-testid="council-commit"]');
+          await until(exists('[data-testid="council-response"]'));
+          await arrival(`chen-response-${turn}`);
+          const saved = await evaluate("localStorage.getItem('shi.chen-council.v1')");
+          await click('[data-testid="council-continue"]'); await arrival(`chen-question-${turn}`);
+          check(await evaluate("localStorage.getItem('shi.chen-council.v1')") === saved, `${prefix}/${turn}: acknowledging council response preserves saved decision`);
+          if (turn === 0) await capture(`${prefix}-chen-question`);
+        }
+        await click('[data-testid="fanyang-enter"]');
+        if (index > 0) { await click('[data-testid="fanyang-scene"] [data-council-action="retry"]'); await click('[data-testid="fanyang-scene"] [data-council-action="reset"]'); }
+        await arrival('fanyang-entry');
+        for (const [turn, id] of ['public-safety', 'guarded-escort', 'accept-transfer'].entries()) {
+          await click(`[data-fanyang-choice="${id}"]`); await click('[data-testid="fanyang-commit"]');
+          await until(exists('[data-testid="fanyang-response"]')); await arrival(`fanyang-response-${turn}`);
+          const saved = await evaluate("localStorage.getItem('shi.fanyang-guarantee.v1')");
+          await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); await arrival(`fanyang-question-${turn}`);
+          check(await evaluate("localStorage.getItem('shi.fanyang-guarantee.v1')") === saved, `${prefix}/${turn}: acknowledging envoy response preserves saved decision`);
+        }
+        await capture(`${prefix}-ending`);
+        check(await evaluate("localStorage.getItem('shi.chapter-01.save.v6')") === chapter, `${prefix}: interludes preserve chapter save`);
       }
     }
   } else if (route === "consequence-loading") {

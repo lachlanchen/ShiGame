@@ -155,3 +155,7 @@ remains separately verified. No full visual acceptance or physical-device claim
 is made. The exact candidate remains **not uploaded**; no production settings or
 test-group membership changed. Airplane mode was restored and the owned emulator
 stopped; the completed continuation remains in its retained save.
+
+Follow-up: the heading-edge issue was reproduced and corrected in shared web
+styles; see [interlude reading inset](INTERLUDE_READING_INSET_20261002.md).
+This does not retrofit the already-signed candidate8 artifact.
