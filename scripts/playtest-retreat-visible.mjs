@@ -250,6 +250,10 @@ try {
             await capture("council-private-film-playing-desktop"); await layout("private film review");
             await click('[data-testid="private-council-film"] button');
             check(await evaluate("document.querySelector('[data-testid=private-council-film] video').paused"), "explicit film pause stops playback");
+            await click('[data-testid="private-council-film"] .silent-film button:nth-of-type(2)');
+            check(await evaluate("document.querySelector('[data-testid=private-council-film] .silent-film').dataset.playback === 'skipped' && document.querySelector('[data-testid=private-council-film] video').paused"), "explicit skip stops the private scene");
+            check(await evaluate("document.activeElement === document.querySelector('[data-testid=private-council-film] [role=status]')"), "skipping preserves a keyboard focus target");
+            await capture("council-private-film-skipped-desktop");
             await click('[data-testid="private-council-film"] summary');
             await until("!document.querySelector('[data-testid=private-council-film] video')");
             check(await evaluate(`localStorage.getItem('${councilKey}')`) === bytes, "playing and closing film review never changes a saved order");
