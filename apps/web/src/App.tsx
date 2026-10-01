@@ -36,13 +36,13 @@ import type { ShiAudioEngine } from "./audioEngine";
 import { gameStorage } from "./persistence";
 import { readChapterSnapshot, writeChapterSnapshot } from "./chapter-snapshot";
 import { EndingText } from "./components/EndingText";
+import { ConsequencePresentation } from "./components/ConsequencePresentation";
 import type { DevelopmentCrossingDriver } from "./development-crossing";
 
 const campaign = campaignJson as unknown as Campaign;
 const PrivateRainScene = import.meta.env.DEV && import.meta.env.VITE_SHI_NATIVE !== "1" && import.meta.env.VITE_SHI_PRIVATE_RAIN_SCENE === "1"
   && new URLSearchParams(window.location.search).get("cinema") === "rain-review"
   ? lazy(() => import("./components/PrivateRainScene").then(module => ({ default: module.PrivateRainScene }))) : null;
-const ResolvedConsequenceScene = lazy(() => import("./components/ResolvedConsequenceScene").then((module) => ({ default: module.ResolvedConsequenceScene })));
 const ThreeBackdrop = lazy(() => import("./components/ThreeBackdrop").then((module) => ({ default: module.ThreeBackdrop })));
 const ResourceRail = lazy(() => import("./components/ResourceRail"));
 const StrategicMap = lazy(() => import("./components/StrategicMap").then((module) => ({ default: module.StrategicMap })));
@@ -796,10 +796,8 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
       </div>
 
       {resolution && (
-        <Suspense fallback={<div role="dialog" aria-modal="true" aria-label={translate(locale, "consequence")} aria-busy="true" style={{ position: "fixed", inset: 0, zIndex: 9, display: "grid", placeItems: "center", background: "#171b18" }}><button className="primary-button" autoFocus onClick={closeTransient}>{translate(locale, "continue")}</button></div>}>
-        <ResolvedConsequenceScene key={`${state.seed}-${state.history.length}`} campaign={campaign} resolution={resolution}
+        <ConsequencePresentation key={`${state.seed}-${state.history.length}`} campaign={campaign} resolution={resolution}
           locale={locale} reducedMotion={reducedMotion} onContinue={closeTransient} saveError={crossingSaveError ? crossingLabels?.error : undefined} titleOverride={resolution.node.id === "broken-crossing" ? crossingDriver?.getCrossingRecord()?.title : undefined} />
-        </Suspense>
       )}
 
       {drawer === "guide" && <Suspense fallback={null}><FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} /></Suspense>}

@@ -34,6 +34,8 @@ const contrast = (foreground, background) => {
 };
 
 const contrastPairs = [
+  ["immediate consequence title", ".consequence-reader h2", "color", "#171b18"],
+  ["immediate consequence prose", ".consequence-reader p", "color", "#171b18"],
   ["aftermath heading metadata", ".consequence-scene p.consequence-eyebrow", "color", "#171b18"],
   ["aftermath prose", ".consequence-scene p.consequence-prose", "color", "#171b18"],
   ["aftermath personal response", ".consequence-character .commitment-reveal p", "color", "#171b18"],
@@ -155,6 +157,7 @@ for (const selector of microtypeSelectors) {
 }
 
 const targetSelectors = [
+  [".consequence-reader button", "min-height"],
   [".title-footer button", "min-height"], [".primary-button", "min-height"], [".header-button", "height"],
   [".site-marker", "min-height"], [".map-inspect-hint", "min-height"], [".map-intel-head button", "height"],
   [".map-intel footer button", "min-height"], [".source-link", "min-height"], [".resolution-banner > button", "min-height"],

@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "passed",
+  "scope": "Production web consequence download delay/failure and cold-resume continuity; desktop and phone viewport, software-rendered Chromium",
+  "baselineCommit": "26b795a10826efd9a069fb96803a0f14f8d7f402",
+  "source": [
+    {
+      "file": "apps/web/src/App.tsx",
+      "sha256": "ed6a800b3c6c5fc4108ac86888e4c0538f6cb3fa4fbc61d29097bfec12304c4e"
+    },
+    {
+      "file": "apps/web/src/components/ConsequencePresentation.tsx",
+      "sha256": "df81546ea09f8deb7ecb2f9e5252116cec06c80717433ce640cae4693118785c"
+    },
+    {
+      "file": "apps/web/src/components/ConsequenceScene.css",
+      "sha256": "6bfc0a9a67e4ae795e471b6a97c2a871150cfc0f3fa472bd07d8b67ed0b54db3"
+    },
+    {
+      "file": "apps/web/src/styles.css",
+      "sha256": "84113b40aff25aefe96ecbdfbe4fcadd7a709eca1c9afe6bfbe93e75a210b137"
+    },
+    {
+      "file": "scripts/playtest-retreat-visible.mjs",
+      "sha256": "135fb92e13ef710c04908efa9c3951bb3f1977d399c48e049c929b31f2305b4f"
+    }
+  ],
+  "runs": [
+    {
+      "locale": "en",
+      "started": "2026-10-01T10:08:10.889Z",
+      "finished": "2026-10-01T10:08:20.190Z",
+      "status": "passed",
+      "checks": [
+        {
+          "message": "SHI display is unoccupied",
+          "pass": true
+        },
+        {
+          "message": "dedicated Chrome page available",
+          "pass": true
+        },
+        {
+          "message": "full noVNC viewer reachable",
+          "pass": true
+        },
+        {
+          "message": "Chrome window fits the dedicated desktop",
+          "pass": true
+        },
+        {
+          "message": "full selected outcome visible while presentation download is held",
+          "pass": true
+        },
+        {
+          "message": "held download has one saved decision and pending reaction",
+          "pass": true
+        },
+        {
+          "message": "loading reader owns focus and scroll lock",
+          "pass": true
+        },
+        {
+          "message": "loading reader and Continue fit phone viewport",
+          "pass": true
+        },
+        {
+          "message": "Continue acknowledges the written reaction exactly once",
+          "pass": true
+        },
+        {
+          "message": "actual production presentation request was intercepted",
+          "pass": true
+        },
+        {
+          "message": "late presentation arrival does not reopen or repeat the decision",
+          "pass": true
+        },
+        {
+          "message": "next decision reaches the rich reaction without repeating the first",
+          "pass": true
+        },
+        {
+          "message": "cold resume requests the uncached presentation chunk",
+          "pass": true
+        },
+        {
+          "message": "failed download preserves the exact pending save on cold resume",
+          "pass": true
+        },
+        {
+          "message": "cold-resumed reader matches the second committed choice",
+          "pass": true
+        },
+        {
+          "message": "keyboard can reach Continue after download failure",
+          "pass": true
+        },
+        {
+          "message": "failed-download reader continues with both decisions intact",
+          "pass": true
+        },
+        {
+          "message": "reader releases scrolling after continuation",
+          "pass": true
+        },
+        {
+          "message": "no browser runtime exceptions",
+          "pass": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "locale": "ar",
+      "started": "2026-10-01T10:08:20.221Z",
+      "finished": "2026-10-01T10:08:29.538Z",
+      "status": "passed",
+      "checks": [
+        {
+          "message": "SHI display is unoccupied",
+          "pass": true
+        },
+        {
+          "message": "dedicated Chrome page available",
+          "pass": true
+        },
+        {
+          "message": "full noVNC viewer reachable",
+          "pass": true
+        },
+        {
+          "message": "Chrome window fits the dedicated desktop",
+          "pass": true
+        },
+        {
+          "message": "full selected outcome visible while presentation download is held",
+          "pass": true
+        },
+        {
+          "message": "Arabic interface preserves readable direction for untranslated story prose",
+          "pass": true
+        },
+        {
+          "message": "held download has one saved decision and pending reaction",
+          "pass": true
+        },
+        {
+          "message": "loading reader owns focus and scroll lock",
+          "pass": true
+        },
+        {
+          "message": "loading reader and Continue fit phone viewport",
+          "pass": true
+        },
+        {
+          "message": "Continue acknowledges the written reaction exactly once",
+          "pass": true
+        },
+        {
+          "message": "actual production presentation request was intercepted",
+          "pass": true
+        },
+        {
+          "message": "late presentation arrival does not reopen or repeat the decision",
+          "pass": true
+        },
+        {
+          "message": "next decision reaches the rich reaction without repeating the first",
+          "pass": true
+        },
+        {
+          "message": "cold resume requests the uncached presentation chunk",
+          "pass": true
+        },
+        {
+          "message": "failed download preserves the exact pending save on cold resume",
+          "pass": true
+        },
+        {
+          "message": "cold-resumed reader matches the second committed choice",
+          "pass": true
+        },
+        {
+          "message": "keyboard can reach Continue after download failure",
+          "pass": true
+        },
+        {
+          "message": "failed-download reader continues with both decisions intact",
+          "pass": true
+        },
+        {
+          "message": "reader releases scrolling after continuation",
+          "pass": true
+        },
+        {
+          "message": "no browser runtime exceptions",
+          "pass": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "locale": "zh-Hans",
+      "started": "2026-10-01T10:08:29.560Z",
+      "finished": "2026-10-01T10:08:39.259Z",
+      "status": "passed",
+      "checks": [
+        {
+          "message": "SHI display is unoccupied",
+          "pass": true
+        },
+        {
+          "message": "dedicated Chrome page available",
+          "pass": true
+        },
+        {
+          "message": "full noVNC viewer reachable",
+          "pass": true
+        },
+        {
+          "message": "Chrome window fits the dedicated desktop",
+          "pass": true
+        },
+        {
+          "message": "full selected outcome visible while presentation download is held",
+          "pass": true
+        },
+        {
+          "message": "held download has one saved decision and pending reaction",
+          "pass": true
+        },
+        {
+          "message": "loading reader owns focus and scroll lock",
+          "pass": true
+        },
+        {
+          "message": "loading reader and Continue fit phone viewport",
+          "pass": true
+        },
+        {
+          "message": "Continue acknowledges the written reaction exactly once",
+          "pass": true
+        },
+        {
+          "message": "actual production presentation request was intercepted",
+          "pass": true
+        },
+        {
+          "message": "late presentation arrival does not reopen or repeat the decision",
+          "pass": true
+        },
+        {
+          "message": "next decision reaches the rich reaction without repeating the first",
+          "pass": true
+        },
+        {
+          "message": "cold resume requests the uncached presentation chunk",
+          "pass": true
+        },
+        {
+          "message": "failed download preserves the exact pending save on cold resume",
+          "pass": true
+        },
+        {
+          "message": "cold-resumed reader matches the second committed choice",
+          "pass": true
+        },
+        {
+          "message": "keyboard can reach Continue after download failure",
+          "pass": true
+        },
+        {
+          "message": "failed-download reader continues with both decisions intact",
+          "pass": true
+        },
+        {
+          "message": "reader releases scrolling after continuation",
+          "pass": true
+        },
+        {
+          "message": "no browser runtime exceptions",
+          "pass": true
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "docs/production/evidence/consequence-reader-en-20261001.png",
+      "sha256": "2ae92b395ffcf6e1def2ed4aed0bfd2933a2b3239eb5689822cfe0324085dd9a",
+      "origin": "Unaltered capture of project-owned game UI",
+      "review": "Agent visually reviewed at original resolution",
+      "intendedUse": "QA evidence, no new runtime art",
+      "license": "Project-owned screenshot; repository LICENSE.md applies"
+    },
+    {
+      "file": "docs/production/evidence/consequence-reader-ar-20261001.png",
+      "sha256": "775c26eeacda2b82068495afb6d42ba55e7af0a4ef31042e296ec5d0660e5785",
+      "origin": "Unaltered capture of project-owned game UI",
+      "review": "Agent visually reviewed at original resolution",
+      "intendedUse": "QA evidence, no new runtime art",
+      "license": "Project-owned screenshot; repository LICENSE.md applies"
+    },
+    {
+      "file": "docs/production/evidence/consequence-reader-zh-20261001.png",
+      "sha256": "3d2c5835952cca673c13e566b957061f2ff743bab922829388fcd349a9e74b11",
+      "origin": "Unaltered capture of project-owned game UI",
+      "review": "Agent visually reviewed at original resolution",
+      "intendedUse": "QA evidence, no new runtime art",
+      "license": "Project-owned screenshot; repository LICENSE.md applies"
+    }
+  ],
+  "validation": {
+    "coreTests": 83,
+    "webTests": 380,
+    "fullBuild": "passed",
+    "initialJavaScriptGzipKiB": 99.79,
+    "initialCssGzipKiB": 11.89,
+    "deployMiB": 26.99
+  },
+  "limitations": [
+    "No new native iOS build or store submission",
+    "Not a hardware frame-rate benchmark or human playtest",
+    "English fallback remains for untranslated Arabic story prose"
+  ],
+  "cleanup": "All exact owned child processes terminated; no SHI desktop retained"
+}

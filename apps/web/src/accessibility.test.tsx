@@ -74,7 +74,7 @@ describe("WCAG semantic gate", () => {
     fireEvent.click(await view.findByTestId("commit-selected"));
     await view.findByTestId("resolution");
     expect((await scan()).violations).toEqual([]);
-    fireEvent.click(view.getByText("What changed"));
+    fireEvent.click(await view.findByText("What changed"));
     expect((await scan()).violations).toEqual([]);
   });
 });
