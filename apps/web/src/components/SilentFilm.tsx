@@ -17,7 +17,7 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
   const mountedRef = useRef(true);
   const nativeActiveRef = useRef(true);
   const pageActiveRef = useRef(true);
-  const [status, setStatus] = useState<"ready" | "starting" | "playing" | "paused" | "ended" | "unavailable">("ready");
+  const [status, setStatus] = useState<"ready" | "starting" | "playing" | "paused" | "ended" | "skipped" | "unavailable">("ready");
 
   useEffect(() => {
     mountedRef.current = true;
@@ -59,7 +59,7 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
 
   const play = async () => {
     const video = videoRef.current;
-    if (!video || !mountedRef.current || !nativeActiveRef.current || !pageActiveRef.current || document.hidden || status === "unavailable" || status === "ended") return;
+    if (!video || !mountedRef.current || !nativeActiveRef.current || !pageActiveRef.current || document.hidden || status === "unavailable" || status === "ended" || status === "skipped") return;
     const request = ++requestRef.current;
     wantedRef.current = true;
     setStatus("starting");
@@ -87,7 +87,7 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
           if (!mayPlay()) { videoRef.current?.pause(); return; }
           setStatus("playing");
         }}
-        onEnded={() => { wantedRef.current = false; requestRef.current += 1; setStatus("ended"); }}
+        onEnded={() => { wantedRef.current = false; requestRef.current += 1; setStatus(current => current === "skipped" ? current : "ended"); }}
         onPause={() => {
           // Browser/native controls may pause without using our button. Revoke
           // intent too, so a pending play promise cannot restart the scene.
@@ -95,16 +95,20 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
           requestRef.current += 1;
           setStatus((current) => current === "playing" || current === "starting" ? "paused" : current);
         }}
-        onError={() => { wantedRef.current = false; requestRef.current += 1; videoRef.current?.pause(); setStatus("unavailable"); }}>
+        onError={() => { wantedRef.current = false; requestRef.current += 1; videoRef.current?.pause(); setStatus(current => current === "skipped" ? current : "unavailable"); }}>
         <track kind="captions" src={asset.captions.src} srcLang={asset.captions.language} label={asset.captions.label} default />
       </video>
-      {status === "ended" || status === "unavailable" ? (
-        <p role="status">{cinemaLabel(locale, status === "ended" ? "finished" : "unavailable")}</p>
+      {status === "ended" || status === "skipped" || status === "unavailable" ? (
+        <p role="status">{cinemaLabel(locale, status === "unavailable" ? "unavailable" : "finished")}</p>
       ) : (
-        <button className="text-button" onClick={() => {
+        <><button className="text-button" onClick={() => {
           if (status === "playing" || status === "starting") { wantedRef.current = false; requestRef.current += 1; videoRef.current?.pause(); setStatus("paused"); }
           else void play();
         }}>{cinemaLabel(locale, status === "playing" || status === "starting" ? "pause" : "play")}</button>
+        <button className="text-button" onClick={() => {
+          wantedRef.current = false; requestRef.current += 1;
+          videoRef.current?.pause(); setStatus("skipped");
+        }}>{cinemaLabel(locale, "skip")}</button></>
       )}
     </section>
   );

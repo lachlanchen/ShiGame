@@ -12,6 +12,25 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe("silent film playback intent", () => {
+  it("skips before playback without starting media or saving a choice", () => {
+    const save = vi.spyOn(Storage.prototype, "setItem");
+    const view = render(<SilentFilm asset={asset} locale="en" />);
+    fireEvent.click(view.getByRole("button", { name: "Skip scene" }));
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("skipped");
+    expect(view.queryByRole("button", { name: "Play scene" })).toBeNull();
+    expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+    expect(save).not.toHaveBeenCalled();
+  });
+  it("keeps a pending clip skipped when its play promise completes", async () => {
+    let resolve!: () => void;
+    vi.mocked(HTMLMediaElement.prototype.play).mockImplementationOnce(() => new Promise<void>(done => { resolve = done; }));
+    const view = render(<SilentFilm asset={asset} locale="en" />);
+    fireEvent.click(view.getByRole("button", { name: "Play scene" }));
+    fireEvent.click(view.getByRole("button", { name: "Skip scene" }));
+    await act(async () => resolve());
+    fireEvent.playing(view.container.querySelector("video")!);
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("skipped");
+  });
   it("pauses a detached old clip when its play promise completes after a scene change", async () => {
     let resolve!: () => void;
     vi.mocked(HTMLMediaElement.prototype.play).mockImplementationOnce(() => new Promise<void>(done => { resolve = done; }));
