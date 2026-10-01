@@ -12,8 +12,10 @@ const storyBranch = process.argv[3] ?? "baseline";
 if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "crossing", "crossing-v2"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured|crossing|crossing-v2] [baseline|partner-search|loan-search]");
 const isCrossing = route === "crossing" || route === "crossing-v2";
 const revisedCrossing = route === "crossing-v2";
+const scoreAudition = process.env.SHI_PLAYTEST_SCORE === "1";
+if (scoreAudition && (!revisedCrossing || production)) throw new Error("Private score review requires the development crossing-v2 route.");
 const aftermath = revisedCrossing ? JSON.parse(await readFile(resolve(root, "content/engagements/chapter-01-crossing-aftermath.v2.json"), "utf8")) : null;
-const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}`;
+const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}${scoreAudition ? "&score=audition" : ""}`;
 const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
 const reserves = route === "scattered" || storyBranch !== "baseline" ? "send-support" : "keep-reserve";
@@ -77,7 +79,7 @@ try {
   await delay(800);
   await launch("vnc", "x11vnc", ["-display", ":121", "-listen", "127.0.0.1", "-rfbport", "5921", "-nopw", "-forever", "-nevershared"]);
   await launch("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:6121", "127.0.0.1:5921"]);
-  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1" });
+  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1", VITE_SHI_PRIVATE_SCORE_AUDITION: scoreAudition ? "1" : "0" });
   report.buildMode = production ? "production-dist" : "development";
   // Existing isolated profile, but an incognito app window preserves old QA saves.
   await launch("chrome", "google-chrome", ["--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--incognito", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=9321", `--user-data-dir=${root}/.runtime/novnc/profile`, "--window-size=1600,1000", "--app=http://127.0.0.1:4173/?seed=00000000"], { DISPLAY: ":121" });
@@ -130,6 +132,19 @@ try {
     const releaseBefore = await evaluate("localStorage.getItem('shi.chapter-01.save.v6')");
     const olderKeys = ["shi.chen-council.v1", "shi.fanyang-guarantee.v1", "shi.dev.chen-retreat.v1", "shi.development.crossing-campaign.v1"];
     const olderBytes = revisedCrossing ? await evaluate(`Object.fromEntries(${JSON.stringify(olderKeys)}.map(key=>[key,localStorage.getItem(key)]))`) : null;
+    if (scoreAudition) {
+      await until(exists('[data-testid="private-score-audition"]'));
+      check(await evaluate("document.querySelector('[data-testid=private-score-audition]').dataset.status==='idle' && !document.querySelector('[data-testid=private-score-audition] audio').getAttribute('src')"), "private score is not requested or played automatically");
+      await click('[data-testid="private-score-audition"] summary');
+      await click('[data-testid="private-score-audition"] button');
+      await until("document.querySelector('[data-testid=private-score-audition]').dataset.status==='playing'");
+      await until("document.querySelector('[data-testid=private-score-audition] audio').currentTime>0.25");
+      report.scorePlayback = await evaluate("(()=>{const a=document.querySelector('[data-testid=private-score-audition] audio');return {duration:a.duration,loop:a.loop,volume:a.volume,currentTime:a.currentTime,paused:a.paused}})()");
+      check(Math.abs(report.scorePlayback.duration - 45) < 0.1 && !report.scorePlayback.loop && !report.scorePlayback.paused, "pinned B recording decodes and plays once at the private audition level");
+      check(await evaluate("localStorage.getItem('shi.development.crossing-campaign.v2')===null"), "starting music does not commit a game order");
+      await capture("score-audition-playing-desktop");
+      await click('[data-testid="private-score-audition"] summary');
+    }
     await capture("crossing-title-desktop");
     await click('[data-testid="begin-game"]');
     await click('[data-testid="guide-continue"]');
@@ -161,6 +176,15 @@ try {
     await click('[data-testid="begin-game"]');
     await until("document.querySelector('[data-testid=engagement-board]')?.dataset.pulseIndex==='1'");
     check(await evaluate(`localStorage.getItem('${key}')`) === afterOrder, "cold resume preserves the saved first order");
+    if (scoreAudition) {
+      await until(exists('[data-testid="private-score-audition"]'));
+      check(await evaluate("document.querySelector('[data-testid=private-score-audition]').dataset.status==='idle'"), "reload does not automatically resume the private soundtrack");
+      await click('[data-testid="private-score-audition"] summary');
+      await click('[data-testid="private-score-audition"] button');
+      await until("document.querySelector('[data-testid=private-score-audition]').dataset.status==='playing'");
+      await click('[data-testid="private-score-audition"] summary');
+      check(await evaluate(`localStorage.getItem('${key}')`) === afterOrder, "explicit score replay does not issue another field command");
+    }
     for (const command of ["repair-the-landing", "hold-for-the-last-household"]) await click(`[data-engagement-command="${command}"]`);
     await until(exists('[data-testid="engagement-outcome"]'));
     check(await evaluate("document.querySelector('[data-testid=shi-app]').dataset.nodeId==='broken-crossing'"), "completed battle waits for explicit campaign commit");
@@ -170,6 +194,9 @@ try {
     await until(exists('[data-testid="resolution"]'));
     check(await evaluate(`document.querySelector('[data-testid=resolution]').textContent.includes(${JSON.stringify(outcome)})`), "campaign reaction matches the saved tactical outcome");
     await capture("crossing-reaction-phone");
+    if (scoreAudition) {
+      check(await evaluate("document.querySelector('[data-testid=private-score-audition] audio').currentTime>1"), "same private recording survives scene transitions without restarting");
+    }
     if (revisedCrossing) {
       check(await evaluate("document.querySelector('[data-testid=commitment-resolution]').closest('details')===null && document.querySelectorAll('[data-testid=commitment-resolution]').length===1"), "personal promise reaction is visible without opening statistical details");
       await capture("crossing-personal-reaction-phone"); await layout("personal reaction phone");

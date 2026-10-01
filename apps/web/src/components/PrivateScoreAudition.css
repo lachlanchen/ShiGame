@@ -1,0 +1,11 @@
+.private-score-audition { position: fixed; z-index: 20; inset-block-start: 8px; inset-inline-end: 8px; width: min(340px, calc(100vw - 16px)); max-height: calc(100dvh - 16px); overflow: auto; background: #171b18; color: #e4dfd1; border: 1px solid #575143; padding: 8px 12px; font: 14px/1.6 var(--sans); }
+.private-score-audition summary { cursor: pointer; min-height: 44px; display: list-item; padding-block: 10px; color: #d2b879; }
+.private-score-audition p { margin: 10px 0; }
+.private-score-audition button { min-height: 44px; padding: 8px 12px; margin-inline-end: 8px; }
+.private-score-audition input { width: 100%; min-height: 44px; }
+.private-score-audition :focus-visible { outline: 3px solid #f0cf86; outline-offset: 2px; }
+@media (forced-colors: active) {
+  .private-score-audition { background: Canvas; color: CanvasText; border-color: CanvasText; }
+  .private-score-audition summary { color: CanvasText; }
+  .private-score-audition :focus-visible { outline-color: Highlight; }
+}

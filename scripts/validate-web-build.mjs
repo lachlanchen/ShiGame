@@ -69,7 +69,7 @@ const deploymentRecords = records.filter((record) => record.extension !== ".map"
 // Unreviewed retreat and the new crossing ledger remain development-only.
 for (const record of deploymentRecords.filter(record => [".js", ".json", ".html"].includes(record.extension))) {
   const contents = await readFile(record.path, "utf8");
-  for (const marker of ["shi.dev.chen-retreat.v1", "chen-retreat-story-draft.v1", "chen-retreat-rules.v1", "shi.development.crossing-campaign.v1", "chapter-01-crossing-campaign-v1", "shi.development.crossing-campaign.v2", "chapter-01-crossing-campaign-v2", "chapter-01-crossing-aftermath-v2"]) {
+  for (const marker of ["shi.dev.chen-retreat.v1", "chen-retreat-story-draft.v1", "chen-retreat-rules.v1", "shi.development.crossing-campaign.v1", "chapter-01-crossing-campaign-v1", "shi.development.crossing-campaign.v2", "chapter-01-crossing-campaign-v2", "chapter-01-crossing-aftermath-v2", "__shi_private_score__", "7d28d185acd999637b19fd9eb0eb1bec778eff9f17c9507fff92519643cdada4"]) {
     if (contents.includes(marker)) fail(`development story/rules leaked into production: ${record.relative}`);
   }
 }

@@ -1,14 +1,17 @@
-import { StrictMode } from "react";
+import { lazy, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "@fontsource-variable/inter/wght.css";
 import "@fontsource-variable/cormorant-garamond/wght.css";
 import { App } from "./App";
 import type { DevelopmentCrossingDriver } from "./development-crossing";
 import "./styles.css";
+const PrivateScoreAudition = import.meta.env.DEV && import.meta.env.VITE_SHI_NATIVE !== "1" && import.meta.env.VITE_SHI_PRIVATE_SCORE_AUDITION === "1" && new URLSearchParams(window.location.search).get("score") === "audition"
+  ? lazy(() => import("./components/PrivateScoreAudition").then(module => ({ default: module.PrivateScoreAudition }))) : null;
 
 function render(developmentCrossing?: DevelopmentCrossingDriver) { createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App developmentCrossing={developmentCrossing} />
+    {PrivateScoreAudition && <Suspense fallback={null}><PrivateScoreAudition /></Suspense>}
   </StrictMode>,
 ); }
 
