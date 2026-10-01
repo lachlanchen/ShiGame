@@ -46,11 +46,13 @@ const crossingScenarios = {
   costly: { commands: ["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"], outcome: "costly-crossing", promise: "strained", resources: "48,83,11,97,96" },
   withdrawal: { commands: ["brace-the-approach", "reinforce-the-rear", "staggered-withdrawal"], outcome: "fighting-withdrawal", promise: "strained", resources: "49,80,7,93,90" },
   orderly: { commands: ["screen-through-reeds", "repair-the-landing", "release-the-reserve"], outcome: "orderly-crossing", promise: "kept", resources: "51,91,15,100,87" },
+  recovery: { commands: ["brace-the-approach", "reinforce-the-rear", "staggered-withdrawal"], outcome: "rear-broken", promise: "broken", resources: "47,89,20,96,94" },
 };
 if (!Object.hasOwn(crossingScenarios, crossingScenario) || (crossingScenario !== "costly" && !internalDirectory)) throw new Error("Alternate crossing scenarios require the compiled internal candidate.");
 const crossingExpectation = crossingScenarios[crossingScenario];
 const graphicsReview = process.env.SHI_PLAYTEST_GRAPHICS ?? "normal";
 if (!["normal", "reduced", "unavailable"].includes(graphicsReview) || (graphicsReview !== "normal" && !internalDirectory)) throw new Error("Graphics fault review requires the compiled internal candidate.");
+if (crossingScenario === "recovery" && graphicsReview === "unavailable") throw new Error("Review recovery preparation and renderer download faults separately.");
 const scoreAudition = process.env.SHI_PLAYTEST_SCORE === "1";
 const councilFilm = process.env.SHI_PLAYTEST_COUNCIL_FILM === "1";
 const rainCinema = process.env.SHI_PLAYTEST_RAIN_CINEMA === "1";
@@ -63,7 +65,7 @@ if (rainCinema && (!revisedCrossing || production || scoreAudition)) throw new E
 if (scoreAudition && (!revisedCrossing || production)) throw new Error("Private score review requires the development crossing-v2 route.");
 const aftermath = revisedCrossing ? JSON.parse(await readFile(resolve(root, "content/engagements/chapter-01-crossing-aftermath.v2.json"), "utf8")) : null;
 const councilMetricCount = Object.keys(JSON.parse(await readFile(resolve(root, "content/councils/chen-council.v1.json"), "utf8")).metrics).length;
-const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}${scoreAudition ? "&score=audition" : ""}${councilFilm ? "&councilFilm=review" : ""}${rainCinema ? "&cinema=rain-review" : ""}`;
+const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : crossingScenario === "recovery" ? "00000001" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}${scoreAudition ? "&score=audition" : ""}${councilFilm ? "&councilFilm=review" : ""}${rainCinema ? "&cinema=rain-review" : ""}`;
 const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
 const reserves = route === "scattered" || storyBranch !== "baseline" ? "send-support" : "keep-reserve";
@@ -433,6 +435,59 @@ try {
     await click('[data-testid="record-drawer"] .icon-button');
     await click('[data-choice-id="root-in-villages"]');
     await click('[data-testid="commit-selected"]'); await click('[data-testid="resolution-continue"]');
+    if (crossingScenario === "recovery") {
+      await until(exists('[data-testid="crossing-reconsider"]'));
+      check(!await evaluate(exists('[data-testid="council-enter"]')) && await evaluate("!!document.querySelector('.story-panel-failed')"), "broken rear and subsequent strategic choice reach a real terminal loss, not Chen");
+      const defeated = await evaluate(`localStorage.getItem('${key}')`);
+      await capture("crossing-defeat-phone"); await layout("terminal loss phone", false);
+      let failedPreparations = 0;
+      const failPreparation = event => {
+        const message = JSON.parse(event.data);
+        if (message.method === "Fetch.requestPaused") {
+          failedPreparations++;
+          void send("Fetch.failRequest", { requestId: message.params.requestId, errorReason: "Failed" }).catch(error => report.errors.push(error.message));
+        }
+      };
+      socket.addEventListener("message", failPreparation);
+      await send("Fetch.enable", { patterns: [{ urlPattern: "*DecisionInspector-*.js*", requestStage: "Request" }] });
+      await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+      await until("!!document.querySelector('[data-testid=crossing-recovery] [role=alert]')");
+      check(failedPreparations > 0 && await evaluate(`localStorage.getItem('${key}')`) === defeated, "failed preparation download keeps the defeat saved and does not offer an unsafe replay");
+      await evaluate("document.querySelector('[data-testid=crossing-recovery] [role=alert]').scrollIntoView({block:'center',behavior:'instant'})");
+      await capture("crossing-replay-load-failure-phone");
+      await send("Fetch.disable"); socket.removeEventListener("message", failPreparation);
+      await click('[data-testid="crossing-reconsider"]');
+      await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+      await until("document.querySelector('[data-testid=crossing-reconsider]')?.disabled===false");
+      await click('[data-testid="crossing-reconsider"]');
+      check(await evaluate(`localStorage.getItem('${key}')`) === defeated, "defeat reload and opening replay confirmation preserve the complete ending");
+      check(await evaluate("document.activeElement.dataset.testid==='crossing-retry-cancel'"), "confirmation initially focuses keeping the ending");
+      await evaluate("document.querySelector('[data-testid=crossing-retry-confirmation]').scrollIntoView({block:'center',behavior:'instant'})");
+      await capture("crossing-replay-confirm-phone"); await layout("replay confirmation phone", false);
+      await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
+      await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
+      await until("!document.querySelector('[data-testid=crossing-retry-confirmation]')");
+      check(await evaluate(`localStorage.getItem('${key}')`) === defeated, "Escape cancels replay without changing the defeat");
+      await send("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+      await click('[data-testid="crossing-reconsider"]'); await click('[data-testid="crossing-retry-confirm"]');
+      await until(exists('[data-testid="commit-selected"]'));
+      const replayBytes = await evaluate(`localStorage.getItem('${key}')`);
+      const replay = JSON.parse(replayBytes);
+      check(replay.ledger.seed === 1 && replay.pendingEventIndex === null
+        && JSON.stringify(replay.ledger.events) === JSON.stringify(beforeOrder.ledger.events.slice(0, 2)), "offline confirmed replay retains the exact two opening choices and seed, not the failed later orders");
+      await send("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+      await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+      await until(exists('[data-testid="commit-selected"]'));
+      check(await evaluate(`localStorage.getItem('${key}')`) === replayBytes && !await evaluate(exists('[data-testid="resolution"]')), "cold replay starts at the crossing without replaying opening reactions");
+      await capture("crossing-replay-checkpoint-phone"); await layout("replay checkpoint phone", false);
+      await click('[data-choice-id="families-first"]'); await click('[data-testid="commit-selected"]');
+      for (const command of ["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"]) await click(`[data-engagement-command="${command}"]`);
+      await click('[data-testid="engagement-return"]'); await until(exists('[data-testid="resolution"]'));
+      check(await evaluate(`document.querySelector('[data-testid=resolution]').textContent.includes(${JSON.stringify(aftermath.outcomes["costly-crossing"].reaction["zh-Hans"])})`), "new orders earn a costly crossing under unchanged conditions, not a free perfect result");
+      await capture("crossing-replayed-reaction-phone");
+      await click('[data-testid="resolution-continue"]'); await click('[data-choice-id="root-in-villages"]');
+      await click('[data-testid="commit-selected"]'); await click('[data-testid="resolution-continue"]');
+    }
     await click('[data-testid="council-enter"]'); await until(exists('[data-testid="chen-council"]'));
     check(await evaluate(`[...document.querySelectorAll('.resource-rail [role=meter]')].map(e=>Number(e.getAttribute('aria-valuenow'))).join(',')==='${revisedCrossing ? crossingExpectation.resources : "48,89,10,97,96"}'`), "visible final resources match the independently replayed representative route");
     check(await evaluate("document.querySelector('[data-testid=chen-council]').dataset.arrival==='supplied'"), "surviving route produces the expected supplied Chen arrival despite high pursuit");

@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import {
   advanceCrossingCampaign, availableEngagementCommands, canChoose, createCrossingCampaignSave,
-  councilEntry, deriveEnding, getNode, replayCrossingCampaign,
+  councilEntry, deriveEnding, getNode, replayCrossingCampaign, reconsiderFailedCrossing,
   type Campaign, type CrossingAftermath, type CrossingCampaignReplay, type CrossingCampaignRules, type EngagementDefinition,
 } from "../packages/game-core/src";
 
@@ -38,6 +38,7 @@ if (Object.keys(rules).sort().join(",") !== ["schemaVersion", "id", "deliverySta
 
 let checkpoints = 0;
 let terminalRoutes = 0;
+let recoveryCheckpoints = 0;
 const failures: Record<string, number> = {};
 const arrivals: Record<string, number> = {};
 const outcomes: Record<string, number> = {};
@@ -55,6 +56,15 @@ const visit = (state: CrossingCampaignReplay) => {
   }
   if (state.campaign.completed) {
     terminalRoutes++;
+    if (state.campaign.failureReason && state.crossings.length === 1) {
+      const original = JSON.stringify(state);
+      const checkpoint = reconsiderFailedCrossing(campaign, definition, rules, state.save, aftermath);
+      if (JSON.stringify(state) !== original || checkpoint.save.seed !== state.save.seed
+        || checkpoint.campaign.completed || checkpoint.engagement || checkpoint.campaign.currentNodeId !== rules.nodeId
+        || JSON.stringify(checkpoint.save.events) !== JSON.stringify(state.save.events.slice(0, checkpoint.save.events.length))
+        || checkpoint.campaign.history.length !== 2) throw new Error("Failed-chapter replay changed its opening checkpoint.");
+      recoveryCheckpoints++;
+    }
     if (state.campaign.failureReason) failures[state.campaign.failureReason] = (failures[state.campaign.failureReason] ?? 0) + 1;
     const arrival = councilEntry(state.campaign)?.arrival;
     if (arrival) arrivals[arrival] = (arrivals[arrival] ?? 0) + 1;
@@ -116,7 +126,7 @@ if (!representative?.campaign.completed || representative.campaign.failureReason
 console.log(JSON.stringify({
   status: "development-rules-audit-not-client-acceptance", rulesId: rules.id,
   campaignSha256: rules.campaignSha256, engagementSha256: rules.engagementSha256,
-  seeds, checkpoints, terminalRoutes, conditions: [...conditions].sort(), outcomes, failures, councilArrivals: arrivals,
+  seeds, checkpoints, terminalRoutes, recoveryCheckpoints, conditions: [...conditions].sort(), outcomes, failures, councilArrivals: arrivals,
   promiseJudgments: Object.fromEntries([...promiseJudgments].map(([id, values]) => [id, [...values].sort()])),
   sameStrategicRoutesWithChangedFates: changedFateGroups.length,
   example: { strategicRoute: JSON.parse(changedFateGroups[0]![0]), possibleFates: [...changedFateGroups[0]![1]] },

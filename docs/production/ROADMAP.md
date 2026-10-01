@@ -26,9 +26,12 @@ now builds separately in production mode and passes one complete visible route
 through the crossing, Chen and Fan Yang with isolated saves. It is not a public
 rollout or mobile beta. Follow-up compiled withdrawal and orderly routes now
 reach the conclusion with their own personal reactions and resource totals,
-including reduced-motion and failed-graphics-download reviews. Terminal loss,
-native parity, physical-device and human review gates remain open. The later
-retreat/refuge draft remains excluded.
+including reduced-motion and failed-graphics-download reviews. A subsequent
+compiled terminal-loss route now supports explicitly confirmed replay from the
+crossing, retaining the opening and same conditions; it reaches the conclusion
+after different orders, including preparation-download failure and a prepared
+offline checkpoint test. Native parity, physical-device and human review gates
+remain open. The later retreat/refuge draft remains excluded.
 
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release

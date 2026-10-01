@@ -24,12 +24,49 @@ async function opening(view: ReturnType<typeof render>) {
     await view.findByTestId("commit-selected");
     fireEvent.click(view.container.querySelector(`[data-choice-id='${id}']`)!);
     fireEvent.click(view.getByTestId("commit-selected"));
-    fireEvent.click(await view.findByTestId("resolution-continue"));
+    // This route tests the campaign, not the independently tested lazy-reader
+    // handoff. Wait for that handoff before taking a synchronous DOM reference.
+    await view.findByTestId("resolution-details");
+    fireEvent.click(view.getByTestId("resolution-continue"));
     await waitFor(() => expect(view.queryByTestId("resolution")).toBeNull());
   }
 }
 
 describe("crossing campaign in the real App shell", () => {
+  it("requires explicit confirmation to replay a defeat without repeating the opening", async () => {
+    const driver = createDevelopmentCrossingDriver(localStorage, 2, "internal");
+    driver.initialize(1);
+    for (const choiceId of ["read-the-names", "issue-grain-tallies"]) { driver.commit({ kind: "decision", choiceId }); driver.acknowledge(); }
+    const checkpoint = driver.restore()!.state;
+    driver.commit({ kind: "begin-crossing", planId: "families-first" });
+    for (const commandId of ["brace-the-approach", "reinforce-the-rear", "staggered-withdrawal"]) driver.commit({ kind: "crossing-command", commandId });
+    driver.commit({ kind: "finish-crossing" }); driver.acknowledge();
+    driver.commit({ kind: "decision", choiceId: "root-in-villages" }); driver.acknowledge();
+    const bytes = localStorage.getItem(driver.interludeNamespace);
+    const view = render(<App developmentCrossing={driver} />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    await waitFor(() => expect((view.getByTestId("crossing-reconsider") as HTMLButtonElement).disabled).toBe(false));
+    fireEvent.click(view.getByTestId("crossing-reconsider"));
+    expect(view.getByTestId("crossing-retry-confirmation").textContent).toContain("not a rescue");
+    expect(document.activeElement).toBe(view.getByTestId("crossing-retry-cancel"));
+    expect(localStorage.getItem(driver.interludeNamespace)).toBe(bytes);
+    fireEvent.click(view.getByTestId("crossing-retry-cancel"));
+    expect(view.queryByTestId("crossing-retry-confirmation")).toBeNull();
+    expect(localStorage.getItem(driver.interludeNamespace)).toBe(bytes);
+    fireEvent.click(view.getByTestId("crossing-reconsider"));
+    const writer = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("full"); });
+    fireEvent.click(view.getByTestId("crossing-retry-confirm"));
+    expect(view.getByRole("alert").textContent).toContain("Could not save");
+    writer.mockRestore();
+    expect(localStorage.getItem(driver.interludeNamespace)).toBe(bytes);
+    fireEvent.click(view.getByTestId("crossing-retry-confirm"));
+    await view.findByTestId("commit-selected");
+    expect(driver.restore()!.state).toEqual(checkpoint);
+    expect(view.queryByTestId("crossing-recovery")).toBeNull();
+    expect(view.getByTestId("shi-app").dataset.nodeId).toBe("broken-crossing");
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe("unchanged release save");
+  });
+
   it("renders the actual second-edition promise and personal reaction after a costly crossing and reload", async () => {
     vi.stubGlobal("crypto", webcrypto);
     const olderKeys = ["shi.chen-council.v1", "shi.fanyang-guarantee.v1", "shi.dev.chen-retreat.v1"];

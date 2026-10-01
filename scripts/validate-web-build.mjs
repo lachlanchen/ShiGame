@@ -72,7 +72,7 @@ const records = await Promise.all(files.map(async (path) => ({
 const deploymentRecords = records.filter((record) => record.extension !== ".map");
 // Only the isolated internal candidate admits the revised crossing. Private
 // media and the later retreat draft remain excluded in both build channels.
-const crossingMarkers = ["shi.development.crossing-campaign.v1", "chapter-01-crossing-campaign-v1", "shi.development.crossing-campaign.v2", "chapter-01-crossing-campaign-v2", "chapter-01-crossing-aftermath-v2", "shi.internal.crossing-campaign.v2"];
+const crossingMarkers = ["shi.development.crossing-campaign.v1", "chapter-01-crossing-campaign-v1", "shi.development.crossing-campaign.v2", "chapter-01-crossing-campaign-v2", "chapter-01-crossing-aftermath-v2", "shi.internal.crossing-campaign.v2", "crossing-retry-confirmation"];
 const seenCrossingMarkers = new Set();
 for (const record of deploymentRecords.filter(record => [".js", ".json", ".html"].includes(record.extension))) {
   const contents = await readFile(record.path, "utf8");

@@ -125,14 +125,73 @@ JavaScript / 183 KB transfer; this is not a mobile startup-speed benchmark. The
 2.4 MB title PNG still dominates this sample and needs a separately reviewed
 delivery optimization. Future lazy content is not counted in these startup totals.
 
-Current qualified source-inventory SHA-256:
+Graphics-checkpoint source-inventory SHA-256:
 `c24f35f6909c1db5e000b5b7b0afe9e74783abcbd9a125da81c34757624ea006`.
-Current artifact-inventory SHA-256:
+Graphics-checkpoint artifact-inventory SHA-256:
 `d69ac43b867f79aaed85775ce9791290f801c71d57068291392940f2745d56d6`.
 The earlier candidate hashes above remain historical evidence, not overwritten
 receipts. New harness options are `SHI_PLAYTEST_CROSSING_SCENARIO=withdrawal`
 or `orderly` and `SHI_PLAYTEST_GRAPHICS=reduced` or `unavailable`; these alternate
 reviews require the isolated compiled candidate.
+
+## Follow-up: defeat is not a dead end
+
+The internal candidate now offers an explicit replay checkpoint after a failed
+chapter that completed the crossing. It retains the two opening choices, their
+resources, seed and field conditions. It replaces crossing and later decisions
+only after confirmation. It cannot undo an ongoing battle, skip an unread
+reaction, reroll conditions or grant a winning result. Cancel/Escape retain the
+defeat; a failed storage write leaves both live state and saved bytes unchanged.
+
+This is openly labeled replay, not a historical rescue or a fictional scene.
+The original English/Chinese interface copy was reviewed for that distinction
+and explicitly names the decisions that will be replaced. Other languages use
+the marked English fallback; this does not close the full localization gate.
+No campaign prose, historical claim, rule effects or ledger version changed.
+The shared core computes the checkpoint; the browser adapter persists it only
+after the successful synchronous transaction.
+
+The route matters: under seed one, a broken rear guard still reaches the next
+strategic choice. Choosing village roots then ends in capture (danger 100).
+Calling the crossing itself instant capture would be inaccurate. Replaying the
+same opening/conditions with screening, landing repair and holding for the last
+household earns a **costly** crossing and a surviving Chen arrival—not an
+automatic perfect crossing. Its Chen resources are 47/89/20/96/94.
+
+The replay controls are part of the internal App module. Required choice and
+opposition panels are prepared before confirmation becomes available, including
+after a cold resume directly at defeat. A failed preparation offers reconnect/
+reload while retaining the ending. This fixes a real offline-test failure in an
+earlier candidate: the checkpoint saved, but unavailable lazy choice panels
+could leave the screen blank. That failed run is retained privately, not counted
+as acceptance. Reload starts a fresh module graph, avoiding a cached failed
+dynamic import on a same-document retry.
+
+Rules validation checks exact opening-prefix/seed preservation at 424 revision-1
+and 426 revision-2 terminal-loss checkpoints across the existing six-seed audit.
+Unit tests cover the real App confirmation, storage rollback, cold restoration,
+changed orders, no mid-battle undo, and unavailable panel preparation. These are
+bounded development qualifications, not native replay parity or store submission.
+
+The corrected compiled build passes **83 core + 390 web tests**. Its complete
+Chinese desktop/390px browser route passes **80 checks**, with no runtime
+exceptions: broken rear → next-choice capture → failed panel download with
+ending preserved → reconnect/reload → cancel → explicit offline replay commit
+→ cold restore online → new orders → costly crossing → Chen → Fan Yang ending.
+The offline claim is the prepared checkpoint operation, not a first-ever offline
+web launch or a physical-device test. Long ending/replay panels require normal
+vertical scrolling; screenshot capture explicitly scrolls to the confirmation.
+
+Current source-inventory SHA-256:
+`f28b87a779aebacb453e2b8ca8345aeefb251bb629f9ef4683c329041bb107c6`.
+Current artifact-inventory SHA-256:
+`5abc1614f25142209ff013bfbd23712577a914de2a22f7fbb5b17ff73fa6dc69`.
+Use `SHI_PLAYTEST_CROSSING_SCENARIO=recovery` with the compiled internal review
+command below. That scenario deliberately fails a preparation download and
+disconnects the network during confirmed replay. The normal public build
+continues to exclude the recovery UI/ledger; it passes unchanged budgets at
+99.87 KiB initial JS, 11.89 KiB CSS and 26.99 MiB deployed. No store upload or
+media admission follows from this checkpoint.
 
 ## Reproduce and next gate
 

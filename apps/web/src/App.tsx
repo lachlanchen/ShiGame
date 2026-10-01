@@ -37,6 +37,7 @@ import { gameStorage } from "./persistence";
 import { readChapterSnapshot, writeChapterSnapshot } from "./chapter-snapshot";
 import { EndingText } from "./components/EndingText";
 import { ConsequencePresentation } from "./components/ConsequencePresentation";
+import CrossingRecoveryComponent from "./components/CrossingRecovery";
 import type { DevelopmentCrossingDriver } from "./development-crossing";
 
 const campaign = campaignJson as unknown as Campaign;
@@ -57,6 +58,8 @@ const CampaignHorizon = lazy(() => import("./components/CampaignHorizon").then((
 const EngagementBoard = lazy(() => import("./components/EngagementBoard").then((module) => ({ default: module.EngagementBoard })));
 const ChenCouncil = lazy(() => import("./components/ChenCouncil").then((module) => ({ default: module.ChenCouncil })));
 const ChronicleDrawer = lazy(() => import("./components/ChronicleDrawer").then((module) => ({ default: module.ChronicleDrawer })));
+const CrossingRecovery = import.meta.env.DEV || import.meta.env.MODE === "internal-crossing"
+  ? CrossingRecoveryComponent : null;
 const SAVE_KEY = "shi.chapter-01.save.v6";
 const LEGACY_SAVE_KEYS = ["shi.chapter-01.save.v5", "shi.chapter-01.save.v4", "shi.chapter-01.save.v3", "shi.chapter-01.save.v2", "shi.chapter-01.save.v1"];
 const DRAFT_SEED_KEY = "shi.chapter-01.seed.v1";
@@ -662,6 +665,9 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
         {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} outcomeOverride={crossingDriver?.getCrossingCommitment()?.outcome} locale={locale} /></Suspense>}
       </div>
       <div className="chen-ending-actions">
+        {CrossingRecovery && crossingDriver && state.failureReason && <CrossingRecovery driver={crossingDriver} locale={locale} onRetry={next => {
+          setState(next); setBattle(null); choiceInFlightRef.current = false;
+        }} />}
         {!state.failureReason && <button className="primary-button" data-testid="council-enter" onClick={() => openDrawer("council")}>{locale.startsWith("zh") ? "进入陈地议事" : "Continue to the council at Chen"} <span>→</span></button>}
         <button className="primary-button" ref={endingRestartRef} onClick={restart}>{translate(locale, "restart")} <span>↺</span></button>
       </div>

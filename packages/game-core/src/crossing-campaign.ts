@@ -55,6 +55,22 @@ export interface CrossingCampaignReplay {
   lastResolution?: ChoiceResolution;
 }
 
+/** Explicit failed-chapter replay from its crossing, never an in-battle undo. */
+export function reconsiderFailedCrossing(campaign: Campaign, definition: EngagementDefinition, rules: CrossingCampaignRules,
+  save: CrossingCampaignSave, aftermath?: CrossingAftermath): CrossingCampaignReplay {
+  const current = replayCrossingCampaign(campaign, definition, rules, save, aftermath);
+  if (!current?.campaign.completed || !current.campaign.failureReason || current.crossings.length !== 1) {
+    throw new Error("Only a terminal loss after the crossing can be reconsidered.");
+  }
+  let start = current.save.events.length - 1;
+  while (start >= 0 && current.save.events[start]?.kind !== "begin-crossing") start--;
+  const next = replayCrossingCampaign(campaign, definition, rules, { ...current.save, events: current.save.events.slice(0, start) }, aftermath);
+  if (start < 0 || !next || next.engagement || next.campaign.completed || next.campaign.currentNodeId !== rules.nodeId) {
+    throw new Error("Crossing replay checkpoint is unavailable.");
+  }
+  return next;
+}
+
 function validateBinding(campaign: Campaign, definition: EngagementDefinition, rules: CrossingCampaignRules, aftermath?: CrossingAftermath): void {
   const policyValid = rules.schemaVersion === 1 ? rules.effectPolicy === "replace-player-effects-retain-other-layers"
     : rules.schemaVersion === 2 && rules.effectPolicy === "outcome-aware-crossing";

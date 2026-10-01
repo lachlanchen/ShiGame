@@ -1,5 +1,5 @@
 import {
-  advanceCrossingCampaign, createCrossingCampaignSave, replayCrossingCampaign,
+  advanceCrossingCampaign, createCrossingCampaignSave, replayCrossingCampaign, reconsiderFailedCrossing,
   type Campaign, type CrossingCampaignEvent, type CrossingCampaignReplay,
   type CrossingAftermath, type CrossingCampaignRules, type EngagementDefinition, type Locale,
 } from "@shi/game-core";
@@ -76,6 +76,14 @@ export function createDevelopmentCrossingDriver(storage: Pick<Storage, "getItem"
     interludeNamespace: key,
     getRetreatCrossing: () => ({ definition, rules, aftermath, save: JSON.parse(JSON.stringify(requireCurrent().save)) as CrossingCampaignReplay["save"] }),
     hasSave: () => Boolean(current?.save.events.length),
+    canReconsider: () => pendingEventIndex === null && Boolean(current?.campaign.failureReason)
+      && current?.crossings.length === 1,
+    reconsider() {
+      if (pendingEventIndex !== null) throw new Error("Read the saved reaction before reconsidering the crossing.");
+      const next = reconsiderFailedCrossing(campaign, definition, rules, requireCurrent().save, aftermath);
+      persist(next, null);
+      return next.campaign;
+    },
     commit(event: CrossingCampaignEvent) {
       if (pendingEventIndex !== null) throw new Error("Read the saved reaction before issuing another order.");
       const next = advanceCrossingCampaign(campaign, definition, rules, requireCurrent().save, event, aftermath);

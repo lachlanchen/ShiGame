@@ -20,6 +20,54 @@ function crossing(driver: ReturnType<typeof createDevelopmentCrossingDriver>) {
 }
 
 describe("development crossing durable browser adapter", () => {
+  function defeated() {
+    const driver = createDevelopmentCrossingDriver(localStorage, 2, "internal");
+    driver.initialize(1);
+    for (const choiceId of ["read-the-names", "issue-grain-tallies"]) { driver.commit({ kind: "decision", choiceId }); driver.acknowledge(); }
+    const checkpoint = driver.restore()!.state;
+    driver.commit({ kind: "begin-crossing", planId: "families-first" });
+    for (const commandId of ["brace-the-approach", "reinforce-the-rear", "staggered-withdrawal"]) driver.commit({ kind: "crossing-command", commandId });
+    driver.commit({ kind: "finish-crossing" }); driver.acknowledge();
+    expect(driver.commit({ kind: "decision", choiceId: "root-in-villages" }).campaign.failureReason).toBe("captured");
+    return { driver, checkpoint };
+  }
+
+  it("replays only a read terminal loss and preserves the exact opening and seed", () => {
+    const { driver, checkpoint } = defeated();
+    expect(driver.canReconsider()).toBe(false);
+    expect(() => driver.reconsider()).toThrow(/Read/);
+    driver.acknowledge();
+    expect(driver.canReconsider()).toBe(true);
+    expect(driver.reconsider()).toEqual(checkpoint);
+    expect(driver.getEngagement()).toBeNull();
+    expect(driver.getCrossingRecord()).toBeUndefined();
+    expect(createDevelopmentCrossingDriver(localStorage, 2, "internal").restore()).toEqual({ state: checkpoint, resolution: null });
+    expect(() => driver.reconsider()).toThrow(/terminal/);
+    driver.commit({ kind: "begin-crossing", planId: "families-first" });
+    expect(() => driver.reconsider()).toThrow(/terminal/);
+    for (const commandId of ["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"]) driver.commit({ kind: "crossing-command", commandId });
+    const changed = driver.commit({ kind: "finish-crossing" });
+    expect(changed.campaign.failureReason).toBeUndefined();
+    expect(changed.crossings[0]!.outcomeId).toBe("costly-crossing");
+    driver.acknowledge();
+    expect(driver.commit({ kind: "decision", choiceId: "root-in-villages" }).campaign.failureReason).toBeUndefined();
+    driver.acknowledge();
+    expect(driver.canReconsider()).toBe(false);
+    expect(() => driver.reconsider()).toThrow(/terminal/);
+    expect(localStorage.getItem(legacyKey)).toBe("owner's original save");
+  });
+
+  it("keeps the defeat and live state intact if replay checkpoint storage fails", () => {
+    const { driver } = defeated(); driver.acknowledge();
+    const before = localStorage.getItem(INTERNAL_CROSSING_V2_KEY);
+    const snapshot = driver.restore();
+    const writer = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("full"); });
+    expect(() => driver.reconsider()).toThrow("full");
+    writer.mockRestore();
+    expect(driver.restore()).toEqual(snapshot);
+    expect(localStorage.getItem(INTERNAL_CROSSING_V2_KEY)).toBe(before);
+  });
+
   it("keeps an internal revision-2 route isolated from released and development campaigns", () => {
     const keys = [legacyKey, DEVELOPMENT_CROSSING_KEY, DEVELOPMENT_CROSSING_V2_KEY, "shi.chen-council.v1", "shi.fanyang-guarantee.v1"];
     for (const key of keys) localStorage.setItem(key, `preserve ${key}`);
