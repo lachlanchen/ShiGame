@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 
-const directory = ".runtime/council-palm-gesture-20261001";
+const directory = process.env.SHI_PALM_STUDY ?? ".runtime/council-palm-fingers-20261001";
 const receipt = JSON.parse(await readFile(`${directory}/receipt.json`, "utf8"));
 const baseline = JSON.parse(await readFile(".runtime/council-relaxed-gesture-20261001-v2/receipt.json", "utf8"));
 const sha = bytes => createHash("sha256").update(bytes).digest("hex");
@@ -28,6 +28,7 @@ function checkWrist(samples) {
     const t = (sample.frame - a) / (b - a);
     const expected = start + (end - start) * t * t * (3 - 2 * t);
     assert.ok(Math.abs(sample.rollDegrees - expected) < 1e-8, `unexpected wrist curve at ${sample.frame}`);
+    assert.ok(Number.isFinite(sample.fingerClosure) && Math.abs(sample.fingerClosure - expected / 90 * 0.65) < 1e-8, `unexpected finger convergence at ${sample.frame}`);
   }
   const speeds = samples.slice(1).map((sample, i) => (sample.rollDegrees - samples[i].rollDegrees) * 30);
   assert.ok(Math.max(...speeds.map(Math.abs)) <= 140, "wrist speed exceeds the authored study bound");

@@ -17,7 +17,11 @@ from mathutils import Matrix, Quaternion, Vector
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--finger-closure", type=float, default=0,
+                        help="Diagnostic convergence toward the middle finger, 0 to 0.75")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
+    if not 0 <= args.finger_closure <= 0.75:
+        raise ValueError("Finger convergence must be bounded between 0 and 0.75")
     here = Path(__file__).resolve()
     spec = importlib.util.spec_from_file_location("keeper_pose", here.with_name("render-council-relaxed-gesture-study.py"))
     pose = importlib.util.module_from_spec(spec)
@@ -32,6 +36,16 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     scene = bpy.context.scene
     pose.author(rig, scene)
+    scene.frame_set(46)
+    bpy.context.view_layer.update()
+    # Reduce reference-pose splay without inventing a grasp or changing thumbs.
+    # Aim proximal phalanges only; child rotations follow the same authored rig.
+    middle = rig.pose.bones["middle_01_r"].matrix.to_3x3() @ Vector((0, 1, 0))
+    for name in ("index_01_r", "ring_01_r", "pinky_01_r"):
+        finger = rig.pose.bones[name]
+        direction = finger.matrix.to_3x3() @ Vector((0, 1, 0))
+        pose.aim(rig, name, direction.normalized().lerp(middle.normalized(), args.finger_closure))
+        finger.keyframe_insert(data_path="rotation_quaternion", frame=46, group=name)
     scene.frame_set(46)
     bpy.context.view_layer.update()
     hand = rig.pose.bones["hand_r"]
@@ -95,6 +109,7 @@ def main():
                "scriptSha256": pose.review.digest(here),
                "poseAuthorSha256": pose.review.digest(Path(pose.__file__)),
                "frame": 46, "blender": bpy.app.version_string, "samples": samples,
+               "fingerClosure": args.finger_closure,
                "boundary": "Static roll comparisons; no motion, palm-contact or historical-etiquette approval."}
     (output / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
 

@@ -36,12 +36,22 @@ def author(rig, scene):
         hand.keyframe_insert(data_path="rotation_quaternion", frame=frame, group=hand.name)
         scene.frame_set(frame)
         bpy.context.view_layer.update()
+        closure = 0.65 * pose.envelope(frame)
+        middle = rig.pose.bones["middle_01_r"].matrix.to_3x3() @ Vector((0, 1, 0))
+        for name in ("index_01_r", "ring_01_r", "pinky_01_r"):
+            finger = rig.pose.bones[name]
+            direction = finger.matrix.to_3x3() @ Vector((0, 1, 0))
+            pose.aim(rig, name, direction.normalized().lerp(middle.normalized(), closure))
+            finger.keyframe_insert(data_path="rotation_quaternion", frame=frame, group=name)
+        scene.frame_set(frame)
+        bpy.context.view_layer.update()
         raw_error = hand.matrix.to_quaternion().rotation_difference(rotation).angle
         error = min(raw_error, abs(2 * math.pi - raw_error))
         drift = (hand.matrix.translation - matrix.translation).length
         if error > math.radians(0.5) or drift > 0.000001:
             raise ValueError("Wrist bake did not retain the requested pose")
         checks.append({"frame": frame, "rollDegrees": degrees,
+                       "fingerClosure": closure,
                        "rotationErrorRadians": error, "originDriftMetres": drift})
     return action
 

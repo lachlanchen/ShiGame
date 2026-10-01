@@ -17,6 +17,14 @@ The source carrier SHA remains `feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe7
 
 ## Admission boundary and next work
 
+### Finger-spread refinement
+
+The current author now converges index/ring/pinky proximal directions toward the middle finger by `0.65 × envelope(frame)`, leaving the thumb and middle-finger pose unchanged. This reduces splay without inventing a grip. The wrist diagnostic accepts bounded `--finger-closure` values from 0 to 0.75 for reproducible close-up comparison. The +90° close-up at 0.65 was inspected; finger spacing is reduced, although the palm remains flat and no prop contact is established.
+
+Current generated candidate: `.runtime/council-palm-fingers-20261001`; movie SHA-256 `149d0d7bf2974bc17693852a4207613eec88ea0cd09351cafdded96267b7daad`. Close-up: `.runtime/council-finger-closure-20261001/wrist-+90.png`, SHA-256 `8545a72cb4115c4194924c7e97834168941eb4af885878414889a5721b7d37d4`. The movie has 48 H.264 frames, 640×360, four seconds, no audio, and fully decodes. Both Blender jobs exited zero; no overlapping SHI render job or GUI stack was launched. Memory preflight was 67 GiB available with high swap; no obsolete SHI process was found or foreign process stopped.
+
+All six artifact tests pass against the new candidate, now the test's default directory (`SHI_PALM_STUDY` overrides it). They also check the requested convergence envelope and its return to zero. They do not measure actual finger-joint angles or certify collision-free fingers; the close-up and sampled peak provide limited visual evidence only. The earlier candidate and its evidence remain historical, not current-author hash matches. No private game film was replaced and no release asset was admitted. Remaining work includes finger curl/weight, sleeve deformation, complete temporal review and actual scene staging.
+
 ### Temporal curve follow-up
 
 The local artifact suite now has six passing tests. It independently checks every requested roll against the specified cubic envelope, not only the four phase endpoints. Measured peak roll speed is 134.8°/s; finite-difference peak acceleration is 504°/s² at 30 source frames/s. Diagnostic bounds are 140°/s and 600°/s², respectively. These are bounds for this authored study, not biological or historical standards. Negative tests inject a mid-gesture snap and movement during settle, hold and return; all are rejected even though endpoint checks alone would accept them. The existing per-frame evaluated-pose error and render hashes remain separately checked. This closes a numerical continuity gap; it does not replace viewing the complete motion or checking cloth/skin deformation.
