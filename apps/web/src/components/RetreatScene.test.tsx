@@ -521,7 +521,12 @@ describe("retreat development scene", () => {
     const beforeInspection = localStorage.getItem(retreatSaveKey);
     fireEvent.click(view.getByTestId("retreat-commit"));
     expect(localStorage.getItem(retreatSaveKey)).toBe(beforeInspection);
-    fireEvent.click(view.container.querySelector('[data-retreat-choice="release-groups"]')!);
+    const alternatives = view.getByTestId("retreat-available-alternatives");
+    expect(alternatives.querySelector('[data-retreat-alternative="stay-together"]')).toBeNull();
+    fireEvent.click(alternatives.querySelector('[data-retreat-alternative="release-groups"]')!);
+    expect(document.activeElement).toBe(view.container.querySelector('[data-retreat-choice="release-groups"]'));
+    expect(localStorage.getItem(retreatSaveKey)).toBe(beforeInspection);
+    expect(view.queryByTestId("retreat-available-alternatives")).toBeNull();
     expect(view.queryByTestId("retreat-prior-choice-required")).toBeNull();
     expect(view.getByTestId("retreat-preview").getAttribute("data-outcome")).toBe("scattered");
     fireEvent.click(view.getByTestId("retreat-commit"));

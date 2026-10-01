@@ -38,6 +38,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
   const [selected, setSelected] = useState(0), [reading, setReading] = useState(initial.history.length > 0);
   const [busy, setBusy] = useState(false), [error, setError] = useState(false), [reset, setReset] = useState(false);
   const transaction = useRef(false), alive = useRef(true), heading = useRef<HTMLHeadingElement>(null);
+  const offerButtons = useRef(new Map<string, HTMLButtonElement>());
   const scene = story.scenes[state.history.length], choice = scene?.choices[selected] ?? scene?.choices[0];
   const preview = choice ? inspectRetreatChoice(rules, state, choice.id) : null;
   const last = state.history.at(-1), lastScene = last && story.scenes.find(item => item.id === last.sceneId);
@@ -133,7 +134,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
         {story.councilCallbacks.some(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)) && <div data-testid="retreat-council-memory">{story.councilCallbacks.filter(callback => callback.sceneId === scene.id && entry.council.choices.includes(callback.afterChoice)).map(callback => <div key={callback.afterChoice}>{lines(callback.lines)}</div>)}</div>}
         {story.chapterCallbacks.some(callback => callback.sceneId === scene.id && entry.chapter.history.some(turn => turn.choiceId === callback.afterChoice)) && <div data-testid="retreat-chapter-memory">{story.chapterCallbacks.filter(callback => callback.sceneId === scene.id && entry.chapter.history.some(turn => turn.choiceId === callback.afterChoice)).map(callback => <div key={callback.afterChoice}>{lines(callback.lines)}</div>)}</div>}
         {lines(scene.decisionLeadIn ?? [])}
-        <div className="chen-offers">{scene.choices.map((item, index) => <button key={item.id} data-retreat-choice={item.id} data-council-choice={item.id} data-council-action="offer" disabled={busy || invalid} aria-pressed={choice.id === item.id} onClick={() => setSelected(index)}><span>{String.fromCharCode(65 + index)}</span>{item.title}{!inspectRetreatChoice(rules, state, item.id).available && <small>条件未满足，可查看原因</small>}</button>)}</div>
+        <div className="chen-offers">{scene.choices.map((item, index) => <button key={item.id} ref={element => { if (element) offerButtons.current.set(item.id, element); else offerButtons.current.delete(item.id); }} data-retreat-choice={item.id} data-council-choice={item.id} data-council-action="offer" disabled={busy || invalid} aria-pressed={choice.id === item.id} onClick={() => setSelected(index)}><span>{String.fromCharCode(65 + index)}</span>{item.title}{!inspectRetreatChoice(rules, state, item.id).available && <small>条件未满足，可查看原因</small>}</button>)}</div>
         <section className="chen-offer-detail" aria-live="polite"><h4>{choice.title}</h4><p>{choice.intent}</p><p>{explanations[choice.id]}</p>
           {preview.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{answerExplanations[answer.afterChoice]}</p>)}
           {!preview.prerequisiteMet && <p data-testid="retreat-prior-choice-required">此前撤离时没有选择护送家户，因此现在不能组织这次共同等待。可查看其他去向；当前命令不会改写那次撤离。</p>}
@@ -143,6 +144,12 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
           {preview.after && <div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{state.metrics[key]} → {preview.after![key]}</b></span>)}</div>}
           {preview.outcome && <p data-testid="retreat-preview" data-outcome={preview.outcome}>预计结果：{outcomeTitle(preview.outcome)}</p>}
           {preview.reactionOverride && <p>{preview.reactionOverride["zh-Hans"]}</p>}
+          {!preview.available && !invalid && <section data-testid="retreat-available-alternatives" aria-label="可行的其他命令">
+            <p>这条路暂时走不通。你仍可查看其他命令；查看不会下令，也不会改变此前的约定。</p>
+            {scene.choices.map((alternative, index) => inspectRetreatChoice(rules, state, alternative.id).available
+              ? <button className="text-button" key={alternative.id} disabled={busy} data-retreat-alternative={alternative.id} onClick={() => { setSelected(index); offerButtons.current.get(alternative.id)?.focus(); }}>查看：{alternative.title}</button>
+              : null)}
+          </section>}
           <button className="primary-button" data-council-action="commit" data-testid="retreat-commit" disabled={busy || invalid || !preview.available} onClick={() => { if (!invalid) void persist(resolveRetreat(rules, state, choice.id)); }}>{busy ? "保存中…" : "确认命令"} →</button>
         </section></section> : null}
     </section>{(!reading || reset || state.debts.length > 0 || witnessed.length > 0) && <aside className="chen-position" aria-label={reading && !reset ? "已确认的约定与往来" : "当前局势"}><h3>{reading && !reset ? "已确认的约定与往来" : "当前局势"}</h3>{(!reading || reset) && <ul className="chen-metrics">{councilMetricKeys.map(key => <li key={key}><span>{metrics[key]}</span><span>{state.metrics[key]} / 10</span></li>)}</ul>}

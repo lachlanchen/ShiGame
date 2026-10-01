@@ -1,0 +1,7 @@
+# Inspect a feasible retreat alternative
+
+When a selected retreat command is unavailable, the development scene now lists other commands that the deterministic inspector currently allows. Each button explicitly says it only inspects the alternative. Selecting it changes the preview and moves keyboard focus to that command's existing offer button; it does not save or commit. Invalid saves and busy transactions do not offer this shortcut. Original prerequisite explanations, debts, resource checks and explicit Confirm remain unchanged.
+
+This addresses a player-facing recovery/navigation gap: blocked collective waiting need not look like the end of the game. The UI does not rank a best answer, fabricate new opportunities, forgive debts or rewrite the earlier evacuation promise.
+
+Verification: 53 retreat component tests pass, including three record-handling routes where collective waiting is impossible. They verify the blocked order is absent from feasible alternatives, selecting dispersion retains exact save bytes, restores keyboard focus, and still previews the actual scattered outcome. TypeScript passes. Production build/boundary validation passed before the final focus-only refinement; budget JS99.40 KiB/CSS11.87 KiB/deploy26.98 MiB. A fresh visible-browser check of these new controls remains pending. This is Chinese development-preview UI, not a native or store update. No core rules, historical source, content revision or save schema changed.
