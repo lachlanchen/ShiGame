@@ -6,7 +6,7 @@
 
 *Trò chơi lịch sử về những quyết định thay đổi cuộc đời.*
 
-[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Google Play](https://play.google.com/store/apps/details?id=art.lazying.shi) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ Mượt mà nghĩa là lệnh phản hồi nhanh, lưu bền vững trước ph�
 
 ## Giới hạn phát hành
 
-Ngày 1 tháng 10 năm 2026, bản di động đã phát hành số 1 tách khỏi phát triển mới. Apple được xác minh ngày 30 tháng 9; Google cần kiểm tra trực tiếp. Hội đồng, Phạm Dương, rút lui và trú ẩn có kiểm thử giới hạn; một số phần chỉ dành QA. Nhân vật chưa phải mỹ thuật điện ảnh cuối cùng. Kiểm thử không thay duyệt người thật và hiệu năng thiết bị. GitHub theo mốc đã kiểm tra; beta cần ký, thử nâng cấp và xác nhận khả dụng. Không cài bộ lịch tự động hằng ngày.
+Ngày 2 tháng 10 năm 2026, bản di động đã phát hành số 1 vẫn tách biệt với phần phát triển mới. Bản Apple có thể tải xuống; Google Production đã phát hành bản số 1 ngày 2 tháng 10, với trang cửa hàng Mỹ được xác minh ở mức 0,99 USD và 169 thị trường mục tiêu. TestFlight vẫn chỉ có bản số 1. Hội đồng, Phạm Dương, rút lui và trú ẩn có kiểm thử giới hạn; một số phần chỉ dành QA. Nhân vật chưa phải mỹ thuật điện ảnh cuối cùng. Kiểm thử không thay duyệt người thật và hiệu năng thiết bị. GitHub theo mốc đã kiểm tra; beta cần ký, thử nâng cấp và xác nhận khả dụng. Không cài bộ lịch tự động hằng ngày.
 
 [Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 

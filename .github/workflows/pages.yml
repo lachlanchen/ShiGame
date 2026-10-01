@@ -20,7 +20,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Package mirrors can consume most of 15 minutes before validation begins.
+    # Keep the full build/quality gates and allow time to upload and deploy.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7

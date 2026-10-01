@@ -1,5 +1,33 @@
 # SHI mobile publication
 
+## Android public release completed — 2026-10-02
+
+This supersedes the earlier Google review/managed-hold state below. Submission3
+and the exact retained release `1.0.0 (1) - Chapter I` were ready to publish.
+Reverified both retained package hashes, Paid / United States USD0.99, and all
+169 Production country names against the approved manifest. The full list of
+15 ready changes contained only the original Production/closed Alpha launch,
+owner-only tester settings, listing, declarations, countries and category.
+
+The owner's September30 authorization explicitly covered publishing this exact
+tested release once approved. Confirmed publication once at October2 02:31 HKT.
+Google now reports **Available on Google Play** and **Last published on October
+2, 2026**, with no changes remaining in the ready list. Managed publishing
+stays on. No rebuild/upload, price change, new territory, tester expansion or
+Apple mutation occurred. Do not repeat publication or upload versionCode1.
+
+The [public US listing](https://play.google.com/store/apps/details?id=art.lazying.shi&hl=en_US&gl=US)
+returned HTTP200 with the correct title and USD0.99 available offer. This is a
+storefront check, not a new device purchase/playtest or an every-market audit.
+The [publication receipt](google-production-release-20261002.json) pins the
+scope, hashes, exact action time and post-action evidence. Raw provider captures
+and credentials remain private.
+
+Apple was checked read-only: version1.0.0 remains READY_FOR_SALE /
+READY_FOR_DISTRIBUTION and downloadable, with only build1 VALID in the existing
+internal group. No newer TestFlight upload is implied. Native follow-up work
+and its ongoing simulator qualification remain separate from both store builds.
+
 ## Apple public release accepted — 2026-09-30
 
 The owner explicitly requested post-processing and listing the Apple game online.

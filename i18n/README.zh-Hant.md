@@ -6,7 +6,7 @@
 
 *讓決策真正改變人的命運的歷史遊戲。*
 
-[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Google Play](https://play.google.com/store/apps/details?id=art.lazying.shi) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ http://127.0.0.1:5173
 
 ## 發行邊界
 
-截至2026年10月1日，已發布行動build 1與新開發內容分開。Apple發布於9月30日核實；Google需要讀取最新狀態。議事、范陽、撤退與避難的開發已有範圍限定的測試，但部分後續內容僅供QA。角色研究還不是最終電影級美術，測試不代替人工審查與實機效能。GitHub在驗證通過的里程碑更新；內部測試還須簽名、升級測試及確認測試者可安裝。不承諾未經設定的每日自動上傳。
+截至2026年10月2日，已發布的行動版build 1仍與新開發內容分開。Apple版可下載；Google Production build 1已於10月2日發布，美國商店頁面確認售價US$0.99，目標市場為169個。TestFlight仍只有build 1。議事、范陽、撤退與避難的開發已有範圍限定的測試，但部分後續內容僅供QA。角色研究還不是最終電影級美術，測試不代替人工審查與實機效能。GitHub在驗證通過的里程碑更新；內部測試還須簽名、升級測試及確認測試者可安裝。不承諾未經設定的每日自動上傳。
 
 [Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 

@@ -6,7 +6,7 @@
 
 *لعبة تاريخية عن قرارات تغيّر حياة الناس.*
 
-[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Google Play](https://play.google.com/store/apps/details?id=art.lazying.shi) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ http://127.0.0.1:5173
 
 ## حدود الإصدار
 
-في 1 أكتوبر 2026، إصدار الهاتف المنشور رقم 1 منفصل عن التطوير الجديد. تحقق نشر Apple في 30 سبتمبر؛ تحتاج حالة Google إلى قراءة حية. توجد اختبارات محدودة للمجلس وفان يانغ والانسحاب والملجأ، لكن بعض الاستمرار للاختبار فقط. الشخصيات ليست فنًا سينمائيًا نهائيًا. الاختبارات لا تعوض المراجعة البشرية أو أداء الأجهزة الفعلية. تحديث GitHub يتبع نقطة تحقق؛ والبيتا تحتاج توقيعًا واختبار ترقية وتأكيد إتاحتها. لا يوجد مجدول يومي آلي.
+في 2 أكتوبر 2026، تظل نسخة الهاتف المنشورة رقم 1 منفصلة عن التطوير الجديد. نسخة Apple متاحة للتنزيل؛ ونُشرت النسخة رقم 1 على Google Production في 2 أكتوبر، مع التحقق من صفحة المتجر الأمريكي بسعر 0.99 دولار أمريكي و169 سوقًا مستهدفة. لا يزال TestFlight يحتوي على النسخة رقم 1 فقط. توجد اختبارات محدودة للمجلس وفان يانغ والانسحاب والملجأ، لكن بعض الاستمرار للاختبار فقط. الشخصيات ليست فنًا سينمائيًا نهائيًا. الاختبارات لا تعوض المراجعة البشرية أو أداء الأجهزة الفعلية. تحديث GitHub يتبع نقطة تحقق؛ والبيتا تحتاج توقيعًا واختبار ترقية وتأكيد إتاحتها. لا يوجد مجدول يومي آلي.
 
 [Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 

@@ -6,7 +6,7 @@
 
 *Un jeu historique où les décisions changent des vies.*
 
-[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Google Play](https://play.google.com/store/apps/details?id=art.lazying.shi) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ La fluidité exige des commandes réactives, une sauvegarde durable avant une r�
 
 ## Limites de publication
 
-Au 1 octobre 2026, la version mobile publiée, build 1, reste distincte du développement. Apple a été vérifié le 30 septembre ; Google exige une lecture actuelle. Conseil, Fan Yang, retraite et refuge ont des tests bornés, mais certaines suites restent QA. Les personnages ne sont pas un art cinématographique final. Tests, avis humains et performances physiques sont distincts. GitHub suit les points validés ; les bêtas exigent signature, test de mise à niveau et disponibilité confirmée. Aucun calendrier quotidien automatique n'est installé.
+Au 2 octobre 2026, le build mobile 1 publié reste distinct du développement. La version Apple est téléchargeable ; le build 1 de Google Production a été publié le 2 octobre, avec une fiche américaine vérifiée à 0,99 USD et 169 marchés ciblés. TestFlight ne contient toujours que le build 1. Conseil, Fan Yang, retraite et refuge ont des tests bornés, mais certaines suites restent QA. Les personnages ne sont pas un art cinématographique final. Tests, avis humains et performances physiques sont distincts. GitHub suit les points validés ; les bêtas exigent signature, test de mise à niveau et disponibilité confirmée. Aucun calendrier quotidien automatique n'est installé.
 
 [Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 

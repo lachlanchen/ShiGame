@@ -6,7 +6,7 @@
 
 *Историческая игра о решениях, меняющих жизнь.*
 
-[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Google Play](https://play.google.com/store/apps/details?id=art.lazying.shi) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ http://127.0.0.1:5173
 
 ## Границы выпуска
 
-На 1 октября 2026 опубликованная мобильная сборка 1 отделена от разработки. Публикация Apple проверена 30 сентября; Google требует текущей проверки. Совет, Фаньян, отступление и убежище имеют ограниченные тесты; часть продолжения только для QA. Персонажи ещё не финальное киноискусство. Тесты не заменяют человека и реальные устройства. GitHub обновляется после проверенных этапов; беты требуют подписи, проверки обновления и подтверждения доступности. Ежедневный автоматический планировщик не установлен.
+На 2 октября 2026 года опубликованная мобильная сборка 1 отделена от новой разработки. Версия Apple доступна для загрузки; сборка 1 в Google Production опубликована 2 октября. Проверены страница магазина США с ценой 0,99 USD и 169 выбранных рынков. В TestFlight по-прежнему только сборка 1. Совет, Фаньян, отступление и убежище имеют ограниченные тесты; часть продолжения только для QA. Персонажи ещё не финальное киноискусство. Тесты не заменяют человека и реальные устройства. GitHub обновляется после проверенных этапов; беты требуют подписи, проверки обновления и подтверждения доступности. Ежедневный автоматический планировщик не установлен.
 
 [Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 

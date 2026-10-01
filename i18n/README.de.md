@@ -6,7 +6,7 @@
 
 *Ein Geschichtsspiel über Entscheidungen, die Leben verändern.*
 
-[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Google Play](https://play.google.com/store/apps/details?id=art.lazying.shi) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ Flüssigkeit bedeutet schnelle Befehle, dauerhafte Speicherung vor der passenden
 
 ## Veröffentlichungsgrenzen
 
-Stand 1. Oktober 2026: veröffentlichter Mobil-Build 1 bleibt vom neuen Entwicklungsstand getrennt. Apple wurde am 30. September verifiziert; Google erfordert aktuelle Abfrage. Rat, Fan Yang, Rückzug und Zuflucht haben begrenzte Tests; Teile der Fortsetzung sind nur QA. Figuren sind keine endgültige Filmkunst. Tests ersetzen weder menschliche Prüfung noch reale Geräteleistung. GitHub folgt geprüften Meilensteinen; Betas brauchen Signierung, Upgrade-Test und bestätigte Verfügbarkeit. Kein automatischer Tagesplaner ist installiert.
+Stand 2. Oktober 2026: Der veröffentlichte Mobil-Build 1 bleibt vom neuen Entwicklungsstand getrennt. Die Apple-Version ist herunterladbar; Google Production Build 1 wurde am 2. Oktober veröffentlicht. Der US-Store-Eintrag wurde mit 0,99 USD verifiziert, bei 169 Zielmärkten. TestFlight enthält weiterhin nur Build 1. Rat, Fan Yang, Rückzug und Zuflucht haben begrenzte Tests; Teile der Fortsetzung sind nur QA. Figuren sind keine endgültige Filmkunst. Tests ersetzen weder menschliche Prüfung noch reale Geräteleistung. GitHub folgt geprüften Meilensteinen; Betas brauchen Signierung, Upgrade-Test und bestätigte Verfügbarkeit. Kein automatischer Tagesplaner ist installiert.
 
 [Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 
