@@ -61,6 +61,8 @@ def main():
     assert sha(Path(__file__).with_name("build-council-connected-garment-study.py")) == receipt["builderSHA256"]
     if receipt.get("activeRestShapeFit"):
         assert sha(Path(__file__).with_name("build-council-morphed-garment-study.py")) == receipt["activeRestShapeFit"]["authorSHA256"]
+    if receipt.get("shellEase"):
+        assert sha(Path(__file__).with_name("build-council-eased-garment-study.py")) == receipt["shellEase"]["authorSHA256"]
     for capture in receipt["rendered"]: assert sha(output / capture["file"]) == capture["sha256"]
     path = Path(__file__).with_name("build-council-continuous-sleeve-study.py")
     spec = importlib.util.spec_from_file_location("shi_garment_baseline", path)

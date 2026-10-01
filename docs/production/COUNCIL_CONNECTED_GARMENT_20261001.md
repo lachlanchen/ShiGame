@@ -115,3 +115,44 @@ Fit against the active rest body in subsequent pattern work. The remaining task
 is cloth allowance and the underarm weight transition, with the same collision/
 strain limits and a convincing silhouette—not more basis-shape shells or a
 relaxed acceptance threshold. No new historical, cinematic or release claim.
+
+## Shell allowance and weight diffusion, v3: stop this approach
+
+`scripts/build-council-eased-garment-study.py` tested a further20mm tapered
+normal offset and six bounded adjacency-weight diffusion passes on v2's actual
+rest-shape carrier. The816 distal sleeve vertices and their influences remain
+untouched. This is a reproducible **rejected experiment**, not a cloth recipe
+for production. The independent checker verifies the added wrapper's hash.
+
+Builder37147 finished with exit0; checker1311 finished with the expected exit1.
+The four saved frames1/46/61/121 were inspected. Frame46 was reopened after
+qualification: protruding anatomical forms and rippled torso contours are
+clearly visible, while existing collar and waist trims remain detached. The
+result is visually worse than v2. A lower strain number does not override that
+failure.
+
+- All source body basis, influences, shape-key values/coordinates, retained
+  distal sleeves and121-frame/53-bone poses remain unchanged.
+- Minimum sampled clearance**−30.86mm**, frame74, point1166: penetration worsened.
+- Maximum edge change factor**2.375**; minimum face area0.00000008902m².
+- One connected surface, boundary loops56/50/24/24. No body masking.
+
+Evidence remains private in `.runtime/council-connected-garment-20261001-v3`:
+
+- Ease wrapper: `f2ef5538b8216dd21e994aba69af84fee0c668c52e573b1221b43f5a5c4938d0`
+- Checker: `f7788f7b4b92cc4e8664740758a7c048104639cfdec08f84ceaebf4b58af0bfb`
+- Blend: `2fda31adca29563870499a5dd27c7f790c0d5466b9c42f7a3c9cdcb7faa3723c`
+- Report: `6900b18ad52dfa667c3dc85996a744fd4ae4d0b7c620ef1708c4b7b16b0d5f41`
+
+**Do not continue increasing body-normal offsets or treating smoothed body
+weights as a garment pattern.** The next council costume experiment must build
+an independent cloth silhouette with intentional underarm/gusset room and
+review its rest drape before animated qualification. Preserve the original
+body, rig, approved elbow geometry and movement; do not loosen collision gates
+or hide failures. This result rules out this shell treatment, but does not claim
+to have solved the council animation blocker.
+
+No SHI Blender job remained after the terminal check.55GiB RAM was available;
+shared swap57/71GiB remains high, with no obsolete SHI runtime identified for
+cleanup. No other project's process, accepted asset, store build or public
+deployment was changed.
