@@ -41,13 +41,15 @@ struct NativeRetreatView: View {
                             if let response = session.response { reaction(engine, presentation, response) }
                             else if let outcome = engine.outcome { conclusion(engine, presentation, outcome) }
                             else { decision(engine, presentation) }
-                            position(engine, presentation)
+                            if session.response == nil || !engine.debts.isEmpty || !presentation.witnessed.isEmpty {
+                                position(engine, presentation)
+                            }
                             DisclosureGroup("史料与开发说明") {
                                 Text("参考《资治通鉴》卷七、卷八。对白、地方行动与分支结局均为原创戏剧重构。粮秣与支持数值承接议事所得的组织能力，不表示北方粮仓搬到了陈地。")
                                     .lineSpacing(4).accessibilityIdentifier("retreat-source-boundary")
-                                Text(presentation.scene.text("transition")).lineSpacing(5)
+                                Text(presentation.evidenceScene.text("transition")).lineSpacing(5)
                                 Text(session.story.object("viewpoint").text("historyBoundary")).lineSpacing(5)
-                                ForEach(presentation.scene.strings("sourceIds"), id: \.self) { id in
+                                ForEach(presentation.evidenceScene.strings("sourceIds"), id: \.self) { id in
                                     let source = session.story.object("sources").object(id)
                                     Text("\(source.text("work"))卷\(source.int("volume")) · \(source.text("anchor"))。\(source.text("supports"))")
                                 }
@@ -131,6 +133,16 @@ struct NativeRetreatView: View {
                         .accessibilityIdentifier("retreat-preview").accessibilityValue(outcome)
                     if outcome == "scattered" { Text(session.definition.object("scattered").localized("reaction", "zh-Hans")) }
                 }
+                if !preview.available && !session.needsRecovery {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("这条路暂时走不通。你仍可查看其他命令；查看不会下令，也不会改变此前的约定。")
+                        ForEach(presentation.feasibleChoices, id: \.idValue) { alternative in
+                            Button("查看：" + alternative.text("title")) { selectedID = alternative.text("id") }
+                                .frame(minHeight: 44)
+                                .accessibilityIdentifier("retreat-alternative-" + alternative.text("id"))
+                        }
+                    }.accessibilityIdentifier("retreat-available-alternatives")
+                }
                 Button("确认命令") { session.choose(offer.text("id")) }.buttonStyle(.borderedProminent).foregroundStyle(ink)
                     .frame(minHeight: 48).disabled(session.needsRecovery || !preview.available).accessibilityIdentifier("retreat-commit")
             }.padding(20).background(gold.opacity(0.07), in: RoundedRectangle(cornerRadius: 14))
@@ -141,7 +153,12 @@ struct NativeRetreatView: View {
             Text(presentation.lastChoice.text("title")).font(.title2).accessibilityAddTraits(.isHeader)
             VStack(alignment: .leading, spacing: 16) { prose(presentation.responseLines) }
                 .accessibilityElement(children: .contain).accessibilityIdentifier("retreat-response")
-            changes(engine.history[response.index].before, engine.history[response.index].after)
+            ForEach(Array(presentation.promiseAnswers.enumerated()), id: \.offset) { _, answer in
+                Text(answer).foregroundStyle(gold).lineSpacing(5)
+            }
+            DisclosureGroup("局势的变化") {
+                changes(engine.history[response.index].before, engine.history[response.index].after)
+            }.accessibilityIdentifier("retreat-response-changes")
             Button("继续") { session.continueResponse(response.id) }.buttonStyle(.borderedProminent).foregroundStyle(ink)
                 .frame(minHeight: 48).accessibilityIdentifier("retreat-continue")
         }
@@ -162,6 +179,8 @@ struct NativeRetreatView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(record.title).font(.headline).accessibilityAddTraits(.isHeader)
                             Text(record.explanation).lineSpacing(5)
+                            DisclosureGroup("这道命令的回应 · 戏剧重构") { prose(record.responseLines) }
+                                .accessibilityIdentifier("retreat-recorded-response-" + record.id)
                             ForEach(record.changedKeys, id: \.self) { key in
                                 Text("\(metrics[key]!): \(record.before[key, default: 0]) → \(record.after[key, default: 0])").monospacedDigit()
                             }
@@ -178,8 +197,10 @@ struct NativeRetreatView: View {
     }
     private func position(_ engine: RetreatEngine, _ presentation: RetreatPresentation) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("当前局势").font(.headline)
-            ForEach(CouncilEngine.metricKeys, id: \.self) { key in Text("\(metrics[key]!): \(engine.metrics[key, default: 0]) / 10").monospacedDigit() }
+            Text(session.response == nil ? "当前局势" : "已确认的约定与往来").font(.headline)
+            if session.response == nil {
+                ForEach(CouncilEngine.metricKeys, id: \.self) { key in Text("\(metrics[key]!): \(engine.metrics[key, default: 0]) / 10").monospacedDigit() }
+            }
             if !engine.debts.isEmpty {
                 Text("未偿之约").font(.headline)
                 ForEach(engine.debts, id: \.id) { debt in Text("欠本地粮主 \(debt.grain) 份粮秣；粮主另持欠契，分行不表示免责。") }

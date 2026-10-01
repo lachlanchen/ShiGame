@@ -4,6 +4,7 @@ struct RetreatDecisionRecord: Identifiable {
     let id: String
     let title: String
     let explanation: String
+    let responseLines: [Record]
     let before: Resources
     let after: Resources
     var changedKeys: [String] { CouncilEngine.metricKeys.filter { before[$0] != after[$0] } }
@@ -33,6 +34,26 @@ struct RetreatPresentation {
         let index = reading ? engine.history.count - 1 : engine.history.count
         let scenes = story.records("scenes")
         return scenes.indices.contains(index) ? scenes[index] : [:]
+    }
+    var evidenceScene: Record {
+        if engine.completed, let last = engine.history.last {
+            return story.records("scenes").first { $0.text("id") == last.sceneId } ?? [:]
+        }
+        return scene
+    }
+    var feasibleChoices: [Record] {
+        guard !reading, !engine.completed else { return [] }
+        return scene.records("choices").filter { engine.canChoose($0) }
+    }
+    var promiseAnswers: [String] {
+        guard reading, let last = engine.history.last,
+              var before = try? RetreatEngine(definition: engine.definition, entry: engine.entry) else { return [] }
+        do {
+            for turn in engine.history.dropLast() { try before.choose(turn.choiceId) }
+            return try before.inspect(last.choiceId).answers.map {
+                engine.definition.object("answerExplanationsZh").text($0.text("afterChoice"))
+            }
+        } catch { return [] }
     }
     var sceneLines: [Record] {
         scene.records("lines")
@@ -72,6 +93,8 @@ struct RetreatPresentation {
             return RetreatDecisionRecord(id: turn.choiceId,
                 title: scene.text("title") + " · " + choice.text("title"),
                 explanation: engine.definition.object("explanationsZh").text(turn.choiceId),
+                responseLines: engine.outcome == "scattered" && turn == engine.history.last
+                    ? story.object("scatteredEnding").records("response") : choice.records("response"),
                 before: turn.before, after: turn.after)
         }
     }

@@ -39,6 +39,11 @@ import CryptoKit
                 let lines = texts(view.sceneLines)
                 precondition(view.responseLines.isEmpty)
                 precondition(view.decisionRecord.isEmpty, "Do not insert the ending record during play")
+                precondition(view.evidenceScene.text("id") == view.scene.text("id"))
+                precondition(view.feasibleChoices.map { $0.text("id") }.contains(id))
+                let expectedAnswers = try engine.inspect(id).answers.map {
+                    rules.object("answerExplanationsZh").text($0.text("afterChoice"))
+                }
                 if view.scene.text("id") == "dawn" {
                     let question = "还按原来的队么？"
                     precondition(lines.last == question, "Ask for the final decision after the reports")
@@ -56,6 +61,8 @@ import CryptoKit
                 precondition(!view.witnessed.contains { $0.text("id") == "han-route-reply" })
                 try engine.choose(id)
                 let reaction = RetreatPresentation(story: story, engine: engine, reading: true)
+                precondition(reaction.promiseAnswers == expectedAnswers)
+                precondition(reaction.feasibleChoices.isEmpty)
                 precondition(reaction.decisionRecord.isEmpty, "Read the saved reaction before the ending record")
                 let save = try engine.chronicle(rulesFingerprint: ru, storyFingerprint: st)
                 let restored = try RetreatEngine.restore(definition: rules, entry: origin, rulesFingerprint: ru, storyFingerprint: st, save: save)
@@ -71,6 +78,9 @@ import CryptoKit
             precondition(engine.outcome == outcome)
             let end = RetreatPresentation(story: story, engine: engine, reading: false)
             precondition(end.scene.isEmpty && !end.endingLines.isEmpty)
+            precondition(end.evidenceScene.text("id") == engine.history.last!.sceneId)
+            precondition(!end.evidenceScene.strings("sourceIds").isEmpty)
+            precondition(end.feasibleChoices.isEmpty && end.promiseAnswers.isEmpty)
             let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
             let saveBeforeRecord = try encoder.encode(engine.chronicle(rulesFingerprint: ru, storyFingerprint: st))
             let record = end.decisionRecord
@@ -78,10 +88,19 @@ import CryptoKit
             for (row, turn) in zip(record, engine.history) {
                 precondition(row.before == turn.before && row.after == turn.after)
                 precondition(!row.title.isEmpty && !row.explanation.isEmpty)
+                let sourceScene = story.records("scenes").first { $0.text("id") == turn.sceneId }!
+                let sourceChoice = sourceScene.records("choices").first { $0.text("id") == turn.choiceId }!
+                let expected = outcome == "scattered" && turn == engine.history.last
+                    ? story.object("scatteredEnding").records("response") : sourceChoice.records("response")
+                precondition(!row.responseLines.isEmpty && texts(row.responseLines) == texts(expected))
                 precondition(row.changedKeys == CouncilEngine.metricKeys.filter { turn.before[$0] != turn.after[$0] })
             }
             let saveAfterRecord = try encoder.encode(engine.chronicle(rulesFingerprint: ru, storyFingerprint: st))
             precondition(saveAfterRecord == saveBeforeRecord)
+            let restored = try RetreatEngine.restore(definition: rules, entry: origin, rulesFingerprint: ru, storyFingerprint: st,
+                save: engine.chronicle(rulesFingerprint: ru, storyFingerprint: st))
+            let recalled = RetreatPresentation(story: story, engine: restored, reading: false)
+            precondition(recalled.decisionRecord.map { texts($0.responseLines) } == record.map { texts($0.responseLines) })
             let matched = end.ending.records("variants").filter { $0.object("when").text("records") == choices[3] }
             precondition(matched.count == 1)
             precondition(texts(end.endingLines) == texts(end.ending.records("lines") + matched[0].records("lines")))
