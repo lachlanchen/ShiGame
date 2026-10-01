@@ -17,12 +17,19 @@ const loadScene: Loader = () => import("./ResolvedConsequenceScene").then(module
 export function ConsequencePresentation({ load = loadScene, ...props }: Props & { load?: Loader }) {
   const [scene, setScene] = useState<Scene | null>(() => load === loadScene ? readyScene : null);
   const [failed, setFailed] = useState(false);
+  const continueFocused = useRef(false);
   useEffect(() => {
     let active = true;
-    void load().then(module => { if (active) setScene(() => module.ResolvedConsequenceScene); },
+    void load().then(module => { if (active) {
+      continueFocused.current = document.activeElement?.getAttribute("data-testid") === "resolution-continue";
+      setScene(() => module.ResolvedConsequenceScene);
+    } },
       () => { if (active) setFailed(true); });
     return () => { active = false; };
   }, [load]);
+  useLayoutEffect(() => {
+    if (scene && continueFocused.current) document.querySelector<HTMLButtonElement>('[data-testid="resolution-continue"]')?.focus({ preventScroll: true });
+  }, [scene]);
   const Scene = scene;
   return Scene ? <Scene {...props} /> : <ReadableConsequence {...props} failed={failed} />;
 }

@@ -6,6 +6,52 @@ Long-range continuation, film-level acceptance and release gates are defined in 
 
 ## Foundation-phase outcomes
 
+### Owner recap and next playable milestone — October 1, 2026
+
+The near-term deliverable is one continuous, replayable opening → consequential
+crossing → Chen council sequence with an earned conclusion, not a collection of
+costume studies. Preserve the wider cinematic/history ambition and all open
+quality gates. Patient development means coherent reviewed increments, not a
+fixed deadline or a promise of unattended daily work.
+
+Current source audit: the released web route reaches Chen and Fan Yang. The
+revised crossing ledger is selected only in development (`main.tsx`/`App.tsx`),
+and retreat/refuge continuation is gated in `ChenCouncil.tsx`. Production
+validation deliberately excludes their markers. Native iOS has separate gated
+retreat work; its current chapter does not yet prove revised crossing-ledger
+parity. Do not describe these development routes as the distributed game.
+
+The next substantial gameplay checkpoint is qualification of the revised
+crossing-to-council sequence for a bounded internal candidate: retained release
+saves, explicit versioned progression, honest previews, matching personal
+reactions, loss/recovery routes, cold resume and equivalent native rules. Then
+qualify the later retreat/refuge arc rather than removing its build guards to
+make a release appear complete. No new epoch is needed to demonstrate that
+orders change people's local fate.
+
+Historical circumstances come from the supplied 《资治通鉴》; distinguish text,
+commentary, dramatized dialogue and alternate outcomes. Continue actual passage
+reading and claim closure per scene. Original consistent faces are authorized;
+the owner's likeness is not required. Use Musia (B as the working cue, other
+candidates retained), low-resolution-first LocalVideoGen trials, image generation
+and editable Blender animation only for named beats with rights and review.
+OpenSCAD is appropriate for repeatable props, not a mandatory character tool.
+
+Maintain native SwiftUI iOS, Android, web and the existing Unreal client with
+shared narrative/rules. Use the shared Macs, iPad and Mi 10 Pro when their
+specific build/device test is needed, serially under resource/coordination
+limits—not all hosts merely because they exist. Tested GitHub/site checkpoints
+and meaningful qualified TestFlight/internal Play betas remain authorized under
+[the beta workflow](../../store/BETA_WORKFLOW.md). Preserve US$0.99/all eligible
+markets and the distinct public-release confirmation requirement. No paid
+generation, unreviewed media admission, or guaranteed film-quality claim follows
+from this recap.
+
+Costume/animation work must remove a named scene blocker. The recent torso-trim
+fix does that, but does not take priority over making the coherent route playable
+and reviewable. Any future checkpoint should state which player experience or
+scene blocker changed, not count tools, documents or generations as game content.
+
 Owner direction recorded 2026-09-26: the long-range vision is a Zizhi Tongjian
 historical anthology, with possible later Tokugawa material. The immediate
 foundation remains Daze and its consequential playable slice, not all eras at

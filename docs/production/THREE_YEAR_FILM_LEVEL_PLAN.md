@@ -23,6 +23,17 @@ The primary work is story, player consequence and film design. Characters, asset
 
 ## Current boundary
 
+### Reaffirmed owner direction, 2026-10-01
+
+The [October 1 roadmap recap](ROADMAP.md#owner-recap-and-next-playable-milestone--october-1-2026)
+sets the immediate work order: qualify the consequential opening/crossing/Chen
+sequence for internal play, then its later continuation, while reviewed media
+serves those scenes. Native SwiftUI iOS and Android join Web/Unreal under the
+same content/rules authority; Unity remains a compatibility baseline. Preserve
+existing saves and release boundaries. This clarifies priorities and current
+client scope; it does not reduce film-level acceptance, waive historical or
+human review, or equate a development-only route with a distributed build.
+
 ### Owner direction, 2026-09-26
 
 The long-range anthology ambition is now explicit: explore the history covered

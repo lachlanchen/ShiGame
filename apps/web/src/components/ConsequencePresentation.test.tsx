@@ -63,4 +63,19 @@ describe("readable consequence during presentation loading", () => {
     expect(view.getByRole("heading").textContent).toBe("The boats return");
     expect(view.getByRole("heading").getAttribute("dir")).toBe("ltr");
   });
+
+  it("keeps Continue focused when the detailed reaction arrives after keyboard navigation", async () => {
+    let ready!: (value: { ResolvedConsequenceScene: typeof ResolvedConsequenceScene }) => void;
+    const load = () => new Promise<{ ResolvedConsequenceScene: typeof ResolvedConsequenceScene }>(resolve => { ready = resolve; });
+    const exit = vi.fn();
+    const view = render(<ConsequencePresentation {...props} load={load} onContinue={exit} />);
+    fireEvent.keyDown(document.activeElement!, { key: "Tab" });
+    expect(document.activeElement).toBe(view.getByTestId("resolution-continue"));
+    await act(async () => ready({ ResolvedConsequenceScene }));
+    expect(view.getByTestId("resolution-details")).toBeTruthy();
+    expect(document.activeElement).toBe(view.getByTestId("resolution-continue"));
+    expect(exit).not.toHaveBeenCalled();
+    fireEvent.click(document.activeElement!);
+    expect(exit).toHaveBeenCalledTimes(1);
+  });
 });

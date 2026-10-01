@@ -142,6 +142,7 @@ try {
     if (readerLocale === "ar") check(await evaluate("document.documentElement.dir==='rtl' && document.querySelector('#consequence-reader-text').dir==='ltr'"), "Arabic interface preserves readable direction for untranslated story prose");
     check((await saved()).history.length === 1 && (await saved()).pendingAftermath === 1, "held download has one saved decision and pending reaction");
     check(await evaluate("document.activeElement.id==='consequence-reader-title' && getComputedStyle(document.body).overflow==='hidden'"), "loading reader owns focus and scroll lock");
+    const readerFont = await evaluate("getComputedStyle(document.querySelector('#consequence-reader-text')).fontFamily");
     await capture("consequence-loading-desktop");
     await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
     check(await evaluate("document.documentElement.scrollWidth<=innerWidth && document.querySelector('[data-testid=resolution-continue]').getBoundingClientRect().bottom<=innerHeight"), "loading reader and Continue fit phone viewport");
@@ -158,6 +159,23 @@ try {
     await until(exists('[data-testid="resolution-details"]'));
     const pending = await saved();
     check(pending.history.length === 2 && pending.pendingAftermath === 2, "next decision reaches the rich reaction without repeating the first");
+    // Cold resume while downloading: a late presentation must retain the
+    // player's focused Continue control rather than reset to the heading.
+    await send("Page.reload");
+    await until(exists('[data-testid="begin-game"]'));
+    await click('[data-testid="begin-game"]');
+    await until(exists('[data-presentation="loading"]'));
+    await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+    await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+    check(await evaluate("document.activeElement.dataset.testid==='resolution-continue'"), "Continue focused before the late presentation arrives");
+    for (let n = 0; n < 80 && requests.length === 0; n++) await delay(100);
+    check(requests.length > 0, "cold focus handoff intercepts the actual presentation request");
+    for (const requestId of requests.splice(0)) await send("Fetch.continueRequest", { requestId });
+    await until(exists('[data-testid="resolution-details"]'));
+    check(await evaluate("document.activeElement.dataset.testid==='resolution-continue'"), "late rich reaction preserves Continue focus");
+    check(await evaluate("getComputedStyle(document.querySelector('#consequence-text')).fontFamily") === readerFont, "outcome keeps the same typeface after presentation loads");
+    check(JSON.stringify(await saved()) === JSON.stringify(pending), "focus handoff does not acknowledge or change the saved reaction");
+    await capture("consequence-late-focus-phone");
     await send("Page.reload");
     await until(exists('[data-testid="begin-game"]'));
     await click('[data-testid="begin-game"]');

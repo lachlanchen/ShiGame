@@ -34,7 +34,7 @@ body:has(.drawer[aria-modal="true"]) { overflow: hidden; }
 .consequence-reader-card { display: flex; flex-direction: column; width: min(100%, 880px); max-height: 100%; min-height: 0; border: 1px solid #575143; background: #171b18; }
 .consequence-reader-copy { overflow: auto; overscroll-behavior: contain; padding: 24px; }
 .consequence-reader h2 { margin: 0 0 24px; font-family: var(--serif); font-size: clamp(1.4rem, 3.5vw, 2.5rem); font-weight: 500; color: #efe7d8; }
-.consequence-reader p { margin: 0; color: #e4dfd1; font-size: clamp(1.08rem, 2.3vw, 1.4rem); line-height: 1.95; }
+.consequence-reader p { margin: 0; color: #e4dfd1; font-family: var(--cjk); font-size: clamp(1.08rem, 2.3vw, 1.4rem); line-height: 1.95; }
 .consequence-reader h2, .consequence-reader p { overflow-wrap: anywhere; }
 .consequence-reader footer { flex-shrink: 0; padding: 18px 24px; border-top: 1px solid #42453b; }
 .consequence-reader button { min-height: 48px; white-space: normal; }

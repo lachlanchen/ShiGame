@@ -50,3 +50,26 @@ scripts/playtest-retreat-visible.mjs consequence-loading`. Set
 be selected through `SHI_BROWSER_PROFILE`; the controller checks its dedicated
 ports/display and uses an incognito app window. Source is shared with Android;
 this checkpoint does not claim a newly signed Android or native iOS package.
+
+## Follow-up: preserve the player's place during loading
+
+The next review reproduced a keyboard interruption: tabbing to Continue while
+the detailed scene downloaded was followed by an unwanted focus reset to the
+heading. A failing regression test captured that behavior. The presentation
+handoff now retains Continue focus if the player has already reached it, without
+acknowledging the reaction or issuing an order. Otherwise the heading retains
+its normal initial focus. The written and detailed outcome also use the same
+locale-aware typeface, avoiding a sans/serif switch during reading.
+
+The final production bundle passed 24 English, 24 Simplified Chinese and 25 Arabic
+visible-browser checks. The route now cold-resumes a saved reaction, holds the
+real JavaScript download, tabs to Continue, releases the download, verifies the
+same focus/typeface and byte-identical save, then separately tests failed loading.
+Nine final phone screenshots were reviewed across loading, handoff and offline
+resume. All dedicated desktop processes were terminated after the serial runs.
+
+Full build: 83 core + 381 web tests. Final style rebuild and static accessibility,
+repository and payload validation pass: initial JS 99.84 KiB, CSS 11.89 KiB,
+deployment 26.99 MiB. This is a bounded continuity fix, not a new story scene or
+physical-device performance claim. Raw evidence remains in the private runtime
+handoff; no existing public screenshots or historical receipts were overwritten.
