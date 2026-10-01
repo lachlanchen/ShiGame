@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { councilMetricKeys, createRetreat, encodeRetreatSnapshot, inspectRetreatChoice, resolveRetreat, restoreRetreat,
-  type RetreatDefinition, type RetreatEntry, type RetreatState } from "@shi/game-core";
+import { councilMetricKeys, createRetreat, encodeRetreatSnapshot, inspectRetreatChoice, resolveRetreat, restoreRetreat, prepareRefugeEntry,
+  type RefugeEntry, type RetreatDefinition, type RetreatEntry, type RetreatState } from "@shi/game-core";
+import { RefugeScene } from "./RefugeScene";
 import story from "../../../../content/story-drafts/chen-retreat.v1.json";
 import rawRules from "../../../../content/campaigns/chen-retreat.rules.v1.json";
 import sourceLocations from "../../../../content/research/retreat-source-locations.v1.json";
@@ -39,6 +40,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
   const [selected, setSelected] = useState(0), [reading, setReading] = useState(initial.history.length > 0);
   const [busy, setBusy] = useState(false), [error, setError] = useState(false), [reset, setReset] = useState(false);
   const [rewindIndex, setRewindIndex] = useState<number | null>(null);
+  const [refuge, setRefuge] = useState<RefugeEntry | null>(null);
   const transaction = useRef(false), alive = useRef(true), heading = useRef<HTMLHeadingElement>(null);
   const offerButtons = useRef(new Map<string, HTMLButtonElement>());
   const scene = story.scenes[state.history.length], choice = scene?.choices[selected] ?? scene?.choices[0];
@@ -57,7 +59,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     && Object.entries(event.when).every(([key, value]) => facts[key] === value)
     && (!event.priorChapterChoice || entry.chapter.history.some(turn => turn.choiceId === event.priorChapterChoice)));
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
-  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [state.history.length, reading, reset, rewindIndex]);
+  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [state.history.length, reading, reset, rewindIndex, refuge]);
   const persist = async (next: RetreatState, showResponse = true) => {
     if (transaction.current) return;
     transaction.current = true; setBusy(true); setError(false); onSavingChange?.(true);
@@ -75,6 +77,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       if (alive.current) setError(true);
     } finally { transaction.current = false; onSavingChange?.(false); if (alive.current) setBusy(false); }
   };
+  if (refuge) return <RefugeScene entry={refuge} saveNamespace={saveNamespace} reducedMotion={reducedMotion} onSavingChange={onSavingChange} onClose={() => setRefuge(null)} />;
   return <section className="drawer chen-council" data-testid="retreat-scene" data-motion={reducedMotion ? "reduced" : "full"}
     role="dialog" aria-modal="true" aria-labelledby="retreat-title" lang="zh-Hans" dir="ltr"
     onKeyDown={event => {
@@ -120,7 +123,10 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
       : state.completed && state.outcome ? <section className="chen-scene" data-testid="retreat-outcome" data-outcome={state.outcome} aria-live="polite"><h3 ref={heading} tabIndex={-1}>{outcomeTitle(state.outcome)}</h3>
         {state.outcome === "scattered" ? <>{lines(story.scatteredEnding.lines)}<div data-testid="retreat-scattered-memory">{story.scatteredEnding.variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}</div><p>{rules.scattered.recovery["zh-Hans"]}</p></> : lines(story.endings[state.outcome].lines)}
         {state.outcome !== "scattered" && <div data-testid="retreat-ending-memory">{story.endings[state.outcome].variants.filter(variant => Object.entries(variant.when).every(([key, value]) => facts[key] === value)).map((variant, index) => <div key={index}>{lines(variant.lines)}</div>)}</div>}
-        <p>{story.epilogue}</p><p>本卷开发段落到此结束。后续尚未开放。</p>
+        <p>{story.epilogue}</p><p>本卷退走段落到此结束。可继续试玩原创续章「一夜之约」。</p>
+        <button className="primary-button" data-testid="retreat-open-refuge" disabled={busy || invalid} onClick={() => {
+          setRefuge(prepareRefugeEntry(rules, entry, JSON.parse(encodeRetreatSnapshot(state, rulesHash, storyHash)), rulesHash, storyHash));
+        }}>继续：寻找落脚处 →</button>
         <p>物资归属：{state.resourceCustody === "common" ? "现存队伍" : state.resourceCustody === "groups" ? "分行各组，不再是公共库存" : "未明，不能重复调拨"}</p>
         <details className="chen-history" data-testid="retreat-decision-record"><summary>回看这一路的决定</summary>
           <p>这里只记录已经确认的行动与当时的变化，不代表失散者已经归来，也不替你判定哪条路最好。</p>

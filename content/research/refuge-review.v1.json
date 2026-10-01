@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-review.v1",
+  "reviewDate": "2026-10-01",
+  "decision": "development-web-preview-only",
+  "publicationApproved": false,
+  "storySHA256": "77d8dc6897623ec8a00f54babb454ec15cd866207408e4f804452091b9a02a73",
+  "originality": "Original SHI dramatic reconstruction; no source-book text or generated media included.",
+  "historicalReview": {
+    "work": "资治通鉴",
+    "volume": 8,
+    "localLines": [2791, 2801],
+    "sourceSHA256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+    "boundary": "Chen Sheng's death, Lü Chen's retaking of Chen and Song Liu's fate establish background, not the fictional householder or the player's participation. No precise historical date is assigned to the fictional night."
+  },
+  "agentStoryReview": {
+    "scope": "Dialogue and continuity review, not human emotional-response acceptance.",
+    "changes": "Replaced ledger-like spoken exposition with a concrete roof-repair request and a short personal promise. Kept grain accountability in the choice explanation and status, rather than making characters recite mechanics.",
+    "invariants": [
+      "The householder needs help, rather than serving only as an exposition source.",
+      "Offering labour creates an unfulfilled personal obligation; neither loading nor entering the scene fulfils it.",
+      "Previously divided or unaccounted-for grain cannot be spent again.",
+      "Earlier debts remain; absent companions do not automatically reappear.",
+      "A confirmed action is saved before its matching reaction appears."
+    ]
+  },
+  "verification": {
+    "core": "Seven focused refuge tests pass across four actual retreat outcomes, with deterministic replay and stale/foreign save rejection.",
+    "repository": "npm run validate passes, including 80 core tests and 335 web tests. Production web build and size budgets pass; this development continuation is excluded from the release bundle.",
+    "web": "Retreat component suite passes 61 tests; full web suite passes 335 tests. Typecheck passes.",
+    "visible": "Complete title-to-remnant loan-search route extended into shelter, phone/desktop evidence, byte-equal cold reload, 76 checks and 23 screenshots; zero browser exceptions.",
+    "privateEvidenceDirectory": ".runtime/story-review/2026-10-01T04-34-29.904Z",
+    "visibleStatusSHA256": "0db1de6b1d2e8bacb7797e850a2b149caa73752da050fcade77ef57c4cb6444b",
+    "visualCorrection": "First screenshots exposed one-character-wide option text despite a passing overflow check. Added the missing choice marker and a readable-column regression check; successor phone screenshot reviewed.",
+    "runtime": "Dedicated SHI browser stack stopped after capture; no public release or store action."
+  },
+  "remaining": [
+    "Implement the next morning's decision and actual fulfilment or breach of the promise.",
+    "Move shelter rule parameters into the shared versioned engine data before native/Unreal integration; the current deterministic rules are TypeScript-only.",
+    "Native SwiftUI, Unreal and device parity for this continuation are not implemented or claimed.",
+    "Human playtesting for emotional resonance and choice balance, final art/audio, localization and full accessibility review remain open."
+  ]
+}

@@ -45,10 +45,11 @@ then temporal review, council scene staging and shared-engine integration.
 ## Reproduction
 
 First reproduce the accepted-action baseline using
-`COUNCIL_MOTION_FILM_REVIEW_20261001.md`. Then use a new study output directory:
+`COUNCIL_MOTION_FILM_REVIEW_20261001.md`. Set `SHI_BLENDER_BIN` to the verified
+shared Blender 4.5.12 executable, then use a new study output directory:
 
 ```bash
-/home/lachlan/.local/share/shi-tools/blender-4.5.12-linux-x64/blender \
+"${SHI_BLENDER_BIN:?Set the shared Blender executable}" \
   --background --disable-autoexec --threads 2 \
   assets/3d/rendered/shi-daze-council-performance-v1.blend \
   --python scripts/render-council-relaxed-gesture-study.py -- \

@@ -40,6 +40,48 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("continues into shelter, saves a personal promise, and resumes without changing the retreat", async () => {
+    vi.stubGlobal("crypto", webcrypto);
+    const input = props();
+    let view = render(<RetreatScene {...input} />);
+    for (const id of ["decline-dispatch", "gather-own", "split-routes", "divide-records", "release-groups"]) await choose(view, id);
+    const original = localStorage.getItem(retreatSaveKey);
+    fireEvent.click(view.getByTestId("retreat-open-refuge"));
+    await view.findByTestId("refuge-commit");
+    fireEvent.click(view.container.querySelector('[data-refuge-choice="offer-grain"]')!);
+    expect((view.getByTestId("refuge-commit") as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(view.container.querySelector('[data-refuge-choice="offer-labour"]')!);
+    fireEvent.click(view.getByTestId("refuge-commit"));
+    expect((await view.findByTestId("refuge-response")).textContent).toContain("这项承诺尚未履行");
+    const key = Object.keys(localStorage).find(key => key.startsWith("shi.dev.refuge.v1."))!;
+    const shelter = localStorage.getItem(key);
+    expect(JSON.parse(shelter!).order).toBe("offer-labour");
+    expect(localStorage.getItem(retreatSaveKey)).toBe(original);
+    fireEvent.click(view.getAllByRole("button", { name: "返回退走结局" }).at(-1)!);
+    expect(view.getByTestId("retreat-outcome").querySelector("h3")).toBe(document.activeElement);
+    view.unmount(); view = render(<RetreatScene {...input} />);
+    fireEvent.click(within(view.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    fireEvent.click(view.getByTestId("retreat-open-refuge"));
+    expect((await view.findByTestId("refuge-response")).textContent).toContain("这项承诺尚未履行");
+    expect(localStorage.getItem(key)).toBe(shelter);
+  });
+  it("does not show the shelter reaction until saving succeeds and rolls back a failed write", async () => {
+    vi.stubGlobal("crypto", webcrypto);
+    const input = props();
+    const view = render(<RetreatScene {...input} />);
+    for (const id of ["decline-dispatch", "gather-own", "split-routes", "divide-records", "release-groups"]) await choose(view, id);
+    const original = localStorage.getItem(retreatSaveKey);
+    fireEvent.click(view.getByTestId("retreat-open-refuge"));
+    await view.findByTestId("refuge-commit");
+    vi.spyOn(persistence, "flushPersistence").mockRejectedValueOnce(new Error("storage offline")).mockResolvedValue(undefined);
+    fireEvent.click(view.getByTestId("refuge-commit"));
+    expect((await view.findByRole("alert")).textContent).toContain("未能保存");
+    expect(view.queryByTestId("refuge-response")).toBeNull();
+    expect(Object.keys(localStorage).filter(key => key.startsWith("shi.dev.refuge.v1."))).toEqual([]);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(original);
+    fireEvent.click(view.getByTestId("refuge-commit"));
+    await view.findByTestId("refuge-response");
+  });
   it("replays a namespaced checkpoint without forgiving the grain loan or touching the legacy slot", async () => {
     const input = props();
     input.entry = structuredClone(input.entry);

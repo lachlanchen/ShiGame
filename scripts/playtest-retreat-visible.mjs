@@ -527,6 +527,32 @@ try {
   check(await evaluate(`document.querySelector(${JSON.stringify(recallSelector)}).textContent`) === remembered, "cold reload preserves exact recalled response");
   check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "recall, sources and reload preserve saved decisions byte for byte");
   await capture("06e-restored-response-mobile"); await layout("restored response");
+  if (process.env.SHI_PLAYTEST_REFUGE === "1") {
+    await click('[data-testid="retreat-open-refuge"]');
+    await until(exists('[data-testid="refuge-commit"]'));
+    check(await evaluate("[...document.querySelectorAll('[data-refuge-choice]')].every(button=>{const text=[...button.childNodes].find(node=>node.nodeType===Node.TEXT_NODE);if(!text)return false;const range=document.createRange();range.selectNodeContents(text);return range.getBoundingClientRect().width>=120 && parseFloat(getComputedStyle(button).gridTemplateColumns.split(' ')[1])>=160;})"), "shelter choices have readable text columns, not single-character stacks");
+    await capture("refuge-opening-mobile"); await layout("shelter opening");
+    await click('[data-refuge-choice="offer-labour"]');
+    await click('[data-testid="refuge-commit"]');
+    await until(exists('[data-testid="refuge-response"]'));
+    check(await evaluate("document.querySelector('[data-testid=refuge-response]').textContent.includes('这项承诺尚未履行')"), "shelter keeps morning repair as an unfulfilled personal promise");
+    const refugeBytes = await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge.v1.')).map(k=>[k,localStorage.getItem(k)]))");
+    check(Object.keys(refugeBytes).length === 1, "shelter writes exactly one branch-specific slot");
+    check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "shelter does not rewrite the retreat ending");
+    if (storyBranch === "loan-search") check(await evaluate("document.querySelector('[data-testid=refuge-scene]').textContent.includes('仍欠本地粮主 2 份粮秣')"), "shelter preserves the earlier grain loan");
+    await capture("refuge-promise-mobile"); await layout("shelter response");
+    await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
+    await capture("refuge-promise-desktop"); await layout("shelter desktop");
+    await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+    await click('[data-testid="council-enter"]'); await click('[data-testid="council-continue"]'); await click('[data-testid="fanyang-enter"]');
+    await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); await click('[data-testid="retreat-enter"]');
+    await click('[data-testid="retreat-response"] [data-council-action="continue"]');
+    await click('[data-testid="retreat-open-refuge"]'); await until(exists('[data-testid="refuge-response"]'));
+    check(JSON.stringify(await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge.v1.')).map(k=>[k,localStorage.getItem(k)]))")) === JSON.stringify(refugeBytes), "cold reload preserves shelter save byte for byte");
+    await capture("refuge-restored-desktop");
+    await click('[data-testid="refuge-scene"] .text-button');
+    await click('[data-testid="retreat-decision-record"] summary');
+  }
   if (route === "dispersed" && storyBranch === "baseline") {
     const upstream = await evaluate("[localStorage.getItem('shi.chen-council.v1'),localStorage.getItem('shi.fanyang-guarantee.v1')]");
     await click('[data-retreat-rewind="evacuation"]');

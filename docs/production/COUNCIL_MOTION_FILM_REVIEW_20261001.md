@@ -45,10 +45,11 @@ private portrait, new historical claim, paid service or public deployment occurs
 ## Reproduction
 
 Use the existing shared installation, not a duplicate SDK. Output must be a new
-directory; the renderer fails rather than overwrite an existing review.
+directory; the renderer fails rather than overwrite an existing review. Set
+`SHI_BLENDER_BIN` to the verified shared Blender 4.5.12 executable first.
 
 ```bash
-/home/lachlan/.local/share/shi-tools/blender-4.5.12-linux-x64/blender \
+"${SHI_BLENDER_BIN:?Set the shared Blender executable}" \
   --background --disable-autoexec --threads 2 \
   assets/3d/rendered/shi-daze-council-performance-v1.blend \
   --python scripts/render-council-motion-film.py -- \

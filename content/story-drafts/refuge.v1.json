@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge.v1",
+  "status": "authoring-only",
+  "publicationApproved": false,
+  "title": "一夜之约",
+  "boundary": "原创续章草案。只描写掌简人寻找个人落脚处，不把旧队伍重新集合，也不声称参与吕臣复陈。夜与晨是虚构场景时间，不是史事的确切日期。",
+  "sourceReadback": {
+    "work": "资治通鉴",
+    "volume": 8,
+    "startLine": 2791,
+    "endLine": 2801,
+    "sha256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+    "supports": "陈胜败亡、吕臣复陈与宋留闻讯后的结局，作为形势背景。不能证明虚构住户、玩家去向、会面或信件抵达时间。原书不随游戏发布。"
+  },
+  "setting": "退走后的一个傍晚。掌简人停在一户人家的屋檐外。",
+  "lines": [
+    { "speaker": "narrator", "text": "门只开了一掌宽。里面有人挪开一只木盆，接住檐下漏进来的水。" },
+    { "speaker": "householder", "text": "住一夜？" },
+    { "speaker": "keeper", "text": "只借檐下这一处。明早走。" },
+    { "speaker": "householder", "text": "能补屋顶么？草有，缺个人帮我递上去。" },
+    { "speaker": "narrator", "text": "你看见门里有一束扎好的草。对方没有问你从哪支队伍来，手也没有从门闩上移开。" }
+  ],
+  "choices": [
+    {
+      "id": "offer-grain",
+      "title": "拨一份仍可支配的公粮，换这一夜落脚",
+      "intent": "只有仍持有公共库存时可选。支出一份粮秣，换取个人休息；不能动用已经分给各组或去向未明的粮。",
+      "response": [
+        { "speaker": "keeper", "text": "我留些粮，换这一夜。" },
+        { "speaker": "householder", "text": "盆边别放东西，夜里还要接水。" },
+        { "speaker": "narrator", "text": "门开大了些。你把凭记放在干处，挨着墙坐下。这一夜借到了，账上也少了实实在在的一份。" }
+      ]
+    },
+    {
+      "id": "offer-labour",
+      "title": "答应天亮补漏，不替别人许诺",
+      "intent": "不支出公粮。你本人欠下明早补漏的劳作；起早履约，这一夜不算充分休息。以前的粮债照旧。",
+      "response": [
+        { "speaker": "keeper", "text": "我补。天亮你来叫我。" },
+        { "speaker": "householder", "text": "天一亮就得补。再下雨，草也湿了。" },
+        { "speaker": "keeper", "text": "那就天一亮。" },
+        { "speaker": "narrator", "text": "对方把草挪到自己脚边，给你腾出干处。你刚坐下，木盆又响了一声。" }
+      ]
+    },
+    {
+      "id": "sleep-outside",
+      "title": "不再添约，在屋外过夜",
+      "intent": "不支出粮食，也不作新承诺；没有得到屋檐下的位置，不能算恢复了精力。不虚构死亡或失散者归来。",
+      "response": [
+        { "speaker": "keeper", "text": "今夜先不借了。" },
+        { "speaker": "narrator", "text": "你退开一步，让门合上。木盆里的水声隔着门板传出来。你把衣襟压在膝下，替怀里的凭记挡住风。" }
+      ]
+    }
+  ],
+  "continuation": "天亮后的履约、联络与偿债仍待下一场实现；此草案不自动完成任何约定。"
+}
