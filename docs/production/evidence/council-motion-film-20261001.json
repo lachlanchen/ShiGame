@@ -1,0 +1,34 @@
+{
+  "status": "engineering-export-verified-narrative-integration-rejected",
+  "scene": "Daze/Chen council character performance",
+  "source": {
+    "file": "assets/3d/rendered/shi-daze-council-performance-v1.blend",
+    "sha256": "feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743",
+    "unchanged": true
+  },
+  "rendererSha256": "a9500894208ffbd000788716c9ee2127f30dedd994e15c2cfba2a76178c22b02",
+  "validatorSha256": "b4ee7765dc25953237d600bf44d476724c64ef95eb37b4814bd317a59744c1b4",
+  "privateOutputDirectory": ".runtime/council-motion-film-20261001",
+  "receiptSha256": "816bb533fecb8b180c49f2d85e761e9f0e5313ad2dbfbbb83bf4a424f731f25a",
+  "movieSha256": "54ad914023870c6cb44b424d5c1904a5313b7db6c94b2e5317dbd0c6c1a03d36",
+  "contactSheetSha256": "f3ce2830c4595202c1f88a9617823005d2924e7b0b8d35c33bcf747352c68331",
+  "reviewedFrame018Sha256": "cb83a9e4d41dec1474008616eb9e3de5b373298ff69d4e0136f1d3d767ddd29b",
+  "verified": {
+    "blender": "4.5.12 LTS",
+    "sourceSamples": 121,
+    "framesHashedAndDecoded": 48,
+    "dimensions": [640, 360],
+    "fps": 12,
+    "durationSeconds": 4,
+    "audioStreams": 0,
+    "maximumFootDisplacementMetres": { "left": 0, "right": 0 },
+    "rendererExitCode": 0,
+    "validatorExitCode": 0,
+    "retainedRuntime": false
+  },
+  "reviewScope": "One full-sized frame and eight-frame contact sheet; not a human temporal acting review",
+  "rejectionReasons": ["reference-like arm silhouette", "blocky garment geometry", "weak gesture readability"],
+  "notProven": ["final acting", "weight", "hand-prop contact", "historical costume", "game integration", "human emotional impact", "native device playback"],
+  "publicAssetAdmitted": false,
+  "gameRulesOrSavesChanged": false
+}
