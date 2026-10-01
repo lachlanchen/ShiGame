@@ -90,11 +90,11 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     {invalid && <p role="alert" className="chen-error">存档损坏、来自另一段经历或内容已改版。原存档保留；明确重开前不能提交命令。</p>}
     {revisionNotice && <p role="status" className="chen-boundary" data-testid="retreat-prose-revision">故事文字已修订，你的决定与物资不变。正在按原进度阅读新版文字；确认下一项行动后才会更新存档版本。</p>}
     {error && <p role="alert" className="chen-error">未能保存，命令尚未确认。请恢复存储后重试。</p>}
-    <div className="chen-layout"><section className="chen-main">
+    <div className={`chen-layout${reading && !reset ? " chen-reading-layout" : ""}`}><section className="chen-main">
       {reset ? <section className="chen-scene"><h3 ref={heading} tabIndex={-1}>替换本段开发存档？此前章节不变。</h3>
         <button className="primary-button" disabled={busy} data-council-action="reset" onClick={() => void persist(createRetreat(rules, entry))}>确认重开</button>
         <button className="text-button" disabled={busy} data-council-action="cancel" onClick={() => setReset(false)}>取消</button></section>
-      : reading && lastChoice && lastScene ? <section className="chen-scene" data-testid="retreat-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{lastChoice.title}</h3>
+      : reading && lastChoice && lastScene ? <section className="chen-scene chen-response" data-testid="retreat-response" aria-live="polite"><h3 ref={heading} tabIndex={-1}>{lastChoice.title}</h3>
         {state.outcome === "scattered" ? lines(story.scatteredEnding.response) : lines(lastChoice.response)}
         {state.outcome && witnessed.map(event => <div data-testid="retreat-companion-answer" key={event.id}>{lines(event.endingResponses[state.outcome!])}</div>)}
         {last && witnessed.map(event => {
@@ -102,7 +102,7 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
           return replies?.[last.choiceId] ? <div data-testid="retreat-letter-answer" key={event.id}>{lines(replies[last.choiceId]!)}</div> : null;
         })}
         {lastPreview?.answers.map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{answerExplanations[answer.afterChoice]}</p>)}
-        {last && <div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{last.before[key]} → {last.after[key]}</b></span>)}</div>}
+        {last && <details className="chen-history" data-testid="retreat-response-changes"><summary>局势的变化</summary><div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{last.before[key]} → {last.after[key]}</b></span>)}</div></details>}
         {lines((lastScene as typeof lastScene & { exitLines?: { speaker: string; text: string }[] }).exitLines ?? [])}
         <button className="primary-button" data-council-action="continue" onClick={() => setReading(false)}>继续 →</button></section>
       : state.completed && state.outcome ? <section className="chen-scene" data-testid="retreat-outcome" data-outcome={state.outcome} aria-live="polite"><h3 ref={heading} tabIndex={-1}>{outcomeTitle(state.outcome)}</h3>
@@ -145,10 +145,10 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
           {preview.reactionOverride && <p>{preview.reactionOverride["zh-Hans"]}</p>}
           <button className="primary-button" data-council-action="commit" data-testid="retreat-commit" disabled={busy || invalid || !preview.available} onClick={() => { if (!invalid) void persist(resolveRetreat(rules, state, choice.id)); }}>{busy ? "保存中…" : "确认命令"} →</button>
         </section></section> : null}
-    </section><aside className="chen-position" aria-label="当前局势"><h3>当前局势</h3><ul className="chen-metrics">{councilMetricKeys.map(key => <li key={key}><span>{metrics[key]}</span><span>{state.metrics[key]} / 10</span></li>)}</ul>
+    </section>{(!reading || reset || state.debts.length > 0 || witnessed.length > 0) && <aside className="chen-position" aria-label={reading && !reset ? "已确认的约定与往来" : "当前局势"}><h3>{reading && !reset ? "已确认的约定与往来" : "当前局势"}</h3>{(!reading || reset) && <ul className="chen-metrics">{councilMetricKeys.map(key => <li key={key}><span>{metrics[key]}</span><span>{state.metrics[key]} / 10</span></li>)}</ul>}
       {state.debts.length > 0 && <section data-testid="retreat-debts"><h3>未偿之约</h3>{state.debts.map(debt => <p key={debt.id}>欠本地粮主 {debt.grain} 份粮秣；债未偿还，粮主另持欠契。分行不表示免责。</p>)}</section>}
       {witnessed.length > 0 && <section data-testid="retreat-observations"><h3>已核实的往来</h3>{witnessed.map(event => <p key={event.id}>{event.observation}</p>)}</section>}
-    </aside></div>
+    </aside>}</div>
     <details className="chen-history"><summary>史料与开发说明</summary><p>{(reading ? lastScene : scene)?.transition}</p>
       <p>{story.viewpoint.historyBoundary}</p>
       {(reading ? lastScene : scene)?.sourceIds.map(id => { const source = story.sources[id as keyof typeof story.sources]; return <p key={id}>{source.work}卷{source.volume} · {source.anchor}。{source.supports}</p>; })}

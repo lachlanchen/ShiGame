@@ -1,0 +1,34 @@
+{
+  "status": "verified-development-web-presentation-not-release-acceptance",
+  "componentSha256": "b888a71792393ea8fae82549109af85180e7a7cd3da3d6a53c13a656872db4b3",
+  "playtestSha256": "30265653178571ec2453337bcb59d10f9e83a83ef57da597923a485da7fe213a",
+  "crossingRoute": {
+    "privateEvidence": ".runtime/story-review/2026-10-01T02-15-17.129Z",
+    "statusSha256": "51dfeb8933fb1dbc91cfa528276fccf13f2e36b841c8e99222f8459d2bb6da2e",
+    "checksPassed": 76,
+    "screenshotsCaptured": 25,
+    "browserExceptions": 0,
+    "reviewedDesktopSha256": "ef76afe6637b9fc3760d2aeb035a91a0ed2df538846d0cbcf5f46d2bac68d49e",
+    "reviewedPhoneSha256": "0818a40dd73dede530f279c1eb73cdf8d4a6186f35142ec25a21a593197f06f3",
+    "resumedPhoneSha256": "0818a40dd73dede530f279c1eb73cdf8d4a6186f35142ec25a21a593197f06f3"
+  },
+  "loanRoute": {
+    "route": "normal chapter / together / loan-search",
+    "privateEvidence": ".runtime/story-review/2026-10-01T02-16-59.606Z",
+    "statusSha256": "be96acaf575058a3a19dd50ddf4d146ac2decf36210674543362279f985406b0",
+    "checksPassed": 53,
+    "screenshotsCaptured": 16,
+    "browserExceptions": 0,
+    "reviewedFinalResponseSha256": "2250b18ab273ad9bf5054278b8964e4acf365cd7c856c0334a83923b822cecfd",
+    "reviewedLoanEndingSha256": "ff79c263b10c02ce6879ebffb9008106fcdfdbda74fe70ed9db358359b778172",
+    "unpaidDebtVisibleOutsideDetails": true
+  },
+  "webTestsPassed": 305,
+  "retreatTestsPassed": 53,
+  "webTypecheck": "passed",
+  "productionBuildBudgets": "passed",
+  "rulesAndContentUnchanged": true,
+  "ownedRuntimesStopped": true,
+  "currentNoVncUrl": null,
+  "notProven": ["all branching routes", "human emotional acceptance", "native SwiftUI parity", "physical devices", "audiovisual acceptance", "publication"]
+}

@@ -39,6 +39,32 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it.each([false, true])("reads the saved reaction before accounting and restores it without a new order (reduced=%s)", async reducedMotion => {
+    const input = { ...props(), reducedMotion };
+    let view = render(<RetreatScene {...input} />);
+    fireEvent.click(view.container.querySelector('[data-retreat-choice="decline-dispatch"]')!);
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    await view.findByTestId("retreat-response");
+    const saved = localStorage.getItem(retreatSaveKey);
+    const response = view.getByTestId("retreat-response");
+    const prose = response.querySelector(".chen-prose")!.textContent;
+    const disclosure = view.getByTestId("retreat-response-changes") as HTMLDetailsElement;
+    expect(disclosure.open).toBe(false);
+    expect(disclosure.querySelectorAll(".chen-preview > span")).toHaveLength(5);
+    expect(response.querySelector(".chen-prose")!.closest("details")).toBeNull();
+    expect(view.container.querySelector(".chen-metrics")).toBeNull();
+    fireEvent.click(disclosure.querySelector("summary")!);
+    expect(disclosure.open).toBe(true);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    view.unmount();
+    view = render(<RetreatScene {...input} />);
+    expect(view.getByTestId("retreat-response").querySelector(".chen-prose")!.textContent).toBe(prose);
+    expect((view.getByTestId("retreat-response-changes") as HTMLDetailsElement).open).toBe(false);
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+    fireEvent.click(within(view.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
+    expect(view.container.querySelector(".chen-metrics")).not.toBeNull();
+    expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
+  });
   it.each([false, true])("resumes reviewed prose and preserves old bytes if the next write fails (failure=%s)", async failNext => {
     const input = props();
     input.rulesHash = retreatStory.saveCompatibility.rulesSHA256;
@@ -543,6 +569,8 @@ describe("retreat development scene", () => {
     fireEvent.click(view.getByTestId("retreat-commit"));
     await view.findByTestId("retreat-response");
     expect(view.getByTestId("retreat-debts").textContent).toContain("欠本地粮主 2 份粮秣");
+    expect(view.getByTestId("retreat-debts").closest("details")).toBeNull();
+    expect(view.container.querySelector(".chen-metrics")).toBeNull();
     const saved = localStorage.getItem(retreatSaveKey);
     expect(JSON.parse(saved!).choices).toEqual(["decline-dispatch", "borrow-local-grain"]);
     view.unmount();
@@ -585,6 +613,9 @@ describe("retreat development scene", () => {
     const close = view.getByRole("button", { name: "返回范阳" }); close.focus();
     fireEvent.keyDown(close, { key: "Tab", shiftKey: true });
     expect(document.activeElement).toBe(view.getByRole("button", { name: "重开本段…" }));
+    expect((await axe.run(view.container, { rules: { "color-contrast": { enabled: false } } })).violations).toEqual([]);
+    fireEvent.click(view.getByTestId("retreat-commit"));
+    await view.findByTestId("retreat-response");
     expect((await axe.run(view.container, { rules: { "color-contrast": { enabled: false } } })).violations).toEqual([]);
   });
 

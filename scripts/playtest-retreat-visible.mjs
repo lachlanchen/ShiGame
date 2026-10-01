@@ -281,11 +281,19 @@ try {
         if (id === "keep-reserve") {
           const bytes = await evaluate(`localStorage.getItem('${retreatKey}')`);
           const response = await evaluate("document.querySelector('[data-testid=retreat-response]').textContent");
+          check(await evaluate("!document.querySelector('[data-testid=retreat-response-changes]').open && !document.querySelector('.chen-metrics')"), "retreat reaction leads without competing numeric accounting");
+          await capture("crossing-retreat-response-phone"); await layout("retreat response phone");
+          await send("Emulation.clearDeviceMetricsOverride");
+          await capture("crossing-retreat-response-desktop"); await layout("retreat response desktop");
+          await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+          await click('[data-testid="retreat-response-changes"] summary');
+          check(await evaluate("document.querySelector('[data-testid=retreat-response-changes]').open && document.querySelectorAll('[data-testid=retreat-response-changes] .chen-preview > span').length===5") && await evaluate(`localStorage.getItem('${retreatKey}')`) === bytes, "optional retreat accounting preserves saved orders");
           await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
           await click('[data-testid="council-enter"]'); await click('[data-testid="council-continue"]'); await click('[data-testid="fanyang-enter"]');
           await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); await click('[data-testid="retreat-enter"]');
           await until(exists('[data-testid="retreat-response"]'));
           check(await evaluate("document.querySelector('[data-testid=retreat-response]').textContent") === response && await evaluate(`localStorage.getItem('${retreatKey}')`) === bytes, "cold resume retains the same retreat response and save bytes");
+          check(await evaluate("!document.querySelector('[data-testid=retreat-response-changes]').open"), "retreat resume restores quiet reading");
           await capture("crossing-retreat-resumed-phone");
         }
         await click('[data-testid="retreat-response"] [data-council-action="continue"]');
