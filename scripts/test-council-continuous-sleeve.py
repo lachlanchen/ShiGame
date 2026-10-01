@@ -48,6 +48,7 @@ def topology(mesh):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--study", required=True, type=Path)
+    parser.add_argument("--report", type=Path, help="Write a new verification snapshot without replacing prior evidence")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
     output = args.study.resolve()
     receipt = json.loads((output / "receipt.json").read_text())
@@ -55,6 +56,9 @@ def main():
     source_hash = "feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743"
     assert sha(source) == receipt["sourceSHA256"] == source_hash
     assert sha(output / "sleeve-study.blend") == receipt["blendSHA256"]
+    fitted = receipt.get("shoulderFit")
+    if fitted:
+        assert sha(Path(__file__).with_name("build-council-shoulder-fit-study.py")) == fitted["authorSHA256"]
     for rendered in receipt["rendered"]:
         assert sha(output / rendered["file"]) == rendered["sha256"]
     author_path = Path(__file__).with_name("render-council-palm-gesture-study.py")
@@ -88,7 +92,12 @@ def main():
         assert len(obj.data.vertices) == 600 and len(obj.data.polygons) == 576
         assert all(len(p.vertices) == 4 for p in obj.data.polygons)
         edges.append(topology(obj.data))
-        assert set(g.name for g in obj.vertex_groups) == {"upperarm_" + obj.name[-1].lower(), "lowerarm_" + obj.name[-1].lower()}
+        groups = set(g.name for g in obj.vertex_groups)
+        if fitted:
+            assert groups <= set(rig.data.bones.keys())
+            assert {"upperarm_" + obj.name[-1].lower(), "lowerarm_" + obj.name[-1].lower()} <= groups
+        else:
+            assert groups == {"upperarm_" + obj.name[-1].lower(), "lowerarm_" + obj.name[-1].lower()}
         assert all(abs(sum(g.weight for g in v.groups) - 1) < 1e-6 for v in obj.data.vertices)
         assert obj.modifiers["SleeveSkin"].object == rig and obj.modifiers["SleeveSkin"].use_deform_preserve_volume
     for part in ("Upper", "Lower"):
@@ -102,6 +111,7 @@ def main():
     worst_edge = None
     free_sleeve_clearance = math.inf
     rest_edges = [[(obj.data.vertices[a].co - obj.data.vertices[b].co).length for a, b in group] for obj, group in zip(sleeves, edges)]
+    assert all(length > 1e-7 for group in rest_edges for length in group), "Collapsed rest-pose sleeve edge"
     samples = []
     for frame in range(1, 122):
         scene.frame_set(frame)
@@ -151,16 +161,21 @@ def main():
     assert minimum_area > 1e-8, "Collapsed sleeve face"
     assert free_sleeve_clearance > 0, "Sampled elbow/cuff penetrates the body"
     assert sha(source) == source_hash
-    report = {"status": "connected-elbow-checks-passed-shoulder-fit-red", "checkerSHA256": sha(Path(__file__)),
+    fit_pass = bool(fitted and minimum_clearance > 0 and maximum_edge_change <= 3)
+    report = {"status": ("sampled-shoulder-fit-checks-passed" if fit_pass else "rejected-shoulder-fit") if fitted else "connected-elbow-checks-passed-shoulder-fit-red", "checkerSHA256": sha(Path(__file__)),
               "blendSHA256": receipt["blendSHA256"], "frames": 121,
               "maximumBoneMatrixError": maximum_pose_error, "bodyBasisAndWeightsUnchanged": True,
               "minimumSampledBodyClearanceMetres": minimum_clearance, "minimumFaceAreaSquareMetres": minimum_area,
               "maximumEdgeLengthChangeFactor": maximum_edge_change, "samples": samples,
               "worstClearance": worst_clearance, "worstEdge": worst_edge,
               "minimumElbowAndCuffSampledClearanceMetres": free_sleeve_clearance,
-              "scope": "One connected tube per sleeve, normalized two-bone weights, unchanged source body/53-bone gesture. Vertex/face-center nearest-surface samples do not prove exact triangle collision or cloth self-collision."}
-    (output / "verification.json").write_text(json.dumps(report, indent=2) + "\n")
+              "shoulderFitAccepted": fit_pass,
+              "scope": "One connected tube per sleeve, normalized skin weights, unchanged source body/53-bone gesture. Vertex/face-center nearest-surface samples do not prove exact triangle collision or cloth self-collision."}
+    report_path = args.report.resolve() if args.report else output / "verification.json"
+    report_path.write_text(json.dumps(report, indent=2) + "\n")
     print("SHI_SLEEVE_CHECK", json.dumps({k: v for k, v in report.items() if k != "samples"}))
+    if fitted and not fit_pass:
+        raise ValueError(f"Reject shoulder fit: sampled body penetration or edge change above candidate bound. See {report_path}; no asset admission.")
 
 
 if __name__ == "__main__":
