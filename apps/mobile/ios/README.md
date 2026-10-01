@@ -172,8 +172,29 @@ The `native-crossing-rules` CI job runs this same check on a standard hosted
 Mac. The Linux content job independently regenerates and compares the canonical
 fixtures. Neither job signs, installs or submits an iOS app.
 
-Still required: the native revision-2 campaign ledger and personal reaction
-binding, atomic session/replay checkpoint, SwiftUI command controls, durable
+The Foundation `CrossingCampaignEngine` now implements the revision-2 ledger
+and personal reaction binding. Its 1,075 canonical checkpoints cover 210 legal
+tactical paths under all three opening promises and both fields, 114 terminal
+loss/recovery checkpoints and 504 rejected ledgers. It replaces the abstract
+crossing effects once, preserves the other resource layers, derives promise
+status and observed flags from actual orders, and retains the opening/seed on
+explicit failed-crossing replay. Content hashes bind the campaign, encounter
+and aftermath. The existing released choices-only save is not migrated.
+
+```bash
+npx vite-node scripts/crossing-campaign-conformance.ts --write
+npm run validate:conformance
+# On an existing Mac/Xcode installation:
+bash scripts/test-native-crossing-campaign.sh
+bash scripts/typecheck-native-ios.sh
+```
+
+Only regenerate after reviewed rule changes. The gzip fixture contains JSON;
+validation compares decompressed canonical content rather than compressor
+versions. The Mac runner also checks the existing 46 chapter routes. See the
+[campaign ledger evidence](../../../docs/production/evidence/native-crossing-ledger-20261001.json).
+
+Still required: atomic session/replay persistence, SwiftUI command controls, durable
 crossing-to-Chen handoff, simulator/device playtests and qualified beta packaging.
 This tactical CLI/typecheck milestone is not an installed playable crossing,
 native campaign parity, cinematic review or TestFlight update.

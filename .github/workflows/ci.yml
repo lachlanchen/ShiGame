@@ -16,6 +16,10 @@ jobs:
       - uses: actions/checkout@v7
       - name: Check native crossing against canonical replay fixtures
         run: bash scripts/test-native-crossing.sh
+      - name: Check native crossing campaign and legacy chapter behavior
+        run: bash scripts/test-native-crossing-campaign.sh
+      - name: Typecheck native app production and preview configurations
+        run: bash scripts/typecheck-native-ios.sh
 
   web-and-content:
     runs-on: ubuntu-latest

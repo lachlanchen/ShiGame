@@ -56,13 +56,18 @@ struct RetreatPresentation {
         } catch { return [] }
     }
     var sceneLines: [Record] {
-        scene.records("lines")
-        + witnessed.filter { $0.text("sceneId") == scene.text("id") }.flatMap { $0.records("lines") }
-        + variants(scene)
-        + ["councilCallbacks", "chapterCallbacks"].flatMap { key in
-            story.records(key).filter { $0.text("sceneId") == scene.text("id") && engine.entry.priorChoices.contains($0.text("afterChoice")) }.flatMap { $0.records("lines") }
+        let current = scene
+        var lines = current.records("lines")
+        lines += witnessed.filter { $0.text("sceneId") == current.text("id") }.flatMap { $0.records("lines") }
+        lines += variants(current)
+        for key in ["councilCallbacks", "chapterCallbacks"] {
+            let callbacks = story.records(key).filter {
+                $0.text("sceneId") == current.text("id") && engine.entry.priorChoices.contains($0.text("afterChoice"))
+            }
+            lines += callbacks.flatMap { $0.records("lines") }
         }
-        + scene.records("decisionLeadIn")
+        lines += current.records("decisionLeadIn")
+        return lines
     }
     func variants(_ record: Record) -> [Record] {
         record.records("variants").filter { matches($0.object("when")) }.flatMap { $0.records("lines") }

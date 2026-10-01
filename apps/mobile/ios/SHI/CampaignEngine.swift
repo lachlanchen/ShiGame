@@ -148,4 +148,18 @@ struct CampaignEngine {
         if resources["people", default: 0] + resources["trust", default: 0] >= 125 { return "deep-roots" }
         return "watchful-strategist"
     }
+
+    /// Keep the exact played state while applying a reviewed encounter's
+    /// temporary choice/commitment definition. Never replay tactical history
+    /// as the old abstract chapter choices.
+    func replacingDefinition(_ definition: Record) throws -> CampaignEngine {
+        guard definition.text("id") == campaign.text("id"),
+              definition.records("nodes").contains(where: { $0.text("id") == nodeID }) else {
+            throw CampaignError.invalid("Encounter definition does not match the campaign.")
+        }
+        var next = try CampaignEngine(campaign: definition, seed: seed)
+        next.nodeID = nodeID; next.resources = resources; next.history = history
+        next.flags = flags; next.completed = completed; next.failure = failure
+        return next
+    }
 }

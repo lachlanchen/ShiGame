@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-01",
+  "status": "native-campaign-ledger-verified-not-durable-session-or-ui-admission",
+  "toolchain": "Apple Swift 6.2.4, x86_64 Mac, Swift 5 language mode",
+  "campaignCheckpoints": 1075,
+  "tacticalPaths": 210,
+  "terminalLossRecoveryCheckpoints": 114,
+  "rejectedLedgers": 504,
+  "coverageBoundary": "All three opening promises and both crossing fields with the first legal courier choice; all legal tactical branches and subsequent ending choices for those origins. Not an exhaustive enumeration of every campaign seed or courier route.",
+  "checks": [
+    "Canonical resource layers, flags, promise profiles, pressure reveal and personal reactions match native replay",
+    "Campaign effects commit once after the last field order, replacing the abstract crossing effects",
+    "Cancellation only before an issued order; failed-chapter replay retains the opening and seed",
+    "Both deserialized JSON and in-memory UInt32-seed ledgers replay identically",
+    "Campaign, encounter and aftermath byte drift is rejected",
+    "Existing native chapter regression: 46 routes, 183 turns passed",
+    "Existing native tactical regression: 122 checkpoints, 296 commands, 17 corrupt states rejected",
+    "Retreat presentation regression: 50 decision/reaction/ending phases passed",
+    "Complete app sources typechecked for x86_64 iOS 16 simulator target in production and SHI_RETREAT_PREVIEW configurations",
+    "Local npm run build passed 83 core and 390 web tests and existing deployment budgets"
+  ],
+  "fixesDuringVerification": [
+    "Initial native replay failed because an in-memory UInt32 seed could not cast directly to UInt64; NSNumber bridging plus exact JSON-number comparison preserves boolean/fraction rejection",
+    "Swift 6.2.4 could not typecheck the prior retreat sceneLines concatenation in reasonable time; equivalent ordered accumulation passed existing presentation checks"
+  ],
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/CampaignEngine.swift": "5e2c0b995630b0e67ecab3c4230a3355ea1528f75ed8b1bf2991ed8ee35343de",
+    "apps/mobile/ios/SHI/CrossingCampaignEngine.swift": "f64e4169f93adaf704521e1925d9f8f70d24e1e07bb9029b1444e69d0c0867fc",
+    "apps/mobile/ios/SHI/RetreatPresentation.swift": "601e7f9d18e9410514120afb6698c2f6386a2543b7962e62fe769a54db0965bd",
+    "apps/mobile/ios/Tests/CrossingCampaignConformance.swift": "4461054f0d369356f4707594802ebf8922237be32aa8ef628be6666d2bd936e5",
+    "scripts/crossing-campaign-conformance.ts": "2405bb0b618ca44a25d62bae8ca52a4eef9e7f222178902d531a560bb5062028",
+    "scripts/test-native-crossing-campaign.sh": "e098e25625cbe8f2793922bb0f5106b22527e150d13537a297ef734de40d30a6",
+    "scripts/typecheck-native-ios.sh": "579e05319b336ee5dfa1facaa26c2f345d84904e7112b50a9e36ddeb5b075dc7",
+    "content/conformance/crossing-campaign-replays.v2.json.gz": "ec00141fd2a3dccd13f18523b92c1e79b15023065c3ab6cc2634895a509d6a46"
+  },
+  "verifiedArchiveSHA256": [
+    "60d8fdf1b5eeaecec248e04afed760c4da968b4d8bd09b45fc124668a3379c04",
+    "7f3a59a9f5221965a1e5fd72c8288b22cd0aeb9a7a1fd82a8d3ef39b28a6dab8"
+  ],
+  "boundaries": [
+    "No released save migration, durable session write or SwiftUI crossing controls added",
+    "No native council entry identity qualification for tactical ledgers yet",
+    "No simulator boot, physical device test, signing, beta submission or public store release",
+    "No historical prose, canonical rule, media asset or commercial-rights changes",
+    "The new helper returns a candidate state; callers must persist it before publishing a reaction"
+  ]
+}

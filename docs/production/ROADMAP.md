@@ -39,6 +39,13 @@ source typechecked for both configurations. It does not yet connect tactical
 orders to the native campaign ledger or SwiftUI. Continue that integration and
 durable session work before claiming the revised crossing is playable on iOS.
 
+The subsequent native revision-2 ledger now matches 1,075 canonical campaign
+checkpoints: orders determine promise status, personal reactions, observed flags
+and resource layers, including 114 failed-route replay checkpoints. Existing
+chapter behavior remains unchanged. This closes the consequence-rule blocker;
+atomic native session persistence and SwiftUI controls are still required before
+an installed crossing-to-Chen playtest or beta can be qualified.
+
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release
 saves, explicit versioned progression, honest previews, matching personal
