@@ -826,7 +826,7 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
           } catch { setCrossingSaveError(true); }
         },
       } : undefined} /></Suspense>}
-      {drawer === "council" && <Suspense fallback={<aside className="drawer" role="dialog" aria-modal="true" aria-label="Loading council" aria-busy="true"><button className="icon-button" autoFocus onClick={closeTransient} aria-label={translate(locale, "close")}>×</button></aside>}><ChenCouncil origin={state} locale={locale} reducedMotion={reducedMotion} onCue={playAudioCue} onClose={closeTransient} onSavingChange={saving => { councilSavingRef.current = saving; }} /></Suspense>}
+      {drawer === "council" && <Suspense fallback={<aside className="drawer" role="dialog" aria-modal="true" aria-label="Loading council" aria-busy="true"><button className="icon-button" autoFocus onClick={closeTransient} aria-label={translate(locale, "close")}>×</button></aside>}><ChenCouncil origin={state} locale={locale} reducedMotion={reducedMotion} onCue={playAudioCue} onClose={closeTransient} saveNamespace={crossingDriver?.interludeNamespace} crossingSource={crossingDriver?.getRetreatCrossing()} onSavingChange={saving => { councilSavingRef.current = saving; }} /></Suspense>}
       {drawer === "record" && <Suspense fallback={null}><ChronicleDrawer campaign={campaign} state={state} locale={locale} onClose={closeTransient} onRestart={restart} crossingRecord={crossingDriver?.getCrossingRecord()} /></Suspense>}
       {drawer && <button className="drawer-scrim" onClick={closeTransient} aria-label={translate(locale, "close")} />}
     </main>

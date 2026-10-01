@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
+import { webcrypto } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import { createDevelopmentCrossingDriver, DEVELOPMENT_CROSSING_KEY } from "./development-crossing";
@@ -13,8 +14,9 @@ beforeEach(() => {
   localStorage.setItem("shi.locale", "en");
   Object.defineProperty(window, "matchMedia", { configurable: true, value: () => ({ matches: true }) });
   Object.defineProperty(navigator, "getGamepads", { configurable: true, value: () => [] });
+  Object.defineProperty(document, "fonts", { configurable: true, value: { load: async () => [], check: () => true } });
 });
-afterEach(() => { cleanup(); vi.restoreAllMocks(); });
+afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 async function opening(view: ReturnType<typeof render>) {
   fireEvent.click(view.getByTestId("begin-game"));
@@ -29,6 +31,9 @@ async function opening(view: ReturnType<typeof render>) {
 
 describe("crossing campaign in the real App shell", () => {
   it("renders the actual second-edition promise and personal reaction after a costly crossing and reload", async () => {
+    vi.stubGlobal("crypto", webcrypto);
+    const olderKeys = ["shi.chen-council.v1", "shi.fanyang-guarantee.v1", "shi.dev.chen-retreat.v1"];
+    for (const key of olderKeys) localStorage.setItem(key, `preserved ${key}`);
     let driver = createDevelopmentCrossingDriver(localStorage, 2);
     let view = render(<App developmentCrossing={driver} />);
     await opening(view);
@@ -53,6 +58,52 @@ describe("crossing campaign in the real App shell", () => {
     await waitFor(() => expect(view.queryByTestId("resolution")).toBeNull());
     fireEvent.click(view.getByTestId("record-toggle"));
     expect((await view.findByTestId("crossing-record")).textContent).toContain(saved.summary.en);
+    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.click(view.container.querySelector("[data-choice-id='root-in-villages']")!);
+    fireEvent.click(view.getByTestId("commit-selected"));
+    fireEvent.click(await view.findByTestId("resolution-continue"));
+    fireEvent.click(await view.findByTestId("council-enter"));
+    await view.findByTestId("chen-council");
+    for (const id of ["defer-title", "joint-ledger", "one-command"]) {
+      fireEvent.click(view.container.querySelector(`[data-council-choice='${id}']`)!);
+      fireEvent.click(view.getByTestId("council-commit"));
+      fireEvent.click(await view.findByTestId("council-continue"));
+    }
+    fireEvent.click(view.getByTestId("fanyang-enter"));
+    await view.findByTestId("fanyang-scene");
+    for (const id of ["public-safety", "guarded-escort", "accept-transfer"]) {
+      fireEvent.click(view.container.querySelector(`[data-fanyang-choice='${id}']`)!);
+      fireEvent.click(view.getByTestId("fanyang-commit"));
+      fireEvent.click((await view.findByTestId("fanyang-response")).querySelector("button")!);
+    }
+    fireEvent.click(view.getByTestId("retreat-enter"));
+    await view.findByTestId("retreat-scene");
+    for (const id of ["keep-reserve", "gather-own", "escort-households", "carry-records", "stay-together"]) {
+      fireEvent.click(view.container.querySelector(`[data-retreat-choice='${id}']`)!);
+      expect((view.getByTestId("retreat-commit") as HTMLButtonElement).disabled).toBe(false);
+      fireEvent.click(view.getByTestId("retreat-commit"));
+      if (id === "keep-reserve") {
+        const reaction = (await view.findByTestId("retreat-response")).textContent;
+        const savedRetreat = localStorage.getItem(`${driver.interludeNamespace}.chen-retreat.v1`);
+        view.unmount();
+        driver = createDevelopmentCrossingDriver(localStorage, 2);
+        view = render(<App developmentCrossing={driver} />);
+        fireEvent.click(view.getByTestId("begin-game"));
+        fireEvent.click(await view.findByTestId("council-enter"));
+        fireEvent.click(await view.findByTestId("council-continue"));
+        fireEvent.click(view.getByTestId("fanyang-enter"));
+        fireEvent.click((await view.findByTestId("fanyang-response")).querySelector("button")!);
+        fireEvent.click(view.getByTestId("retreat-enter"));
+        expect((await view.findByTestId("retreat-response")).textContent).toBe(reaction);
+        expect(localStorage.getItem(`${driver.interludeNamespace}.chen-retreat.v1`)).toBe(savedRetreat);
+      }
+      fireEvent.click((await view.findByTestId("retreat-response")).querySelector("button")!);
+    }
+    expect(view.getByTestId("retreat-outcome").getAttribute("data-outcome")).toBe("together");
+    for (const key of olderKeys) expect(localStorage.getItem(key)).toBe(`preserved ${key}`);
+    for (const suffix of ["chen-council.v1", "fanyang-guarantee.v1", "chen-retreat.v1"]) {
+      expect(localStorage.getItem(`${driver.interludeNamespace}.${suffix}`)).not.toBeNull();
+    }
     expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe("unchanged release save");
   });
   it("plays, pauses, cold-resumes, commits once and continues to the matching Chen arrival", async () => {

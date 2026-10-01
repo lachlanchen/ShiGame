@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { councilAnswers, councilCanChoose, councilEntry, councilMetricKeys, councilReadiness, createCouncil, localize, prepareFanyangEntry, resolveCouncil, restoreCouncil,
-  type CouncilDefinition, type CouncilRecord, type CouncilState, type GameState, type Locale } from "@shi/game-core";
+  type CouncilDefinition, type CouncilRecord, type CouncilState, type GameState, type Locale, type CrossingRetreatSource } from "@shi/game-core";
 import data from "../generated/chen-council.v1.json";
 import rawFingerprint from "../generated/chen-council.v1.sha256?raw";
 import { flushPersistence, gameStorage } from "../persistence";
@@ -12,12 +12,13 @@ const RetreatPreview = import.meta.env.DEV ? lazy(() => import("./RetreatPreview
 
 const definition = data as CouncilDefinition;
 const fingerprint = rawFingerprint.trim();
-const key = "shi.chen-council.v1";
 
-export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onSavingChange }: {
+export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onSavingChange, saveNamespace, crossingSource }: {
   origin: GameState; locale: Locale; reducedMotion: boolean; onClose: () => void; onCue: (cue: "select" | "commit" | "ending") => void;
   onSavingChange?: (saving: boolean) => void;
+  saveNamespace?: string; crossingSource?: CrossingRetreatSource;
 }) {
+  const key = saveNamespace ? `${saveNamespace}.chen-council.v1` : "shi.chen-council.v1";
   const [entry] = useState(() => {
     const value = councilEntry(origin);
     if (!value) throw new Error("Complete Chapter I before entering Chen");
@@ -115,10 +116,10 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
     ? prepareFanyangEntry(definition, origin, { ...state, definitionSHA256: fingerprint }, fingerprint) : null;
   if (retreatSnapshot && continuation && RetreatPreview) return <Suspense fallback={<section className="drawer chen-council" role="dialog" aria-modal="true" aria-label="Loading retreat preview"><p role="status">Loading story preview…</p><button autoFocus className="primary-button" data-council-action="close" onClick={() => setRetreatSnapshot(null)}>Back</button></section>}>
     <RetreatPreview origin={origin} councilSnapshot={encodeCouncilSnapshot(state, fingerprint)} fanyangSnapshot={retreatSnapshot}
-      reducedMotion={reducedMotion} onClose={() => setRetreatSnapshot(null)} onSavingChange={onSavingChange} />
+      reducedMotion={reducedMotion} onClose={() => setRetreatSnapshot(null)} onSavingChange={onSavingChange} saveNamespace={saveNamespace} crossingSource={crossingSource} />
   </Suspense>;
   if (showFanyang && continuation) return <FanyangScene entry={continuation} locale={locale} reducedMotion={reducedMotion}
-    onCue={onCue} onClose={() => setShowFanyang(false)} onSavingChange={onSavingChange}
+    onCue={onCue} onClose={() => setShowFanyang(false)} onSavingChange={onSavingChange} saveNamespace={saveNamespace}
     onContinue={RetreatPreview ? setRetreatSnapshot : undefined} />;
 
   return <aside className="drawer chen-council" data-testid="chen-council" data-round={state.history.length}

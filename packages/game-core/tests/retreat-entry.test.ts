@@ -10,6 +10,11 @@ import campaignRaw from "../../../content/campaigns/chapter-01-daze.json";
 import councilRaw from "../../../content/councils/chen-council.v1.json";
 import fanyangRaw from "../../../content/councils/fanyang-guarantee.v1.json";
 import storyDraft from "../../../content/story-drafts/chen-retreat.v1.json";
+import crossingDefinition from "../../../content/engagements/chapter-01-broken-crossing.v1.json";
+import crossingRules from "../../../content/engagements/chapter-01-crossing-campaign.rules.v2.json";
+import crossingAftermath from "../../../content/engagements/chapter-01-crossing-aftermath.v2.json";
+import { advanceCrossingCampaign, createCrossingCampaignSave, replayCrossingCampaign,
+  type CrossingRetreatSource, type CrossingCampaignEvent } from "../src";
 
 const definitions = { campaign: campaignRaw as Campaign, council: councilRaw as CouncilDefinition,
   fanyang: fanyangRaw as FanyangDefinition };
@@ -39,6 +44,30 @@ function fixture(chapter = chapters[0]!) {
 }
 
 describe("Chen retreat continuity handoff", () => {
+  it("replays revised crossing orders instead of trusting derived chapter resources at the retreat boundary", () => {
+    const source = { definition: crossingDefinition, rules: crossingRules, aftermath: crossingAftermath,
+      save: createCrossingCampaignSave(definitions.campaign, crossingRules as CrossingRetreatSource["rules"], 0) } as CrossingRetreatSource;
+    let state = replayCrossingCampaign(definitions.campaign, source.definition, source.rules, source.save, source.aftermath)!;
+    const events: CrossingCampaignEvent[] = [
+      { kind: "decision", choiceId: "read-the-names" }, { kind: "decision", choiceId: "issue-grain-tallies" },
+      { kind: "begin-crossing", planId: "families-first" },
+      ...["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"].map(commandId => ({ kind: "crossing-command" as const, commandId })),
+      { kind: "finish-crossing" }, { kind: "decision", choiceId: "root-in-villages" },
+    ];
+    for (const event of events) state = advanceCrossingCampaign(definitions.campaign, source.definition, source.rules, state.save, event, source.aftermath);
+    source.save = state.save;
+    const snapshots = fixture(state.campaign);
+    const before = JSON.stringify({ source, snapshots });
+    const entry = prepareRetreatEntry(definitions, snapshots, revisions, source)!;
+    expect(entry).not.toBeNull();
+    expect(entry.chapter).toEqual(state.campaign);
+    expect(entry.id).toContain(source.rules.id);
+    expect(prepareRetreatEntry(definitions, snapshots, revisions)).toBeNull();
+    expect(prepareRetreatEntry(definitions, { ...snapshots, chapter: { ...state.campaign, resources: { ...state.campaign.resources, grain: 100 } } }, revisions, source)).toBeNull();
+    expect(prepareRetreatEntry(definitions, snapshots, revisions, { ...source, save: { ...source.save, rulesId: "wrong" } })).toBeNull();
+    expect(prepareRetreatEntry(definitions, snapshots, { ...revisions, campaign: "0".repeat(64) }, source)).toBeNull();
+    expect(JSON.stringify({ source, snapshots })).toBe(before);
+  });
   it("replays 993 Fan Yang endings across every Chen route from all three arrivals", () => {
     let count = 0;
     const identities = new Set<string>(), endings = new Set<string>();

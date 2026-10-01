@@ -8,13 +8,14 @@ import review from "../../../../content/research/fanyang-entry-review.v1.json";
 import { flushPersistence, gameStorage } from "../persistence";
 import "./ChenCouncil.css";
 const definition = raw as FanyangDefinition, fingerprint = review.contentSHA256;
-const key = "shi.fanyang-guarantee.v1";
 
-export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onSavingChange, onContinue }: {
+export function FanyangScene({ entry, locale, reducedMotion, onClose, onCue, onSavingChange, onContinue, saveNamespace }: {
   entry: FanyangEntry; locale: Locale; reducedMotion: boolean; onClose: () => void;
   onCue: (cue: "select" | "commit" | "ending") => void; onSavingChange?: (saving: boolean) => void;
   onContinue?: (snapshot: string) => void;
+  saveNamespace?: string;
 }) {
+  const key = saveNamespace ? `${saveNamespace}.fanyang-guarantee.v1` : "shi.fanyang-guarantee.v1";
   const [{ initial, damaged }] = useState(() => {
     const initial = createFanyang(definition, entry);
     try {

@@ -71,6 +71,8 @@ export function createDevelopmentCrossingDriver(storage: Pick<Storage, "getItem"
         }) };
     },
     getCrossingCommitment: () => current?.crossingResolutions.at(-1)?.commitment,
+    interludeNamespace: `shi.development.crossing-campaign.v${revision}`,
+    getRetreatCrossing: () => ({ definition, rules, aftermath, save: JSON.parse(JSON.stringify(requireCurrent().save)) as CrossingCampaignReplay["save"] }),
     hasSave: () => Boolean(current?.save.events.length),
     commit(event: CrossingCampaignEvent) {
       if (pendingEventIndex !== null) throw new Error("Read the saved reaction before issuing another order.");

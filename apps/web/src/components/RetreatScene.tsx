@@ -16,14 +16,16 @@ speakers["han-letter"] = "韩驿使来简";
 const lines = (items: { speaker: string; text: string }[]) => items.map((line, index) => <p className="chen-prose" key={index}>{speakers[line.speaker] && <strong>{speakers[line.speaker]}： </strong>}{line.text}</p>);
 const outcomeTitle = (outcome: RetreatState["outcome"]) => outcome === "scattered" ? rules.scattered.title["zh-Hans"] : outcome ? story.endings[outcome].title : "";
 
-export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClose, onSavingChange }: {
+export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClose, onSavingChange, saveNamespace }: {
   entry: RetreatEntry; rulesHash: string; storyHash: string; reducedMotion: boolean;
   onClose: () => void; onSavingChange?: (value: boolean) => void;
+  saveNamespace?: string;
 }) {
+  const saveKey = saveNamespace ? `${saveNamespace}.chen-retreat.v1` : retreatSaveKey;
   const [{ initial, damaged, revised }] = useState(() => {
     const initial = createRetreat(rules, entry);
     try {
-      const saved = gameStorage.getItem(retreatSaveKey);
+      const saved = gameStorage.getItem(saveKey);
       if (!saved) return { initial, damaged: false, revised: false };
       const compatible = story.saveCompatibility.rulesSHA256 === rulesHash ? story.saveCompatibility.previousStorySHA256 : [];
       const snapshot = JSON.parse(saved);
@@ -57,13 +59,13 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     transaction.current = true; setBusy(true); setError(false); onSavingChange?.(true);
     let previous: string | null = null, wrote = false;
     try {
-      previous = gameStorage.getItem(retreatSaveKey);
-      gameStorage.setItem(retreatSaveKey, encodeRetreatSnapshot(next, rulesHash, storyHash)); wrote = true;
+      previous = gameStorage.getItem(saveKey);
+      gameStorage.setItem(saveKey, encodeRetreatSnapshot(next, rulesHash, storyHash)); wrote = true;
       await flushPersistence();
       if (alive.current) { setState(next); setSelected(0); setReading(next.history.length > 0); setInvalid(false); setReset(false); setRevisionNotice(false); }
     } catch {
       if (wrote) try {
-        if (previous === null) gameStorage.removeItem(retreatSaveKey); else gameStorage.setItem(retreatSaveKey, previous);
+        if (previous === null) gameStorage.removeItem(saveKey); else gameStorage.setItem(saveKey, previous);
         await flushPersistence();
       } catch { /* An unsuccessful rollback never authorizes a success message. */ }
       if (alive.current) setError(true);

@@ -2,7 +2,7 @@
 
 2026-10-01. Development checkpoint, not public or native release acceptance.
 
-The opt-in web route `?crossing=campaign-v2` uses the shared v2 rules and reviewed development aftermath copy. Version 1 remains available at `?crossing=campaign`; release chapter saves are unchanged. Each edition has a separate chapter storage key. Later council/interlude storage is still shared: this checkpoint does not certify isolation of the entire first volume.
+The opt-in web route `?crossing=campaign-v2` uses the shared v2 rules and reviewed development aftermath copy. Version 1 remains available at `?crossing=campaign`; release chapter saves are unchanged. Each development edition now has separate chapter, Chen council, Fan Yang and retreat storage keys. Existing unnamespaced interlude saves are retained without automatic migration; earlier development interludes stored there remain untouched.
 
 ## Design intent
 
@@ -24,4 +24,10 @@ The ford, household witnesses, dialogue, tactical orders and promise judgments a
 - Full core suite: 67 passing tests. Full web suite: 261 passing tests. Web TypeScript and production build pass; development-only content is excluded. Initial JavaScript is 99.36 KiB against a 100 KiB budget.
 - No new visible browser evidence, physical-device acceptance, animation, video, music integration or publication is claimed by this checkpoint. Automated tests cannot establish that the scene resonates with people.
 
-Next: visible desktop/phone review, ending review, edition-isolated interlude saves, and human playtesting before promotion. Cinematic assets must follow these outcome-specific reactions rather than overwrite their meaning.
+## Continuation checkpoint
+
+The retreat handoff now replays the development crossing ledger against trusted bundled rules and rejects a displayed chapter that differs from the replay. It verifies campaign revision identity, rejects invalid ledgers, and distinguishes retreat entry identities by crossing rules/content revisions. Legacy callers retain their original migration and entry identity.
+
+The actual React-shell test continues a costly crossing through three Chen decisions, three Fan Yang decisions and five retreat decisions to the together ending. It checks cold resume during the retreat, unchanged older interlude bytes and independent new save keys. This proves that tested route, not every v2 first-volume route or physical-device support.
+
+Next: visible desktop/phone review, ending review, broader crossing-to-retreat branch tests, and human playtesting before promotion. Cinematic assets must follow these outcome-specific reactions rather than overwrite their meaning.
