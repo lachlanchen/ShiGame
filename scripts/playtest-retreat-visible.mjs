@@ -13,10 +13,12 @@ if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "cros
 const isCrossing = route === "crossing" || route === "crossing-v2";
 const revisedCrossing = route === "crossing-v2";
 const scoreAudition = process.env.SHI_PLAYTEST_SCORE === "1";
+const councilFilm = process.env.SHI_PLAYTEST_COUNCIL_FILM === "1";
+if (councilFilm && (!revisedCrossing || production)) throw new Error("Private council film requires the development crossing-v2 route.");
 if (scoreAudition && (!revisedCrossing || production)) throw new Error("Private score review requires the development crossing-v2 route.");
 const aftermath = revisedCrossing ? JSON.parse(await readFile(resolve(root, "content/engagements/chapter-01-crossing-aftermath.v2.json"), "utf8")) : null;
 const councilMetricCount = Object.keys(JSON.parse(await readFile(resolve(root, "content/councils/chen-council.v1.json"), "utf8")).metrics).length;
-const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}${scoreAudition ? "&score=audition" : ""}`;
+const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}${scoreAudition ? "&score=audition" : ""}${councilFilm ? "&councilFilm=review" : ""}`;
 const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
 const reserves = route === "scattered" || storyBranch !== "baseline" ? "send-support" : "keep-reserve";
@@ -80,7 +82,7 @@ try {
   await delay(800);
   await launch("vnc", "x11vnc", ["-display", ":121", "-listen", "127.0.0.1", "-rfbport", "5921", "-nopw", "-forever", "-nevershared"]);
   await launch("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:6121", "127.0.0.1:5921"]);
-  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1", VITE_SHI_PRIVATE_SCORE_AUDITION: scoreAudition ? "1" : "0" });
+  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1", VITE_SHI_PRIVATE_SCORE_AUDITION: scoreAudition ? "1" : "0", VITE_SHI_PRIVATE_COUNCIL_FILM: councilFilm ? "1" : "0" });
   report.buildMode = production ? "production-dist" : "development";
   // Existing isolated profile, but an incognito app window preserves old QA saves.
   await launch("chrome", "google-chrome", ["--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--incognito", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=9321", `--user-data-dir=${root}/.runtime/novnc/profile`, "--window-size=1600,1000", "--app=http://127.0.0.1:4173/?seed=00000000"], { DISPLAY: ":121" });
@@ -232,6 +234,23 @@ try {
           const councilKey = `${key}.chen-council.v1`;
           const bytes = await evaluate(`localStorage.getItem('${councilKey}')`);
           const response = await evaluate("document.querySelector('[data-testid=council-response] .chen-prose').textContent");
+          if (councilFilm) {
+            await until(exists('[data-testid="private-council-film"]'));
+            check(await evaluate("!document.querySelector('[data-testid=private-council-film]').open && !document.querySelector('[data-testid=private-council-film] video')"), "private film is initially collapsed without media requests");
+            await click('[data-testid="private-council-film"] summary');
+            await until(exists('[data-testid="private-council-film"] video'));
+            check(await evaluate("document.querySelector('[data-testid=private-council-film] video').paused"), "opening film review does not autoplay");
+            await click('[data-testid="private-council-film"] button');
+            await until("document.querySelector('[data-testid=private-council-film] video').currentTime>0.1");
+            report.councilFilm = await evaluate("(()=>{const v=document.querySelector('[data-testid=private-council-film] video');return {duration:v.duration,width:v.videoWidth,height:v.videoHeight,muted:v.muted,loop:v.loop,currentTime:v.currentTime}})()");
+            check(report.councilFilm.duration === 4 && report.councilFilm.width === 640 && report.councilFilm.height === 360 && report.councilFilm.muted && !report.councilFilm.loop, "actual four-second silent Blender study decodes in the game");
+            await capture("council-private-film-playing-desktop"); await layout("private film review");
+            await click('[data-testid="private-council-film"] button');
+            check(await evaluate("document.querySelector('[data-testid=private-council-film] video').paused"), "explicit film pause stops playback");
+            await click('[data-testid="private-council-film"] summary');
+            await until("!document.querySelector('[data-testid=private-council-film] video')");
+            check(await evaluate(`localStorage.getItem('${councilKey}')`) === bytes, "playing and closing film review never changes a saved order");
+          }
           check(await evaluate("!document.querySelector('[data-testid=council-response-changes]').open && !document.querySelector('.chen-position')"), "council response leads without an expanded ledger or competing metrics");
           await capture("crossing-council-response-desktop"); await layout("council response desktop");
           await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });

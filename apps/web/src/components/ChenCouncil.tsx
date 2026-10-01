@@ -10,6 +10,8 @@ import { FanyangScene } from "./FanyangScene";
 import { ViewpointIntro } from "./ViewpointIntro";
 import { cinemaLabel } from "../cinema-labels";
 const RetreatPreview = import.meta.env.DEV ? lazy(() => import("./RetreatPreview").then(module => ({ default: module.RetreatPreview }))) : null;
+const PrivateCouncilFilm = import.meta.env.DEV && import.meta.env.VITE_SHI_NATIVE !== "1" && import.meta.env.VITE_SHI_PRIVATE_COUNCIL_FILM === "1"
+  ? lazy(() => import("./PrivateCouncilFilm").then(module => ({ default: module.PrivateCouncilFilm }))) : null;
 
 const definition = data as CouncilDefinition;
 const fingerprint = rawFingerprint.trim();
@@ -152,6 +154,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
         </section> : reading && lastChoice ? <section className="chen-scene chen-response" key={`answer-${state.history.length}`} data-testid="council-response" aria-live="polite">
           <p className="eyebrow">{label("response")}</p><h3 ref={sceneHeading} tabIndex={-1}>{text(lastChoice.title)}</h3><p className="chen-prose">{text(lastChoice.response)}</p>
           {councilAnswers(state, lastChoice).map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{text(answer.text)}</p>)}
+          {PrivateCouncilFilm && new URLSearchParams(location.search).get("councilFilm") === "review" && <Suspense fallback={<p>Loading private motion review…</p>}><PrivateCouncilFilm reducedMotion={reducedMotion} /></Suspense>}
           {last && <details className="chen-history" data-testid="council-response-changes">
             <summary>{cinemaLabel(locale, "changes")}</summary>{savedChanges(last)}
           </details>}
