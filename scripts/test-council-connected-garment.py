@@ -72,8 +72,14 @@ def main():
     if cloth_receipt:
         assert sha(Path(__file__).with_name("build-council-cloth-garment-study.py")) == cloth_receipt["authorSHA256"]
         assert cloth_receipt["frames"] == 121 and cloth_receipt["pinGroup"] == pin_group
-        assert len(cloth_receipt["cache"]) == 121
-        assert len({cache["file"] for cache in cloth_receipt["cache"]}) == 121
+        settle_frames = cloth_receipt.get("settleFrames", 0)
+        assert isinstance(settle_frames, int) and 0 <= settle_frames <= 60
+        assert cloth_receipt.get("cacheFrameStart", 1) == 1
+        assert cloth_receipt.get("cacheFrameEnd", 121) == 121 + settle_frames
+        assert cloth_receipt.get("visibleFrameOffset", 0) == settle_frames
+        assert cloth_receipt.get("maximumPrerollBoneMatrixError", 0) < 1e-6
+        assert len(cloth_receipt["cache"]) == 121 + settle_frames
+        assert len({cache["file"] for cache in cloth_receipt["cache"]}) == 121 + settle_frames
         for cache in cloth_receipt["cache"]:
             cache_path = (output / cache["file"]).resolve()
             assert cache_path.is_relative_to(output) and sha(cache_path) == cache["sha256"]
@@ -119,14 +125,22 @@ def main():
     if cloth_receipt:
         cloth = obj.modifiers["SHI_GarmentCloth"]
         assert cloth.type == "CLOTH" and cloth.point_cache.is_baked
+        assert cloth.point_cache.frame_start == cloth_receipt.get("cacheFrameStart", 1)
+        assert cloth.point_cache.frame_end == cloth_receipt.get("cacheFrameEnd", 121)
         assert cloth.settings.vertex_group_mass == pin_group and cloth.collision_settings.use_collision
+        assert cloth.settings.compression_stiffness == cloth_receipt.get("compressionStiffness", 15)
         assert body.modifiers["SHI_ClothBodyCollider"].type == "COLLISION"
+        for frame in range(1, 1 + cloth_receipt.get("settleFrames", 0)):
+            bpy.context.scene.frame_set(frame); bpy.context.view_layer.update()
+            assert max(abs(bone.matrix[r][c] - baseline[0][bone.name][r][c])
+                       for bone in rig.pose.bones for r in range(4) for c in range(4)) < 1e-6, "Reopened pre-roll must hold the original first pose"
     rest = [(obj.data.vertices[a].co - obj.data.vertices[b].co).length for a, b in edges]
     assert min(rest) > 1e-7, "Collapsed rest edge"
     minimum_clearance, maximum_edge, minimum_area, pose_error = math.inf, 1, math.inf, 0
     worst, worst_edge, samples = None, None, []
     for frame in range(1, 122):
-        bpy.context.scene.frame_set(frame); bpy.context.view_layer.update()
+        simulation_frame = frame + (cloth_receipt.get("visibleFrameOffset", 0) if cloth_receipt else 0)
+        bpy.context.scene.frame_set(simulation_frame); bpy.context.view_layer.update()
         for bone in rig.pose.bones:
             pose_error = max(pose_error, max(abs(bone.matrix[r][c] - baseline[frame - 1][bone.name][r][c]) for r in range(4) for c in range(4)))
         graph = bpy.context.evaluated_depsgraph_get()
@@ -161,6 +175,8 @@ def main():
               "checkerSHA256": sha(Path(__file__)), "blendSHA256": receipt["blendSHA256"],
               "bodyBasisAndWeightsUnchanged": True, "distalSleeveBasisAndWeightsUnchanged": True,
               "bodyShapeKeyValuesAndCoordinatesUnchanged": True,
+              "visibleFrameOffset": cloth_receipt.get("visibleFrameOffset", 0) if cloth_receipt else 0,
+              "clothCacheFrames": len(cloth_receipt["cache"]) if cloth_receipt else 0,
               "maximumBoneMatrixError": pose_error, "boundaryLoops": loops, "frames": 121,
               "minimumSampledBodyClearanceMetres": minimum_clearance, "maximumEdgeLengthChangeFactor": maximum_edge,
               "minimumFaceAreaSquareMetres": minimum_area, "worstClearance": worst, "worstEdge": worst_edge, "samples": samples,

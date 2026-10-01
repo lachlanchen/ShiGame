@@ -88,3 +88,66 @@ GUI, player or noVNC stack was launched.55GiB RAM available, swap56/71GiB at
 postcheck; no obsolete SHI runtime was available to reclaim and foreign
 services were untouched. No paid generation, public push/deployment or store
 submission occurred. Inherited dirty paths were not edited or staged.
+
+## Stationary pre-roll: sampled startup contact resolved
+
+The builder now supports a bounded0–60-frame stationary pre-roll. An initial
+negative-timeline attempt (v2, handle42834) stopped with exit1: it produced149
+cache files where151 were required, with the initial negative frame and frame0
+absent. Preserve that incomplete private bake; it has no qualification receipt
+or rendered acceptance claim. The cache-count gate was not reduced to match it.
+
+The successor uses only positive simulation frames. In its private copy, every
+rig key and interpolation handle is offset by30 frames. Visible frameN maps to
+simulation frameN+30, so the displayed gesture has its original timing; the
+accepted source action/file is never modified. The builder verifies that the
+pre-roll holds the original first pose. The independent checker also verifies
+that stationary hold after reopening and compares every visible pose to the
+original121-frame/53-bone baseline. No first visible frame is omitted.
+
+V3 builder42642 exit0 produced all151 cache files and four reviewed captures.
+Checker30391 exit1: minimum sampled clearance**+5.685mm** across all121 visible
+frames; maximum bone matrix error0; edge change factor**3.158** still fails at
+visible frame32, edge134–336. Thus the startup sampled contact blocker is removed,
+not the full garment acceptance blocker.
+
+V4 tests compression stiffness30 instead of15, with the same geometry, gesture,
+30-frame pre-roll and unchanged3× acceptance bound. Builder39526 exit0 and
+checker20974 exit1. All151 cache hashes were verified; the reopened pre-roll
+and all visible poses match the original first pose/baseline as applicable.
+
+- Minimum sampled body clearance**+5.685mm**, worst visible frame46.
+- Maximum edge change factor**3.148**, worst visible frame39, edge134–336.
+- Minimum face area0.000032193m²; original body/morphs/distal binds unchanged.
+
+The stiffness change does not materially resolve the compressed join. **Do not
+continue increasing solver stiffness to force this pattern through the gate.**
+Revise the underarm transition rest shape/ease and inspect that specific edge.
+It spans approximately(−.170,−.079,1.140) to(−.198,−.080,1.147)m at rest;
+simulation shortens it to about31.8% of rest length. Keep the positive-timeline
+pre-roll and unchanged original gesture for the next pattern test.
+
+All four v3 and four v4 stills were viewed. Skin exposure is no longer apparent
+at the earlier gap in these views, but collar/belt pieces still detach/intersect
+and the costume remains an untextured engineering carrier. There is no exact
+triangle/self-collision proof, continuous-motion review or cinematic admission.
+
+V3 evidence: `.runtime/council-cloth-garment-20261001-v3`.
+
+- Blend: `37eab028f9aaa07b97383b422a69e06fb3f018d6e80151d41a1ae9ee142ced78`
+- Report: `aa5d9fbe1b6c694ff65cc775d533be33ed5d43fb7c05b1634a8ab899bf925b91`
+
+V4 evidence: `.runtime/council-cloth-garment-20261001-v4`.
+
+- Builder: `04ae813064692bf7c1ee062b74a0b18842dc6ce7e2ef22b26b28a5f4f4b4dcb0`
+- Checker: `804905cfcc6ad6ecd65792fa89096571ae7176e591c1ecb7bf18f8b912cb4c87`
+- Blend: `6538275f390e6de826bb93e256e6b0e73312161761742bee672956c9a3a04326`
+- Report: `8776247afb6f3a4389f9162356661cc026e06710b4b242276c0ce75045730355`
+
+Earlier receipts/reports remain untouched and identify their historical recipe
+hashes; the pre-roll builder has evolved since v1. Commit888b9e9 retains the v1
+recipe/checker for historical reproduction. Current builder defaults preserve
+the no-pre-roll/stiffness15 settings but produce new source hashes.
+
+All owned jobs are terminal, with no GUI or noVNC launched.54GiB RAM available,
+swap56/71GiB at postcheck; other projects and inherited dirty work untouched.
