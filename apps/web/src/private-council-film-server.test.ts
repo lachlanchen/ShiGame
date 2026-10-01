@@ -28,6 +28,7 @@ describe("private council film isolation", () => {
     const result = await request(true, "/__shi_private_council_film__/study.vtt");
     expect(result.statusCode).toBe(200);
     expect(result.body).toContain("WEBVTT");
+    expect(result.body).toContain("offers an open palm and returns to rest");
     expect(result.body).toContain("Not a depiction of this order");
     expect(result.headers["Cache-Control"]).toBe("no-store");
     expect(result.headers["X-Content-Type-Options"]).toBe("nosniff");

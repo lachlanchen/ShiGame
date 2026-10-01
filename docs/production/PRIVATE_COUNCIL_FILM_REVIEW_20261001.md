@@ -21,4 +21,14 @@ LocalVideoGen's studio was unavailable. Its installed H3 lane is not approved fo
 
 ## Emotional quality gate
 
+## Refined study in-game checkpoint
+
+The current private server now pins `.runtime/council-palm-fingers-20261001/speaker-study.mp4`, SHA-256 `149d0d7bf2974bc17693852a4207613eec88ea0cd09351cafdded96267b7daad`, replacing only the older private review movie. Its descriptive caption now says the keeper offers an open palm and returns to rest. Both current and former hashes remain forbidden in production deployment validation. The prior movie and evidence are retained; neither has release admission.
+
+Visible run32083 exited zero: `.runtime/story-review/2026-10-01T02-51-54.374Z`, 83 checks, 26 screenshots, no browser exceptions. Pinned film decoded as four seconds/640×360/silent/nonlooping; explicit playback advanced to 0.242197 seconds, then paused and closed without altering the saved council decision. The route continued through council, Fan Yang and retreat cold resumes to the ending. The playing screenshot was inspected: engineering labelling, captions and pause control remain visible. This is an agent-operated integration check, not human temporal/acting acceptance or native verification.
+
+Status SHA-256: `ae6d086e9587f6219e2cedbc9e94197d735daa15460d06963443833e11b6ae1a`. Eleven focused private-player/server tests and six local motion-artifact tests passed; production build and two build-validator tests passed. Budgets remained JS99.41 KiB, CSS11.87 KiB, deploy26.98 MiB. Vite retains its existing extensionless-config-import future-compatibility warning. Exact owned PIDs1668352/1668450–1668453 and ports4173/5921/6121/9321 were absent after cleanup;67GiB RAM available,70/71GiB swap used. No store or public action occurred.
+
+### Emotional quality gate (unchanged)
+
 The owner's requirement is that the game resonate with people. Film must support an affected person's response to a real saved consequence—not replace that consequence with decoration. Prioritize recurring relationships, remembered promises, unresolved losses and visible debts. Keep historical evidence distinct from reconstructed dialogue and local counterfactual fate. This technical blockout does not establish emotional quality; a coherent scene and human playtest are still required.

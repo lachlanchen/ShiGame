@@ -4,8 +4,8 @@ import { resolve } from "node:path";
 import type { Plugin } from "vite";
 
 export const councilFilmPath = "/__shi_private_council_film__/study.mp4";
-export const councilFilmSHA256 = "ef86dc9babb6e073949b2285a75bd4cc82703cae8eef55a422b42fe476819345";
-const captions = "WEBVTT\n\n00:00.000 --> 00:04.000\nPrivate engineering study: the keeper raises one arm and returns to rest.\nNot a depiction of this order or final acting.\n";
+export const councilFilmSHA256 = "149d0d7bf2974bc17693852a4207613eec88ea0cd09351cafdded96267b7daad";
+const captions = "WEBVTT\n\n00:00.000 --> 00:04.000\nPrivate engineering study: the keeper offers an open palm and returns to rest.\nNot a depiction of this order or final acting.\n";
 
 /** Fixed, loopback-only review artifacts. Never package private media. */
 export function privateCouncilFilmServer(enabled: boolean, root: string): Plugin {
@@ -23,7 +23,7 @@ export function privateCouncilFilmServer(enabled: boolean, root: string): Plugin
       try {
         let bytes: Buffer;
         if (request.url === councilFilmPath) {
-          bytes = await readFile(resolve(root, ".runtime/council-relaxed-gesture-20261001-v2/speaker-study.mp4"));
+          bytes = await readFile(resolve(root, ".runtime/council-palm-fingers-20261001/speaker-study.mp4"));
           if (createHash("sha256").update(bytes).digest("hex") !== councilFilmSHA256) throw new Error("Film identity mismatch");
           response.setHeader("Content-Type", "video/mp4");
         } else {
