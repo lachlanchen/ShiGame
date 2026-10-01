@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "sync:ios": "vite-node scripts/sync-ios-content.ts",
-    "validate:ios-content": "vite-node scripts/validate-ios-content.ts",
+    "validate:ios-content": "node --test scripts/chapter-save-compatibility.test.mjs && node scripts/chapter-save-compatibility.mjs && vite-node scripts/validate-ios-content.ts",
     "build:android-web": "npm run sync:content && VITE_SHI_NATIVE=1 npm --workspace @shi/web run build",
     "build:android": "bash scripts/build-android.sh",
     "dev": "npm run sync:content && npm --workspace @shi/web run dev -- --host 127.0.0.1",

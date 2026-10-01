@@ -63,6 +63,13 @@ remain before signed-candidate qualification. Keep reviewed scene imagery
 and motion tied to this working sequence; its text-heavy layout is not the final
 movie-like experience.
 
+The next [released-save compatibility checkpoint](NATIVE_RELEASED_SAVE_COMPATIBILITY_20261001.md)
+fixes rejection of release-1 iOS saves after prose-only edits. Exact historical
+bytes and unchanged replay expectations are reconstructed before admission;
+183 recreated checkpoints restore without writes. Seventeen native unit tests
+passed. Actual signed app/container upgrades and physical-device tests remain
+open; legacy saves are not silently converted into tactical histories.
+
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release
 saves, explicit versioned progression, honest previews, matching personal

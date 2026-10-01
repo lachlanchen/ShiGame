@@ -42,8 +42,15 @@ struct ChoiceAftermath: Identifiable {
         }
         do {
             if FileManager.default.fileExists(atPath: self.saveURL.path) {
+                let size = try FileManager.default.attributesOfItem(atPath: self.saveURL.path)[.size] as? NSNumber
+                guard let size, size.intValue <= 2_000_000 else {
+                    throw CampaignError.invalid("This chronicle exceeds the supported size. It has been preserved.")
+                }
                 let save = try JSONDecoder().decode(Chronicle.self, from: Data(contentsOf: self.saveURL))
-                guard save.version == 1, save.campaignSHA256 == fingerprint, save.choices.count <= 100 else {
+                let policy = Bundle.main.url(forResource: "chapter-01-save-compatibility.v1", withExtension: "json")
+                    .flatMap { try? Data(contentsOf: $0) }
+                guard save.version == 1, save.choices.count <= 100,
+                      CampaignSaveCompatibility.accepts(saved: save.campaignSHA256, current: fingerprint, policy: policy) else {
                     throw CampaignError.invalid("This chronicle uses different campaign rules. It has been preserved; contact support before starting a new chronicle.")
                 }
                 var restored = try CampaignEngine(campaign: campaign, seed: save.seed)

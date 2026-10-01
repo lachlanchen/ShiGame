@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "campaignId": "chapter-01-daze",
+  "currentCampaignSHA256": "0144569248b68b056d3d711ec87242a19a13eb3fbe5ede9c4a7cd6a6dd8fba58",
+  "reviewStatus": "reviewed-prose-only",
+  "previousCampaigns": [
+    {
+      "campaignSHA256": "445974ec77d789adc0bd54b147c924fffd1fc440668f900667b1086341a2ef0c",
+      "sourceCommit": "f443d6a5be7ea3bc16bfe1aa39a28dcdbf79d960",
+      "releasedConformanceSHA256": "7bc8d1ba6692dcf7849acd879b4ad24963c104ccf9aab72f381d0259f95f9e20",
+      "previousText": [
+        {
+          "path": "/nodes/0/dialogue/en",
+          "previousText": "“If the register reaches the next post, we are nine hundred isolated offenders. If it does not, what are we?” Chen Sheng does not raise his voice. Rain answers for him on the roof tiles."
+        },
+        {
+          "path": "/nodes/0/dialogue/zh-Hans",
+          "previousText": "“名籍若送到下一亭，我们便是九百个各自待罪的人。名籍若送不到——我们又是什么？”陈胜没有高声。雨点替他敲着屋瓦。"
+        },
+        {
+          "path": "/nodes/1/dialogue/en",
+          "previousText": "Aunt Yu puts an empty scoop beside your register. “A just cause can still empty an unjustly full granary. Tell us the rule before hunger writes it for you.”"
+        },
+        {
+          "path": "/nodes/1/dialogue/zh-Hans",
+          "previousText": "妪母把一只空斗放在名籍旁：“义军也能掏空一座不义的粮仓。趁饥饿还没替你定规矩，先把规矩说清楚。”"
+        },
+        {
+          "path": "/nodes/2/dialogue/en",
+          "previousText": "Wu Guang turns the captured drum on its side. “A drum tells everyone to move. It does not tell them why they should follow us after the first mile.”"
+        },
+        {
+          "path": "/nodes/2/dialogue/zh-Hans",
+          "previousText": "吴广把缴来的鼓侧放在地上：“鼓能叫所有人动起来，却不能告诉他们，为何走过第一里后还要跟着我们。”"
+        },
+        {
+          "path": "/nodes/3/dialogue/en",
+          "previousText": "Courier Han looks at the blank space where the register was. “A missing list is already a message. Let me choose who receives it.”"
+        },
+        {
+          "path": "/nodes/3/dialogue/zh-Hans",
+          "previousText": "韩驿使看着名籍原先摆放的空处：“名籍失踪，本身就是一封信。让我选它送到谁手里。”"
+        },
+        {
+          "path": "/nodes/4/dialogue/en",
+          "previousText": "Chen Sheng watches you lay three tally slips on the wet rail: people, provisions, pursuit. “The river will collect one kind of debt before sunset. Which debt will we choose?”"
+        },
+        {
+          "path": "/nodes/4/dialogue/zh-Hans",
+          "previousText": "陈胜看着你把三根筹片摆在湿漉漉的栏木上：人、粮、追兵。“日落前，这条河必会来收一种债。我们选择还哪一种？”"
+        },
+        {
+          "path": "/nodes/5/dialogue/en",
+          "previousText": "Chen Sheng draws no map. He places three stones in the mud. “Power is not inside a stone. It is in what the ground lets the stones do to one another. Keeper—what ground will we make?”"
+        },
+        {
+          "path": "/nodes/5/dialogue/zh-Hans",
+          "previousText": "陈胜没有展开地图，只在泥里放下三块石头：“势不在石中，而在地形让石头彼此如何作用。掌简人——我们要造出怎样的地？”"
+        },
+        {
+          "path": "/nodes/5/storyEchoes/1/text/en",
+          "previousText": "Wu Guang wrings rain from an empty grain sack. “We bought one intact column with tomorrow's meals. The next victory must feed that debt, or the debt will consume us.”"
+        },
+        {
+          "path": "/nodes/5/storyEchoes/1/text/zh-Hans",
+          "previousText": "吴广拧着一只空粮袋里的雨水：“我们用明日的饭换来一支完整的队伍。下一场胜利必须喂饱这笔债，否则它会把我们吃掉。”"
+        }
+      ]
+    }
+  ]
+}

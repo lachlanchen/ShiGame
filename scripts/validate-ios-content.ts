@@ -12,6 +12,9 @@ import { engagementMetricLabels } from "../apps/web/src/engagement-i18n";
 
 const root = resolve(import.meta.dirname, "..");
 const resource = resolve(root, "apps/mobile/ios/SHI/Resources");
+assert((await readFile(resolve(root, "content/compatibility/chapter-01-save-compatibility.v1.json"))).equals(
+  await readFile(resolve(resource, "chapter-01-save-compatibility.v1.json")),
+), "Native save compatibility policy differs from its reviewed source");
 // This draft is only copied by the separate QA project, never sync:ios.
 const productionSpec = await readFile(resolve(root, "apps/mobile/ios/project.yml"), "utf8");
 const qaSpec = await readFile(resolve(root, "apps/mobile/ios/project-qa.yml"), "utf8");

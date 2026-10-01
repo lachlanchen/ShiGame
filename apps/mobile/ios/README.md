@@ -39,6 +39,15 @@ physical-device qualification or availability to TestFlight testers.
 
 ## Numbered beta archives
 
+Before qualifying an upgrade, see the [released-save continuity fix](../../../docs/production/NATIVE_RELEASED_SAVE_COMPATIBILITY_20261001.md).
+Release-1 saves now survive the reviewed prose-only campaign revision. Loading
+is write-free; an explicit next order/acknowledgement writes the current hash.
+Unknown revisions still fail closed. This has 183 recreated-checkpoint tests,
+not yet a signed store-app/container upgrade. Validate the exact inverse-prose
+manifest with `npm run validate:ios-content`; on Mac also run
+`bash scripts/test-native-save-compatibility.sh`. The unit suites are
+`SHITests/ReleasedChronicleUpgradeTests` and `SHITests/AftermathTests`.
+
 Use `scripts/build-ios.sh` on the qualified signing Mac after syncing a frozen
 source snapshot and generated resources into an isolated SHI staging directory.
 Set `SHI_ROOT` to that directory, `SHI_VERSION` (default1.0.0), and explicitly

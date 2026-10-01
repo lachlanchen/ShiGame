@@ -14,6 +14,7 @@ const target = resolve(root, "apps/mobile/ios/SHI/Resources");
 await mkdir(target, { recursive: true });
 const source = resolve(root, "content/campaigns/chapter-01-daze.json");
 await copyFile(source, resolve(target, "campaign.json"));
+await copyFile(resolve(root, "content/compatibility/chapter-01-save-compatibility.v1.json"), resolve(target, "chapter-01-save-compatibility.v1.json"));
 await copyFile(resolve(root, "content/councils/chen-council.v1.json"), resolve(target, "chen-council.v1.json"));
 await copyFile(resolve(root, "content/councils/fanyang-guarantee.v1.json"), resolve(target, "fanyang-guarantee.v1.json"));
 await copyFile(resolve(root, "content/presentation/viewpoints.v1.json"), resolve(target, "viewpoints.v1.json"));

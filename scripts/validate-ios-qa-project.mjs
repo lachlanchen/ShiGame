@@ -19,11 +19,12 @@ for (const [path, mode] of projects) {
   const sources = files("PBXSourcesBuildPhase"), resources = files("PBXResourcesBuildPhase");
   for (const name of ["SHIApp.swift", "NativeCouncilView.swift", "NativeFanyangView.swift", "NativeRetreatView.swift", "RetreatPreviewContent.swift", "NativeRefugeView.swift", "RefugeContinuationSession.swift"])
     assert(sources.includes(name), `Missing compiled source ${name}`);
-  for (const name of ["campaign.json", "chen-council.v1.json", "fanyang-guarantee.v1.json", "viewpoints.v1.json", "ui.json", "Assets.xcassets"])
+  for (const name of ["campaign.json", "chapter-01-save-compatibility.v1.json", "chen-council.v1.json", "fanyang-guarantee.v1.json", "viewpoints.v1.json", "ui.json", "Assets.xcassets"])
     assert(resources.includes(name), `Missing inherited resource ${name}`);
   for (const name of drafts) assert.equal(resources.includes(name), qa, `Wrong draft resource boundary: ${name}`);
   for (const name of crossingFiles) assert.equal(resources.includes(name), crossing, `Wrong crossing resource boundary: ${name}`);
-  for (const name of ["CrossingCampaignSession.swift", "CrossingPreviewContent.swift", "NativeCrossingCampaignView.swift"])
+  assert(!resources.includes("chapter-01-replays.v1.json"), "Test fixture leaked into the app bundle");
+  for (const name of ["CampaignSaveCompatibility.swift", "CrossingCampaignSession.swift", "CrossingPreviewContent.swift", "NativeCrossingCampaignView.swift"])
     assert(sources.includes(name), `Missing crossing source ${name}`);
   const configs = objects[target.buildConfigurationList].buildConfigurations.map(id => objects[id]);
   assert(configs.length >= 2, "Inspect both Debug and Release");

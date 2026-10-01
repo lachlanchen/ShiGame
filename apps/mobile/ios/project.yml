@@ -42,7 +42,10 @@ targets:
   SHITests:
     type: bundle.unit-test
     platform: iOS
-    sources: [UnitTests]
+    sources:
+      - path: UnitTests
+      - path: ../../../content/conformance/chapter-01-replays.v1.json
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.lazying.shi.tests

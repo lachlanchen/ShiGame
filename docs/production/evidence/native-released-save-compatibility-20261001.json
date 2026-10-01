@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-01",
+  "status": "released-format-save-loader-verified-not-store-upgrade",
+  "baseCommit": "c6dcd3bfeddabbc5e5aacdd5aa77071e2c328b30",
+  "previousCampaignSHA256": "445974ec77d789adc0bd54b147c924fffd1fc440668f900667b1086341a2ef0c",
+  "currentCampaignSHA256": "0144569248b68b056d3d711ec87242a19a13eb3fbe5ede9c4a7cd6a6dd8fba58",
+  "historicalSourceCommit": "f443d6a5be7ea3bc16bfe1aa39a28dcdbf79d960",
+  "proof": "Reversing exactly 14 prose-only tokens recovers the exact published campaign bytes; reverting only the fixture campaign hash recovers its exact original SHA",
+  "verification": {
+    "nodeCompatibilityTests": 4,
+    "nativePolicyChecks": 13,
+    "nativeUnitTestsPassed": 17,
+    "nativeUnitTestsFailed": 0,
+    "nativeUnitTestsSkipped": 0,
+    "nativeUnitSuites": ["ReleasedChronicleUpgradeTests (5)", "AftermathTests (12)"],
+    "recreatedReleasedCheckpoints": 183,
+    "referenceRoutes": 46,
+    "device": "iPhone SE (3rd generation) simulator, iOS 26.3.1 (23D8133), x86_64",
+    "toolchain": "Xcode 26.3 / Swift 6.2.4",
+    "hostBundle": "art.lazying.shi.crossingqa",
+    "typechecks": ["production", "SHI_RETREAT_PREVIEW", "SHI_CROSSING_PREVIEW"],
+    "generatedProjectAudit": "Production and both QA projects include compatibility source/resource; reference fixture excluded from app resources; preview flags/bundles isolated",
+    "localBuild": "npm run build passed, including 83 core and 390 web tests and deployment budgets"
+  },
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/SHIApp.swift": "91b087404f9d866542ca57ce638ff2ffffa968cd721985fae0278008a8819b43",
+    "apps/mobile/ios/SHI/CampaignSaveCompatibility.swift": "afca58e48899724bfe7293556584a7d8fbca7438b1f2d8166635626b0dc74fa0",
+    "apps/mobile/ios/UnitTests/ReleasedChronicleUpgradeTests.swift": "b32fe543d13bb66c26f72e3e4049c1bc2cbb31f6fcda4c6feb18fd905a9ef9b8",
+    "content/compatibility/chapter-01-save-compatibility.v1.json": "26c8de2d84603c761564c681293e26986f74b3d19610c55b4652eaae60bcc339",
+    "scripts/chapter-save-compatibility.mjs": "66572239631c4f85a4f2b47dee90f839d6edacf6b29ea2b6defbfe503eef4fd4"
+  },
+  "verifiedSourceArchives": ["60a733f11a25f29959521a07800a45b63ff4381350504802364bb6eb0caca6c7", "18c6008e69a1c1a440dca71be4a228d33e3f8b31773274410980d63955fe52da"],
+  "boundaries": [
+    "Recreated release-format saves; no owner save accessed or changed",
+    "Not a signed install/update, physical-device test or TestFlight upload",
+    "No implicit conversion to revised tactical crossing; continuation identity stays absent for legacy chronicles",
+    "No new prose/rules/media or intermediate unreleased hash admission",
+    "All owned simulator/build jobs stopped; existing shared services preserved"
+  ]
+}
