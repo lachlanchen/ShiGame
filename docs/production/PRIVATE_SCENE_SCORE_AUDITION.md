@@ -51,3 +51,23 @@ Final visible run: `.runtime/story-review/2026-10-01T01-34-06.594Z`, 58 passing 
 This is browser decoding/playback and layout evidence, not verification of physical speakers or a full listening pass. Soundtrack emotional fit and admission remain open. Exact owned children and ports were verified absent after cleanup. Evidence summary: `docs/production/evidence/private-score-playback-web-20261001.json`.
 
 After the repairs, all 278 web tests, web TypeScript checks and production build/budget checks pass. The private score remains excluded from the production bundle.
+
+## Interruption continuity — October 1 follow-up
+
+The review player now tracks native foreground permission independently of
+document visibility. An inactive native window cannot request another fetch/play;
+foregrounding alone does not restart music. Actual media pause events cancel
+pending play intent and update the displayed status, including pauses initiated
+outside the component. A late play promise cannot override a pause or a media
+failure. Explicit resume keeps the current playhead and reuses the verified cue.
+
+Verification:11 focused player tests and the complete333-test/28-file web suite
+passed; TypeScript and production build/budget checks passed. Three regressions
+cover external pause during pending play, inactive/active native transitions,
+and media failure before play resolves. No new browser or physical-speaker
+listening evidence is claimed for this follow-up.
+
+The Musia production skill's listening and provenance gates remain in effect.
+CandidateB bytes, other candidates, generation settings and release admission
+are unchanged. This fixes playback consent/continuity for scene review; it does
+not approve emotional fit, similarity, commercial rights or a shipping mix.

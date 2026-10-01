@@ -11,21 +11,26 @@ export function PrivateScoreAudition() {
   const loading = useRef(false);
   const abort = useRef<AbortController | null>(null);
   const alive = useRef(true);
+  const nativeActive = useRef(true);
   const playRequest = useRef(0);
   const [status, setStatus] = useState("idle");
   const [volume, setVolume] = useState(0.2);
   const volumeRef = useRef(volume);
-  const pause = () => {
-    playRequest.current++; abort.current?.abort(); audio.current?.pause();
+  const cancelPlay = () => {
+    playRequest.current++; abort.current?.abort();
     if (alive.current) setStatus(current => current === "playing" || current === "loading" ? "paused" : current);
   };
+  const pause = () => { cancelPlay(); audio.current?.pause(); };
   useEffect(() => {
     alive.current = true;
     const alreadyActive = document.body.classList.contains("score-review-active");
     document.body.classList.add("score-review-active");
     const player = audio.current!;
     const visibility = () => { if (document.hidden) pause(); };
-    const native = (event: Event) => { if (!(event as CustomEvent<boolean>).detail) pause(); };
+    const native = (event: Event) => {
+      nativeActive.current = Boolean((event as CustomEvent<boolean>).detail);
+      if (!nativeActive.current) pause();
+    };
     document.addEventListener("visibilitychange", visibility);
     window.addEventListener("pagehide", pause);
     window.addEventListener("shi-native-active", native);
@@ -40,7 +45,7 @@ export function PrivateScoreAudition() {
     };
   }, []);
   const play = async () => {
-    if (loading.current) return;
+    if (loading.current || document.hidden || !nativeActive.current) return;
     loading.current = true;
     const request = ++playRequest.current;
     const player = audio.current!;
@@ -53,7 +58,7 @@ export function PrivateScoreAudition() {
         if (bytes.byteLength > 2_000_000) throw new Error("Oversized private recording");
         const hash = await crypto.subtle.digest("SHA-256", bytes);
         if (Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, "0")).join("") !== sha256) throw new Error("Wrong recording");
-        if (!alive.current || abort.current.signal.aborted || request !== playRequest.current) return;
+        if (!alive.current || document.hidden || !nativeActive.current || abort.current.signal.aborted || request !== playRequest.current) return;
         // Same-origin media complies with media-src 'self'. The fixed server
         // endpoint rechecks the pinned hash for the media request as well.
         player.src = scoreURL;
@@ -62,7 +67,7 @@ export function PrivateScoreAudition() {
       player.volume = volumeRef.current;
       if (player.ended) player.currentTime = 0;
       await player.play();
-      if (!alive.current || document.hidden || request !== playRequest.current) { player.pause(); return; }
+      if (!alive.current || document.hidden || !nativeActive.current || request !== playRequest.current) { player.pause(); return; }
       setStatus("playing");
     } catch { if (alive.current && request === playRequest.current) setStatus("unavailable"); }
     finally { loading.current = false; }
@@ -71,7 +76,7 @@ export function PrivateScoreAudition() {
     <summary aria-label="Score B · private audition / 配乐试听"><span className="audition-icon" aria-hidden="true">♫</span><span className="audition-label">Score B · private audition / 配乐试听</span></summary>
     <p>ACE-Step / Musia · seed 926102 · 45 s. Working candidate only: listening, similarity, rights and scene-mix approval pending. Not a release asset.</p>
     <p>开发试听，未通过听审与商用准入。一次播放，不循环；场景切换不重启，不自动作出选择。其他候选与原音频保留。</p>
-    <audio ref={audio} preload="none" onEnded={() => { if (alive.current) setStatus("ended"); }} onError={() => { if (alive.current) setStatus("unavailable"); }} />
+    <audio ref={audio} preload="none" onPause={cancelPlay} onEnded={() => { if (alive.current) setStatus("ended"); }} onError={() => { if (alive.current) { cancelPlay(); setStatus("unavailable"); } }} />
     <div><button type="button" disabled={status === "loading"} onClick={() => { void play(); }}>Play / 播放</button>
       <button type="button" onClick={pause}>Pause / 暂停</button></div>
     <label>Audition level / 试听音量 <input type="range" min="0" max="0.35" step="0.01" value={volume} onChange={event => { const next = Number(event.target.value); volumeRef.current = next; setVolume(next); if (audio.current) audio.current.volume = next; }} /></label>

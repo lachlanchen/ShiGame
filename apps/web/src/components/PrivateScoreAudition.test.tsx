@@ -16,6 +16,47 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 describe("private scene score audition", () => {
+  it("honours external pause while a play promise is pending and preserves playhead on explicit resume", async () => {
+    let finish!: () => void;
+    vi.mocked(HTMLMediaElement.prototype.play).mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+    const view = render(<PrivateScoreAudition />);
+    const player = view.container.querySelector("audio")!;
+    fireEvent.click(view.getByText("Play / 播放"));
+    await waitFor(() => expect(player.play).toHaveBeenCalledTimes(1));
+    player.currentTime = 12;
+    fireEvent.pause(player); finish();
+    await waitFor(() => expect(player.pause).toHaveBeenCalled());
+    expect(view.getByTestId("private-score-audition").dataset.status).toBe("paused");
+    fireEvent.click(view.getByText("Play / 播放"));
+    await waitFor(() => expect(view.getByTestId("private-score-audition").dataset.status).toBe("playing"));
+    expect(player.currentTime).toBe(12);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+  it("blocks inactive native playback and never resumes automatically on foregrounding", async () => {
+    const view = render(<PrivateScoreAudition />);
+    fireEvent(window, new CustomEvent("shi-native-active", { detail: false }));
+    fireEvent.click(view.getByText("Play / 播放"));
+    expect(fetch).not.toHaveBeenCalled();
+    fireEvent(window, new CustomEvent("shi-native-active", { detail: true }));
+    expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+    fireEvent.click(view.getByText("Play / 播放"));
+    await waitFor(() => expect(view.getByTestId("private-score-audition").dataset.status).toBe("playing"));
+    fireEvent(window, new CustomEvent("shi-native-active", { detail: false }));
+    expect(view.getByTestId("private-score-audition").dataset.status).toBe("paused");
+    fireEvent.click(view.getByText("Play / 播放"));
+    fireEvent(window, new CustomEvent("shi-native-active", { detail: true }));
+    expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
+  });
+  it("keeps media failure visible when a pending play subsequently resolves", async () => {
+    let finish!: () => void;
+    vi.mocked(HTMLMediaElement.prototype.play).mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+    const view = render(<PrivateScoreAudition />);
+    fireEvent.click(view.getByText("Play / 播放"));
+    await waitFor(() => expect(HTMLMediaElement.prototype.play).toHaveBeenCalled());
+    fireEvent.error(view.container.querySelector("audio")!); finish();
+    await waitFor(() => expect(HTMLMediaElement.prototype.pause).toHaveBeenCalled());
+    expect(view.getByTestId("private-score-audition").dataset.status).toBe("unavailable");
+  });
   it("does not fetch or play until requested, keeps the same recording across renders, and never loops", async () => {
     const view = render(<PrivateScoreAudition />);
     const player = view.container.querySelector("audio")!;
