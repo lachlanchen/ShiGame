@@ -85,7 +85,13 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
           setStatus("playing");
         }}
         onEnded={() => { wantedRef.current = false; requestRef.current += 1; setStatus("ended"); }}
-        onPause={() => setStatus((current) => current === "playing" ? "paused" : current)}
+        onPause={() => {
+          // Browser/native controls may pause without using our button. Revoke
+          // intent too, so a pending play promise cannot restart the scene.
+          wantedRef.current = false;
+          requestRef.current += 1;
+          setStatus((current) => current === "playing" || current === "starting" ? "paused" : current);
+        }}
         onError={() => { wantedRef.current = false; requestRef.current += 1; videoRef.current?.pause(); setStatus("unavailable"); }}>
         <track kind="captions" src={asset.captions.src} srcLang={asset.captions.language} label={asset.captions.label} default />
       </video>

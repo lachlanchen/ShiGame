@@ -12,6 +12,33 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe("silent film playback intent", () => {
+  it("honours an external pause while play is still pending", async () => {
+    let resolve!: () => void;
+    vi.mocked(HTMLMediaElement.prototype.play).mockImplementation(() => new Promise<void>(done => { resolve = done; }));
+    const view = render(<SilentFilm asset={asset} locale="en" />);
+    fireEvent.click(view.getByRole("button", { name: "Play scene" }));
+    fireEvent.pause(view.container.querySelector("video")!);
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("paused");
+    vi.mocked(HTMLMediaElement.prototype.pause).mockClear();
+    await act(async () => resolve());
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("paused");
+    expect(HTMLMediaElement.prototype.pause).toHaveBeenCalledTimes(1);
+    vi.mocked(HTMLMediaElement.prototype.play).mockResolvedValueOnce(undefined);
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Play scene" })));
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("playing");
+    expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not accept a playing event after an external pause", async () => {
+    const view = render(<SilentFilm asset={asset} locale="en" />);
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Play scene" })));
+    const video = view.container.querySelector("video")!;
+    fireEvent.pause(video);
+    vi.mocked(HTMLMediaElement.prototype.pause).mockClear();
+    fireEvent.playing(video);
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("paused");
+    expect(HTMLMediaElement.prototype.pause).toHaveBeenCalledTimes(1);
+  });
   it("keeps a restored page paused until the next explicit play", async () => {
     const view = render(<SilentFilm asset={asset} locale="en" />);
     await act(async () => fireEvent.click(view.getByRole("button", { name: "Play scene" })));
