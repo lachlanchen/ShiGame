@@ -144,8 +144,10 @@ Follow-up: signed8 passed the corrected chapter arrivals and offline council/
 Fan Yang continuation, but exposed clipped interlude headings. The source inset
 fix passed three-layout production review. [Signed9](ANDROID_READING_INSET_20261002.md)
 now preserves the 8-to-9 saved route and verifies readable headings, a fresh
-three-order Chen replay and cold-restored response. Neither candidate has been
-uploaded. Finish exact9 complete-route/upgrade qualification and current-track
+three-order Chen replay and cold-restored response. Its subsequent fresh offline
+ten-order route also reaches the gate ending, with a shared-ledger payoff and
+cold-restored chapter/council/surrender state. Neither candidate has been
+uploaded. Finish retained-release upgrade qualification and current-track
 reconciliation before the existing-group beta; do not treat build8 route evidence
 as a fresh build9 run or silently widen the release to gated story content.
 
