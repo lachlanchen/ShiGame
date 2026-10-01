@@ -18,9 +18,9 @@ Signed release unit/lint tasks, APK/AAB production, identity/certificate checks 
 
 ## Boundaries and next gate
 
-Build8's fresh complete chapter/Fan Yang and offline qualification remains [separate evidence](SCENE_ARRIVAL_20261002.md). The initial build9 run above establishes the targeted signed correction, upgrade preservation and new Chen/cold-response behavior. The fresh exact9 full route below is subsequent evidence. Neither run establishes direct production1-to9 upgrade, Play-delivered signing chain, physical-device performance, all-locales acceptance or new cinematic assets.
+Build8's fresh complete chapter/Fan Yang and offline qualification remains [separate evidence](SCENE_ARRIVAL_20261002.md). The initial build9 run above establishes the targeted signed correction, upgrade preservation and new Chen/cold-response behavior. The fresh exact9 full route and direct retained-APK upgrade below are subsequent evidence. No run establishes the Play-delivered signing chain, physical-device performance, all-locales acceptance or new cinematic assets.
 
-The read-only Play preflight at `2026-10-01T21:09:28.960Z` showed only uploaded versionCode1. Build9 was unused, not reserved. No provider upload, internal-track change or production promotion occurred. Complete the remaining retained-release upgrade checks and reconcile current internal-track state before distribution under the existing beta authorization. Native iOS signing and testing remain independent.
+The original read-only Play preflight at `2026-10-01T21:09:28.960Z` showed only uploaded versionCode1. Build9 was unused, not reserved. No provider upload, internal-track change or production promotion occurred. The subsequent direct-upgrade and track readback below narrow the remaining distribution work. Native iOS signing and testing remain independent.
 
 The exact owned emulator was stopped after capture, and its ports were verified closed. No resident SHI review desktop remains. The broader objective is still a coherent, consequential Tongjian-based cinematic game; this checkpoint removes a reading interruption rather than adding story or claiming completion.
 
@@ -47,3 +47,15 @@ After the tenth order, force-stop and cold launch preserved the chapter ending/s
 - [New route's ending](evidence/android9-full-ending-20261002.png)
 
 This closes the fresh complete-route gate for one English exact9 emulator path. It does not establish all branches/locales, direct production1-to9 upgrade, physical-device acceptance or distribution. The owned emulator was stopped after evidence capture; the completed new route is retained for subsequent testing.
+
+## Follow-up: direct retained release1 → signed9 upgrade
+
+A separate SHI-owned API34 AVD reused the installed system image, preserving the previous completed9 route untouched. The retained original signed1 APK (`ae70607f1efb7cf3a4ef3c27aaafcac12d8ebdfe5d04a1e51ff0fa484c48f653`) was installed without rebuilding it. Normal UI play committed `read-the-names`, seed `A066DC1C`, with resources `41 / 54 / 28 / 67 / 58` and the protection commitment.
+
+After force-stop, `adb install -r` installed exact9 without uninstall, data clearing or intermediate candidate. The package readback changed versionCode1 → 9 while retaining `firstInstallTime 2026-10-02 05:39:13`; the update time was `05:42:14`. Continue restored the same seed, commitment and all five resources. Release1's transient consequence overlay was not migrated as an unread response; its committed consequence remained in the journal.
+
+The remaining three orders—grain tallies, households first, village covenants—reached Deep Roots with protection kept and `52 / 100 / 18 / 100 / 97`. Cold launch retained that ending, all four decisions appeared exactly once in the journal, and the route opened a fresh Chen council. Six assertion groups passed; resumed scene, journal and cold-ending images were visually inspected. [Preserved journal](evidence/android9-direct-upgrade-record-20261002.png) · [Cold-restored ending](evidence/android9-direct-upgrade-ending-20261002.png).
+
+Read-only provider checks during this checkpoint recorded only uploaded build1 at `2026-10-01T21:39:15.194Z` and an active Internal testing track at `21:40:30.929Z`, with `1.0.0 (1) - Chapter I internal` available to internal testers. No upload, tester-list change, track edit or promotion was performed. Recheck before writing; build numbers are not reserved by viewing them.
+
+This closes direct retained-APK upgrade qualification, not Play-delivered re-signing or physical-device acceptance. Initial incomplete UI dumps were rejected and retried against the same running app; no blank/stale capture was accepted. The exact emulator was stopped after capture; its saved upgraded route is retained. Next distribute the qualified candidate only under the existing internal-beta scope, with tester membership and final provider state verified, then use that delivered build for physical-device feedback. Public production remains build1.

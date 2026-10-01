@@ -147,8 +147,10 @@ now preserves the 8-to-9 saved route and verifies readable headings, a fresh
 three-order Chen replay and cold-restored response. Its subsequent fresh offline
 ten-order route also reaches the gate ending, with a shared-ledger payoff and
 cold-restored chapter/council/surrender state. Neither candidate has been
-uploaded. Finish retained-release upgrade qualification and current-track
-reconciliation before the existing-group beta; do not treat build8 route evidence
+uploaded. Direct retained signed1-to9 upgrade now also passes: original decision,
+seed/resources, continued ending, cold journal and Chen entry survive without
+clearing data. The internal track still lists1 available to testers. Verify the
+existing tester scope and final provider state for distribution; do not treat build8 route evidence
 as a fresh build9 run or silently widen the release to gated story content.
 
 Maintain native SwiftUI iOS, Android, web and the existing Unreal client with
