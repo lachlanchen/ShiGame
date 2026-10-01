@@ -497,7 +497,6 @@ for (const receipt of [
   wetRegisterRuntime.admissionBoundary?.sourceReceipt,
   ...Object.values(wetRegisterRuntime.sourceContractReceipts ?? {}),
   ...(wetRegisterRuntime.toolchainReceipts ?? []),
-  ...(wetRegisterRuntime.compiledSourceSnapshot ?? []),
 ]) {
   if (!receipt?.file || !Number.isInteger(receipt.bytes) || receipt.bytes <= 0
       || !/^[0-9a-f]{64}$/.test(receipt.sha256 ?? "")) {
@@ -512,6 +511,32 @@ for (const receipt of [
   } catch {
     errors.push(`wet-register source/tool/compiled receipt is missing: ${receipt.file}`);
   }
+}
+const historicalWetRegisterCompiledSources = {
+  "apps/unreal/Source/SHI/ShiCouncilWetRegisterInteractionModel.h": [10389, "c5201111f5c7be0fa98f02e544ebae7aed86cfac151446c3d3e8d1d7a95fee4f"],
+  "apps/unreal/Source/SHI/ShiCouncilWetRegisterInteractionModel.cpp": [37160, "710cf639d2f297b4864a2dd3df3b64dcd0d72ea4357c898e740a87999d6f3707"],
+  "apps/unreal/Source/SHI/ShiCouncilFigure.h": [4691, "28abdf547b95c1cf16a45417925fe9f4c94cda0b7a8396bee64eed4653006a95"],
+  "apps/unreal/Source/SHI/ShiCouncilFigure.cpp": [64630, "bb4ea98a4b6737848ad6e03eee86d8476c049759d3dc2f93a21d7ae989a8a955"],
+  "apps/unreal/Source/SHI/ShiGameMode.h": [9245, "3db86a940e9afc090ebebe888449c14badb45709cac8854dcc683033272e4de9"],
+  "apps/unreal/Source/SHI/ShiGameMode.cpp": [84106, "a52b58dfcad86071ee06145146f03d05c78ab946ba3a3cba6782f77d4e3ae829"],
+  "apps/unreal/Source/SHI/Private/Tests/ShiCampaignAutomationTest.cpp": [175862, "c59e19c6fffdabae5a843a31bc56dbd9f87c30c78f3b594d1aa36d41a9753580"],
+  "apps/unreal/Config/DefaultGame.ini": [1360, "353c6b5169408ab82bd7e55679531ce33ec253b8799b653385b2885c8787cf31"],
+};
+const wetRegisterCompiledSemantics = wetRegisterRuntime.compiledSourceSnapshotSemantics;
+if (wetRegisterCompiledSemantics?.status !== "historical-package-source-snapshot"
+    || wetRegisterCompiledSemantics?.snapshotBoundary !== "package-build-time"
+    || wetRegisterCompiledSemantics?.packageRevision !== wetRegisterRuntime.cookContract?.packageRevision
+    || wetRegisterCompiledSemantics?.immutable !== true
+    || wetRegisterCompiledSemantics?.currentWorkingTreeEqualityExpected !== false
+    || wetRegisterCompiledSemantics?.currentWorkingTreeValidation !== "separate-current-build-required")
+  errors.push("wet-register compiled source evidence loses its immutable historical-package boundary");
+if ((wetRegisterRuntime.compiledSourceSnapshot ?? []).map((receipt) => receipt.file).sort().join("\n")
+      !== Object.keys(historicalWetRegisterCompiledSources).sort().join("\n"))
+  errors.push("wet-register historical compiled source snapshot inventory drifted");
+for (const receipt of wetRegisterRuntime.compiledSourceSnapshot ?? []) {
+  const historical = historicalWetRegisterCompiledSources[receipt.file];
+  if (!historical || receipt.bytes !== historical[0] || receipt.sha256 !== historical[1])
+    errors.push(`wet-register historical compiled source receipt drifted: ${receipt.file}`);
 }
 if (Object.keys(wetRegisterRuntime.sourceContractReceipts ?? {}).length !== 4
     || wetRegisterRuntime.toolchainReceipts?.length !== 6

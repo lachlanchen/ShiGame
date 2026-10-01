@@ -2,38 +2,31 @@
 
 [![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
 
-# SHI · 權力之形 / 《勢》
+# SHI · The Shape of Power / 《势》
 
-*一部關於人、地、時、信念、糧道與制度如何共同成為權力的美麗而嚴謹的歷史策略敘事。*
+*讓決策真正改變人的命運的歷史遊戲。*
 
-[![Validate SHI](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml/badge.svg)](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml) [![Play pre-alpha](https://img.shields.io/badge/Play-Web_Pre--alpha-B8945B?style=flat-square)](https://lachlanchen.github.io/ShiGame/) [![Unity 6](https://img.shields.io/badge/Unity-6000.0.80f1-222?style=flat-square&logo=unity)](../apps/unity/) [![Sponsor](https://img.shields.io/github/sponsors/lachlanchen?style=flat-square)](https://github.com/sponsors/lachlanchen)
-
-SHI 是正式製作中的遊戲，而非一次性展示。第一段可玩章節始於公元前 209 年的大澤鄉雨夜：玩家扮演一名虛構的戍卒名籍吏，決定一群受困之人如何成為政治運動。更長的戰役將走向秦亡與楚漢相爭，但不會把項羽、劉邦或後來的勝負寫成必然命運。
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
 | [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=kofi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
-![SHI 可玩標題畫面](../docs/production/evidence/web-01-title-en.png)
+![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## SHI 的獨特之處
+## 遊戲
 
-- 糧、信、勢、民與險共同構成局面，不被壓成一個「戰力」數字。
-- 選擇會製造反制與整頓：速度帶來飢餓，合法性帶來債務，隱秘也會削弱信心。
-- 歷史記載、後世編纂、兵學視角與戲劇性重構明確分開。
-- 網頁端與真正的 Unity 6 工程讀取同一份戰役資料。
-- 十一種介面語言、阿拉伯語 RTL 和資產來源審查已建立。
+SHI從公元前209年大澤鄉的雨夜開始。你是一位虛構的徵發名冊記錄者：糧食、信任、同伴和暴露風險，決定哪些承諾能夠兌現。選擇帶來代價、對手的應對和恢復機會，而非必然的勝利。《資治通鑑》是歷史脊梁；重構對白和改寫命運的分支明確標為戲劇創作，不冒充史書原文。
 
-## 當前內容
+## 客戶端
 
-| 路徑 | 已實現內容 |
-| --- | --- |
-| [`apps/web`](../apps/web/) | 可玩網頁端、存檔、史料簿、決策記錄、移動端與 RTL |
-| [`apps/unity`](../apps/unity/) | Unity 6 與 3D 軍議圖；Linux/WebGL 編輯器已安裝，授權登入仍是公開阻塞項 |
-| [`content`](../content/) | 6 場景、15 選擇、5 資源、整頓與 3 個結局 |
-| [`docs`](../docs/) | 設計、史料、架構、本地化、美術、測試、發布與品質關卡路線圖 |
+Web採用React/Three.js與確定性的TypeScript規則。iOS是SwiftUI/SceneKit/Foundation原生應用，Android封裝離線Web遊戲。Unreal 5.8負責電影式桌面體驗；Unity 6保留共享內容基礎。各端使用版本化戰役資料，不各自編造獨立的歷史事實。
 
-## 快速開始
+[Web](../apps/web/) · [iOS](../apps/mobile/ios/) · [Android](../apps/mobile/android/) · [Unreal](../apps/unreal/) · [Unity](../apps/unity/) · [Rules](../packages/game-core/) · [Content](../content/)
+
+## 本地執行
+
+需要Node.js 22+。先本地執行，再驗證並建置。原生行動端與引擎的設定見對應目錄；Web建置成功不等於行動簽名套件通過測試，也不能替代商店處理與測試者實際可用的回執。
 
 ```bash
 npm install
@@ -42,17 +35,25 @@ npm run validate
 npm run build
 ```
 
-## 架構與研究基線
+http://127.0.0.1:5173
 
-戰役 JSON 是唯一敘事真源，由確定性 TypeScript 核心與 Unity 6 共用。私人書籍、OCR、聊天與完整備忘錄不進入 Git。詳見[遊戲設計](../docs/design/GAME_DESIGN_DOCUMENT.md)、[史料政策](../docs/history/SOURCE_POLICY.md)與[品質關卡路線圖](../docs/production/ROADMAP.md)。
+## 電影式體驗審查
 
-## 構建與驗證
+流暢意味著命令回應及時、對應反應播放前完成可靠存檔，並由玩家明確繼續。音樂和影片必須保留字幕、暫停、跳過、同意和減少動態效果。原創角色的相貌與服裝需要一致。Musia、LocalVideoGen和Blender試作在來源、授權、畫面及聲音審查通過前保持私有，不能只因為生成成功就進入遊戲。
 
-自動驗證涵蓋戰役圖、引用、翻譯鍵、規則、型別與測試；可見 noVNC/Chrome 另通過 50 項玩法、壓力應手、鍵盤、RTL、行動版與存檔檢查。證據見[測試說明](../docs/production/PLAYTESTING.md)。
+[Design](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Sources](../docs/history/SOURCE_POLICY.md) · [Playtests](../docs/production/PLAYTESTING.md) · [Roadmap](../docs/production/ROADMAP.md)
+
+## 發行邊界
+
+截至2026年10月1日，已發布行動build 1與新開發內容分開。Apple發布於9月30日核實；Google需要讀取最新狀態。議事、范陽、撤退與避難的開發已有範圍限定的測試，但部分後續內容僅供QA。角色研究還不是最終電影級美術，測試不代替人工審查與實機效能。GitHub在驗證通過的里程碑更新；內部測試還須簽名、升級測試及確認測試者可安裝。不承諾未經設定的每日自動上傳。
+
+[Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 
 ## 引用
 
-研究或教學使用請引用 [`CITATION.cff`](../CITATION.cff)。
+研究使用請引用CITATION.cff。公開可見不授予再利用許可；私有書籍、密鑰和生成快取不進入Git。請區分歷史證據、遊戲規則、視覺試作及正式發行的版本，不將工程通過稱作藝術完成。
+
+[CITATION.cff](../CITATION.cff) · [LICENSE.md](../LICENSE.md)
 
 ```bibtex
 @software{chen_shi_2026,
@@ -63,6 +64,4 @@ npm run build
 }
 ```
 
-## 狀態與範圍
-
-2026-08-09 前期系統版本。網頁章節現有確定性的壓力應手、存檔遷移、鍵盤操作、全路線驗證與 50 項可見測試；真正的 Linux/WebGL Unity 編輯器已安裝並由 Hub 識別。原生導入與編譯仍需帳戶持有人登入並啟用 Unity 授權；Unity 6 生產版本鎖定不變。雙端構建、史料、本地化、資產、試玩與發布關卡真正通過前，專案不會宣稱完成。
+Copyright © 2026 Lachlan Chen.

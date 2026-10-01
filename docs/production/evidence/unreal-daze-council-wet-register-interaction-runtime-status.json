@@ -426,6 +426,14 @@
       "sha256": "22aa422dc72d225d92c7d1e656947b0b4917dc1a1327e1ac7952fcec0a7cc513"
     }
   ],
+  "compiledSourceSnapshotSemantics": {
+    "status": "historical-package-source-snapshot",
+    "snapshotBoundary": "package-build-time",
+    "packageRevision": "path-sanitized-review-v4",
+    "immutable": true,
+    "currentWorkingTreeEqualityExpected": false,
+    "currentWorkingTreeValidation": "separate-current-build-required"
+  },
   "compiledSourceSnapshot": [
     {
       "file": "apps/unreal/Source/SHI/ShiCouncilWetRegisterInteractionModel.h",

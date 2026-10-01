@@ -2,38 +2,31 @@
 
 [![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
 
-# SHI · Hình của quyền lực / 《勢》
+# SHI · The Shape of Power / 《势》
 
-*Một tự sự chiến lược đẹp và nghiêm túc với lịch sử về cách con người, địa thế, thời gian, lòng tin, hậu cần và thể chế trở thành quyền lực.*
+*Trò chơi lịch sử về những quyết định thay đổi cuộc đời.*
 
-[![Validate SHI](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml/badge.svg)](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml) [![Play pre-alpha](https://img.shields.io/badge/Play-Web_Pre--alpha-B8945B?style=flat-square)](https://lachlanchen.github.io/ShiGame/) [![Unity 6](https://img.shields.io/badge/Unity-6000.0.80f1-222?style=flat-square&logo=unity)](../apps/unity/) [![Sponsor](https://img.shields.io/github/sponsors/lachlanchen?style=flat-square)](https://github.com/sponsors/lachlanchen)
-
-SHI là một trò chơi thật đang được sản xuất, không phải bản trình diễn dùng một lần. Chương đầu bắt đầu trong mưa ở Đại Trạch năm 209 TCN. Trong vai người giữ sổ trưng binh hư cấu, người chơi quyết định cách một nhóm bị mắc kẹt trở thành phong trào chính trị. Chiến dịch đi từ sự sụp đổ của Tần đến tranh chấp Sở–Hán mà không coi Hạng Vũ, Lưu Bang hay chiến thắng về sau là định mệnh.
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
 | [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=kofi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
-![Màn hình chơi SHI](../docs/production/evidence/web-01-title-en.png)
+![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## Điểm khác biệt của SHI
+## Trò chơi
 
-- Lương, tín, thế, dân và bại lộ tạo nên thế cục, không bị gộp thành một điểm sức mạnh.
-- Tốc độ có thể gây đói, chính danh tạo nợ, bí mật làm mất tin; mỗi lựa chọn sinh ra phản ứng và hồi phục.
-- Sử liệu, biên soạn đời sau, binh thư và tái dựng kịch tính được phân biệt rõ.
-- Web và dự án Unity 6 thật dùng chung một chiến dịch có phiên bản.
-- Có nền tảng UI 11 ngôn ngữ, RTL tiếng Ả Rập và hồ sơ nguồn/kiểm duyệt cho mọi tài sản tạo sinh.
+SHI bắt đầu trong mưa ở Đại Trạch năm 209 TCN. Bạn là người giữ sổ quân dịch hư cấu: lương thực, lòng tin, con người và mức lộ diện quyết định lời hứa nào có thể giữ. Lựa chọn tạo chi phí, đối kháng và cơ hội phục hồi, không bảo đảm thắng lợi. Tư trị thông giám là xương sống lịch sử; đối thoại tái dựng và kết quả thay thế được ghi rõ, không giả làm trích dẫn.
 
-## Nội dung hiện tại
+## Các bản
 
-| Đường dẫn | Đã có |
-| --- | --- |
-| [`apps/web`](../apps/web/) | Web chơi được, lưu, sổ nguồn/quyết định, di động và RTL |
-| [`apps/unity`](../apps/unity/) | Unity 6 và bàn chiến lược 3D; trình biên tập Linux/WebGL đã cài, đăng nhập giấy phép vẫn là chặn công khai |
-| [`content`](../content/) | 6 cảnh, 15 lựa chọn, 5 tài nguyên, hồi phục và 3 kết thúc |
-| [`docs`](../docs/) | Thiết kế, lịch sử, kiến trúc, bản địa hóa, mỹ thuật, QA, phát hành và lộ trình theo cổng chất lượng |
+Web dùng React/Three.js và luật TypeScript xác định. iOS thuần SwiftUI/SceneKit/Foundation; Android đóng gói trò chơi ngoại tuyến. Unreal 5.8 là bản điện ảnh trên máy tính; Unity 6 duy trì nền tảng nội dung chung. Các bản dùng dữ liệu chiến dịch có phiên bản, không kể lịch sử riêng.
 
-## Bắt đầu nhanh
+[Web](../apps/web/) · [iOS](../apps/mobile/ios/) · [Android](../apps/mobile/android/) · [Unreal](../apps/unreal/) · [Unity](../apps/unity/) · [Rules](../packages/game-core/) · [Content](../content/)
+
+## Chạy cục bộ
+
+Cần Node.js 22+. Chạy cục bộ rồi kiểm tra trước khi dựng. Hướng dẫn bản native và engine nằm trong thư mục tương ứng; bản dựng web không chứng nhận gói di động đã ký.
 
 ```bash
 npm install
@@ -42,17 +35,25 @@ npm run validate
 npm run build
 ```
 
-## Kiến trúc và nghiên cứu
+http://127.0.0.1:5173
 
-JSON chiến dịch có phiên bản là nguồn tự sự duy nhất cho lõi TypeScript tất định và Unity 6. Sách riêng, OCR, trò chuyện và bản ghi nhớ đầy đủ không vào Git. Xem [thiết kế](../docs/design/GAME_DESIGN_DOCUMENT.md), [chính sách nguồn](../docs/history/SOURCE_POLICY.md), [lộ trình theo cổng chất lượng](../docs/production/ROADMAP.md).
+## Duyệt điện ảnh
 
-## Build và xác nhận
+Mượt mà nghĩa là lệnh phản hồi nhanh, lưu bền vững trước phản ứng tương ứng và tiếp tục rõ ràng. Nhạc và video giữ phụ đề, tạm dừng, bỏ qua, đồng ý và giảm chuyển động. Khuôn mặt và trang phục gốc phải nhất quán. Nghiên cứu Musia, LocalVideoGen và Blender vẫn riêng tư cho đến khi duyệt nguồn gốc, quyền, hình và âm.
 
-Xác nhận tự động kiểm tra đồ thị, tham chiếu, khóa ngôn ngữ, luật, kiểu và test. Bài test noVNC/Chrome hiển thị đã qua 50 mục về chơi, phản ứng áp lực, bàn phím, nguồn, lưu, RTL, di động, WebGL và console. Xem [bằng chứng](../docs/production/PLAYTESTING.md).
+[Design](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Sources](../docs/history/SOURCE_POLICY.md) · [Playtests](../docs/production/PLAYTESTING.md) · [Roadmap](../docs/production/ROADMAP.md)
+
+## Giới hạn phát hành
+
+Ngày 1 tháng 10 năm 2026, bản di động đã phát hành số 1 tách khỏi phát triển mới. Apple được xác minh ngày 30 tháng 9; Google cần kiểm tra trực tiếp. Hội đồng, Phạm Dương, rút lui và trú ẩn có kiểm thử giới hạn; một số phần chỉ dành QA. Nhân vật chưa phải mỹ thuật điện ảnh cuối cùng. Kiểm thử không thay duyệt người thật và hiệu năng thiết bị. GitHub theo mốc đã kiểm tra; beta cần ký, thử nâng cấp và xác nhận khả dụng. Không cài bộ lịch tự động hằng ngày.
+
+[Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 
 ## Trích dẫn
 
-Khi dùng SHI trong nghiên cứu hoặc giảng dạy, hãy trích [`CITATION.cff`](../CITATION.cff).
+Trích CITATION.cff khi nghiên cứu. Công khai không cấp quyền tái sử dụng; sách riêng, khóa và cache không đưa vào Git.
+
+[CITATION.cff](../CITATION.cff) · [LICENSE.md](../LICENSE.md)
 
 ```bibtex
 @software{chen_shi_2026,
@@ -63,6 +64,4 @@ Khi dùng SHI trong nghiên cứu hoặc giảng dạy, hãy trích [`CITATION.c
 }
 ```
 
-## Trạng thái và phạm vi
-
-Tiền alpha chứng minh hệ thống ngày 2026-08-09. Chương web có phản ứng áp lực tất định, chuyển đổi bản lưu, điều khiển bàn phím, kiểm tra mọi tuyến và 50 kiểm tra trực quan. Trình biên tập Unity Linux/WebGL thật đã được cài và Hub nhận diện. Việc nhập và biên dịch bản gốc cần chủ tài khoản đăng nhập, kích hoạt giấy phép Unity; ghim sản xuất Unity 6 vẫn được giữ nguyên. Chưa gọi là hoàn tất trước khi hai client, nghiên cứu, ngôn ngữ, tài sản, chơi thử và phát hành đều đạt.
+Copyright © 2026 Lachlan Chen.

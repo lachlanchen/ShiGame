@@ -189,5 +189,5 @@ toolchain or enough free storage for a build.
 
 Use `Tests/Conformance.swift` separately with the unchanged `CampaignEngine.swift`
 to compare the native rules against `content/conformance/chapter-01-replays.v1.json`.
-The September 27 development checkpoint is documented in
-[`CONSEQUENCE_PRESENTATION_2026_09_27.md`](../../../docs/production/CONSEQUENCE_PRESENTATION_2026_09_27.md).
+The development continuation and its QA-only boundaries are documented in
+[`NATIVE_REFUGE_UI_20261001.md`](../../../docs/production/NATIVE_REFUGE_UI_20261001.md).

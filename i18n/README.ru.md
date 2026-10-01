@@ -2,38 +2,31 @@
 
 [![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
 
-# SHI · Форма власти / 《勢》
+# SHI · The Shape of Power / 《势》
 
-*Красивая и исторически добросовестная стратегическая история о том, как люди, местность, время, вера, снабжение и институты становятся властью.*
+*Историческая игра о решениях, меняющих жизнь.*
 
-[![Validate SHI](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml/badge.svg)](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml) [![Play pre-alpha](https://img.shields.io/badge/Play-Web_Pre--alpha-B8945B?style=flat-square)](https://lachlanchen.github.io/ShiGame/) [![Unity 6](https://img.shields.io/badge/Unity-6000.0.80f1-222?style=flat-square&logo=unity)](../apps/unity/) [![Sponsor](https://img.shields.io/github/sponsors/lachlanchen?style=flat-square)](https://github.com/sponsors/lachlanchen)
-
-SHI — настоящая игра в производстве, а не одноразовая демонстрация. Первая игровая глава начинается под дождём в Дацзэ в 209 году до н. э. В роли вымышленного хранителя списка мобилизованных игрок решает, как застрявшая группа становится политическим движением. Кампания ведёт от падения Цинь к противостоянию Чу и Хань, не объявляя Сян Юя, Лю Бана или будущую победу неизбежными.
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
 | [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=kofi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
-![Игровой экран SHI](../docs/production/evidence/web-01-title-en.png)
+![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## Чем отличается SHI
+## Игра
 
-- Зерно, доверие, порыв, люди и раскрытие создают положение, а не одну цифру силы.
-- Скорость рождает голод, легитимность — долг, секретность — недоверие; выбор создаёт ответ и восстановление.
-- Исторические свидетельства, поздние компиляции, трактаты и художественная реконструкция разделены.
-- Веб и настоящий проект Unity 6 используют одну версионированную кампанию.
-- Есть основа 11 языков UI, арабского RTL и проверяемого происхождения каждого созданного ресурса.
+SHI начинается под дождём в Дазэ в 209 году до н. э. Вы — вымышленный хранитель списка призывников: зерно, доверие, люди и заметность определяют выполнимые обещания. Решения создают затраты, противодействие и пути восстановления, а не неизбежную победу. Историческая основа — «Цзы чжи тун цзянь»; реконструированные диалоги и альтернативные исходы помечены, а не выданы за цитаты.
 
-## Текущее содержимое
+## Клиенты
 
-| Путь | Реализовано сейчас |
-| --- | --- |
-| [`apps/web`](../apps/web/) | Игровой веб, сохранение, реестры источников/решений, мобильный вид и RTL |
-| [`apps/unity`](../apps/unity/) | Unity 6 и 3D-стол; редактор Linux/WebGL установлен, вход для лицензии остаётся открытым блокером |
-| [`content`](../content/) | 6 сцен, 15 решений, 5 ресурсов, восстановление и 3 финала |
-| [`docs`](../docs/) | Дизайн, история, архитектура, локализация, искусство, QA, релиз и поэтапный план качества |
+Веб использует React/Three.js и детерминированные правила TypeScript. iOS — нативный SwiftUI/SceneKit/Foundation; Android упаковывает офлайн-игру. Unreal 5.8 — кинематографический настольный клиент; Unity 6 сохраняет общую основу. Версионированные данные кампании исключают независимые исторические сюжеты.
 
-## Быстрый старт
+[Web](../apps/web/) · [iOS](../apps/mobile/ios/) · [Android](../apps/mobile/android/) · [Unreal](../apps/unreal/) · [Unity](../apps/unity/) · [Rules](../packages/game-core/) · [Content](../content/)
+
+## Локальный запуск
+
+Нужен Node.js 22+. Запустите локально и проверьте перед сборкой. Настройка описана в каталогах клиентов; веб-сборка не подтверждает подписанный мобильный пакет.
 
 ```bash
 npm install
@@ -42,17 +35,25 @@ npm run validate
 npm run build
 ```
 
-## Архитектура и исследование
+http://127.0.0.1:5173
 
-Версионированный JSON — единственный источник повествования для детерминированного ядра TypeScript и Unity 6. Частные книги, OCR, чаты и полный меморандум не попадают в Git. См. [геймдизайн](../docs/design/GAME_DESIGN_DOCUMENT.md), [политику источников](../docs/history/SOURCE_POLICY.md), [поэтапный план качества](../docs/production/ROADMAP.md).
+## Кинематографическая проверка
 
-## Сборка и проверка
+Плавность означает отзывчивые приказы, надёжное сохранение до соответствующей реакции и явное продолжение. Музыка и видео сохраняют субтитры, паузу, пропуск, согласие и уменьшение движения. Оригинальные лица и костюмы должны быть едиными. Материалы Musia, LocalVideoGen и Blender остаются частными до проверки происхождения, прав, изображения и звука.
 
-Проверяются граф, ссылки, языковые ключи, правила, типы и тесты. Видимый тест noVNC/Chrome прошёл 50 проверку игры, ответного давления, клавиатуры, источников, сохранения, RTL, мобильного вида, WebGL и консоли. [Доказательства](../docs/production/PLAYTESTING.md) включены.
+[Design](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Sources](../docs/history/SOURCE_POLICY.md) · [Playtests](../docs/production/PLAYTESTING.md) · [Roadmap](../docs/production/ROADMAP.md)
+
+## Границы выпуска
+
+На 1 октября 2026 опубликованная мобильная сборка 1 отделена от разработки. Публикация Apple проверена 30 сентября; Google требует текущей проверки. Совет, Фаньян, отступление и убежище имеют ограниченные тесты; часть продолжения только для QA. Персонажи ещё не финальное киноискусство. Тесты не заменяют человека и реальные устройства. GitHub обновляется после проверенных этапов; беты требуют подписи, проверки обновления и подтверждения доступности. Ежедневный автоматический планировщик не установлен.
+
+[Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 
 ## Цитирование
 
-Для исследований и обучения цитируйте [`CITATION.cff`](../CITATION.cff).
+Для исследований цитируйте CITATION.cff. Публичность не даёт лицензии на повторное использование; частные книги, ключи и кэши не входят в Git.
+
+[CITATION.cff](../CITATION.cff) · [LICENSE.md](../LICENSE.md)
 
 ```bibtex
 @software{chen_shi_2026,
@@ -63,6 +64,4 @@ npm run build
 }
 ```
 
-## Статус и границы
-
-Пре-альфа проверки систем от 2026-08-09. Веб-глава получила детерминированные ответы давления, миграцию сохранений, клавиатурное управление, проверку всех маршрутов и 50 видимую проверку. Настоящий редактор Unity с модулями Linux/WebGL установлен и распознан Hub. Для нативного импорта и компиляции владелец аккаунта должен войти и активировать лицензию Unity; производственная фиксация Unity 6 сохранена. Проект не будет назван завершённым до проверки обоих клиентов, исследований, языков, ресурсов, плейтестов и релиза.
+Copyright © 2026 Lachlan Chen.

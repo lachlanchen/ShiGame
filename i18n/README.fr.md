@@ -2,38 +2,31 @@
 
 [![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
 
-# SHI · La forme du pouvoir / 《勢》
+# SHI · The Shape of Power / 《势》
 
-*Un récit stratégique beau et historiquement rigoureux sur la manière dont personnes, terrain, temps, croyance, logistique et institutions deviennent pouvoir.*
+*Un jeu historique où les décisions changent des vies.*
 
-[![Validate SHI](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml/badge.svg)](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml) [![Play pre-alpha](https://img.shields.io/badge/Play-Web_Pre--alpha-B8945B?style=flat-square)](https://lachlanchen.github.io/ShiGame/) [![Unity 6](https://img.shields.io/badge/Unity-6000.0.80f1-222?style=flat-square&logo=unity)](../apps/unity/) [![Sponsor](https://img.shields.io/github/sponsors/lachlanchen?style=flat-square)](https://github.com/sponsors/lachlanchen)
-
-SHI est un véritable jeu en production, pas une démo jetable. Le premier chapitre jouable commence sous la pluie de Daze en 209 av. J.-C. Dans le rôle fictif du gardien d'un registre de conscription, le joueur décide comment un groupe bloqué devient mouvement politique. La campagne mène à la chute des Qin puis au conflit Chu–Han sans rendre Xiang Yu, Liu Bang ni la victoire ultérieure inévitables.
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
 | [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=kofi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
-![Écran jouable de SHI](../docs/production/evidence/web-01-title-en.png)
+![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## Ce qui distingue SHI
+## Jeu
 
-- Grain, confiance, élan, peuple et exposition forment une position, pas une unique statistique de force.
-- Vitesse, légitimité et secret créent faim, dette ou méfiance : chaque choix engendre riposte et récupération.
-- Sources historiques, compilations tardives, textes stratégiques et reconstruction dramatique sont distingués.
-- Le Web et un vrai projet Unity 6 partagent la même campagne versionnée.
-- Onze langues d'interface, RTL arabe et provenance/revue de chaque ressource générée sont en place.
+SHI commence sous la pluie à Daze en 209 avant notre ère. Vous incarnez un gardien fictif du registre des conscrits : grain, confiance, personnes et exposition déterminent les promesses tenables. Les choix créent coûts, opposition et possibilités de reprise, jamais une victoire inévitable. Zizhi Tongjian est le fil historique ; dialogues reconstruits et issues alternatives sont signalés, pas présentés comme citations.
 
-## Contenu actuel
+## Clients
 
-| Chemin | Réalisé maintenant |
-| --- | --- |
-| [`apps/web`](../apps/web/) | Web jouable, sauvegarde, registres sources/décisions, mobile et RTL |
-| [`apps/unity`](../apps/unity/) | Unity 6 et table 3D ; éditeur Linux/WebGL installé, connexion de licence encore bloquante |
-| [`content`](../content/) | 6 scènes, 15 choix, 5 ressources, récupération et 3 fins |
-| [`docs`](../docs/) | Design, histoire, architecture, localisation, art, QA, publication et feuille de route |
+Le web utilise React/Three.js et des règles TypeScript déterministes. iOS est natif SwiftUI/SceneKit/Foundation ; Android embarque le jeu hors ligne. Unreal 5.8 est le client cinématographique de bureau ; Unity 6 conserve une base commune. Les clients utilisent des données versionnées, pas des récits historiques indépendants.
 
-## Démarrage rapide
+[Web](../apps/web/) · [iOS](../apps/mobile/ios/) · [Android](../apps/mobile/android/) · [Unreal](../apps/unreal/) · [Unity](../apps/unity/) · [Rules](../packages/game-core/) · [Content](../content/)
+
+## Lancement local
+
+Node.js 22+ est requis. Lancez localement puis validez avant compilation. Les dossiers des clients documentent leur préparation ; une compilation web ne certifie pas un paquet mobile signé.
 
 ```bash
 npm install
@@ -42,17 +35,25 @@ npm run validate
 npm run build
 ```
 
-## Architecture et recherche
+http://127.0.0.1:5173
 
-Le JSON versionné est l'unique source narrative, partagée par le cœur déterministe TypeScript et Unity 6. Livres privés, OCR, discussions et mémo complet n'entrent pas dans Git. Lire le [design](../docs/design/GAME_DESIGN_DOCUMENT.md), la [politique des sources](../docs/history/SOURCE_POLICY.md) et la [feuille de route par jalons qualité](../docs/production/ROADMAP.md).
+## Revue cinématographique
 
-## Build et validation
+La fluidité exige des commandes réactives, une sauvegarde durable avant une réaction correspondante et une continuation explicite. Musique et vidéo gardent sous-titres, pause, saut, consentement et réduction des mouvements. Visages et costumes originaux restent cohérents. Les études Musia, LocalVideoGen et Blender restent privées jusqu'à validation des sources, droits, images et sons.
 
-La validation couvre graphe, références, clés linguistiques, règles, types et tests. Le test visible noVNC/Chrome a réussi 50 contrôles de jeu, réponses de pression, clavier, sources, sauvegarde, RTL, mobile, WebGL et console. Voir les [preuves](../docs/production/PLAYTESTING.md).
+[Design](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Sources](../docs/history/SOURCE_POLICY.md) · [Playtests](../docs/production/PLAYTESTING.md) · [Roadmap](../docs/production/ROADMAP.md)
+
+## Limites de publication
+
+Au 1 octobre 2026, la version mobile publiée, build 1, reste distincte du développement. Apple a été vérifié le 30 septembre ; Google exige une lecture actuelle. Conseil, Fan Yang, retraite et refuge ont des tests bornés, mais certaines suites restent QA. Les personnages ne sont pas un art cinématographique final. Tests, avis humains et performances physiques sont distincts. GitHub suit les points validés ; les bêtas exigent signature, test de mise à niveau et disponibilité confirmée. Aucun calendrier quotidien automatique n'est installé.
+
+[Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 
 ## Citation
 
-Pour un usage en recherche ou enseignement, citez [`CITATION.cff`](../CITATION.cff).
+Citez CITATION.cff pour la recherche. La visibilité publique n'accorde aucun droit de réutilisation ; livres privés, clés et caches restent hors de Git.
+
+[CITATION.cff](../CITATION.cff) · [LICENSE.md](../LICENSE.md)
 
 ```bibtex
 @software{chen_shi_2026,
@@ -63,6 +64,4 @@ Pour un usage en recherche ou enseignement, citez [`CITATION.cff`](../CITATION.c
 }
 ```
 
-## État et périmètre
-
-Pré-alpha de preuve des systèmes du 2026-08-09. Le chapitre Web possède des réponses de pression déterministes, une migration des sauvegardes, des commandes clavier, une validation de tous les parcours et 50 contrôles visibles. Le véritable éditeur Unity Linux/WebGL est installé et reconnu par Hub. L'import et la compilation natifs exigent encore la connexion du titulaire du compte et l'activation d'une licence Unity ; la version de production Unity 6 reste épinglée. Le projet ne sera pas déclaré achevé avant validation des deux clients, de la recherche, des langues, des ressources, des playtests et de la publication.
+Copyright © 2026 Lachlan Chen.

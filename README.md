@@ -4,88 +4,56 @@
 
 # SHI · The Shape of Power / 《势》
 
-*A beautiful, historically grounded strategy narrative about how people, terrain, time, belief, logistics, and institutions become power.*
+*A history game about decisions that change lives.*
 
-[![Validate SHI](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml/badge.svg)](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml) [![Play pre-alpha](https://img.shields.io/badge/Play-Web_Pre--alpha-B8945B?style=flat-square)](https://lachlanchen.github.io/ShiGame/) [![Unreal 5.8](https://img.shields.io/badge/Unreal-5.8-222?style=flat-square&logo=unrealengine)](apps/unreal/) [![Unity 6](https://img.shields.io/badge/Unity-6000.0.80f1-222?style=flat-square&logo=unity)](apps/unity/) [![Sponsor](https://img.shields.io/github/sponsors/lachlanchen?style=flat-square)](https://github.com/sponsors/lachlanchen)
-
-SHI is a production game project—not a disposable demo. Its first playable chapter begins in the rain at Daze Village in 209 BCE, as a fictional levy-record keeper must decide how a stranded group becomes a political movement. The wider campaign follows the collapse of Qin toward the Chu–Han contention without treating Xiang Yu, Liu Bang, or later victory as inevitable.
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
 | [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=kofi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
-![SHI playable title screen](docs/production/evidence/web-01-title-en.png)
+![SHI](docs/production/evidence/web-01-title-en.png)
 
-## Why SHI is different
+## Game
 
-- Power is positional: grain, trust, momentum, people, and exposure create opportunities and obligations rather than a single “strength” score.
-- Decisions are deliberate orders: compact cards select a doctrine without changing the campaign; one focused reading then discloses its full method, promise, pressure and exact effects before a separately named **Issue order** action commits it.
-- At the broken crossing, the selected doctrine opens a three-pulse command exercise: issue only legal orders, read the field's separate answer, manage six local states and carry the resulting cost back to council. Web and native Unreal independently reproduce all 76 legal replays; the exercise remains deliberately non-authoritative over the campaign chronicle.
-- Unreal issues that order through one fail-closed transaction: deterministic rule state, the refreshed 3D command signals, the complete consequence camera plan, live actor closure and the candidate save must all validate before the active chronicle advances.
-- Opening choices establish a named promise to a visible stakeholder. The promise travels through the chapter, and every choice at the broken ford discloses whether it will keep, strain, or break it—and the exact operational cost—before commitment.
-- Choices create counterplay and recovery problems. Every nonterminal decision warns about one exposed weakness, then reveals and records an authored state, terrain, supply, or network response.
-- Qin pursuit is a persistent, readable opponent: the current Exposure band, exact added pressure and a concrete counterplay are disclosed before commitment and recorded afterward.
-- Qin also forms a deterministic, disclosed read of repeated strategic methods. The selected-order reading names its method and shows whether the prepared counter will hit; changing method makes the read miss.
-- Every new chronicle receives a shareable seed that selects a small authored field condition. The exact signal and effects are disclosed before commitment, recorded afterward, and explicitly labeled dramatic reconstruction.
-- Historical accounts, later compilations, strategic texts, and dramatic reconstructions are visibly separated.
-- The wartable is playable intelligence, not decoration: known ground, reported networks and reference-only places expose uncertainty and claim-filtered evidence without leaking later victory into the opening scene.
-- A shared opt-in soundscape gives rain, focus, inspection and consequence a restrained procedural language. Ambience and effects mix independently, sound never carries exclusive information, deterministic and actual-browser output pass objective audio gates, and human listening approval remains an open release gate.
-- One versioned campaign payload drives the polished web client, priority Unreal 5.8 cinematic client and maintained Unity 6 baseline.
-- English, Arabic, German, Spanish, French, Japanese, Korean, Russian, Vietnamese, Simplified Chinese, and Traditional Chinese UI foundations are present, including Arabic RTL.
-- Every generated art or 3D asset keeps provenance and a review trail; rejected revisions remain documented.
+SHI begins in rain at Daze in 209 BCE. You are a fictional levy-record keeper: grain, trust, people and exposure shape which promises you can keep. Choices create costs, opposition and recovery—not an inevitable victory. Zizhi Tongjian is the historical spine; reconstructed dialogue and alternate outcomes are labeled, not passed off as quotations.
 
-![SHI broken-crossing command board](docs/production/evidence/web-42-command-board.png)
+## Clients
 
-## Current contents
+Web uses React/Three.js and deterministic TypeScript rules. iOS is native SwiftUI/SceneKit/Foundation; Android packages the offline web game. Unreal 5.8 is the cinematic desktop client; Unity 6 remains a shared-content baseline. They consume versioned campaign data, not independent historical stories.
 
-| Path | What is real now |
-| --- | --- |
-| [`apps/web`](apps/web/) | Playable React/Vite client, compact select-only campaign orders plus a non-authoritative three-pulse broken-crossing command board with plan/condition binding, legal-order filtering, separate field answers, local-state meters, outcome preview and pointer/keyboard/standard-gamepad operation; lazy Three.js atmosphere/intelligence map and Web Audio soundscape, replayable save-v6 migration, carried commitments, persistent pursuit, strategic-method reads and seeded field signals, first-run guide, six-layer records, responsive layouts and Arabic RTL |
-| [`apps/unreal`](apps/unreal/) | Priority Unreal Engine 5.8 C++ cinematic client: official UE 5.8.1 native compile and exact 21-suite automation; canonical schema-v7/audio/edition/character loaders; independent 46-route campaign and 76-route command replay; fail-closed durable-first order/restart transactions; complete six-scene progression; bounded wartable/signals, consequence cinema and opt-in sound; reviewed command-weight, wet-field/shelter/rain/vegetation production blockouts; five distinct shared-skeleton Daze council character blockouts; an exact 21-control silent facial-intent engineering lane on five meshes; and one isolated Chen Sheng skin-material engineering route. Facial v2 cooks and mounts 559 packages—21 isolated facial assets over the accepted 538-package body-performance build—while the skin route adds exactly five isolated assets and cooks 564. Story progression and headless smoke were not rerun for either bounded character review; the prior v5 body-performance package remains the latest proof of those paths. Interaction hands, mouth interior/voice/lip sync, close framing, visible fallback, final art/acting and human review remain open. |
-| [`apps/unity`](apps/unity/) | Unity 6 LTS project consuming the same campaign/audio contracts, matching select/inspect/issue-order flow, selectable/raycasted 3D wartable markers, procedural rain/cues, localized mixer/intelligence/guide/record/gamepad UI, native preflight/build automation and EditMode tests; license/import gate is documented |
-| [`content`](content/) | Chapter I with 6 scenes, 15 method-tagged choices, 3 carried commitments and 9 exact answers, 12 pressure responses, 3 classified pursuit postures, 3 strategic methods, 3 prepared counters plus a neutral read, 12 classified field conditions, 5 resources, a recovery turn, 3 conclusions, 7 source records, 13 claim records, 5 registered editions, one versioned procedural-audio contract, a hash-bound 46-route cross-engine corpus and a non-authoritative broken-crossing engagement candidate |
-| [`packages/game-core`](packages/game-core/) | Seed-reproducible six-layer campaign resolution plus the pure three-pulse broken-crossing command resolver, authoritative replay/migration and tamper rejection, player and opponent memory, requirements, failure thresholds, exhaustive campaign and 76-route engagement validation, localization fallback, and tests |
-| [`assets`](assets/) | Reviewed Daze/Broken Crossing lookdev plus AgenticApp/Blender wartable, command-weight, command-surface, wet-field, field-shelter, rain-VFX, wet-field-vegetation, five-character skeletal/body blockouts and bounded facial-performance engineering sources, previews, `.blend`, GLB/FBX exports, rejected-trial records and SHA-256 provenance |
-| [`docs`](docs/) | Game design, history policy, architecture, localization, accessibility/audio contracts, art direction, engine status, release gates, measured QA evidence, the foundation roadmap, and the film-level production charter |
+[Web](apps/web/) · [iOS](apps/mobile/ios/) · [Android](apps/mobile/android/) · [Unreal](apps/unreal/) · [Unity](apps/unity/) · [Rules](packages/game-core/) · [Content](content/)
 
-## Quick start
+## Run locally
 
-Requires Node.js 22+.
+Use Node.js 22+. Start locally, then validate before building. Native and engine setup is documented in their directories; a web build does not certify a signed mobile package.
 
 ```bash
 npm install
 npm run dev
-```
-
-Open `http://127.0.0.1:5173`. To verify the production checkpoint:
-
-```bash
 npm run validate
 npm run build
 ```
 
-Unreal and Unity instructions plus the remaining editor, hardware, human-review and asset gates are in [`apps/unreal/README.md`](apps/unreal/README.md), [`apps/unity/README.md`](apps/unity/README.md), and [`docs/production/ENGINE_STATUS.md`](docs/production/ENGINE_STATUS.md).
+http://127.0.0.1:5173
 
-## Architecture and research baseline
+## Cinematic review
 
-```text
-historical claims + authored reconstruction + audio contract
-                         ↓
-              versioned shared JSON + validation + SHA-256
-              ↙                 ↓                    ↘
-TypeScript rules + Web       Unreal 5.8 C++       Unity 6 C#
-React/Three/Web Audio    priority cinematic 3D    maintained baseline
-```
+Smoothness means responsive orders, a durable save before a matching reaction, and an explicit continuation. Music/video must preserve captions, pause/skip, consent and reduced motion. Original faces and costumes must remain consistent. Musia, LocalVideoGen and Blender studies stay private until provenance, rights and visual/audio review pass.
 
-Private books, OCR collections, chat extracts, downloads, and the complete working memo remain outside Git. The project records pinpoint metadata and reviewed original prose rather than publishing source files. Read the [game design document](docs/design/GAME_DESIGN_DOCUMENT.md), [historical martial-command contract](docs/design/HISTORICAL_MARTIAL_COMMAND.md), [martial-source review queue](docs/history/MARTIAL_SOURCE_REVIEW.md), [deliberate-order contract](docs/design/DELIBERATE_ORDER_FLOW.md), [player commitment contract](docs/design/PLAYER_COMMITMENT_MEMORY.md), [opposition posture contract](docs/design/OPPOSITION_POSTURE.md), [opposition method-read contract](docs/design/OPPOSITION_METHOD_READ.md), [wartable intelligence contract](docs/design/WARTABLE_INTELLIGENCE.md), [Unreal command-space signal contract](docs/design/COMMAND_SPACE_SIGNALS.md), [Unreal order-transaction contract](docs/design/UNREAL_ORDER_TRANSACTION.md), [Unreal canonical council-staging contract](docs/design/UNREAL_COUNCIL_STAGING.md), [Unreal consequence-cinema contract](docs/design/UNREAL_CONSEQUENCE_CINEMA.md), [historical review system](docs/history/HISTORICAL_REVIEW_SYSTEM.md), [edition register](docs/history/EDITION_REGISTER.md), [seeded uncertainty contract](docs/design/SEEDED_UNCERTAINTY.md), [audio direction](docs/art/AUDIO_DIRECTION.md), [source policy](docs/history/SOURCE_POLICY.md), [accessibility contract](docs/production/ACCESSIBILITY.md), [foundation production roadmap](docs/production/ROADMAP.md), and [film-level production charter](docs/production/THREE_YEAR_FILM_LEVEL_PLAN.md).
+[Design](docs/design/GAME_DESIGN_DOCUMENT.md) · [Sources](docs/history/SOURCE_POLICY.md) · [Playtests](docs/production/PLAYTESTING.md) · [Roadmap](docs/production/ROADMAP.md)
 
-## Build and validation
+## Release boundaries
 
-`npm run validate` checks the edition/rights register, campaign graph and three-act chronology, source-to-claim-to-scene/site closure, intelligence states, reconstruction boundaries, localization, six-layer rules, save migration, every field-condition branch, the 76-route non-authoritative engagement contract, the regenerated 46-route conformance corpus, synchronized Web/Unreal/Unity payloads, the Unreal project contract, audio/provenance, accessibility and font/privacy contracts, types, automated tests and representative axe scans. `npm run build` additionally enforces initial/lazy/font/deployment size budgets. The visible noVNC/Chrome gate adds 264 checks, including the complete three-pulse controller-driven command exercise and campaign-horizon rail, to the selection, commitment, opposition, accessibility, localization, input, audio and network checks. A second isolated visible-Chrome/PipeWire gate records actual output, proves exact silence before consent and enforces peak, EBU R128 loudness, DC and channel parity. Evidence and reproduction details are in [`docs/production/PLAYTESTING.md`](docs/production/PLAYTESTING.md).
+As of October 1, 2026, released mobile build 1 is separate from newer development. Apple publication was verified September 30; Google status needs live readback. Council/Fan Yang/retreat/refuge development has bounded tests, but some continuation content is QA-only. Character studies are not final film-quality art. Tests do not replace human review or physical-device performance. GitHub updates follow validated checkpoints; internal betas also require signing, upgrade tests and provider availability. No automatic daily scheduler is installed.
+
+[Beta workflow](store/BETA_WORKFLOW.md) · [Native evidence](docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 
 ## Citation
 
-If you use SHI in research or teaching, cite the repository. GitHub reads [CITATION.cff](CITATION.cff) and shows a **Cite this repository** panel.
+Cite CITATION.cff when using SHI in research. Public visibility does not grant a reuse license; private books, keys and generated caches never belong in Git.
+
+[CITATION.cff](CITATION.cff) · [LICENSE.md](LICENSE.md)
 
 ```bibtex
 @software{chen_shi_2026,
@@ -96,18 +64,4 @@ If you use SHI in research or teaching, cite the repository. GitHub reads [CITAT
 }
 ```
 
-## Status and scope
-
-Pre-alpha schema-v7/Unreal-priority checkpoint, 2026-08-11. The production build passes 57 TypeScript/UI tests, all 76 engagement routes, 689 successful and 87 capture/scattering campaign condition routes, the 46-route cross-engine corpus, Unreal/history/audio/accessibility/font/privacy gates and every bundle budget. The SHA-pinned visible Web route passes 264 checks across the complete chapter, pointer/keyboard/standard-gamepad command play, responsive layouts, all eleven locales, axe states, forced colors, reflow and actual 400% browser zoom with zero console errors or remote/failed requests. The public Web game remains deployed and HTTP 200; each new checkpoint must independently clear hosted validation and Pages deployment before its receipt is promoted.
-
-Epic's official UE 5.8.1 installed build compiles and links the C++ project and passes exactly twenty-one native `SHI.` suites against the byte-identical campaign and engagement payloads. The facial v2 Linux Development package cooks and mounts 559 packages: the accepted 538-package body-performance baseline plus five morph-bearing skeletal meshes, fifteen isolated materials and one CC0 eye texture. Each mesh retains the exact deterministic 21-control silent facial-intent contract. The first v1 visual pass was rejected because `SkinClay` and `EyeBrown` lacked Unreal's `MorphTargets` material usage and fell back to **Default Material**; v2 saves all fifteen materials for `SkeletalMesh` usage and exactly those two for `MorphTargets`. Watched development views accept a normal Chen Sheng speaker, a reduced-motion Chen Sheng speaker and a normal Keeper listener. They do not make the generic shared face final or historical.
-
-Facial v2 did not rerun an input-driven story route or a separate headless smoke. The prior 538-package v5 body-performance build remains the latest such proof: it accepts real input, advances Act I → Act II, records a verified autosave and passes headless Entry/`ShiGameMode` smoke. Earlier packaged evidence also completes Broken Crossing and the full four-decision chapter, exercises fail-closed save/restart/actor attacks, persists cuts-only presentation and captures native opt-in audio. A prior accepted physical-display chart records 195.18 FPS average and zero hitches, but must be repeated on final scene content. Core gameplay evidence remains in [`unreal-linux-package-status.json`](docs/production/evidence/unreal-linux-package-status.json) and [`unreal-runtime-acceptance-status.json`](docs/production/evidence/unreal-runtime-acceptance-status.json); the bounded facial result is in [`unreal-daze-council-facial-performance-presentation-status.json`](docs/production/evidence/unreal-daze-council-facial-performance-presentation-status.json).
-
-The separate Chen Sheng skin lane proves a reversible five-asset PBR/material route, including a corrected `MaterialMasks2K.B → Opacity` Subsurface Profile connection, source/import privacy checks, a path-sanitized Linux Development executable, and watched normal/reduced-motion deformation. This is an **engineering admission only**. The reviewed frames still show a generic low-detail non-portrait blockout, so visual character art, identity, anatomy and close-camera gates remain rejected rather than being promoted by a technically valid shader. See the [skin presentation evidence](docs/production/evidence/unreal-daze-council-skin-lookdev-presentation-status.json).
-
-Six original environment/prop/VFX increments now pass the same end-to-end production-blockout loop: deterministic Blender source, clean GLB/FBX validation, exact UE 5.8.1 LOD/UV/material/collision inspection, compile-clean authored graphs, fail-closed non-authoritative placement, forced cook, clean launch and visible play. The latest vegetation checkpoint adds exactly two meshes and one material over the 513-package rain baseline, mounts 516 packages, advances two fresh canonical decisions, completes all three Broken Crossing pulses and returns the exact campaign save unchanged. Its first archive was rejected because compiled string references did not cook the assets; the corrected isolated cook boundary proves all three in IoStore. This is usable reviewed blockout evidence—not final art or an exact botanical reconstruction. [Vegetation presentation evidence](docs/production/evidence/unreal-daze-wet-field-vegetation-presentation-status.json) retains the remaining character, formation, final-performance and human-review gates.
-
-This is still not final-character or film-quality art, and numerical/audio automation is not human approval. The facial lane still requires interaction hands, a reviewed mouth interior, voice/lip sync, close framing, a visibly exercised fail-closed fallback, final art/acting and human historical/cultural/accessibility review. Editor PIE remains red after an NVIDIA Vulkan outdated-swapchain crash even though the packaged player is stable. Physical-controller, human listening and motion-comfort, assistive-technology, observed-player, Qin-law, geography, translation, final terrain/formation/character, licensed Unity runtime and specialist reviews remain open. SHI is a quality-driven long-term production with no fixed completion deadline; neither passing automation nor engineering proxies are presented as a finished public alpha.
-
-Copyright © 2026 Lachlan Chen. Public visibility does not grant a reuse license; see [LICENSE.md](LICENSE.md).
+Copyright © 2026 Lachlan Chen.

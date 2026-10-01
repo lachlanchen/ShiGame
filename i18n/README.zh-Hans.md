@@ -2,40 +2,31 @@
 
 [![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
 
-# SHI · 权力之形 / 《势》
+# SHI · The Shape of Power / 《势》
 
-*一部关于人、地、时、信念、粮道与制度如何共同成为权力的美丽而严谨的历史策略叙事。*
+*让决策真正改变人的命运的历史游戏。*
 
-[![Validate SHI](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml/badge.svg)](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml) [![Play pre-alpha](https://img.shields.io/badge/Play-Web_Pre--alpha-B8945B?style=flat-square)](https://lachlanchen.github.io/ShiGame/) [![Unity 6](https://img.shields.io/badge/Unity-6000.0.80f1-222?style=flat-square&logo=unity)](../apps/unity/) [![Sponsor](https://img.shields.io/github/sponsors/lachlanchen?style=flat-square)](https://github.com/sponsors/lachlanchen)
-
-SHI 是正式制作中的游戏，而非一次性演示。第一段可玩章节始于公元前 209 年的大泽乡雨夜：玩家扮演一名虚构的戍卒名籍吏，决定一群受困之人如何成为政治运动。更长的战役将走向秦亡与楚汉相争，但不会把项羽、刘邦或后来的胜负写成必然命运。
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
 | [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=kofi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
-![SHI 可玩标题画面](../docs/production/evidence/web-01-title-en.png)
+![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## SHI 的独特之处
+## 游戏
 
-- 粮、信、势、民与险共同构成局面，不被压成一个“战力”数字。
-- 每种选择都会制造反制与整顿问题：速度带来饥饿，合法性带来债务，隐秘保留选择也会削弱信心。
-- 历史记载、后世编纂、兵学视角与戏剧性重构在界面中明确区分。
-- 网页端与真正的 Unity 6 工程使用同一份版本化战役数据。
-- 十一种界面语言与阿拉伯语 RTL 基础已经建立；每项生成资产均保留来源和审查记录。
+SHI从公元前209年大泽乡的雨夜开始。你是一位虚构的征发名册记录者：粮食、信任、同伴和暴露风险，决定哪些承诺能够兑现。选择带来代价、对手的应对和恢复机会，而非必然的胜利。《资治通鉴》是历史脊梁；重构对白和改写命运的分支明确标为戏剧创作，不冒充史书原文。
 
-## 当前内容
+## 客户端
 
-| 路径 | 已实现内容 |
-| --- | --- |
-| [`apps/web`](../apps/web/) | 可玩的 React/Vite/Three.js 网页端、存档、史料簿、决策记录、移动端与 RTL |
-| [`apps/unity`](../apps/unity/) | 读取同一战役的 Unity 6 工程与 3D 军议图；Linux/WebGL 编辑器已安装，授权登录仍是公开阻塞项 |
-| [`content`](../content/) | 6 场景、15 选择、5 资源、1 次整顿与 3 个结局 |
-| [`docs`](../docs/) | 设计、史料、架构、本地化、美术、测试、发布与质量关卡路线图 |
+Web采用React/Three.js与确定性的TypeScript规则。iOS是SwiftUI/SceneKit/Foundation原生应用，Android封装离线Web游戏。Unreal 5.8负责电影式桌面体验；Unity 6保留共享内容基础。各端使用版本化战役数据，不各自编造独立的历史事实。
 
-## 快速开始
+[Web](../apps/web/) · [iOS](../apps/mobile/ios/) · [Android](../apps/mobile/android/) · [Unreal](../apps/unreal/) · [Unity](../apps/unity/) · [Rules](../packages/game-core/) · [Content](../content/)
 
-需要 Node.js 22+。
+## 本地运行
+
+需要Node.js 22+。先本地运行，再验证并构建。原生移动端与引擎的配置见对应目录；Web构建成功不等于移动签名包通过测试，也不能替代商店处理与测试者实际可用的回执。
 
 ```bash
 npm install
@@ -44,17 +35,25 @@ npm run validate
 npm run build
 ```
 
-## 架构与研究基线
+http://127.0.0.1:5173
 
-版本化战役 JSON 是唯一叙事真源，由确定性的 TypeScript 核心和 Unity 6 客户端共同读取。私人书籍、OCR、聊天记录、下载文件与完整工作备忘录不进入 Git。详见[游戏设计文档](../docs/design/GAME_DESIGN_DOCUMENT.md)、[史料政策](../docs/history/SOURCE_POLICY.md)和[质量关卡路线图](../docs/production/ROADMAP.md)。
+## 电影式体验审查
 
-## 构建与验证
+流畅意味着命令响应及时、对应反应播放前完成可靠存档，并由玩家明确继续。音乐和视频必须保留字幕、暂停、跳过、同意和减少动态效果。原创角色的相貌与服装需要一致。Musia、LocalVideoGen和Blender试作在来源、授权、画面及声音审查通过前保持私有，不能只因为生成成功就进入游戏。
 
-`npm run validate` 检查战役图、引用、翻译键、规则、类型和测试。可见 noVNC/Chrome 测试另有 50 项检查，覆盖游玩、压力应手、史料分类、存档、键盘、阿拉伯语 RTL、移动端、WebGL 与控制台错误；证据见[测试说明](../docs/production/PLAYTESTING.md)。
+[Design](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Sources](../docs/history/SOURCE_POLICY.md) · [Playtests](../docs/production/PLAYTESTING.md) · [Roadmap](../docs/production/ROADMAP.md)
+
+## 发行边界
+
+截至2026年10月1日，已发布移动build 1与新开发内容分开。Apple发布于9月30日核实；Google需要读取最新状态。议事、范阳、撤退与避难的开发已有范围限定的测试，但部分后续内容仅供QA。角色研究还不是最终电影级美术，测试不代替人工审查与实机性能。GitHub在验证通过的里程碑更新；内部测试还须签名、升级测试及确认测试者可安装。不承诺未经设置的每日自动上传。
+
+[Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 
 ## 引用
 
-若在研究或教学中使用 SHI，请引用 [`CITATION.cff`](../CITATION.cff)。
+研究使用请引用CITATION.cff。公开可见不授予再利用许可；私有书籍、密钥和生成缓存不进入Git。请区分历史证据、游戏规则、视觉试作及正式发行的版本，不将工程通过称作艺术完成。
+
+[CITATION.cff](../CITATION.cff) · [LICENSE.md](../LICENSE.md)
 
 ```bibtex
 @software{chen_shi_2026,
@@ -65,6 +64,4 @@ npm run build
 }
 ```
 
-## 状态与范围
-
-2026-08-09 前期系统版本。网页章节现有确定性的压力应手、存档迁移、键盘操作、全路线验证与 50 项可见测试；真正的 Linux/WebGL Unity 编辑器已安装并由 Hub 识别。原生导入与编译仍需账户持有人登录并激活 Unity 许可证；Unity 6 生产版本锁定不变。项目不设固定完工期限，将按质量关卡逐日稳步推进；双端构建、史料、本地化、资产、试玩与发布检查真正通过前，不会宣称完成。
+Copyright © 2026 Lachlan Chen.

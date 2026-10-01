@@ -2,38 +2,31 @@
 
 [![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
 
-# SHI · 힘의 형세 / 《勢》
+# SHI · The Shape of Power / 《势》
 
-*사람·지형·시간·믿음·병참·제도가 어떻게 힘의 형세를 만드는지 다루는 아름답고 역사에 성실한 전략 서사.*
+*사람의 운명을 바꾸는 결정을 다루는 역사 게임.*
 
-[![Validate SHI](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml/badge.svg)](https://github.com/lachlanchen/ShiGame/actions/workflows/ci.yml) [![Play pre-alpha](https://img.shields.io/badge/Play-Web_Pre--alpha-B8945B?style=flat-square)](https://lachlanchen.github.io/ShiGame/) [![Unity 6](https://img.shields.io/badge/Unity-6000.0.80f1-222?style=flat-square&logo=unity)](../apps/unity/) [![Sponsor](https://img.shields.io/github/sponsors/lachlanchen?style=flat-square)](https://github.com/sponsors/lachlanchen)
-
-SHI는 일회성 데모가 아니라 실제 제작 중인 게임입니다. 첫 장은 기원전 209년 대택향의 비에서 시작합니다. 플레이어는 가상의 징발 명부 관리자로서 발이 묶인 사람들이 정치 운동이 되는 방식을 선택합니다. 진의 붕괴와 초한쟁패로 이어지지만 항우, 유방, 훗날의 승리를 필연으로 쓰지 않습니다.
+[Web](https://lachlanchen.github.io/ShiGame/) · [Story](https://lachlanchen.github.io/ShiGame/story/) · [App Store](https://apps.apple.com/us/app/id6816377548) · [Sponsor](https://github.com/sponsors/lachlanchen)
 
 | Donate | PayPal | Stripe |
 | --- | --- | --- |
 | [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=kofi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
-![SHI 플레이 화면](../docs/production/evidence/web-01-title-en.png)
+![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## SHI가 다른 점
+## 게임
 
-- 군량·신뢰·기세·민심·노출이 관계를 만들며 하나의 전투력 수치로 축약되지 않습니다.
-- 속도는 굶주림을, 정당성은 빚을, 비밀은 불신을 낳아 다음 반격과 회복 문제를 만듭니다.
-- 역사 기록, 후대 편찬, 병법의 관점, 극적 재구성을 분리합니다.
-- 웹과 실제 Unity 6 프로젝트가 같은 버전의 캠페인 데이터를 사용합니다.
-- 11개 UI 언어, 아랍어 RTL, 생성 자산 출처·검수 기반이 있습니다.
+SHI는 기원전 209년 대택의 비 속에서 시작합니다. 주인공은 창작된 징발 명부 기록관입니다. 식량, 신뢰, 사람과 노출 위험이 지킬 수 있는 약속을 결정합니다. 선택은 비용과 대응, 회복의 기회를 만들며 승리를 보장하지 않습니다. 자치통감을 역사적 뼈대로 삼되 재구성한 대사와 대체 결말은 사료 인용과 구분합니다.
 
-## 현재 내용
+## 클라이언트
 
-| 경로 | 구현 상태 |
-| --- | --- |
-| [`apps/web`](../apps/web/) | 플레이 가능한 웹, 저장, 사료·결정 장부, 모바일, RTL |
-| [`apps/unity`](../apps/unity/) | Unity 6과 3D 작전 탁자. Linux/WebGL 에디터는 설치됐으며 라이선스 로그인이 공개 차단 항목 |
-| [`content`](../content/) | 6개 장면, 15개 선택, 5개 자원, 회복 국면, 3개 결말 |
-| [`docs`](../docs/) | 설계·역사·기술·현지화·미술·QA·출시·품질 게이트 로드맵 |
+Web은 React/Three.js와 결정론적 TypeScript 규칙을 사용합니다. iOS는 SwiftUI/SceneKit/Foundation 네이티브 구현이고 Android는 오프라인 웹 게임을 패키징합니다. Unreal 5.8은 영화적 데스크톱 클라이언트, Unity 6은 공통 콘텐츠 기반입니다. 버전이 지정된 캠페인 데이터를 공유하며 독립된 역사 이야기를 만들지 않습니다.
 
-## 빠른 시작
+[Web](../apps/web/) · [iOS](../apps/mobile/ios/) · [Android](../apps/mobile/android/) · [Unreal](../apps/unreal/) · [Unity](../apps/unity/) · [Rules](../packages/game-core/) · [Content](../content/)
+
+## 로컬 실행
+
+Node.js 22+가 필요합니다. 로컬로 실행하고 빌드 전에 검증하세요. 네이티브 및 엔진 설정은 각 디렉터리에 있습니다. 웹 빌드 성공은 서명된 모바일 패키지를 인증하지 않습니다.
 
 ```bash
 npm install
@@ -42,17 +35,25 @@ npm run validate
 npm run build
 ```
 
-## 아키텍처와 연구 기준
+http://127.0.0.1:5173
 
-버전 관리 캠페인 JSON이 유일한 서사 원본이며 결정론적 TypeScript 코어와 Unity 6이 공유합니다. 개인 서적, OCR, 채팅, 전체 메모는 Git에 넣지 않습니다. [게임 설계](../docs/design/GAME_DESIGN_DOCUMENT.md), [사료 정책](../docs/history/SOURCE_POLICY.md), [품질 게이트 로드맵](../docs/production/ROADMAP.md)을 참고하세요.
+## 영상 검토
 
-## 빌드와 검증
+매끄러움은 반응 빠른 명령, 알맞은 반응 이전의 영구 저장, 명확한 계속하기에서 나옵니다. 음악과 영상에는 자막, 일시 정지, 건너뛰기, 동의와 동작 줄이기를 유지합니다. 독창적인 얼굴과 의상은 일관되어야 합니다. Musia, LocalVideoGen, Blender 연구는 출처, 권리, 영상과 음향 검토를 통과하기 전까지 비공개입니다.
 
-캠페인 그래프, 인용, 번역 키, 규칙, 타입, 테스트를 자동 검증합니다. 보이는 noVNC/Chrome 시험은 플레이, 압력 응수, 키보드, 출처 분류, 저장, RTL, 모바일, WebGL, 콘솔 50개 항목을 통과했습니다. [시험 증거](../docs/production/PLAYTESTING.md)를 확인할 수 있습니다.
+[Design](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Sources](../docs/history/SOURCE_POLICY.md) · [Playtests](../docs/production/PLAYTESTING.md) · [Roadmap](../docs/production/ROADMAP.md)
+
+## 출시 범위
+
+2026년 10월 1일 기준 출시된 모바일 빌드 1과 새 개발판은 별개입니다. Apple 출시는 9월 30일 확인했고 Google은 현재 상태 확인이 필요합니다. 회의, 범양, 후퇴, 피난 개발에는 제한된 테스트가 있지만 일부는 QA 전용입니다. 인물은 최종 영화 수준 미술이 아닙니다. 테스트는 사람의 검토나 실기기 성능을 대체하지 않습니다. GitHub는 검증한 단계마다 갱신하고 내부 베타에는 서명, 업그레이드 테스트와 배포 확인이 필요합니다. 매일 자동 배포하는 스케줄러는 설치하지 않았습니다.
+
+[Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 
 ## 인용
 
-연구·교육에 사용할 때는 [`CITATION.cff`](../CITATION.cff)를 인용해 주세요.
+연구에는 CITATION.cff를 인용하세요. 공개가 재사용 허가를 뜻하지 않습니다. 비공개 책, 키와 생성 캐시는 Git에 넣지 않습니다.
+
+[CITATION.cff](../CITATION.cff) · [LICENSE.md](../LICENSE.md)
 
 ```bibtex
 @software{chen_shi_2026,
@@ -63,6 +64,4 @@ npm run build
 }
 ```
 
-## 상태와 범위
-
-2026-08-09 시스템 증명 프리알파. 웹 장에는 결정론적 압력 응수, 저장 이전, 키보드 조작, 전체 경로 검증과 50개 가시 시험이 있습니다. 실제 Linux/WebGL Unity 에디터가 설치되어 Hub에 등록되었습니다. 네이티브 가져오기와 컴파일에는 계정 소유자의 로그인과 Unity 라이선스 활성화가 필요하며 Unity 6 프로덕션 핀은 유지됩니다. 두 클라이언트, 사료, 현지화, 자산, 플레이테스트, 출시 기준이 통과되기 전에는 완료라 부르지 않습니다.
+Copyright © 2026 Lachlan Chen.

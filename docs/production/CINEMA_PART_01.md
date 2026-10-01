@@ -10,7 +10,8 @@ unsatisfactory takes are the commitment.
 ## One scene, one unresolved choice
 
 The first film work stays on `chapter-01-daze` / `rain-order`, using the existing
-[wet-register contract](../../content/cinematics/chapter-01-council-film.v1.json).
+[wet-register design](../design/UNREAL_CONSEQUENCE_CINEMA.md).
+The separate cinematic JSON draft is not part of this committed checkpoint.
 It must not invent a parallel opening or select one of the player's three choices.
 The film's job is to make the register and the people carrying it matter.
 
