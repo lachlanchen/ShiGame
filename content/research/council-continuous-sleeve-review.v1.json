@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "id": "council-continuous-sleeve-review.v1",
+  "reviewDate": "2026-10-01",
+  "status": "connected-elbow-study-retained-shoulder-fit-red",
+  "publicationApproved": false,
+  "namedSceneBlocker": "The keeper's council offering gesture used separate rigid upper/lower sleeves, opening the garment silhouette at the elbow. A connected sleeve is needed before a final clothed performance.",
+  "source": {
+    "path": "assets/3d/rendered/shi-daze-council-performance-v1.blend",
+    "sha256": "feb52d4080cdfd0cdfa212fb4ec92a427ba676a6fba84fe74f3ac0f165eab743",
+    "provenance": "assets/provenance/shi-daze-council-performance-v1.json",
+    "rights": "New deterministic sleeve geometry is SHI-authored. Existing body, rig and materials retain their recorded source provenance; no new model, texture, mocap or third-party clothing was used.",
+    "character": "keeper; existing blockout retained. This is not the photorealistic Chen Sheng face used in the rain image.",
+    "preserved": "Source file hash, body vertex basis and skin weights, all 53 bone matrices over 121 source frames, and existing palm gesture. No accepted asset, runtime export or narrative definition replaced."
+  },
+  "implementation": {
+    "builder": "scripts/build-council-continuous-sleeve-study.py",
+    "sha256": "2d866b2dd6b03d0fbc0ab4c09790fe7f051050e6500858f2a81708b181e6c571",
+    "method": "600 vertices and 576 quads per connected open sleeve; rounded centerline and tangent, normalized upper/lower-arm weights with smooth transition, volume-preserving armature deformation. Existing rigid sleeves retained hidden in the editable study.",
+    "simulation": "No cloth simulation or physical material strain model."
+  },
+  "verification": {
+    "checker": "scripts/test-council-continuous-sleeve.py",
+    "checkerSHA256": "bf813d3fff98adc26337fdff5ed0ba1ddb54427ba0773748cfb419722d4ed4c2",
+    "receiptSHA256": "64cca3ec27937ad965bc94ba96739282a5d911a076bf9026ffe8fb361acac200",
+    "reportSHA256": "60d61bbff7c1e68c94b0d958cd24903c68a3e48e651dd435ad7fd7c9837cb228",
+    "blendSHA256": "1d6e2a7e3f3c502585a95fdb12bc46b58a9b99ed20c3175481c2b24c1652ff3b",
+    "frames": 121,
+    "topology": "One connected surface and two open 24-vertex boundary loops per sleeve. No collapsed faces; weights sum to one.",
+    "maximumBoneMatrixError": 0,
+    "minimumElbowAndCuffSampledBodyClearanceMetres": 0.012231798842549324,
+    "minimumGlobalSampledBodyClearanceMetres": -0.06486257910728455,
+    "maximumEdgeLengthChangeFactor": 1.9671142940663457,
+    "rejectedFirstAttempt": "Normals were rounded around a sharp centerline, producing near-coincident inner elbow rows and a 6.42058 maximum edge change factor. Rounded centerline revision reduced it to 1.96711.",
+    "scope": "Body clearance samples vertices and face centers over the full source interval. They do not prove exact triangle collision, cloth self-collision, physical strain or natural acting. Shoulder/armpit attachment remains red, with 64.86 mm sampled penetration; it was not omitted from the global result."
+  },
+  "render": {
+    "file": "keeper-sleeve-motion-v2.mp4",
+    "sha256": "bae2c077df44499447c8f6036f8c05f5c1c13a35d6bb4dcd82ae70fcbe8a37f4",
+    "format": "1280x720, 30 fps, 120 H.264 frames, four seconds, silent",
+    "review": "Agent inspected initial/peak/return poses and movie frames 27 and 120. Full movie decode passed. Diagnostic arm/torso framing intentionally crops the head; no human normal-speed viewing or cinematic acting acceptance claimed."
+  },
+  "remaining": [
+    "Fit the sleeve shoulder/armpit join to the torso garment and review body intersections without hiding the measured problem.",
+    "Develop believable cloth shape and folds; nearly twofold local edge changes do not establish physical fabric quality.",
+    "Review natural timing, fingers, full costume, identity and actual scene staging before replacing any game footage.",
+    "Keep this as named-scene engineering evidence, not finished game content."
+  ]
+}
