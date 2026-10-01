@@ -78,7 +78,7 @@ for (const record of deploymentRecords.filter(record => [".js", ".json", ".html"
   const contents = await readFile(record.path, "utf8");
   if (contents.includes("149d0d7bf2974bc17693852a4207613eec88ea0cd09351cafdded96267b7daad")) fail(`private palm study leaked into production: ${record.relative}`);
   for (const marker of crossingMarkers) if (contents.includes(marker)) seenCrossingMarkers.add(marker);
-  for (const marker of ["shi.dev.chen-retreat.v1", "chen-retreat-story-draft.v1", "chen-retreat-rules.v1", "__shi_private_score__", "7d28d185acd999637b19fd9eb0eb1bec778eff9f17c9507fff92519643cdada4", "__shi_private_council_film__", "__shi_private_rain_scene__", "ef86dc9babb6e073949b2285a75bd4cc82703cae8eef55a422b42fe476819345", ...(internal ? [] : crossingMarkers)]) {
+  for (const marker of ["refuge-followup.v1", "先安顿眼前的人", "shi.dev.chen-retreat.v1", "chen-retreat-story-draft.v1", "chen-retreat-rules.v1", "__shi_private_score__", "7d28d185acd999637b19fd9eb0eb1bec778eff9f17c9507fff92519643cdada4", "__shi_private_council_film__", "__shi_private_rain_scene__", "ef86dc9babb6e073949b2285a75bd4cc82703cae8eef55a422b42fe476819345", ...(internal ? [] : crossingMarkers)]) {
     if (contents.includes(marker)) fail(`development story/rules leaked into production: ${record.relative}`);
   }
 }

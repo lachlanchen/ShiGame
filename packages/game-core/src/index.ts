@@ -11,3 +11,4 @@ export * from "./refuge";
 export * from "./refuge-morning";
 export * from "./refuge-contact-entry";
 export * from "./refuge-contact";
+export * from "./refuge-followup";

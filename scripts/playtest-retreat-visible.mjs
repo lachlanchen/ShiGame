@@ -58,6 +58,8 @@ const councilFilm = process.env.SHI_PLAYTEST_COUNCIL_FILM === "1";
 const rainCinema = process.env.SHI_PLAYTEST_RAIN_CINEMA === "1";
 const morningOrder = process.env.SHI_PLAYTEST_MORNING;
 const contactOrder = process.env.SHI_PLAYTEST_CONTACT;
+const followupOrder = process.env.SHI_PLAYTEST_FOLLOWUP;
+if (followupOrder && (!contactOrder || !["share-ration", "walk-to-ferry"].includes(followupOrder))) throw new Error("Follow-up review requires a contact and a known action.");
 if (contactOrder && (!morningOrder || !["leave-route", "leave-record", "ask-unprompted", "show-record"].includes(contactOrder))) throw new Error("Contact review requires morning and a known contact choice.");
 if (morningOrder && (!["repair-roof", "follow-witness"].includes(morningOrder) || process.env.SHI_PLAYTEST_REFUGE !== "1")) throw new Error("Morning review requires refuge and a known morning choice.");
 if (councilFilm && (!revisedCrossing || production)) throw new Error("Private council film requires the development crossing-v2 route.");
@@ -925,6 +927,38 @@ try {
         check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "contact preserves retreat history");
         await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
         await capture("contact-restored-desktop"); await layout("contact restored desktop");
+        if (followupOrder) {
+          await click('[data-testid="contact-open-followup"]'); await until(exists('[data-testid="followup-commit"]'));
+          await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+          await capture("followup-opening-mobile"); await layout("follow-up opening");
+          const initialGrain = await evaluate("document.querySelector('[data-testid=followup-grain]').textContent");
+          await click(`[data-followup-choice="${followupOrder}"]`);
+          await capture("followup-choice-mobile"); await layout("follow-up choice");
+          check(await evaluate("[...document.querySelectorAll('[data-followup-choice]')].every(button=>parseFloat(getComputedStyle(button).gridTemplateColumns.split(' ')[1])>=160)"), "follow-up choices retain readable phone text columns");
+          await click('[data-testid="followup-commit"]'); await until(exists('[data-testid="followup-response"]'));
+          const expectedLine = followupOrder === "share-ration" ? "不必再抱着湿鞋过夜" : "他没有再独自走";
+          check(await evaluate(`document.querySelector('[data-testid=followup-response]').textContent.includes(${JSON.stringify(expectedLine)})`), "newcomer receives the committed local outcome, not a fabricated reunion");
+          const finalGrain = await evaluate("document.querySelector('[data-testid=followup-grain]').textContent");
+          check(Number(finalGrain.match(/\d+/)[0]) === Number(initialGrain.match(/\d+/)[0]) - (followupOrder === "share-ration" ? 1 : 0), "follow-up spends only the disclosed available grain");
+          const followupBytes = await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge-followup.v1.')).map(k=>[k,localStorage.getItem(k)]))");
+          check(Object.keys(followupBytes).length === 1 && JSON.parse(Object.values(followupBytes)[0]).order === followupOrder, "follow-up writes one branch-specific choice");
+          await evaluate("document.querySelector('[data-testid=followup-response]').scrollIntoView({block:'start',behavior:'instant'})");
+          await capture("followup-response-mobile"); await layout("follow-up response");
+          await send("Page.reload");
+          for (const selector of ['[data-testid="begin-game"]', '[data-testid="council-enter"]', '[data-testid="council-continue"]', '[data-testid="fanyang-enter"]',
+            '[data-testid="fanyang-response"] [data-council-action="continue"]', '[data-testid="retreat-enter"]', '[data-testid="retreat-response"] [data-council-action="continue"]',
+            '[data-testid="retreat-open-refuge"]', '[data-testid="refuge-open-morning"]', '[data-testid="morning-open-contact"]', '[data-testid="contact-open-followup"]']) await click(selector);
+          await until(exists('[data-testid="followup-response"]'));
+          check(JSON.stringify(await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge-followup.v1.')).map(k=>[k,localStorage.getItem(k)]))")) === JSON.stringify(followupBytes), "cold reload preserves exact follow-up bytes");
+          check(await evaluate("document.querySelector('[data-testid=followup-grain]').textContent") === finalGrain, "cold resume does not spend another ration");
+          for (const [prefix, bytes] of [["refuge-contact", contactBytes], ["refuge-morning", morningBytes], ["refuge", refugeBytes]]) {
+            check(JSON.stringify(await evaluate(`Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.${prefix}.v1.')).map(k=>[k,localStorage.getItem(k)]))`)) === JSON.stringify(bytes), `follow-up preserves ${prefix} history`);
+          }
+          check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "follow-up preserves original retreat history");
+          await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
+          await capture("followup-restored-desktop"); await layout("follow-up restored desktop");
+          await click('[data-testid="followup-back"]');
+        }
         await click('[data-testid="contact-back"]');
       }
       await click('[data-testid="morning-back"]');

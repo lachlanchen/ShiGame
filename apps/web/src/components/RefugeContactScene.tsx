@@ -1,9 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { encodeContactSnapshot, inspectContactChoice, resolveContact, restoreContact,
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { encodeContactSnapshot, inspectContactChoice, prepareFollowupEntry, resolveContact, restoreContact,
   type ContactDefinition, type ContactOrder, type ContactState, type RefugeContactEntry } from "@shi/game-core";
 import story from "../../../../content/story-drafts/refuge-contact.v1.json";
 import storyText from "../../../../content/story-drafts/refuge-contact.v1.json?raw";
 import { flushPersistence, gameStorage } from "../persistence";
+import { RefugeFollowupScene } from "./RefugeFollowupScene";
 
 const definition = story as ContactDefinition;
 const speakers: Record<string, string> = { keeper: "掌简人", householder: "屋主", traveller: "过路人" };
@@ -20,6 +21,7 @@ export function RefugeContactScene({ entry, saveNamespace, reducedMotion, onClos
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<ContactOrder>(offers[0]!.id as ContactOrder);
   const [busy, setBusy] = useState(false);
+  const [showFollowup, setShowFollowup] = useState(false);
   const transaction = useRef(false), alive = useRef(true), heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     alive.current = true;
@@ -35,7 +37,7 @@ export function RefugeContactScene({ entry, saveNamespace, reducedMotion, onClos
     })();
     return () => { alive.current = false; };
   }, [entry, saveNamespace]);
-  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [loaded?.result, Boolean(loaded)]);
+  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [loaded?.result, Boolean(loaded), showFollowup]);
   const commit = async () => {
     if (!loaded || loaded.result || transaction.current || !inspectContactChoice(definition, entry, selected).available) return;
     transaction.current = true; setBusy(true); setError(""); onSavingChange?.(true);
@@ -58,6 +60,10 @@ export function RefugeContactScene({ entry, saveNamespace, reducedMotion, onClos
   const choice = offers.find(item => item.id === (loaded?.result?.order ?? selected))!;
   const available = inspectContactChoice(definition, entry, selected).available;
   const resultLabel = loaded?.result && (loaded.result.evidence === "none" ? loaded.result.message : loaded.result.evidence);
+  const followup = useMemo(() => loaded?.result
+    ? prepareFollowupEntry(definition, entry, JSON.parse(encodeContactSnapshot(loaded.result, loaded.hash)), loaded.hash) : null, [loaded, entry]);
+  if (showFollowup && followup) return <RefugeFollowupScene entry={followup} saveNamespace={saveNamespace}
+    reducedMotion={reducedMotion} onClose={() => setShowFollowup(false)} onSavingChange={onSavingChange} />;
   return <section className="drawer chen-council" data-testid="refuge-contact" role="dialog" aria-modal="true" aria-labelledby="contact-title" lang="zh-Hans" dir="ltr" data-motion={reducedMotion ? "reduced" : "full"}
     onKeyDown={event => {
       if (event.altKey || event.key === "Escape") event.stopPropagation();
@@ -77,6 +83,7 @@ export function RefugeContactScene({ entry, saveNamespace, reducedMotion, onClos
       {loaded.result ? <div data-testid="contact-response" aria-live="polite"><h3>{choice.title}</h3>{lines(choice.response)}
         <p>{resultLabel && resultLabel !== "not-entrusted" && story.outcomeLabels[resultLabel]}</p>
         <p>行动已保存。{story.continuation}</p>
+        {followup && <button className="primary-button" data-testid="contact-open-followup" onClick={() => setShowFollowup(true)}>沿着留下的线索继续 →</button>}
       </div> : <>{lines(scene.lines)}<p data-testid="contact-record-memory">{story.recordMemory[entry.records]}</p>
         <div className="chen-offers">{offers.map((item, index) => <button key={item.id} disabled={busy} data-contact-choice={item.id} aria-pressed={selected === item.id} onClick={() => setSelected(item.id as ContactOrder)}><span aria-hidden="true">{String.fromCharCode(65 + index)}</span>{item.title}</button>)}</div>
         <section className="chen-offer-detail" aria-live="polite"><h3>{choice.title}</h3><p>{choice.intent}</p>

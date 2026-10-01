@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-followup-review.v1",
+  "reviewDate": "2026-10-02",
+  "decision": "reviewed-development-web-only",
+  "publicationApproved": false,
+  "storySHA256": "5b668127d4d63cd9b2ecf5939aad2488e976419b828de3c35f3a91e9440dfa0b",
+  "historicalBoundary": {
+    "work": "资治通鉴",
+    "volume": 8,
+    "localLinesRead": [2786, 2806],
+    "sourceSHA256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+    "scope": "Reread Chen Sheng's defeat, death and the fractured aftermath as background. Main narrative and commentary are distinct. The householder, stranger, local paths, ferry schedule and dialogue are original reconstruction, not attested events or quotations. No private source pages or translations are redistributed."
+  },
+  "agentStoryReview": {
+    "purpose": "Pay off the three existing inquiry leads in a playable encounter, then close this local episode with a consequential human-scale choice.",
+    "continuity": "The sunset promise reaches the same house, basin and eaves. The independent inquiry finds a matching shoe clue without establishing identity. The guided encounter explicitly reveals that the guide has repeated identifying information, so agreement cannot serve as independent testimony.",
+    "dilemma": "Shelter the stranger using one genuinely available ration and lose the final ferry inquiry, or retain the common food and accompany the stranger to the ferry while leaving food and lodging unresolved. Neither option identifies a lost companion or guarantees transport.",
+    "corrections": "Added elapsed searching time before the river arrivals, disclosed the final ferry before commitment, obtained explicit householder consent for the stranger, and kept the roof promise broken even when the stranger receives shelter. Visual review caught a generic walk-to-ferry line after the guided party was already there; that branch now has its own shore-to-boat offer and reaction.",
+    "limits": "Agent editorial review only. Emotional resonance, historical-material acceptance, observed balance and native presentation remain unverified."
+  },
+  "implementation": {
+    "input": "Replay the prior identifier-only contact save against its exact unchanged content hash; do not accept an injected grain inventory or invented reunion.",
+    "output": "Separate branch/revision-bound follow-up save; derive food cost and outcome by replay. Preserve debt, record custody, prior disclosure, local contact and roof-promise state.",
+    "presentation": "Explicit inspect/confirm; durable persistence before reaction; optional read-back without undo; corrupt-save preservation and failed-save rollback attempt; no timers, automatic choices or media requirements.",
+    "scope": "Chinese development web only. Shared versioned content and deterministic rules are ready for native parity work, but no SwiftUI or Unreal follow-up implementation is claimed. Existing night/morning/contact saves and formal build content are unchanged."
+  },
+  "visibleReview": {
+    "result": "Three final connected routes passed 124 checks each, with zero runtime exceptions; mobile choices and outcomes visually inspected. Household sharing, guided ferry escort and independent reed-bank sharing all survive cold reload without a second food deduction or rewriting upstream saves.",
+    "householdStatusSHA256": "82aac6978dbef3f00bd85365f9b7ffde90ead45a57756034f68407efcccedb4a",
+    "guidedFerryStatusSHA256": "58bb999c58e6311489e0b645c82ce4b5103f6bcfd2defbb98b2bb7966c80c00f",
+    "independentReedsStatusSHA256": "450a979bdce83219fef0cae3fefc0cb8acfcd0fb7bb2e7fee8c92f630b1aac3a",
+    "choiceCaptureSHA256": "534a3af6afb188dfd933a8499b0ce45f736ed960b05a069d47ad46a85e7a132f",
+    "guidedCaptureSHA256": "09bd2a4e2874e2098096e14d9d95145330567d94d2f912c5cb5340f95902d9e7",
+    "limit": "Agent-operated development web, not human acceptance or native/device testing. The zero-food fallback wording was normalized after capture and is separately covered across all three entrances by component tests."
+  },
+  "buildReview": "Final npm run build passed 85 core and 404 web tests, repository/content checks and production budgets. The production scan rejects this scene's identifier and title; neither is present. This does not certify native or store delivery.",
+  "remaining": ["Native continuation parity and physical-device review", "Human playtest of pacing, dilemma clarity and emotional effect", "Reviewed cinematic and musical assets for this beat"]
+}

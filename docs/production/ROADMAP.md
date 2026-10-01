@@ -99,6 +99,14 @@ qualify the later retreat/refuge arc rather than removing its build guards to
 make a release appear complete. No new epoch is needed to demonstrate that
 orders change people's local fate.
 
+The [refuge inquiry payoff](REFUGE_INQUIRY_PAYOFF_20261002.md) now gives the
+three contact leads a development-web encounter and a food-versus-search
+decision affecting an unidentified stranger's immediate circumstances. It uses
+shared versioned story/rules and separate saves, without rewriting older refuge
+decisions. Next qualify this same continuation in native iOS and obtain player
+feedback before widening the arc; its source checkpoint is not a mobile release
+or proof of cinematic completion.
+
 Historical circumstances come from the supplied 《资治通鉴》; distinguish text,
 commentary, dramatized dialogue and alternate outcomes. Continue actual passage
 reading and claim closure per scene. Original consistent faces are authorized;

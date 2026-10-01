@@ -33,6 +33,11 @@ describe("contact encounter", () => {
     expect((await view.findByTestId("contact-response")).textContent).toContain(expected);
     expect(localStorage.getItem(key)).toBe(bytes);
     expect(JSON.parse(bytes!).order).toBe(order);
+    fireEvent.click(view.getByTestId("contact-open-followup"));
+    await view.findByTestId("followup-commit");
+    expect(localStorage.getItem(key)).toBe(bytes);
+    fireEvent.click(view.getByTestId("followup-back"));
+    await view.findByTestId("contact-response");
   });
   it.each(["divide-records", "strip-identities"] as const)("keeps a useful non-identifying path for %s", async records => {
     const view = render(<RefugeContactScene {...props(entry("river-approach", records))} />);

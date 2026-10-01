@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-followup.v1",
+  "publicationApproved": false,
+  "boundary": "原创地方场景，承接《资治通鉴》卷八陈胜败亡后的离散形势。屋主、渡口和来者均为戏剧重构；没有据此辨认任何史载人物或确认失散同伴生还。",
+  "title": "先安顿眼前的人",
+  "scenes": {
+    "return-at-sunset": {
+      "title": "日落前，门下多了一双鞋",
+      "lines": [
+        { "speaker": "narrator", "text": "你赶在日落前回到屋檐下。那只木盆还倒扣着，一个陌生人坐在旁边，把湿鞋抱在怀里。" },
+        { "speaker": "householder", "text": "他来问掌简的。我没叫他往里走，等你回来。" },
+        { "speaker": "stranger", "text": "我不是来认人的。路上听说，这里有人还肯把人点清。" },
+        { "speaker": "narrator", "text": "你蹲下来，他却先看你囊口。你把手从绳结上移开。" },
+        { "speaker": "householder", "text": "檐下能再挤一个。吃的得你们自己想办法。" }
+      ]
+    },
+    "reed-bank-alone": {
+      "title": "芦苇边的人没有等你认名字",
+      "lines": [
+        { "speaker": "narrator", "text": "沿河问了大半天，你才找到芦苇旁那块高地。有人坐在一捆湿草上，正把左鞋上的绳一圈圈解开。" },
+        { "speaker": "keeper", "text": "昨夜是你在这里问粮？" },
+        { "speaker": "stranger", "text": "问过。也不止我一个。" },
+        { "speaker": "narrator", "text": "他说的鞋和地方对得上，脸却不是你能认出的脸。你没有叫出一直惦记的那个名字。" },
+        { "speaker": "stranger", "text": "你要找的人，我未必见过。可不可以先告诉我，今晚往哪儿走？" }
+      ]
+    },
+    "ferry-with-guide": {
+      "title": "渡口，只认得半句话",
+      "escort": {
+        "title": "不动公粮，陪他到船边问话",
+        "intent": "你们已经在渡口，不必再走一遍。公粮留给原来的队伍；你陪来者走到船边，保住末班船的查问机会。食宿和船位仍未解决，不能拿同行当作身份担保。",
+        "response": [
+          { "speaker": "keeper", "text": "粮不能先许给你。我陪你到船边问。" },
+          { "speaker": "stranger", "text": "等一下。我这只鞋还没系好。" },
+          { "speaker": "narrator", "text": "你站在岸边等他。系好鞋，他才跟你并排走下去。引路的过路人提起空筐，转身去忙自己的事。" },
+          { "speaker": "narrator", "text": "船上还有人在应声，你们赶得及问话。公粮没有少，食宿也没有凭空解决；但走到船边的这一段，他没有再独自走。" }
+        ]
+      },
+      "lines": [
+        { "speaker": "narrator", "text": "过路人带你沿岸问了几处，直到天光将收，才在渡口找到先前说的那个人。他把空筐放下，招呼岸边的陌生人。" },
+        { "speaker": "traveller", "text": "就是我刚才跟你说的那笔——" },
+        { "speaker": "keeper", "text": "先别说。" },
+        { "speaker": "stranger", "text": "我已经听见一点了。对上了，你就能带我走吗？" },
+        { "speaker": "narrator", "text": "你收起凭记。他低头拧鞋里的水，不再猜上面的字。你仍不知道他是谁，但眼前这个人确实还没有落脚的地方。" }
+      ]
+    }
+  },
+  "decisionContext": "渡口传来招呼：天快黑了，问船的现在过去。你知道屋主那里或许能挤出一处檐下的位置，但得先把人的吃食解决。带人过去安顿，就赶不上这班船。",
+  "messageMemory": {
+    "route-entrusted": "屋主说，只转述了你日落前回来的话，没有拿姓名筛问。口信至少传到这个来者耳中，来者却未被辨认为旧同伴。",
+    "record-entrusted": "屋主拿出你留下的抄件：“他答不上来。我没让他碰，可他问，凭什么对不上就不能等。”这次筛问没有认出同伴，也已经让屋主知道了那一笔记录。"
+  },
+  "choices": [
+    {
+      "id": "share-ration", "grainCost": 1,
+      "title": "分出一份公粮，带他去借檐下的位置",
+      "intent": "须有一份仍可支配的公粮。你陪来者回到屋主处，分粮换得今夜安顿；不再赶最后一班渡船。他会知道这个落脚点，但不能因此查看名籍，也不会自动成为可信同伴。",
+      "effects": { "newcomer": "sheltered", "search": "last-ferry-missed", "disclosure": "shelter-location" },
+      "response": [
+        { "speaker": "narrator", "text": "你陪陌生人在屋主面前站定，拿出一份公粮。屋主看了看他怀里的湿鞋，才把木盆挪开。" },
+        { "speaker": "householder", "text": "只借他一夜。明早的吃食，你们还得自己找。" },
+        { "speaker": "narrator", "text": "你把分出的那份粮放在来者伸手够得着的地方。" },
+        { "speaker": "stranger", "text": "要把我也写上吗？" },
+        { "speaker": "keeper", "text": "先吃。吃这一份，不用拿一个名字来换。" },
+        { "speaker": "narrator", "text": "等他坐稳，渡口最后一声招呼已经远了。你没有找到失散的人，却让眼前这个人不必再抱着湿鞋过夜。囊里少掉的那份粮，也不会自己回来。" }
+      ]
+    },
+    {
+      "id": "walk-to-ferry", "grainCost": 0,
+      "title": "不动公粮，陪他赶到渡口问船",
+      "intent": "公粮留给原来的队伍。你陪他去赶最后一班船，保住继续查问的机会；今夜的食宿仍未解决。只同行到渡口，不替他许诺船位、口粮或新的身份。",
+      "effects": { "newcomer": "accompanied-to-ferry", "search": "last-ferry-inquiry", "disclosure": "travel-route" },
+      "response": [
+        { "speaker": "keeper", "text": "粮不能先许给你。我陪你问船，走到渡口再说。" },
+        { "speaker": "stranger", "text": "那你慢一点。我这只鞋还没系好。" },
+        { "speaker": "narrator", "text": "你停下来等他。再起身时，他走在你旁边，没有去碰装凭记的囊。" },
+        { "speaker": "narrator", "text": "你们赶上渡口最后一声招呼，还能问船上的人。公粮没有少，食宿也没有凭空解决；但这段路，他没有再独自走。" }
+      ]
+    }
+  ],
+  "brokenPromiseResponse": "屋主没有再提早晨漏雨的地方，只让来者坐下。借给他一夜，不等于原谅你的失约。",
+  "ending": "这一夜，你仍不知道失散同伴的去向。你已经替一个眼前的人作了决定，也留下了明天必须面对的代价。此段试玩到这里；存档保留，不必重走此前的路。"
+}
