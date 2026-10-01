@@ -65,6 +65,18 @@ def main():
         assert sha(Path(__file__).with_name("build-council-eased-garment-study.py")) == receipt["shellEase"]["authorSHA256"]
     if receipt.get("independentPattern"):
         assert sha(Path(__file__).with_name("build-council-pattern-garment-study.py")) == receipt["independentPattern"]["authorSHA256"]
+    if receipt.get("gussetTransition"):
+        assert sha(Path(__file__).with_name("build-council-gusset-garment-study.py")) == receipt["gussetTransition"]["authorSHA256"]
+    cloth_receipt = receipt.get("clothSimulation")
+    pin_group = "SHI_ClothPins" if cloth_receipt else None
+    if cloth_receipt:
+        assert sha(Path(__file__).with_name("build-council-cloth-garment-study.py")) == cloth_receipt["authorSHA256"]
+        assert cloth_receipt["frames"] == 121 and cloth_receipt["pinGroup"] == pin_group
+        assert len(cloth_receipt["cache"]) == 121
+        assert len({cache["file"] for cache in cloth_receipt["cache"]}) == 121
+        for cache in cloth_receipt["cache"]:
+            cache_path = (output / cache["file"]).resolve()
+            assert cache_path.is_relative_to(output) and sha(cache_path) == cache["sha256"]
     for capture in receipt["rendered"]: assert sha(output / capture["file"]) == capture["sha256"]
     path = Path(__file__).with_name("build-council-continuous-sleeve-study.py")
     spec = importlib.util.spec_from_file_location("shi_garment_baseline", path)
@@ -95,12 +107,20 @@ def main():
     for start, sleeve in zip((len(obj.data.vertices) - 816, len(obj.data.vertices) - 408), retained):
         for v, (point, weights) in zip(obj.data.vertices[start:start + 408], sleeve):
             assert tuple(v.co) == point
-            actual = {obj.vertex_groups[g.group].name: g.weight for g in v.groups}
+            actual = {obj.vertex_groups[g.group].name: g.weight for g in v.groups
+                      if obj.vertex_groups[g.group].name != pin_group}
             assert set(actual) == set(weights) and all(abs(actual[k] - weights[k]) < 1e-6 for k in weights)
+            if cloth_receipt:
+                assert abs(obj.vertex_groups[pin_group].weight(v.index) - 1) < 1e-6
     edges, loops = topology(obj.data)
-    assert set(g.name for g in obj.vertex_groups) <= set(rig.data.bones.keys())
-    assert all(abs(sum(g.weight for g in v.groups) - 1) < 1e-6 for v in obj.data.vertices)
+    assert set(g.name for g in obj.vertex_groups) <= set(rig.data.bones.keys()) | ({pin_group} if cloth_receipt else set())
+    assert all(abs(sum(g.weight for g in v.groups if obj.vertex_groups[g.group].name != pin_group) - 1) < 1e-6 for v in obj.data.vertices)
     assert obj.modifiers["GarmentSkin"].object == rig and obj.modifiers["GarmentSkin"].use_deform_preserve_volume
+    if cloth_receipt:
+        cloth = obj.modifiers["SHI_GarmentCloth"]
+        assert cloth.type == "CLOTH" and cloth.point_cache.is_baked
+        assert cloth.settings.vertex_group_mass == pin_group and cloth.collision_settings.use_collision
+        assert body.modifiers["SHI_ClothBodyCollider"].type == "COLLISION"
     rest = [(obj.data.vertices[a].co - obj.data.vertices[b].co).length for a, b in edges]
     assert min(rest) > 1e-7, "Collapsed rest edge"
     minimum_clearance, maximum_edge, minimum_area, pose_error = math.inf, 1, math.inf, 0
