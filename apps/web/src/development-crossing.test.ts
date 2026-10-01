@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { availableEngagementCommands, getNode, type Campaign, type EngagementDefinition } from "@shi/game-core";
 import campaignJson from "../../../content/campaigns/chapter-01-daze.json";
 import engagementJson from "../../../content/engagements/chapter-01-broken-crossing.v1.json";
-import { createDevelopmentCrossingDriver, DEVELOPMENT_CROSSING_KEY } from "./development-crossing";
+import { createDevelopmentCrossingDriver, DEVELOPMENT_CROSSING_KEY, DEVELOPMENT_CROSSING_V2_KEY } from "./development-crossing";
 
 const campaign = campaignJson as Campaign;
 const definition = engagementJson as EngagementDefinition;
@@ -20,6 +20,27 @@ function crossing(driver: ReturnType<typeof createDevelopmentCrossingDriver>) {
 }
 
 describe("development crossing durable browser adapter", () => {
+  it("keeps the revised personal reaction and promise judgment through reload without changing older chapter saves", () => {
+    localStorage.setItem(DEVELOPMENT_CROSSING_KEY, "owner's first-edition save");
+    let driver = createDevelopmentCrossingDriver(localStorage, 2);
+    crossing(driver);
+    for (const commandId of ["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"]) {
+      driver.commit({ kind: "crossing-command", commandId });
+      driver = createDevelopmentCrossingDriver(localStorage, 2);
+    }
+    const finished = driver.commit({ kind: "finish-crossing" });
+    expect(finished.crossings[0]!.outcomeId).toBe("costly-crossing");
+    driver = createDevelopmentCrossingDriver(localStorage, 2);
+    expect(driver.restore()!.resolution).toEqual(finished.lastResolution);
+    expect(driver.getCrossingCommitment()!.outcome.status).toBe("strained");
+    expect(driver.getCrossingRecord()!.summary).toEqual(finished.lastResolution!.choice.consequence);
+    expect(driver.getCrossingRecord()!.pressure).toEqual(finished.lastResolution!.choice.pressure!.reveal);
+    driver.acknowledge();
+    expect(createDevelopmentCrossingDriver(localStorage, 2).getCrossingCommitment()!.outcome.status).toBe("strained");
+    expect(localStorage.getItem(DEVELOPMENT_CROSSING_V2_KEY)).not.toBeNull();
+    expect(localStorage.getItem(DEVELOPMENT_CROSSING_KEY)).toBe("owner's first-edition save");
+    expect(localStorage.getItem(legacyKey)).toBe("owner's original save");
+  });
   it("resumes every pulse and the outcome reaction without touching release saves", () => {
     let driver = createDevelopmentCrossingDriver(localStorage);
     let active = crossing(driver);

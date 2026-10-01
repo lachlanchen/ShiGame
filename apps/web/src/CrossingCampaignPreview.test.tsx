@@ -28,6 +28,33 @@ async function opening(view: ReturnType<typeof render>) {
 }
 
 describe("crossing campaign in the real App shell", () => {
+  it("renders the actual second-edition promise and personal reaction after a costly crossing and reload", async () => {
+    let driver = createDevelopmentCrossingDriver(localStorage, 2);
+    let view = render(<App developmentCrossing={driver} />);
+    await opening(view);
+    expect(view.getByTestId("decision-inspector").textContent).toContain("actual crossing result decides");
+    fireEvent.click(view.container.querySelector("[data-choice-id='families-first']")!);
+    fireEvent.click(view.getByTestId("commit-selected"));
+    const board = await view.findByTestId("engagement-board");
+    for (const id of ["screen-through-reeds", "repair-the-landing", "hold-for-the-last-household"]) {
+      fireEvent.click(board.querySelector(`[data-engagement-command='${id}']`)!);
+    }
+    fireEvent.click(view.getByTestId("engagement-return"));
+    const reaction = await view.findByTestId("resolution");
+    const saved = driver.getCrossingRecord()!;
+    expect(reaction.textContent).toContain(saved.summary.en);
+    expect(driver.getCrossingCommitment()!.outcome.status).toBe("strained");
+    view.unmount();
+    driver = createDevelopmentCrossingDriver(localStorage, 2);
+    view = render(<App developmentCrossing={driver} />);
+    fireEvent.click(view.getByTestId("begin-game"));
+    expect((await view.findByTestId("resolution")).textContent).toContain(saved.summary.en);
+    fireEvent.click(view.getByTestId("resolution-continue"));
+    await waitFor(() => expect(view.queryByTestId("resolution")).toBeNull());
+    fireEvent.click(view.getByTestId("record-toggle"));
+    expect((await view.findByTestId("crossing-record")).textContent).toContain(saved.summary.en);
+    expect(localStorage.getItem("shi.chapter-01.save.v6")).toBe("unchanged release save");
+  });
   it("plays, pauses, cold-resumes, commits once and continues to the matching Chen arrival", async () => {
     let driver = createDevelopmentCrossingDriver(localStorage);
     let view = render(<App developmentCrossing={driver} />);

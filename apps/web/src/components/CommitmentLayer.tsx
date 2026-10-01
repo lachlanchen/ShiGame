@@ -42,9 +42,9 @@ export function CommitmentForecast({ commitmentId, outcomeId, locale }: { commit
   </div>;
 }
 
-export function CommitmentResolutionCopy({ commitmentId, outcomeId, stakeholder, locale }: { commitmentId: string; outcomeId: string; stakeholder: LocalizedText; locale: Locale }) {
+export function CommitmentResolutionCopy({ commitmentId, outcomeId, stakeholder, locale, outcomeOverride }: { commitmentId: string; outcomeId: string; stakeholder: LocalizedText; locale: Locale; outcomeOverride?: CommitmentOutcome }) {
   const commitment = commitmentFor(commitmentId);
-  const outcome = outcomeFor(commitment, outcomeId);
+  const outcome = commitment.outcomes.find(candidate => candidate.id === outcomeId) ?? outcomeOverride ?? outcomeFor(commitment, outcomeId);
   return <div className={`commitment-reveal commitment-${outcome.status}`} data-testid="commitment-resolution" data-commitment-status={outcome.status}>
     <span>{translateCommitment(locale, "answer")} · {translateCommitment(locale, outcome.status)}</span>
     <p dir={contentDirection(outcome.response, locale)}>{localize(outcome.response, locale)} <i dir={contentDirection(stakeholder, locale)}>· {localize(stakeholder, locale)}</i></p>
@@ -55,14 +55,14 @@ export function CommitmentResolutionDeltas({ effects, locale }: { effects: Parti
   return <CommitmentEffects effects={effects} locale={locale} className="delta-list commitment-deltas" />;
 }
 
-export function CommitmentRecord({ commitmentId, outcomeId, effects, locale }: { commitmentId: string; outcomeId: string; effects: Partial<Resources>; locale: Locale }) {
+export function CommitmentRecord({ commitmentId, outcomeId, effects, locale, outcomeOverride }: { commitmentId: string; outcomeId: string; effects: Partial<Resources>; locale: Locale; outcomeOverride?: CommitmentOutcome }) {
   const commitment = commitmentFor(commitmentId);
-  const outcome = outcomeFor(commitment, outcomeId);
+  const outcome = commitment.outcomes.find(candidate => candidate.id === outcomeId) ?? outcomeOverride ?? outcomeFor(commitment, outcomeId);
   return <p className={`record-commitment commitment-${outcome.status}`}><b>{translateCommitment(locale, "answer")} · {translateCommitment(locale, outcome.status)}</b>{localize(commitment.title, locale)} · {Object.entries(effects).map(([key, value]) => effectLabel(key as ResourceKey, value ?? 0, locale)).join(" · ")}</p>;
 }
 
-export function CommitmentEndingSummary({ commitmentId, outcomeId, locale }: { commitmentId: string; outcomeId: string; locale: Locale }) {
+export function CommitmentEndingSummary({ commitmentId, outcomeId, locale, outcomeOverride }: { commitmentId: string; outcomeId: string; locale: Locale; outcomeOverride?: CommitmentOutcome }) {
   const commitment = commitmentFor(commitmentId);
-  const outcome = outcomeFor(commitment, outcomeId);
+  const outcome = commitment.outcomes.find(candidate => candidate.id === outcomeId) ?? outcomeOverride ?? outcomeFor(commitment, outcomeId);
   return <p className={`commitment-ending commitment-${outcome.status}`} data-testid="commitment-ending" data-commitment-status={outcome.status}><b>{translateCommitment(locale, "chapterAnswer")} · {translateCommitment(locale, outcome.status)}</b><span>{localize(commitment.title, locale)}</span></p>;
 }

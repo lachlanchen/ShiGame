@@ -651,7 +651,7 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
         <p className="eyebrow">{state.failureReason ? translate(locale, "failed") : translate(locale, "complete")}</p>
         <EndingHeading id={state.failureReason ? "story-title" : undefined}>{state.failureReason ? translate(locale, state.failureReason) : translate(locale, ending === "wildfire" ? "endingWildfire" : ending === "deep-roots" ? "endingRoots" : "endingWatchful")}</EndingHeading>
         <EndingText locale={locale} textKey={state.failureReason ? (state.failureReason === "captured" ? "capturedText" : "scatteredText") : ending === "wildfire" ? "endingWildfireText" : ending === "deep-roots" ? "endingRootsText" : "endingWatchfulText"} />
-        {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} locale={locale} /></Suspense>}
+        {answeredCommitmentRecord?.commitmentId && answeredCommitmentRecord.commitmentOutcomeId && <Suspense fallback={null}><CommitmentEndingSummary commitmentId={answeredCommitmentRecord.commitmentId} outcomeId={answeredCommitmentRecord.commitmentOutcomeId} outcomeOverride={crossingDriver?.getCrossingCommitment()?.outcome} locale={locale} /></Suspense>}
       </div>
       <div className="chen-ending-actions">
         {!state.failureReason && <button className="primary-button" data-testid="council-enter" onClick={() => openDrawer("council")}>{locale.startsWith("zh") ? "进入陈地议事" : "Continue to the council at Chen"} <span>→</span></button>}
@@ -787,7 +787,7 @@ export function App({ developmentCrossing }: { developmentCrossing?: Development
       {resolution && (
         <Suspense fallback={<div role="dialog" aria-modal="true" aria-label={translate(locale, "consequence")} aria-busy="true" style={{ position: "fixed", inset: 0, zIndex: 9, display: "grid", placeItems: "center", background: "#171b18" }}><button className="primary-button" autoFocus onClick={closeTransient}>{translate(locale, "continue")}</button></div>}>
         <ResolvedConsequenceScene key={`${state.seed}-${state.history.length}`} campaign={campaign} resolution={resolution}
-          locale={locale} reducedMotion={reducedMotion} onContinue={closeTransient} saveError={crossingSaveError ? crossingLabels?.error : undefined} />
+          locale={locale} reducedMotion={reducedMotion} onContinue={closeTransient} saveError={crossingSaveError ? crossingLabels?.error : undefined} titleOverride={resolution.node.id === "broken-crossing" ? crossingDriver?.getCrossingRecord()?.title : undefined} />
         </Suspense>
       )}
 

@@ -3,19 +3,36 @@ import { readFile } from "node:fs/promises";
 import {
   advanceCrossingCampaign, availableEngagementCommands, canChoose, createCrossingCampaignSave,
   councilEntry, deriveEnding, getNode, replayCrossingCampaign,
-  type Campaign, type CrossingCampaignReplay, type CrossingCampaignRules, type EngagementDefinition,
+  type Campaign, type CrossingAftermath, type CrossingCampaignReplay, type CrossingCampaignRules, type EngagementDefinition,
 } from "../packages/game-core/src";
 
 const campaignBytes = await readFile(new URL("../content/campaigns/chapter-01-daze.json", import.meta.url));
 const engagementBytes = await readFile(new URL("../content/engagements/chapter-01-broken-crossing.v1.json", import.meta.url));
 const campaign = JSON.parse(campaignBytes.toString()) as Campaign;
 const definition = JSON.parse(engagementBytes.toString()) as EngagementDefinition;
-const rules = JSON.parse(await readFile(new URL("../content/engagements/chapter-01-crossing-campaign.rules.v1.json", import.meta.url), "utf8")) as CrossingCampaignRules;
+const revision = process.argv.includes("--v2") ? 2 : 1;
+const rules = JSON.parse(await readFile(new URL(`../content/engagements/chapter-01-crossing-campaign.rules.v${revision}.json`, import.meta.url), "utf8")) as CrossingCampaignRules;
+const aftermathBytes = revision === 2 ? await readFile(new URL("../content/engagements/chapter-01-crossing-aftermath.v2.json", import.meta.url)) : undefined;
+const aftermath = aftermathBytes ? JSON.parse(aftermathBytes.toString()) as CrossingAftermath : undefined;
 const hash = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 if (rules.campaignSha256 !== hash(campaignBytes) || rules.engagementSha256 !== hash(engagementBytes)) {
   throw new Error("Crossing integration inputs changed: review and version the rules/migration before adoption.");
 }
-if (Object.keys(rules).sort().join(",") !== ["schemaVersion", "id", "deliveryStatus", "campaignId", "engagementId", "nodeId", "effectPolicy", "campaignSha256", "engagementSha256"].sort().join(",")) {
+if (aftermathBytes && rules.aftermathSha256 !== hash(aftermathBytes)) throw new Error("Crossing reaction content changed without a reviewed rules revision.");
+if (aftermath) {
+  const text = (value: { en?: string; "zh-Hans"?: string }) => {
+    if (!value.en?.trim() || !value["zh-Hans"]?.trim()) throw new Error("Crossing reaction requires both authored languages.");
+  };
+  for (const outcome of definition.outcomes) { text(aftermath.outcomes[outcome.id]!.reaction); text(aftermath.outcomes[outcome.id]!.pressure); }
+  for (const terminal of Object.values(aftermath.terminal)) text(terminal);
+  for (const commitment of campaign.commitments) for (const status of ["kept", "strained", "broken"] as const) {
+    const profile = aftermath.commitments[commitment.id]![status]; text(profile.response);
+    for (const [key, value] of Object.entries(profile.effects)) {
+      if (!["grain", "trust", "momentum", "people", "danger"].includes(key) || !Number.isInteger(value) || Math.abs(value) > 25) throw new Error("Invalid crossing promise effect.");
+    }
+  }
+}
+if (Object.keys(rules).sort().join(",") !== ["schemaVersion", "id", "deliveryStatus", "campaignId", "engagementId", "nodeId", "effectPolicy", "campaignSha256", "engagementSha256", ...(revision === 2 ? ["aftermathId", "aftermathSha256"] : [])].sort().join(",")) {
   throw new Error("Unexpected crossing integration contract fields.");
 }
 
@@ -25,11 +42,17 @@ const failures: Record<string, number> = {};
 const arrivals: Record<string, number> = {};
 const outcomes: Record<string, number> = {};
 const conditions = new Set<string>();
+const promiseJudgments = new Map<string, Set<string>>();
 const fateGroups = new Map<string, Set<string>>();
 const visit = (state: CrossingCampaignReplay) => {
   checkpoints++;
-  const resumed = replayCrossingCampaign(campaign, definition, rules, JSON.parse(JSON.stringify(state.save)));
+  const resumed = replayCrossingCampaign(campaign, definition, rules, JSON.parse(JSON.stringify(state.save)), aftermath);
   if (!resumed || JSON.stringify(resumed) !== JSON.stringify(state)) throw new Error("Cold replay drifted.");
+  const commitment = state.crossingResolutions.at(-1)?.commitment;
+  if (commitment) {
+    const statuses = promiseJudgments.get(commitment.commitment.id) ?? new Set<string>();
+    statuses.add(commitment.outcome.status); promiseJudgments.set(commitment.commitment.id, statuses);
+  }
   if (state.campaign.completed) {
     terminalRoutes++;
     if (state.campaign.failureReason) failures[state.campaign.failureReason] = (failures[state.campaign.failureReason] ?? 0) + 1;
@@ -44,7 +67,7 @@ const visit = (state: CrossingCampaignReplay) => {
     return;
   }
   const next = (event: Parameters<typeof advanceCrossingCampaign>[4]) =>
-    visit(advanceCrossingCampaign(campaign, definition, rules, state.save, event));
+    visit(advanceCrossingCampaign(campaign, definition, rules, state.save, event, aftermath));
   if (state.engagement) {
     conditions.add(state.engagement.conditionId);
     if (state.engagement.completed) {
@@ -66,7 +89,7 @@ const visit = (state: CrossingCampaignReplay) => {
 };
 const seeds = [0, 1, 2, 3, 4, 0x5eed2026];
 for (const seed of seeds) {
-  const initial = replayCrossingCampaign(campaign, definition, rules, createCrossingCampaignSave(campaign, rules, seed));
+  const initial = replayCrossingCampaign(campaign, definition, rules, createCrossingCampaignSave(campaign, rules, seed), aftermath);
   if (!initial) throw new Error("Crossing integration content failed binding.");
   visit(initial);
 }
@@ -75,6 +98,7 @@ if (conditions.size !== definition.conditions.length || Object.keys(outcomes).le
 }
 const changedFateGroups = [...fateGroups].filter(([, fates]) => fates.size > 1);
 if (!changedFateGroups.length) throw new Error("Tactical commands never change an ending or council arrival on the same strategic route.");
+if (revision === 2 && campaign.commitments.some(commitment => promiseJudgments.get(commitment.id)?.size !== 3)) throw new Error("Some revised promise judgments are unreachable.");
 const representativeEvents = [
   { kind: "decision", choiceId: "read-the-names" },
   { kind: "decision", choiceId: "issue-grain-tallies" },
@@ -87,12 +111,13 @@ const representativeEvents = [
 ];
 const representative = replayCrossingCampaign(campaign, definition, rules, {
   ...createCrossingCampaignSave(campaign, rules, 0), events: representativeEvents,
-});
+}, aftermath);
 if (!representative?.campaign.completed || representative.campaign.failureReason) throw new Error("Representative crossing-to-Chen route failed.");
 console.log(JSON.stringify({
   status: "development-rules-audit-not-client-acceptance", rulesId: rules.id,
   campaignSha256: rules.campaignSha256, engagementSha256: rules.engagementSha256,
   seeds, checkpoints, terminalRoutes, conditions: [...conditions].sort(), outcomes, failures, councilArrivals: arrivals,
+  promiseJudgments: Object.fromEntries([...promiseJudgments].map(([id, values]) => [id, [...values].sort()])),
   sameStrategicRoutesWithChangedFates: changedFateGroups.length,
   example: { strategicRoute: JSON.parse(changedFateGroups[0]![0]), possibleFates: [...changedFateGroups[0]![1]] },
   representative: { seed: 0, events: representativeEvents, resources: representative.campaign.resources,

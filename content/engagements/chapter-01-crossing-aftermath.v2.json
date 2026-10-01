@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 2,
+  "id": "chapter-01-crossing-aftermath-v2",
+  "deliveryStatus": "development-only",
+  "claimStatus": "dramatic-reconstruction",
+  "review": {
+    "status": "reviewed-development-copy",
+    "reviewer": "Codex narrative/continuity pass",
+    "historicalBoundary": "The crossing and every line of dialogue are fiction. Tongjian vol. 7, Qin Annals II, Second Emperor year one supplies the Daze-to-Chen historical spine, not this particular ford, household or conversation.",
+    "humanAcceptance": "pending"
+  },
+  "outcomes": {
+    "orderly-crossing": {
+      "reaction": {
+        "en": "The last file reaches the landing. Someone turns to count the people behind him; another calls back from the rear. Only then does the Keeper loosen his grip on the wet cord. “Give them a moment. Then we go on.”",
+        "zh-Hans": "最后一列到了登陆点。前面的人回头数身后的脚步，后队还有人应声。掌简人这才松开攥紧的湿绳：“让他们喘一口气，再走。”"
+      },
+      "pressure": {
+        "en": "The organized crossing is complete. Wet stores, spent labor and visible movement still leave costs and traces; an orderly crossing does not erase the disclosed pursuit.",
+        "zh-Hans": "整队渡河已经完成。湿粮、劳作与队伍移动仍留下代价和踪迹；渡得有序，并不等于已摆脱先前披露的追捕。"
+      }
+    },
+    "costly-crossing": {
+      "reaction": {
+        "en": "The column moves on in uneven groups. Someone stops to look back, but the people behind him press past. The Keeper catches his sleeve. “Who are you waiting for?” The man shakes his head; he has not seen them yet. The Keeper leaves space beside the marks he has counted.",
+        "zh-Hans": "队伍一拨一拨地往前挪。有人停下来望着来路，后面的人还在挤过去。掌简人拉住他的衣袖：“在等谁？”那人摇头，还没看见。掌简人在已经点过的记号旁留了一截空白。"
+      },
+      "pressure": {
+        "en": "The crossing secured only part of its intended result. Time, stores and cohesion were spent; neither this report nor the plan certifies that everyone crossed.",
+        "zh-Hans": "渡河只保住了大部分目标。时间、物资与队形都付出了代价；这一份战果记录和原定方案，都不能证明所有人已过河。"
+      }
+    },
+    "fighting-withdrawal": {
+      "reaction": {
+        "en": "The rear gives ground a file at a time. When the column pauses, a carrier asks whether they are going back to the ford. The Keeper looks along the line before answering. “Not now. Tell me who stayed with you.” The crossing is still unfinished.",
+        "zh-Hans": "后卫一列一列地让出地面。队伍停下来时，一个载物者问，还回不回渡口。掌简人沿着队列望了一遍才答：“眼下不回。先说，谁还跟你在一起。”这一次，河还没有渡完。"
+      },
+      "pressure": {
+        "en": "The column broke contact without completing the intended crossing. The remaining resource costs belong to the attempt and withdrawal, not a second claim of completed passage.",
+        "zh-Hans": "队伍脱离了接触，却没有完成预定渡河。余下的资源代价属于这次尝试和撤离，不是在另一个账目里又算作整队渡完。"
+      }
+    },
+    "rear-broken": {
+      "reaction": {
+        "en": "A call from the rear is answered from somewhere among the reeds, not from a formed line. Someone wants to strike out the people who are missing. The Keeper covers the marks with his hand. “Missing is not dead. Leave room. We still have to find out.”",
+        "zh-Hans": "后面的呼声从芦苇里传回来，不再来自一列站稳的队伍。有人要划掉没应声的人。掌简人用手盖住那些记号：“没应声，不等于死了。先留着，还得去问。”"
+      },
+      "pressure": {
+        "en": "The rear lost its organized signal. Separation is established; individual deaths and universal safe arrival are not. The cost of that separation remains in the campaign.",
+        "zh-Hans": "后卫失去了有组织的信号。队伍散开已经确定，个人死亡与全员平安却都没有得到证实。这次失散的代价会继续留在行程里。"
+      }
+    }
+  },
+  "terminal": {
+    "captured": {
+      "en": "A shout cuts through the rain. The Keeper stops as the patrol closes in. He cannot finish the count. This report records capture, not the death of every person in the column.",
+      "zh-Hans": "雨里传来一声喝止。巡卒围近，掌简人停了下来，没能把人数点完。这里记录的是被截住，不是把队伍里的每个人都判作已死。"
+    },
+    "scattered": {
+      "en": "The calls no longer bring the column together. The Keeper hears footsteps leaving in different directions and gets no formed answer. No single command can now move them as one group.",
+      "zh-Hans": "呼喊已经拢不回队伍。掌简人听见脚步往几个方向散去，却等不到成列的回应。眼下再没有一道命令，能让他们作为同一支队伍行动。"
+    }
+  },
+  "commitments": {
+    "names-under-protection": {
+      "kept": {
+        "response": {
+          "en": "Aunt Yu waits for the rear to answer before she nods. “This time, you did what you said.”",
+          "zh-Hans": "妪母等到后队也应了声，才点头：“这一次，说的话算数了。”"
+        },
+        "effects": {
+          "trust": 4
+        }
+      },
+      "strained": {
+        "response": {
+          "en": "Aunt Yu looks along the broken intervals in the column. “You said every name. I will not call that settled while we are still asking who is here.”",
+          "zh-Hans": "妪母望着队伍里断开的几处：“你说过，每一个名字。还在问谁到了，我就不能说这笔已经清了。”"
+        },
+        "effects": {
+          "momentum": 1,
+          "trust": -2
+        }
+      },
+      "broken": {
+        "response": {
+          "en": "Aunt Yu keeps her hand on the marks that have no answer. “Their names are still here. We have not brought the protection with them.”",
+          "zh-Hans": "妪母按住那些还没人应答的记号：“名字还在这里。说要护住他们，我们却没能跟上。”"
+        },
+        "effects": {
+          "trust": -4,
+          "danger": 2
+        }
+      }
+    },
+    "movement-before-answer": {
+      "kept": {
+        "response": {
+          "en": "Wu Guang watches the files keep moving after contact breaks. He gives the signal once more; the next file answers. “Keep that interval. Do not bunch up now.”",
+          "zh-Hans": "吴广看着脱离接触的队列仍在移动，又打了一次信号，下一列应了：“照这个间隔走，别在这里挤起来。”"
+        },
+        "effects": {
+          "momentum": 4,
+          "trust": -1
+        }
+      },
+      "strained": {
+        "response": {
+          "en": "Wu Guang is still waiting for one file to clear the next. “We won time at the beacon. We have spent some of it here.” He lifts his hand to send the next group on.",
+          "zh-Hans": "吴广还在等前一列让出位置：“夺燧抢来的时间，有一部分耗在这里了。”他抬手，让下一拨接着走。"
+        },
+        "effects": {
+          "trust": 1,
+          "momentum": -2
+        }
+      },
+      "broken": {
+        "response": {
+          "en": "Wu Guang looks back toward the answering patrol signals. “Their reports have caught up. That first move is no longer ours.” He turns to the people still within earshot.",
+          "zh-Hans": "吴广望向巡卒应答的方向：“他们的消息追上了。抢来的那一步，已经不是我们的了。”他转身，去招呼还听得见的人。"
+        },
+        "effects": {
+          "momentum": -4,
+          "danger": 2
+        }
+      }
+    },
+    "register-stays-dark": {
+      "kept": {
+        "response": {
+          "en": "Courier Han loses the moving files behind the broken tracks. He cannot join one continuous route to the hidden list from this crossing. The Keeper keeps the register closed.",
+          "zh-Hans": "韩驿使隔着散开的痕迹，辨不出一支连续行进的队伍。这次渡河没有让他把藏起的名籍与一条完整路线接上。掌简人仍没有展开名籍。"
+        },
+        "effects": {
+          "danger": -4,
+          "grain": -1
+        }
+      },
+      "strained": {
+        "response": {
+          "en": "Courier Han can describe pieces of the movement, not recover the hidden names. “They will ask about this road.” The Keeper does not open the register for him.",
+          "zh-Hans": "韩驿使能说出队伍移动的几段，却找不回藏起的名字：“他们会来问这条路。”掌简人没有为他展开名籍。"
+        },
+        "effects": {
+          "trust": 1,
+          "danger": 2
+        }
+      },
+      "broken": {
+        "response": {
+          "en": "Courier Han follows the visible traces from one position to the next. The hidden register remains closed, but the promise to leave no joinable route has failed.",
+          "zh-Hans": "韩驿使循着留下的痕迹，从一处看到下一处。名籍仍未展开，可是不留可接续踪迹的那句承诺，已经守不住了。"
+        },
+        "effects": {
+          "trust": -2,
+          "danger": 3
+        }
+      }
+    }
+  }
+}

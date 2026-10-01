@@ -12,8 +12,9 @@ function render(developmentCrossing?: DevelopmentCrossingDriver) { createRoot(do
   </StrictMode>,
 ); }
 
-if (import.meta.env.DEV && import.meta.env.VITE_SHI_NATIVE !== "1" && new URLSearchParams(window.location.search).get("crossing") === "campaign") {
-  import("./development-crossing").then(({ createDevelopmentCrossingDriver }) => render(createDevelopmentCrossingDriver(localStorage))).catch(() => {
+if (import.meta.env.DEV && import.meta.env.VITE_SHI_NATIVE !== "1" && ["campaign", "campaign-v2"].includes(new URLSearchParams(window.location.search).get("crossing") ?? "")) {
+  import("./development-crossing").then(({ createDevelopmentCrossingDriver }) => render(createDevelopmentCrossingDriver(localStorage,
+    new URLSearchParams(window.location.search).get("crossing") === "campaign-v2" ? 2 : 1))).catch(() => {
     document.getElementById("root")!.textContent = "SHI could not open the development crossing save. Original progress has been preserved. Reload to retry.";
   });
 } else if (import.meta.env.VITE_SHI_NATIVE === "1") {

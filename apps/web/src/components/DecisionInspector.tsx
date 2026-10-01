@@ -34,7 +34,7 @@ export function DecisionInspector({
   enabled: boolean;
   onOpenCommandBoard?: () => void;
   onCommit: () => void;
-  campaignCrossing?: { cost: string; begin: string };
+  campaignCrossing?: { cost: string; begin: string; promise?: string };
 }) {
   const titleId = `selected-order-${choice.id}`;
   return <section className="decision-inspector" data-testid="decision-inspector" data-selected-choice={choice.id} aria-labelledby={titleId}>
@@ -52,7 +52,7 @@ export function DecisionInspector({
         <p dir={contentDirection(choice.strategy, locale)}>{localize(choice.strategy, locale)}</p>
       </div>
       {establishedCommitmentId && establishingStakeholder && <CommitmentEstablishForecast commitmentId={establishedCommitmentId} stakeholder={establishingStakeholder} locale={locale} />}
-      {activeCommitmentId && commitmentOutcomeId && <CommitmentForecast commitmentId={activeCommitmentId} outcomeId={commitmentOutcomeId} locale={locale} />}
+      {campaignCrossing?.promise ? <p>{campaignCrossing.promise}</p> : activeCommitmentId && commitmentOutcomeId && <CommitmentForecast commitmentId={activeCommitmentId} outcomeId={commitmentOutcomeId} locale={locale} />}
       <ChoiceMethodForecast methodId={choice.methodId} readId={readId} locale={locale} />
       {choice.pressure && <div className={`pressure-warning pressure-${choice.pressure.kind}`}><span>{translate(locale, "pressureForecast")}</span><p dir={contentDirection(choice.pressure.warning, locale)}>{localize(choice.pressure.warning, locale)}</p></div>}
     </div>
