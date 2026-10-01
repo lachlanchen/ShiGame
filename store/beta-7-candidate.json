@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "candidateBuild": 7,
   "createdOn": "2026-10-02",
-  "scope": "Signed Android candidate; focused arrival/retained-save upgrade checks passed; full beta qualification pending",
+  "scope": "Signed Android candidate; retained-save upgrades and offline Chen-to-Fan-Yang continuation passed; full beta qualification pending",
   "providerPreflight": {
     "readOnly": true,
     "uploadedVersionCodes": [1],
@@ -29,10 +29,14 @@
       "Release build, lint, unit smoke, signature and source-fingerprint checks passed",
       "Retained candidate4 chronicle survived in-place 4-to-6-to-7 upgrades without clearing or uninstalling",
       "Signed API34 runtime showed visible return control on initial Chen arrival and reopening; actual return tap succeeded",
-      "52 council component tests passed; final phone screenshot visually reviewed"
+      "52 council component tests passed; final phone screenshot visually reviewed",
+      "Exact retained signed APK played three Chen decisions and three Fan Yang decisions offline on API34, reaching the previewed guaranteed surrender",
+      "Cold-restored unread council and final Fan Yang response/expanded-change UI XML matched byte-for-byte; chapter seed, ending and resource labels remained unchanged",
+      "Council replay cancellation preserved text and accessible descriptions; broken-promise response and final six metrics checked; three route screenshots visually inspected"
     ],
     "limitations": [
-      "Full fresh route, offline/lifecycle and unread-reaction runtime checks remain",
+      "Fresh Chapter I-to-ending route and remaining Back/Escape/source-ledger runtime checks remain; completed continuation began from a retained Chapter I save",
+      "Unavailable offers were visibly marked but not selected in this device run; their commit-control gate was not exercised",
       "This is not a distributed build1 or Play-signing upgrade test",
       "Physical-device and human playtest qualification remain",
       "Development-only crossing, retreat/refuge and unreviewed media remain excluded",

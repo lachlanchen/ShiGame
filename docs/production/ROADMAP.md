@@ -129,8 +129,10 @@ OpenSCAD is appropriate for repeatable props, not a mandatory character tool.
 The [signed Android arrival correction](ANDROID_COUNCIL_ARRIVAL_20261002.md)
 preserves the retained chronicle across candidate upgrades and keeps Chen's
 return control visible on entry. Candidate 7 has a focused signed-runtime pass,
-not full beta qualification or an upload. Continue its real route and
-distributed-save/physical-device checks using the retained exact artifacts.
+and subsequently passed an offline Chen-to-Fan-Yang route with two cold-restored
+responses and preserved chapter state. This is not full beta qualification or
+an upload. Continue fresh Chapter I, distributed-save and physical-device checks
+using the retained exact artifacts.
 
 Maintain native SwiftUI iOS, Android, web and the existing Unreal client with
 shared narrative/rules. Use the shared Macs, iPad and Mi 10 Pro when their
