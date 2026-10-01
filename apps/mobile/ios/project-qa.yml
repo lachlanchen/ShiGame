@@ -8,6 +8,14 @@ targets:
         buildPhase: resources
       - path: ../../../content/story-drafts/chen-retreat.v1.json
         buildPhase: resources
+      - path: ../../../content/campaigns/refuge.rules.v1.json
+        buildPhase: resources
+      - path: ../../../content/story-drafts/refuge.v1.json
+        buildPhase: resources
+      - path: ../../../content/story-drafts/refuge-morning.v1.json
+        buildPhase: resources
+      - path: ../../../content/story-drafts/refuge-contact.v1.json
+        buildPhase: resources
     settings:
       base:
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHI_RETREAT_PREVIEW"

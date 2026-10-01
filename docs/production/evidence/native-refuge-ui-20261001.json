@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "native-refuge-ui-v3",
+  "date": "2026-10-01",
+  "scope": "Unsigned Chinese QA preview; household labour/repair/message continuation after full opening/council/Fan Yang/retreat route",
+  "publication": false,
+  "result": {
+    "exitCode": 0,
+    "passedTests": 2,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "uiRouteSeconds": 410.807,
+    "summarySha256": "d165749e760413a3ab27737cba364ec1d2c2864ca80cc63468b104af38562e01",
+    "runtimeWarning": "Internal QoS priority inversion; performance investigation remains open"
+  },
+  "environment": {
+    "platform": "iOS Simulator",
+    "osVersion": "27.0",
+    "model": "iPad Pro 11-inch (M5)",
+    "simulatorShutdownVerified": true,
+    "ownedBuildProcessesAbsentVerified": true
+  },
+  "sourceOverlaySha256": "1a1640d10ad9099913c4e7e11daf2fee422a5834e93489eba6bd80c3f856509a",
+  "selectedEvidenceTransferSha256": "e4a553f2787e3f229d6d8a869a9743dedd60c21b24922860feeb61dc90d10a17",
+  "captures": [
+    { "scene": "night-response", "sha256": "7e224f867d4cb28f2a6964eee9e94cfbd6a77144efae1750bb1e69593e01ba8b", "agentViewed": true },
+    { "scene": "kept-promise", "sha256": "b129fe3262e4fd5494bdf75c2b03e236efdb08dc94a038a39c542328d9e71a6d", "agentViewed": true },
+    { "scene": "entrusted-message", "sha256": "bbebc9a0d8e663aec784301aa78418eb6943b730784b15488bc5c646c67a2cdb", "agentViewed": true },
+    { "scene": "reopened-conclusion", "sha256": "8a6660685d88e806a8e54ee88e8ac8668a2e913e17f1ac9b0efd35de09699dec", "agentViewed": true }
+  ],
+  "localRegression": { "coreTestsPassed": 83, "webTestsPassed": 376, "generatedProjectBoundaryPassed": true },
+  "openGates": [
+    "River-route native UI",
+    "Phone and large-text layouts",
+    "Physical-device and assistive-technology testing",
+    "Localization beyond Chinese development scenes",
+    "Reviewed cinematic motion and music",
+    "Human playtest feedback",
+    "Explicit publication or store submission confirmation"
+  ]
+}

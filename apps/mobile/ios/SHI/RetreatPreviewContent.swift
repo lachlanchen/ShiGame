@@ -17,4 +17,15 @@ enum RetreatPreviewContent {
     }
     static let rules = load("chen-retreat.rules.v1")
     static let story = load("chen-retreat.v1")
+    static var refuge: [String: Data]? {
+        let names = ["retreatRules": "chen-retreat.rules.v1", "retreatStory": "chen-retreat.v1",
+                     "nightRules": "refuge.rules.v1", "nightStory": "refuge.v1",
+                     "morning": "refuge-morning.v1", "contact": "refuge-contact.v1"]
+        var content: [String: Data] = [:]
+        for (key, name) in names {
+            guard let bytes = load(name) else { return nil }
+            content[key] = bytes
+        }
+        return content
+    }
 }

@@ -30,7 +30,7 @@ final class SHIUITests: XCTestCase {
     }
     func reveal(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<32 {
-            let reading = ["panel-reading", "aftermath", "retreat-scene", "fanyang-scene", "council", "campaign", "title-reading"]
+            let reading = ["panel-reading", "aftermath", "refuge-scene", "retreat-scene", "fanyang-scene", "council", "campaign", "title-reading"]
                 .map { app.scrollViews[$0] }.first { $0.exists && $0.isHittable }
             let viewport = reading ?? app
             var visible = viewport.frame.intersection(app.frame)
@@ -476,6 +476,40 @@ final class SHIUITests: XCTestCase {
         let cancel = app.buttons.matching(identifier: "retreat-cancel-restart").firstMatch
         XCTAssertTrue(cancel.waitForExistence(timeout: 10)); cancel.tap()
         XCTAssertEqual(ending.value as? String, expected)
+        let refuge = app.buttons["refuge-enter"]
+        reveal(refuge, in: app); XCTAssertTrue(refuge.isEnabled); refuge.tap()
+        XCTAssertTrue(app.scrollViews["refuge-scene"].waitForExistence(timeout: 10))
+        reveal(app.buttons["refuge-restart"], in: app); app.buttons["refuge-restart"].tap()
+        app.buttons.matching(identifier: "refuge-confirm-restart").firstMatch.tap()
+        func refugeOrder(_ id: String) {
+            let offer = app.buttons["refuge-offer-" + id]
+            reveal(offer, in: app); XCTAssertTrue(offer.isEnabled); offer.tap()
+            let commit = app.buttons["refuge-commit"]
+            reveal(commit, in: app); commit.tap()
+            XCTAssertTrue(app.descendants(matching: .any).matching(identifier: "refuge-response").firstMatch.waitForExistence(timeout: 10))
+            XCTAssertTrue(app.buttons["refuge-continue"].exists)
+            XCTAssertFalse(app.buttons["refuge-commit"].exists)
+        }
+        func refugeNext() {
+            let next = app.buttons["refuge-continue"]; reveal(next, in: app); next.tap()
+        }
+        refugeOrder("offer-labour"); capture("refuge-01-native-night-response"); refugeNext()
+        refugeOrder("repair-roof"); capture("refuge-02-native-kept-promise"); refugeNext()
+        let privateRecord = app.buttons["refuge-offer-leave-record"]
+        reveal(privateRecord, in: app); XCTAssertTrue(privateRecord.exists); XCTAssertFalse(privateRecord.isEnabled)
+        refugeOrder("leave-route")
+        XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "具体话语尚未托付")).firstMatch.exists,
+            "The saved contact outcome must replace the morning's pending-message status")
+        capture("refuge-03-native-message-response")
+        app.buttons["refuge-close"].tap()
+        reveal(refuge, in: app); refuge.tap()
+        XCTAssertTrue(app.descendants(matching: .any).matching(identifier: "refuge-response").firstMatch.waitForExistence(timeout: 10))
+        refugeNext()
+        let complete = app.staticTexts["refuge-complete"]
+        reveal(complete, in: app); XCTAssertTrue(complete.exists)
+        XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "具体话语尚未托付")).firstMatch.exists)
+        capture("refuge-04-native-resumed-conclusion")
+        app.buttons["refuge-close"].tap()
         app.buttons["retreat-close"].tap()
         XCTAssertTrue(app.staticTexts["fanyang-outcome"].waitForExistence(timeout: 10))
         XCTAssertEqual(app.staticTexts["fanyang-outcome"].value as? String, "withdrawn")

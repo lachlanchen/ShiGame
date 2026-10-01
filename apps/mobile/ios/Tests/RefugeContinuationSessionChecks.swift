@@ -40,6 +40,16 @@ import Foundation
             precondition(!FileManager.default.fileExists(atPath: url.path))
             failWrite = false
             for id in ["offer-labour", "follow-witness", "ask-unprompted"] {
+                if FileManager.default.fileExists(atPath: url.path) {
+                    let before = live.engine!.summary as NSDictionary
+                    let original = try Data(contentsOf: url)
+                    failWrite = true
+                    precondition(!live.choose(id) && live.response == nil)
+                    precondition(live.engine!.summary as NSDictionary == before)
+                    let afterFailure = try Data(contentsOf: url); precondition(afterFailure == original)
+                    failWrite = false
+                    checks += 1
+                }
                 precondition(live.choose(id))
                 let saved = try Data(contentsOf: url), responseID = live.response!.id
                 precondition(!live.choose(id))
@@ -55,6 +65,13 @@ import Foundation
             precondition(!live.choose("show-record"))
             let good = try Data(contentsOf: url)
             let corrupt = Data("not a chronicle".utf8); try corrupt.write(to: url)
+            let failedRecovery = RefugeContinuationSession(retreat: retreat, content: content, saveURL: url) { _, _ in
+                throw CocoaError(.fileWriteOutOfSpace)
+            }
+            precondition(failedRecovery.needsRecovery && !failedRecovery.restart())
+            precondition(failedRecovery.needsRecovery && !failedRecovery.choose("sleep-outside"))
+            let afterFailedRecovery = try Data(contentsOf: url); precondition(afterFailedRecovery == corrupt)
+            checks += 1
             let damaged = RefugeContinuationSession(retreat: retreat, content: content, saveURL: url)
             precondition(damaged.needsRecovery && !damaged.choose("sleep-outside"))
             let untouched = try Data(contentsOf: url); precondition(untouched == corrupt)
