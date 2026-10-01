@@ -141,6 +141,7 @@ export function replayCrossingCampaign(
               ...candidate,
               choices: candidate.choices.map((choice) => choice.id !== completed.planId ? choice : {
                 ...choice, effects: { ...completed.campaignEffects },
+                consequence: definition.outcomes.find((outcome) => outcome.id === completed.outcomeId)!.summary,
               }),
             }),
           };

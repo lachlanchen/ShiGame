@@ -1,6 +1,6 @@
 # Crossing: action, consequence and continuation
 
-Status: development rules checkpoint. No client has adopted the ledger, and the current public/store game is unchanged.
+Status: development rules and opt-in web client checkpoint. The current public/store game is unchanged; native and Unreal adoption remains pending.
 
 ## Player experience being built
 
@@ -31,11 +31,17 @@ In 56 fixed-seed strategic routes, changing only tactical commands changes the e
 
 ## Required next checkpoints
 
-1. Adapt the development web client to this ledger with an explicit migration path for existing chapter saves. Retain historical saves under their original rules; do not replay old abstract crossing choices as if the player issued tactical commands.
-2. Keep the active crossing visible/resumable after reload or closing an overlay. Add explicit commit feedback and save-error handling. Test actual pointer, keyboard, phone and offline/resume routes.
+1. The development web client now uses this ledger under `?crossing=campaign` on a non-native Vite development server (for example `http://127.0.0.1:5173/?crossing=campaign&seed=00000000` after `npm run dev`). Normal URLs retain the original game. Existing release saves are not converted or deleted: the preview starts/resumes a separate rules edition, explicitly disclosed on its title. Historical abstract crossings never acquire invented tactical commands. A corrupt development save stops initialization instead of silently creating a new one. New labels currently cover English and Simplified Chinese; full localization and native durable-writing review are still release gates.
+2. Pause/reload, explicit finish feedback and storage-failure retry are implemented. An active battle hides abstract orders and offers resume; before the first command, explicit cancellation permits reselection. The existing main App, consequence and Chen screens are reused rather than creating divergent narrative scenes. A real-pointer desktop/390px route passed 33 checks with no runtime exceptions; all three commands appear in the chronicle and its consequence matches the tactical outcome. Other tactical routes, actual offline reload, physical controller, assistive technology and native-device playtests remain pending.
 3. Port the same contract and replay fixtures to native SwiftUI, Android and Unreal before enabling a release path. Do not give one client divergent battle costs or narrative truth.
 4. Review balance and the campaign pressure prose: the existing field/pursuit layers remain, so they must not describe a second copy of a loss already shown in the battle.
 5. Author outcome-specific physical reactions and continuous shots. Match approved faces, clothing, props, river geography, rain and musical motif. Use reviewed Musia/LocalVideoGen/Blender materials; no new audiovisual assets were generated or accepted by this rules checkpoint.
 6. Let the people carry the consequence: show who crossed, what was left behind, and who remembers the promise. Keep uncertainty where an individual's fate was not observed. Human playtests must assess clarity, agency, resonance and pacing.
 
 Completion remains unproven until the playable client flow, cross-client replay, audiovisual continuity and human acceptance are verified.
+
+## Web checkpoint evidence
+
+`docs/production/evidence/crossing-campaign-web-20261001.json` pins the reviewed source and screenshot hashes for the visible run in `.runtime/story-review/2026-10-01T00-08-34.353Z`. The representative route ends with grain48/trust89/momentum10/people97/danger96 and a supplied Chen arrival. The first browser run incorrectly expected divided; an independent ledger replay exposed the harness mistake, and the corrected run compares all five visible resource values as well as the arrival. The supplied entry prioritizes grain under the existing council rule; high pursuit is not evidence that the arrival must be pressed.
+
+Storage failures preserve both the durable ledger and the live state. Failed reaction acknowledgement now returns a refusal to the consequence panel, which keeps Continue retryable and displays its error outside collapsed details. The new module is absent from the production artifact, enforced by build-marker checks. No new music, video or image asset was generated, accepted or integrated by this checkpoint. Visual review still finds the battle and reaction text-heavy.

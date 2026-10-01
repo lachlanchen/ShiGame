@@ -75,11 +75,27 @@ if (conditions.size !== definition.conditions.length || Object.keys(outcomes).le
 }
 const changedFateGroups = [...fateGroups].filter(([, fates]) => fates.size > 1);
 if (!changedFateGroups.length) throw new Error("Tactical commands never change an ending or council arrival on the same strategic route.");
+const representativeEvents = [
+  { kind: "decision", choiceId: "read-the-names" },
+  { kind: "decision", choiceId: "issue-grain-tallies" },
+  { kind: "begin-crossing", planId: "families-first" },
+  { kind: "crossing-command", commandId: "screen-through-reeds" },
+  { kind: "crossing-command", commandId: "repair-the-landing" },
+  { kind: "crossing-command", commandId: "hold-for-the-last-household" },
+  { kind: "finish-crossing" },
+  { kind: "decision", choiceId: "root-in-villages" },
+];
+const representative = replayCrossingCampaign(campaign, definition, rules, {
+  ...createCrossingCampaignSave(campaign, rules, 0), events: representativeEvents,
+});
+if (!representative?.campaign.completed || representative.campaign.failureReason) throw new Error("Representative crossing-to-Chen route failed.");
 console.log(JSON.stringify({
-  status: "development-rules-only-clients-not-adopted", rulesId: rules.id,
+  status: "development-rules-audit-not-client-acceptance", rulesId: rules.id,
   campaignSha256: rules.campaignSha256, engagementSha256: rules.engagementSha256,
   seeds, checkpoints, terminalRoutes, conditions: [...conditions].sort(), outcomes, failures, councilArrivals: arrivals,
   sameStrategicRoutesWithChangedFates: changedFateGroups.length,
   example: { strategicRoute: JSON.parse(changedFateGroups[0]![0]), possibleFates: [...changedFateGroups[0]![1]] },
+  representative: { seed: 0, events: representativeEvents, resources: representative.campaign.resources,
+    outcome: representative.crossings[0]!.outcomeId, councilArrival: councilEntry(representative.campaign)!.arrival },
   scope: "All legal campaign and tactical routes for six seeds; resume every checkpoint; no client or visual acceptance claimed.",
 }, null, 2));

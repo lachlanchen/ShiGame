@@ -7,7 +7,7 @@ import "./ConsequenceScene.css";
 
 /** Receives resolved text, never a choice resolver, state setter or save writer.
  * Remount per committed turn. Completion, skip and media errors cannot issue orders. */
-export function ConsequenceScene({ locale, title, titleDirection, consequence, textDirection, children, reducedMotion, film, onContinue }: {
+export function ConsequenceScene({ locale, title, titleDirection, consequence, textDirection, children, reducedMotion, film, onContinue, saveError }: {
   locale: Locale;
   title: string;
   titleDirection?: "ltr";
@@ -16,7 +16,8 @@ export function ConsequenceScene({ locale, title, titleDirection, consequence, t
   children: ReactNode;
   reducedMotion: boolean;
   film?: SilentFilmAsset;
-  onContinue: () => void;
+  onContinue: () => void | boolean;
+  saveError?: string;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -25,7 +26,7 @@ export function ConsequenceScene({ locale, title, titleDirection, consequence, t
   const finish = () => {
     if (exitedRef.current) return;
     exitedRef.current = true;
-    onContinue();
+    if (onContinue() === false) exitedRef.current = false;
   };
 
   useLayoutEffect(() => {
@@ -60,6 +61,7 @@ export function ConsequenceScene({ locale, title, titleDirection, consequence, t
         <div className="consequence-body">
           {showFilm && film && <SilentFilm key={film.src} asset={film} locale={locale} />}
           <p className="consequence-prose" id="consequence-text" dir={textDirection}>{consequence}</p>
+          {saveError && <p role="alert">{saveError}</p>}
           <details className="consequence-details" data-testid="resolution-details">
             <summary>{cinemaLabel(locale, "changes")}</summary>
             <div className="consequence-ledger">{children}</div>

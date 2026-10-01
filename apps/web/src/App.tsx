@@ -19,6 +19,7 @@ import {
   type Campaign,
   type Choice,
   type ChoiceResolution,
+  type EngagementState,
   type GameState,
   type Locale,
   type LocalizedText,
@@ -35,6 +36,7 @@ import type { ShiAudioEngine } from "./audioEngine";
 import { gameStorage } from "./persistence";
 import { readChapterSnapshot, writeChapterSnapshot } from "./chapter-snapshot";
 import { EndingText } from "./components/EndingText";
+import type { DevelopmentCrossingDriver } from "./development-crossing";
 
 const campaign = campaignJson as unknown as Campaign;
 const ResolvedConsequenceScene = lazy(() => import("./components/ResolvedConsequenceScene").then((module) => ({ default: module.ResolvedConsequenceScene })));
@@ -108,10 +110,13 @@ function initialLocale(): Locale {
 const effectLabel = (key: ResourceKey, value: number, locale: Locale) => `${value > 0 ? "+" : ""}${value} ${translate(locale, key)}`;
 const contentDirection = (text: LocalizedText, locale: Locale): "ltr" | undefined => locale === "ar" && !text.ar ? "ltr" : undefined;
 
-export function App() {
-  const [restoredState] = useState(readSavedState);
+export function App({ developmentCrossing }: { developmentCrossing?: DevelopmentCrossingDriver } = {}) {
+  const crossingDriver = import.meta.env.DEV ? developmentCrossing : undefined;
+  const [restoredState] = useState(() => crossingDriver ? crossingDriver.restore() : readSavedState());
   const [locale, setLocale] = useState<Locale>(initialLocale);
-  const [state, setState] = useState<GameState>(() => restoredState?.state ?? createInitialState(campaign, initialSeed()));
+  const [state, setState] = useState<GameState>(() => restoredState?.state ?? (crossingDriver ? crossingDriver.initialize(initialSeed()) : createInitialState(campaign, initialSeed())));
+  const [battle, setBattle] = useState<EngagementState | null>(() => crossingDriver?.getEngagement() ?? null);
+  const [crossingSaveError, setCrossingSaveError] = useState(false);
   const [screen, setScreen] = useState<"title" | "play">("title");
   const [drawer, setDrawer] = useState<"sources" | "record" | "guide" | "audio" | "engagement" | "council" | null>(null);
   const councilSavingRef = useRef(false);
@@ -120,7 +125,7 @@ export function App() {
   const [resolution, setResolution] = useState<ChoiceResolution | null>(() => restoredState?.resolution ?? null);
   const [reducedMotion, setReducedMotion] = useState(() => gameStorage.getItem(MOTION_KEY) === "true" || window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [fontStatus, setFontStatus] = useState<"loading" | "ready" | "error">("loading");
-  const [hasSave, setHasSave] = useState(restoredState !== null);
+  const [hasSave, setHasSave] = useState(crossingDriver ? crossingDriver.hasSave() : restoredState !== null);
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState(0);
   const [audioPreferences, setAudioPreferences] = useState<AudioPreferences>(readAudioPreferences);
   const [audioStatus, setAudioStatus] = useState<AudioRuntimeStatus>(() => readAudioPreferences().enabled ? "armed" : "off");
@@ -150,6 +155,8 @@ export function App() {
   const ending = state.completed ? deriveEnding(state) : null;
   const nodeNumber = campaign.nodes.findIndex((candidate) => candidate.id === node.id) + 1;
   const sourceSite = campaign.sites.find((site) => site.id === sourceSiteId) ?? null;
+  const crossingLabels = crossingDriver?.labels(locale);
+  const crossingPlan = Boolean(crossingDriver && node.id === "broken-crossing");
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -168,13 +175,14 @@ export function App() {
   }, [locale]);
 
   useEffect(() => {
+    if (crossingDriver) return;
     gameStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
     if (state.history.length > 0) {
       gameStorage.setItem(SAVE_KEY, writeChapterSnapshot(state, resolution));
       for (const legacy of LEGACY_SAVE_KEYS) gameStorage.removeItem(legacy);
       setHasSave(true);
     }
-  }, [state, resolution]);
+  }, [state, resolution, crossingDriver]);
 
   useEffect(() => {
     screenRef.current = screen;
@@ -262,15 +270,33 @@ export function App() {
 
   const choose = (choice: Choice) => {
     if (choiceInFlightRef.current || resolution || drawer || !canChoose(choice, state.resources)) return;
-    const result = resolveChoice(campaign, state, choice.id);
+    if (crossingDriver && node.id === "broken-crossing") { openDrawer("engagement"); return; }
+    let result: ChoiceResolution;
+    try {
+      result = crossingDriver ? crossingDriver.commit({ kind: "decision", choiceId: choice.id }).lastResolution! : resolveChoice(campaign, state, choice.id);
+      setCrossingSaveError(false);
+    } catch (error) {
+      if (!crossingDriver) throw error;
+      setCrossingSaveError(true);
+      return;
+    }
     choiceInFlightRef.current = true;
     setResolution(result);
     setState(result.state);
+    if (crossingDriver) setHasSave(true);
     playAudioCue(result.state.completed ? (result.state.failureReason ? "failure" : "ending") : "commit");
   };
 
   const openDrawer = (next: "sources" | "record" | "guide" | "audio" | "engagement" | "council") => {
     if (resolution) return;
+    if (next === "engagement" && crossingDriver && !battle) {
+      try {
+        const nextState = crossingDriver.commit({ kind: "begin-crossing", planId: node.choices[selectedChoiceIndex]!.id });
+        setBattle(nextState.engagement!);
+        setHasSave(true);
+        setCrossingSaveError(false);
+      } catch { setCrossingSaveError(true); return; }
+    }
     if (!drawer) {
       const active = document.activeElement;
       returnFocusRef.current = active instanceof HTMLElement && active !== document.body && active !== document.documentElement ? active : null;
@@ -282,6 +308,7 @@ export function App() {
   const enterPlay = () => {
     screenRef.current = "play";
     setScreen("play");
+    if (battle) { setDrawer("engagement"); return; }
     if (audioPreferencesRef.current.enabled) playAudioCue("drawer");
     if (!hasSave && gameStorage.getItem(ONBOARDING_KEY) !== "complete") openDrawer("guide");
   };
@@ -291,6 +318,10 @@ export function App() {
     // durable transaction as the council's own controls, including rollback.
     if (drawer === "council" && councilSavingRef.current) return;
     if (!drawer && !resolution) return;
+    if (resolution && crossingDriver) {
+      try { crossingDriver.acknowledge(); setCrossingSaveError(false); }
+      catch { setCrossingSaveError(true); return false; }
+    }
     if (drawer === "guide") gameStorage.setItem(ONBOARDING_KEY, "complete");
     const returnTarget = returnFocusRef.current;
     returnFocusRef.current = null;
@@ -565,9 +596,16 @@ export function App() {
   };
 
   const restart = () => {
+    if (crossingDriver) {
+      try { setState(crossingDriver.reset(state.seed)); }
+      catch { setCrossingSaveError(true); return; }
+      setBattle(null);
+      setCrossingSaveError(false);
+    } else {
+      clearSaves();
+      setState(createInitialState(campaign, state.seed));
+    }
     choiceInFlightRef.current = false;
-    clearSaves();
-    setState(createInitialState(campaign, state.seed));
     gameStorage.setItem(DRAFT_SEED_KEY, String(state.seed));
     setResolution(null);
     setDrawer(null);
@@ -578,11 +616,18 @@ export function App() {
   };
 
   const newChronicle = () => {
-    choiceInFlightRef.current = false;
-    clearSaves();
     const seed = randomSeed();
+    if (crossingDriver) {
+      try { setState(crossingDriver.reset(seed)); }
+      catch { setCrossingSaveError(true); return; }
+      setBattle(null);
+      setCrossingSaveError(false);
+    } else {
+      clearSaves();
+      setState(createInitialState(campaign, seed));
+    }
+    choiceInFlightRef.current = false;
     gameStorage.setItem(DRAFT_SEED_KEY, String(seed));
-    setState(createInitialState(campaign, seed));
     setResolution(null);
     setDrawer(null);
     setMapSiteId(null);
@@ -632,6 +677,8 @@ export function App() {
           <div className="seal-title"><span className="hanzi">勢</span><div><h1>SHI</h1><p>{localize(campaign.title, locale).replace(/^SHI\s*[—-]\s*/i, "")}</p></div></div>
           <blockquote>{translate(locale, "opening")}</blockquote>
           <p className="title-note">{translate(locale, "openingNote")}</p>
+          {crossingLabels && <p className="title-note" data-testid="crossing-development-notice">{crossingLabels.status}. {crossingLabels.boundary}</p>}
+          {crossingSaveError && crossingLabels && <p role="alert">{crossingLabels.error}</p>}
           <div className="title-actions">
             <button className="primary-button" data-testid="begin-game" ref={beginButtonRef} onClick={enterPlay}>{hasSave ? translate(locale, "continue") : translate(locale, "begin")} <span>→</span></button>
             {hasSave && <button className="text-button" onClick={newChronicle}>{translate(locale, "newGame")}</button>}
@@ -647,7 +694,7 @@ export function App() {
   }
 
   return (
-    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-opposition-stage={oppositionStage?.id ?? "complete"} data-method-read-id={methodRead.read.id} data-commitment-id={activeCommitment?.id ?? "none"} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
+    <main className={`game-shell ${state.completed ? "is-complete" : ""}`} data-testid="shi-app" data-screen="play" data-font-status={fontStatus} data-motion={reducedMotion ? "reduced" : "full"} data-node-id={node.id} data-save-version={crossingDriver ? "crossing-ledger-v1" : currentSaveVersion} data-seed={formatSeed(state.seed)} data-condition-id={activeCondition.id} data-opposition-stage={oppositionStage?.id ?? "complete"} data-method-read-id={methodRead.read.id} data-commitment-id={activeCommitment?.id ?? "none"} data-controller={controllerConnected ? "connected" : "none"} data-audio-enabled={audioPreferences.enabled ? "true" : "false"} data-audio-status={audioStatus} data-audio-cue={lastAudioCue}>
       <Suspense fallback={<div className="three-backdrop" aria-hidden="true" />}><ThreeBackdrop reducedMotion={reducedMotion} paused={Boolean(drawer || resolution)} /></Suspense>
       <div className="game-stage" data-testid="game-stage" inert={Boolean(drawer || resolution)} aria-hidden={resolution ? true : undefined}>
       <header className="game-header">
@@ -704,8 +751,10 @@ export function App() {
 
       {!state.completed ? (
         <section className="choices-panel" inert={Boolean(resolution)}>
+          {crossingSaveError && crossingLabels && !drawer && !resolution && <p className="engagement-boundary" role="alert">{crossingLabels.error}</p>}
+          {battle && crossingLabels && <button type="button" className="primary-button" data-testid="resume-crossing" onClick={() => openDrawer("engagement")}>{crossingLabels.resume}</button>}
           <div className="choices-heading"><span>{translate(locale, "choice")} · {translate(locale, "chronicleSeed")} {formatSeed(state.seed)}</span><small aria-live="polite">{translate(locale, "turn")} {state.history.length + 1}{controllerConnected && <> · {translate(locale, "controllerReady")}</>}<span className="choices-input-detail"> · {controllerConnected ? `${translate(locale, "controllerHint")} · Y/△ · M${node.id === "broken-crossing" ? " · X/□ ◎" : ""}` : translate(locale, "keyboardHint")}</span></small></div>
-          <div className="choices-grid">
+          {!battle && <div className="choices-grid">
             {node.choices.map((choice, index) => {
               const enabled = canChoose(choice, state.resources);
               const selected = selectedChoiceIndex === index;
@@ -713,20 +762,21 @@ export function App() {
                 <button className={`choice-card ${selected ? "is-selected" : ""}${controllerConnected && selected ? " is-gamepad-selected" : ""}`} data-choice-id={choice.id} aria-keyshortcuts={`Shift+${index + 1}`} aria-pressed={selected} key={choice.id} ref={(element) => { choiceRefs.current[index] = element; }} onFocus={() => setSelectedChoiceIndex(index)} onClick={() => { setSelectedChoiceIndex(index); playAudioCue("select"); }} disabled={!enabled}>
                   <span className="choice-index">{String.fromCharCode(65 + index)}</span>
                   <div className="choice-main"><h2 dir={contentDirection(choice.label, locale)}>{localize(choice.label, locale)}</h2><p dir={contentDirection(choice.intent, locale)}>{localize(choice.intent, locale)}</p></div>
-                  <div className="effects">{Object.entries(choice.effects).map(([key, value]) => <span className={`${(value ?? 0) < 0 ? "negative" : "positive"} ${key === "danger" ? "risk" : ""}`} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>
+                  {!crossingPlan && <div className="effects">{Object.entries(choice.effects).map(([key, value]) => <span className={`${(value ?? 0) < 0 ? "negative" : "positive"} ${key === "danger" ? "risk" : ""}`} key={key}>{effectLabel(key as ResourceKey, value ?? 0, locale)}</span>)}</div>}
                   {!enabled && <span className="locked">{translate(locale, "locked")} {Object.entries(choice.requirements?.min ?? {}).map(([key, value]) => `${translate(locale, key as ResourceKey)} ${value}`).join(" · ")}</span>}
                   <span className="choice-arrow">{selected ? "◆" : "◇"}</span>
                 </button>
               );
             })}
-          </div>
+          </div>}
           {(() => {
+            if (battle) return null;
             const choice = node.choices[selectedChoiceIndex] ?? node.choices.find((candidate) => canChoose(candidate, state.resources));
             if (!choice) return null;
             const commitmentOutcome = selectCommitmentOutcome(campaign, state, choice);
             const establishedCommitment = selectEstablishedCommitment(campaign, choice);
             const establishingStakeholder = establishedCommitment ? campaign.characters.find((character) => character.id === establishedCommitment.stakeholderId) : null;
-            return <Suspense fallback={<div className="decision-inspector decision-inspector-loading" aria-busy="true" />}><DecisionInspector choice={choice} choiceIndex={node.choices.indexOf(choice)} locale={locale} readId={methodRead.read.id} establishedCommitmentId={establishedCommitment?.id} establishingStakeholder={establishingStakeholder?.name} activeCommitmentId={commitmentOutcome?.commitment.id} commitmentOutcomeId={commitmentOutcome?.outcome.id} enabled={canChoose(choice, state.resources)} onOpenCommandBoard={node.id === "broken-crossing" && canChoose(choice, state.resources) ? () => openDrawer("engagement") : undefined} onCommit={() => choose(choice)} /></Suspense>;
+            return <Suspense fallback={<div className="decision-inspector decision-inspector-loading" aria-busy="true" />}><DecisionInspector choice={choice} choiceIndex={node.choices.indexOf(choice)} locale={locale} readId={methodRead.read.id} establishedCommitmentId={establishedCommitment?.id} establishingStakeholder={establishingStakeholder?.name} activeCommitmentId={commitmentOutcome?.commitment.id} commitmentOutcomeId={commitmentOutcome?.outcome.id} enabled={canChoose(choice, state.resources)} onOpenCommandBoard={node.id === "broken-crossing" && canChoose(choice, state.resources) ? () => openDrawer("engagement") : undefined} campaignCrossing={crossingPlan ? crossingLabels : undefined} onCommit={() => choose(choice)} /></Suspense>;
           })()}
         </section>
       ) : (
@@ -737,16 +787,47 @@ export function App() {
       {resolution && (
         <Suspense fallback={<div role="dialog" aria-modal="true" aria-label={translate(locale, "consequence")} aria-busy="true" style={{ position: "fixed", inset: 0, zIndex: 9, display: "grid", placeItems: "center", background: "#171b18" }}><button className="primary-button" autoFocus onClick={closeTransient}>{translate(locale, "continue")}</button></div>}>
         <ResolvedConsequenceScene key={`${state.seed}-${state.history.length}`} campaign={campaign} resolution={resolution}
-          locale={locale} reducedMotion={reducedMotion} onContinue={closeTransient} />
+          locale={locale} reducedMotion={reducedMotion} onContinue={closeTransient} saveError={crossingSaveError ? crossingLabels?.error : undefined} />
         </Suspense>
       )}
 
       {drawer === "guide" && <Suspense fallback={null}><FieldGuide locale={locale} controllerConnected={controllerConnected} onClose={closeTransient} /></Suspense>}
       {drawer === "sources" && <Suspense fallback={null}><SourceLedger locale={locale} activeIds={sourceSite?.sourceRefs ?? node.sourceRefs} activeClaimIds={sourceSite?.claimRefs ?? node.claimRefs} contextTitle={sourceSite ? localize(sourceSite.name, locale) : undefined} onClose={closeTransient} /></Suspense>}
       {drawer === "audio" && <Suspense fallback={null}><AudioSettings locale={locale} preferences={audioPreferences} status={audioStatus} onEnabledChange={setAudioEnabled} onLevelChange={setAudioLevel} onPreview={() => playAudioCue("commit")} onClose={closeTransient} /></Suspense>}
-      {drawer === "engagement" && <Suspense fallback={null}><EngagementBoard key={`${node.id}-${node.choices[selectedChoiceIndex]?.id}-${activeCondition.id}`} planId={node.choices[selectedChoiceIndex]!.id} conditionId={activeCondition.id} locale={locale} onCue={playAudioCue} onClose={closeTransient} /></Suspense>}
+      {drawer === "engagement" && <Suspense fallback={null}><EngagementBoard key={`${node.id}-${battle?.planId ?? node.choices[selectedChoiceIndex]?.id}-${activeCondition.id}`} planId={battle?.planId ?? node.choices[selectedChoiceIndex]!.id} conditionId={battle?.conditionId ?? activeCondition.id} locale={locale} onCue={playAudioCue} onClose={closeTransient} saveError={crossingSaveError ? crossingLabels?.error : undefined} campaignSession={crossingDriver && battle && crossingLabels ? {
+        state: battle,
+        labels: crossingLabels,
+        onCancel() {
+          try {
+            crossingDriver.commit({ kind: "cancel-crossing" });
+            setBattle(null);
+            setCrossingSaveError(false);
+            closeTransient();
+          } catch { setCrossingSaveError(true); }
+        },
+        onCommand(commandId) {
+          try {
+            const next = crossingDriver.commit({ kind: "crossing-command", commandId });
+            setBattle(next.engagement!);
+            setCrossingSaveError(false);
+            return true;
+          } catch { setCrossingSaveError(true); return false; }
+        },
+        onFinish() {
+          try {
+            const next = crossingDriver.commit({ kind: "finish-crossing" });
+            setState(next.campaign);
+            setResolution(next.lastResolution!);
+            setBattle(null);
+            setDrawer(null);
+            setCrossingSaveError(false);
+            choiceInFlightRef.current = true;
+            playAudioCue(next.campaign.failureReason ? "failure" : next.campaign.completed ? "ending" : "commit");
+          } catch { setCrossingSaveError(true); }
+        },
+      } : undefined} /></Suspense>}
       {drawer === "council" && <Suspense fallback={<aside className="drawer" role="dialog" aria-modal="true" aria-label="Loading council" aria-busy="true"><button className="icon-button" autoFocus onClick={closeTransient} aria-label={translate(locale, "close")}>×</button></aside>}><ChenCouncil origin={state} locale={locale} reducedMotion={reducedMotion} onCue={playAudioCue} onClose={closeTransient} onSavingChange={saving => { councilSavingRef.current = saving; }} /></Suspense>}
-      {drawer === "record" && <Suspense fallback={null}><ChronicleDrawer campaign={campaign} state={state} locale={locale} onClose={closeTransient} onRestart={restart} /></Suspense>}
+      {drawer === "record" && <Suspense fallback={null}><ChronicleDrawer campaign={campaign} state={state} locale={locale} onClose={closeTransient} onRestart={restart} crossingRecord={crossingDriver?.getCrossingRecord()} /></Suspense>}
       {drawer && <button className="drawer-scrim" onClick={closeTransient} aria-label={translate(locale, "close")} />}
     </main>
   );

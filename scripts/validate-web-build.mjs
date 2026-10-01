@@ -66,11 +66,11 @@ const records = await Promise.all(files.map(async (path) => ({
   extension: extname(path),
 })));
 const deploymentRecords = records.filter((record) => record.extension !== ".map");
-// Unreviewed retreat prose and its authoring save must remain development-only.
+// Unreviewed retreat and the new crossing ledger remain development-only.
 for (const record of deploymentRecords.filter(record => [".js", ".json", ".html"].includes(record.extension))) {
   const contents = await readFile(record.path, "utf8");
-  for (const marker of ["shi.dev.chen-retreat.v1", "chen-retreat-story-draft.v1", "chen-retreat-rules.v1"]) {
-    if (contents.includes(marker)) fail(`development retreat leaked into production: ${record.relative}`);
+  for (const marker of ["shi.dev.chen-retreat.v1", "chen-retreat-story-draft.v1", "chen-retreat-rules.v1", "shi.development.crossing-campaign.v1", "chapter-01-crossing-campaign-v1"]) {
+    if (contents.includes(marker)) fail(`development story/rules leaked into production: ${record.relative}`);
   }
 }
 const deployBytes = deploymentRecords.reduce((sum, record) => sum + record.bytes, 0);

@@ -1,0 +1,200 @@
+{
+  "status": "passed",
+  "scope": "Opt-in development web crossing-to-Chen; one real-control route; not release, native, human fun, balance or audiovisual acceptance.",
+  "started": "2026-10-01T00:08:34.354Z",
+  "finished": "2026-10-01T00:08:53.164Z",
+  "checks": [
+    {
+      "message": "SHI display is unoccupied",
+      "pass": true
+    },
+    {
+      "message": "dedicated Chrome page available",
+      "pass": true
+    },
+    {
+      "message": "full noVNC viewer reachable",
+      "pass": true
+    },
+    {
+      "message": "Chrome window fits the dedicated desktop",
+      "pass": true
+    },
+    {
+      "message": "development rules and release-save boundary are disclosed",
+      "pass": true
+    },
+    {
+      "message": "crossing does not disclose obsolete fixed abstract costs",
+      "pass": true
+    },
+    {
+      "message": "crossing desktop: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "message": "crossing desktop: background scrolling locked for modal",
+      "pass": true
+    },
+    {
+      "message": "crossing phone: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "message": "crossing phone: background scrolling locked for modal",
+      "pass": true
+    },
+    {
+      "message": "one pointer-issued field order is saved exactly once",
+      "pass": true
+    },
+    {
+      "message": "issued orders cannot be cancelled",
+      "pass": true
+    },
+    {
+      "message": "closing pauses without changing battle bytes",
+      "pass": true
+    },
+    {
+      "message": "paused battle cannot be bypassed by an abstract choice",
+      "pass": true
+    },
+    {
+      "message": "paused crossing: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "message": "paused crossing: background scrolling available outside modal",
+      "pass": true
+    },
+    {
+      "message": "cold resume preserves the saved first order",
+      "pass": true
+    },
+    {
+      "message": "completed battle waits for explicit campaign commit",
+      "pass": true
+    },
+    {
+      "message": "crossing outcome: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "message": "crossing outcome: background scrolling locked for modal",
+      "pass": true
+    },
+    {
+      "message": "campaign reaction matches the saved tactical outcome",
+      "pass": true
+    },
+    {
+      "message": "outcome reload does not duplicate the campaign commit",
+      "pass": true
+    },
+    {
+      "message": "chronicle retains all three tactical orders",
+      "pass": true
+    },
+    {
+      "message": "crossing chronicle: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "message": "crossing chronicle: background scrolling locked for modal",
+      "pass": true
+    },
+    {
+      "message": "visible final resources match the independently replayed representative route",
+      "pass": true
+    },
+    {
+      "message": "grain-48 route produces the expected supplied Chen arrival despite high pursuit",
+      "pass": true
+    },
+    {
+      "message": "integrated playthrough never writes the release chapter save",
+      "pass": true
+    },
+    {
+      "message": "Chen after crossing: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "message": "Chen after crossing: background scrolling locked for modal",
+      "pass": true
+    },
+    {
+      "message": "Chen desktop: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "message": "Chen desktop: background scrolling locked for modal",
+      "pass": true
+    },
+    {
+      "message": "no browser runtime exceptions",
+      "pass": true
+    }
+  ],
+  "runtimeErrors": [],
+  "screenshots": [
+    {
+      "name": "crossing-title-desktop.png",
+      "sha256": "96287bb428aed9d0f196deb8f9e89bab4a61030c04c382f9e83849217f86e339"
+    },
+    {
+      "name": "crossing-command-desktop.png",
+      "sha256": "12ef34d6db0bf8c87784472c24598b09db71a7af9148a360c2d8ee391016b922"
+    },
+    {
+      "name": "crossing-command-phone.png",
+      "sha256": "dc6fdb73a9eee4c1ed50b1cd9f5566a38b5c6ebd36a26be71cf7886e8ff7dcbf"
+    },
+    {
+      "name": "crossing-response-phone.png",
+      "sha256": "6c7397879e80601346d36b94de276259339f5b44b3a4a0a78ff3158fc6e19328"
+    },
+    {
+      "name": "crossing-paused-phone.png",
+      "sha256": "8d068c5ecac98b2fc3faae5b628d88350a803c7cf770fdf59d93271c30893e6a"
+    },
+    {
+      "name": "crossing-outcome-phone.png",
+      "sha256": "56fa0a3bae945341a234114bed59b7ef7fe6c27706ea35c6c93b1f924a534061"
+    },
+    {
+      "name": "crossing-reaction-phone.png",
+      "sha256": "0f5c82836c27beb09777099599399a16ef49748787793cd877fc90f6d96842f7"
+    },
+    {
+      "name": "crossing-record-phone.png",
+      "sha256": "4f15ab5265600f8287a26203a2e20717b006c710d84c406ff6c1eb2aaec9cdba"
+    },
+    {
+      "name": "crossing-chen-phone.png",
+      "sha256": "e5f7407d56ddfe21f1864bfcdaf4dcd5c665557019ed5a411d3d0062d9adbbf4"
+    },
+    {
+      "name": "crossing-chen-desktop.png",
+      "sha256": "8754cb585042e57d4c59ef045b902fdbb996c8a59bb6bb1e3a4a43b1519d4400"
+    }
+  ],
+  "reviewedScreenshots": [
+    "crossing-outcome-phone.png",
+    "crossing-chen-desktop.png"
+  ],
+  "visualFinding": "Controls and text fit the reviewed frames; action and reaction remain text-heavy, with cinematic assets and human review still required.",
+  "sourceSha256": {
+    "apps/web/src/App.tsx": "8e3c27df0cc4a3ba27f50aa79670b2ee4af6c9feaaaea8ffb7eba8e46ea0aff3",
+    "apps/web/src/development-crossing.ts": "f08918c59db87d3adacbc51a144176fe5b978bdd5f512c43b352643c9697577f",
+    "apps/web/src/main.tsx": "20de308879f92c7368061d4555756d7194519e02da46afdfff4ab98532848229",
+    "apps/web/src/components/EngagementBoard.tsx": "dac92b6253e85035d5b8c6d3661058152f8314c87ea7cf92b34d44b143b3affb",
+    "apps/web/src/components/ChronicleDrawer.tsx": "6c8f7c517e41857a8a7709be666daab44212d3c3da1f36dc4f98cb6c6a725b1c",
+    "apps/web/src/components/ConsequenceScene.tsx": "083a24de103331f1e9a0c178cfbcdda43351136f9494cfaa07ec009d5efcaf46",
+    "packages/game-core/src/crossing-campaign.ts": "d42fb32bc6742236da708a24d2a288f7348d255f16b522af5c855860ea871450",
+    "scripts/playtest-retreat-visible.mjs": "0fb98b27582bde162a0b57cf61b40791433ecf686ae5b695d0230979c17e41da"
+  },
+  "runtimeCleanup": "Exact owned PIDs and ports verified absent after harness cleanup; private runtime handoff records ownership.",
+  "rulesCommit": "fc8b293"
+}

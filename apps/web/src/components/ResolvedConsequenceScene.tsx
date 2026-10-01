@@ -6,8 +6,9 @@ import { ConsequenceScene } from "./ConsequenceScene";
 import { CommitmentResolutionCopy, CommitmentResolutionDeltas } from "./CommitmentLayer";
 import { MethodReadResolutionCopy, MethodReadResolutionDeltas, OppositionResolutionCopy, OppositionResolutionDeltas } from "./OppositionLayer";
 
-export function ResolvedConsequenceScene({ campaign, resolution, locale, reducedMotion, onContinue }: {
-  campaign: Campaign; resolution: ChoiceResolution; locale: Locale; reducedMotion: boolean; onContinue: () => void;
+export function ResolvedConsequenceScene({ campaign, resolution, locale, reducedMotion, onContinue, saveError }: {
+  campaign: Campaign; resolution: ChoiceResolution; locale: Locale; reducedMotion: boolean; onContinue: () => void | boolean;
+  saveError?: string;
 }) {
   const direction = (text: LocalizedText) => locale === "ar" && !text.ar ? "ltr" as const : undefined;
   const deltas = (effects: ChoiceResolution["deltas"], className: string) => (
@@ -16,7 +17,7 @@ export function ResolvedConsequenceScene({ campaign, resolution, locale, reduced
   return (
     <ConsequenceScene locale={locale} title={localize(resolution.choice.label, locale)} titleDirection={direction(resolution.choice.label)}
       consequence={localize(resolution.choice.consequence, locale)} textDirection={direction(resolution.choice.consequence)}
-      reducedMotion={reducedMotion} onContinue={onContinue}>
+      reducedMotion={reducedMotion} onContinue={onContinue} saveError={saveError}>
       <div className="resolution-copy">
         {resolution.commitment && <CommitmentResolutionCopy commitmentId={resolution.commitment.commitment.id} outcomeId={resolution.commitment.outcome.id} stakeholder={campaign.characters.find((character) => character.id === resolution.commitment!.commitment.stakeholderId)!.name} locale={locale} />}
         {resolution.choice.pressure && <div className="pressure-reveal"><span>{translate(locale, "pressureResponse")}</span><p dir={direction(resolution.choice.pressure.reveal)}>{localize(resolution.choice.pressure.reveal, locale)}</p></div>}

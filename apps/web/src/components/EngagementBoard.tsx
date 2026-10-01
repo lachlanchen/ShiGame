@@ -27,14 +27,23 @@ const metricEffects = (effects: EngagementMetricEffects, locale: Locale) => Obje
   </span>
 ));
 
-export function EngagementBoard({ planId, conditionId, locale, onCue, onClose }: {
+export function EngagementBoard({ planId, conditionId, locale, onCue, onClose, campaignSession, saveError }: {
   planId: string;
   conditionId: string;
   locale: Locale;
   onCue: (cue: "select" | "commit" | "ending") => void;
   onClose: () => void;
+  saveError?: string;
+  campaignSession?: {
+    state: EngagementState;
+    onCommand: (commandId: string) => boolean;
+    onFinish: () => void;
+    onCancel: () => void;
+    labels: { status: string; boundary: string; finish: string; effects: string; cancel: string };
+  };
 }) {
-  const [state, setState] = useState<EngagementState>(() => createEngagementState(definition, planId, conditionId));
+  const [localState, setState] = useState<EngagementState>(() => createEngagementState(definition, planId, conditionId));
+  const state = campaignSession?.state ?? localState;
   const boardRef = useRef<HTMLElement>(null);
   const plan = useMemo(() => definition.plans.find((candidate) => candidate.id === planId)!, [planId]);
   const condition = useMemo(() => definition.conditions.find((candidate) => candidate.id === conditionId)!, [conditionId]);
@@ -54,6 +63,10 @@ export function EngagementBoard({ planId, conditionId, locale, onCue, onClose }:
   }, [state.history.length]);
 
   const issue = (commandId: string) => {
+    if (campaignSession) {
+      if (campaignSession.onCommand(commandId)) onCue(state.pulseIndex + 1 === definition.pulses.length ? "ending" : "commit");
+      return;
+    }
     const next = resolveEngagementCommand(definition, state, commandId);
     setState(next);
     onCue(next.completed ? "ending" : "commit");
@@ -77,12 +90,14 @@ export function EngagementBoard({ planId, conditionId, locale, onCue, onClose }:
       <div>
         <span className="eyebrow">{translateEngagement(locale, "commandBoard")}</span>
         <h2 id={titleId} dir={contentDirection(definition.title, locale)}>{localize(definition.title, locale)}</h2>
-        <p className="engagement-status"><i aria-hidden="true" />{translateEngagement(locale, "referenceStatus")}</p>
+        <p className="engagement-status"><i aria-hidden="true" />{campaignSession?.labels.status ?? translateEngagement(locale, "referenceStatus")}</p>
       </div>
       <button className="icon-button" data-engagement-close autoFocus onClick={onClose} aria-label={translate(locale, "close")}>×</button>
     </header>
 
-    <p className="engagement-boundary">{translateEngagement(locale, "boundary")}</p>
+    <p className="engagement-boundary">{campaignSession?.labels.boundary ?? translateEngagement(locale, "boundary")}</p>
+    {saveError && <p role="alert" className="engagement-boundary">{saveError}</p>}
+    {campaignSession && state.history.length === 0 && <button type="button" className="text-button" data-testid="cancel-crossing-plan" onClick={campaignSession.onCancel}>{campaignSession.labels.cancel}</button>}
 
     <section className="engagement-briefing" aria-label={translateEngagement(locale, "objective")}>
       <div><span>{translateEngagement(locale, "plan")}</span><strong dir={contentDirection(plan.title, locale)}>{localize(plan.title, locale)}</strong><p dir={contentDirection(plan.mainEffort, locale)}>{localize(plan.mainEffort, locale)}</p></div>
@@ -132,8 +147,8 @@ export function EngagementBoard({ planId, conditionId, locale, onCue, onClose }:
       <span>{translateEngagement(locale, "completed")}</span>
       <h3 id="engagement-outcome-title" dir={contentDirection(outcome.title, locale)}>{localize(outcome.title, locale)}</h3>
       <p dir={contentDirection(outcome.summary, locale)}>{localize(outcome.summary, locale)}</p>
-      <div><strong>{translateEngagement(locale, "campaignPreview")}</strong><div className="engagement-effect-row">{Object.entries(state.campaignEffects ?? {}).map(([key, value]) => <span className={`${(value ?? 0) < 0 ? "negative" : "positive"} ${key === "danger" ? "risk" : ""}`} key={key}>{signed(value ?? 0)} {translate(locale, key as ResourceKey)}</span>)}</div></div>
-      <button type="button" className="primary-button engagement-return" data-testid="engagement-return" onClick={onClose}>{translateEngagement(locale, "returnToCouncil")} <i aria-hidden="true">↩</i></button>
+      <div><strong>{campaignSession?.labels.effects ?? translateEngagement(locale, "campaignPreview")}</strong><div className="engagement-effect-row">{Object.entries(state.campaignEffects ?? {}).map(([key, value]) => <span className={`${(value ?? 0) < 0 ? "negative" : "positive"} ${key === "danger" ? "risk" : ""}`} key={key}>{signed(value ?? 0)} {translate(locale, key as ResourceKey)}</span>)}</div></div>
+      <button type="button" className="primary-button engagement-return" data-testid="engagement-return" onClick={campaignSession?.onFinish ?? onClose}>{campaignSession?.labels.finish ?? translateEngagement(locale, "returnToCouncil")} <i aria-hidden="true">↩</i></button>
     </section>}
 
     {state.history.length > 0 && <section className="engagement-history" aria-label={translateEngagement(locale, "commandRecord")}>
