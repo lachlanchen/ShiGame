@@ -138,6 +138,46 @@ screenshots as well as the result summary. Simulator automation does not prove
 physical-device performance, VoiceOver usability, linguistic quality or film
 decoder behavior.
 
+## Tactical crossing foundation
+
+`EngagementEngine.swift` now resolves the shared tactical crossing in native
+Foundation: plan/field initialization, legal commands, player and opponent
+metric layers, ordered outcomes and resulting campaign effects. It replays
+saved identifiers and checks every derived value rather than trusting saved
+metrics. Invalid orders leave the engine unchanged. It does not yet replace
+the native chapter's abstract crossing choice or advance the campaign itself.
+
+The canonical TypeScript generator exhausts all plan/condition paths into
+`content/conformance/crossing-tactical-replays.v1.json`. Normal validation checks
+that this versioned fixture still matches the authored definition and resolver.
+The Swift checker verifies the definition SHA before comparing 122 checkpoints,
+76 complete paths, legal-order lists, all intermediate layers, outcome effects
+and 17 corrupted states. Extra top-level transport metadata follows the existing
+canonical compatibility policy; altered history/metrics are rejected.
+
+On the qualified Mac, with the source/fixture hashes verified:
+
+```bash
+bash scripts/test-native-crossing.sh
+```
+
+The runner uses the existing Xcode compiler in Swift 5 language mode and retains
+a small CLI/log directory under `.runtime`; it neither installs nor signs an
+app. On October 1, the actual Apple Silicon run passed all 122 checkpoints and
+296 replayed commands. The complete current app source also type-checked for
+the iOS 16 simulator target, in production and `SHI_RETREAT_PREVIEW` modes.
+See the [scoped evidence](../../../docs/production/evidence/native-crossing-rules-20261001.json).
+
+The `native-crossing-rules` CI job runs this same check on a standard hosted
+Mac. The Linux content job independently regenerates and compares the canonical
+fixtures. Neither job signs, installs or submits an iOS app.
+
+Still required: the native revision-2 campaign ledger and personal reaction
+binding, atomic session/replay checkpoint, SwiftUI command controls, durable
+crossing-to-Chen handoff, simulator/device playtests and qualified beta packaging.
+This tactical CLI/typecheck milestone is not an installed playable crossing,
+native campaign parity, cinematic review or TestFlight update.
+
 ## Chen council
 
 A surviving Chapter I exposes the optional council on its ending screen. Three

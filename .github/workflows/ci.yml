@@ -9,6 +9,14 @@ permissions:
   contents: read
 
 jobs:
+  native-crossing-rules:
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check native crossing against canonical replay fixtures
+        run: bash scripts/test-native-crossing.sh
+
   web-and-content:
     runs-on: ubuntu-latest
     timeout-minutes: 15

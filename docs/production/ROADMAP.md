@@ -33,6 +33,12 @@ after different orders, including preparation-download failure and a prepared
 offline checkpoint test. Native parity, physical-device and human review gates
 remain open. The later retreat/refuge draft remains excluded.
 
+Native follow-up: the [Foundation tactical crossing engine](../../apps/mobile/ios/README.md#tactical-crossing-foundation)
+now matches all 122 canonical checkpoints on the Mac mini, with full native app
+source typechecked for both configurations. It does not yet connect tactical
+orders to the native campaign ledger or SwiftUI. Continue that integration and
+durable session work before claiming the revised crossing is playable on iOS.
+
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release
 saves, explicit versioned progression, honest previews, matching personal

@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-01",
+  "status": "native-tactical-rules-verified-not-campaign-or-ui-admission",
+  "toolchain": "Apple Swift 6.4, arm64 Mac; explicit Swift 5 language mode on repeatable runner",
+  "canonicalCheckpoints": 122,
+  "completeTacticalPaths": 76,
+  "replayedCommandsAcrossCheckpoints": 296,
+  "corruptSnapshotsRejected": 17,
+  "checks": [
+    "Definition SHA-256 matches TypeScript-generated fixtures",
+    "All intermediate metrics, response identities, legal command lists, outcomes and campaign effects match",
+    "Unavailable and post-completion orders do not mutate the live native engine",
+    "Derived save data is replayed and compared rather than trusted",
+    "Existing top-level transport-metadata compatibility retained",
+    "Actual Mac CLI compile and execution passed twice, including reusable script",
+    "All current native app Swift files typechecked for arm64 iOS 16 simulator target in production and SHI_RETREAT_PREVIEW modes"
+  ],
+  "sourceSHA256": {
+    "apps/mobile/ios/SHI/EngagementEngine.swift": "a2158fb0305d620b5c9f729bfb2ba0eb3c88ad54dd4d9b62701b332f166d0694",
+    "apps/mobile/ios/SHI/CampaignEngine.swift": "8e70409100e4c562362cf202480cd97793696c7713cae2f8e751d0f05a9f9b13",
+    "apps/mobile/ios/Tests/EngagementConformance.swift": "bac46ae87914b6b5d56cfce7a433490d8d72e2d25c854b6491779a40c43c5077",
+    "scripts/engagement-conformance.ts": "bc70f80f5718af71f90adeb4ce1d15e37f610698c48266f29a86a465ac5a0cd7",
+    "scripts/test-native-crossing.sh": "c648592c601d1a0177190503666f521f48c2e12c9418f33d760107fc998db368",
+    "content/conformance/crossing-tactical-replays.v1.json": "96b2ae867db5a50cf572c44b54979e13a1940195006c8ed0a3e906556d7745e4",
+    "content/engagements/chapter-01-broken-crossing.v1.json": "e5e7d40076e456c4044ab92f04209095af13fa5ff9599a66601f030b15133b8c"
+  },
+  "transferredArchiveSHA256": [
+    "006b78ac156489360ea864128e08f91ae8e1b5575729f69e57ed027765e789bc",
+    "8cc08ba8711d9dae22d09fdd8f65cd60c71b432610419a56174c2ac674f87d91"
+  ],
+  "boundaries": [
+    "No native campaign ledger, durable tactical session or SwiftUI command integration admitted",
+    "No simulator boot, device install, signing, store upload, release app replacement or shared service changes",
+    "No new historical prose, media asset, content rule or commercial-rights admission",
+    "Typecheck does not prove simulator or physical-device runtime behavior"
+  ]
+}
