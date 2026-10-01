@@ -21,6 +21,9 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
 
   useEffect(() => {
     mountedRef.current = true;
+    wantedRef.current = false;
+    requestRef.current += 1;
+    setStatus("ready");
     const video = videoRef.current;
     const pause = () => {
       wantedRef.current = false;
@@ -50,7 +53,7 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
       window.removeEventListener("pageshow", show);
       window.removeEventListener("shi-native-active", active);
     };
-  }, []);
+  }, [asset.src, asset.captions.src, asset.captions.language]);
 
   const mayPlay = () => mountedRef.current && wantedRef.current && nativeActiveRef.current && pageActiveRef.current && !document.hidden;
 
@@ -66,7 +69,7 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
       await video.play();
       // A late completion must not restart a paused/backgrounded/detached scene.
       // But an obsolete completion must not stop a newer explicit play request.
-      if (!mayPlay()) { video.pause(); return; }
+      if (video !== videoRef.current || !mayPlay()) { video.pause(); return; }
       if (request !== requestRef.current) return;
       setStatus("playing");
     } catch {
@@ -79,7 +82,7 @@ export function SilentFilm({ asset, locale }: { asset: SilentFilmAsset; locale: 
 
   return (
     <section className="silent-film" data-testid="silent-film" data-playback={status}>
-      <video ref={videoRef} src={asset.src} muted playsInline preload="none" aria-label={cinemaLabel(locale, "play")}
+      <video key={JSON.stringify([asset.src, asset.captions.src, asset.captions.language])} ref={videoRef} src={asset.src} muted playsInline preload="none" aria-label={cinemaLabel(locale, "play")}
         onPlaying={() => {
           if (!mayPlay()) { videoRef.current?.pause(); return; }
           setStatus("playing");

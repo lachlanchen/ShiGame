@@ -12,6 +12,39 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe("silent film playback intent", () => {
+  it("pauses a detached old clip when its play promise completes after a scene change", async () => {
+    let resolve!: () => void;
+    vi.mocked(HTMLMediaElement.prototype.play).mockImplementationOnce(() => new Promise<void>(done => { resolve = done; }));
+    const view = render(<SilentFilm asset={asset} locale="en" />);
+    fireEvent.click(view.getByRole("button", { name: "Play scene" }));
+    const previous = view.container.querySelector("video")!;
+    view.rerender(<SilentFilm asset={{ ...asset, src: "/next-test-only.mp4" }} locale="en" />);
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Play scene" })));
+    vi.mocked(HTMLMediaElement.prototype.pause).mockClear();
+    await act(async () => resolve());
+    expect(vi.mocked(HTMLMediaElement.prototype.pause).mock.instances).toEqual([previous]);
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("playing");
+  });
+
+  it("keeps native-inactive permission when the clip changes", async () => {
+    const view = render(<SilentFilm asset={asset} locale="en" />);
+    act(() => window.dispatchEvent(new CustomEvent("shi-native-active", { detail: false })));
+    view.rerender(<SilentFilm asset={{ ...asset, src: "/next-test-only.mp4" }} locale="en" />);
+    fireEvent.click(view.getByRole("button", { name: "Play scene" }));
+    expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+  });
+  it.each(["ended", "error"])("opens the next clip ready, not with the previous %s state", async reason => {
+    const view = render(<SilentFilm asset={asset} locale="en" />);
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Play scene" })));
+    const previous = view.container.querySelector("video")!;
+    fireEvent(previous, new Event(reason));
+    view.rerender(<SilentFilm asset={{ ...asset, src: "/next-test-only.mp4" }} locale="en" />);
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("ready");
+    expect(view.container.querySelector("video")).not.toBe(previous);
+    expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Play scene" })));
+    expect(view.getByTestId("silent-film").dataset.playback).toBe("playing");
+  });
   it("honours an external pause while play is still pending", async () => {
     let resolve!: () => void;
     vi.mocked(HTMLMediaElement.prototype.play).mockImplementation(() => new Promise<void>(done => { resolve = done; }));
