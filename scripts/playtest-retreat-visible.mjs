@@ -1,6 +1,6 @@
 // Own one isolated visible desktop; preserve evidence, terminate exact children.
 import { spawn, execFileSync } from "node:child_process";
-import { mkdir, writeFile, open } from "node:fs/promises";
+import { mkdir, writeFile, open, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import net from "node:net";
 
@@ -9,8 +9,11 @@ const route = process.argv[2] ?? "together";
 const production = process.env.SHI_PLAYTEST_PRODUCTION === "1";
 if (production && route !== "captured") throw new Error("Production review currently supports only the captured opening route.");
 const storyBranch = process.argv[3] ?? "baseline";
-if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "crossing"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured|crossing] [baseline|partner-search|loan-search]");
-const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${route === "crossing" ? "&crossing=campaign" : ""}`;
+if (!["together", "dispersed", "remnant", "scattered", "book", "captured", "crossing", "crossing-v2"].includes(route) || !["baseline", "partner-search", "loan-search"].includes(storyBranch) || process.argv.length > 4) throw new Error("Usage: node scripts/playtest-retreat-visible.mjs [together|dispersed|remnant|scattered|book|captured|crossing|crossing-v2] [baseline|partner-search|loan-search]");
+const isCrossing = route === "crossing" || route === "crossing-v2";
+const revisedCrossing = route === "crossing-v2";
+const aftermath = revisedCrossing ? JSON.parse(await readFile(resolve(root, "content/engagements/chapter-01-crossing-aftermath.v2.json"), "utf8")) : null;
+const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}`;
 const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
 const reserves = route === "scattered" || storyBranch !== "baseline" ? "send-support" : "keep-reserve";
@@ -74,7 +77,7 @@ try {
   await delay(800);
   await launch("vnc", "x11vnc", ["-display", ":121", "-listen", "127.0.0.1", "-rfbport", "5921", "-nopw", "-forever", "-nevershared"]);
   await launch("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:6121", "127.0.0.1:5921"]);
-  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: route === "crossing" ? "0" : "1" });
+  await launch("vite", process.execPath, ["node_modules/vite/bin/vite.js", ...(production ? ["preview"] : []), "apps/web", "--host", "127.0.0.1", "--port", "4173", "--strictPort"], production ? {} : { VITE_SHI_NATIVE: isCrossing ? "0" : "1" });
   report.buildMode = production ? "production-dist" : "development";
   // Existing isolated profile, but an incognito app window preserves old QA saves.
   await launch("chrome", "google-chrome", ["--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--incognito", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=9321", `--user-data-dir=${root}/.runtime/novnc/profile`, "--window-size=1600,1000", "--app=http://127.0.0.1:4173/?seed=00000000"], { DISPLAY: ":121" });
@@ -120,11 +123,13 @@ try {
     await until("location.hash==='#top'");
     check(true, "return link reaches route directory");
     check(await evaluate("!document.querySelector('script,iframe,img,link,form')"), "offline book has no active external content");
-  } else if (route === "crossing") {
+  } else if (isCrossing) {
     await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
     await until("document.documentElement.lang==='zh-Hans'");
     check(await evaluate("document.querySelector('[data-testid=crossing-development-notice]').textContent.includes('旧版存档独立保留')"), "development rules and release-save boundary are disclosed");
     const releaseBefore = await evaluate("localStorage.getItem('shi.chapter-01.save.v6')");
+    const olderKeys = ["shi.chen-council.v1", "shi.fanyang-guarantee.v1", "shi.dev.chen-retreat.v1", "shi.development.crossing-campaign.v1"];
+    const olderBytes = revisedCrossing ? await evaluate(`Object.fromEntries(${JSON.stringify(olderKeys)}.map(key=>[key,localStorage.getItem(key)]))`) : null;
     await capture("crossing-title-desktop");
     await click('[data-testid="begin-game"]');
     await click('[data-testid="guide-continue"]');
@@ -139,7 +144,7 @@ try {
     await capture("crossing-command-desktop"); await layout("crossing desktop");
     await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
     await capture("crossing-command-phone"); await layout("crossing phone");
-    const key = "shi.development.crossing-campaign.v1";
+    const key = `shi.development.crossing-campaign.v${revisedCrossing ? 2 : 1}`;
     const beforeOrder = JSON.parse(await evaluate(`localStorage.getItem('${key}')`));
     await click('[data-engagement-command="screen-through-reeds"]');
     await until("document.querySelector('[data-testid=engagement-board]').dataset.pulseIndex==='1'");
@@ -159,12 +164,21 @@ try {
     for (const command of ["repair-the-landing", "hold-for-the-last-household"]) await click(`[data-engagement-command="${command}"]`);
     await until(exists('[data-testid="engagement-outcome"]'));
     check(await evaluate("document.querySelector('[data-testid=shi-app]').dataset.nodeId==='broken-crossing'"), "completed battle waits for explicit campaign commit");
-    const outcome = await evaluate("document.querySelector('.engagement-outcome > p').textContent");
+    const outcome = revisedCrossing ? aftermath.outcomes["costly-crossing"].reaction["zh-Hans"] : await evaluate("document.querySelector('.engagement-outcome > p').textContent");
     await capture("crossing-outcome-phone"); await layout("crossing outcome");
     await click('[data-testid="engagement-return"]');
     await until(exists('[data-testid="resolution"]'));
     check(await evaluate(`document.querySelector('[data-testid=resolution]').textContent.includes(${JSON.stringify(outcome)})`), "campaign reaction matches the saved tactical outcome");
     await capture("crossing-reaction-phone");
+    if (revisedCrossing) {
+      check(await evaluate("document.querySelector('[data-testid=commitment-resolution]').closest('details')===null && document.querySelectorAll('[data-testid=commitment-resolution]').length===1"), "personal promise reaction is visible without opening statistical details");
+      await capture("crossing-personal-reaction-phone"); await layout("personal reaction phone");
+      await click('[data-testid="resolution-details"] summary');
+      check(await evaluate("document.querySelector('[data-testid=commitment-resolution]').dataset.commitmentStatus==='strained'"), "costly protection is strained, not automatically kept");
+      check(await evaluate(`document.querySelector('[data-testid=commitment-resolution]').textContent.includes(${JSON.stringify(aftermath.commitments["names-under-protection"].strained.response["zh-Hans"])})`), "the affected character answers the actual promise judgment");
+      await capture("crossing-promise-phone"); await layout("actual promise reaction");
+      await click('[data-testid="resolution-details"] summary');
+    }
     const finished = await evaluate(`localStorage.getItem('${key}')`);
     await send("Page.reload"); await until(exists('[data-testid="begin-game"]'));
     await click('[data-testid="begin-game"]'); await until(exists('[data-testid="resolution"]'));
@@ -178,11 +192,44 @@ try {
     await click('[data-choice-id="root-in-villages"]');
     await click('[data-testid="commit-selected"]'); await click('[data-testid="resolution-continue"]');
     await click('[data-testid="council-enter"]'); await until(exists('[data-testid="chen-council"]'));
-    check(await evaluate("[...document.querySelectorAll('.resource-rail [role=meter]')].map(e=>Number(e.getAttribute('aria-valuenow'))).join(',')==='48,89,10,97,96'"), "visible final resources match the independently replayed representative route");
+    check(await evaluate(`[...document.querySelectorAll('.resource-rail [role=meter]')].map(e=>Number(e.getAttribute('aria-valuenow'))).join(',')==='${revisedCrossing ? "48,83,11,97,96" : "48,89,10,97,96"}'`), "visible final resources match the independently replayed representative route");
     check(await evaluate("document.querySelector('[data-testid=chen-council]').dataset.arrival==='supplied'"), "grain-48 route produces the expected supplied Chen arrival despite high pursuit");
     check(await evaluate("localStorage.getItem('shi.chapter-01.save.v6')") === releaseBefore, "integrated playthrough never writes the release chapter save");
     await capture("crossing-chen-phone"); await layout("Chen after crossing");
     await send("Emulation.clearDeviceMetricsOverride"); await capture("crossing-chen-desktop"); await layout("Chen desktop");
+    if (revisedCrossing) {
+      for (const id of ["defer-title", "joint-ledger", "one-command"]) {
+        await click(`[data-council-choice="${id}"]`); await click('[data-testid="council-commit"]'); await click('[data-testid="council-continue"]');
+      }
+      await click('[data-testid="fanyang-enter"]');
+      for (const id of ["public-safety", "guarded-escort", "accept-transfer"]) {
+        await click(`[data-fanyang-choice="${id}"]`); await click('[data-testid="fanyang-commit"]'); await click('[data-testid="fanyang-response"] [data-council-action="continue"]');
+      }
+      await click('[data-testid="retreat-enter"]'); await until(exists('[data-testid="retreat-scene"]'));
+      await capture("crossing-retreat-desktop"); await layout("retreat after crossing");
+      await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+      await capture("crossing-retreat-phone"); await layout("retreat phone");
+      const retreatKey = `${key}.chen-retreat.v1`;
+      for (const id of ["keep-reserve", "gather-own", "escort-households", "carry-records", "stay-together"]) {
+        await click(`[data-retreat-choice="${id}"]`); await click('[data-testid="retreat-commit"]');
+        if (id === "keep-reserve") {
+          const bytes = await evaluate(`localStorage.getItem('${retreatKey}')`);
+          const response = await evaluate("document.querySelector('[data-testid=retreat-response]').textContent");
+          await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+          await click('[data-testid="council-enter"]'); await click('[data-testid="council-continue"]'); await click('[data-testid="fanyang-enter"]');
+          await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); await click('[data-testid="retreat-enter"]');
+          await until(exists('[data-testid="retreat-response"]'));
+          check(await evaluate("document.querySelector('[data-testid=retreat-response]').textContent") === response && await evaluate(`localStorage.getItem('${retreatKey}')`) === bytes, "cold resume retains the same retreat response and save bytes");
+          await capture("crossing-retreat-resumed-phone");
+        }
+        await click('[data-testid="retreat-response"] [data-council-action="continue"]');
+      }
+      check(await evaluate("document.querySelector('[data-testid=retreat-outcome]').dataset.outcome==='together'"), "revised crossing continues to an earned first-volume ending");
+      check(await evaluate(`Object.fromEntries(${JSON.stringify(olderKeys)}.map(key=>[key,localStorage.getItem(key)]))`).then(value=>JSON.stringify(value)===JSON.stringify(olderBytes)), "older chapter and interlude slots remain unchanged");
+      check(await evaluate(`JSON.parse(localStorage.getItem('${retreatKey}')).choices.length===5`), "five retreat choices are committed once in the edition-owned save");
+      await capture("crossing-ending-phone"); await layout("crossing volume ending");
+      await send("Emulation.clearDeviceMetricsOverride"); await capture("crossing-ending-desktop"); await layout("crossing ending desktop");
+    }
   } else if (route === "captured") {
     await evaluate("(()=>{const e=document.querySelector('select');e.value='zh-Hans';e.dispatchEvent(new Event('change',{bubbles:true}))})()");
     await until("document.documentElement.lang==='zh-Hans'");

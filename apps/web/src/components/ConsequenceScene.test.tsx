@@ -16,6 +16,14 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); axe.reset(); });
 
 describe("consequence presentation boundary", () => {
+  it("keeps a supplied character reaction in the main scene, without issuing an action", () => {
+    const exit = vi.fn();
+    const view = render(<ConsequenceScene {...props} characterReaction={<p>Who are you waiting for?</p>} onContinue={exit} />);
+    expect(view.getByText("Who are you waiting for?").closest("details")).toBeNull();
+    expect(view.getByRole("dialog").getAttribute("aria-describedby")).toBe("consequence-text consequence-character");
+    expect((view.getByTestId("resolution-details") as HTMLDetailsElement).open).toBe(false);
+    expect(exit).not.toHaveBeenCalled();
+  });
   it("works without a film, focuses its heading and keeps details optional", async () => {
     const exit = vi.fn();
     const view = render(<ConsequenceScene {...props} onContinue={exit} />);

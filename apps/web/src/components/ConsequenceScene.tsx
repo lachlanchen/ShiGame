@@ -7,13 +7,14 @@ import "./ConsequenceScene.css";
 
 /** Receives resolved text, never a choice resolver, state setter or save writer.
  * Remount per committed turn. Completion, skip and media errors cannot issue orders. */
-export function ConsequenceScene({ locale, title, titleDirection, consequence, textDirection, children, reducedMotion, film, onContinue, saveError }: {
+export function ConsequenceScene({ locale, title, titleDirection, consequence, textDirection, children, characterReaction, reducedMotion, film, onContinue, saveError }: {
   locale: Locale;
   title: string;
   titleDirection?: "ltr";
   consequence: string;
   textDirection?: "ltr";
   children: ReactNode;
+  characterReaction?: ReactNode;
   reducedMotion: boolean;
   film?: SilentFilmAsset;
   onContinue: () => void | boolean;
@@ -38,7 +39,7 @@ export function ConsequenceScene({ locale, title, titleDirection, consequence, t
 
   return (
     <div className="resolution-banner consequence-scene" data-testid="resolution" data-motion={reducedMotion ? "reduced" : "full"}
-      role="dialog" aria-modal="true" aria-labelledby="consequence-title" aria-describedby="consequence-text"
+      role="dialog" aria-modal="true" aria-labelledby="consequence-title" aria-describedby={characterReaction ? "consequence-text consequence-character" : "consequence-text"}
       ref={panelRef} onKeyDown={(event) => {
         if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); finish(); return; }
         if (event.key !== "Tab") return;
@@ -61,6 +62,7 @@ export function ConsequenceScene({ locale, title, titleDirection, consequence, t
         <div className="consequence-body">
           {showFilm && film && <SilentFilm key={film.src} asset={film} locale={locale} />}
           <p className="consequence-prose" id="consequence-text" dir={textDirection}>{consequence}</p>
+          {characterReaction && <div className="consequence-character" id="consequence-character" data-testid="consequence-character">{characterReaction}</div>}
           {saveError && <p role="alert">{saveError}</p>}
           <details className="consequence-details" data-testid="resolution-details">
             <summary>{cinemaLabel(locale, "changes")}</summary>

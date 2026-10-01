@@ -48,6 +48,9 @@ describe("crossing campaign in the real App shell", () => {
     const reaction = await view.findByTestId("resolution");
     const saved = driver.getCrossingRecord()!;
     expect(reaction.textContent).toContain(saved.summary.en);
+    expect(view.getByTestId("commitment-resolution").closest("details")).toBeNull();
+    expect(view.getByTestId("commitment-resolution").closest("[data-testid=consequence-character]")).not.toBeNull();
+    expect(view.queryAllByTestId("commitment-resolution")).toHaveLength(1);
     expect(driver.getCrossingCommitment()!.outcome.status).toBe("strained");
     view.unmount();
     driver = createDevelopmentCrossingDriver(localStorage, 2);

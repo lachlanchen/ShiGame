@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "scope": "One pointer-driven development v2 crossing-to-Chen-to-Fan-Yang-to-retreat-together route, with desktop and 390x844 layout review. Not production/native/store/human fun or audiovisual acceptance.",
+  "started": "2026-10-01T01:13:20.648Z",
+  "finished": "2026-10-01T01:13:57.924Z",
+  "checksPassed": 52,
+  "screenshotsCaptured": 17,
+  "browserExceptions": [],
+  "runtimeEvidence": ".runtime/story-review/2026-10-01T01-13-20.647Z",
+  "statusSHA256": "f61bc026c3cdec0d218b8854bafb71a00ca0ffbb037191ba235585bc71fe4683",
+  "verifiedBehaviors": [
+    "Actual three field orders saved once; pause and cold resume preserve bytes",
+    "Outcome committed once; reload preserves the reaction",
+    "Costly protection is strained and its character response is outside collapsed details",
+    "Chronicle retains the three field orders",
+    "Chapter resources 48/83/11/97/96 produce supplied Chen arrival",
+    "Three Chen and three Fan Yang decisions continue into retreat",
+    "Retreat cold resume retains the same response and bytes",
+    "Five retreat choices reach together ending",
+    "Older chapter/interlude slots unchanged; no horizontal overflow in tested screens"
+  ],
+  "sourcesSHA256": {
+    "scripts/playtest-retreat-visible.mjs": "a9816e0c3bed5a6d16670f0e88f70542d8be120d0311aa82f0ac1d53373e34db",
+    "apps/web/src/components/ConsequenceScene.tsx": "17245d747c4456a8a476131f8f4e56f24609482fb8736e7a2f42c5093fb6dc0e",
+    "apps/web/src/components/ConsequenceScene.css": "da7e02601704b3df75921973b06aa504f8360ebf2bea5409a5d8883bc1b9200d",
+    "apps/web/src/components/ResolvedConsequenceScene.tsx": "c3d51a747863030ed86c1c8e460922b0be245cd4b57e4aa33e081871cc804701",
+    "content/engagements/chapter-01-crossing-aftermath.v2.json": "960ecdd013ddf2a3356f81cda176ffaa35ee0d8cba94ac161dfde7aff588b04d"
+  },
+  "visuallyReviewedScreenshotsSHA256": {
+    "crossing-personal-reaction-phone.png": "9a431a46ebe2b55eab7ea64653d240ba302cc5d7f1a1af9cba3384bc8f47ea67",
+    "crossing-command-desktop.png": "c7e4d942ff0edfb1c0503b425cd98538300035d88c72ea556f52b5f13d150c3c",
+    "crossing-ending-phone.png": "bec38b41cdc70bd9b8e2e12abb375dadd1ac57a2e831e625e78b70d9d02985bd"
+  },
+  "cleanup": "Exact owned process IDs and ports 4173/5921/6121/9321 verified absent after finally cleanup; no retained SHI review stack."
+}

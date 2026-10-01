@@ -18,6 +18,10 @@
 .consequence-body { padding: 28px 36px; }
 .consequence-scene p.consequence-prose { margin: 0; color: #e4dfd1; font-size: clamp(1.08rem, 2.3vw, 1.4rem); line-height: 1.95; max-width: 60ch; overflow-wrap: anywhere; }
 .consequence-details { margin-top: 28px; border-top: 1px solid #42453b; }
+.consequence-character { margin-top: 24px; max-width: 60ch; }
+.consequence-character .commitment-reveal span { color: #d2b879; font-size: .8rem; line-height: 1.6; }
+.consequence-character .commitment-reveal p { margin: 10px 0 0; color: #e4dfd1; font-size: 1.08rem; line-height: 1.85; overflow-wrap: anywhere; }
+.consequence-character .commitment-reveal p i { color: #c6c5b9; }
 .consequence-details summary { padding: 14px 4px; min-height: 48px; color: #d2b879; cursor: pointer; line-height: 1.6; }
 .consequence-ledger { display: grid; gap: 22px; padding-block: 10px; }
 .consequence-scene .resolution-copy, .consequence-scene .resolution-copy:has(.commitment-reveal) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }

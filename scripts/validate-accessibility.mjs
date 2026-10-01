@@ -36,6 +36,9 @@ const contrast = (foreground, background) => {
 const contrastPairs = [
   ["aftermath heading metadata", ".consequence-scene p.consequence-eyebrow", "color", "#171b18"],
   ["aftermath prose", ".consequence-scene p.consequence-prose", "color", "#171b18"],
+  ["aftermath personal response", ".consequence-character .commitment-reveal p", "color", "#171b18"],
+  ["aftermath personal status", ".consequence-character .commitment-reveal span", "color", "#171b18"],
+  ["aftermath personal attribution", ".consequence-character .commitment-reveal p i", "color", "#171b18"],
   ["aftermath details disclosure", ".consequence-details summary", "color", "#171b18"],
   ["aftermath film fallback", ".consequence-scene .silent-film p", "color", "#171b18"],
   ["aftermath effect layer label", ".consequence-delta-layer h3", "color", "#171b18"],
