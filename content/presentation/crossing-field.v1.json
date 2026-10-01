@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "crossing-field-v1",
+  "claimStatus": "dramatic-reconstruction",
+  "purpose": "Read-only schematic of tactical indices, not surveyed geography or individual people.",
+  "canvas": { "width": 100, "height": 60 },
+  "river": { "left": 44, "right": 59 },
+  "route": { "startX": 24, "endX": 80, "y": 28 },
+  "rear": { "x": 28, "y": 45, "minimumSpread": 2, "maximumSpread": 8 },
+  "pursuit": { "startX": 6, "endX": 19, "y": 45 },
+  "palette": { "ground": "#18241d", "bank": "#29382a", "water": "#264d52", "flow": "#739b9a", "route": "#dbc080", "rear": "#bec9ae", "pursuit": "#efa48b", "ink": "#101711" },
+  "labels": {
+    "en": { "title": "Read the crossing", "nearBank": "Approach", "farBank": "Far bank", "boundary": "Schematic indices, not headcounts or exact positions. A farther crossing marker does not certify everyone's arrival." },
+    "zh-Hans": { "title": "看清渡河态势", "nearBank": "来路", "farBank": "对岸", "boundary": "示意的是态势指标，不是人数或精确位置。渡河标记前移，不代表所有人已经到达。" },
+    "zh-Hant": { "title": "看清渡河態勢", "nearBank": "來路", "farBank": "對岸", "boundary": "示意的是態勢指標，不是人數或精確位置。渡河標記前移，不代表所有人已經到達。" },
+    "ja": { "title": "渡河の状況を読む", "nearBank": "進入路", "farBank": "対岸", "boundary": "指標の模式図であり、人数や正確な位置ではありません。渡河の印が進んでも、全員の到着を保証しません。" },
+    "ko": { "title": "도하 상황 읽기", "nearBank": "접근로", "farBank": "맞은편 강변", "boundary": "인원수나 정확한 위치가 아닌 지표의 개략도입니다. 도하 표식이 전진해도 모두의 도착을 보장하지 않습니다." },
+    "vi": { "title": "Đọc tình hình vượt sông", "nearBank": "Đường tiếp cận", "farBank": "Bờ bên kia", "boundary": "Sơ đồ chỉ số, không phải số người hay vị trí chính xác. Dấu vượt sông tiến lên không chứng tỏ mọi người đã đến nơi." },
+    "ar": { "title": "قراءة وضع العبور", "nearBank": "طريق الاقتراب", "farBank": "الضفة المقابلة", "boundary": "رسم تخطيطي للمؤشرات، لا لأعداد الأشخاص أو المواقع الدقيقة. تقدّم علامة العبور لا يثبت وصول الجميع." },
+    "fr": { "title": "Lire la traversée", "nearBank": "Approche", "farBank": "Rive opposée", "boundary": "Schéma d’indices, pas d’effectifs ni de positions exactes. L’avancée du repère ne garantit pas l’arrivée de tous." },
+    "es": { "title": "Leer el cruce", "nearBank": "Acceso", "farBank": "Orilla opuesta", "boundary": "Esquema de índices, no de personas ni posiciones exactas. El avance del marcador no garantiza que todos hayan llegado." },
+    "ru": { "title": "Оценить переправу", "nearBank": "Подход", "farBank": "Другой берег", "boundary": "Схема показателей, а не численности или точных позиций. Продвижение отметки не означает, что все добрались до берега." },
+    "de": { "title": "Die Querung lesen", "nearBank": "Zugang", "farBank": "Gegenüberliegendes Ufer", "boundary": "Schematische Kennwerte, keine Personenzahlen oder exakten Positionen. Ein vorgerückter Marker bestätigt nicht die Ankunft aller." }
+  }
+}

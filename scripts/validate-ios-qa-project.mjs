@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 const [qaPath, productionPath, crossingPath, upgradePath] = process.argv.slice(2);
 assert(qaPath && productionPath, "Pass generated QA and production PBX JSON paths");
 const drafts = ["chen-retreat.rules.v1.json", "chen-retreat.v1.json", "refuge.rules.v1.json", "refuge.v1.json", "refuge-morning.v1.json", "refuge-contact.v1.json"];
-const crossingFiles = ["chapter-01-broken-crossing.v1.json", "chapter-01-crossing-campaign.rules.v2.json", "chapter-01-crossing-aftermath.v2.json"];
+const crossingFiles = ["chapter-01-broken-crossing.v1.json", "chapter-01-crossing-campaign.rules.v2.json", "chapter-01-crossing-aftermath.v2.json", "crossing-field.v1.json"];
 const projects = [[qaPath, "retreat"], [productionPath, "production"]];
 if (crossingPath) projects.push([crossingPath, "crossing"]);
 if (upgradePath) projects.push([upgradePath, "upgrade"]);
@@ -25,7 +25,7 @@ for (const [path, mode] of projects) {
   for (const name of drafts) assert.equal(resources.includes(name), qa, `Wrong draft resource boundary: ${name}`);
   for (const name of crossingFiles) assert.equal(resources.includes(name), crossing, `Wrong crossing resource boundary: ${name}`);
   assert(!resources.includes("chapter-01-replays.v1.json"), "Test fixture leaked into the app bundle");
-  for (const name of ["CampaignSaveCompatibility.swift", "CrossingCampaignSession.swift", "CrossingPreviewContent.swift", "NativeCrossingCampaignView.swift"])
+  for (const name of ["CampaignSaveCompatibility.swift", "CrossingCampaignSession.swift", "CrossingPreviewContent.swift", "NativeCrossingCampaignView.swift", "CrossingFieldPresentation.swift", "NativeCrossingField.swift"])
     assert(sources.includes(name), `Missing crossing source ${name}`);
   const configs = objects[target.buildConfigurationList].buildConfigurations.map(id => objects[id]);
   assert(configs.length >= 2, "Inspect both Debug and Release");

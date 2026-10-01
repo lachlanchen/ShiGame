@@ -1,0 +1,16 @@
+.crossing-field { margin: 18px 0; padding: 16px; border: 1px solid #68725c; border-radius: 12px; background: #101711; color: #ded7c5; }
+.crossing-field figcaption { font-size: 1rem; font-family: var(--cjk); margin-bottom: 12px; }
+.crossing-field-banks { display: flex; justify-content: space-between; gap: 20px; font-size: .8rem; color: #c2c7b5; margin-bottom: 8px; }
+.crossing-field-banks span { max-width: 44%; }
+.crossing-field svg { display: block; width: 100%; max-height: 280px; }
+.crossing-field svg text { font: 5px sans-serif; font-weight: 700; }
+.crossing-field-legend { display: flex; flex-wrap: wrap; gap: 10px 20px; list-style: none; padding: 0; font-size: .8rem; line-height: 1.6; }
+.crossing-field-legend li > span { display: inline-block; min-width: 1.4em; text-align: center; border: 1px solid currentColor; border-radius: 50%; }
+.crossing-field-legend strong { white-space: nowrap; }
+.crossing-field > p { margin-bottom: 0; color: #bec6b6; font-size: .8rem; line-height: 1.6; }
+.crossing-field-marker { transition: transform .45s ease-out; }
+[data-motion="reduced"] .crossing-field-marker { transition: none !important; }
+/* Override the application's global near-zero transition fallback: this
+   presentation needs no transition event and can disable movement entirely. */
+@media (prefers-reduced-motion: reduce) { .crossing-field-marker { transition: none !important; } }
+@media (forced-colors: active) { .crossing-field svg { display: none; } .crossing-field { background: Canvas; color: CanvasText; border-color: CanvasText; } .crossing-field p, .crossing-field-banks { color: CanvasText; } }

@@ -1,0 +1,23 @@
+{
+  "assetId": "crossing-field-v1",
+  "createdAt": "2026-10-02",
+  "generator": "Codex-authored deterministic vector and SwiftUI presentation code",
+  "file": "../../content/presentation/crossing-field.v1.json",
+  "inputs": [
+    "Committed crossingProgress, rearCohesion and pursuitClosure indices from the existing game rules",
+    "Existing project metric labels"
+  ],
+  "rightsStatus": "Project-authored presentation under the repository copyright policy; no external model output, textures, book pages or character likeness",
+  "platformDependency": "The native pursuit icon uses Apple's bundled SF Symbols through SwiftUI, not a redistributed symbol asset",
+  "reviewStatus": "agent-reviewed-web-and-native-diagram; bounded route tests passed, human acceptance pending",
+  "intendedUse": ["web-reference-exercise", "internal-crossing-campaign", "isolated-native-crossing-qa"],
+  "historicalStatus": "Dramatic-reconstruction schematic, not evidence for historical positions, troop numbers or a surveyed crossing",
+  "review": {
+    "visual": "Chinese and Arabic Web phone captures and English iPhone SE before/after captures inspected",
+    "webRoute": "Complete development crossing-to-retreat route passed after reduced-motion correction",
+    "nativeRoute": "iPhone SE simulator full crossing-to-Chen route passed, including diagram and cold-resume assertions",
+    "humanAcceptance": false,
+    "cinematicAssetAdmission": false
+  },
+  "reviewDocument": "../../docs/production/CROSSING_FIELD_20261002.md"
+}

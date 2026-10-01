@@ -378,9 +378,34 @@ try {
     await capture("crossing-command-phone"); await layout("crossing phone");
     const key = internalDirectory ? "shi.internal.crossing-campaign.v2" : `shi.development.crossing-campaign.v${revisedCrossing ? 2 : 1}`;
     const beforeOrder = JSON.parse(await evaluate(`localStorage.getItem('${key}')`));
+    const fieldPosition = await evaluate("document.querySelector('[data-field-progress]')?.getAttribute('data-field-progress')");
+    check(fieldPosition !== null && fieldPosition !== undefined, "shared crossing schematic is present");
+    await evaluate("document.querySelector('[data-testid=crossing-field]').scrollIntoView({block:'center',behavior:'instant'})");
+    await capture("crossing-field-before-phone"); await layout("crossing schematic phone");
+    const fieldSave = await evaluate(`localStorage.getItem('${key}')`);
+    for (const language of ["ar", "zh-Hans"]) {
+      await click('[data-engagement-close]'); await click('.brand-button');
+      await click('.title-footer button:last-child');
+      await evaluate(`(()=>{const e=document.querySelector('select');e.value=${JSON.stringify(language)};e.dispatchEvent(new Event('change',{bubbles:true}))})()`);
+      await until(`document.documentElement.lang===${JSON.stringify(language)}`);
+      await click('[data-testid="begin-game"]'); await until(exists('[data-testid="crossing-field"]'));
+      check(await evaluate(`localStorage.getItem('${key}')`) === fieldSave, "changing diagram language does not mutate the crossing ledger");
+      if (language === "ar") {
+        check(await evaluate("document.documentElement.dir==='rtl'&&document.querySelector('.crossing-field-banks').dir==='ltr'"), "Arabic reading preserves the fixed bank orientation");
+        await evaluate("document.querySelector('[data-testid=crossing-field]').scrollIntoView({block:'center',behavior:'instant'})");
+        await capture("crossing-field-arabic-phone"); await layout("Arabic crossing schematic");
+      }
+    }
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+    check(await evaluate("getComputedStyle(document.querySelector('.crossing-field-marker')).transitionDuration==='0s'"), "schematic movement honors reduced motion");
+    await send("Emulation.setEmulatedMedia", { features: graphicsReview === "reduced" ? [{ name: "prefers-reduced-motion", value: "reduce" }] : [] });
     await click(`[data-engagement-command="${crossingExpectation.commands[0]}"]`);
     await until("document.querySelector('[data-testid=engagement-board]').dataset.pulseIndex==='1'");
     const afterOrder = await evaluate(`localStorage.getItem('${key}')`);
+    const committedFieldPosition = await evaluate("document.querySelector('[data-field-progress]').getAttribute('data-field-progress')");
+    check(committedFieldPosition !== fieldPosition, "committed command changes the schematic progress index");
+    await evaluate("document.querySelector('[data-testid=crossing-field]').scrollIntoView({block:'center',behavior:'instant'})");
+    await capture("crossing-field-after-phone");
     check(JSON.parse(afterOrder).ledger.events.length === beforeOrder.ledger.events.length + 1, "one pointer-issued field order is saved exactly once");
     check(!await evaluate("!!document.querySelector('[data-testid=cancel-crossing-plan]')"), "issued orders cannot be cancelled");
     await capture("crossing-response-phone");
@@ -393,6 +418,7 @@ try {
     await click('[data-testid="begin-game"]');
     await until("document.querySelector('[data-testid=engagement-board]')?.dataset.pulseIndex==='1'");
     check(await evaluate(`localStorage.getItem('${key}')`) === afterOrder, "cold resume preserves the saved first order");
+    check(await evaluate("document.querySelector('[data-field-progress]').getAttribute('data-field-progress')") === committedFieldPosition, "cold resume reconstructs the same schematic without another order");
     if (scoreAudition) {
       await until(exists('[data-testid="private-score-audition"]'));
       check(await evaluate("document.querySelector('[data-testid=private-score-audition]').dataset.status==='idle'"), "reload does not automatically resume the private soundtrack");

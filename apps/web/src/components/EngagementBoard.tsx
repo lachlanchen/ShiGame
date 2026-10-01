@@ -16,6 +16,7 @@ import rawDefinition from "../generated/chapter-01-broken-crossing.v1.json";
 import { translate } from "../i18n";
 import { engagementMetricLabels, engagementOrderLabels, translateEngagement } from "../engagement-i18n";
 import "./EngagementBoard.css";
+import { CrossingField } from "./CrossingField";
 
 const definition = rawDefinition as EngagementDefinition;
 const contentDirection = (text: LocalizedText, locale: Locale): "ltr" | undefined => locale === "ar" && !text.ar ? "ltr" : undefined;
@@ -105,6 +106,7 @@ export function EngagementBoard({ planId, conditionId, locale, onCue, onClose, c
       <div className="engagement-objective"><span>{translateEngagement(locale, "objective")}</span><p dir={contentDirection(definition.objective, locale)}>{localize(definition.objective, locale)}</p></div>
     </section>
 
+    <CrossingField metrics={state.metrics} locale={locale} />
     <section className="engagement-metrics" aria-label={translateEngagement(locale, "localState")}>
       <h3>{translateEngagement(locale, "localState")}</h3>
       <div>{engagementMetricKeys.map((key) => {

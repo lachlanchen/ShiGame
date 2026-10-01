@@ -19,9 +19,11 @@ describe("broken-crossing Web command board", () => {
     expect(board.textContent).toContain("Households first");
     expect(board.textContent).toContain("The ford rises another hand");
     expect(board.querySelectorAll("[data-engagement-command]")).toHaveLength(2);
+    const initialMarker = board.querySelector("[data-field-progress]")?.getAttribute("data-field-progress");
 
     fireEvent.click(board.querySelector("[data-engagement-command='screen-through-reeds']")!);
     expect(board.getAttribute("data-pulse-index")).toBe("1");
+    expect(board.querySelector("[data-field-progress]")?.getAttribute("data-field-progress")).not.toBe(initialMarker);
     expect(view.getByTestId("engagement-answer").textContent).toContain("Small probes force the screen");
     fireEvent.click(board.querySelector("[data-engagement-command='repair-the-landing']")!);
     expect(board.getAttribute("data-pulse-index")).toBe("2");

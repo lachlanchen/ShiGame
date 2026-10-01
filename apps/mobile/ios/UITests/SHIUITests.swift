@@ -203,6 +203,9 @@ final class SHIUITests: XCTestCase {
         issue("issue-grain-tallies"); readReaction()
         issue("families-first")
         XCTAssertTrue(app.staticTexts["crossing-pulse"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["crossing-field-title"].exists)
+        XCTAssertTrue(app.staticTexts["crossing-field-crossingProgress"].label.contains("23/100"))
+        reveal(app.staticTexts["crossing-field-title"], in: app)
         capture("crossing-02-first-orders")
         issue("screen-through-reeds")
         XCTAssertTrue(app.buttons["crossing-reaction-continue"].waitForExistence(timeout: 10))
@@ -211,6 +214,9 @@ final class SHIUITests: XCTestCase {
         XCTAssertTrue(app.buttons["crossing-reaction-continue"].waitForExistence(timeout: 15))
         XCTAssertEqual(app.staticTexts["crossing-scene-title"].label, orderTitle)
         capture("crossing-03-field-response-resumed"); readReaction()
+        XCTAssertTrue(app.staticTexts["crossing-field-crossingProgress"].label.contains("33/100"))
+        reveal(app.staticTexts["crossing-field-title"], in: app)
+        capture("crossing-field-committed-order")
         issue("repair-the-landing"); readReaction()
         issue("hold-for-the-last-household"); readReaction()
         let finish = app.buttons["crossing-finish"]
@@ -224,6 +230,15 @@ final class SHIUITests: XCTestCase {
         XCTAssertTrue(council.waitForExistence(timeout: 10)); reveal(council, in: app)
         capture("crossing-05-conclusion"); council.tap()
         XCTAssertTrue(app.staticTexts["council-title"].waitForExistence(timeout: 10))
+        // This repeatable seed can restore a council from an earlier QA run.
+        // Reset through the visible, confirmed control only on first entry;
+        // the later cold-resume assertion must retain the new council save.
+        let retryCouncil = app.buttons["council-retry"]
+        if retryCouncil.exists {
+            reveal(retryCouncil, in: app); retryCouncil.tap()
+            let confirmCouncil = app.buttons.matching(identifier: "council-confirm-restart").firstMatch
+            XCTAssertTrue(confirmCouncil.waitForExistence(timeout: 10)); confirmCouncil.tap()
+        }
         let first = councilDecision("defer-title", app)
         app.terminate(); app.launch()
         XCTAssertTrue(app.buttons["crossing-council-enter"].waitForExistence(timeout: 15))

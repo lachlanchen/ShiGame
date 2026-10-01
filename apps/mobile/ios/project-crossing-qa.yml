@@ -10,6 +10,8 @@ targets:
         buildPhase: resources
       - path: ../../../content/engagements/chapter-01-crossing-aftermath.v2.json
         buildPhase: resources
+      - path: ../../../content/presentation/crossing-field.v1.json
+        buildPhase: resources
     settings:
       base:
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHI_CROSSING_PREVIEW"

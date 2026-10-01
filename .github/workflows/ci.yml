@@ -24,6 +24,8 @@ jobs:
         run: bash scripts/test-native-crossing-session.sh
       - name: Check released chapter save compatibility policy
         run: bash scripts/test-native-save-compatibility.sh
+      - name: Check shared crossing diagram projection
+        run: bash scripts/test-native-crossing-field.sh
 
   web-and-content:
     runs-on: ubuntu-latest

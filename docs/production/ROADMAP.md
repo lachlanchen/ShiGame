@@ -78,6 +78,13 @@ the upgrade gap but is not the retained signed App Store binary or a physical
 device. Continue signed-beta qualification and reviewed scene media; do not
 count another harness checkpoint as a new playable story beat.
 
+The [shared crossing diagram](CROSSING_FIELD_20261002.md) now makes progress,
+rear cohesion and pursuit readable spatially in Web and native QA, without
+changing rules or saves. A complete visible development Web route and iPhone SE
+crossing-to-Chen route passed with cold resumes; Arabic geography and reduced
+motion were checked on Web. This is a reviewed tactical schematic, not a new
+story episode, historical map or final cinematic animation.
+
 The next substantial gameplay checkpoint is qualification of the revised
 crossing-to-council sequence for a bounded internal candidate: retained release
 saves, explicit versioned progression, honest previews, matching personal

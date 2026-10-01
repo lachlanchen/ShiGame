@@ -167,6 +167,10 @@ struct NativeCrossingCampaignView: View {
             reactionView(reaction, state: state)
         } else if let battle = state.engagement {
             heading(text(session.content.engagement, "title"))
+            if let field = CrossingFieldPresentation.bundled {
+                NativeCrossingField(definition: field, metrics: battle.metrics, labels: labels, locale: locale,
+                                    reducedMotion: reducedMotion || manualReducedMotion)
+            }
             metrics(battle.metrics, keys: EngagementEngine.metricKeys, tactical: true)
             if battle.completed {
                 let outcome = session.content.engagement.records("outcomes").first { $0.text("id") == battle.outcomeID } ?? [:]

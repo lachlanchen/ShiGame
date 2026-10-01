@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-02",
+  "timezone": "Asia/Hong_Kong",
+  "baseCommit": "46f32faec40b09864da74d8db7093b765b7dc6d2",
+  "scope": "Read-only crossing diagram in web and isolated native crossing QA",
+  "sources": {
+    "content/presentation/crossing-field.v1.json": "28c48a720a11740c97033923be83964d76b3cb4d8e5fd2eabacfb9af2c7eef64",
+    "apps/web/src/components/CrossingField.tsx": "aaf5bd7f942ad4cbed3c5e596be9eb20fb5c1fb2a812a23c941adb78722fa828",
+    "apps/web/src/components/CrossingField.css": "a781ea120b57942e8c5ded4d6c498af8d6431178c81d43c8484a441c3ecab4ae",
+    "apps/mobile/ios/SHI/CrossingFieldPresentation.swift": "87e0986a5f3f9e28e67fbbc47b8656226f6aa11dbfe77540b322d6a9dec77eb2",
+    "apps/mobile/ios/SHI/NativeCrossingField.swift": "45d0ba60105393bb30833ae48a3559446de307ea4786f9dca29281f5acdecbe0",
+    "apps/mobile/ios/UITests/SHIUITests.swift": "81f584eb2068d1371defcba4536b939077c7ed2d15cbb0191cb8bc8a26a200d5"
+  },
+  "captures": {
+    "docs/production/evidence/crossing-field-web-zh-20261002.png": "9ad882e468e553a522a231ac90eec77231c4c05e3f7f85566899eaa062050a4b",
+    "docs/production/evidence/crossing-field-web-ar-20261002.png": "475382387eb9d194cd36f1bfe89117497abfc88f7714964f9859453ca21b879f",
+    "docs/production/evidence/crossing-field-native-se-20261002.png": "bb26161dbed46d6c1ef1414cf37c5e731508e4fcf93aae515dd590f96fc78d53"
+  },
+  "web": {
+    "mode": "development crossing-v2, costly route",
+    "result": "passed",
+    "checksPassed": 87,
+    "screenshots": 28,
+    "runtimeExceptions": 0,
+    "phoneViewport": [390, 844],
+    "sequence": ["opening", "crossing", "Chen", "Fan Yang", "retreat ending"],
+    "diagramReview": ["Chinese", "Arabic", "fixed banks", "saved before/after", "cold resume", "reduced motion"]
+  },
+  "compiledInternalWeb": {
+    "result": "passed",
+    "checksPassed": 77,
+    "screenshots": 23,
+    "runtimeExceptions": 0,
+    "sourceTreeSHA256": "669b6c3f776231f810232bba439fec1069447611acef5440efe544be2c4cc4d4",
+    "artifactTreeSHA256": "cc9bdf579f1269ea3fe2529be23ce5181a0c4f26b785c65ec399d8c05a5bf6d3",
+    "sequence": ["opening", "crossing", "Chen", "Fan Yang", "bounded ending"],
+    "retreatDraftExcluded": true
+  },
+  "native": {
+    "result": "passed",
+    "device": "iPhone SE (3rd generation) simulator",
+    "osVersion": "26.3.1",
+    "architecture": "x86_64",
+    "passedTests": 1,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "exportedScreenshots": 9,
+    "test": "testCrossingCampaignColdResumeAndChen",
+    "projectionCases": 103,
+    "typecheckedConfigurations": ["production", "retreat", "crossing"],
+    "inspectedGeneratedProjects": ["production", "retreat", "crossing", "upgrade"],
+    "repeatabilityFix": "First council entry resets a prior same-origin QA council through its explicit confirmation; later cold resume preserves new state"
+  },
+  "cleanup": { "ownedSimulatorsShutdown": true, "ownedWebDesktopStopped": true, "ownedBuildAndTestProcessesStopped": true },
+  "limits": {
+    "humanAcceptance": false,
+    "physicalDeviceQualification": false,
+    "voiceOverOperation": false,
+    "newMusicOrVideoAdmission": false,
+    "cinematicQualityAcceptance": false,
+    "testFlightOrPlayUpload": false,
+    "revisedCampaignPublicActivation": false
+  }
+}
