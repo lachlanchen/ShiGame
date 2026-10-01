@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-morning.v1",
+  "publicationApproved": false,
+  "title": "天亮就走的人",
+  "boundary": "原创地方场景，承接《资治通鉴》卷八所记陈胜败亡后的背景。屋主、过路人和会面均为戏剧重构；不把传闻当作同伴生还或吕臣军去向的证明。",
+  "sourceReference": "refuge.v1.sourceReadback",
+  "opening": [
+    { "speaker": "narrator", "text": "天亮时，雨停了。屋主把昨夜那束草拆开，摊在门前。一个背着空筐的人在路边停下，问你们往哪里走。" },
+    { "speaker": "traveller", "text": "我从河边来。昨夜有几个人也在打听散了的队伍。" },
+    { "speaker": "keeper", "text": "还在那里？" },
+    { "speaker": "traveller", "text": "昨夜在。我要回去取东西，你要问，就跟上。" },
+    { "speaker": "narrator", "text": "那人把筐换了个肩，没有放下。屋主已经扶好了梯子，抬头看了一眼天。" }
+  ],
+  "nightMemory": {
+    "offer-labour": "昨夜你答应天亮帮忙补漏。屋主把一捆草留在你脚边，等你递上去。",
+    "offer-grain": "昨夜的粮已经换了借宿。你没有答应补屋顶，可以现在走。",
+    "sleep-outside": "你在屋外熬过一夜，没有欠下补漏的约定。衣襟还是潮的。"
+  },
+  "choices": [
+    {
+      "id": "repair-roof",
+      "title": "先把草递上去",
+      "intent": "帮屋主补漏，换得一个愿意替你留话的人；过路人不会等你。若昨夜许了诺，这次才算履行。不会偿还此前的粮债，也不会自动找到同伴。",
+      "effects": { "promiseIfOwed": "kept", "contact": "holds-word", "lead": "departed" },
+      "response": [
+        { "speaker": "keeper", "text": "你先走。我还得帮这里一把。" },
+        { "speaker": "narrator", "text": "空筐在那人的背上晃了两下，拐过墙角。你抱起草，等屋主在梯上站稳，再一束束往上递。" },
+        { "speaker": "householder", "text": "那边，压住。别松手。" },
+        { "speaker": "narrator", "text": "漏处补好后，屋主下了梯子，把木盆倒扣在墙边。路上已经看不见那个空筐。" },
+        { "speaker": "householder", "text": "你要留什么话？有人来问，我替你说。" }
+      ]
+    },
+    {
+      "id": "follow-witness",
+      "title": "跟上过路人，去问清楚",
+      "intent": "保住当面追问的机会，不保证认出或找到同伴。若昨夜许诺补漏，此次离开会失约，屋主不再答应替你留话；若没有许诺，不记作背信。此前的粮债不变。",
+      "effects": { "promiseIfOwed": "broken", "contact": "none", "contactIfOwed": "refused", "lead": "with-witness" },
+      "response": [
+        { "speaker": "keeper", "text": "等一下，我跟你走。" },
+        { "speaker": "narrator", "text": "你把装简的囊提起来，追上那个空筐。那人朝河边指了指。" },
+        { "speaker": "traveller", "text": "到那边我指给你。是不是你找的人，我可不知道。" }
+      ]
+    }
+  ],
+  "promiseResponses": {
+    "kept": [{ "speaker": "householder", "text": "你昨夜说天亮就补，还真没走。" }],
+    "broken": [{ "speaker": "householder", "text": "草还在这儿呢。你走吧，别再让我替你应下别的。" }],
+    "none": []
+  },
+  "outcomeLabels": {
+    "promise": { "kept": "补漏之约已履行", "broken": "补漏之约已失信，尚未修复关系", "none": "昨夜未许诺，不记作失信" },
+    "contact": { "holds-word": "屋主愿意替你留话，具体话语尚未托付", "refused": "屋主拒绝再替你应承", "none": "未建立留话约定" },
+    "lead": { "departed": "过路人已经离开；没有确认河边人的身份", "with-witness": "已跟上过路人；河边人的身份仍待核实" }
+  },
+  "continuation": "下一场将承接留话或河边问讯；此处不替你确认任何人的生死，也不自动完成联络。"
+}

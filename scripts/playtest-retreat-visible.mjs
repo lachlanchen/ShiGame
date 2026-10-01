@@ -14,6 +14,8 @@ const isCrossing = route === "crossing" || route === "crossing-v2";
 const revisedCrossing = route === "crossing-v2";
 const scoreAudition = process.env.SHI_PLAYTEST_SCORE === "1";
 const councilFilm = process.env.SHI_PLAYTEST_COUNCIL_FILM === "1";
+const morningOrder = process.env.SHI_PLAYTEST_MORNING;
+if (morningOrder && (!["repair-roof", "follow-witness"].includes(morningOrder) || process.env.SHI_PLAYTEST_REFUGE !== "1")) throw new Error("Morning review requires refuge and a known morning choice.");
 if (councilFilm && (!revisedCrossing || production)) throw new Error("Private council film requires the development crossing-v2 route.");
 if (scoreAudition && (!revisedCrossing || production)) throw new Error("Private score review requires the development crossing-v2 route.");
 const aftermath = revisedCrossing ? JSON.parse(await readFile(resolve(root, "content/engagements/chapter-01-crossing-aftermath.v2.json"), "utf8")) : null;
@@ -550,6 +552,33 @@ try {
     await click('[data-testid="retreat-open-refuge"]'); await until(exists('[data-testid="refuge-response"]'));
     check(JSON.stringify(await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge.v1.')).map(k=>[k,localStorage.getItem(k)]))")) === JSON.stringify(refugeBytes), "cold reload preserves shelter save byte for byte");
     await capture("refuge-restored-desktop");
+    if (morningOrder) {
+      await click('[data-testid="refuge-open-morning"]'); await until(exists('[data-testid="morning-commit"]'));
+      await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+      await capture("morning-opening-mobile"); await layout("morning opening");
+      await click(`[data-morning-choice="${morningOrder}"]`);
+      await capture("morning-choice-mobile"); await layout("morning choice");
+      check(await evaluate("[...document.querySelectorAll('[data-morning-choice]')].every(button=>parseFloat(getComputedStyle(button).gridTemplateColumns.split(' ')[1])>=160)"), "morning choices retain readable text columns");
+      check(await evaluate("document.querySelector('[data-testid=morning-memory]').textContent.includes('昨夜你答应')"), "morning recalls the actual labour promise");
+      await click('[data-testid="morning-commit"]'); await until(exists('[data-testid="morning-response"]'));
+      const expected = morningOrder === "repair-roof" ? "补漏之约已履行" : "补漏之约已失信";
+      check(await evaluate(`document.querySelector('[data-testid=morning-response]').textContent.includes(${JSON.stringify(expected)})`), "morning presents the matching kept or broken promise");
+      const morningBytes = await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge-morning.v1.')).map(k=>[k,localStorage.getItem(k)]))");
+      check(Object.keys(morningBytes).length === 1, "morning writes exactly one branch-specific save");
+      await capture("morning-response-mobile"); await layout("morning response");
+      await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+      await click('[data-testid="council-enter"]'); await click('[data-testid="council-continue"]'); await click('[data-testid="fanyang-enter"]');
+      await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); await click('[data-testid="retreat-enter"]');
+      await click('[data-testid="retreat-response"] [data-council-action="continue"]');
+      await click('[data-testid="retreat-open-refuge"]'); await click('[data-testid="refuge-open-morning"]');
+      await until(exists('[data-testid="morning-response"]'));
+      check(JSON.stringify(await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge-morning.v1.')).map(k=>[k,localStorage.getItem(k)]))")) === JSON.stringify(morningBytes), "morning cold reload preserves exact saved choice");
+      check(JSON.stringify(await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge.v1.')).map(k=>[k,localStorage.getItem(k)]))")) === JSON.stringify(refugeBytes), "morning does not rewrite the night's historical record");
+      check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "morning preserves retreat ending bytes");
+      await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
+      await capture("morning-restored-desktop"); await layout("morning restored desktop");
+      await click('[data-testid="morning-back"]');
+    }
     await click('[data-testid="refuge-scene"] .text-button');
     await click('[data-testid="retreat-decision-record"] summary');
   }

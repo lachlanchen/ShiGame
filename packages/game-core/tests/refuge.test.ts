@@ -5,13 +5,17 @@ import { createInitialState, resolveChoice, councilEntry, createCouncil, resolve
   createFanyang, resolveFanyang, encodeFanyangSnapshot, prepareRetreatEntry, createRetreat, resolveRetreat,
   encodeRetreatSnapshot, prepareRefugeEntry, createRefuge, inspectRefugeChoice, resolveRefuge,
   encodeRefugeSnapshot, restoreRefuge, type Campaign, type CouncilDefinition, type FanyangDefinition,
-  type RetreatDefinition } from "../src";
+  type RetreatDefinition, type MorningDefinition, resolveMorning, restoreMorning, encodeMorningSnapshot } from "../src";
 import campaignRaw from "../../../content/campaigns/chapter-01-daze.json";
 import councilRaw from "../../../content/councils/chen-council.v1.json";
 import fanyangRaw from "../../../content/councils/fanyang-guarantee.v1.json";
 import retreatRaw from "../../../content/campaigns/chen-retreat.rules.v1.json";
 import draft from "../../../content/story-drafts/refuge.v1.json";
 import review from "../../../content/research/refuge-review.v1.json";
+import morningRaw from "../../../content/story-drafts/refuge-morning.v1.json";
+import morningReview from "../../../content/research/refuge-morning-review.v1.json";
+const morning = morningRaw as MorningDefinition;
+const morningHash = createHash("sha256").update(JSON.stringify(morningRaw)).digest("hex");
 
 const hash = (path: string) => createHash("sha256").update(readFileSync(new URL(`../../../content/${path}`, import.meta.url))).digest("hex");
 const revisions = { campaign: hash("campaigns/chapter-01-daze.json"), council: hash("councils/chen-council.v1.json"), fanyang: hash("councils/fanyang-guarantee.v1.json") };
@@ -58,8 +62,24 @@ describe("shelter continuation boundary", () => {
       expect(result.personalObligation).toBe(order === "offer-labour" ? "morning-repair" : null);
       expect(() => resolveRefuge(result, order)).toThrow();
       expect(restoreRefuge(entry!, JSON.parse(encodeRefugeSnapshot(result, refugeHash)), refugeHash)).toEqual(result);
+      for (const action of ["repair-roof", "follow-witness"] as const) {
+        const dawn = resolveMorning(morning, result, action);
+        expect(dawn.promise).toBe(order === "offer-labour" ? action === "repair-roof" ? "kept" : "broken" : "none");
+        expect(dawn.contact).toBe(action === "repair-roof" ? "holds-word" : order === "offer-labour" ? "refused" : "none");
+        expect(dawn.lead).toBe(action === "repair-roof" ? "departed" : "with-witness");
+        expect(dawn.commonGrain).toBe(result.commonGrain);
+        expect(dawn.debts).toEqual(result.debts);
+        const saved = JSON.parse(encodeMorningSnapshot(dawn, morningHash, refugeHash));
+        expect(restoreMorning(morning, result, { ...saved, commonGrain: 999, promise: "kept", debts: [] }, morningHash, refugeHash)).toEqual(dawn);
+        expect(restoreMorning(morning, result, saved, "0".repeat(64), refugeHash)).toBeNull();
+        expect(restoreMorning(morning, result, saved, morningHash, "0".repeat(64))).toBeNull();
+        expect(restoreMorning(morning, result, { ...saved, order: "invented" }, morningHash, refugeHash)).toBeNull();
+        expect(restoreMorning(morning, result, { ...saved, entryId: "another-night" }, morningHash, refugeHash)).toBeNull();
+        expect(result.personalObligation).toBe(order === "offer-labour" ? "morning-repair" : null);
+      }
     }
     expect(initial.order).toBeNull();
+    expect(() => resolveMorning(morning, initial, "repair-roof")).toThrow();
     expect(snapshot.choices).toEqual(orders);
   });
   it("rejects incomplete, foreign and stale histories and ignores forged inventory fields", () => {
@@ -78,6 +98,9 @@ describe("shelter continuation boundary", () => {
     expect(draft.sourceReadback.volume).toBe(8);
     expect(review.storySHA256).toBe(refugeHash);
     expect(review.publicationApproved).toBe(false);
+    expect(morningRaw.publicationApproved).toBe(false);
+    expect(morningReview.storySHA256).toBe(hash("story-drafts/refuge-morning.v1.json"));
+    expect(morning.choices.map(choice => choice.id)).toEqual(["repair-roof", "follow-witness"]);
   });
   it("remembers a personal promise across reload without settling earlier debts", () => {
     const { entry } = route([...routes[1][1]]);

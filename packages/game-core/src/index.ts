@@ -8,3 +8,4 @@ export * from "./fanyang";
 export * from "./retreat-entry";
 export * from "./retreat";
 export * from "./refuge";
+export * from "./refuge-morning";

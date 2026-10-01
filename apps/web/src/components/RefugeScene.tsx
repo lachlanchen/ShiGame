@@ -4,6 +4,7 @@ import { createRefuge, encodeRefugeSnapshot, inspectRefugeChoice, resolveRefuge,
 import story from "../../../../content/story-drafts/refuge.v1.json";
 import storyText from "../../../../content/story-drafts/refuge.v1.json?raw";
 import { flushPersistence, gameStorage } from "../persistence";
+import { RefugeMorningScene } from "./RefugeMorningScene";
 
 const speakers: Record<string, string> = { keeper: "掌简人", householder: "屋主" };
 const lines = (items: { speaker: string; text: string }[]) => items.map((line, index) =>
@@ -21,6 +22,7 @@ export function RefugeScene({ entry, saveNamespace, reducedMotion, onClose, onSa
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<RefugeOrder>("offer-labour");
   const [busy, setBusy] = useState(false);
+  const [morning, setMorning] = useState(false);
   const transaction = useRef(false), alive = useRef(true), heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     alive.current = true;
@@ -36,7 +38,7 @@ export function RefugeScene({ entry, saveNamespace, reducedMotion, onClose, onSa
     })();
     return () => { alive.current = false; };
   }, [entry, saveNamespace]);
-  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [loaded?.state.order, Boolean(loaded)]);
+  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [loaded?.state.order, Boolean(loaded), morning]);
   const commit = async () => {
     if (!loaded || transaction.current || !inspectRefugeChoice(loaded.state, selected).available) return;
     transaction.current = true; setBusy(true); setError(""); onSavingChange?.(true);
@@ -56,6 +58,7 @@ export function RefugeScene({ entry, saveNamespace, reducedMotion, onClose, onSa
     } finally { transaction.current = false; onSavingChange?.(false); if (alive.current) setBusy(false); }
   };
   const choice = story.choices.find(item => item.id === (loaded?.state.order ?? selected))!;
+  if (morning && loaded?.state.order) return <RefugeMorningScene night={loaded.state} nightHash={loaded.hash} saveNamespace={saveNamespace} reducedMotion={reducedMotion} onClose={() => setMorning(false)} onSavingChange={onSavingChange} />;
   return <section className="drawer chen-council" data-testid="refuge-scene" role="dialog" aria-modal="true" aria-labelledby="refuge-title" lang="zh-Hans" dir="ltr" data-motion={reducedMotion ? "reduced" : "full"}
     onKeyDown={event => {
       if (event.altKey || event.key === "Escape") event.stopPropagation();
@@ -73,8 +76,8 @@ export function RefugeScene({ entry, saveNamespace, reducedMotion, onClose, onSa
     {!loaded && !error && <p role="status">正在核对退走后的经历…</p>}
     {loaded && <div className="chen-layout"><section className="chen-main"><section className="chen-scene">
       {loaded.state.order ? <div data-testid="refuge-response" aria-live="polite"><h3>{choice.title}</h3>{lines(choice.response)}
-        <p>行动已保存。{loaded.state.personalObligation ? "天亮要帮屋主补漏；这项承诺尚未履行。" : loaded.state.rested ? "你换得了一夜休息。" : "你留在屋外，没有添下新约。"}</p>
-        <p>{story.continuation}</p>
+        <p>当晚记录：{loaded.state.personalObligation ? "天亮要帮屋主补漏；这项承诺尚未履行。" : loaded.state.rested ? "你换得了一夜休息。" : "你留在屋外，没有添下新约。"} 后续履约情况以天亮后的记录为准。</p>
+        <button className="primary-button" data-testid="refuge-open-morning" onClick={() => setMorning(true)}>继续：天亮了 →</button>
       </div> : <><p>{story.setting}</p>{lines(story.lines)}
         <div className="chen-offers">{story.choices.map((item, index) => <button key={item.id} disabled={busy} aria-pressed={selected === item.id} data-refuge-choice={item.id} onClick={() => setSelected(item.id as RefugeOrder)}><span aria-hidden="true">{String.fromCharCode(65 + index)}</span>{item.title}</button>)}</div>
         <section className="chen-offer-detail" aria-live="polite"><h3>{choice.title}</h3><p>{choice.intent}</p>

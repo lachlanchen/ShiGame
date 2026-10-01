@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-morning-review.v1",
+  "reviewDate": "2026-10-01",
+  "decision": "development-web-preview-only",
+  "publicationApproved": false,
+  "storySHA256": "6910471fb4bea58f112ce144531bf2f23d94fee831183185a61a6ab204b48540",
+  "source": {
+    "work": "资治通鉴",
+    "volume": 8,
+    "localLinesRead": [2791, 2801],
+    "sourceSHA256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+    "boundary": "Re-read the Qin-collapse background. The roof, household, traveller, river meeting and player's decisions are original dramatization, not attested events. No private source text is published."
+  },
+  "storyReview": {
+    "reviewer": "agent; human emotional-response acceptance remains open",
+    "continuity": "Same roof, grass bundle, rain aftermath, keeper and householder as the previous night. No time-dated historical claim or automatic reunion.",
+    "dilemma": "Repair establishes a willing local contact but loses the passing witness. Following preserves an information opportunity, not guaranteed rescue. It breaches trust only if the player actually promised to repair.",
+    "reviewedChanges": "Keep dialogue concrete and brief; explain mechanics outside speech. Separate the historical night record from the morning outcome so reviewing the night cannot undo a kept or broken promise.",
+    "rights": "Original authored dialogue and rules. No generated music, images or footage admitted by this checkpoint."
+  },
+  "saveContract": {
+    "definition": "Versioned narrative and morning effects share refuge-morning.v1.json; both are fingerprinted.",
+    "authority": "Morning derives from a restored shelter state, itself derived from a replayed retreat. Morning saves contain identifiers and content hashes, not authoritative resource or relationship values.",
+    "compatibility": "Existing shelter bytes and fingerprint remain unchanged. Morning uses a separate branch-specific slot and pins both the night and morning revisions. Stale or corrupt saves are preserved, not overwritten.",
+    "transaction": "Show reaction only after persistence succeeds; reject duplicate input and navigation during writes; attempt rollback on failure."
+  },
+  "verification": {
+    "repository": "npm run validate passed: 80 core tests and 341 web tests. Focused refuge tests were rerun after adding further stale-entry and immutable-night assertions.",
+    "build": "Production web build and size budgets pass. Morning story identifiers/text are absent from release JavaScript/JSON; this remains a development continuation.",
+    "coverage": "Both morning choices across every available night choice on four actual retreat outcomes; no false betrayal, no forgiven debt, no injected resources, correct promise/contact/lead outcomes, revision rejection and replay. Six dedicated web tests cover reload, save failure, duplicate input, busy Escape, corrupt-save preservation and semantic accessibility; an actual retreat-to-night-to-morning component route also passes.",
+    "visible": "Two serial title-to-remnant loan-search browser runs, one for each morning choice. Each passed 91 checks with 27 screenshots and zero browser exceptions; phone and restored desktop responses inspected. Both retain night and retreat bytes across cold reload.",
+    "witnessEvidence": { "directory": ".runtime/story-review/2026-10-01T04-44-09.308Z", "statusSHA256": "fb8391fd2295bbe189866efbb7e62cf20262903c8e3e3312060ccc8eac407fba" },
+    "repairEvidence": { "directory": ".runtime/story-review/2026-10-01T04-45-30.103Z", "statusSHA256": "7e32b6815d2747fcec95effac22e38ef28843b0d2c03b98662a97b9f882fe8ae" },
+    "boundary": "Agent-driven development web evidence, not physical-device, native, human playtest or final cinematic acceptance. No store or public release action."
+  },
+  "remaining": [
+    "Play the next contact scene: choosing what to entrust to the householder or testing the witness's account at the river.",
+    "Implement repair opportunities after broken trust rather than treating this choice as permanent moral condemnation.",
+    "Native SwiftUI and Unreal continuation parity, device testing, full localization and visual/audio production remain unfinished.",
+    "Human playtesting, contrast and assistive-technology review are not replaced by automated tests or agent screenshot inspection."
+  ]
+}

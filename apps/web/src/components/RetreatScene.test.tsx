@@ -57,6 +57,14 @@ describe("retreat development scene", () => {
     const shelter = localStorage.getItem(key);
     expect(JSON.parse(shelter!).order).toBe("offer-labour");
     expect(localStorage.getItem(retreatSaveKey)).toBe(original);
+    fireEvent.click(view.getByTestId("refuge-open-morning"));
+    await view.findByTestId("morning-commit");
+    expect(view.getByTestId("morning-memory").textContent).toContain("昨夜你答应");
+    fireEvent.click(view.getByTestId("morning-commit"));
+    expect((await view.findByTestId("morning-response")).textContent).toContain("补漏之约已履行");
+    fireEvent.click(view.getByTestId("morning-back"));
+    expect(view.getByTestId("refuge-response").textContent).toContain("当晚记录");
+    expect(localStorage.getItem(key)).toBe(shelter);
     fireEvent.click(view.getAllByRole("button", { name: "返回退走结局" }).at(-1)!);
     expect(view.getByTestId("retreat-outcome").querySelector("h3")).toBe(document.activeElement);
     view.unmount(); view = render(<RetreatScene {...input} />);
