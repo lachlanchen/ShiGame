@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "candidateBuild": 7,
+  "createdOn": "2026-10-02",
+  "scope": "Signed Android candidate; focused arrival/retained-save upgrade checks passed; full beta qualification pending",
+  "providerPreflight": {
+    "readOnly": true,
+    "uploadedVersionCodes": [1],
+    "bundlePagination": "1 - 1 of 1",
+    "internalTrack": "Build1 available to internal testers",
+    "productionTrack": "Build1 available on Google Play",
+    "numberReserved": false
+  },
+  "android": {
+    "status": "signed-partially-runtime-qualified-not-uploaded",
+    "applicationId": "art.lazying.shi",
+    "versionCode": 7,
+    "sourceCommit": "17d1dad2da0e46f9199f30be68863e019af35c46",
+    "sourceCleanAtBuild": true,
+    "sourceSetSHA256": "e7e708b15851391d61177d6640d333b9c4d42d7fe97b86c8e3da8bc917b6459e",
+    "sourceFiles": 348,
+    "sourceUnchangedDuringBuild": true,
+    "apkSHA256": "207f5db44d3acc4e46a2f8e0f2e0bcde58f916947329d88b3acbc29b52db8fd7",
+    "aabSHA256": "7f7914222162997d20bd9fa712ce6402184b45150b338dabc6b4db1501d7d769",
+    "signerCertificateSHA256": "3ce089f4f9f7da11355ecace697bfade9377f9159fff14f4529b5b090a3032c8",
+    "uploaded": false,
+    "qualification": [
+      "Release build, lint, unit smoke, signature and source-fingerprint checks passed",
+      "Retained candidate4 chronicle survived in-place 4-to-6-to-7 upgrades without clearing or uninstalling",
+      "Signed API34 runtime showed visible return control on initial Chen arrival and reopening; actual return tap succeeded",
+      "52 council component tests passed; final phone screenshot visually reviewed"
+    ],
+    "limitations": [
+      "Full fresh route, offline/lifecycle and unread-reaction runtime checks remain",
+      "This is not a distributed build1 or Play-signing upgrade test",
+      "Physical-device and human playtest qualification remain",
+      "Development-only crossing, retreat/refuge and unreviewed media remain excluded",
+      "Reconcile live provider state before any upload; production remains build1"
+    ]
+  },
+  "precedingCandidate": {
+    "build": 6,
+    "status": "held-council-arrival-control-offscreen",
+    "sourceCommit": "efd1858",
+    "sourceSetSHA256": "34529d2dcfa0070771d9edbdc8a1b721e849dc4aadbd98a98fac81d0e23635a6",
+    "apkSHA256": "b3d9fc68f21926e3f7325966274d3c5b2033f1d27d452fcfdc78cf735f9dcb70",
+    "aabSHA256": "8639f6e61f3472ac1634de269b63bb27c5a610ee59ce0d5a2744fb243e9a47a0",
+    "uploaded": false
+  }
+}

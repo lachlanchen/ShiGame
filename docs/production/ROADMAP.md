@@ -126,6 +126,12 @@ candidates retained), low-resolution-first LocalVideoGen trials, image generatio
 and editable Blender animation only for named beats with rights and review.
 OpenSCAD is appropriate for repeatable props, not a mandatory character tool.
 
+The [signed Android arrival correction](ANDROID_COUNCIL_ARRIVAL_20261002.md)
+preserves the retained chronicle across candidate upgrades and keeps Chen's
+return control visible on entry. Candidate 7 has a focused signed-runtime pass,
+not full beta qualification or an upload. Continue its real route and
+distributed-save/physical-device checks using the retained exact artifacts.
+
 Maintain native SwiftUI iOS, Android, web and the existing Unreal client with
 shared narrative/rules. Use the shared Macs, iPad and Mi 10 Pro when their
 specific build/device test is needed, serially under resource/coordination
