@@ -159,6 +159,10 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
           {preview.newDebt && <p data-testid="retreat-debt-preview">新欠本地粮主：{preview.newDebt.grain} 份粮秣。债随约定保留，分行或去名不会销账。</p>}
           {preview.after && <div className="chen-preview">{councilMetricKeys.map(key => <span key={key}>{metrics[key]} <b>{state.metrics[key]} → {preview.after![key]}</b></span>)}</div>}
           {preview.outcome && <p data-testid="retreat-preview" data-outcome={preview.outcome}>预计结果：{outcomeTitle(preview.outcome)}</p>}
+          {preview.dispersionChecks.length > 0 && <section data-testid="retreat-dispersal-checks" aria-label="有序分行条件">
+            <p>停止统领不需要许可；能否安排妥当，要看下令后的粮秣与支持。支持只需一方达标，不把三方相加。</p>
+            <ul>{preview.dispersionChecks.map(check => <li key={check.key}>{check.key === "grain" ? "分行粮秣" : "民间、诸部、军中最高一方支持"}：{check.value} / 需要 {check.required} {check.met ? "✓" : `还缺 ${check.required - check.value}`}</li>)}</ul>
+          </section>}
           {preview.reactionOverride && <p>{preview.reactionOverride["zh-Hans"]}</p>}
           {!preview.available && !invalid && <section data-testid="retreat-available-alternatives" aria-label="可行的其他命令">
             <p>这条路暂时走不通。你仍可查看其他命令；查看不会下令，也不会改变此前的约定。</p>

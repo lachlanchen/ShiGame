@@ -44,6 +44,13 @@ import CryptoKit
                 let expectedAnswers = try engine.inspect(id).answers.map {
                     rules.object("answerExplanationsZh").text($0.text("afterChoice"))
                 }
+                let preview = try engine.inspect(id)
+                if id == "release-groups" {
+                    precondition(preview.dispersionChecks.count == 2)
+                    precondition(preview.dispersionChecks[0].value == preview.after!["grain"])
+                    precondition(preview.dispersionChecks[1].value == max(preview.after!["city"]!, max(preview.after!["allies"]!, preview.after!["veterans"]!)))
+                    precondition(preview.dispersionChecks.allSatisfy { $0.met } == (preview.outcome == "dispersed"))
+                } else { precondition(preview.dispersionChecks.isEmpty) }
                 if view.scene.text("id") == "dawn" {
                     let question = "还按原来的队么？"
                     precondition(lines.last == question, "Ask for the final decision after the reports")

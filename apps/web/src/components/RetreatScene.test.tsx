@@ -614,6 +614,8 @@ describe("retreat development scene", () => {
     expect(view.queryByTestId("retreat-available-alternatives")).toBeNull();
     expect(view.queryByTestId("retreat-prior-choice-required")).toBeNull();
     expect(view.getByTestId("retreat-preview").getAttribute("data-outcome")).toBe("scattered");
+    expect(view.getByTestId("retreat-dispersal-checks").textContent).toContain("分行粮秣：0 / 需要 1 还缺 1");
+    expect(view.getByTestId("retreat-dispersal-checks").textContent).toContain("不把三方相加");
     fireEvent.click(view.getByTestId("retreat-commit"));
     const response = await view.findByTestId("retreat-response");
     expect(response.textContent).toContain("账还没核完");

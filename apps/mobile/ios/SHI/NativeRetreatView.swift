@@ -143,6 +143,14 @@ struct NativeRetreatView: View {
                         .accessibilityIdentifier("retreat-preview").accessibilityValue(outcome)
                     if outcome == "scattered" { Text(session.definition.object("scattered").localized("reaction", "zh-Hans")) }
                 }
+                if !preview.dispersionChecks.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("停止统领不需要许可；能否安排妥当，要看下令后的粮秣与支持。支持只需一方达标，不把三方相加。")
+                        ForEach(preview.dispersionChecks) { check in
+                            Text("\(check.id == "grain" ? "分行粮秣" : "民间、诸部、军中最高一方支持")：\(check.value) / 需要 \(check.required) \(check.met ? "✓" : "还缺 \(check.required - check.value)")")
+                        }
+                    }.accessibilityIdentifier("retreat-dispersal-checks")
+                }
                 if !preview.available && !session.needsRecovery {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("这条路暂时走不通。你仍可查看其他命令；查看不会下令，也不会改变此前的约定。")

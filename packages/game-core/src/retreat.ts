@@ -65,15 +65,18 @@ export function inspectRetreatChoice(definition: RetreatDefinition, state: Retre
   const debtAvailable = !choice.debt || !state.debts.some(debt => debt.id === choice.debt!.id);
   const available = prerequisiteMet && debtAvailable && checks.every(check => check.met) && maximumChecks.every(check => check.met);
   const after = Object.fromEntries(councilMetricKeys.map(key => [key, Math.max(0, Math.min(10, state.metrics[key] + (effects[key] ?? 0)))])) as CouncilMetrics;
+  const dispersionChecks = available && choice.ending === "disperse" ? [
+    { key: "grain" as const, value: after.grain, required: definition.dispersionRequirements.grain },
+    { key: "backing" as const, value: Math.max(after.city, after.allies, after.veterans), required: definition.dispersionRequirements.anyBacking },
+  ].map(check => ({ ...check, met: check.value >= check.required })) : [];
   let outcome: RetreatOutcome | undefined;
   if (available && choice.ending) {
     outcome = choice.ending === "disperse"
-      ? after.grain >= definition.dispersionRequirements.grain
-        && Math.max(after.city, after.allies, after.veterans) >= definition.dispersionRequirements.anyBacking
+      ? dispersionChecks.every(check => check.met)
         ? "dispersed" : "scattered"
       : choice.ending;
   }
-  return { choice, answers, effects, checks, maximumChecks, prerequisiteMet, debtAvailable, available,
+  return { choice, answers, effects, checks, maximumChecks, dispersionChecks, prerequisiteMet, debtAvailable, available,
     newDebt: available && choice.debt ? { ...choice.debt } : undefined,
     // Unavailable previews must not advertise clamped unaffordable spending.
     after: available ? after : null, outcome,

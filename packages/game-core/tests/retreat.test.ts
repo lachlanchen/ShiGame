@@ -56,6 +56,23 @@ function capacity(value: number) {
 }
 
 describe("resource-backed retreat rules", () => {
+  it.each([
+    [0, 3, 3, 3, "scattered"], [1, 1, 1, 1, "scattered"],
+    [1, 2, 0, 0, "dispersed"], [1, 0, 2, 0, "dispersed"], [1, 0, 0, 2, "dispersed"],
+  ] as const)("explains dispersal at grain %s and backing %s/%s/%s", (grain, city, allies, veterans, outcome) => {
+    const state = follow(capacity(8), ["decline-dispatch", "gather-own", "split-routes", "carry-records"]);
+    Object.assign(state.metrics, { grain, city, allies, veterans }); // Threshold fixture, not a claimed playable route.
+    const original = JSON.stringify(state);
+    const preview = inspectRetreatChoice(rules, state, "release-groups");
+    expect(preview.available).toBe(true); // Leaving command remains possible even when orderly departure is not.
+    expect(preview.dispersionChecks).toEqual([
+      { key: "grain", value: grain, required: 1, met: grain >= 1 },
+      { key: "backing", value: Math.max(city, allies, veterans), required: 2, met: Math.max(city, allies, veterans) >= 2 },
+    ]);
+    expect(preview.outcome).toBe(outcome);
+    expect(resolveRetreat(rules, state, "release-groups").outcome).toBe(outcome);
+    expect(JSON.stringify(state)).toBe(original);
+  });
   it("matches every authored scene and order, without promoting the draft to a release", () => {
     expect(rules.storyId).toBe(story.id);
     expect(rulesRaw.publicationApproved).toBe(false);

@@ -465,6 +465,13 @@ try {
     check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeInspection, "inspecting feasible retreat alternatives does not write a decision");
   } else await click(`[data-retreat-choice="${finalChoice}"]`);
   check(await evaluate(`document.querySelector('[data-testid=retreat-preview]')?.dataset.outcome===${JSON.stringify(route)}`), "final outcome disclosed before commitment");
+  if (finalChoice === "release-groups") {
+    const checksText = await evaluate("document.querySelector('[data-testid=retreat-dispersal-checks]').textContent");
+    check(checksText.includes("不把三方相加") && checksText.includes("分行粮秣"), "forecast distinguishes food and single-group support requirements");
+    if (route === "scattered") check(checksText.includes("还缺"), "scattering preview explains an actual missing requirement");
+    await evaluate("document.querySelector('[data-testid=retreat-dispersal-checks]').scrollIntoView({block:'center',behavior:'instant'})");
+    await capture("04e-dispersal-requirements-mobile"); await layout("dispersal requirements");
+  }
   if (route === "scattered") await capture("04b-scattering-warning-mobile");
   await click('[data-testid="retreat-commit"]');
   await capture("05-ending-response-mobile");

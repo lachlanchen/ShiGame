@@ -23,6 +23,7 @@ struct RetreatInspection {
     let available: Bool
     let effects: Resources
     let requirements: [CouncilRequirement]
+    let dispersionChecks: [CouncilRequirement]
     let maximums: Resources
     let prerequisiteMet: Bool
     let answers: [Record]
@@ -81,15 +82,19 @@ struct RetreatEngine {
             ($0, max(0, min(10, metrics[$0]! + effects[$0, default: 0])))
         })
         var ending: String?
+        var dispersionChecks: [CouncilRequirement] = []
         if available, let requested = choice["ending"] as? String {
             if requested == "disperse" {
                 let required = definition.object("dispersionRequirements")
-                ending = after["grain"]! >= required.int("grain")
-                    && max(after["city"]!, max(after["allies"]!, after["veterans"]!)) >= required.int("anyBacking")
+                dispersionChecks = [
+                    CouncilRequirement(id: "grain", value: after["grain"]!, required: required.int("grain")),
+                    CouncilRequirement(id: "backing", value: max(after["city"]!, max(after["allies"]!, after["veterans"]!)), required: required.int("anyBacking"))
+                ]
+                ending = dispersionChecks.allSatisfy { $0.met }
                     ? "dispersed" : "scattered"
             } else { ending = requested }
         }
-        return RetreatInspection(available: available, effects: effects, requirements: requirements,
+        return RetreatInspection(available: available, effects: effects, requirements: requirements, dispersionChecks: dispersionChecks,
             maximums: maximums, prerequisiteMet: prerequisiteMet, answers: answers,
             after: available ? after : nil, outcome: ending,
             newDebt: available && !debt.isEmpty ? RetreatDebt(id: debt.text("id"), creditor: debt.text("creditor"), grain: debt.int("grain")) : nil)
