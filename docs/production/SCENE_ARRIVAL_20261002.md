@@ -118,3 +118,40 @@ The earlier release1-to-7 upgrade and council/offline evidence remain separately
 scoped to 7; do not relabel them as tests of 8. Finish the remaining beta gates
 and reconcile provider state before distributing this exact candidate. No new
 historical claims, dialogue, media or save schema were introduced here.
+
+## Exact-build offline continuation follow-up
+
+The same signed8 APK, without rebuilding or changing its save directly, completed
+the remaining Chen and Fan Yang sequence on the retained API34 emulator. Airplane
+mode was enabled before the six orders and confirmed still enabled at the ending.
+
+Chen: crown → army rations → one command. The broken protection pledge was
+explained in the response, and city support fell 7 → 2 (ordinary −2 plus pledge
+penalty −3). The result was **Signatures without a common road**, with grain 2,
+tempo 8, city 2, allies 0 and veterans 10. An offline force-stop/relaunch restored
+the unread rations response; reopening its change details produced byte-identical
+UI XML. The details expansion itself is not claimed to persist automatically.
+
+Fan Yang: public protection → disciplined escort → accept surrender. Before the
+escort, the allied-witness offer was selected despite insufficient allied backing.
+Its Confirm control had `enabled="false"`; a real tap left the round and every
+displayed text/resource unchanged. The raw XML comparison differed only in the
+pressed button's small geometry shift, so that check uses semantic text plus the
+disabled attribute, not a false claim of byte equality or private save inspection.
+
+The gate preview and actual outcome both read **A gate opened by an enforceable
+promise**. Final metrics were grain 1 / time 8 / civil 3 / allies 0 / soldiers 7 /
+protection 9. The unread surrender response and reopened changes also survived
+offline cold restart unchanged. Six continuation assertion groups passed.
+
+Reviewed captures: [broken pledge](evidence/android-beta8-broken-pledge-20261002.png),
+[disabled order](evidence/android-beta8-disabled-order-20261002.png),
+[ending](evidence/android-beta8-fanyang-ending-20261002.png).
+
+Visual review also found that some council/Fan Yang heading arrivals sit against
+the upper viewport edge with slight glyph clipping. This is an open presentation
+issue, not a failed save or blocked route. The new opening-story arrival correction
+remains separately verified. No full visual acceptance or physical-device claim
+is made. The exact candidate remains **not uploaded**; no production settings or
+test-group membership changed. Airplane mode was restored and the owned emulator
+stopped; the completed continuation remains in its retained save.
