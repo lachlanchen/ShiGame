@@ -294,6 +294,10 @@ describe("retreat development scene", () => {
       const restored = render(<RetreatScene {...input} />);
       fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
       expect(restored.getByTestId("retreat-ending-memory").textContent).toBe(prose);
+      const restoredRecall = restored.container.querySelector(`[data-retreat-recorded-response="${retreatStory.scenes.at(-1)!.id}"]`)!;
+      expect(restoredRecall.textContent).toBe(recalled.textContent);
+      expect((restoredRecall as HTMLDetailsElement).open).toBe(false);
+      fireEvent.click(restoredRecall.querySelector("summary")!);
       expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
       restored.unmount();
     }
@@ -577,6 +581,9 @@ describe("retreat development scene", () => {
     expect(restored.getByTestId("retreat-response").textContent).toContain("原先说好的分行，没有等到一一交接");
     fireEvent.click(within(restored.getByTestId("retreat-response")).getByRole("button", { name: /继续/ }));
     expect(restored.getByTestId("retreat-outcome").textContent).toBe(prose);
+    const restoredRecall = restored.container.querySelector(`[data-retreat-recorded-response="${retreatStory.scenes.at(-1)!.id}"]`)!;
+    for (const line of retreatStory.scatteredEnding.response) expect(restoredRecall.textContent).toContain(line.text);
+    expect(restoredRecall.textContent).not.toContain("愿结伴的结伴");
     expect(localStorage.getItem(retreatSaveKey)).toBe(saved);
   });
 
