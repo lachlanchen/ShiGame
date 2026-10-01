@@ -276,6 +276,11 @@ describe("retreat development scene", () => {
       const sourceSave = localStorage.getItem(retreatSaveKey);
       fireEvent.click(within(view.getByTestId("retreat-source-panel")).getByText("史料与开发说明"));
       expect(localStorage.getItem(retreatSaveKey)).toBe(sourceSave);
+      const recalled = view.container.querySelector(`[data-retreat-recorded-response="${retreatStory.scenes.at(-1)!.id}"]`)!;
+      const authoredResponse = retreatStory.scenes.at(-1)!.choices.find(choice => choice.id === decision)!.response;
+      for (const line of authoredResponse) expect(recalled.textContent).toContain(line.text);
+      fireEvent.click(recalled.querySelector("summary")!);
+      expect(localStorage.getItem(retreatSaveKey)).toBe(sourceSave);
       const variants = retreatStory.endings[outcome].variants;
       const expected = variants.find(variant => variant.when.records === records)!;
       const memory = view.getByTestId("retreat-ending-memory");
@@ -559,6 +564,9 @@ describe("retreat development scene", () => {
     expect(view.queryByTestId("retreat-ending-memory")).toBeNull();
     expect(view.getByTestId("retreat-outcome").textContent).not.toContain("人分开了，账还是找你");
     const memory = view.getByTestId("retreat-scattered-memory");
+    const recalled = view.container.querySelector(`[data-retreat-recorded-response="${retreatStory.scenes.at(-1)!.id}"]`)!;
+    for (const line of retreatStory.scatteredEnding.response) expect(recalled.textContent).toContain(line.text);
+    expect(recalled.textContent).not.toContain("愿结伴的结伴");
     for (const variant of retreatStory.scatteredEnding.variants) {
       for (const line of variant.lines) expect(memory.textContent?.includes(line.text)).toBe(variant.when.records === records);
     }

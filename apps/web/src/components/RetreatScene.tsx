@@ -121,6 +121,10 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
             return <li key={turn.sceneId} data-recorded-choice={turn.choiceId}>
               <h4>{recordedScene.title} · {recordedChoice.title}</h4>
               <p>{explanations[turn.choiceId]}</p>
+              <details className="chen-history" data-retreat-recorded-response={turn.sceneId}>
+                <summary>这道命令的回应 · 戏剧重构</summary>
+                {lines(state.outcome === "scattered" && turn === state.history.at(-1) ? story.scatteredEnding.response : recordedChoice.response)}
+              </details>
               <ul>{councilMetricKeys.filter(key => turn.before[key] !== turn.after[key]).map(key =>
                 <li key={key}>{metrics[key]}：{turn.before[key]} → {turn.after[key]}</li>)}</ul>
               {councilMetricKeys.every(key => turn.before[key] === turn.after[key]) && <p>本次未改变这五项数值；已作出的承诺与记录仍然保留。</p>}
