@@ -7,12 +7,15 @@ struct NativeRefugeView: View {
     @AccessibilityFocusState private var headingFocused: Bool
     @State private var selectedID = ""
     @State private var confirmRestart = false
+    @State private var showFollowup = false
+    private let followup: Data?
     private let ink = Color(red: 0.07, green: 0.10, blue: 0.12)
     private let paper = Color(red: 0.93, green: 0.89, blue: 0.79)
     private let gold = Color(red: 0.84, green: 0.69, blue: 0.39)
     private let speakers = ["keeper": "掌简人", "householder": "屋主", "traveller": "过路人"]
 
-    init(retreat: RetreatEngine, content: [String: Data], saveURL: URL? = nil) {
+    init(retreat: RetreatEngine, content: [String: Data], saveURL: URL? = nil, followup: Data? = nil) {
+        self.followup = followup
         _session = StateObject(wrappedValue: RefugeContinuationSession(retreat: retreat, content: content, saveURL: saveURL))
     }
     private func lines(_ records: [Record]) -> some View {
@@ -51,6 +54,11 @@ struct NativeRefugeView: View {
                             } else if engine.completed {
                                 Text(engine.contactDefinition.text("continuation")).lineSpacing(6)
                                     .accessibilityIdentifier("refuge-complete")
+                                if followup != nil {
+                                    Button("沿着留下的线索继续") { showFollowup = true }
+                                        .buttonStyle(.borderedProminent).foregroundStyle(ink).frame(minHeight: 48)
+                                        .disabled(session.needsRecovery).accessibilityIdentifier("followup-enter")
+                                }
                             } else {
                                 decision(engine, phase: phase, current: current)
                             }
@@ -83,6 +91,10 @@ struct NativeRefugeView: View {
                         .accessibilityIdentifier("refuge-confirm-restart")
                     Button("取消", role: .cancel) { }
                 } message: { Text("从原来的退走结局重新开始这一夜。此前章节、粮债和凭记去向不变；不兼容或损坏的原文件会先保留副本。") }
+        }.fullScreenCover(isPresented: $showFollowup) {
+            if let engine = session.engine, engine.completed, session.response == nil, !session.needsRecovery, let followup {
+                NativeRefugeFollowupView(origin: engine, fingerprints: session.fingerprints, story: followup)
+            }
         }.environment(\.locale, Locale(identifier: "zh-Hans")).environment(\.layoutDirection, .leftToRight)
             .tint(gold).preferredColorScheme(.dark)
     }

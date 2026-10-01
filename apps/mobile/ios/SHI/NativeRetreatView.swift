@@ -88,7 +88,7 @@ struct NativeRetreatView: View {
         }.fullScreenCover(isPresented: $showRefuge) {
             if let engine = session.engine, engine.completed, session.response == nil,
                !session.needsRecovery, let content = RetreatPreviewContent.refuge {
-                NativeRefugeView(retreat: engine, content: content)
+                NativeRefugeView(retreat: engine, content: content, followup: RetreatPreviewContent.followup)
             }
         }.environment(\.locale, Locale(identifier: "zh-Hans")).environment(\.layoutDirection, .leftToRight)
             .tint(gold).preferredColorScheme(.dark)

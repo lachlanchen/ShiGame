@@ -1,14 +1,22 @@
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { gunzipSync } from "node:zlib";
+import assert from "node:assert/strict";
 import { createInitialState, resolveChoice, councilEntry, createCouncil, resolveCouncil, prepareFanyangEntry,
   createFanyang, resolveFanyang, encodeFanyangSnapshot, prepareRetreatEntry, createRetreat, resolveRetreat,
   encodeRetreatSnapshot, prepareRefugeEntry, createRefuge, inspectRefugeChoice, resolveRefuge,
   encodeRefugeSnapshot, resolveMorning, encodeMorningSnapshot, prepareRefugeContactEntry,
-  inspectContactChoice, resolveContact, type RefugeState, type MorningState, type ContactState,
+  inspectContactChoice, resolveContact, encodeContactSnapshot, prepareFollowupEntry, canChooseFollowup, resolveFollowup,
+  type RefugeState, type MorningState, type ContactState,
   type RefugeOrder, type MorningOrder, type ContactOrder } from "../packages/game-core/src";
 
 const root = resolve(import.meta.dirname, "..");
+const checkFollowup = process.argv[2] === "--check";
+const withFollowup = checkFollowup || process.argv.includes("--followup");
+const followupPath = "story-drafts/refuge-followup.v1.json";
+const followupBytes = readFileSync(resolve(root, "content", followupPath));
+const followup = JSON.parse(followupBytes.toString());
 const paths = { campaign: "campaigns/chapter-01-daze.json", council: "councils/chen-council.v1.json", fanyang: "councils/fanyang-guarantee.v1.json",
   retreatRules: "campaigns/chen-retreat.rules.v1.json", retreatStory: "story-drafts/chen-retreat.v1.json", nightRules: "campaigns/refuge.rules.v1.json",
   nightStory: "story-drafts/refuge.v1.json", morning: "story-drafts/refuge-morning.v1.json", contact: "story-drafts/refuge-contact.v1.json" };
@@ -60,8 +68,17 @@ const entries = routes.map(retreatChoices => {
       const available = (["leave-route", "leave-record", "ask-unprompted", "show-record"] as ContactOrder[])
         .filter(id => inspectContactChoice(data.contact!.value, contactEntry, id).available);
       cases.push({ summary: summary([nightID, morningID], night, morning), available });
-      for (const contactID of available) cases.push({ summary: summary([nightID, morningID, contactID], night, morning,
-        resolveContact(data.contact!.value, contactEntry, contactID)), available: [] });
+      for (const contactID of available) {
+        const contact = resolveContact(data.contact!.value, contactEntry, contactID);
+        const nextEntry = prepareFollowupEntry(data.contact!.value, contactEntry,
+          JSON.parse(encodeContactSnapshot(contact, hashes.contact!)), hashes.contact!)!;
+        const next = (["share-ration", "walk-to-ferry"] as const).filter(id => canChooseFollowup(followup, nextEntry, id)).map(order => {
+          const { entryId: _entry, ...expected } = resolveFollowup(followup, nextEntry, order);
+          return expected;
+        });
+        cases.push({ summary: summary([nightID, morningID, contactID], night, morning, contact), available: [],
+          ...(withFollowup ? { followup: next } : {}) });
+      }
     }
   }
   return { retreatChoices, outcome: retreat.outcome, cases };
@@ -69,6 +86,10 @@ const entries = routes.map(retreatChoices => {
 const output = process.argv[2];
 if (!output) throw new Error("Pass a private fixture output path");
 const fixture = { version: 1, paths, hashes, chapterChoices, councilChoices, fanyangChoices, entries,
+  ...(withFollowup ? { followup: { path: followupPath, sha256: createHash("sha256").update(followupBytes).digest("hex") } } : {}),
   stateCount: entries.reduce((sum, entry) => sum + entry.cases.length, 0) };
-writeFileSync(output, JSON.stringify(fixture));
+if (checkFollowup) {
+  assert.equal(gunzipSync(readFileSync(resolve(root, "content/conformance/refuge-followup-replays.v1.json.gz"))).toString(), JSON.stringify(fixture),
+    "Native follow-up fixture must match current shared TypeScript rules and content");
+} else writeFileSync(output, JSON.stringify(fixture));
 console.log(`Refuge parity fixture: ${fixture.stateCount} states, four actual retreat endings and all three record modes.`);

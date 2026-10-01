@@ -107,6 +107,17 @@ decisions. Next qualify this same continuation in native iOS and obtain player
 feedback before widening the arc; its source checkpoint is not a mobile release
 or proof of cinematic completion.
 
+The [native refuge follow-up](NATIVE_REFUGE_FOLLOWUP_20261002.md) now consumes
+that same reviewed scene in SwiftUI with a separate, branch-bound save. Native
+checks pass 44 outcomes across 30 completed contact branches, including failed
+writes, zero-food fallback and preserved earlier records. Its first full phone
+run exposed an accessibility identifier defect; a focused retained-save test
+now passes after correction, with choice and cold-resume captures reviewed.
+The complete small-phone successor now passes, including household and river
+consequences and exact cold-resume checks; three final captures were reviewed.
+Continue physical-device/signed-beta qualification and reviewed scene media
+before expanding another episode or admitting this draft to a mobile release.
+
 Historical circumstances come from the supplied 《资治通鉴》; distinguish text,
 commentary, dramatized dialogue and alternate outcomes. Continue actual passage
 reading and claim closure per scene. Original consistent faces are authorized;

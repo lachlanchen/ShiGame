@@ -30,7 +30,7 @@ final class SHIUITests: XCTestCase {
     }
     func reveal(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<32 {
-            let reading = ["crossing-order-reading", "crossing-reading", "panel-reading", "aftermath", "refuge-scene", "retreat-scene", "fanyang-scene", "council", "campaign", "title-reading"]
+            let reading = ["followup-scene", "crossing-order-reading", "crossing-reading", "panel-reading", "aftermath", "refuge-scene", "retreat-scene", "fanyang-scene", "council", "campaign", "title-reading"]
                 .map { app.scrollViews[$0] }.first { $0.exists && $0.isHittable }
             let viewport = reading ?? app
             var visible = viewport.frame.intersection(app.frame)
@@ -533,6 +533,51 @@ final class SHIUITests: XCTestCase {
     }
 
     #if SHI_RETREAT_PREVIEW
+    #if SHI_RETAINED_REFUGE_REVIEW
+    // Opt-in diagnostic using the real campaign retained by the full route.
+    // No injected state or reset of the earlier campaign. Not a clean-install test.
+    func testRefugeFollowupFromRetainedCampaign() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-shi.locale", "en", "-shi.reduced-motion", "true"]
+        func tap(_ id: String) {
+            let button = app.buttons[id]
+            XCTAssertTrue(button.waitForExistence(timeout: 15)); reveal(button, in: app)
+            XCTAssertTrue(button.isEnabled); button.tap()
+        }
+        func resume() {
+            app.launch(); tap("begin-game")
+            XCTAssertEqual(app.buttons["chronicle-toggle"].value as? String, "4")
+            tap("council-enter"); councilContinue(app)
+            tap("fanyang-enter"); tap("fanyang-continue")
+            tap("retreat-enter"); tap("retreat-continue")
+            tap("refuge-enter"); tap("refuge-continue"); tap("followup-enter")
+            XCTAssertTrue(app.scrollViews["followup-scene"].waitForExistence(timeout: 10))
+        }
+        resume()
+        tap("followup-restart")
+        app.buttons.matching(identifier: "followup-confirm-restart").firstMatch.tap()
+        let grain = app.staticTexts["followup-grain"]
+        XCTAssertTrue(grain.exists)
+        XCTAssertEqual(grain.label, "可支配公粮：0")
+        let share = app.buttons["followup-offer-share-ration"]
+        reveal(share, in: app); XCTAssertFalse(share.isEnabled)
+        capture("followup-focused-zero-food-choice")
+        tap("followup-offer-walk-to-ferry"); tap("followup-commit")
+        let response = app.descendants(matching: .any).matching(identifier: "followup-response").firstMatch
+        XCTAssertTrue(response.waitForExistence(timeout: 10))
+        let saved = response.descendants(matching: .staticText).allElementsBoundByIndex.map(\.label)
+        XCTAssertFalse(saved.isEmpty); XCTAssertEqual(grain.label, "可支配公粮：0")
+        XCTAssertFalse(app.buttons["followup-commit"].exists)
+        capture("followup-focused-saved-response")
+        app.terminate(); resume()
+        XCTAssertTrue(response.waitForExistence(timeout: 10))
+        XCTAssertEqual(response.descendants(matching: .staticText).allElementsBoundByIndex.map(\.label), saved)
+        XCTAssertEqual(grain.label, "可支配公粮：0")
+        XCTAssertFalse(app.buttons["followup-commit"].exists)
+        capture("followup-focused-cold-resume")
+    }
+    #endif
+
     func testRetreatContinuationResumeEndingAndCancel() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-shi.locale", "en", "-shi.reduced-motion", "true"]
@@ -710,6 +755,36 @@ final class SHIUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "具体话语尚未托付")).firstMatch.exists)
         capture("refuge-04-native-resumed-conclusion")
 
+        func enterFollowup() {
+            let enter = app.buttons["followup-enter"]; reveal(enter, in: app); XCTAssertTrue(enter.isEnabled); enter.tap()
+            XCTAssertTrue(app.scrollViews["followup-scene"].waitForExistence(timeout: 10))
+        }
+        func followupOutcome() -> XCUIElement { app.descendants(matching: .any).matching(identifier: "followup-response").firstMatch }
+        func chooseFollowup(_ order: String) {
+            enterFollowup()
+            reveal(app.buttons["followup-restart"], in: app); app.buttons["followup-restart"].tap()
+            app.buttons.matching(identifier: "followup-confirm-restart").firstMatch.tap()
+            let grain = app.staticTexts["followup-grain"]
+            XCTAssertTrue(grain.exists)
+            if grain.label == "可支配公粮：0" {
+                let share = app.buttons["followup-offer-share-ration"]
+                reveal(share, in: app); XCTAssertFalse(share.isEnabled)
+            }
+            let offer = app.buttons["followup-offer-" + order]; reveal(offer, in: app); XCTAssertTrue(offer.isEnabled); offer.tap()
+            let commit = app.buttons["followup-commit"]; reveal(commit, in: app); XCTAssertTrue(commit.isEnabled); commit.tap()
+            XCTAssertTrue(followupOutcome().waitForExistence(timeout: 10))
+            XCTAssertFalse(app.buttons["followup-commit"].exists)
+        }
+        chooseFollowup("walk-to-ferry")
+        let householdGrain = app.staticTexts["followup-grain"].label
+        capture("followup-01-native-household-consequence")
+        app.buttons["followup-close"].tap()
+        XCTAssertTrue(complete.waitForExistence(timeout: 10))
+        enterFollowup()
+        XCTAssertTrue(followupOutcome().waitForExistence(timeout: 10))
+        XCTAssertEqual(app.staticTexts["followup-grain"].label, householdGrain)
+        app.buttons["followup-close"].tap()
+
         // Replay only this continuation, then follow the other lead. All earlier
         // chapter and record-custody decisions remain the same actual save.
         reveal(app.buttons["refuge-restart"], in: app); app.buttons["refuge-restart"].tap()
@@ -755,6 +830,24 @@ final class SHIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "屋主拒绝再替你应承")).firstMatch.exists)
         XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "已托付去处口信")).firstMatch.exists)
         capture("refuge-08-native-river-conclusion")
+        chooseFollowup("walk-to-ferry")
+        let savedFollowup = followupOutcome().descendants(matching: .staticText).allElementsBoundByIndex.map(\.label)
+        let riverGrain = app.staticTexts["followup-grain"].label
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "补漏失约仍在")).firstMatch.exists)
+        capture("followup-02-native-river-consequence")
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["begin-game"].waitForExistence(timeout: 15)); app.buttons["begin-game"].tap()
+        reveal(app.buttons["council-enter"], in: app); app.buttons["council-enter"].tap(); councilContinue(app)
+        reveal(app.buttons["fanyang-enter"], in: app); app.buttons["fanyang-enter"].tap()
+        reveal(app.buttons["fanyang-continue"], in: app); app.buttons["fanyang-continue"].tap()
+        enterRetreat(); XCTAssertTrue(reaction().waitForExistence(timeout: 10)); next()
+        reveal(refuge, in: app); refuge.tap(); XCTAssertTrue(riverReaction.waitForExistence(timeout: 10)); refugeNext()
+        enterFollowup(); XCTAssertTrue(followupOutcome().waitForExistence(timeout: 10))
+        XCTAssertEqual(followupOutcome().descendants(matching: .staticText).allElementsBoundByIndex.map(\.label), savedFollowup)
+        XCTAssertEqual(app.staticTexts["followup-grain"].label, riverGrain)
+        XCTAssertFalse(app.buttons["followup-commit"].exists)
+        capture("followup-03-native-cold-resumed-consequence")
+        app.buttons["followup-close"].tap()
         app.buttons["refuge-close"].tap()
         app.buttons["retreat-close"].tap()
         XCTAssertTrue(app.staticTexts["fanyang-outcome"].waitForExistence(timeout: 10))

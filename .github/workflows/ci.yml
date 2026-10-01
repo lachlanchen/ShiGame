@@ -26,6 +26,8 @@ jobs:
         run: bash scripts/test-native-save-compatibility.sh
       - name: Check shared crossing diagram projection
         run: bash scripts/test-native-crossing-field.sh
+      - name: Check native refuge follow-up and durable branch saves
+        run: bash scripts/test-native-refuge-followup.sh
 
   web-and-content:
     runs-on: ubuntu-latest

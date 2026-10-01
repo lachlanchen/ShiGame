@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 // Source-spec string checks alone cannot establish XcodeGen merge behavior.
 const [qaPath, productionPath, crossingPath, upgradePath] = process.argv.slice(2);
 assert(qaPath && productionPath, "Pass generated QA and production PBX JSON paths");
-const drafts = ["chen-retreat.rules.v1.json", "chen-retreat.v1.json", "refuge.rules.v1.json", "refuge.v1.json", "refuge-morning.v1.json", "refuge-contact.v1.json"];
+const drafts = ["chen-retreat.rules.v1.json", "chen-retreat.v1.json", "refuge.rules.v1.json", "refuge.v1.json", "refuge-morning.v1.json", "refuge-contact.v1.json", "refuge-followup.v1.json"];
 const crossingFiles = ["chapter-01-broken-crossing.v1.json", "chapter-01-crossing-campaign.rules.v2.json", "chapter-01-crossing-aftermath.v2.json", "crossing-field.v1.json", "crossing-establishing.v1.json", "broken-crossing-establishing-v1.jpg"];
 const projects = [[qaPath, "retreat"], [productionPath, "production"]];
 if (crossingPath) projects.push([crossingPath, "crossing"]);
@@ -18,6 +18,8 @@ for (const [path, mode] of projects) {
   const files = phaseType => target.buildPhases.map(id => objects[id]).filter(phase => phase.isa === phaseType)
     .flatMap(phase => phase.files.map(id => objects[objects[id].fileRef]?.path));
   const sources = files("PBXSourcesBuildPhase"), resources = files("PBXResourcesBuildPhase");
+  for (const name of ["RefugeFollowupEngine.swift", "RefugeFollowupSession.swift", "NativeRefugeFollowupView.swift"])
+    assert(sources.includes(name), `Missing follow-up source ${name}`);
   for (const name of ["SHIApp.swift", "NativeCouncilView.swift", "NativeFanyangView.swift", "NativeRetreatView.swift", "RetreatPreviewContent.swift", "NativeRefugeView.swift", "RefugeContinuationSession.swift"])
     assert(sources.includes(name), `Missing compiled source ${name}`);
   for (const name of ["campaign.json", "chapter-01-save-compatibility.v1.json", "chen-council.v1.json", "fanyang-guarantee.v1.json", "viewpoints.v1.json", "ui.json", "Assets.xcassets"])
