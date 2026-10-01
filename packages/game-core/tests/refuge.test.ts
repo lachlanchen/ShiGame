@@ -5,7 +5,8 @@ import { createInitialState, resolveChoice, councilEntry, createCouncil, resolve
   createFanyang, resolveFanyang, encodeFanyangSnapshot, prepareRetreatEntry, createRetreat, resolveRetreat,
   encodeRetreatSnapshot, prepareRefugeEntry, createRefuge, inspectRefugeChoice, resolveRefuge,
   encodeRefugeSnapshot, restoreRefuge, type Campaign, type CouncilDefinition, type FanyangDefinition,
-  type RetreatDefinition, type MorningDefinition, resolveMorning, restoreMorning, encodeMorningSnapshot, prepareRefugeContactEntry } from "../src";
+  type RetreatDefinition, type MorningDefinition, resolveMorning, restoreMorning, encodeMorningSnapshot, prepareRefugeContactEntry,
+  type ContactDefinition, type ContactOrder, inspectContactChoice, resolveContact, encodeContactSnapshot, restoreContact } from "../src";
 import campaignRaw from "../../../content/campaigns/chapter-01-daze.json";
 import councilRaw from "../../../content/councils/chen-council.v1.json";
 import fanyangRaw from "../../../content/councils/fanyang-guarantee.v1.json";
@@ -14,6 +15,9 @@ import draft from "../../../content/story-drafts/refuge.v1.json";
 import review from "../../../content/research/refuge-review.v1.json";
 import morningRaw from "../../../content/story-drafts/refuge-morning.v1.json";
 import morningReview from "../../../content/research/refuge-morning-review.v1.json";
+import contactRaw from "../../../content/story-drafts/refuge-contact.v1.json";
+import contactReview from "../../../content/research/refuge-contact-review.v1.json";
+const contactDefinition = contactRaw as ContactDefinition;
 const morning = morningRaw as MorningDefinition;
 const morningHash = createHash("sha256").update(JSON.stringify(morningRaw)).digest("hex");
 
@@ -107,6 +111,25 @@ describe("shelter continuation boundary", () => {
         expect(contact.companionPresence).toBe("unestablished");
         expect(contact.messageDelivery).toBe("not-entrusted");
         expect(contact.witnessAccount).toBe("not-questioned");
+        for (const candidate of contactDefinition.choices) {
+          const order = candidate.id as ContactOrder;
+          const possible = candidate.location === contact.location && (!candidate.requiresHeldRecords || contact.records === "carry-records");
+          expect(inspectContactChoice(contactDefinition, contact, order).available).toBe(possible);
+          if (!possible) { expect(() => resolveContact(contactDefinition, contact, order)).toThrow(); continue; }
+          const result = resolveContact(contactDefinition, contact, order);
+          expect(result.commonGrain).toBe(contact.commonGrain);
+          expect(result.debts).toEqual(contact.debts);
+          expect(result.promise).toBe(contact.promise);
+          expect(result.localContact).toBe(contact.localContact);
+          expect(result.companionPresence).toBe("unestablished");
+          expect(result).toMatchObject(candidate.effects);
+          const fingerprint = hash("story-drafts/refuge-contact.v1.json");
+          const snapshot = JSON.parse(encodeContactSnapshot(result, fingerprint));
+          expect(restoreContact(contactDefinition, contact, { ...snapshot, debts: [], companionPresence: "arrived", evidence: "proven" }, fingerprint)).toEqual(result);
+          expect(restoreContact(contactDefinition, contact, { ...snapshot, entryId: "foreign" }, fingerprint)).toBeNull();
+          expect(restoreContact(contactDefinition, contact, snapshot, "0".repeat(64))).toBeNull();
+        }
+        expect(contactDefinition.choices.some(choice => inspectContactChoice(contactDefinition, contact, choice.id as ContactOrder).available)).toBe(true);
         expect(prepareRefugeContactEntry(morning, entry!, { ...nightSaved, records: "carry-records" },
           { ...saved, records: "carry-records", commonGrain: 999, companionPresence: "arrived", messageDelivery: "delivered" }, refugeHash, morningHash)).toEqual(contact);
         expect(prepareRefugeContactEntry(morning, entry!, { ...nightSaved, order: null }, saved, refugeHash, morningHash)).toBeNull();
@@ -144,6 +167,8 @@ describe("shelter continuation boundary", () => {
     expect(morningRaw.publicationApproved).toBe(false);
     expect(morningReview.storySHA256).toBe(hash("story-drafts/refuge-morning.v1.json"));
     expect(morning.choices.map(choice => choice.id)).toEqual(["repair-roof", "follow-witness"]);
+    expect(contactReview.storySHA256).toBe(hash("story-drafts/refuge-contact.v1.json"));
+    expect(contactRaw.publicationApproved).toBe(false);
   });
   it("remembers a personal promise across reload without settling earlier debts", () => {
     const { entry } = route([...routes[1][1]]);

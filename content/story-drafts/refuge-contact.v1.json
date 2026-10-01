@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-contact.v1",
+  "publicationApproved": false,
+  "sourceReference": "refuge.v1.sourceReadback",
+  "boundary": "原创地方场景。历史背景承接《资治通鉴》卷八陈胜败亡后的形势；住户、过路人、问讯和口信并非史书记载。相似特征只是线索，不证明旧同伴生还或抵达。",
+  "scenes": {
+    "household": {
+      "title": "留给后来人的话",
+      "lines": [
+        { "speaker": "narrator", "text": "屋主用脚把倒扣的木盆挪到墙根。屋檐下腾出的地方，只够两个人坐。" },
+        { "speaker": "householder", "text": "人来了，我总得知道该留谁。" },
+        { "speaker": "keeper", "text": "也可能没人来。" },
+        { "speaker": "householder", "text": "那你更得说清。留到什么时候？" },
+        { "speaker": "householder", "text": "日落前我还在。你若要回来，就说个准时候。我可不能出去替你找人。" }
+      ]
+    },
+    "river-approach": {
+      "title": "先听他怎么说",
+      "lines": [
+        { "speaker": "narrator", "text": "河边有两处可以落脚：芦苇旁一块高地，再往下是渡口。过路人把空筐放在脚边，弯腰紧了紧系带。" },
+        { "speaker": "keeper", "text": "昨夜的人在哪边？" },
+        { "speaker": "traveller", "text": "两边都有人。你要找谁，总得给我个说法。" },
+        { "speaker": "narrator", "text": "囊口的绳结抵着你的手。你没有马上接话。过路人把空筐提起来，等你决定怎么问。" }
+      ]
+    }
+  },
+  "recordMemory": {
+    "carry-records": "现有凭记仍由你保管，可以取出一笔核对；亮给陌生人看也会暴露可辨识的信息。",
+    "divide-records": "凭记已经分给各组，不能假定所有抄件都在你手里。仍可留下去处或先听对方陈述。",
+    "strip-identities": "可追查身份的记号已经去掉。匿名欠账不能变回名籍；仍可留去处或独立问讯。"
+  },
+  "choices": [
+    {
+      "id": "leave-route", "location": "household", "requiresHeldRecords": false,
+      "title": "只留回来的时间和去处",
+      "intent": "不抄姓名，约定日落前回来听消息。屋主会向来问的人转述，不能替你分辨谁可信；口信已托付不等于已送达。",
+      "effects": { "message": "route-entrusted", "evidence": "none", "disclosure": "route", "nextLead": "return-at-sunset" },
+      "response": [
+        { "speaker": "keeper", "text": "有人来找掌简的，告诉他我日落前回来。别替我留住他，让他自己定。" },
+        { "speaker": "householder", "text": "要是问你的不是自己人呢？" },
+        { "speaker": "keeper", "text": "就这些，别添别的。" },
+        { "speaker": "narrator", "text": "屋主把这几句话复述了一遍。你听到日落二字，才将囊口系紧。你留下了能找到自己的办法，却还不知道会是谁先听见。" }
+      ]
+    },
+    {
+      "id": "leave-record", "location": "household", "requiresHeldRecords": true,
+      "title": "抄一笔现有凭记，请屋主核对",
+      "intent": "只有仍集中保管凭记时可选。让屋主用一笔可辨识记录筛问来者，减少认错的机会；额外暴露这一笔信息。没有替来者证明身份，也没有给任何人销债。",
+      "effects": { "message": "record-entrusted", "evidence": "none", "disclosure": "identifying-record", "nextLead": "return-at-sunset" },
+      "response": [
+        { "speaker": "narrator", "text": "你从现有凭记中拣出仍能辨认的一笔，另抄给屋主。其余的没有展开。" },
+        { "speaker": "keeper", "text": "来人先自己说。对得上，再告诉他我日落前回来。" },
+        { "speaker": "householder", "text": "对上这几个字，就算你的人？" },
+        { "speaker": "keeper", "text": "不算。只请他留下话，我回来再问。" },
+        { "speaker": "narrator", "text": "屋主把抄件收进门内。你能带走的原件仍在囊里，这一笔却已经多了一个知情人。" }
+      ]
+    },
+    {
+      "id": "ask-unprompted", "location": "river-approach", "requiresHeldRecords": false,
+      "title": "先听他独自说，不亮凭记",
+      "intent": "不先给身份线索，取得一段未受凭记提示的陈述；问完他就去取东西，不再陪你走。特征可供回查，不能据此确认是谁。",
+      "effects": { "message": "not-entrusted", "evidence": "unprompted-account", "disclosure": "none", "nextLead": "reed-bank-alone" },
+      "response": [
+        { "speaker": "keeper", "text": "先说你见到的。什么样的人，在哪儿？" },
+        { "speaker": "traveller", "text": "芦苇那边。有个蹲着捆鞋，左脚缠了几圈绳。他问哪边还能领粮，我没答上来。" },
+        { "speaker": "keeper", "text": "后来呢？" },
+        { "speaker": "traveller", "text": "后来我走了。这会儿还在不在，你得自己看。" },
+        { "speaker": "narrator", "text": "那人背起筐走向渡口。你把昨夜、芦苇边、左鞋三项分别记住，没有在旁边填上任何人的名字。" }
+      ]
+    },
+    {
+      "id": "show-record", "location": "river-approach", "requiresHeldRecords": true,
+      "title": "亮一笔凭记，请他带路去问",
+      "intent": "只有仍集中保管凭记时可选。换得过路人陪你到渡口引见，但暴露这一笔身份信息；他看过之后的说法不再算独立印证。无人因此自动成为失散同伴。",
+      "effects": { "message": "not-entrusted", "evidence": "prompted-account", "disclosure": "identifying-record", "nextLead": "ferry-with-guide" },
+      "response": [
+        { "speaker": "narrator", "text": "你只解开一处绳结，指给他看现有凭记中的一笔。过路人把上面的字念了一遍。" },
+        { "speaker": "traveller", "text": "这个我拿不准。渡口还有两个人，我带你去问。" },
+        { "speaker": "keeper", "text": "先别说你认得。让他们自己讲。" },
+        { "speaker": "narrator", "text": "他提起空筐，等你重新系好囊口才走。你跟上去。有人愿意引见，和有人替你作证，还不是同一件事。" }
+      ]
+    }
+  ],
+  "outcomeLabels": {
+    "route-entrusted": "已托付去处口信，尚无送达或回信证据",
+    "record-entrusted": "已托付一笔核对记录，尚未确认任何来者",
+    "unprompted-account": "取得未受凭记提示的陈述，内容仍待核实",
+    "prompted-account": "获得引见，但看过凭记后的说法不是独立印证"
+  },
+  "continuation": "下一场将承接日落回访、芦苇边查问或渡口引见。此前的粮债、失约与记录去向不因一次交谈消失。"
+}

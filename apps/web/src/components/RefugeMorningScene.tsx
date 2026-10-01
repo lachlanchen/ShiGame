@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { encodeMorningSnapshot, morningEntryId, resolveMorning, restoreMorning,
-  type MorningDefinition, type MorningOrder, type MorningState, type RefugeState } from "@shi/game-core";
+import { encodeMorningSnapshot, encodeRefugeSnapshot, morningEntryId, resolveMorning, restoreMorning, prepareRefugeContactEntry,
+  type MorningDefinition, type MorningOrder, type MorningState, type RefugeState, type RefugeEntry, type RefugeContactEntry } from "@shi/game-core";
+import { RefugeContactScene } from "./RefugeContactScene";
 import story from "../../../../content/story-drafts/refuge-morning.v1.json";
 import storyText from "../../../../content/story-drafts/refuge-morning.v1.json?raw";
 import { flushPersistence, gameStorage } from "../persistence";
@@ -11,14 +12,15 @@ const lines = (items: { speaker: string; text: string }[]) => items.map((line, i
 async function hash(value: string) {
   return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value))), byte => byte.toString(16).padStart(2, "0")).join("");
 }
-export function RefugeMorningScene({ night, nightHash, saveNamespace, reducedMotion, onClose, onSavingChange }: {
-  night: RefugeState; nightHash: string; saveNamespace?: string; reducedMotion: boolean;
+export function RefugeMorningScene({ night, nightHash, refugeEntry, saveNamespace, reducedMotion, onClose, onSavingChange }: {
+  night: RefugeState; nightHash: string; refugeEntry: RefugeEntry; saveNamespace?: string; reducedMotion: boolean;
   onClose: () => void; onSavingChange?: (value: boolean) => void;
 }) {
   const [loaded, setLoaded] = useState<{ key: string; hash: string; result: MorningState | null } | null>(null);
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<MorningOrder>("repair-roof");
   const [busy, setBusy] = useState(false);
+  const [contact, setContact] = useState<RefugeContactEntry | null>(null);
   const transaction = useRef(false), alive = useRef(true), heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     alive.current = true;
@@ -34,7 +36,7 @@ export function RefugeMorningScene({ night, nightHash, saveNamespace, reducedMot
     })();
     return () => { alive.current = false; };
   }, [night, nightHash, saveNamespace]);
-  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [loaded?.result, Boolean(loaded)]);
+  useLayoutEffect(() => { heading.current?.focus({ preventScroll: true }); heading.current?.scrollIntoView?.({ block: "start", behavior: "instant" }); }, [loaded?.result, Boolean(loaded), contact]);
   const commit = async () => {
     if (!loaded || loaded.result || transaction.current) return;
     transaction.current = true; setBusy(true); setError(""); onSavingChange?.(true);
@@ -55,6 +57,7 @@ export function RefugeMorningScene({ night, nightHash, saveNamespace, reducedMot
   };
   const choice = story.choices.find(item => item.id === (loaded?.result?.order ?? selected))!;
   const preview = loaded?.result ?? (loaded ? resolveMorning(definition, night, selected) : null);
+  if (contact) return <RefugeContactScene entry={contact} saveNamespace={saveNamespace} reducedMotion={reducedMotion} onClose={() => setContact(null)} onSavingChange={onSavingChange} />;
   return <section className="drawer chen-council" data-testid="refuge-morning" role="dialog" aria-modal="true" aria-labelledby="morning-title" lang="zh-Hans" dir="ltr" data-motion={reducedMotion ? "reduced" : "full"}
     onKeyDown={event => {
       if (event.altKey || event.key === "Escape") event.stopPropagation();
@@ -76,7 +79,11 @@ export function RefugeMorningScene({ night, nightHash, saveNamespace, reducedMot
         {lines(choice.response)}
         {loaded.result.promise === "kept" && lines(story.promiseResponses.kept)}
         <ul>{preview && <><li>{story.outcomeLabels.promise[preview.promise]}</li><li>{story.outcomeLabels.contact[preview.contact]}</li><li>{story.outcomeLabels.lead[preview.lead]}</li></>}</ul>
-        <p>行动已保存。{story.continuation}</p>
+        <p>行动已保存。接下来可以{loaded.result.lead === "with-witness" ? "在河边向过路人问讯" : "向屋主托付口信"}，这一步尚未替你完成。</p>
+        <button className="primary-button" data-testid="morning-open-contact" onClick={() => {
+          const next = prepareRefugeContactEntry(definition, refugeEntry, JSON.parse(encodeRefugeSnapshot(night, nightHash)), JSON.parse(encodeMorningSnapshot(loaded.result!, loaded.hash, nightHash)), nightHash, loaded.hash);
+          if (next) setContact(next); else setError("不能核对问讯所需的前段记录，未修改存档。");
+        }}>继续：{loaded.result.lead === "with-witness" ? "河边问讯" : "留下口信"} →</button>
       </div> : <>{lines(story.opening)}<p data-testid="morning-memory">{story.nightMemory[night.order!]}</p>
         <div className="chen-offers">{story.choices.map((item, index) => <button key={item.id} disabled={busy} data-morning-choice={item.id} aria-pressed={selected === item.id} onClick={() => setSelected(item.id as MorningOrder)}><span aria-hidden="true">{String.fromCharCode(65 + index)}</span>{item.title}</button>)}</div>
         <section className="chen-offer-detail" aria-live="polite"><h3>{choice.title}</h3><p>{choice.intent}</p>

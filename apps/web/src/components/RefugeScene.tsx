@@ -58,7 +58,7 @@ export function RefugeScene({ entry, saveNamespace, reducedMotion, onClose, onSa
     } finally { transaction.current = false; onSavingChange?.(false); if (alive.current) setBusy(false); }
   };
   const choice = story.choices.find(item => item.id === (loaded?.state.order ?? selected))!;
-  if (morning && loaded?.state.order) return <RefugeMorningScene night={loaded.state} nightHash={loaded.hash} saveNamespace={saveNamespace} reducedMotion={reducedMotion} onClose={() => setMorning(false)} onSavingChange={onSavingChange} />;
+  if (morning && loaded?.state.order) return <RefugeMorningScene night={loaded.state} nightHash={loaded.hash} refugeEntry={entry} saveNamespace={saveNamespace} reducedMotion={reducedMotion} onClose={() => setMorning(false)} onSavingChange={onSavingChange} />;
   return <section className="drawer chen-council" data-testid="refuge-scene" role="dialog" aria-modal="true" aria-labelledby="refuge-title" lang="zh-Hans" dir="ltr" data-motion={reducedMotion ? "reduced" : "full"}
     onKeyDown={event => {
       if (event.altKey || event.key === "Escape") event.stopPropagation();

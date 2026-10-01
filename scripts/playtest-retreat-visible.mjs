@@ -15,6 +15,8 @@ const revisedCrossing = route === "crossing-v2";
 const scoreAudition = process.env.SHI_PLAYTEST_SCORE === "1";
 const councilFilm = process.env.SHI_PLAYTEST_COUNCIL_FILM === "1";
 const morningOrder = process.env.SHI_PLAYTEST_MORNING;
+const contactOrder = process.env.SHI_PLAYTEST_CONTACT;
+if (contactOrder && (!morningOrder || !["leave-route", "leave-record", "ask-unprompted", "show-record"].includes(contactOrder))) throw new Error("Contact review requires morning and a known contact choice.");
 if (morningOrder && (!["repair-roof", "follow-witness"].includes(morningOrder) || process.env.SHI_PLAYTEST_REFUGE !== "1")) throw new Error("Morning review requires refuge and a known morning choice.");
 if (councilFilm && (!revisedCrossing || production)) throw new Error("Private council film requires the development crossing-v2 route.");
 if (scoreAudition && (!revisedCrossing || production)) throw new Error("Private score review requires the development crossing-v2 route.");
@@ -577,6 +579,33 @@ try {
       check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "morning preserves retreat ending bytes");
       await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
       await capture("morning-restored-desktop"); await layout("morning restored desktop");
+      if (contactOrder) {
+        await click('[data-testid="morning-open-contact"]'); await until(exists('[data-testid="contact-commit"]'));
+        await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+        await capture("contact-opening-mobile"); await layout("contact opening");
+        await click(`[data-contact-choice="${contactOrder}"]`);
+        await capture("contact-choice-mobile"); await layout("contact choice");
+        check(await evaluate("[...document.querySelectorAll('[data-contact-choice]')].every(button=>parseFloat(getComputedStyle(button).gridTemplateColumns.split(' ')[1])>=160)"), "contact choices have readable text columns");
+        await click('[data-testid="contact-commit"]'); await until(exists('[data-testid="contact-response"]'));
+        const expectedContact = { "leave-route": "已托付去处口信", "leave-record": "已托付一笔核对记录", "ask-unprompted": "取得未受凭记提示的陈述", "show-record": "不是独立印证" }[contactOrder];
+        check(await evaluate(`document.querySelector('[data-testid=contact-response]').textContent.includes(${JSON.stringify(expectedContact)})`), "contact reaction matches the committed information choice");
+        const contactBytes = await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge-contact.v1.')).map(k=>[k,localStorage.getItem(k)]))");
+        check(Object.keys(contactBytes).length === 1 && JSON.parse(Object.values(contactBytes)[0]).order === contactOrder, "one contact choice is saved to the correct branch");
+        await capture("contact-response-mobile"); await layout("contact response");
+        await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]');
+        await click('[data-testid="council-enter"]'); await click('[data-testid="council-continue"]'); await click('[data-testid="fanyang-enter"]');
+        await click('[data-testid="fanyang-response"] [data-council-action="continue"]'); await click('[data-testid="retreat-enter"]');
+        await click('[data-testid="retreat-response"] [data-council-action="continue"]');
+        await click('[data-testid="retreat-open-refuge"]'); await click('[data-testid="refuge-open-morning"]');
+        await click('[data-testid="morning-open-contact"]'); await until(exists('[data-testid="contact-response"]'));
+        check(JSON.stringify(await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge-contact.v1.')).map(k=>[k,localStorage.getItem(k)]))")) === JSON.stringify(contactBytes), "contact cold reload preserves exact choice bytes");
+        check(JSON.stringify(await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge-morning.v1.')).map(k=>[k,localStorage.getItem(k)]))")) === JSON.stringify(morningBytes), "contact does not rewrite morning history");
+        check(JSON.stringify(await evaluate("Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith('shi.dev.refuge.v1.')).map(k=>[k,localStorage.getItem(k)]))")) === JSON.stringify(refugeBytes), "contact does not rewrite the night");
+        check(await evaluate("localStorage.getItem('shi.dev.chen-retreat.v1')") === savedBeforeRecord, "contact preserves retreat history");
+        await send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
+        await capture("contact-restored-desktop"); await layout("contact restored desktop");
+        await click('[data-testid="contact-back"]');
+      }
       await click('[data-testid="morning-back"]');
     }
     await click('[data-testid="refuge-scene"] .text-button');

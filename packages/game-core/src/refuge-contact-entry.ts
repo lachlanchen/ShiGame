@@ -1,7 +1,7 @@
 import { restoreRefuge, type RefugeEntry } from "./refuge";
 import { restoreMorning, type MorningDefinition, type MorningState } from "./refuge-morning";
 
-/** Future contact-scene input, derived from both actual confirmed decisions. */
+/** Contact-scene input, derived from both actual confirmed decisions. */
 export interface RefugeContactEntry {
   version: 1;
   id: string;

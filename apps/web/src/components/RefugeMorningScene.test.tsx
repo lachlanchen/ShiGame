@@ -9,7 +9,7 @@ import { RefugeMorningScene } from "./RefugeMorningScene";
 
 const entry: RefugeEntry = { version: 1, id: "verified-night-test", retreatOutcome: "remnant", custody: "common",
   recordedGrain: 3, spendableCommonGrain: 3, debts: [], records: "strip-identities", priorOrders: [], companionPresence: "unestablished" };
-const props = (order: RefugeOrder = "offer-labour") => ({ night: resolveRefuge(createRefuge(entry), order),
+const props = (order: RefugeOrder = "offer-labour") => ({ night: resolveRefuge(createRefuge(entry), order), refugeEntry: entry,
   nightHash: "a".repeat(64), reducedMotion: true, onClose: vi.fn(), onSavingChange: vi.fn(), saveNamespace: "shi.morning-test" });
 beforeEach(() => { vi.stubGlobal("crypto", webcrypto); });
 afterEach(() => { cleanup(); localStorage.clear(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
@@ -41,6 +41,13 @@ describe("morning continuation", () => {
     expect(result.textContent).toContain("过路人已经离开");
     expect(result.textContent).toContain("具体话语尚未托付");
     expect(view.queryByTestId("morning-commit")).toBeNull();
+    fireEvent.click(view.getByTestId("morning-open-contact"));
+    await view.findByTestId("contact-commit");
+    expect(view.getByTestId("contact-record-memory").textContent).toContain("记号已经去掉");
+    fireEvent.click(view.getByTestId("contact-commit"));
+    expect((await view.findByTestId("contact-response")).textContent).toContain("已托付去处口信");
+    fireEvent.click(view.getByTestId("contact-back"));
+    expect(view.getByTestId("morning-response")).toBeTruthy();
   });
   it("rolls back a rejected save, blocks duplicate input and Escape while committing, then retries", async () => {
     const input = props(), view = render(<RefugeMorningScene {...input} />);

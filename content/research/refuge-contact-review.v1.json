@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "refuge-contact-review.v1",
+  "reviewDate": "2026-10-01",
+  "decision": "development-web-preview-only",
+  "publicationApproved": false,
+  "storySHA256": "1e94a87617cff06c2fd8115af0f58ee547a89da1ad2a9222516d2ce363fd0905",
+  "historicalBoundary": {
+    "work": "资治通鉴",
+    "volume": 8,
+    "localLinesRead": [2791, 2801],
+    "sourceSHA256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+    "scope": "Re-read the Qin-collapse background; neither the household nor river encounter is attested. Original local dialogue, geography and witness claims do not establish historical military participation, precise dates or a companion's survival. No source-book text is published."
+  },
+  "agentStoryReview": {
+    "originality": "Original SHI dialogue and rules; no media generation or third-party quotation.",
+    "continuity": "The repaired roof, overturned basin, empty basket, keeper's record bag and previous trust state persist. A wrapped left shoe echoes a prior motif but is explicitly not identification of Ah Heng or anyone else.",
+    "dilemma": "General messages expose a route but not names; a record permits more selective questioning at the cost of identifying disclosure. An unprompted account preserves independence but loses the guide; showing a record gains an introduction without pretending the guide's subsequent account is independent evidence.",
+    "corrections": "Removed a pre-decision return promise from the household opening and removed narration implying every player retained identifying records. A promise or disclosure occurs only after explicit confirmation.",
+    "boundary": "Agent review is not human emotional-resonance or final historical-material approval."
+  },
+  "implementation": {
+    "branches": "Household and river scenes each offer two actions. Record-dependent actions require actual centrally held records. Both distributed and anonymized histories retain a non-identifying action; no dead end is introduced.",
+    "state": "Carry food, debt, roof-promise state, local relationship and record custody. Record entrusted versus delivered and prompted versus unprompted evidence separately. Preserve uncertainty about missing people.",
+    "persistence": "Separate fingerprinted branch slot, identifier-only save, reconstruction on load, rollback attempt on failure, no reaction before durable confirmation, duplicate and busy-navigation guards. Existing night and morning saves are unchanged.",
+    "scope": "Development web only; no store submission or public deployment. Native SwiftUI/Unreal continuation parity remains unfinished."
+  },
+  "verification": {
+    "build": "Production web build and size budgets pass; contact identifiers and story text are absent from release JavaScript/JSON. No public build was deployed.",
+    "repository": "npm run validate passed: 83 core tests and 349 web tests. Eight dedicated contact component tests exercise all four actions, reload, record restrictions, corrupt-save preservation, failed-save rollback, duplicate/busy-input guards and semantic accessibility. Existing real retreat/night/morning tests extend through contact.",
+    "core": "Actual retreat-to-night-to-morning entries exercise each available contact action and reject wrong-location or unavailable record actions. State preserves debts, resources, local relationship and promise; snapshot injection cannot invent evidence or reunions.",
+    "visible": "Corrected household leave-record and river ask-unprompted routes each pass 106 browser checks, with 31 captures and zero exceptions. Phone choice/reaction and restored desktop frames reviewed; contact, morning, night and retreat bytes survive cold reload. Other two contact actions have component coverage, not separate visible runs.",
+    "householdEvidence": { "directory": ".runtime/story-review/2026-10-01T05-01-54.372Z", "statusSHA256": "2d46522d7b1fa7a30a93718cdde8097ab4ab944b7506e816cd5e26bb09891963" },
+    "riverEvidence": { "directory": ".runtime/story-review/2026-10-01T05-03-31.152Z", "statusSHA256": "544dd6d2ab20f62afee408211606ac5b29f7d37020590c2c8d28691119680a7a" },
+    "superseded": "Initial river capture at 05-00-13 predates the opening-text corrections and is not the accepted narrative evidence.",
+    "boundary": "Agent-driven web review, not physical-device, native, human listening/playtesting or final cinematic approval. All dedicated browser stacks stopped."
+  },
+  "remaining": [
+    "Resolve the promised sunset return, independent reed-bank inquiry and guided ferry introduction in later playable scenes.",
+    "Show actual consequences of information disclosure and allow recovery from broken trust rather than ending at descriptive state labels.",
+    "Human playtesting of pacing, emotional resonance, strategy balance and accessibility; native/device parity; reviewed cinematic and musical assets."
+  ]
+}
