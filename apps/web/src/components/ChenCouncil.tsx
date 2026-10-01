@@ -8,6 +8,7 @@ import { councilSnapshotMatchesRevision, encodeCouncilSnapshot } from "../counci
 import "./ChenCouncil.css";
 import { FanyangScene } from "./FanyangScene";
 import { ViewpointIntro } from "./ViewpointIntro";
+import { cinemaLabel } from "../cinema-labels";
 const RetreatPreview = import.meta.env.DEV ? lazy(() => import("./RetreatPreview").then(module => ({ default: module.RetreatPreview }))) : null;
 
 const definition = data as CouncilDefinition;
@@ -140,7 +141,7 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
       <summary>{text({ en: "Council rules and conditions", "zh-Hans": "议事规则与条件" })}</summary>
       <p className="chen-objective">{text(definition.objective)}</p>
     </details>
-    <div className="chen-layout">
+    <div className={`chen-layout${reading && !confirmReset ? " chen-reading-layout" : ""}`}>
       <section className="chen-main">
         {invalid && <p role="alert" className="chen-error">{label("invalidSave")}</p>}
         {error && <p role="alert" className="chen-error">{label("saveError")}</p>}
@@ -148,10 +149,12 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
           <h3 ref={sceneHeading} tabIndex={-1}>{label("confirmRetry")}</h3>
           <div className="chen-actions"><button className="primary-button" data-council-action="reset" disabled={busy} onClick={() => void persist(createCouncil(definition, entry))}>{label("reset")}</button>
             <button className="text-button" data-council-action="cancel" disabled={busy} onClick={() => setConfirmReset(false)}>{label("cancel")}</button></div>
-        </section> : reading && lastChoice ? <section className="chen-scene" key={`answer-${state.history.length}`} data-testid="council-response" aria-live="polite">
+        </section> : reading && lastChoice ? <section className="chen-scene chen-response" key={`answer-${state.history.length}`} data-testid="council-response" aria-live="polite">
           <p className="eyebrow">{label("response")}</p><h3 ref={sceneHeading} tabIndex={-1}>{text(lastChoice.title)}</h3><p className="chen-prose">{text(lastChoice.response)}</p>
           {councilAnswers(state, lastChoice).map(answer => <p className="chen-promise-answer" key={answer.afterChoice}>{text(answer.text)}</p>)}
-          {last && savedChanges(last)}
+          {last && <details className="chen-history" data-testid="council-response-changes">
+            <summary>{cinemaLabel(locale, "changes")}</summary>{savedChanges(last)}
+          </details>}
           <button className="primary-button" data-council-action="continue" data-testid="council-continue" onClick={() => setReading(false)}>{label(state.completed ? "conclude" : "continue")} →</button>
         </section> : outcome ? <section className="chen-scene" data-testid="council-outcome" data-outcome={state.outcome} aria-live="polite">
           <p className="eyebrow">{label("round")} · 3 / 3</p><h3 ref={sceneHeading} tabIndex={-1}>{text(outcome.title)}</h3><p className="chen-prose">{text(outcome.text)}</p>
@@ -187,12 +190,12 @@ export function ChenCouncil({ origin, locale, reducedMotion, onClose, onCue, onS
           </section>
         </section> : null}
       </section>
-      <aside className="chen-position" aria-label={label("arrival")}>
+      {(!reading || confirmReset) && <aside className="chen-position" aria-label={label("arrival")}>
         <p className="eyebrow">{label("arrival")}</p><h3>{text(arrival.title)}</h3><p>{text(arrival.text)}</p>
         <ul className="chen-metrics">{councilMetricKeys.map(metric => <li key={metric} data-council-metric={metric} data-value={state.metrics[metric]}><span>{text(definition.metrics[metric].title)}</span><span className="chen-value">{state.metrics[metric]} / 10</span>
           <div className="chen-meter" aria-hidden="true"><i style={{ inlineSize: `${state.metrics[metric] * 10}%` }} /></div><small>{text(definition.metrics[metric].meaning)}</small></li>)}</ul>
         {firstChoice?.pledge && <section className="chen-promise"><h4>{label("pledge")}</h4><p>{text(firstChoice.pledge)}</p></section>}
-      </aside>
+      </aside>}
     </div>
     <details className="chen-history"><summary>{label("history")}</summary><h3>{text(definition.history.title)}</h3><p>{text(definition.history.account)}</p><p>{text(definition.history.distinction)}</p>
       <ul>{definition.history.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a><p>{source.locator}</p></li>)}</ul></details>

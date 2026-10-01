@@ -15,6 +15,7 @@ const revisedCrossing = route === "crossing-v2";
 const scoreAudition = process.env.SHI_PLAYTEST_SCORE === "1";
 if (scoreAudition && (!revisedCrossing || production)) throw new Error("Private score review requires the development crossing-v2 route.");
 const aftermath = revisedCrossing ? JSON.parse(await readFile(resolve(root, "content/engagements/chapter-01-crossing-aftermath.v2.json"), "utf8")) : null;
+const councilMetricCount = Object.keys(JSON.parse(await readFile(resolve(root, "content/councils/chen-council.v1.json"), "utf8")).metrics).length;
 const appURL = `http://127.0.0.1:4173/?seed=${route === "captured" ? "5EED2026" : "00000000"}${isCrossing ? `&crossing=${revisedCrossing ? "campaign-v2" : "campaign"}` : ""}${scoreAudition ? "&score=audition" : ""}`;
 const grainPromise = storyBranch === "partner-search" ? "voluntary-pots" : "issue-grain-tallies";
 const evacuation = ["together", "scattered"].includes(route) ? "escort-households" : "hold-formation";
@@ -226,7 +227,26 @@ try {
     await send("Emulation.clearDeviceMetricsOverride"); await capture("crossing-chen-desktop"); await layout("Chen desktop");
     if (revisedCrossing) {
       for (const id of ["defer-title", "joint-ledger", "one-command"]) {
-        await click(`[data-council-choice="${id}"]`); await click('[data-testid="council-commit"]'); await click('[data-testid="council-continue"]');
+        await click(`[data-council-choice="${id}"]`); await click('[data-testid="council-commit"]');
+        if (id === "defer-title") {
+          const councilKey = `${key}.chen-council.v1`;
+          const bytes = await evaluate(`localStorage.getItem('${councilKey}')`);
+          const response = await evaluate("document.querySelector('[data-testid=council-response] .chen-prose').textContent");
+          check(await evaluate("!document.querySelector('[data-testid=council-response-changes]').open && !document.querySelector('.chen-position')"), "council response leads without an expanded ledger or competing metrics");
+          await capture("crossing-council-response-desktop"); await layout("council response desktop");
+          await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+          await capture("crossing-council-response-phone"); await layout("council response phone");
+          await click('[data-testid="council-response-changes"] summary');
+          check(await evaluate(`document.querySelector('[data-testid=council-response-changes]').open && document.querySelectorAll('[data-testid=council-response-changes] [role=listitem]').length===${councilMetricCount}`), "optional council ledger retains every saved metric");
+          check(await evaluate(`localStorage.getItem('${councilKey}')`) === bytes, "reading council changes does not save a decision");
+          await send("Page.reload"); await until(exists('[data-testid="begin-game"]')); await click('[data-testid="begin-game"]'); await click('[data-testid="council-enter"]');
+          await until(exists('[data-testid="council-response"]'));
+          check(await evaluate("document.querySelector('[data-testid=council-response] .chen-prose').textContent") === response && await evaluate(`localStorage.getItem('${councilKey}')`) === bytes, "council cold resume retains reaction and exact save bytes");
+          check(await evaluate("!document.querySelector('[data-testid=council-response-changes]').open"), "resumed council reaction restores the quiet reading presentation");
+          await capture("crossing-council-response-resumed-phone");
+          await send("Emulation.clearDeviceMetricsOverride");
+        }
+        await click('[data-testid="council-continue"]');
       }
       await click('[data-testid="fanyang-enter"]');
       for (const id of ["public-safety", "guarded-escort", "accept-transfer"]) {

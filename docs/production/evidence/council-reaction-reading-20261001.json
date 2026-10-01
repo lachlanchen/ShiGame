@@ -1,0 +1,26 @@
+{
+  "status": "verified-development-web-presentation-not-release-acceptance",
+  "privateEvidence": ".runtime/story-review/2026-10-01T02-03-22.629Z",
+  "statusSha256": "e923c3be0f6df69b81068a3298928eb9c4f5b8f7317855eae71f271a237d6044",
+  "componentSha256": "dfea9bf77e255919ca2e9a631718c0ca6a8d9bf24ceab391be7c4f92309c02e3",
+  "stylesheetSha256": "ff02741b7367d08b77dad16fceb8769ff49d240b13561490339f215bc2cc9706",
+  "playtestSha256": "645d14b42d45b1458174ce801df40c8f0c857102c369411d8156f8e2899cb902",
+  "reviewedScreenshots": {
+    "crossing-council-response-desktop.png": "01381dab8363e656595c5925c849c0e0734ec9cdddaf5ecfcab3e0fc5b20c1ab",
+    "crossing-council-response-phone.png": "8bfdfd5197e7fba671f1ee256de9ee032b0790ffe97f4f68fd0c24ea5d4357e0",
+    "crossing-council-response-resumed-phone.png": "84ccf79c8137c660da58ee57ac4a1ab6a00be8cd97ae564d87fb151a0271a631"
+  },
+  "checksPassed": 61,
+  "screenshotsCaptured": 20,
+  "browserExceptions": 0,
+  "webTestsPassed": 290,
+  "councilTestsPassed": 48,
+  "webTypecheck": "passed",
+  "productionBuildBudgets": "passed",
+  "verifiedRoute": "crossing-v2 / supplied Chen / defer-title,joint-ledger,one-command / public-safety,guarded-escort,accept-transfer / keep-reserve,gather-own,escort-households,carry-records,stay-together",
+  "coldResume": ["crossing", "council response", "retreat response"],
+  "releaseSaveSlotsUnchanged": true,
+  "ownedRuntimeStopped": true,
+  "currentNoVncUrl": null,
+  "notProven": ["human emotional acceptance", "physical-device acceptance", "native SwiftUI parity", "final animation", "music acceptance", "public deployment"]
+}

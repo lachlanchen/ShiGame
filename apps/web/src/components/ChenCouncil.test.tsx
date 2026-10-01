@@ -11,6 +11,7 @@ import rawFingerprint from "../generated/chen-council.v1.sha256?raw";
 import rawCouncilData from "../generated/chen-council.v1.json";
 import viewpoints from "../../../../content/presentation/viewpoints.v1.json";
 import { supportedLocales } from "@shi/game-core";
+import { cinemaLabel } from "../cinema-labels";
 
 const councilData = rawCouncilData as CouncilDefinition;
 
@@ -24,6 +25,37 @@ const props = () => ({ origin: origin(), locale: "en" as const, reducedMotion: f
 afterEach(() => { cleanup(); localStorage.clear(); vi.restoreAllMocks(); });
 
 describe("Chen council presentation", () => {
+  it.each(supportedLocales)("keeps the saved reaction primary and changes optional, including cold resume (%s)", async locale => {
+    const input = { ...props(), locale };
+    const view = render(<ChenCouncil {...input} />);
+    fireEvent.click(view.getByTestId("council-commit"));
+    await view.findByTestId("council-response");
+    const saved = localStorage.getItem("shi.chen-council.v1");
+    expect(saved).not.toBeNull();
+    const assertPresentation = () => {
+      const response = view.getByTestId("council-response");
+      const changes = within(response).getByTestId("council-response-changes") as HTMLDetailsElement;
+      expect(changes.open).toBe(false);
+      expect(changes.querySelector("summary")?.textContent).toBe(cinemaLabel(locale, "changes"));
+      expect(within(response).getByText(councilData.rounds[0]!.choices[0]!.response[locale] ?? councilData.rounds[0]!.choices[0]!.response.en).closest("details")).toBeNull();
+      expect(view.container.querySelector(".chen-position")).toBeNull();
+      expect(within(changes).getAllByRole("listitem")).toHaveLength(councilMetricKeys.length);
+      fireEvent.click(changes.querySelector("summary")!);
+      expect(changes.open).toBe(true);
+      expect(localStorage.getItem("shi.chen-council.v1")).toBe(saved);
+      expect(input.onCue).toHaveBeenCalledTimes(1);
+    };
+    assertPresentation();
+    view.unmount();
+    const resumed = render(<ChenCouncil {...input} />);
+    expect(resumed.getByTestId("council-response")).toBeTruthy();
+    expect((resumed.getByTestId("council-response-changes") as HTMLDetailsElement).open).toBe(false);
+    expect(localStorage.getItem("shi.chen-council.v1")).toBe(saved);
+    fireEvent.click(resumed.getByTestId("council-continue"));
+    expect(resumed.container.querySelector(".chen-position")).not.toBeNull();
+    expect(localStorage.getItem("shi.chen-council.v1")).toBe(saved);
+    expect(input.onCue).toHaveBeenCalledTimes(1);
+  });
   it.each(["en", "zh-Hans"] as const)("keeps rules available without interrupting the opening or writing a choice (%s)", locale => {
     const view = render(<ChenCouncil {...props()} locale={locale} />);
     const rules = view.getByTestId("council-rules") as HTMLDetailsElement;
@@ -177,6 +209,10 @@ describe("Chen council presentation", () => {
     const last = councilData.rounds[2]!.choices.find(choice => choice.id === "hold-chen")!;
     expect(within(view.getByTestId("council-response")).getByText(last.response.en)).toBeTruthy();
     const lastChanges = within(view.getByTestId("council-response")).getByTestId("council-saved-changes");
+    expect(lastChanges.closest("details")?.open).toBe(false);
+    for (const answer of view.getByTestId("council-response").querySelectorAll(".chen-promise-answer")) {
+      expect(answer.closest("details")).toBeNull();
+    }
     for (const metric of councilMetricKeys) {
       const record = savedState.history[2]!;
       const delta = record.after[metric] - record.before[metric];
@@ -216,6 +252,23 @@ describe("Chen council presentation", () => {
       rules: { "color-contrast": { enabled: false } },
     });
     expect(result.violations).toEqual([]);
+  });
+
+  it("keeps a saved reaction, disclosure and continue control semantically accessible", async () => {
+    document.documentElement.lang = "en";
+    document.title = "SHI · Council response review";
+    const view = render(<ChenCouncil {...props()} reducedMotion />);
+    fireEvent.click(view.getByTestId("council-commit"));
+    await view.findByTestId("council-response");
+    expect(document.activeElement).toBe(within(view.getByTestId("council-response")).getByRole("heading", { level: 3 }));
+    for (const expanded of [false, true]) {
+      if (expanded) fireEvent.click(view.getByTestId("council-response-changes").querySelector("summary")!);
+      const result = await axe.run(document, {
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] },
+        rules: { "color-contrast": { enabled: false } },
+      });
+      expect(result.violations).toEqual([]);
+    }
   });
 
   it("inspects without mutation, saves each commitment once, pauses and resumes", async () => {
