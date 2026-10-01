@@ -3,6 +3,7 @@ import { councilMetricKeys, createRetreat, encodeRetreatSnapshot, inspectRetreat
   type RetreatDefinition, type RetreatEntry, type RetreatState } from "@shi/game-core";
 import story from "../../../../content/story-drafts/chen-retreat.v1.json";
 import rawRules from "../../../../content/campaigns/chen-retreat.rules.v1.json";
+import sourceLocations from "../../../../content/research/retreat-source-locations.v1.json";
 import { flushPersistence, gameStorage } from "../persistence";
 import "./ChenCouncil.css";
 
@@ -158,7 +159,8 @@ export function RetreatScene({ entry, rulesHash, storyHash, reducedMotion, onClo
     </aside>}</div>
     <details className="chen-history"><summary>史料与开发说明</summary><p>{(reading ? lastScene : scene)?.transition}</p>
       <p>{story.viewpoint.historyBoundary}</p>
-      {(reading ? lastScene : scene)?.sourceIds.map(id => { const source = story.sources[id as keyof typeof story.sources]; return <p key={id}>{source.work}卷{source.volume} · {source.anchor}。{source.supports}</p>; })}
+      {(reading ? lastScene : scene)?.sourceIds.map(id => { const source = story.sources[id as keyof typeof story.sources]; const location = sourceLocations.locations[id as keyof typeof sourceLocations.locations]; return <p key={id} data-retreat-source={id}>{source.work}卷{source.volume} · {source.anchor}。{source.supports}{location && <small> 本地对读定位：第{location.startLine}–{location.endLine}行。</small>}</p>; })}
+      <p>{sourceLocations.boundaryZh}</p>
       {state.completed && state.outcome && state.outcome !== "scattered" && <p>{story.endings[state.outcome].unresolved}</p>}
       {state.completed && state.outcome === "scattered" && <p>{story.scatteredEnding.unresolved}</p>}
       <p>{story.boundary}</p></details>

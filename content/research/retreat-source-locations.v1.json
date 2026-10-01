@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "checkedOn": "2026-10-01",
+  "referenceSHA256": "8c38d75fe3dff92552ee6cb5fea6855ae71280eb9f2f4a38f0ba36d1d76daf17",
+  "boundaryZh": "行号仅定位本地对读版本，不是通行版本页码。原文含音注与校勘；以下定位不证明虚构人物、粮站、信件抵达时间或玩家队伍的去向。",
+  "locations": {
+    "qin-response": { "volume": 7, "startLine": 2703, "endLine": 2709 },
+    "broken-command": { "volume": 8, "startLine": 2773, "endLine": 2783 },
+    "chen-fall": { "volume": 8, "startLine": 2791, "endLine": 2793 },
+    "embers": { "volume": 8, "startLine": 2799, "endLine": 2799 }
+  }
+}

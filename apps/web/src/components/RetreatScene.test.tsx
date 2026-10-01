@@ -12,6 +12,7 @@ import fanyangRaw from "../../../../content/councils/fanyang-guarantee.v1.json";
 import councilHash from "../generated/chen-council.v1.sha256?raw";
 import fanyangReview from "../../../../content/research/fanyang-entry-review.v1.json";
 import retreatStory from "../../../../content/story-drafts/chen-retreat.v1.json";
+import retreatSources from "../../../../content/research/retreat-source-locations.v1.json";
 import { encodeCouncilSnapshot } from "../council-snapshot";
 import * as persistence from "../persistence";
 import { ChenCouncil } from "./ChenCouncil";
@@ -39,6 +40,20 @@ async function choose(view: ReturnType<typeof render>, id: string) {
 }
 
 describe("retreat development scene", () => {
+  it("covers every retreat source with a matching volume and valid local range", () => {
+    expect(retreatSources.referenceSHA256).toBe(retreatStory.sourceReadback.sha256);
+    expect(Object.keys(retreatSources.locations).sort()).toEqual(Object.keys(retreatStory.sources).sort());
+    for (const [id, location] of Object.entries(retreatSources.locations)) {
+      expect(location.volume).toBe(retreatStory.sources[id as keyof typeof retreatStory.sources].volume);
+      expect(Number.isInteger(location.startLine) && location.startLine > 0).toBe(true);
+      expect(Number.isInteger(location.endLine) && location.endLine >= location.startLine).toBe(true);
+    }
+  });
+  it("exposes the checked Qin-response location without treating local line numbers as edition pages", () => {
+    const view = render(<RetreatScene {...props()} />);
+    expect(view.container.querySelector('[data-retreat-source="qin-response"]')?.textContent).toContain("第2703–2709行");
+    expect(view.getByText(/行号仅定位本地对读版本/).textContent).toContain("不证明虚构人物");
+  });
   it.each([false, true])("reads the saved reaction before accounting and restores it without a new order (reduced=%s)", async reducedMotion => {
     const input = { ...props(), reducedMotion };
     let view = render(<RetreatScene {...input} />);
