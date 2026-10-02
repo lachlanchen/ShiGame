@@ -14,7 +14,19 @@
 
 ![SHI](docs/production/evidence/web-01-title-en.png)
 
-## Game
+## Volume design — 2026-10-02
+
+SHI is being developed volume by volume, following Zizhi Tongjian’s history from 403 BCE to 959 CE, with Shiji, Zuo Zhuan, Hanshu, Hou Hanshu and the owner-supplied translations as references. Volume I opens with the earlier Jinyang siege, then develops the division of land and offices, household relationships and succession.
+
+Players make decisions, conduct diplomacy and liaison, and build a position through land, wealth, office and adult household relationships, including spouses and concubines. Gains bring new allies, claims and obligations. Moving characters, commandable scenes, music and continuous cinematic transitions are the production target.
+
+This is the new design and visual target; a playable Jinyang build has not yet been delivered. The existing released chapter and beta receipts are described below.
+
+[Series design](docs/design/GAME_DESIGN_DOCUMENT.md) · [Volume I](docs/design/JINYANG_CHAPTER_DESIGN.md) · [Delivery gates](docs/production/SHI_WORKABLE_GOAL.md)
+
+![Jinyang scene concept — production target, not a game screenshot](assets/art/lookdev/jinyang-scene-target-v1.png)
+
+## Released chapter
 
 SHI begins in rain at Daze in 209 BCE. You are a fictional levy-record keeper: grain, trust, people and exposure shape which promises you can keep. Choices create costs, opposition and recovery—not an inevitable victory. Zizhi Tongjian is the historical spine; reconstructed dialogue and alternate outcomes are labeled, not passed off as quotations.
 

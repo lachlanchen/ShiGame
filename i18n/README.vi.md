@@ -14,7 +14,19 @@
 
 ![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## Trò chơi
+## Thiết kế theo từng tập — 2026-10-02
+
+SHI được phát triển và hoàn thiện từng tập. Lịch sử trong Tư trị thông giám, từ năm 403 trước Công nguyên đến năm 959, là trục chính; Sử ký, Tả truyện, Hán thư, Hậu Hán thư và các bản dịch do chủ dự án cung cấp là tài liệu tham khảo. Tập I mở đầu bằng cuộc vây hãm Tấn Dương diễn ra trước đó, rồi chuyển sang phân chia đất đai và chức vị, quan hệ trong gia đình và kế vị.
+
+Người chơi ra quyết định, tiến hành ngoại giao và liên lạc, gây dựng vị thế bằng đất đai, tài sản, chức vị cùng quan hệ với vợ và thiếp trưởng thành. Mỗi thành quả đem lại đồng minh, yêu sách và nghĩa vụ mới. Nhân vật chuyển động, cảnh có thể điều khiển, âm nhạc và chuyển cảnh điện ảnh liền mạch là mục tiêu sản xuất.
+
+Đây là thiết kế mới và mục tiêu hình ảnh; bản Tấn Dương có thể chơi chưa được hoàn thành. Chương đã phát hành và bằng chứng phân phối bản thử nghiệm được trình bày bên dưới.
+
+[Thiết kế toàn bộ loạt game](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Tập I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Tiêu chí bàn giao](../docs/production/SHI_WORKABLE_GOAL.md)
+
+![Ý tưởng cảnh Tấn Dương — mục tiêu sản xuất, không phải ảnh chụp game](../assets/art/lookdev/jinyang-scene-target-v1.png)
+
+## Chương đã phát hành
 
 SHI bắt đầu trong mưa ở Đại Trạch năm 209 TCN. Bạn là người giữ sổ quân dịch hư cấu: lương thực, lòng tin, con người và mức lộ diện quyết định lời hứa nào có thể giữ. Lựa chọn tạo chi phí, đối kháng và cơ hội phục hồi, không bảo đảm thắng lợi. Tư trị thông giám là xương sống lịch sử; đối thoại tái dựng và kết quả thay thế được ghi rõ, không giả làm trích dẫn.
 

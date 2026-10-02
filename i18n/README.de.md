@@ -14,7 +14,19 @@
 
 ![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## Spiel
+## Bandkonzept — 2026-10-02
+
+SHI wird Band für Band entwickelt. Die Geschichte des Zizhi Tongjian von 403 v. Chr. bis 959 n. Chr. bildet das Rückgrat; Shiji, Zuo Zhuan, Hanshu, Hou Hanshu und die bereitgestellten Übersetzungen dienen als weitere Quellen. Band I beginnt mit der früheren Belagerung von Jinyang und führt zur Aufteilung von Land und Ämtern, zu Haushaltsbeziehungen und zur Nachfolge.
+
+Spielende treffen Entscheidungen, betreiben Diplomatie und vermitteln zwischen Machtträgern. Land, Vermögen, Ämter und Beziehungen zu erwachsenen Ehefrauen und Konkubinen prägen ihre Stellung. Jeder Gewinn bringt neue Verbündete, Ansprüche und Verpflichtungen. Bewegte Figuren, steuerbare Szenen, Musik und zusammenhängende filmische Übergänge sind das Produktionsziel.
+
+Dies sind der neue Entwurf und das visuelle Ziel; eine spielbare Jinyang-Version wurde noch nicht ausgeliefert. Das bisher veröffentlichte Kapitel und die Beta-Nachweise stehen weiter unten.
+
+[Serienkonzept](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Band I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Lieferkriterien](../docs/production/SHI_WORKABLE_GOAL.md)
+
+![Jinyang-Szenenkonzept — Produktionsziel, kein Spiel-Screenshot](../assets/art/lookdev/jinyang-scene-target-v1.png)
+
+## Veröffentlichtes Kapitel
 
 SHI beginnt im Regen in Daze, 209 v. Chr. Du spielst einen erfundenen Hüter des Einberufungsregisters: Getreide, Vertrauen, Menschen und Sichtbarkeit bestimmen erfüllbare Versprechen. Entscheidungen erzeugen Kosten, Gegenwehr und Erholung statt sicheren Sieg. Zizhi Tongjian bildet das historische Rückgrat; rekonstruierte Dialoge und alternative Ausgänge sind gekennzeichnet, keine angeblichen Zitate.
 

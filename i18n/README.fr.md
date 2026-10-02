@@ -14,7 +14,19 @@
 
 ![SHI](../docs/production/evidence/web-01-title-en.png)
 
-## Jeu
+## Conception par volumes — 2026-10-02
+
+SHI se développe volume par volume, avec l’histoire du Zizhi Tongjian de 403 av. J.-C. à 959 comme fil conducteur, et le Shiji, le Zuo Zhuan, le Hanshu, le Hou Hanshu ainsi que les traductions fournies par le propriétaire comme références. Le volume I s’ouvre sur le siège antérieur de Jinyang, puis aborde le partage des terres et des charges, les relations du foyer et la succession.
+
+Le joueur prend des décisions, mène des négociations diplomatiques et établit des contacts. Terres, richesse, charges et relations avec des épouses et des concubines adultes façonnent sa position. Chaque gain apporte des alliés, des revendications et des obligations. Personnages animés, scènes à commander, musique et transitions cinématographiques continues constituent l’objectif de production.
+
+Il s’agit du nouveau projet et de sa cible visuelle ; aucune version jouable de Jinyang n’a encore été livrée. Le chapitre déjà publié et les justificatifs des bêtas sont décrits ci-dessous.
+
+[Conception de la série](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Volume I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Critères de livraison](../docs/production/SHI_WORKABLE_GOAL.md)
+
+![Concept de la scène de Jinyang — cible de production, pas une capture du jeu](../assets/art/lookdev/jinyang-scene-target-v1.png)
+
+## Chapitre publié
 
 SHI commence sous la pluie à Daze en 209 avant notre ère. Vous incarnez un gardien fictif du registre des conscrits : grain, confiance, personnes et exposition déterminent les promesses tenables. Les choix créent coûts, opposition et possibilités de reprise, jamais une victoire inévitable. Zizhi Tongjian est le fil historique ; dialogues reconstruits et issues alternatives sont signalés, pas présentés comme citations.
 

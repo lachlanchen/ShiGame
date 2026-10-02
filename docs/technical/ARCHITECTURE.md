@@ -1,5 +1,7 @@
 # Technical architecture
 
+2026-10-02 scope note: this document describes the existing Qin-oriented implementation. The new whole-history product direction is in [Game design](../design/GAME_DESIGN_DOCUMENT.md), with migration and adoption decisions in [Unified workflow](UNIFIED_GAME_WORKFLOW.md). Existing campaign/save authority below remains valid for those releases; it is not a requirement to center the redesigned game on the Keeper or Daze.
+
 ## Decision
 
 SHI uses one authored campaign payload with three clients. Unreal is feature-first for cinematic 3D; Web is the fastest playable reference; Unity remains a maintained compatibility baseline:

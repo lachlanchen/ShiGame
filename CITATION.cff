@@ -4,7 +4,7 @@ type: software
 title: "SHI: The Shape of Power"
 version: 0.1.0
 date-released: 2026-08-08
-abstract: "A multilingual, historically grounded strategy narrative about the late Qin collapse and the contingent formation of power."
+abstract: "SHI is a multilingual historical strategy game project following Zizhi Tongjian, with cinematic decisions, diplomacy and the changing shape of power."
 authors:
   - family-names: Chen
     given-names: Lachlan

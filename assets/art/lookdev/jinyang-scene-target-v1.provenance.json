@@ -1,0 +1,28 @@
+{
+  "id": "jinyang-scene-target-v1",
+  "type": "image-concept",
+  "created": "2026-10-02",
+  "asset": "jinyang-scene-target-v1.png",
+  "sha256": "2a1544f89733b90bf99904ee7e5590cbac6636791493141ef1f5a9e6fd77743d",
+  "provider": "Codex built-in image generation",
+  "intendedUse": "Volume I environment/staging concept for Jinyang; reference for scene layout, light and material direction.",
+  "historicalBasis": [
+    "Tongjian volume 1, Jinyang flashback",
+    "Shiji volume 43, Zhao hereditary house"
+  ],
+  "review": {
+    "status": "agent-visual-concept-review",
+    "releaseApproved": false,
+    "observations": [
+      "Readably connected wall, work parties, water, raised route and camp areas.",
+      "Distinct foreground leader and envoy; natural material/light target.",
+      "Layout is schematic; costume ornaments, lamps, crowd spacing and architecture require period review.",
+      "Still image only; does not demonstrate engine behavior, animation or face continuity across shots."
+    ]
+  },
+  "rights": {
+    "coordinationOwner": "owner-company",
+    "status": "not-asserted-for-release"
+  },
+  "prompt": "Use case: historical-scene. Asset type: SHI cinematic game environment and staging concept, 16:9 landscape. Create a richly detailed photorealistic film-like view of a reconstructed Jinyang siege in ancient Jin, before the 403 BCE three-Jin recognition, fifth century BCE. This is a historically informed game-design study, not an authenticated reconstruction. From a raised earthen defensive wall, readable human-scale medium-wide view: in the foreground a composed adult Zhao leader in a restrained dark blue-grey cross-collar robe and a distinct envoy in weathered grey-brown cloth, natural tied dark hair, looking toward the flooded approaches rather than posing. Below them several adult workers support a timber brace and carry supplies to a dry raised path. Midground: compact low rammed-earth city walls, muddy floodwater outside the threatened defenses, one clearly visible raised route. Distance: three distinct small besieging camp areas on dry ground, separated spatially, with modest lanterns and plain unmarked cloth banners; distant earthen embankment and hills. Compose a clear connection between wall, workers, water, route and camps; retain readable terrain and faces. Restrained blue-grey dawn, earthen ochres, muted jade and warm amber practical lights, strong readable light, rich cloth, mud, wood and water materials. Believable supported feet, hands and gestures. No grand fantasy palace, Ming stone crenellations, Japanese samurai costume, medieval European armor, modern items, magic, exaggerated glowing objects, text, letters, labels, game HUD, logos or watermarks. One coherent image, no montage, no borders."
+}

@@ -1,131 +1,140 @@
-# SHI game design document
+# SHI — historical power, made playable
 
-Status: living baseline · updated 2026-08-09 · owner: game director
+Direction reset: 2026-10-02. This is the master design, not a description of the released build. It replaces the narrow Keeper/Daze-led direction. Existing Qin content, assets, saves and released applications remain intact as material for a later campaign.
 
-## Product promise
+## The promise
 
-SHI (《势》) is a historical strategy narrative about how power emerges from relationships among people, supply, terrain, time, institutions, stories, and force. The player should finish a session feeling that history was contingent, that every victory changed the board, and that moral commitments had operational consequences.
+Our conversation establishes these product requirements: use the full Tongjian historical spine and the owner's five-book originals/translations; make decisions and consequences intelligible through figures, action, maps, music and film; let the player change outcomes; use original consistent casting chosen by the developer; automate production with Codex/Astra, Blender/OpenSCAD, Unreal, Musia and local MiniMax/LocalVideoGen; deliver complete volumes one by one at a steady reviewed pace; preserve native iOS and Android development and use the shared Mac/iPad/Mi 10 Pro resources for relevant tests; provide regular verified Git, TestFlight and Google internal-test checkpoints; retain the US$0.99/all-eligible-markets direction. Company licensing coordination stays with the owner.
 
-The first campaign begins with the late-Qin crisis, the Daze Village uprising, and the road toward the Chu–Han contention. Xiang Yu and Liu Bang are major later actors, not predestined protagonists who erase the agency of everyone around them.
+The latest progression requirement adds diplomacy and liaison alongside land, gold/wealth, offices and adult household relationships, including spouses and concubines. These systems form the player's continuing estate/career record within a volume.
 
-## Audience and format
+SHI（《势》）is a cinematic historical strategy game about **how power is assembled, exercised, lost and rebuilt**. The player reads a situation through people, terrain and movement; commits a plan; meets other actors' responses; and lives through the resulting change.
 
-- Primary audience: players who enjoy consequential narrative, political strategy, readable systems, and history without requiring prior specialist knowledge.
-- Session shape: 20–35 minute chapter decisions inside a 10–15 hour campaign arc.
-- Platforms: modern web client for reach and continuous playable validation; Unreal Engine 5.8 is the priority cinematic/native 3D experience; Unity 6 remains a shared-schema baseline rather than a feature fork.
-- Rating target: teen, with violence conveyed through aftermath, testimony, logistics, and decisions rather than spectacle.
-- Business model is undecided. No monetization mechanics may be added without a separate ethical/economic review.
+The whole story follows 《资治通鉴》 from 403 BCE to 959 CE. 《左传》 supplies relevant earlier context; 《史记》《汉书》《后汉书》 deepen the periods they actually cover. We use the owner's editions and supplied translations in ../ZhJpBook, not newly improvised translations. This is neither an illustrated chronology nor a moral-answer quiz.
 
-## Design pillars
+The emotional hook is responsibility under uncertainty: the people who need an army's protection also supply its food; a useful ally can become tomorrow's threat; a reform that solves one crisis can change who can overthrow you. Historical institutions and decisions provide the drama. Do not manufacture a 1,300-year family saga or place an invented record keeper at the center of every event.
 
-1. **Power is positional.** Resources matter because of their relationships and timing, not because a larger number always wins.
-2. **History is contingent.** Outcomes are plausible within constraints; later dynastic success never becomes retroactive destiny.
-3. **People are infrastructure, not currency.** Civilian support and trust change what actions are possible. They are never presented as disposable hit points.
-4. **Choices are legible, not solved.** Intent and likely effects are visible, but second-order consequences and new opponents keep the decision interesting.
-5. **Loss creates play.** Exposure, hunger, and fragmentation produce recovery decisions before terminal failure. A setback should change the strategy rather than simply waste time.
-6. **Sources remain visible.** Historical claims, later compilations, classical strategic lenses, and dramatic reconstructions are distinguishable in play.
+The long-term scope is the historical arc below. The **bounded current goal** is one complete, attractive, replayable Jinyang chapter that proves the framework. These are different commitments. A 1,300-year roadmap is not a promise to finish every dynasty before a useful release.
 
-## Core loop
+## The whole-story structure
 
-```text
-Read the position
-  → inspect people, supplies, momentum, trust, exposure, intelligence horizons and sources
-  → select a doctrine and open its complete focused reading without changing the position
-  → issue the order and accept its opportunity cost
-  → establish or answer a promise whose stakeholder will remember it
-  → see immediate movement on the shared state
-  → reveal the authored state, terrain, supply or network response
-  → absorb the pursuing administration's disclosed posture
-  → test whether its disclosed read of your repeated method hits or misses
-  → face the countermove or recovery problem created by that doctrine
-  → preserve, transform or abandon the network
-  → record the decision and carry flags into the next chapter
-```
+Each campaign has its own historical viewpoint, beginning, reversal and ending. Dates below organize the product; they are not claims that all proposed episodes have already been researched. Entry into a new era explicitly shows the date, location, role and inherited historical situation.
 
-## Strategic resources
-
-| Resource | Meaning | Failure pressure | Counterplay |
+| Campaign | Historical span | Central change in power | Playable design focus |
 | --- | --- | --- | --- |
-| Grain | Food, transport capacity, reserve time | Low grain makes fast plans brittle | Requisition with debt, ration, abandon weight, build local supply |
-| Trust | Belief that commitments will be honored | Low trust closes voluntary and diplomatic options | Visible limits, restitution, shared risk, credible institutions |
-| Momentum | Ability to set the next problem for others | Low momentum lets opponents consolidate | Signal, move, narrate, make a political fact |
-| People | Cohesion, households, skilled hands, messengers | Zero people ends the movement | Protect families, release people into networks, recruit through consent |
-| Exposure | How precisely the state can see and contain the network | 100 exposure causes capture | Misdirect, split channels, control signals, sacrifice tempo |
+| I. From alliance to conquest | 403–221 BCE, with a marked Jinyang flashback | Aristocratic coalitions give way to territorial mobilization and competing reforms | Credible alliances, institutions, recruitment, supply and encirclement |
+| II. Unification and fracture | 221–202 BCE | Imperial concentration breaks; rival coalitions contest the settlement | Overextension, local compliance, command and redistribution |
+| III. Holding an empire together | 202 BCE–9 CE | Regional delegation, court authority and frontier commitments interact | Revenue, appointments, regional autonomy and succession |
+| IV. Restoration and its limits | 9–184 CE | Reform, rebellion and restoration redistribute access to authority | Local support, elite networks, relief and court access |
+| V. Competing centers | 184–280 CE | Military and regional bases become rival states | Grain, recruitment, intelligence, alliances and campaigns |
+| VI. Fragmented legitimacy | 280–589 CE | Succession, regional armies and migration remake political geography | Command loyalty, settlement, regional coalitions and reunification |
+| VII. Reunification's price | 589–649 CE | Mobilization enables a unified state and can exhaust its support | Public works, military commitments, coalition formation and restraint |
+| VIII. The confident center | 649–755 CE | Court institutions and frontier command reshape dependence | Appointment networks, information and concentration of command |
+| IX. The center loses its reach | 755–907 CE | Military, fiscal and regional authority cease to align | Remittance, bargaining, delegation and competing claims |
+| X. Rebuilding the settlement | 907–959 CE | Military succession and regional consolidation create new possibilities | Stable command, taxation, succession and durable institutions |
 
-All values are clamped to 0–100. Exposure is deliberately not a moral score. High momentum can be dangerous; high trust can make obligations expensive.
+The first campaign's eventual arc is Jinyang/three-Jin recognition → competing state capacity and reform → changing alliance systems → Qin unification. Each era can contain several complete game volumes. Volume I connects the Jinyang opening to land settlement, offices and household/succession; its complete production specification is [Volume I design](JINYANG_CHAPTER_DESIGN.md). Individual episodes require source packets before production.
 
-## Chapter I: Rain at Daze Village
+The game alternates scales: a human encounter exposes a constraint, a regional map makes relationships legible, a short military or political operation tests the plan, and the aftermath changes the map. A century is not presented as ten consecutive council conversations.
 
-The player is a fictional keeper of a Qin levy register. This point of view makes bureaucracy, legibility, and collective identity playable without overwriting Chen Sheng or Wu Guang.
+## The player's role and powers
 
-The vertical slice has three acts:
+For a chapter, the player controls a clearly identified historical decision-maker's available decisions, with explicitly introduced delegated viewpoints where needed. They cannot issue orders outside that office's actual reach. Zhao's viewpoint at Jinyang may direct its defense and authorize an envoy; it cannot command Han's forces merely by selecting their banner.
 
-1. **The register:** public covenant, forcing move, or concealed probe.
-2. **The cost of organization:** each opening creates a different council about food, signals, or information.
-3. **The broken crossing:** every doctrine encounters logistics and pursuit before choosing deep roots, wildfire, or watchful connection to emerging forces around Pei and Kuaiji.
+Historical actors have interests, information, dependencies and limits. They are not fixed good/bad characters or affection meters. Their actions must remain intelligible even when they oppose the player. Speeches in a chronicle are attributed historical accounts, not authenticated recordings of verbatim speech. Brief connective performance is labeled reconstruction; do not invent intimate biographies to make a scene “emotional.”
 
-The current slice contains six scenes, fifteen choices, three carried player commitments with nine exact answers, twelve pressure responses, three persistent Qin pursuit postures, three strategic methods, three prepared method counters plus a neutral read, twelve seed-selected field conditions, three conclusions, replayable save-v6 migration, an inspectable wartable, and explicit source/claim records. Exhaustive condition branching currently finds 689 successful routes and 87 capture/scattering routes. It is a pre-alpha chapter, not the complete campaign.
+Faces are original consistent casting, not assertions of historical likeness. Each named actor has a canonical face/body/costume/voice record and era-specific variants. Identity is preserved across Blender, Unreal, images and LocalVideoGen. Reusing Chen Sheng's face for a Jinyang actor is not continuity.
 
-## Conflict model
+## The repeatable game
 
-The campaign does not use a conventional “attack for damage” loop as its strategic center. Conflict is resolved through overlapping fields:
+**Observe → form a plan → commit limited resources → see an independent response → adapt → carry the consequence forward.**
 
-- **Legibility:** who knows where people, grain, and messages are?
-- **Commitment:** which promises cannot be withdrawn without losing trust?
-- **Tempo:** who defines what must happen next?
-- **Network shape:** concentrated command, federated cells, household ties, official routes.
-- **Narrative authority:** whose account makes action seem legitimate or inevitable?
-- **Material constraint:** weather, river crossings, harvest, weapons, distance, animal power.
+Power is a network of relationships, not a universal score:
 
-Later tactical encounters use the versioned [historical martial-command system](HISTORICAL_MARTIAL_COMMAND.md): spatial command, formation, terrain, signals, command delay, morale/cohesion, reserves and withdrawal feed these campaign fields rather than becoming disconnected combat minigames.
+- **Military command:** who can order which force, where it is, and whether it will comply.
+- **Material capacity:** grain, transport, labor, treasury and replacement capacity.
+- **Institutions:** offices, authority to appoint, extraction rules and succession arrangements.
+- **Coalitions:** reciprocal commitments, credible guarantees, conflicting interests and exit options.
+- **Information and legitimacy:** what actors know, which claims others recognize, and what uncertainty remains.
+- **Geography and time:** routes, distance, seasons, fortifications and the delay before help arrives.
 
-## Failure and recovery
+Introduce only the relationships a current encounter needs. Show supply moving, an envoy reaching a camp, an ally holding position or a gate closing. Detailed numbers and source explanations belong in inspection views. The normal screen needs a short objective, a readable place, and a few useful actions.
 
-- Terminal capture occurs at 100 exposure.
-- Terminal scattering occurs at zero people.
-- Before those boundaries, authored recovery turns offer asymmetric repair: reduce exposure by consuming grain, preserve people by surrendering tempo, or regain supplies by creating debt.
-- Restarts are immediate, but the decision ledger shows the player why the position collapsed.
-- A future “chronicle memory” mode may reveal counterfactual insights after completion; it must never secretly change the recorded seed or reconstructed result.
+Commands use verbs, not doctrine names: inspect, dispatch, allocate, promise, withhold, reinforce, synchronize, attack, withdraw. A forecast shows the known cost and uncertainty; it does not expose every private intention. Opponents react to observable actions. Randomness, where justified, is seeded and signaled; it cannot substitute for designed motives.
 
-## Onboarding and feedback
+The pleasure comes from understanding a relationship, exploiting an opening, making a difficult commitment and seeing a coordinated action succeed. Difficulty adds competing constraints, not more prose. Replay comes from alternate workable plans and changed consequences, not a hidden “historically correct” button.
 
-- The title communicates the thesis in one sentence.
-- Five resources appear before the first choice.
-- Compact choice cards show the order title, intent and immediate deltas without committing. The selected-order inspector shows the complete strategic reading, method hit/miss, commitment forecast, exact effects and qualitative pressure warning; only the separate **Issue order** action commits.
-- Every opening choice names the promise and stakeholder it will establish. The promise remains visible until the broken ford, where all legal answers disclose **kept**, **strained**, or **broken** and their exact operational effects before commitment.
-- The current Qin pursuit posture shows its exact Exposure band, modifier and counterplay before commitment; it is explicitly dramatic reconstruction.
-- The Qin method read shows all observed method counts, its prepared target and exact effect. Each choice names its method and whether the current read will hit; changing method makes the read miss.
-- A seed-selected field signal and its exact effects appear before every decision and remain explicitly labeled dramatic reconstruction.
-- Consequence, commitment answer when applicable, authored pressure response, pursuing-administration posture, method read and disclosed field condition persist after transition with their deltas visually separated, so players can connect action, obligation, countermove, opponent learning, circumstance and state change.
-- Source and decision ledgers are available without leaving play; the decision record preserves the answered promise, pressure, pursuit, method/read hit or miss, and field responses.
-- The wartable distinguishes known ground, reported networks and reference-only places. Its uncertainty text blocks later-history hindsight from masquerading as opening-scene knowledge.
-- Modified keyboard shortcuts operate decisions and ledgers without conflicting with browser-reserved tab controls.
-- A one-time, replayable field guide teaches field → move → answer over the live opening state without changing campaign progress.
-- Standard gamepad selection, commit, close and ledger commands route through the same deterministic actions as keyboard/pointer input; connected state and selection are visible without relying on color.
-- Pointer, keyboard and gamepad can inspect the same wartable sites and filtered evidence without mutating the campaign state.
-- Keyboard, touch, reduced-motion, text scaling, color-independent meters, RTL, and screen-reader labels are release gates.
+## First complete chapter: Jinyang — an alliance can turn
 
-## Narrative standards
+This is chapter 1 of volume I, followed by division/settlement and household/succession chapters. The first beta gate remains a complete 15–20 minute Jinyang chapter; finish the volume before starting a new volume's production. The initial estate record carries surviving force, prepared wealth, contacts, commitments and claims; later settlement establishes land and office rights.
 
-- Attested persons keep their known constraints and do not become mouthpieces for modern conclusions.
-- Fictional composite characters are labeled.
-- Dialogue is concise, situation-specific, and never quoted as if sourced.
-- Names, dates, geography, ranks, law, clothing, food, travel, and material culture require individual claim records.
-- Violence must preserve its human cost and cannot be aestheticized as proof of strategic brilliance.
+Design target: 15–20 minutes, one siege location and its surrounding camps, three linked decision phases, an execution sequence and a real ending. Duration and enjoyment must be measured in playtests.
 
-## Campaign arc
+《资治通鉴》卷一 begins its chronological frame with the three Jin houses' recognition in 403 BCE and then recounts earlier events. **The Jinyang siege is that earlier flashback; do not date the siege 403 BCE.** Exact calendar wording remains a source-reconciliation task, not a reason to halt blockout.
 
-| Arc | Strategic question | Tentative chapters |
-| --- | --- | --- |
-| Qin fracture | When does administration become vulnerability? | Daze, Chen, county reactions |
-| Many Chus | Can restored names coordinate incompatible interests? | Kuaiji, Xiang clan, rival Chu claims |
-| Pei network | How does a flexible coalition become governable? | Pei companions, marches, local compacts |
-| Entering the passes | Can restraint be made credible under victory? | Guanzhong, surrender, competing orders |
-| Chu–Han contest | Does concentrated force defeat distributed legitimacy? | Feasts, supply fronts, defections, command crises |
-| Settlement | What survives the winner? | Institutions, memory, households, costs of unification |
+The original and supplied modern Chinese translation were read at local chunk `zizhi-tongjian-chunk-00017-p002`. They describe Han and Wei's fear of becoming the next targets, fear of premature disclosure, a secretly agreed action date, a redirected flood and coordinated attacks. The local Shiji Zhao-house original and supplied translation in `shiji-chunk-1949` were also read for liaison, wavering retainers and land division. Earlier Tongjian passages describe the choice of Jinyang and its population's support. Main text, Hu Sanxing's commentary and textual notes remain distinct. Private source locations and hashes are in the ignored research record.
 
-This arc is a research and prototyping map, not permission to write unreviewed chapters in bulk.
+### What happens on screen
 
-## Quality bar
+| Phase | Player action | Independent pressure and response | Visible consequence |
+| --- | --- | --- | --- |
+| 1. Keep a position worth saving | Inspect water and defenses; assign limited effort between shelter/defense and preparations outside the walls | Water pressure continues; visible preparations attract attention | People move to usable ground; a route or work party becomes available |
+| 2. Make cooperation possible | Dispatch a limited, authorized mission; negotiate timing and a commitment that each ally can verify | Han and Wei fear unilateral exposure and do not obey Zhao; Zhi can increase watchfulness | An envoy returns, a signal is acknowledged or withheld, camp dispositions change |
+| 3. Coordinate, act or cut losses | Choose whether to spend another action window confirming readiness, execute the prepared operation, or preserve a withdrawal option | Waiting costs endurance; rushing risks an isolated attack; a watchful opponent can disrupt an exposed plan | Water, troops and signals visibly change together—or fail to do so |
+| 4. Settle the outcome | Regroup, inspect losses and obligations, choose the authored continuation | Cooperation creates claims on the settlement; survival is not costless victory | Changed control, surviving forces and continuing commitments remain on the map |
 
-A chapter is shippable only when it has a playable tension curve, meaningful counterplay, an auditable source matrix, reviewed localization layout, approved asset provenance, passing deterministic tests, keyboard/touch/gamepad parity, the applicable screen-reader/reflow/motion/contrast evidence, performance evidence, and at least two observed playtest reports. “More generated content” is never a substitute for these gates.
+The concrete routes, work allocations, message mechanisms and numerical balance are **gameplay reconstruction**, not additional historical claims. No invented private conversation is required to explain the problem.
+
+Prototype three families of outcome:
+
+1. **Coordinated reversal:** enough preparation and credible synchronization bring both allies into the operation; success leaves obligations, not unconditional loyalty.
+2. **Costly survival:** preserving a prepared way out or reaching a limited settlement saves a remnant but loses the position. This is a counterfactual branch requiring its own ending.
+3. **Isolation and defeat:** a brittle or exposed plan fails. The player sees why, can replay the last planning checkpoint, and is not forced through the opening film again.
+
+Test two distinct plans for success across different disclosed conditions. A single optimal click sequence fails the design test. Allow a recoverable setback before the final commitment.
+
+The historical outcome does not become a triumphal “clan extermination score.” An aftermath distinguishes military success, political redistribution and the recorded human cost. The source account and the player's alternative remain separately accessible.
+
+### The very first minute
+
+A short view establishes a flooded city, the surrounding camps and the threatened defenses. Control arrives within 30 seconds. A player can point at the water line and a work party, hear a short practical report, and make a meaningful assignment within 60 seconds. No compulsory essay, abstract five-meter tutorial or knowledge quiz.
+
+The regional view is the same space at a useful scale, not a new text dashboard. Camera movement returns to the affected people. It should be possible to understand the immediate task with both the history journal closed and the sound muted.
+
+## Consequences across a long history
+
+Within a chapter, saved decisions change access, forces, relationships and the ending. Within a volume, keep land/control rights, treasury, offices, liaison networks, obligations and adult household relationships in the same continuing record. Land generates capacity and duties; wealth funds real commitments; an office grants jurisdiction; a spouse or concubine has identity, family/network ties and succession consequences. Within an authored campaign branch, later encounters must honor those changes. Major divergence requires authored downstream support.
+
+At a new era, offer a clearly labeled **historical-spine entry**, separate from the player's previous counterfactual chronicle. Do not imply that a short simulation at Jinyang accurately generated the next millennium. Continuity across eras comes from the player's growing understanding of recurring power problems and the evolving historical map, not an immortal protagonist.
+
+A chronicle records decisions and outcomes, with an optional concise explanation of commitment, coordination, information or overextension. These are interpretations that help replay, not universal rules for entrepreneurship or a claim that history proves one winning strategy.
+
+## Film and gameplay are one production
+
+Use real-time characters for actions the player can change. Blender supplies editable environments, rigs and motion; Unreal supplies interactive scenes, camera transitions and controlled renders. Musia supplies a coherent musical family. LocalVideoGen/MiniMax supplies selected short reference-driven transitions and establishing shots, starting with the fastest suitable low-resolution preview.
+
+A clip cannot invent a survivor, change a face, complete an unchosen command or decide the outcome. The saved simulation state selects presentation. A missing clip falls back to an engine shot. Skip/pause/resume do not change the result. Maintain character, costume, held object, position, weather, lighting and music continuity at every boundary.
+
+Start with a small useful performance set: walk/stop/turn, listen, point, dispatch/receive, brace/work, advance/recoil and withdraw. Animation must show weight, ground contact and coordinated interaction. A portrait, rain particles, camera panning or swaying mannequins do not meet the moving-character gate.
+
+Use music with intentional entrances, quiet intervals, matched transitions and dialogue ducking. The six existing Musia candidates remain available; candidate B is only a provisional cue for the later Qin rain scene, not the mandatory theme for all history.
+
+## Readability and platform contract
+
+One objective at a time; at most two subtitle lines; inspectable sources and advanced forecasts. Offer pause-to-plan, large touch targets, keyboard/controller equivalents, reduced motion, readable contrast, non-color signals and independent music/voice/effects controls. No required fast tapping.
+
+Unreal is the primary cinematic runtime. Web remains the fast shared-rules preview. Preserve native iOS and Android releases while qualifying the redesigned encounter; no disguised web-only replacement for native iOS. Unity is preserved as a compatibility baseline, not a fourth independent narrative. Port shared rules with golden replay fixtures rather than promising that TypeScript executes unchanged in C++ or Swift.
+
+Keep the 11-language foundation. Source-backed Simplified Chinese is the first writing review lane; validate required strings and RTL behavior before a multilingual release. Translation completeness is not established by a manifest's existence.
+
+## Delivery and quality
+
+Follow the bounded [production goal](../production/SHI_WORKABLE_GOAL.md) and [researched unified workflow](../technical/UNIFIED_GAME_WORKFLOW.md). First prove the entire Jinyang decision-to-ending loop with moving figures and provisional audio, then refine it. Do not spend another milestone perfecting an isolated face, sleeve or prop.
+
+Acceptance requires observed novice play, multiple consequential routes, animation and sound in the actual player, save/resume, cinematic fallback and measured device performance. A complete test suite, source packet, concept image or rendered trailer alone is not a completed game.
+
+The owner delegates ordinary creative choices to the developer and retains playable-checkpoint review. The company handles licensing coordination; provenance remains recorded without turning routine design into repeated licensing work. Price remains US$0.99 in eligible markets. Store/public actions retain explicit confirmation boundaries.
+
+## Current checkpoint
+
+Master direction, volume progression and opening source/cast/geography design: established. The full [Volume I design](JINYANG_CHAPTER_DESIGN.md) and reviewed [Jinyang scene concept](../../assets/art/lookdev/jinyang-scene-target-v1.png) now guide production. Jinyang gameplay, final characters, scene animation, score, movie transitions and mobile qualification remain incomplete.
