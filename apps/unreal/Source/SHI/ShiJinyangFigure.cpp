@@ -34,17 +34,36 @@ void AShiJinyangFigure::Initialize(UStaticMesh* Cube, UStaticMesh* Sphere, UStat
 }
 void AShiJinyangFigure::MoveAlong(const TArray<FVector>& Route, bool Carry)
 {
-    Waypoints = Route; bCarrying = Carry; bWorking = false;
+    Waypoints = Route; bCarrying = Carry; bWorking = false; bReceiving = false;
+    FVector Previous = GetActorLocation();
+    FinalYaw = GetActorRotation().Yaw;
+    for (const FVector& Point : Route)
+    {
+        FVector Delta = Point - Previous; Delta.Z = 0;
+        if (!Delta.IsNearlyZero()) FinalYaw = Delta.Rotation().Yaw;
+        Previous = Point;
+    }
 }
 void AShiJinyangFigure::SetWorking(bool Working)
 {
     bWorking = Working; bCarrying = Working; WorkTime = 0.f;
 }
+void AShiJinyangFigure::SetReceiving(bool Receiving)
+{
+    bReceiving = Receiving; Pose();
+}
+void AShiJinyangFigure::SetSettledPose(const FVector& Location, float Yaw, bool Working)
+{
+    Waypoints.Empty(); Distance = 0.f; bReceiving = false;
+    FinalYaw = Yaw;
+    SetActorLocationAndRotation(FVector(Location.X, Location.Y, 2), FRotator(0, Yaw, 0));
+    SetWorking(Working); Pose();
+}
 void AShiJinyangFigure::FinishMotion()
 {
     if (Waypoints.Num())
-        SetActorLocation(FVector(Waypoints.Last().X, Waypoints.Last().Y, 2));
-    Waypoints.Empty(); Pose();
+        SetActorLocationAndRotation(FVector(Waypoints.Last().X, Waypoints.Last().Y, 2), FRotator(0, FinalYaw, 0));
+    Waypoints.Empty(); Distance = 0.f; Pose();
 }
 void AShiJinyangFigure::Tick(float Dt)
 {
@@ -57,11 +76,16 @@ void AShiJinyangFigure::Tick(float Dt)
         else
         {
             const FVector Direction = Delta.GetSafeNormal();
-            SetActorRotation(FRotator(0, Direction.Rotation().Yaw, 0));
+            SetActorRotation(FMath::RInterpConstantTo(GetActorRotation(), FRotator(0, Direction.Rotation().Yaw, 0), Dt, 180.f));
             SetActorLocation(GetActorLocation() + Direction * Travel);
             Distance += Travel;
             if (Delta.Size() <= Travel + .1f) Waypoints.RemoveAt(0);
         }
+    }
+    if (!Waypoints.Num())
+    {
+        Distance = 0.f;
+        SetActorRotation(FMath::RInterpConstantTo(GetActorRotation(), FRotator(0, FinalYaw, 0), Dt, 180.f));
     }
     if (bWorking) WorkTime += Dt;
     Pose();
@@ -101,9 +125,11 @@ void AShiJinyangFigure::Pose()
         const float Sign = Side == 0 ? -1.f : 1.f;
         const FVector Shoulder(0, 24.f * Sign, 137);
         const float Work = bWorking ? FMath::Sin(WorkTime * 2.f) * 2.f : 0.f;
-        const FVector Hand = bCarrying ? FVector(30.f + Work, 36.f * Sign, 111)
+        const FVector Hand = bReceiving && Side == 1 ? FVector(36, 25, 120)
+            : bCarrying ? FVector(30.f + Work, 36.f * Sign, 111)
             : FVector(Moving ? FMath::Sin(Phase * 2.f * PI) * 13.f : 2.f, 24.f * Sign, 84);
-        const FVector Elbow = bCarrying ? FVector(10.f + Work, 32.f * Sign, 112)
+        const FVector Elbow = bReceiving && Side == 1 ? FVector(12, 30, 118)
+            : bCarrying ? FVector(10.f + Work, 32.f * Sign, 112)
             : (Shoulder + Hand) * .5f + FVector(-7, 0, 0);
         Rod(9 + Side * 2, Shoulder, Elbow, 11.f); Rod(10 + Side * 2, Elbow, Hand, 9.f);
         Parts[13 + Side]->SetRelativeLocation(Hand);

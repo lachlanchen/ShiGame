@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-02",
+  "encounter": "jinyang-encounter-v1",
+  "reviewStatus": "agent-development-review",
+  "releaseApproved": false,
+  "g1Passed": false,
+  "provenance": "Actual isolated Unreal 5.8.1 player captures; original project staging using Epic engine primitive meshes/materials. No generated AI asset or final historical likeness claim.",
+  "images": [
+    {"file": "diplomatic-receive-blockout.png", "sha256": "109fe2871486ce089b836212a8856d6ea8e41e20bebae9a7cc1df592c88eb66f", "scope": "Receiving gesture, held troops, fixed navigation; prior to compact selected-label change."},
+    {"file": "estate-resume-blockout.png", "sha256": "2d87156622c0655a7ad0a1c2c7bf2257364afa92a6cab5963362c8f559ec023f", "scope": "Final compiled cold resume; remnant60 and reserves36 consistent with estate; selected Zhao label readable."}
+  ],
+  "recordings": [
+    {"route": "quiet-recovery", "seconds": 255.666667, "sha256": "12452064c37bef233df35189c7993b5bcbe9293ab370c45c09cde9da247be60a", "orders": 8, "outcome": "coordinated-reversal", "estateTreasury": 19},
+    {"route": "withdrawal", "seconds": 45.413, "sha256": "725956dff192e6c1b9572755e431c1d31c935c33035395e65b8e26cef5ddefad", "orders": 2, "outcome": "costly-withdrawal", "estateTreasury": 36}
+  ],
+  "recordingReview": "Both actual-input routes completed without skip, decoded fully, sampled contact sheets and selected UI frames inspected. Not every-frame animation, human comprehension or engine-frame-rate acceptance. Movies retained privately.",
+  "audio": {"source": "own-game master mixer, not microphone/shared-desktop capture", "nonzero": true, "listeningAccepted": false, "musiaIntegrated": false},
+  "limits": ["Four-minute coordination blockout is not the intended 15–20-minute chapter.", "No final cast, authentic signaling claim, contact-correct skeletal animation, score, local video, physical-device qualification or new beta delivery."]
+}

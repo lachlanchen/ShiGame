@@ -66,6 +66,7 @@ try {
     resolve(root, "apps/unreal/SHI.uproject"), "/Engine/Maps/Entry?game=/Script/SHI.ShiJinyangGameMode",
     "-game", "-windowed", "-ResX=1920", "-ResY=1080", "-WinX=0", "-WinY=0", "-nosplash", "-vulkan",
     "-ShiJinyangSave=" + resolve(evidence, "chronicle.v1.json"),
+    "-ShiAudioReview",
     "-abslog=" + resolve(evidence, "engine.log"),
   ]);
   player.on("exit", (code, signal) => finish("player exit " + code + " " + signal));

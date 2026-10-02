@@ -17,6 +17,9 @@ public:
         UMaterialInterface* Material, const FLinearColor& Color);
     void MoveAlong(const TArray<FVector>& Route, bool bCarry = false);
     void SetWorking(bool Working);
+    void SetReceiving(bool Receiving);
+    void FaceAtRest(float Yaw) { FinalYaw = Yaw; }
+    void SetSettledPose(const FVector& Location, float Yaw, bool Working = false);
     void FinishMotion();
     bool IsMoving() const { return Waypoints.Num() > 0; }
     virtual void Tick(float DeltaSeconds) override;
@@ -24,6 +27,8 @@ private:
     UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> Parts;
     TArray<FVector> Waypoints;
     bool bCarrying = false, bWorking = false;
+    bool bReceiving = false;
+    float FinalYaw = 0.f;
     float Distance = 0.f, WorkTime = 0.f;
     void Pose();
     void Rod(int32 Index, const FVector& A, const FVector& B, float Width);

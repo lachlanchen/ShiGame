@@ -45,6 +45,8 @@ struct FShiSoundscapeControlState
     std::atomic<float> Master;
     std::atomic<float> Ambience;
     std::atomic<float> Effects;
+    std::atomic<uint64> GeneratedSamples{0};
+    std::atomic<float> Peak{0.f};
     TQueue<FName, EQueueMode::Mpsc> PendingCues;
 
     FShiSoundscapeControlState()
@@ -93,6 +95,7 @@ namespace
             EffectsFader.SetTarget(bEnabled ? Control->Effects.load(std::memory_order_acquire) : 0.f, FadeFrames);
 
             const int32 NumFrames = NumSamples / 2;
+            float Peak = 0.f;
             for (int32 Frame = 0; Frame < NumFrames; ++Frame)
             {
                 const int32 LeftIndex = FMath::FloorToInt(RainPosition) % RainSamples.Num();
@@ -125,8 +128,11 @@ namespace
                 const float Sample = FMath::Clamp((Lowpassed * AmbienceFader.Advance() + CueValue * EffectsFader.Advance()) * Master, -1.f, 1.f);
                 OutAudio[Frame * 2] = Sample;
                 OutAudio[Frame * 2 + 1] = Sample;
+                Peak = FMath::Max(Peak, FMath::Abs(Sample));
             }
             if ((NumSamples & 1) != 0) OutAudio[NumSamples - 1] = 0.f;
+            Control->GeneratedSamples.fetch_add(NumSamples, std::memory_order_relaxed);
+            Control->Peak.store(Peak, std::memory_order_relaxed);
             return NumSamples;
         }
 
@@ -157,6 +163,17 @@ namespace
         FShiLinearFader AmbienceFader;
         FShiLinearFader EffectsFader;
     };
+}
+
+FShiSoundscapeRenderStats UShiSoundscapeComponent::GetRenderStats() const
+{
+    FShiSoundscapeRenderStats Stats;
+    if (ControlState.IsValid())
+    {
+        Stats.GeneratedSamples = ControlState->GeneratedSamples.load(std::memory_order_relaxed);
+        Stats.Peak = ControlState->Peak.load(std::memory_order_relaxed);
+    }
+    return Stats;
 }
 
 UShiSoundscapeComponent::UShiSoundscapeComponent(const FObjectInitializer& ObjectInitializer)

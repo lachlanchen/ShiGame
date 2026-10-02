@@ -2,6 +2,8 @@
 #include "ShiJinyangFigure.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiAtomicSaveFile.h"
+#include "AudioMixerBlueprintLibrary.h"
+#include "Components/AudioComponent.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "Components/LightComponent.h"
@@ -23,6 +25,7 @@
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Guid.h"
+#include "Misc/App.h"
 #include "InputCoreTypes.h"
 #include "Widgets/SOverlay.h"
 #include "Widgets/SBoxPanel.h"
@@ -43,6 +46,7 @@ void AShiJinyangGameMode::BeginPlay()
     FString Locale; FParse::Value(FCommandLine::Get(), TEXT("ShiLocale="), Locale);
     bChinese = Locale == TEXT("zh-Hans") || Locale == TEXT("zh");
     bReducedMotion = FParse::Param(FCommandLine::Get(), TEXT("ShiReducedMotion"));
+    bAudioReview = FParse::Param(FCommandLine::Get(), TEXT("ShiAudioReview"));
     SavePath = FPaths::ProjectSavedDir() / TEXT("Jinyang/chronicle.v1.json");
     FString Override;
     if (FParse::Value(FCommandLine::Get(), TEXT("ShiJinyangSave="), Override))
@@ -67,7 +71,9 @@ void AShiJinyangGameMode::BeginPlay()
     Sound->RegisterComponent();
     if (Sound->LoadCanonical(Error)) Sound->SetAmbienceActive(true);
     else Note = Text(TEXT("Provisional sound unavailable; orders remain playable."), TEXT("临时音效不可用，仍可继续操作。"));
-    SelectSite(TEXT("wall")); RefreshScreen();
+    SelectSite(TEXT("wall"));
+    if (!Model.GetState().Outcome.IsEmpty()) SetOutcomeCamera();
+    RefreshScreen();
     UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_READY history=%d save=%s blockout=true"), Model.GetState().History.Num(), *SavePath);
 }
 AStaticMeshActor* AShiJinyangGameMode::Box(const FVector& P, const FVector& Scale, const FLinearColor& Color)
@@ -127,6 +133,11 @@ void AShiJinyangGameMode::CreateWorld()
         {
             Box(P + FVector(0, 0, -18), FVector(5.2, 4.5, .4), FLinearColor(.3, .26, .17));
             Box(P + FVector(100, 0, 65), FVector(1.4, 1.7, 1.3), C);
+            if (Pair.Key != TEXT("zhi"))
+            {
+                Box(P + FVector(-140, 100, 90), FVector(.035,.035,1.8), FLinearColor(.22,.13,.06));
+                Signals.Add(Pair.Key, Box(P + FVector(-140,100,65), FVector(.7,.035,.35), C));
+            }
         }
     }
     CreateFigures();
@@ -172,12 +183,15 @@ FVector AShiJinyangGameMode::ForceDestination(int32 I) const
 TArray<FVector> AShiJinyangGameMode::ForceRoute(int32 I) const
 {
     const FVector End = ForceDestination(I);
+    const float Lane = 1020 + (I % 4) * 52;
+    const float Lower = -646 + (I % 4) * 44;
+    const float Upper = 842 + (I % 4) * 38;
     if (Model.GetState().Outcome == TEXT("costly-withdrawal"))
-        return {FVector(-550, -100, 0), End};
-    if (I < 4) return {FVector(Figures[I]->GetActorLocation().X, 900, 0), FVector(1100, 900, 0), FVector(1100, End.Y, 0), End};
-    if (I < 8) return {FVector(Figures[I]->GetActorLocation().X, -580, 0), FVector(1100, -580, 0), FVector(1100, End.Y, 0), End};
+        return {FVector(-568 + (I - 12) * 18, -100, 0), End};
+    if (I < 4) return {FVector(Figures[I]->GetActorLocation().X, Upper, 0), FVector(Lane, Upper, 0), FVector(Lane, End.Y, 0), End};
+    if (I < 8) return {FVector(Figures[I]->GetActorLocation().X, Lower, 0), FVector(Lane, Lower, 0), FVector(Lane, End.Y, 0), End};
     if (I < 12) return {End};
-    return {FVector(-500, -580, 0), FVector(1100, -580, 0), FVector(1100, End.Y, 0), End};
+    return {FVector(-540 + (I % 4) * 30, Lower, 0), FVector(Lane, Lower, 0), FVector(Lane, End.Y, 0), End};
 }
 FString AShiJinyangGameMode::Objective() const
 {
@@ -201,15 +215,23 @@ FString AShiJinyangGameMode::SiteReport() const
         const auto& A = S.Allies[SelectedSite];
         if (!A.Proposal) return Text(TEXT("No mission has reached this camp."), TEXT("尚无使者抵达这座营地。"));
         const FString Date = A.AgreedWindow < 0 ? Text(TEXT("not yet"), TEXT("尚未")) : FString::FromInt(A.AgreedWindow);
-        return bChinese ? FString::Printf(TEXT("已收到提议。集结时间：%d。已确认日期：%s。"), A.ReadyAt, *Date)
-            : FString::Printf(TEXT("Proposal received. Assembly: window %d. Date acknowledged: %s."), A.ReadyAt, *Date);
+        const FString Decision = Model.AllyResponse(SelectedSite)->GetStringField(TEXT("decision"));
+        const FString Reply = Decision == TEXT("stay") ? Text(TEXT("The camp declines: the exposed plan is too risky."), TEXT("营中拒绝：计划暴露的风险太大。"))
+            : Decision == TEXT("withhold") ? Text(TEXT("Troops held: the other camp's pledge is missing."), TEXT("按兵不动：尚无另一方的承诺。"))
+            : A.AgreedWindow < 0 ? Text(TEXT("Both pledges received. A date is still needed."), TEXT("已收到双方承诺，仍须约定日期。"))
+            : A.AgreedWindow < A.ReadyAt ? Text(TEXT("Date acknowledged, but the force cannot assemble in time."), TEXT("已确认日期，但军队来不及集结。"))
+            : Text(TEXT("Agreed date allows assembly. Raised signal, troops still held."), TEXT("约定日期容得下集结。信号升起，军队仍待行动。"));
+        return Reply + (bChinese ? FString::Printf(TEXT("\n集结时段：%d · 已确认日期：%s。"), A.ReadyAt, *Date)
+            : FString::Printf(TEXT("\nAssembly: window %d · acknowledged date: %s."), A.ReadyAt, *Date));
     }
     if (SelectedSite == TEXT("zhi")) return Text(TEXT("The opposing camp watches exposed preparations. You cannot order its forces."), TEXT("敌营会注意暴露的准备。你无权指挥其军队。"));
     if (SelectedSite == TEXT("route")) return S.Exit
         ? Text(TEXT("The exit is prepared, with room for only part of the force."), TEXT("退路已经准备，只能带走一部分力量。"))
         : Text(TEXT("A withdrawal needs preparation before the position is lost."), TEXT("必须在阵地失守前准备撤离。"));
-    FString Report = bChinese ? FString::Printf(TEXT("当前时段 %d · 阵地可维持至 %d · 储备 %d · 可调兵力 %d"), S.Tick, S.Deadline, S.Treasury, S.Force)
-        : FString::Printf(TEXT("Current window %d · city holds through %d · reserves %d · available force %d"), S.Tick, S.Deadline, S.Treasury, S.Force);
+    const int32 DisplayForce = S.Estate ? static_cast<int32>(S.Estate->GetNumberField(TEXT("survivingForce"))) : S.Force;
+    const int32 DisplayTreasury = S.Estate ? static_cast<int32>(S.Estate->GetNumberField(TEXT("treasury"))) : S.Treasury;
+    FString Report = bChinese ? FString::Printf(TEXT("当前时段 %d · 阵地可维持至 %d · 储备 %d · 可调兵力 %d"), S.Tick, S.Deadline, DisplayTreasury, DisplayForce)
+        : FString::Printf(TEXT("Current window %d · city holds through %d · reserves %d · available force %d"), S.Tick, S.Deadline, DisplayTreasury, DisplayForce);
     if (SelectedSite == TEXT("zhao") && S.Window >= 0)
         Report += bChinese ? FString::Printf(TEXT("\n约定行动：%d · 韩集结：%d · 魏集结：%d"), S.Window, S.Allies[TEXT("han")].ReadyAt, S.Allies[TEXT("wei")].ReadyAt)
             : FString::Printf(TEXT("\nAgreed operation: %d · Han ready: %d · Wei ready: %d"), S.Window, S.Allies[TEXT("han")].ReadyAt, S.Allies[TEXT("wei")].ReadyAt);
@@ -220,6 +242,15 @@ TArray<FString> AShiJinyangGameMode::ContextCommands() const
     TArray<FString> Out;
     for (const auto& Id : Model.Available()) if (Model.GetCommands()[Id].Site == SelectedSite) Out.Add(Id);
     return Out;
+}
+int32 AShiJinyangGameMode::CommandKey(const FString& Id) const
+{
+    // A command keeps its key when another command becomes unavailable.
+    if (Id == TEXT("withdraw") || Id.StartsWith(TEXT("escort-")) || Id == TEXT("early-date")) return 2;
+    if (Id == TEXT("aligned-date")) return 3;
+    if (Id == TEXT("wait")) return 4;
+    if (Id == TEXT("execute")) return 5;
+    return 1;
 }
 void AShiJinyangGameMode::SelectSite(const FString& Id)
 {
@@ -246,20 +277,21 @@ void AShiJinyangGameMode::RefreshScreen()
         const auto Object = Raw->AsObject(); const FString Id = Object->GetStringField(TEXT("id"));
         const TMap<FString, FString> ShortEn = {{TEXT("wall"),TEXT("Wall")},{TEXT("embankment"),TEXT("Dam")},{TEXT("route"),TEXT("Exit")},{TEXT("han"),TEXT("Han")},{TEXT("wei"),TEXT("Wei")},{TEXT("zhi"),TEXT("Zhi")},{TEXT("zhao"),TEXT("Zhao")}};
         const TMap<FString, FString> ShortZh = {{TEXT("wall"),TEXT("防线")},{TEXT("embankment"),TEXT("堤道")},{TEXT("route"),TEXT("退路")},{TEXT("han"),TEXT("韩营")},{TEXT("wei"),TEXT("魏营")},{TEXT("zhi"),TEXT("智营")},{TEXT("zhao"),TEXT("指挥")}};
-        const FString Label = bChinese ? ShortZh[Id] : ShortEn[Id];
-        SitesBar->AddSlot().AutoWidth().Padding(2)[SNew(SButton).Text(FText::FromString(Label))
-            .OnClicked_Lambda([this, Id]() { SelectSite(Id); return FReply::Handled(); })];
+        const FString Label = (Id == SelectedSite ? TEXT("[") : TEXT(""))
+            + (bChinese ? ShortZh[Id] : ShortEn[Id]) + (Id == SelectedSite ? TEXT("]") : TEXT(""));
+        SitesBar->AddSlot().AutoWidth().Padding(2)[SNew(SBox).WidthOverride(68).HeightOverride(44)
+            [SNew(SButton).ContentPadding(FMargin(4)).HAlign(HAlign_Center).VAlign(VAlign_Center).Text(FText::FromString(Label))
+            .OnClicked_Lambda([this, Id]() { SelectSite(Id); return FReply::Handled(); })]];
     }
     auto Context = SNew(SVerticalBox);
-    Context->AddSlot().AutoHeight()[SitesBar];
     Context->AddSlot().AutoHeight().Padding(0, 8)[SNew(STextBlock).Text(FText::FromString(SiteReport())).WrapTextAt(430).Font(FCoreStyle::GetDefaultFontStyle("Regular", 16))];
     const auto Actions = ContextCommands();
     for (int32 I = 0; I < Actions.Num(); ++I)
     {
         const FString Id = Actions[I]; const auto& C = Model.GetCommands()[Id];
         const FString Label = bChinese
-            ? FString::Printf(TEXT("%d  %s · %d 时段 / %d 储备"), I + 1, *C.Chinese, C.Time, C.Cost)
-            : FString::Printf(TEXT("%d  %s · %d windows / %d reserves"), I + 1, *C.English, C.Time, C.Cost);
+            ? FString::Printf(TEXT("%d  %s · %d 时段 / %d 储备"), CommandKey(Id), *C.Chinese, C.Time, C.Cost)
+            : FString::Printf(TEXT("%d  %s · %d windows / %d reserves"), CommandKey(Id), *C.English, C.Time, C.Cost);
         Context->AddSlot().AutoHeight().Padding(0, 3)[SNew(SButton).Text(FText::FromString(Label))
             .IsEnabled(!bSaveBlocked && !bPaused && BusyTime <= 0)
             .OnClicked_Lambda([this, Id]() { Issue(Id); return FReply::Handled(); })];
@@ -284,7 +316,7 @@ void AShiJinyangGameMode::RefreshScreen()
             Context->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Summary)).WrapTextAt(430)];
         }
         Context->AddSlot().AutoHeight().Padding(0, 8)[SNew(SButton)
-            .Text(FText::FromString(bRestartArmed ? Text(TEXT("Confirm: archive this route and start again"), TEXT("确认：保留本次纪事，重新开始")) : Text(TEXT("Try a different plan"), TEXT("尝试另一种方案"))))
+            .Text(FText::FromString(bRestartArmed ? Text(TEXT("Confirm: archive and start again · R"), TEXT("确认：保留纪事，重新开始 · R")) : Text(TEXT("Try a different plan · R"), TEXT("尝试另一种方案 · R"))))
             .IsEnabled(!bSaveBlocked && BusyTime <= 0).OnClicked_Lambda([this]() { Restart(); return FReply::Handled(); })];
         if (bRestartArmed) Context->AddSlot().AutoHeight()[SNew(SButton).Text(FText::FromString(Text(TEXT("Cancel"), TEXT("取消"))))
             .OnClicked_Lambda([this]() { bRestartArmed = false; RefreshScreen(); return FReply::Handled(); })];
@@ -301,7 +333,8 @@ void AShiJinyangGameMode::RefreshScreen()
         .OnClicked_Lambda([this]() { bReducedMotion = !bReducedMotion; SelectSite(SelectedSite); return FReply::Handled(); })];
     Screen = SNew(SOverlay)
         + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(22)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(FLinearColor(.018,.027,.04,.96)).ForegroundColor(FLinearColor::White).Padding(15)[Top]]
-        + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(22)[SNew(SBox).WidthOverride(460)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(FLinearColor(.018,.027,.04,.96)).ForegroundColor(FLinearColor::White).Padding(15)[Context]]]
+        + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(22,22,22,86)[SNew(SBox).WidthOverride(460)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(FLinearColor(.018,.027,.04,.96)).ForegroundColor(FLinearColor::White).Padding(15)[Context]]]
+        + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(22)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(FLinearColor(.018,.027,.04,.96)).ForegroundColor(FLinearColor::White).Padding(12)[SitesBar]]
         + SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Top).Padding(22)[Tools];
     GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(), 100);
     Screen->SetVisibility(bHideHud ? EVisibility::Collapsed : EVisibility::SelfHitTestInvisible);
@@ -327,6 +360,7 @@ void AShiJinyangGameMode::Issue(const FString& Id)
 void AShiJinyangGameMode::Present(const FString& Id)
 {
     BusyTime = .5f;
+    Beats.Empty(); BeatIndex = -1; BeatHold = 0.f;
     ActivePresentation = Id;
     Note = Text(TEXT("Order saved. Watch the people carry it out."), TEXT("命令已存档。观察人们执行。"));
     if (Id == TEXT("brace") && Figures.IsValidIndex(16))
@@ -339,25 +373,39 @@ void AShiJinyangGameMode::Present(const FString& Id)
     if ((Han || Wei) && Envoy.IsValid())
     {
         bFollowingEnvoy = true;
-        const FVector P = Sites[Han ? TEXT("han") : TEXT("wei")] + FVector(-90, -20, 0);
+        const FString Camp = Han ? TEXT("han") : TEXT("wei");
+        const FVector P = Sites[Camp] + FVector(-170, -20, 0);
         const FVector Start = Sites[TEXT("zhao")] + FVector(90, 70, 0);
-        if (Han) Envoy->MoveAlong({FVector(-550,650,0), FVector(-550,900,0), FVector(P.X,900,0), P,
-            FVector(P.X,900,0), FVector(-550,900,0), FVector(-550,650,0), Start});
-        else Envoy->MoveAlong({FVector(-500,-580,0), FVector(P.X,-580,0), P,
-            FVector(P.X,-580,0), FVector(-500,-580,0), Start});
+        if (Han)
+        {
+            Beats.Add({{FVector(-550,650,0), FVector(-550,900,0), FVector(P.X,900,0), P}, Camp, 4.f});
+            Beats.Add({{FVector(P.X,900,0), FVector(-550,900,0), FVector(-550,650,0), Start}, TEXT(""), 0.f});
+        }
+        else
+        {
+            Beats.Add({{FVector(-500,-580,0), FVector(P.X,-580,0), P}, Camp, 4.f});
+            Beats.Add({{FVector(P.X,-580,0), FVector(-500,-580,0), Start}, TEXT(""), 0.f});
+        }
+        BeginNextBeat();
     }
     if (Id == TEXT("relay") && Envoy.IsValid())
     {
         bFollowingEnvoy = true;
-        Envoy->MoveAlong({FVector(-550,650,0), FVector(-550,900,0), FVector(510,900,0), FVector(510,880,0),
-            FVector(510,900,0), FVector(1100,900,0), FVector(1100,-580,0), FVector(910,-580,0), FVector(910,-620,0),
-            FVector(910,-580,0), FVector(-500,-580,0), Sites[TEXT("zhao")] + FVector(90,70,0)});
+        Beats.Add({{FVector(-550,650,0), FVector(-550,900,0), FVector(430,900,0), FVector(430,880,0)}, TEXT("han"), 4.f});
+        Beats.Add({{FVector(430,900,0), FVector(1100,900,0), FVector(1100,-580,0), FVector(830,-580,0), FVector(830,-620,0)}, TEXT("wei"), 4.f});
+        Beats.Add({{FVector(830,-580,0), FVector(-500,-580,0), Sites[TEXT("zhao")] + FVector(90,70,0)}, TEXT(""), 0.f});
+        BeginNextBeat();
+    }
+    if (Id == TEXT("early-date") || Id == TEXT("aligned-date"))
+    {
+        Beats.Add({{}, TEXT("han"), 4.f}); Beats.Add({{}, TEXT("wei"), 4.f});
+        BeginNextBeat();
     }
     if (!Model.GetState().Outcome.IsEmpty())
     {
         const auto& S = Model.GetState();
-        CameraTarget = FVector(450, -1750, 1450);
-        RotationTarget = (FVector(500, 250, 80) - CameraTarget).Rotation();
+        Beats.Empty(); BeatIndex = -1; bFollowingEnvoy = false;
+        SetOutcomeCamera();
         if (S.Outcome == TEXT("coordinated-reversal"))
         {
             for (int32 I = 0; I < 16; ++I) Figures[I]->MoveAlong(ForceRoute(I));
@@ -383,20 +431,72 @@ void AShiJinyangGameMode::Present(const FString& Id)
         }
     }
 }
+void AShiJinyangGameMode::BeginNextBeat()
+{
+    ++BeatIndex; bBeatResponseStarted = false; BeatHold = 0.f;
+    if (!Beats.IsValidIndex(BeatIndex)) return;
+    const auto& Beat = Beats[BeatIndex];
+    if (Beat.Route.Num() && Envoy.IsValid()) Envoy->MoveAlong(Beat.Route);
+    if (!Beat.Route.Num() && Sites.Contains(Beat.Camp))
+    {
+        const FVector P = Sites[Beat.Camp];
+        CameraTarget = P + FVector(-480,-620,520);
+        RotationTarget = (P + FVector(0,0,90) - CameraTarget).Rotation();
+    }
+}
+void AShiJinyangGameMode::SetDiplomaticVisuals(const FString& Camp, bool Instant)
+{
+    if (!Model.GetState().Allies.Contains(Camp)) return;
+    const auto& A = Model.GetState().Allies[Camp];
+    const int32 Captain = Camp == TEXT("han") ? 0 : 4;
+    const FVector Contact = Sites[Camp] + FVector(-100,-20,0);
+    if (Figures.IsValidIndex(Captain) && A.Proposal)
+    {
+        if (Instant) Figures[Captain]->SetSettledPose(Contact, 180);
+        else Figures[Captain]->MoveAlong({Contact});
+        Figures[Captain]->FaceAtRest(180);
+        Figures[Captain]->SetReceiving(true);
+    }
+    const bool ReadyDate = A.AgreedWindow >= 0 && A.AgreedWindow >= A.ReadyAt;
+    if (Signals.Contains(Camp) && Signals[Camp].IsValid())
+        Signals[Camp]->SetActorLocation(Sites[Camp] + FVector(-140,100,ReadyDate ? 170 : 65));
+}
+void AShiJinyangGameMode::SetOutcomeCamera()
+{
+    CameraTarget = FVector(600,-1700,1950);
+    RotationTarget = (FVector(900,200,60) - CameraTarget).Rotation();
+    if (bReducedMotion && Camera.IsValid()) Camera->SetActorLocationAndRotation(CameraTarget,RotationTarget);
+}
 void AShiJinyangGameMode::ApplySettledVisuals(bool Resume)
 {
     if (Figures.Num() < 19) return;
     const auto& S = Model.GetState();
-    if (S.Braced) { if (Resume) Figures[16]->SetActorLocation(Sites[TEXT("wall")] + FVector(-80, 0, 0)); Figures[16]->SetWorking(true); }
-    if (S.Diversion) { if (Resume) Figures[17]->SetActorLocation(FVector(700,166,2)); Figures[17]->SetWorking(true); }
+    // Natural completion, skip and cold resume share the same location, facing and pose.
+    if (S.Braced) Figures[16]->SetSettledPose(Sites[TEXT("wall")] + FVector(-80,0,0), 0, true);
+    if (S.Diversion) Figures[17]->SetSettledPose(FVector(700,166,0), 90, true);
+    if (S.Exit && S.Outcome.IsEmpty()) for (int32 I = 12; I < 14; ++I)
+        Figures[I]->SetSettledPose(FVector(-550,530 + (I-12)*80,0),90);
+    for (const FString& Camp : {FString(TEXT("han")),FString(TEXT("wei"))}) SetDiplomaticVisuals(Camp,true);
+    if (Envoy.IsValid()) Envoy->SetSettledPose(Sites[TEXT("zhao")] + FVector(90,70,0),0);
     if (Water.IsValid() && S.Result && S.Result->GetBoolField(TEXT("diversionExecuted")))
         Water->SetActorLocation(FVector(1150, 420, -.5));
-    if (Resume && !S.Outcome.IsEmpty())
+    if (!S.Outcome.IsEmpty())
     {
         if (S.Outcome == TEXT("coordinated-reversal")) for (int32 I = 0; I < 16; ++I)
-            Figures[I]->SetActorLocation(ForceDestination(I) + FVector(0,0,2));
+            Figures[I]->SetSettledPose(ForceDestination(I),0);
         if (S.Outcome == TEXT("costly-withdrawal")) for (int32 I = 12; I < 16; ++I)
-            Figures[I]->SetActorLocation(ForceDestination(I) + FVector(0,0,2));
+            Figures[I]->SetSettledPose(ForceDestination(I),90);
+        if (S.Outcome == TEXT("isolated-defeat"))
+        {
+            for (int32 I = 8; I < 12; ++I) Figures[I]->SetSettledPose(ForceDestination(I),180);
+            if (S.Result && S.Result->GetBoolField(TEXT("diversionExecuted")))
+            {
+                for (int32 Ally = 0; Ally < 2; ++Ally)
+                    if (S.Result->GetObjectField(TEXT("allies"))->GetObjectField(Ally == 0 ? TEXT("han") : TEXT("wei"))->GetBoolField(TEXT("participates")))
+                        for (int32 I = Ally*4; I < Ally*4+4; ++I) Figures[I]->SetSettledPose(ForceDestination(I),0);
+                for (int32 I = 12; I < 16; ++I) Figures[I]->SetSettledPose(ForceDestination(I),0);
+            }
+        }
     }
     if (S.Result)
     {
@@ -429,7 +529,10 @@ void AShiJinyangGameMode::SkipMovement()
     if (BusyTime <= 0) return;
     for (const auto& F : Figures) if (F.IsValid()) F->FinishMotion();
     BusyTime = 0; bFollowingEnvoy = false;
+    Beats.Empty(); BeatIndex = -1;
     ApplySettledVisuals(false); SelectSite(SelectedSite);
+    if (!Model.GetState().Outcome.IsEmpty()) SetOutcomeCamera();
+    UE_LOG(LogTemp,Display,TEXT("SHI_JINYANG_SETTLED history=%d skipped=true outcome=%s"),Model.GetState().History.Num(),*Model.GetState().Outcome);
 }
 void AShiJinyangGameMode::Restart()
 {
@@ -443,10 +546,12 @@ void AShiJinyangGameMode::Restart()
         || !FShiAtomicSaveFile::WriteUtf8(SavePath, Fresh.ExportSave(), Error))
     { Note = Error; RefreshScreen(); return; }
     Model = MoveTemp(Fresh); LastSaved = Model.ExportSave(); bRestartArmed = false; bPaused = false;
+    Beats.Empty(); BeatIndex = -1; BusyTime = 0; bFollowingEnvoy = false;
     // Recreate only this chapter's figures; prior chronicle stays in the route archive.
     for (const auto& F : Figures) if (F.IsValid()) F->Destroy();
     Figures.Empty(); Envoy.Reset();
     CreateFigures();
+    ApplySettledVisuals(true);
     if (Water.IsValid()) Water->SetActorLocation(FVector(450,150,-.5));
     Note = Text(TEXT("Previous route archived. New plan ready."), TEXT("上一条路线已保留。可以尝试新方案。"));
     SelectSite(TEXT("wall"));
@@ -462,8 +567,26 @@ void AShiJinyangGameMode::Tick(float Dt)
         Screen->SetVisibility(bHideHud ? EVisibility::Collapsed : EVisibility::SelfHitTestInvisible);
     }
     if (PC->WasInputKeyJustPressed(EKeys::SpaceBar)) TogglePause();
+    if (PC->WasInputKeyJustPressed(EKeys::R) && !Model.GetState().Outcome.IsEmpty()
+        && BusyTime <= 0 && !bSaveBlocked && !bPaused) Restart();
     if (PC->WasInputKeyJustPressed(EKeys::M) && Sound)
     { Sound->SetSoundEnabled(!Sound->IsSoundEnabled()); RefreshScreen(); }
+    if (bAudioReview && PC->WasInputKeyJustPressed(EKeys::F8) && Sound)
+    {
+        const auto Stats = Sound->GetRenderStats();
+        const auto* Audio = Sound->GetAudioComponent();
+        UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_AUDIO enabled=%d playing=%d samples=%llu peak=%.6f app=%.3f focus=%d component=%.3f"),
+            Sound->IsSoundEnabled(), Sound->IsPlaying(), Stats.GeneratedSamples, Stats.Peak,
+            FApp::GetVolumeMultiplier(), FApp::HasFocus(), Audio ? Audio->VolumeMultiplier : -1.f);
+    }
+    if (bAudioReview && PC->WasInputKeyJustPressed(EKeys::F9))
+    {
+        bAudioRecording = !bAudioRecording;
+        if (bAudioRecording) UAudioMixerBlueprintLibrary::StartRecordingOutput(this,60);
+        else UAudioMixerBlueprintLibrary::StopRecordingOutput(this,EAudioRecordingExportType::WavFile,
+            TEXT("jinyang-mixer"),FPaths::GetPath(SavePath));
+        UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_AUDIO_RECORD active=%d"), bAudioRecording);
+    }
     if (PC->WasInputKeyJustPressed(EKeys::Escape) && bRestartArmed)
     { bRestartArmed = false; RefreshScreen(); }
     else if (PC->WasInputKeyJustPressed(EKeys::Escape) && BusyTime > 0) SkipMovement();
@@ -472,9 +595,9 @@ void AShiJinyangGameMode::Tick(float Dt)
         const TArray<FString> Order = {TEXT("wall"),TEXT("embankment"),TEXT("route"),TEXT("han"),TEXT("wei"),TEXT("zhi"),TEXT("zhao")};
         SelectSite(Order[(Order.IndexOfByKey(SelectedSite) + 1) % Order.Num()]);
     }
-    const FKey Digit[] = {EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four};
+    const FKey Digit[] = {EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four,EKeys::Five};
     const auto Actions = ContextCommands();
-    for (int32 I = 0; I < 4; ++I) if (Actions.IsValidIndex(I) && PC->WasInputKeyJustPressed(Digit[I])) Issue(Actions[I]);
+    for (const FString& Id : Actions) if (PC->WasInputKeyJustPressed(Digit[CommandKey(Id)-1])) Issue(Id);
     if (PC->WasInputKeyJustPressed(EKeys::LeftMouseButton))
     {
         FHitResult Hit;
@@ -496,14 +619,45 @@ void AShiJinyangGameMode::Tick(float Dt)
     Camera->SetActorRotation(FMath::RInterpTo(Camera->GetActorRotation(), RotationTarget, Dt, bReducedMotion ? 1000.f : 3.f));
     if (!bPaused && BusyTime > 0)
     {
+        if (Beats.IsValidIndex(BeatIndex) && Envoy.IsValid() && !Envoy->IsMoving())
+        {
+            if (!bBeatResponseStarted)
+            {
+                bBeatResponseStarted = true; BeatHold = Beats[BeatIndex].HoldSeconds;
+                const FString Camp = Beats[BeatIndex].Camp;
+                if (!Camp.IsEmpty())
+                {
+                    SetDiplomaticVisuals(Camp,false);
+                    Envoy->FaceAtRest(0); Envoy->SetReceiving(true);
+                    const FString Decision = Model.AllyResponse(Camp)->GetStringField(TEXT("decision"));
+                    Note = Decision == TEXT("stay") ? Text(TEXT("The camp declines the exposed plan."),TEXT("营中拒绝了暴露的计划。"))
+                        : Decision == TEXT("withhold") ? Text(TEXT("The commander receives the envoy, but holds the troops until the other camp pledges."),TEXT("主将接见使者，但要等另一方承诺才肯出兵。"))
+                        : Text(TEXT("The partner's pledge is received. The troops still wait for the agreed operation."),TEXT("已收到另一方的承诺。军队仍须等待约定的行动。"));
+                    if (Sound) Sound->PlayCue(FName(TEXT("inspect")));
+                    RefreshScreen();
+                    UE_LOG(LogTemp,Display,TEXT("SHI_JINYANG_REPLY camp=%s decision=%s ready=%d agreed=%d"),*Camp,*Decision,
+                        Model.GetState().Allies[Camp].ReadyAt,Model.GetState().Allies[Camp].AgreedWindow);
+                }
+            }
+            else { BeatHold -= Dt; if (BeatHold <= 0) BeginNextBeat(); }
+        }
         BusyTime = FMath::Max(0.f, BusyTime - Dt);
+        if (Beats.IsValidIndex(BeatIndex)) BusyTime = FMath::Max(BusyTime,.1f);
         for (const auto& F : Figures) if (F.IsValid() && F->IsMoving()) BusyTime = FMath::Max(BusyTime, .1f);
-        if (BusyTime <= 0) { ApplySettledVisuals(false); RefreshScreen(); }
+        if (BusyTime <= 0)
+        {
+            ApplySettledVisuals(false); Beats.Empty(); BeatIndex = -1; bFollowingEnvoy = false;
+            if (!Model.GetState().Outcome.IsEmpty()) SetOutcomeCamera();
+            RefreshScreen();
+            UE_LOG(LogTemp,Display,TEXT("SHI_JINYANG_SETTLED history=%d skipped=false outcome=%s"),Model.GetState().History.Num(),*Model.GetState().Outcome);
+        }
     }
 }
 void AShiJinyangGameMode::EndPlay(const EEndPlayReason::Type Reason)
 {
     if (Sound) Sound->Stop();
+    if (bAudioRecording) UAudioMixerBlueprintLibrary::StopRecordingOutput(this,EAudioRecordingExportType::WavFile,
+        TEXT("jinyang-mixer-interrupted"),FPaths::GetPath(SavePath));
     if (Screen && GEngine && GEngine->GameViewport) GEngine->GameViewport->RemoveViewportWidgetContent(Screen.ToSharedRef());
     Screen.Reset(); Super::EndPlay(Reason);
 }

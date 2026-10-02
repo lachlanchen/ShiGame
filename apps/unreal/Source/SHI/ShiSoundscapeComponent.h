@@ -6,6 +6,11 @@
 #include "ShiSoundscapeComponent.generated.h"
 
 struct FShiSoundscapeControlState;
+struct FShiSoundscapeRenderStats
+{
+    uint64 GeneratedSamples = 0;
+    float Peak = 0.f;
+};
 
 UCLASS(ClassGroup=(Audio), Meta=(BlueprintSpawnableComponent))
 class SHI_API UShiSoundscapeComponent : public USynthComponent
@@ -32,6 +37,7 @@ public:
     float GetEffectsCap() const { return Contract.Mix.EffectsCap; }
     int32 GetContractSampleRate() const { return Contract.Ambience.SampleRate; }
     const FString& GetContractId() const { return Contract.Id; }
+    FShiSoundscapeRenderStats GetRenderStats() const;
 
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

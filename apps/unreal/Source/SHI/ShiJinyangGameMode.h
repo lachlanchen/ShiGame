@@ -10,6 +10,13 @@ class UShiSoundscapeComponent;
 class UStaticMesh;
 class UMaterialInterface;
 
+struct FShiJinyangPresentationBeat
+{
+    TArray<FVector> Route;
+    FString Camp;
+    float HoldSeconds = 0.f;
+};
+
 UCLASS()
 class SHI_API AShiJinyangGameMode : public AGameModeBase
 {
@@ -27,9 +34,15 @@ private:
     FString ActivePresentation;
     bool bFollowingEnvoy = false;
     bool bHideHud = false;
+    bool bAudioReview = false, bAudioRecording = false;
+    TArray<FShiJinyangPresentationBeat> Beats;
+    int32 BeatIndex = -1;
+    float BeatHold = 0.f;
+    bool bBeatResponseStarted = false;
     TSharedPtr<SWidget> Screen;
     TMap<FString, FVector> Sites;
     TMap<FString, TWeakObjectPtr<AStaticMeshActor>> Markers;
+    TMap<FString, TWeakObjectPtr<AStaticMeshActor>> Signals;
     TArray<TWeakObjectPtr<AShiJinyangFigure>> Figures;
     TWeakObjectPtr<ACameraActor> Camera;
     TWeakObjectPtr<AShiJinyangFigure> Envoy;
@@ -49,11 +62,15 @@ private:
     void SelectSite(const FString& Id);
     void Issue(const FString& Id);
     void Present(const FString& Id);
+    void BeginNextBeat();
+    void SetDiplomaticVisuals(const FString& Camp, bool Instant);
+    void SetOutcomeCamera();
     void ApplySettledVisuals(bool bResume);
     void Restart();
     void TogglePause();
     void SkipMovement();
     TArray<FString> ContextCommands() const;
+    int32 CommandKey(const FString& Id) const;
     FString Text(const TCHAR* English, const TCHAR* Chinese) const;
     FString Objective() const;
     FString SiteReport() const;

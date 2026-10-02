@@ -37,6 +37,8 @@ public:
     const TMap<FString, FShiJinyangCommand>& GetCommands() const { return Commands; }
     const TSharedPtr<FJsonObject>& GetDefinition() const { return Definition; }
     const FString& GetFingerprint() const { return Fingerprint; }
+    TSharedPtr<FJsonObject> AllyResponse(const FString& Id) const
+    { return State.Allies.Contains(Id) ? Respond(Id) : nullptr; }
 private:
     TSharedPtr<FJsonObject> Definition;
     TMap<FString, int32> Parameters;

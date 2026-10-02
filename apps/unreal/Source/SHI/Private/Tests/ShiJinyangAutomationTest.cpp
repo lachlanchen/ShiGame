@@ -89,6 +89,21 @@ bool FShiJinyangReplayParity::RunTest(const FString& Arguments)
     FJsonSerializer::Serialize(Malformed.ToSharedRef(), TJsonWriterFactory<>::Create(&BadDefinition));
     TestFalse(TEXT("Missing geography fails before creating scene"), Guard.Initialize(BadDefinition, Error));
     TestEqual(TEXT("Failed definition preserves prior model"), Guard.ExportSave(), Before);
+    FShiJinyangModel Replies;
+    TestTrue(TEXT("Reply model initialized"),Replies.Initialize(Definition,Error));
+    for (const FString& Id : {FString(TEXT("brace")),FString(TEXT("diversion")),FString(TEXT("quiet-han"))})
+        TestTrue(TEXT("Reply setup order"),Replies.Commit(Id,Error));
+    TestEqual(TEXT("Contact alone does not command Han"),Replies.AllyResponse(TEXT("han"))->GetStringField(TEXT("decision")),FString(TEXT("withhold")));
+    TestEqual(TEXT("Uncontacted Wei stays"),Replies.AllyResponse(TEXT("wei"))->GetStringField(TEXT("decision")),FString(TEXT("stay")));
+    TestTrue(TEXT("Second contact"),Replies.Commit(TEXT("quiet-wei"),Error));
+    TestEqual(TEXT("Two unrelayed contacts still withhold"),Replies.AllyResponse(TEXT("wei"))->GetStringField(TEXT("decision")),FString(TEXT("withhold")));
+    TestTrue(TEXT("Pledges relayed"),Replies.Commit(TEXT("relay"),Error));
+    TestEqual(TEXT("Received partner pledge gives conditional agreement"),Replies.AllyResponse(TEXT("wei"))->GetStringField(TEXT("decision")),FString(TEXT("conditional")));
+    TestTrue(TEXT("Early date"),Replies.Commit(TEXT("early-date"),Error));
+    TestEqual(TEXT("Acknowledged date is not force readiness"),Replies.AllyResponse(TEXT("wei"))->GetStringField(TEXT("executionIssue")),FString(TEXT("not-ready")));
+    TestTrue(TEXT("Reschedule recovery"),Replies.Commit(TEXT("aligned-date"),Error));
+    TestTrue(TEXT("Later matching date permits Wei participation"),Replies.AllyResponse(TEXT("wei"))->GetBoolField(TEXT("participates")));
+    TestFalse(TEXT("No manufactured reply for an unknown camp"),Replies.AllyResponse(TEXT("unknown")).IsValid());
     return true;
 }
 #endif
