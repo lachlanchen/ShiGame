@@ -1,0 +1,509 @@
+#include "ShiJinyangGameMode.h"
+#include "ShiJinyangFigure.h"
+#include "ShiSoundscapeComponent.h"
+#include "ShiAtomicSaveFile.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
+#include "Components/LightComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/SkyLightComponent.h"
+#include "Engine/DirectionalLight.h"
+#include "Engine/SkyLight.h"
+#include "Engine/Engine.h"
+#include "Engine/GameViewportClient.h"
+#include "Engine/StaticMeshActor.h"
+#include "Engine/StaticMesh.h"
+#include "Engine/World.h"
+#include "Engine/HitResult.h"
+#include "GameFramework/PlayerController.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
+#include "Misc/Paths.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Guid.h"
+#include "InputCoreTypes.h"
+#include "Widgets/SOverlay.h"
+#include "Widgets/SBoxPanel.h"
+#include "Widgets/Layout/SBorder.h"
+#include "Widgets/Layout/SBox.h"
+#include "Widgets/Input/SButton.h"
+#include "Widgets/Text/STextBlock.h"
+#include "Styling/CoreStyle.h"
+
+AShiJinyangGameMode::AShiJinyangGameMode()
+{
+    PrimaryActorTick.bCanEverTick = true; DefaultPawnClass = nullptr;
+}
+FString AShiJinyangGameMode::Text(const TCHAR* En, const TCHAR* Zh) const { return bChinese ? Zh : En; }
+void AShiJinyangGameMode::BeginPlay()
+{
+    Super::BeginPlay();
+    FString Locale; FParse::Value(FCommandLine::Get(), TEXT("ShiLocale="), Locale);
+    bChinese = Locale == TEXT("zh-Hans") || Locale == TEXT("zh");
+    bReducedMotion = FParse::Param(FCommandLine::Get(), TEXT("ShiReducedMotion"));
+    SavePath = FPaths::ProjectSavedDir() / TEXT("Jinyang/chronicle.v1.json");
+    FString Override;
+    if (FParse::Value(FCommandLine::Get(), TEXT("ShiJinyangSave="), Override))
+        SavePath = FPaths::ConvertRelativePathToFull(Override);
+    FString Error;
+    if (!FFileHelper::LoadFileToString(DefinitionText, *(FPaths::ProjectContentDir() / TEXT("StreamingAssets/jinyang.v1.json")))
+        || !Model.Initialize(DefinitionText, Error))
+    { Note = TEXT("Jinyang definition unavailable: ") + Error; bSaveBlocked = true; RefreshScreen(); return; }
+    if (FPaths::FileExists(SavePath))
+    {
+        if (!FFileHelper::LoadFileToString(LastSaved, *SavePath) || !Model.Restore(LastSaved, Error))
+        { bSaveBlocked = true; Note = Text(TEXT("Save cannot be restored. File preserved. Choose a separate chronicle path."), TEXT("无法恢复存档。原文件已保留，请使用独立的纪事文件。")); }
+    }
+    else
+    {
+        LastSaved = Model.ExportSave();
+        if (!FShiAtomicSaveFile::WriteUtf8(SavePath, LastSaved, Error))
+        { bSaveBlocked = true; Note = Error; }
+    }
+    CreateWorld(); ApplySettledVisuals(true);
+    Sound = NewObject<UShiSoundscapeComponent>(this);
+    Sound->RegisterComponent();
+    if (Sound->LoadCanonical(Error)) Sound->SetAmbienceActive(true);
+    else Note = Text(TEXT("Provisional sound unavailable; orders remain playable."), TEXT("临时音效不可用，仍可继续操作。"));
+    SelectSite(TEXT("wall")); RefreshScreen();
+    UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_READY history=%d save=%s blockout=true"), Model.GetState().History.Num(), *SavePath);
+}
+AStaticMeshActor* AShiJinyangGameMode::Box(const FVector& P, const FVector& Scale, const FLinearColor& Color)
+{
+    auto* A = GetWorld()->SpawnActor<AStaticMeshActor>(P, FRotator::ZeroRotator);
+    auto* Mesh = A->GetStaticMeshComponent(); Mesh->SetMobility(EComponentMobility::Movable);
+    Mesh->SetStaticMesh(Cube); A->SetActorScale3D(Scale);
+    auto* M = UMaterialInstanceDynamic::Create(BasicMaterial, this);
+    M->SetVectorParameterValue(TEXT("Color"), Color); Mesh->SetMaterial(0, M);
+    return A;
+}
+AShiJinyangFigure* AShiJinyangGameMode::Figure(const FVector& P, const FLinearColor& Color)
+{
+    auto* A = GetWorld()->SpawnActor<AShiJinyangFigure>(FVector(P.X, P.Y, 2), FRotator::ZeroRotator);
+    A->Initialize(Cube, Sphere, Cylinder, BasicMaterial, Color); Figures.Add(A); return A;
+}
+void AShiJinyangGameMode::CreateWorld()
+{
+    Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+    Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    Cylinder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+    BasicMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+    if (!Cube || !Sphere || !Cylinder || !BasicMaterial)
+    { bSaveBlocked = true; Note = TEXT("Required engine blockout meshes are unavailable."); return; }
+    for (const auto& Raw : Model.GetDefinition()->GetArrayField(TEXT("sites")))
+    {
+        const auto S = Raw->AsObject(); const auto P = S->GetArrayField(TEXT("position"));
+        Sites.Add(S->GetStringField(TEXT("id")), FVector(P[0]->AsNumber(), P[1]->AsNumber(), P[2]->AsNumber()));
+    }
+    // Deliberately compressed schematic terrain, not archaeological measurement.
+    Box(FVector(400, 200, -75), FVector(38, 31, 1.5), FLinearColor(.15, .12, .075));
+    Water = Box(FVector(450, 150, -.5), FVector(23, 23, .02), FLinearColor(.055, .18, .23));
+    Box(FVector(-650, -300, -18), FVector(12, 12, .4), FLinearColor(.28, .23, .15));
+    Box(FVector(-240, -140, 100), FVector(.55, 6.2, 2), FLinearColor(.30, .24, .15));
+    Box(FVector(-240, -750, 100), FVector(.55, 1.4, 2), FLinearColor(.30, .24, .15));
+    Box(FVector(-850, 160, 100), FVector(4.7, .55, 2), FLinearColor(.30, .24, .15));
+    Box(FVector(-320, 160, 100), FVector(1.7, .55, 2), FLinearColor(.30, .24, .15));
+    Box(FVector(-500, 650, -18), FVector(2, 14, .4), FLinearColor(.31, .27, .18));
+    Box(FVector(300, 900, -18), FVector(18, 2, .4), FLinearColor(.31, .27, .18));
+    Box(FVector(700, 500, -18), FVector(2, 7, .4), FLinearColor(.27, .24, .14));
+    Box(FVector(850, -580, -18), FVector(13, 2, .4), FLinearColor(.31, .27, .18));
+    // Raised lanes connect the same routes used by the figures. No walking across floodwater.
+    Box(FVector(1100, 160, -18), FVector(2.6, 17, .4), FLinearColor(.31, .27, .18));
+    Box(FVector(700, -210, -18), FVector(2, 9, .4), FLinearColor(.31, .27, .18));
+    Box(FVector(1260, 450, -18), FVector(3.6, 4.5, .4), FLinearColor(.31, .27, .18));
+    Box(FVector(1850, 450, -18), FVector(7.8, 4.5, .4), FLinearColor(.31, .27, .18));
+    Box(FVector(720, 250, 35), FVector(5, 1, .7), FLinearColor(.26, .21, .14));
+    for (const auto& Pair : Sites)
+    {
+        const FLinearColor C = Pair.Key == TEXT("han") ? FLinearColor(.58, .34, .18)
+            : Pair.Key == TEXT("wei") ? FLinearColor(.23, .46, .30)
+            : Pair.Key == TEXT("zhi") ? FLinearColor(.42, .19, .17) : FLinearColor(.14, .32, .45);
+        const FVector P = Pair.Value;
+        auto* Marker = Box(P + FVector(0, 0, 18), FVector(.45, .45, .36), C);
+        Marker->Tags.Add(FName(*Pair.Key)); Markers.Add(Pair.Key, Marker);
+        if (Pair.Key == TEXT("han") || Pair.Key == TEXT("wei") || Pair.Key == TEXT("zhi"))
+        {
+            Box(P + FVector(0, 0, -18), FVector(5.2, 4.5, .4), FLinearColor(.3, .26, .17));
+            Box(P + FVector(100, 0, 65), FVector(1.4, 1.7, 1.3), C);
+        }
+    }
+    CreateFigures();
+    auto* Sun = GetWorld()->SpawnActor<ADirectionalLight>(FVector(0, 0, 1400), FRotator(-38, -32, 0));
+    Sun->GetLightComponent()->SetIntensity(4.f);
+    Sun->GetLightComponent()->SetLightColor(FLinearColor(1.f, .89f, .71f));
+    auto* Sky = GetWorld()->SpawnActor<ASkyLight>();
+    Sky->GetLightComponent()->SetMobility(EComponentMobility::Movable);
+    Sky->GetLightComponent()->SetIntensity(.7f);
+    Sky->GetLightComponent()->RecaptureSky();
+    Camera = GetWorld()->SpawnActor<ACameraActor>();
+    Camera->GetCameraComponent()->FieldOfView = 60;
+    if (auto* PC = GetWorld()->GetFirstPlayerController())
+    {
+        PC->bShowMouseCursor = true; PC->SetViewTarget(Camera.Get());
+        FInputModeGameAndUI Mode; Mode.SetHideCursorDuringCapture(false);
+        Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock); PC->SetInputMode(Mode);
+    }
+}
+void AShiJinyangGameMode::CreateFigures()
+{
+    // Explicit role order; never rely on TMap iteration for who joins an operation.
+    const FLinearColor Colors[] = {FLinearColor(.58,.34,.18), FLinearColor(.23,.46,.30), FLinearColor(.42,.19,.17)};
+    const FString CampIds[] = {TEXT("han"), TEXT("wei"), TEXT("zhi")};
+    for (int32 C = 0; C < 3; ++C) for (int32 I = 0; I < 4; ++I)
+        Figure(Sites[CampIds[C]] + FVector(-80 + I * 60, -150, 0), Colors[C]);
+    for (int32 I = 0; I < 4; ++I) Figure(FVector(-700 + I * 65, -270, 0), FLinearColor(.13,.29,.39));
+    Figure(FVector(-430,-100,0), FLinearColor(.34,.31,.23));
+    Figure(FVector(-480,-130,0), FLinearColor(.39,.35,.26));
+    Envoy = Figure(Sites[TEXT("zhao")] + FVector(90,70,0), FLinearColor(.37,.31,.22));
+}
+FVector AShiJinyangGameMode::ForceDestination(int32 I) const
+{
+    const auto& S = Model.GetState();
+    if (S.Outcome == TEXT("costly-withdrawal") && I >= 12)
+        return FVector(-550, 530 + (I - 12) * 80, 0);
+    const int32 Slot = I % 4;
+    if (S.Outcome == TEXT("coordinated-reversal"))
+        return FVector(I < 4 ? 1320 : I < 8 ? 1400 : I < 12 ? 1930 : 1480, 280 + Slot * 65, 0);
+    if (I >= 8 && I < 12) return FVector(1100, 280 + Slot * 65, 0);
+    return FVector(I < 4 ? 1300 : I < 8 ? 1380 : 1100, 280 + Slot * 65, 0);
+}
+TArray<FVector> AShiJinyangGameMode::ForceRoute(int32 I) const
+{
+    const FVector End = ForceDestination(I);
+    if (Model.GetState().Outcome == TEXT("costly-withdrawal"))
+        return {FVector(-550, -100, 0), End};
+    if (I < 4) return {FVector(Figures[I]->GetActorLocation().X, 900, 0), FVector(1100, 900, 0), FVector(1100, End.Y, 0), End};
+    if (I < 8) return {FVector(Figures[I]->GetActorLocation().X, -580, 0), FVector(1100, -580, 0), FVector(1100, End.Y, 0), End};
+    if (I < 12) return {End};
+    return {FVector(-500, -580, 0), FVector(1100, -580, 0), FVector(1100, End.Y, 0), End};
+}
+FString AShiJinyangGameMode::Objective() const
+{
+    if (!Model.GetDefinition()) return Note;
+    if (BusyTime > 0) return Text(TEXT("The order is underway. Follow the movement or pause to inspect."), TEXT("命令正在执行。观察行动，或暂停查看局势。"));
+    const auto& S = Model.GetState();
+    if (!S.Outcome.IsEmpty()) return Text(TEXT("Review what survived and what the settlement will owe."), TEXT("查看留下的力量，以及分配时需要兑现的承诺。"));
+    if (S.Window >= 0) return Text(TEXT("Compare the agreed date with force readiness. Act, reschedule or withdraw."), TEXT("核对约定日期与集结进度，再行动、改期或撤离。"));
+    if (S.Relayed) return Text(TEXT("Both sides received the pledges. Agree on a date they can meet."), TEXT("双方已收到承诺。约定能够共同赴约的日期。"));
+    if (!S.Allies[TEXT("han")].Mission.IsEmpty() || !S.Allies[TEXT("wei")].Mission.IsEmpty())
+        return Text(TEXT("Contact the other camp, then relay their conditional pledges."), TEXT("联络另一座营地，再转达双方附有条件的承诺。"));
+    return Text(TEXT("Keep the city usable. Prepare an operation or a way out."), TEXT("守住可用的阵地，准备行动，或留出退路。"));
+}
+FString AShiJinyangGameMode::SiteReport() const
+{
+    if (!Model.GetDefinition()) return Note;
+    if (BusyTime > 0) return Text(TEXT("The people are carrying out the saved order."), TEXT("人们正在执行已存档的命令。"));
+    const auto& S = Model.GetState();
+    if (SelectedSite == TEXT("han") || SelectedSite == TEXT("wei"))
+    {
+        const auto& A = S.Allies[SelectedSite];
+        if (!A.Proposal) return Text(TEXT("No mission has reached this camp."), TEXT("尚无使者抵达这座营地。"));
+        const FString Date = A.AgreedWindow < 0 ? Text(TEXT("not yet"), TEXT("尚未")) : FString::FromInt(A.AgreedWindow);
+        return bChinese ? FString::Printf(TEXT("已收到提议。集结时间：%d。已确认日期：%s。"), A.ReadyAt, *Date)
+            : FString::Printf(TEXT("Proposal received. Assembly: window %d. Date acknowledged: %s."), A.ReadyAt, *Date);
+    }
+    if (SelectedSite == TEXT("zhi")) return Text(TEXT("The opposing camp watches exposed preparations. You cannot order its forces."), TEXT("敌营会注意暴露的准备。你无权指挥其军队。"));
+    if (SelectedSite == TEXT("route")) return S.Exit
+        ? Text(TEXT("The exit is prepared, with room for only part of the force."), TEXT("退路已经准备，只能带走一部分力量。"))
+        : Text(TEXT("A withdrawal needs preparation before the position is lost."), TEXT("必须在阵地失守前准备撤离。"));
+    FString Report = bChinese ? FString::Printf(TEXT("当前时段 %d · 阵地可维持至 %d · 储备 %d · 可调兵力 %d"), S.Tick, S.Deadline, S.Treasury, S.Force)
+        : FString::Printf(TEXT("Current window %d · city holds through %d · reserves %d · available force %d"), S.Tick, S.Deadline, S.Treasury, S.Force);
+    if (SelectedSite == TEXT("zhao") && S.Window >= 0)
+        Report += bChinese ? FString::Printf(TEXT("\n约定行动：%d · 韩集结：%d · 魏集结：%d"), S.Window, S.Allies[TEXT("han")].ReadyAt, S.Allies[TEXT("wei")].ReadyAt)
+            : FString::Printf(TEXT("\nAgreed operation: %d · Han ready: %d · Wei ready: %d"), S.Window, S.Allies[TEXT("han")].ReadyAt, S.Allies[TEXT("wei")].ReadyAt);
+    return Report;
+}
+TArray<FString> AShiJinyangGameMode::ContextCommands() const
+{
+    TArray<FString> Out;
+    for (const auto& Id : Model.Available()) if (Model.GetCommands()[Id].Site == SelectedSite) Out.Add(Id);
+    return Out;
+}
+void AShiJinyangGameMode::SelectSite(const FString& Id)
+{
+    if (!Sites.Contains(Id)) return;
+    bFollowingEnvoy = false;
+    SelectedSite = Id;
+    const FVector P = Sites[Id];
+    CameraTarget = bPaused ? FVector(450, -1650, 1950) : P + FVector(-480, -620, 520);
+    RotationTarget = (P + FVector(0, 0, 60) - CameraTarget).Rotation();
+    if (bReducedMotion && Camera.IsValid()) Camera->SetActorLocationAndRotation(CameraTarget, RotationTarget);
+    RefreshScreen();
+}
+void AShiJinyangGameMode::RefreshScreen()
+{
+    if (!GEngine || !GEngine->GameViewport) return;
+    if (Screen) GEngine->GameViewport->RemoveViewportWidgetContent(Screen.ToSharedRef());
+    auto Top = SNew(SVerticalBox);
+    Top->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Text(TEXT("JINYANG · ZHAO COMMAND"), TEXT("晋阳 · 赵氏指挥")))).Font(FCoreStyle::GetDefaultFontStyle("Bold", 24))];
+    Top->AddSlot().AutoHeight().Padding(0, 8)[SNew(STextBlock).Text(FText::FromString(Objective())).Font(FCoreStyle::GetDefaultFontStyle("Regular", 18)).WrapTextAt(650)];
+    Top->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Text(TEXT("Development motion blockout · earlier Tongjian flashback · reconstructed orders"), TEXT("动作灰盒开发版 · 通鉴前史 · 操作属游戏重构")))).Font(FCoreStyle::GetDefaultFontStyle("Regular", 12))];
+    auto SitesBar = SNew(SHorizontalBox);
+    if (Model.GetDefinition()) for (const auto& Raw : Model.GetDefinition()->GetArrayField(TEXT("sites")))
+    {
+        const auto Object = Raw->AsObject(); const FString Id = Object->GetStringField(TEXT("id"));
+        const TMap<FString, FString> ShortEn = {{TEXT("wall"),TEXT("Wall")},{TEXT("embankment"),TEXT("Dam")},{TEXT("route"),TEXT("Exit")},{TEXT("han"),TEXT("Han")},{TEXT("wei"),TEXT("Wei")},{TEXT("zhi"),TEXT("Zhi")},{TEXT("zhao"),TEXT("Zhao")}};
+        const TMap<FString, FString> ShortZh = {{TEXT("wall"),TEXT("防线")},{TEXT("embankment"),TEXT("堤道")},{TEXT("route"),TEXT("退路")},{TEXT("han"),TEXT("韩营")},{TEXT("wei"),TEXT("魏营")},{TEXT("zhi"),TEXT("智营")},{TEXT("zhao"),TEXT("指挥")}};
+        const FString Label = bChinese ? ShortZh[Id] : ShortEn[Id];
+        SitesBar->AddSlot().AutoWidth().Padding(2)[SNew(SButton).Text(FText::FromString(Label))
+            .OnClicked_Lambda([this, Id]() { SelectSite(Id); return FReply::Handled(); })];
+    }
+    auto Context = SNew(SVerticalBox);
+    Context->AddSlot().AutoHeight()[SitesBar];
+    Context->AddSlot().AutoHeight().Padding(0, 8)[SNew(STextBlock).Text(FText::FromString(SiteReport())).WrapTextAt(430).Font(FCoreStyle::GetDefaultFontStyle("Regular", 16))];
+    const auto Actions = ContextCommands();
+    for (int32 I = 0; I < Actions.Num(); ++I)
+    {
+        const FString Id = Actions[I]; const auto& C = Model.GetCommands()[Id];
+        const FString Label = bChinese
+            ? FString::Printf(TEXT("%d  %s · %d 时段 / %d 储备"), I + 1, *C.Chinese, C.Time, C.Cost)
+            : FString::Printf(TEXT("%d  %s · %d windows / %d reserves"), I + 1, *C.English, C.Time, C.Cost);
+        Context->AddSlot().AutoHeight().Padding(0, 3)[SNew(SButton).Text(FText::FromString(Label))
+            .IsEnabled(!bSaveBlocked && !bPaused && BusyTime <= 0)
+            .OnClicked_Lambda([this, Id]() { Issue(Id); return FReply::Handled(); })];
+    }
+    if (!Model.GetState().Outcome.IsEmpty() && BusyTime <= 0)
+    {
+        const FString Outcome = Model.GetState().Outcome;
+        const FString Ending = Outcome == TEXT("coordinated-reversal") ? Text(TEXT("The alliance turns the siege"), TEXT("联盟扭转围城"))
+            : Outcome == TEXT("costly-withdrawal") ? Text(TEXT("A remnant gets out"), TEXT("带着余部撤离")) : Text(TEXT("The position is lost"), TEXT("阵地失守"));
+        Context->AddSlot().AutoHeight().Padding(0, 6)[SNew(STextBlock).Text(FText::FromString(Ending)).Font(FCoreStyle::GetDefaultFontStyle("Bold", 20)).WrapTextAt(430)];
+        if (Model.GetState().Estate)
+        {
+            const auto E = Model.GetState().Estate;
+            const int32 Force = static_cast<int32>(E->GetNumberField(TEXT("survivingForce")));
+            const int32 Treasury = static_cast<int32>(E->GetNumberField(TEXT("treasury")));
+            const FString OfficeId = E->GetStringField(TEXT("office"));
+            const FString Office = OfficeId == TEXT("zhao-command") ? Text(TEXT("Zhao command retained"), TEXT("保有赵氏指挥权"))
+                : OfficeId == TEXT("displaced-command") ? Text(TEXT("Displaced command"), TEXT("流亡指挥")) : Text(TEXT("Command lost"), TEXT("指挥权丧失"));
+            const FString Summary = bChinese
+                ? FString::Printf(TEXT("可调兵力 %d · 储备 %d · %s\n权利主张与义务已存档。分配章节正在制作。"), Force, Treasury, *Office)
+                : FString::Printf(TEXT("Available remnant %d · reserves %d · %s\nClaims and obligations saved. Settlement chapter is in development."), Force, Treasury, *Office);
+            Context->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Summary)).WrapTextAt(430)];
+        }
+        Context->AddSlot().AutoHeight().Padding(0, 8)[SNew(SButton)
+            .Text(FText::FromString(bRestartArmed ? Text(TEXT("Confirm: archive this route and start again"), TEXT("确认：保留本次纪事，重新开始")) : Text(TEXT("Try a different plan"), TEXT("尝试另一种方案"))))
+            .IsEnabled(!bSaveBlocked && BusyTime <= 0).OnClicked_Lambda([this]() { Restart(); return FReply::Handled(); })];
+        if (bRestartArmed) Context->AddSlot().AutoHeight()[SNew(SButton).Text(FText::FromString(Text(TEXT("Cancel"), TEXT("取消"))))
+            .OnClicked_Lambda([this]() { bRestartArmed = false; RefreshScreen(); return FReply::Handled(); })];
+    }
+    Context->AddSlot().AutoHeight().Padding(0, 7)[SNew(STextBlock).Text(FText::FromString(Note)).WrapTextAt(430)];
+    if (BusyTime > 0) Context->AddSlot().AutoHeight()[SNew(SButton).Text(FText::FromString(Text(TEXT("Skip movement · keeps this order"), TEXT("跳过动作 · 保留本次命令"))))
+        .OnClicked_Lambda([this]() { SkipMovement(); return FReply::Handled(); })];
+    auto Tools = SNew(SHorizontalBox);
+    Tools->AddSlot().AutoWidth()[SNew(SButton).Text(FText::FromString(Sound && Sound->IsSoundEnabled() ? Text(TEXT("Sound on · M"), TEXT("声音已开启 · M")) : Text(TEXT("Enable sound · M"), TEXT("开启声音 · M"))))
+        .OnClicked_Lambda([this]() { if (Sound) Sound->SetSoundEnabled(!Sound->IsSoundEnabled()); RefreshScreen(); return FReply::Handled(); })];
+    Tools->AddSlot().AutoWidth().Padding(5, 0)[SNew(SButton).Text(FText::FromString(bPaused ? Text(TEXT("Resume · Space"), TEXT("继续 · 空格")) : Text(TEXT("Pause / overview · Space"), TEXT("暂停 / 全局视图 · 空格"))))
+        .OnClicked_Lambda([this]() { TogglePause(); return FReply::Handled(); })];
+    Tools->AddSlot().AutoWidth()[SNew(SButton).Text(FText::FromString(bReducedMotion ? Text(TEXT("Reduced camera motion"), TEXT("减少镜头运动")) : Text(TEXT("Reduce camera motion"), TEXT("减少镜头运动"))))
+        .OnClicked_Lambda([this]() { bReducedMotion = !bReducedMotion; SelectSite(SelectedSite); return FReply::Handled(); })];
+    Screen = SNew(SOverlay)
+        + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(22)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(FLinearColor(.018,.027,.04,.96)).ForegroundColor(FLinearColor::White).Padding(15)[Top]]
+        + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(22)[SNew(SBox).WidthOverride(460)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(FLinearColor(.018,.027,.04,.96)).ForegroundColor(FLinearColor::White).Padding(15)[Context]]]
+        + SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Top).Padding(22)[Tools];
+    GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(), 100);
+    Screen->SetVisibility(bHideHud ? EVisibility::Collapsed : EVisibility::SelfHitTestInvisible);
+}
+void AShiJinyangGameMode::Issue(const FString& Id)
+{
+    UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_INPUT id=%s blocked=%d paused=%d busy=%.2f restart=%d"), *Id, bSaveBlocked, bPaused, BusyTime, bRestartArmed);
+    if (bSaveBlocked || bPaused || BusyTime > 0 || bRestartArmed) return;
+    FShiJinyangModel Candidate = Model; FString Error;
+    if (!Candidate.Commit(Id, Error)) { Note = Error; RefreshScreen(); return; }
+    FString Current;
+    if (!FFileHelper::LoadFileToString(Current, *SavePath) || Current != LastSaved)
+    { bSaveBlocked = true; Note = Text(TEXT("Save changed outside this session. Reload before issuing more orders."), TEXT("存档已被其他会话修改。请重新载入后操作。")); RefreshScreen(); return; }
+    const FString NewSave = Candidate.ExportSave();
+    if (!FShiAtomicSaveFile::WriteUtf8(SavePath, NewSave, Error)) { Note = Error; RefreshScreen(); return; }
+    Model = MoveTemp(Candidate); LastSaved = NewSave;
+    if (Sound) { Sound->ResumePreferredFromGesture(); Sound->PlayCue(FName(TEXT("commit"))); }
+    Present(Id);
+    UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_ORDER id=%s tick=%d history=%d outcome=%s"), *Id,
+        Model.GetState().Tick, Model.GetState().History.Num(), *Model.GetState().Outcome);
+    RefreshScreen();
+}
+void AShiJinyangGameMode::Present(const FString& Id)
+{
+    BusyTime = .5f;
+    ActivePresentation = Id;
+    Note = Text(TEXT("Order saved. Watch the people carry it out."), TEXT("命令已存档。观察人们执行。"));
+    if (Id == TEXT("brace") && Figures.IsValidIndex(16))
+        Figures[16]->MoveAlong({Sites[TEXT("wall")] + FVector(-80, 0, 0)}, true);
+    if (Id == TEXT("diversion") && Figures.IsValidIndex(17))
+        Figures[17]->MoveAlong({FVector(-500, -580, 0), FVector(700, -580, 0), FVector(700, 166, 0)}, true);
+    if (Id == TEXT("escape"))
+        for (int32 I = 12; I < 14; ++I) Figures[I]->MoveAlong({FVector(-550, -100, 0), FVector(-550, 530 + (I - 12) * 80, 0)}, true);
+    const bool Han = Id.EndsWith(TEXT("-han")), Wei = Id.EndsWith(TEXT("-wei"));
+    if ((Han || Wei) && Envoy.IsValid())
+    {
+        bFollowingEnvoy = true;
+        const FVector P = Sites[Han ? TEXT("han") : TEXT("wei")] + FVector(-90, -20, 0);
+        const FVector Start = Sites[TEXT("zhao")] + FVector(90, 70, 0);
+        if (Han) Envoy->MoveAlong({FVector(-550,650,0), FVector(-550,900,0), FVector(P.X,900,0), P,
+            FVector(P.X,900,0), FVector(-550,900,0), FVector(-550,650,0), Start});
+        else Envoy->MoveAlong({FVector(-500,-580,0), FVector(P.X,-580,0), P,
+            FVector(P.X,-580,0), FVector(-500,-580,0), Start});
+    }
+    if (Id == TEXT("relay") && Envoy.IsValid())
+    {
+        bFollowingEnvoy = true;
+        Envoy->MoveAlong({FVector(-550,650,0), FVector(-550,900,0), FVector(510,900,0), FVector(510,880,0),
+            FVector(510,900,0), FVector(1100,900,0), FVector(1100,-580,0), FVector(910,-580,0), FVector(910,-620,0),
+            FVector(910,-580,0), FVector(-500,-580,0), Sites[TEXT("zhao")] + FVector(90,70,0)});
+    }
+    if (!Model.GetState().Outcome.IsEmpty())
+    {
+        const auto& S = Model.GetState();
+        CameraTarget = FVector(450, -1750, 1450);
+        RotationTarget = (FVector(500, 250, 80) - CameraTarget).Rotation();
+        if (S.Outcome == TEXT("coordinated-reversal"))
+        {
+            for (int32 I = 0; I < 16; ++I) Figures[I]->MoveAlong(ForceRoute(I));
+        }
+        else if (S.Outcome == TEXT("costly-withdrawal"))
+            for (int32 I = 12; I < 16; ++I) Figures[I]->MoveAlong(ForceRoute(I));
+        else
+        {
+            if (S.Result && S.Result->GetBoolField(TEXT("diversionExecuted")))
+            {
+                for (int32 Ally = 0; Ally < 2; ++Ally)
+                {
+                    const TCHAR* AllyId = Ally == 0 ? TEXT("han") : TEXT("wei");
+                    if (S.Result->GetObjectField(TEXT("allies"))->GetObjectField(AllyId)->GetBoolField(TEXT("participates")))
+                        for (int32 I = Ally * 4; I < Ally * 4 + 4; ++I)
+                            Figures[I]->MoveAlong(ForceRoute(I));
+                }
+                for (int32 I = 12; I < 16; ++I)
+                    Figures[I]->MoveAlong(ForceRoute(I));
+            }
+            for (int32 I = 8; I < 12; ++I)
+                Figures[I]->MoveAlong(ForceRoute(I));
+        }
+    }
+}
+void AShiJinyangGameMode::ApplySettledVisuals(bool Resume)
+{
+    if (Figures.Num() < 19) return;
+    const auto& S = Model.GetState();
+    if (S.Braced) { if (Resume) Figures[16]->SetActorLocation(Sites[TEXT("wall")] + FVector(-80, 0, 0)); Figures[16]->SetWorking(true); }
+    if (S.Diversion) { if (Resume) Figures[17]->SetActorLocation(FVector(700,166,2)); Figures[17]->SetWorking(true); }
+    if (Water.IsValid() && S.Result && S.Result->GetBoolField(TEXT("diversionExecuted")))
+        Water->SetActorLocation(FVector(1150, 420, -.5));
+    if (Resume && !S.Outcome.IsEmpty())
+    {
+        if (S.Outcome == TEXT("coordinated-reversal")) for (int32 I = 0; I < 16; ++I)
+            Figures[I]->SetActorLocation(ForceDestination(I) + FVector(0,0,2));
+        if (S.Outcome == TEXT("costly-withdrawal")) for (int32 I = 12; I < 16; ++I)
+            Figures[I]->SetActorLocation(ForceDestination(I) + FVector(0,0,2));
+    }
+    if (S.Result)
+    {
+        const TMap<FString,FString> ReasonsMap = {
+            {TEXT("city-deadline-missed"), Text(TEXT("The city could not hold until the operation."),TEXT("阵地无法维持至行动时刻。"))},
+            {TEXT("diversion-unavailable"), Text(TEXT("The flood diversion did not operate."),TEXT("未能实施决水行动。"))},
+            {TEXT("han:not-committed"), Text(TEXT("Han withheld its forces."),TEXT("韩氏没有出兵。"))},
+            {TEXT("wei:not-committed"), Text(TEXT("Wei withheld its forces."),TEXT("魏氏没有出兵。"))},
+            {TEXT("han:not-ready"), Text(TEXT("Han had not assembled."),TEXT("韩军尚未集结。"))},
+            {TEXT("wei:not-ready"), Text(TEXT("Wei had not assembled."),TEXT("魏军尚未集结。"))},
+            {TEXT("han:wrong-window"), Text(TEXT("Han did not acknowledge this date."),TEXT("韩氏未确认这一日期。"))},
+            {TEXT("wei:wrong-window"), Text(TEXT("Wei did not acknowledge this date."),TEXT("魏氏未确认这一日期。"))},
+            {TEXT("prepared-withdrawal-used"), Text(TEXT("The prepared exit saved a limited remnant."),TEXT("预备退路保住了有限的余部。"))}};
+        FString Reasons;
+        for (const auto& R : S.Result->GetArrayField(TEXT("reasons")))
+        { if (!Reasons.IsEmpty()) Reasons += TEXT(" "); Reasons += ReasonsMap.FindRef(R->AsString()); }
+        if (Reasons.IsEmpty() && S.Outcome == TEXT("coordinated-reversal"))
+            Reasons = Text(TEXT("Han and Wei joined. Their settlement claims remain obligations, not permanent loyalty."),TEXT("韩、魏共同参战。分配时仍须兑现承诺，并不等于永久忠诚。"));
+        Note = Reasons;
+    }
+}
+void AShiJinyangGameMode::TogglePause()
+{
+    bPaused = !bPaused;
+    for (const auto& F : Figures) if (F.IsValid()) F->SetActorTickEnabled(!bPaused);
+    SelectSite(SelectedSite);
+}
+void AShiJinyangGameMode::SkipMovement()
+{
+    if (BusyTime <= 0) return;
+    for (const auto& F : Figures) if (F.IsValid()) F->FinishMotion();
+    BusyTime = 0; bFollowingEnvoy = false;
+    ApplySettledVisuals(false); SelectSite(SelectedSite);
+}
+void AShiJinyangGameMode::Restart()
+{
+    if (!bRestartArmed) { bRestartArmed = true; RefreshScreen(); return; }
+    FString Error, Current;
+    if (!FFileHelper::LoadFileToString(Current, *SavePath) || Current != LastSaved)
+    { bSaveBlocked = true; Note = TEXT("Save changed; restart not applied."); RefreshScreen(); return; }
+    FShiJinyangModel Fresh;
+    const FString Archive = FPaths::GetPath(SavePath) / TEXT("routes") / (FGuid::NewGuid().ToString(EGuidFormats::Digits) + TEXT(".json"));
+    if (!Fresh.Initialize(DefinitionText, Error) || !FShiAtomicSaveFile::WriteUtf8(Archive, LastSaved, Error)
+        || !FShiAtomicSaveFile::WriteUtf8(SavePath, Fresh.ExportSave(), Error))
+    { Note = Error; RefreshScreen(); return; }
+    Model = MoveTemp(Fresh); LastSaved = Model.ExportSave(); bRestartArmed = false; bPaused = false;
+    // Recreate only this chapter's figures; prior chronicle stays in the route archive.
+    for (const auto& F : Figures) if (F.IsValid()) F->Destroy();
+    Figures.Empty(); Envoy.Reset();
+    CreateFigures();
+    if (Water.IsValid()) Water->SetActorLocation(FVector(450,150,-.5));
+    Note = Text(TEXT("Previous route archived. New plan ready."), TEXT("上一条路线已保留。可以尝试新方案。"));
+    SelectSite(TEXT("wall"));
+}
+void AShiJinyangGameMode::Tick(float Dt)
+{
+    Super::Tick(Dt);
+    auto* PC = GetWorld()->GetFirstPlayerController();
+    if (!PC || !Camera.IsValid()) return;
+    if (PC->WasInputKeyJustPressed(EKeys::H) && Screen)
+    {
+        bHideHud = !bHideHud;
+        Screen->SetVisibility(bHideHud ? EVisibility::Collapsed : EVisibility::SelfHitTestInvisible);
+    }
+    if (PC->WasInputKeyJustPressed(EKeys::SpaceBar)) TogglePause();
+    if (PC->WasInputKeyJustPressed(EKeys::M) && Sound)
+    { Sound->SetSoundEnabled(!Sound->IsSoundEnabled()); RefreshScreen(); }
+    if (PC->WasInputKeyJustPressed(EKeys::Escape) && bRestartArmed)
+    { bRestartArmed = false; RefreshScreen(); }
+    else if (PC->WasInputKeyJustPressed(EKeys::Escape) && BusyTime > 0) SkipMovement();
+    if (PC->WasInputKeyJustPressed(EKeys::Tab))
+    {
+        const TArray<FString> Order = {TEXT("wall"),TEXT("embankment"),TEXT("route"),TEXT("han"),TEXT("wei"),TEXT("zhi"),TEXT("zhao")};
+        SelectSite(Order[(Order.IndexOfByKey(SelectedSite) + 1) % Order.Num()]);
+    }
+    const FKey Digit[] = {EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four};
+    const auto Actions = ContextCommands();
+    for (int32 I = 0; I < 4; ++I) if (Actions.IsValidIndex(I) && PC->WasInputKeyJustPressed(Digit[I])) Issue(Actions[I]);
+    if (PC->WasInputKeyJustPressed(EKeys::LeftMouseButton))
+    {
+        FHitResult Hit;
+        if (PC->GetHitResultUnderCursor(ECC_Visibility, false, Hit) && Hit.GetActor() && Hit.GetActor()->Tags.Num())
+            SelectSite(Hit.GetActor()->Tags[0].ToString());
+    }
+    FVector Pan = FVector::ZeroVector;
+    if (PC->IsInputKeyDown(EKeys::W)) Pan.X += 1;
+    if (PC->IsInputKeyDown(EKeys::S)) Pan.X -= 1;
+    if (PC->IsInputKeyDown(EKeys::D)) Pan.Y += 1;
+    if (PC->IsInputKeyDown(EKeys::A)) Pan.Y -= 1;
+    CameraTarget += Pan * Dt * 450;
+    if (bFollowingEnvoy && !bPaused && Envoy.IsValid() && Envoy->IsMoving())
+    {
+        CameraTarget = Envoy->GetActorLocation() + FVector(-480, -500, 380);
+        RotationTarget = (Envoy->GetActorLocation() + FVector(0, 0, 100) - CameraTarget).Rotation();
+    }
+    Camera->SetActorLocation(FMath::VInterpTo(Camera->GetActorLocation(), CameraTarget, Dt, bReducedMotion ? 1000.f : 3.f));
+    Camera->SetActorRotation(FMath::RInterpTo(Camera->GetActorRotation(), RotationTarget, Dt, bReducedMotion ? 1000.f : 3.f));
+    if (!bPaused && BusyTime > 0)
+    {
+        BusyTime = FMath::Max(0.f, BusyTime - Dt);
+        for (const auto& F : Figures) if (F.IsValid() && F->IsMoving()) BusyTime = FMath::Max(BusyTime, .1f);
+        if (BusyTime <= 0) { ApplySettledVisuals(false); RefreshScreen(); }
+    }
+}
+void AShiJinyangGameMode::EndPlay(const EEndPlayReason::Type Reason)
+{
+    if (Sound) Sound->Stop();
+    if (Screen && GEngine && GEngine->GameViewport) GEngine->GameViewport->RemoveViewportWidgetContent(Screen.ToSharedRef());
+    Screen.Reset(); Super::EndPlay(Reason);
+}

@@ -137,4 +137,4 @@ The owner delegates ordinary creative choices to the developer and retains playa
 
 ## Current checkpoint
 
-Master direction, volume progression and opening source/cast/geography design: established. The full [Volume I design](JINYANG_CHAPTER_DESIGN.md) and reviewed [Jinyang scene concept](../../assets/art/lookdev/jinyang-scene-target-v1.png) now guide production. Jinyang gameplay, final characters, scene animation, score, movie transitions and mobile qualification remain incomplete.
+Master direction, volume progression and opening source/cast/geography design: established. The full [Volume I design](JINYANG_CHAPTER_DESIGN.md) and reviewed [Jinyang scene concept](../../assets/art/lookdev/jinyang-scene-target-v1.png) guide production. An interactive Unreal motion blockout now links performed orders, diplomacy and three ending families to saved estate records; see the [development review](../production/JINYANG_BLOCKOUT_20261002.md). G1 remains open: audible sound, normal pacing, complete recorded routes and movement acceptance still need work. Final characters, score, movie transitions and mobile qualification remain incomplete.

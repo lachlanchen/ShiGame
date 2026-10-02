@@ -20,7 +20,7 @@ SHI is being developed volume by volume, following Zizhi Tongjian’s history fr
 
 Players make decisions, conduct diplomacy and liaison, and build a position through land, wealth, office and adult household relationships, including spouses and concubines. Gains bring new allies, claims and obligations. Moving characters, commandable scenes, music and continuous cinematic transitions are the production target.
 
-This is the new design and visual target; a playable Jinyang build has not yet been delivered. The existing released chapter and beta receipts are described below.
+Jinyang now has an interactive Unreal motion blockout with performed orders, diplomacy, three ending families and a saved estate/career record. See the [development review](docs/production/JINYANG_BLOCKOUT_20261002.md). It is not finished cinematic art or a new mobile beta. Existing released chapters and beta receipts are described below.
 
 [Series design](docs/design/GAME_DESIGN_DOCUMENT.md) · [Volume I](docs/design/JINYANG_CHAPTER_DESIGN.md) · [Delivery gates](docs/production/SHI_WORKABLE_GOAL.md)
 

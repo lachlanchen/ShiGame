@@ -15,6 +15,12 @@ const outputs = [
   resolve(root, "apps/unreal/Content/StreamingAssets/chapter-01-daze.json"),
 ];
 const contents = await readFile(source);
+// Additive development encounter. Copying it does not admit it to a release.
+for (const target of ["apps/web/src/generated", "apps/unity/Assets/StreamingAssets", "apps/unreal/Content/StreamingAssets"]) {
+  const output = resolve(root, target, "jinyang.v1.json");
+  await mkdir(dirname(output), { recursive: true });
+  await copyFile(resolve(root, "content/encounters/jinyang.v1.json"), output);
+}
 // One authored interlude for all clients. Native/engine presentation admission
 // remains separate; copying a definition is not a claim of a native port.
 for (const target of ["apps/web/src/generated", "apps/unity/Assets/StreamingAssets", "apps/unreal/Content/StreamingAssets", "apps/mobile/ios/SHI/Resources"]) {

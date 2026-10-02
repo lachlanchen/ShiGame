@@ -1,0 +1,46 @@
+{
+  "revision": 1,
+  "date": "2026-10-02",
+  "status": "development-review",
+  "releaseApproved": false,
+  "g1Accepted": false,
+  "provenance": {
+    "creator": "SHI engine-native procedural staging and actual Unreal player captures",
+    "tools": [
+      "Unreal Engine 5.8.1",
+      "Xvfb",
+      "ImageMagick screen capture"
+    ],
+    "geometry": "Original procedural blockout using installed engine BasicShapes; no private books or engine mesh binaries included.",
+    "licenseStatus": "Development evidence; company release clearance remains separate.",
+    "intendedUse": "Document interaction/readiness and repaired outcome staging, not final cinematic art"
+  },
+  "screenshots": [
+    {
+      "path": "date-readable.png",
+      "sha256": "889db6aa4b306807fa777dd3d64dd3169ce2aa8d2628c18422e41c20db41958f",
+      "review": "Viewed: disclosed operation/readiness dates, readable development HUD."
+    },
+    {
+      "path": "victory-blockout.png",
+      "sha256": "d32b1b00f6221d18f3baeae7f8d7a1eeccb0046e7f657ae9152a69fc55f92c39",
+      "review": "Viewed: actual earned ending, reserves and remnant; formation on dry terrain, primitive characters remain unaccepted."
+    }
+  ],
+  "tests": {
+    "core": 105,
+    "web": 416,
+    "conformanceRoutes": 7,
+    "fullStateCheckpoints": 52,
+    "nativeResult": "Success",
+    "nativeProcessExit": 1,
+    "nativeExitExplanation": "Linux forced TestExit, not a clean exit-0 run."
+  },
+  "unmet": [
+    "Audible in-game sound",
+    "Continuous unskipped chapter recording",
+    "Normal chapter pacing and novice understanding",
+    "Reviewed final character/animation/contact",
+    "Device performance and signed betas"
+  ]
+}

@@ -20,7 +20,7 @@ SHI được phát triển và hoàn thiện từng tập. Lịch sử trong Tư
 
 Người chơi ra quyết định, tiến hành ngoại giao và liên lạc, gây dựng vị thế bằng đất đai, tài sản, chức vị cùng quan hệ với vợ và thiếp trưởng thành. Mỗi thành quả đem lại đồng minh, yêu sách và nghĩa vụ mới. Nhân vật chuyển động, cảnh có thể điều khiển, âm nhạc và chuyển cảnh điện ảnh liền mạch là mục tiêu sản xuất.
 
-Đây là thiết kế mới và mục tiêu hình ảnh; bản Tấn Dương có thể chơi chưa được hoàn thành. Chương đã phát hành và bằng chứng phân phối bản thử nghiệm được trình bày bên dưới.
+Tấn Dương hiện có bản kiểm chứng chuyển động tương tác trong Unreal, với các lệnh được thực hiện, ngoại giao, ba nhóm kết cục và hồ sơ tài sản, chức vị được lưu lại. Xem [báo cáo phát triển](../docs/production/JINYANG_BLOCKOUT_20261002.md). Đây chưa phải hình ảnh điện ảnh hoàn thiện hay bản thử nghiệm di động mới. Các chương đã phát hành và bằng chứng phân phối bản thử nghiệm được trình bày bên dưới.
 
 [Thiết kế toàn bộ loạt game](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Tập I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Tiêu chí bàn giao](../docs/production/SHI_WORKABLE_GOAL.md)
 

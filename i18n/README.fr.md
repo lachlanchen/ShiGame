@@ -20,7 +20,7 @@ SHI se développe volume par volume, avec l’histoire du Zizhi Tongjian de 403 
 
 Le joueur prend des décisions, mène des négociations diplomatiques et établit des contacts. Terres, richesse, charges et relations avec des épouses et des concubines adultes façonnent sa position. Chaque gain apporte des alliés, des revendications et des obligations. Personnages animés, scènes à commander, musique et transitions cinématographiques continues constituent l’objectif de production.
 
-Il s’agit du nouveau projet et de sa cible visuelle ; aucune version jouable de Jinyang n’a encore été livrée. Le chapitre déjà publié et les justificatifs des bêtas sont décrits ci-dessous.
+Jinyang dispose désormais d’une maquette interactive de mouvements dans Unreal, avec des ordres exécutés, de la diplomatie, trois familles de dénouements et un registre sauvegardé du patrimoine et de la carrière. Voir le [bilan de développement](../docs/production/JINYANG_BLOCKOUT_20261002.md). Ce n’est ni une réalisation cinématographique achevée ni une nouvelle bêta mobile. Les chapitres publiés et les justificatifs des bêtas figurent ci-dessous.
 
 [Conception de la série](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Volume I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Critères de livraison](../docs/production/SHI_WORKABLE_GOAL.md)
 
