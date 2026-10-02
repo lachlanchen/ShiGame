@@ -65,6 +65,9 @@ private:
     void BeginNextBeat();
     void SetDiplomaticVisuals(const FString& Camp, bool Instant);
     void SetOutcomeCamera();
+    void SetOperationVisuals(bool Instant);
+    TArray<FVector> OperationRoute(int32 Index, const FVector& End) const;
+    FString OperationReport() const;
     void ApplySettledVisuals(bool bResume);
     void Restart();
     void TogglePause();

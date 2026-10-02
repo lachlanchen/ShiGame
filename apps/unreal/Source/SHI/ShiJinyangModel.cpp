@@ -15,6 +15,10 @@ const TArray<FString> Ids = {
     TEXT("aligned-date"), TEXT("wait"), TEXT("execute"), TEXT("withdraw")
 };
 const TArray<FString> Allies = {TEXT("han"), TEXT("wei")};
+const TArray<FString> OperationKeys = {TEXT("watchThreshold"),TEXT("screenLoss"),TEXT("disruptedLoss"),TEXT("reserveLoss"),
+    TEXT("quickAssaultLoss"),TEXT("heldAssaultLoss"),TEXT("minimumReserve")};
+const TArray<FString> OperationIds = {TEXT("screen-embankment"),TEXT("rush-embankment"),TEXT("open-water"),
+    TEXT("commit-reserve"),TEXT("hold-front"),TEXT("press-attack")};
 bool Integer(const TSharedPtr<FJsonObject>& Object, const TCHAR* Key, int32& Out)
 {
     double N = 0;
@@ -42,19 +46,21 @@ bool FShiJinyangModel::Initialize(const FString& Json, FString& Error)
 {
     FShiJinyangModel Candidate;
     TSharedPtr<FJsonObject> Root;
-    int32 Version = 0;
+    int32 SchemaVersion = 0;
     FString Id;
     if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), Root) || !Root
-        || !Integer(Root, TEXT("schemaVersion"), Version) || Version != 1
-        || !Root->TryGetStringField(TEXT("id"), Id) || Id != TEXT("jinyang-encounter-v1"))
+        || !Integer(Root, TEXT("schemaVersion"), SchemaVersion) || (SchemaVersion != 1 && SchemaVersion != 2)
+        || !Root->TryGetStringField(TEXT("id"), Id) || Id != FString::Printf(TEXT("jinyang-encounter-v%d"),SchemaVersion))
     { Error = TEXT("Unsupported Jinyang definition"); return false; }
+    Candidate.Version = SchemaVersion; Candidate.CommandIds = Ids;
+    if (SchemaVersion == 2) Candidate.CommandIds.Append(OperationIds);
     const TSharedPtr<FJsonObject>* P = nullptr;
     const TArray<TSharedPtr<FJsonValue>>* RawCommands = nullptr;
     if (!Root->TryGetObjectField(TEXT("parameters"), P) || !P || !*P
         || !Root->TryGetArrayField(TEXT("commands"), RawCommands) || !RawCommands
-        || RawCommands->Num() != Ids.Num())
+        || RawCommands->Num() != Candidate.CommandIds.Num())
     { Error = TEXT("Missing Jinyang parameters or commands"); return false; }
-    Candidate.Fingerprint = Id + TEXT("|1");
+    Candidate.Fingerprint = Id + FString::Printf(TEXT("|%d"),SchemaVersion);
     for (const auto& Key : Keys)
     {
         int32 Value = 0;
@@ -64,6 +70,18 @@ bool FShiJinyangModel::Initialize(const FString& Json, FString& Error)
     }
     if (Candidate.Parameters[TEXT("people")] < 1 || Candidate.Parameters[TEXT("force")] < 1)
     { Error = TEXT("Jinyang requires people and force"); return false; }
+    if (SchemaVersion == 2)
+    {
+        const TSharedPtr<FJsonObject>* Operation = nullptr;
+        if (!Root->TryGetObjectField(TEXT("operation"),Operation)) { Error=TEXT("Missing operation rules"); return false; }
+        for (const auto& Key : OperationKeys)
+        {
+            int32 Value = 0;
+            if (!Integer(*Operation,*Key,Value)) { Error=TEXT("Invalid operation parameter"); return false; }
+            Candidate.Parameters.Add(Key,Value);
+            Candidate.Fingerprint += FString::Printf(TEXT("|%s=%d"),*Key,Value);
+        }
+    }
     const TArray<TSharedPtr<FJsonValue>>* RawSites = nullptr;
     const TArray<FString> RequiredSites = {TEXT("wall"),TEXT("embankment"),TEXT("route"),TEXT("han"),TEXT("wei"),TEXT("zhi"),TEXT("zhao")};
     TSet<FString> SiteIds;
@@ -96,7 +114,7 @@ bool FShiJinyangModel::Initialize(const FString& Json, FString& Error)
         const TSharedPtr<FJsonObject>* Label = nullptr;
         FShiJinyangCommand C;
         if (!Raw || !Raw->TryGetObject(Object) || !Object || !*Object
-            || !(*Object)->TryGetStringField(TEXT("id"), C.Id) || !Ids.Contains(C.Id)
+            || !(*Object)->TryGetStringField(TEXT("id"), C.Id) || !Candidate.CommandIds.Contains(C.Id)
             || Candidate.Commands.Contains(C.Id) || !(*Object)->TryGetStringField(TEXT("site"), C.Site) || !SiteIds.Contains(C.Site)
             || !Integer(*Object, TEXT("time"), C.Time) || !Integer(*Object, TEXT("cost"), C.Cost)
             || !Integer(*Object, TEXT("watch"), C.Watch)
@@ -105,9 +123,11 @@ bool FShiJinyangModel::Initialize(const FString& Json, FString& Error)
             || !(*Label)->TryGetStringField(TEXT("zh-Hans"), C.Chinese)
             || C.English.IsEmpty() || C.English.Len() > 160 || C.Chinese.IsEmpty() || C.Chinese.Len() > 160)
         { Error = TEXT("Invalid Jinyang command"); return false; }
+        if (OperationIds.Contains(C.Id) && (C.Time || C.Watch))
+        { Error=TEXT("Operation rounds cannot alter the agreed window"); return false; }
         Candidate.Commands.Add(C.Id, C);
     }
-    for (const auto& CommandId : Ids)
+    for (const auto& CommandId : Candidate.CommandIds)
     {
         const auto& C = Candidate.Commands[CommandId];
         Candidate.Fingerprint += FString::Printf(TEXT("|%s=%d,%d,%d"), *CommandId, C.Time, C.Cost, C.Watch);
@@ -131,11 +151,25 @@ TArray<FString> FShiJinyangModel::Available() const
 {
     TArray<FString> Out;
     if (!Definition || !State.Outcome.IsEmpty() || State.History.Num() >= 32) return Out;
-    for (const auto& Id : Ids)
+    for (const auto& Id : CommandIds)
     {
         const auto& C = Commands[Id]; bool Allowed = false;
         if (C.Cost > State.Treasury || (Id.StartsWith(TEXT("escort-"))
             && State.Force < Parameters[TEXT("escortForce")])) continue;
+        const auto& O = State.Operation;
+        if (!O.Phase.IsEmpty())
+        {
+            if (Id == TEXT("withdraw")) Allowed=State.Exit;
+            else if (O.Phase == TEXT("deployment")) Allowed=Id==TEXT("rush-embankment")
+                || (Id==TEXT("screen-embankment") && State.Force>=Parameters[TEXT("minimumReserve")]);
+            else if (O.Phase == TEXT("breach")) Allowed=Id==TEXT("open-water");
+            else if (O.Phase == TEXT("disrupted")) Allowed=Id==TEXT("press-attack")
+                || (Id==TEXT("commit-reserve") && O.Reserve==TEXT("ready") && State.Force>=Parameters[TEXT("minimumReserve")]);
+            else if (O.Phase == TEXT("assault")) Allowed=Id==TEXT("press-attack") || (Id==TEXT("hold-front") && !O.FrontHeld);
+            if (Allowed) Out.Add(Id);
+            continue;
+        }
+        if (!Ids.Contains(Id)) continue;
         if (Id == TEXT("execute")) Allowed = State.Window >= 0;
         else if (Id == TEXT("withdraw")) Allowed = State.Exit;
         else if (State.Tick > State.Deadline) continue;
@@ -176,6 +210,7 @@ bool FShiJinyangModel::Commit(const FString& Id, FString& Error)
     if (!Available().Contains(Id)) { Error = TEXT("Unavailable Jinyang order: ") + Id; return false; }
     const auto& C = Commands[Id];
     State.History.Add(Id); State.Tick += C.Time; State.Treasury -= C.Cost; State.Watch += C.Watch;
+    if (!State.Operation.Phase.IsEmpty()) { PerformOperation(Id); Error.Reset(); return true; }
     if (Id == TEXT("brace")) { State.Braced = true; State.Deadline += Parameters[TEXT("braceExtension")]; }
     if (Id == TEXT("diversion")) { State.Diversion = true; State.DiversionReady = State.Tick; }
     if (Id == TEXT("escape"))
@@ -209,13 +244,58 @@ bool FShiJinyangModel::Commit(const FString& Id, FString& Error)
         State.Tick = State.OperationWindow;
         if (Id == TEXT("withdraw")) State.DiversionReady = -1;
         Resolve();
+        if (Version == 2 && Id == TEXT("execute") && State.Outcome == TEXT("coordinated-reversal"))
+        {
+            State.Operation.Phase=TEXT("deployment");
+            State.Operation.Enemy=State.Watch>=Parameters[TEXT("watchThreshold")] ? TEXT("reinforced") : TEXT("guard");
+            State.Result.Reset(); State.Estate.Reset(); State.Outcome.Reset();
+        }
     }
     Error.Reset(); return true;
 }
-void FShiJinyangModel::Resolve()
+void FShiJinyangModel::PerformOperation(const FString& Id)
+{
+    auto& O = State.Operation; ++O.Round;
+    auto Lose = [this,&O](int32 Amount) { const int32 N=FMath::Min(State.Force,Amount); State.Force-=N; O.Losses+=N; };
+    if (Id==TEXT("screen-embankment") || Id==TEXT("rush-embankment"))
+    {
+        O.Approach=Id==TEXT("screen-embankment") ? TEXT("screen") : TEXT("rush");
+        O.Reserve=O.Approach==TEXT("screen") ? TEXT("committed") : TEXT("ready"); O.Phase=TEXT("breach");
+    }
+    else if (Id==TEXT("open-water"))
+    {
+        if (O.Approach==TEXT("rush") && O.Enemy==TEXT("reinforced"))
+        { Lose(Parameters[TEXT("disruptedLoss")]); O.Phase=TEXT("disrupted"); O.Enemy=TEXT("counterattack"); }
+        else
+        {
+            if (O.Approach==TEXT("screen")) Lose(Parameters[TEXT("screenLoss")]);
+            O.WaterOpen=true; O.Phase=TEXT("assault"); O.Enemy=TEXT("disordered");
+        }
+    }
+    else if (Id==TEXT("commit-reserve"))
+    { Lose(Parameters[TEXT("reserveLoss")]); O.Reserve=TEXT("committed"); O.WaterOpen=true; O.Phase=TEXT("assault"); O.Enemy=TEXT("disordered"); }
+    else if (Id==TEXT("hold-front")) { O.FrontHeld=true; O.Enemy=TEXT("encircled"); }
+    else if (Id==TEXT("press-attack") || Id==TEXT("withdraw"))
+    {
+        if (Id==TEXT("press-attack") && O.WaterOpen)
+            Lose(Parameters[O.FrontHeld ? TEXT("heldAssaultLoss") : TEXT("quickAssaultLoss")]);
+        Resolve(Id==TEXT("press-attack") && !O.WaterOpen,Id==TEXT("withdraw"));
+        auto Reasons=State.Result->GetArrayField(TEXT("reasons"));
+        if (O.WaterOpen)
+        {
+            State.Result->SetBoolField(TEXT("diversionExecuted"),true);
+            Reasons.RemoveAll([](const TSharedPtr<FJsonValue>& Reason) { return Reason->AsString()==TEXT("diversion-unavailable"); });
+        }
+        Reasons.Add(MakeShared<FJsonValueString>(Id==TEXT("withdraw") ? TEXT("operation-withdrawal")
+            : !O.WaterOpen ? TEXT("breach-not-open") : O.FrontHeld ? TEXT("flanks-arrived") : TEXT("front-rushed")));
+        State.Result->SetArrayField(TEXT("reasons"),Reasons); O.Phase=TEXT("resolved");
+    }
+}
+void FShiJinyangModel::Resolve(bool AttackingIntact, bool ForcedExit)
 {
     const bool City = State.OperationWindow <= State.Deadline;
-    const bool Diversion = City && State.DiversionReady >= 0 && State.DiversionReady <= State.OperationWindow;
+    const bool Diversion = City && State.DiversionReady >= 0 && State.DiversionReady <= State.OperationWindow
+        && (State.Operation.Phase.IsEmpty() || State.Operation.WaterOpen) && !ForcedExit;
     auto Responses = MakeShared<FJsonObject>();
     bool Coordinated = Diversion;
     TArray<FString> Reasons, Obligations, Contacts;
@@ -231,7 +311,7 @@ void FShiJinyangModel::Resolve()
         }
         if (!State.Allies[Ally].Mission.IsEmpty()) Contacts.Add(Ally);
     }
-    const bool Withdrawal = !Coordinated && City && State.ExitReady >= 0
+    const bool Withdrawal = !Coordinated && !AttackingIntact && City && State.ExitReady >= 0
         && State.ExitReady <= State.OperationWindow && State.ExitCapacity > 0;
     const int32 Evacuated = Withdrawal ? FMath::Min(Parameters[TEXT("people")], State.ExitCapacity) : 0;
     State.Outcome = Coordinated ? TEXT("coordinated-reversal")
@@ -258,7 +338,7 @@ void FShiJinyangModel::Resolve()
 }
 FString FShiJinyangModel::ExportSave() const
 {
-    auto Root = MakeShared<FJsonObject>(); Root->SetNumberField(TEXT("revision"), 1);
+    auto Root = MakeShared<FJsonObject>(); Root->SetNumberField(TEXT("revision"), Version);
     Root->SetStringField(TEXT("definitionFingerprint"), Fingerprint);
     Root->SetArrayField(TEXT("history"), Strings(State.History)); return Serialize(Root);
 }
@@ -268,7 +348,7 @@ bool FShiJinyangModel::Restore(const FString& Save, FString& Error)
     int32 Revision = 0; FString SavedFingerprint;
     if (!Definition || Save.Len() > 16384
         || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Save), Root) || !Root
-        || Root->Values.Num() != 3 || !Integer(Root, TEXT("revision"), Revision) || Revision != 1
+        || Root->Values.Num() != 3 || !Integer(Root, TEXT("revision"), Revision) || Revision != Version
         || !Root->TryGetStringField(TEXT("definitionFingerprint"), SavedFingerprint) || SavedFingerprint != Fingerprint
         || !Root->TryGetArrayField(TEXT("history"), History) || !History || History->Num() > 32)
     { Error = TEXT("Incompatible or malformed Jinyang save"); return false; }
@@ -283,7 +363,7 @@ bool FShiJinyangModel::Restore(const FString& Save, FString& Error)
 TSharedPtr<FJsonObject> FShiJinyangModel::StateObject() const
 {
     auto Root = MakeShared<FJsonObject>(), Situation = MakeShared<FJsonObject>();
-    Root->SetNumberField(TEXT("revision"), 1); Root->SetStringField(TEXT("definitionFingerprint"), Fingerprint);
+    Root->SetNumberField(TEXT("revision"), Version); Root->SetStringField(TEXT("definitionFingerprint"), Fingerprint);
     Root->SetArrayField(TEXT("history"), Strings(State.History)); Root->SetNumberField(TEXT("tick"), State.Tick);
     Root->SetNumberField(TEXT("treasury"), State.Treasury); Root->SetNumberField(TEXT("force"), State.Force);
     Root->SetBoolField(TEXT("braced"), State.Braced); Root->SetBoolField(TEXT("diversion"), State.Diversion);
@@ -315,5 +395,19 @@ TSharedPtr<FJsonObject> FShiJinyangModel::StateObject() const
     Situation->SetObjectField(TEXT("allies"), AllyObjects); Root->SetObjectField(TEXT("situation"), Situation);
     if (State.Result) Root->SetObjectField(TEXT("result"), State.Result); else Root->SetField(TEXT("result"), MakeShared<FJsonValueNull>());
     if (State.Estate) Root->SetObjectField(TEXT("estate"), State.Estate); else Root->SetField(TEXT("estate"), MakeShared<FJsonValueNull>());
+    if (Version == 2)
+    {
+        const auto& O=State.Operation;
+        if (O.Phase.IsEmpty()) Root->SetField(TEXT("operation"),MakeShared<FJsonValueNull>());
+        else
+        {
+            auto Op=MakeShared<FJsonObject>();
+            Op->SetStringField(TEXT("phase"),O.Phase); Op->SetStringField(TEXT("approach"),O.Approach);
+            Op->SetStringField(TEXT("enemy"),O.Enemy); Op->SetStringField(TEXT("reserve"),O.Reserve);
+            Op->SetBoolField(TEXT("waterOpen"),O.WaterOpen); Op->SetBoolField(TEXT("frontHeld"),O.FrontHeld);
+            Op->SetNumberField(TEXT("losses"),O.Losses); Op->SetNumberField(TEXT("round"),O.Round);
+            Root->SetObjectField(TEXT("operation"),Op);
+        }
+    }
     return Root;
 }

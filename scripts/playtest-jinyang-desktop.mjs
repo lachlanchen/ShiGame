@@ -8,12 +8,23 @@ const run = promisify(execFile);
 const evidence = resolve(process.argv[2] || ".runtime/jinyang-desktop-review");
 const routeName = process.argv[3] || "quiet-recovery";
 const captureName = process.argv.find(a=>a.startsWith("--capture="))?.slice(10) || routeName;
+const stopAfter = process.argv.find(a=>a.startsWith("--stop-after="))?.slice(13);
 if (!/^[a-z0-9-]{1,64}$/.test(captureName)) throw Error("Invalid capture name");
 const routes = {
   "quiet-recovery": [["wall",1,"brace"],["embankment",1,"diversion"],["han",1,"quiet-han"],
     ["wei",1,"quiet-wei"],["zhao",1,"relay"],["zhao",2,"early-date"],
     ["zhao",3,"aligned-date"],["zhao",5,"execute"]],
   withdrawal: [["route",1,"escape"],["route",2,"withdraw"]],
+  "operation-recovery": [["embankment",1,"diversion"],["han",2,"escort-han"],["wei",2,"escort-wei"],
+    ["zhao",1,"relay"],["zhao",3,"aligned-date"],["zhao",5,"execute"],
+    ["embankment",2,"rush-embankment"],["embankment",1,"open-water"],
+    ["zhao",1,"commit-reserve"],["zhao",1,"hold-front"],["zhao",2,"press-attack"]],
+  "operation-defeat": [["embankment",1,"diversion"],["han",2,"escort-han"],["wei",2,"escort-wei"],
+    ["zhao",1,"relay"],["zhao",3,"aligned-date"],["zhao",5,"execute"],
+    ["embankment",2,"rush-embankment"],["embankment",1,"open-water"],["zhao",2,"press-attack"]],
+  "operation-screen": [["embankment",1,"diversion"],["han",2,"escort-han"],["wei",2,"escort-wei"],
+    ["zhao",1,"relay"],["zhao",3,"aligned-date"],["zhao",5,"execute"],
+    ["embankment",1,"screen-embankment"],["embankment",1,"open-water"],["zhao",1,"hold-front"],["zhao",2,"press-attack"]],
 };
 if (!routes[routeName]) throw Error("Unknown review route");
 const ownership = JSON.parse(await readFile(resolve(evidence,"owned-processes.json"),"utf8"));
@@ -24,7 +35,7 @@ if (!command.includes("ShiJinyangGameMode") || !command.includes(evidence)) thro
 const env = {...process.env,DISPLAY:ownership.display,XAUTHORITY:""};
 const pause = ms => new Promise(r => setTimeout(r,ms));
 const key = async k => { await run("xdotool",["key",k],{env}); await pause(500); };
-const logPath = resolve(evidence,"engine.log"), savePath = resolve(evidence,"chronicle.v1.json");
+const logPath = resolve(evidence,"engine.log"), savePath = resolve(evidence,ownership.saveName || "chronicle.v1.json");
 const videoPath = resolve(evidence,captureName+"-full.mp4");
 try { await access(videoPath); throw Error("Recording already exists; choose another capture name"); }
 catch (e) { if (e.code!=="ENOENT") throw e; }
@@ -35,7 +46,14 @@ async function waitFor(predicate,label,seconds=120) {
 }
 await waitFor(async()=> (await readFile(logPath,"utf8")).includes("SHI_JINYANG_READY"),"player ready");
 const ledger = JSON.parse(await readFile(savePath,"utf8"));
-if (ledger.history.length) {
+if (ledger.revision===2 && routeName==="quiet-recovery") routes[routeName].push(
+  ["embankment",2,"rush-embankment"],["embankment",1,"open-water"],["zhao",1,"hold-front"],["zhao",2,"press-attack"]);
+let firstOrder=0;
+if (process.argv.includes("--continue-route")) {
+  if (!ledger.history.length || ledger.history.length>=routes[routeName].length
+      || ledger.history.some((id,i)=>id!==routes[routeName][i]?.[2])) throw Error("Saved history is not the requested route's unfinished prefix");
+  firstOrder=ledger.history.length;
+} else if (ledger.history.length) {
   if (!process.argv.includes("--archive-restart")) throw Error("Route needs a fresh chronicle, or an explicit --archive-restart on a completed ending");
   const log = await readFile(logPath,"utf8");
   if (!/SHI_JINYANG_SETTLED[^\n]*outcome=(coordinated-reversal|costly-withdrawal|isolated-defeat)/.test(log))
@@ -43,6 +61,7 @@ if (ledger.history.length) {
   await key("r"); await pause(700); await key("r");
   await waitFor(async()=> JSON.parse(await readFile(savePath,"utf8")).history.length===0,"confirmed archived restart",10);
 }
+if (stopAfter && !routes[routeName].slice(firstOrder).some(row=>row[2]===stopAfter)) throw Error("Stop order is not in the remaining route");
 let recording, recordingClosed;
 let audioStarted = false;
 const events = [], started = Date.now();
@@ -62,7 +81,9 @@ try {
   await run("import",["-window","root",resolve(evidence,captureName+"-entry.png")],{env});
   const sites=["wall","embankment","route","han","wei","zhi","zhao"];
   let selected=0;
-  for (const [site,digit,id] of routes[routeName]) {
+  for (const [site,digit,id] of routes[routeName].slice(firstOrder)) {
+    const observedSite=[...(await readFile(logPath,"utf8")).matchAll(/SHI_JINYANG_SITE site=(\w+)/g)].at(-1)?.[1];
+    if (observedSite && sites.includes(observedSite)) selected=sites.indexOf(observedSite);
     while (sites[selected]!==site) { await key("Tab"); selected=(selected+1)%sites.length; }
     await pause(800);
     const before = (await readFile(logPath,"utf8")).length;
@@ -75,7 +96,12 @@ try {
     await waitFor(async()=> (await readFile(logPath,"utf8")).slice(before).includes(`SHI_JINYANG_SETTLED history=${history.length} skipped=false`),"settled "+id);
     await pause(1300);
     await run("import",["-window","root",resolve(evidence,captureName+"-"+id+".png")],{env});
+    if (id===stopAfter) break;
   }
+  const ending=[...(await readFile(logPath,"utf8")).matchAll(/SHI_JINYANG_SETTLED[^\n]*outcome=([^\r\n]*)/g)].at(-1)?.[1];
+  const completed=["coordinated-reversal","costly-withdrawal","isolated-defeat"].includes(ending);
+  if (!stopAfter && !completed)
+    throw Error("No observed settled ending; this recording is not a complete route");
   await key("F8"); await pause(3000);
   const exportStarted=Date.now(); await key("F9"); audioStarted = false;
   await waitFor(async()=> { try { const s=await stat(resolve(evidence,"jinyang-mixer.wav")); return s.mtimeMs>=exportStarted && s.size>44; } catch { return false; } },"fresh mixer export",15);
@@ -83,9 +109,10 @@ try {
   await copyFile(resolve(evidence,"jinyang-mixer.wav"),resolve(evidence,captureName+"-mixer.wav"));
   await writeFile(resolve(evidence,captureName+"-input-review.json"),JSON.stringify({route:routeName,
     started:new Date(started).toISOString(),seconds:(Date.now()-started)/1000,events,
+    completed, firstOrder, stopAfter:stopAfter || null,
     input:"actual xdotool keyboard; no skips; save inspected read-only",visualReview:"pending",
     capture:"15fps capture is not measured engine frame rate; mixer audio is not physical speaker acceptance"},null,2));
-  console.log("Complete route recorded: "+videoPath);
+  console.log((completed ? (firstOrder ? "Ending segment" : "Complete route") : "Intermediate segment")+" recorded: "+videoPath);
 } finally {
   if (audioStarted) await key("F9");
   if (recording && recording.exitCode===null) recording.stdin.end("q\n");

@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 2,
+  "id": "jinyang-encounter-v2",
+  "status": "development-blockout",
+  "classification": "gameplay-reconstruction",
+  "sourceAnchors": [
+    "tongjian-volume-1-jinyang-flashback",
+    "shiji-volume-43-zhao-house"
+  ],
+  "sourceReferences": [
+    {
+      "id": "tongjian-volume-1-jinyang-flashback",
+      "work": "资治通鉴",
+      "volume": "卷一",
+      "passage": "晋阳之围回叙",
+      "publicParallel": "https://zh.wikisource.org/wiki/資治通鑑/卷001",
+      "workingText": "Owner-supplied original and translation, privately pinned."
+    },
+    {
+      "id": "shiji-volume-43-zhao-house",
+      "work": "史记",
+      "volume": "卷四十三·赵世家",
+      "passage": "晋阳联络与分地",
+      "publicParallel": "https://zh.wikisource.org/wiki/史記/卷043",
+      "workingText": "Owner-supplied original and translation, privately pinned."
+    }
+  ],
+  "review": {
+    "status": "agent-design-review",
+    "date": "2026-10-02",
+    "releaseApproved": false,
+    "scope": "Operation orders, enemy response, reserve recovery and costs; agent design review, gameplay reconstruction. Source supports breach, water disruption, allied flanks and Zhao front. Numerical losses, stronger guards and tactical alternatives are authored."
+  },
+  "parameters": {
+    "cityDeadline": 12,
+    "people": 100,
+    "treasury": 40,
+    "force": 100,
+    "braceExtension": 4,
+    "withdrawalCapacity": 60,
+    "escortForce": 10,
+    "hanThreat": 6,
+    "weiThreat": 7,
+    "hanRisk": 1,
+    "weiRisk": 2,
+    "unilateralRisk": 8,
+    "hanPreparation": 3,
+    "weiPreparation": 6
+  },
+  "commands": [
+    {
+      "id": "brace",
+      "site": "wall",
+      "time": 1,
+      "cost": 3,
+      "watch": 0,
+      "label": {
+        "en": "Brace the defenses",
+        "zh-Hans": "加固防线"
+      }
+    },
+    {
+      "id": "diversion",
+      "site": "embankment",
+      "time": 2,
+      "cost": 5,
+      "watch": 1,
+      "label": {
+        "en": "Prepare the diversion",
+        "zh-Hans": "准备引水"
+      }
+    },
+    {
+      "id": "escape",
+      "site": "route",
+      "time": 2,
+      "cost": 4,
+      "watch": 0,
+      "label": {
+        "en": "Prepare a withdrawal route",
+        "zh-Hans": "准备撤离路线"
+      }
+    },
+    {
+      "id": "quiet-han",
+      "site": "han",
+      "time": 2,
+      "cost": 3,
+      "watch": 0,
+      "label": {
+        "en": "Send a quiet mission",
+        "zh-Hans": "秘密联络"
+      }
+    },
+    {
+      "id": "quiet-wei",
+      "site": "wei",
+      "time": 2,
+      "cost": 3,
+      "watch": 0,
+      "label": {
+        "en": "Send a quiet mission",
+        "zh-Hans": "秘密联络"
+      }
+    },
+    {
+      "id": "escort-han",
+      "site": "han",
+      "time": 1,
+      "cost": 5,
+      "watch": 1,
+      "label": {
+        "en": "Send an escorted mission",
+        "zh-Hans": "派护卫随行"
+      }
+    },
+    {
+      "id": "escort-wei",
+      "site": "wei",
+      "time": 1,
+      "cost": 5,
+      "watch": 1,
+      "label": {
+        "en": "Send an escorted mission",
+        "zh-Hans": "派护卫随行"
+      }
+    },
+    {
+      "id": "relay",
+      "site": "zhao",
+      "time": 2,
+      "cost": 3,
+      "watch": 1,
+      "label": {
+        "en": "Relay the conditional pledges",
+        "zh-Hans": "转达双方承诺"
+      }
+    },
+    {
+      "id": "early-date",
+      "site": "zhao",
+      "time": 2,
+      "cost": 2,
+      "watch": 0,
+      "label": {
+        "en": "Agree on an early operation",
+        "zh-Hans": "约定提早行动"
+      }
+    },
+    {
+      "id": "aligned-date",
+      "site": "zhao",
+      "time": 2,
+      "cost": 2,
+      "watch": 0,
+      "label": {
+        "en": "Allow time to assemble",
+        "zh-Hans": "留出集结时间"
+      }
+    },
+    {
+      "id": "wait",
+      "site": "zhao",
+      "time": 1,
+      "cost": 1,
+      "watch": 0,
+      "label": {
+        "en": "Hold for another report",
+        "zh-Hans": "等待下一份回报"
+      }
+    },
+    {
+      "id": "execute",
+      "site": "zhao",
+      "time": 0,
+      "cost": 0,
+      "watch": 0,
+      "label": {
+        "en": "Launch the operation",
+        "zh-Hans": "发动行动"
+      }
+    },
+    {
+      "id": "withdraw",
+      "site": "route",
+      "time": 0,
+      "cost": 0,
+      "watch": 0,
+      "label": {
+        "en": "Use the prepared exit",
+        "zh-Hans": "按预案撤离"
+      }
+    },
+    {
+      "id": "screen-embankment",
+      "site": "embankment",
+      "time": 0,
+      "cost": 3,
+      "watch": 0,
+      "label": {
+        "en": "Screen the workers with the reserve",
+        "zh-Hans": "分兵掩护守堤人员"
+      }
+    },
+    {
+      "id": "rush-embankment",
+      "site": "embankment",
+      "time": 0,
+      "cost": 0,
+      "watch": 0,
+      "label": {
+        "en": "Rush the embankment; keep the reserve",
+        "zh-Hans": "直取堤道，保留后队"
+      }
+    },
+    {
+      "id": "open-water",
+      "site": "embankment",
+      "time": 0,
+      "cost": 0,
+      "watch": 0,
+      "label": {
+        "en": "Open the prepared breach",
+        "zh-Hans": "打开预备缺口"
+      }
+    },
+    {
+      "id": "commit-reserve",
+      "site": "zhao",
+      "time": 0,
+      "cost": 0,
+      "watch": 0,
+      "label": {
+        "en": "Send the reserve to recover the breach",
+        "zh-Hans": "投入后队，夺回堤口"
+      }
+    },
+    {
+      "id": "hold-front",
+      "site": "zhao",
+      "time": 0,
+      "cost": 2,
+      "watch": 0,
+      "label": {
+        "en": "Hold the front while the allies close in",
+        "zh-Hans": "稳住正面，等两翼合击"
+      }
+    },
+    {
+      "id": "press-attack",
+      "site": "zhao",
+      "time": 0,
+      "cost": 0,
+      "watch": 0,
+      "label": {
+        "en": "Advance the Zhao force",
+        "zh-Hans": "赵军向前进攻"
+      }
+    }
+  ],
+  "sites": [
+    {
+      "id": "wall",
+      "label": {
+        "en": "City defenses",
+        "zh-Hans": "城内防线"
+      },
+      "position": [
+        -350,
+        -150,
+        0
+      ]
+    },
+    {
+      "id": "embankment",
+      "label": {
+        "en": "Diversion embankment",
+        "zh-Hans": "引水堤道"
+      },
+      "position": [
+        700,
+        250,
+        0
+      ]
+    },
+    {
+      "id": "route",
+      "label": {
+        "en": "Raised exit route",
+        "zh-Hans": "撤离高地"
+      },
+      "position": [
+        -500,
+        650,
+        0
+      ]
+    },
+    {
+      "id": "han",
+      "label": {
+        "en": "Han camp",
+        "zh-Hans": "韩营"
+      },
+      "position": [
+        600,
+        900,
+        0
+      ]
+    },
+    {
+      "id": "wei",
+      "label": {
+        "en": "Wei camp",
+        "zh-Hans": "魏营"
+      },
+      "position": [
+        1000,
+        -600,
+        0
+      ]
+    },
+    {
+      "id": "zhi",
+      "label": {
+        "en": "Zhi camp",
+        "zh-Hans": "智营"
+      },
+      "position": [
+        1500,
+        450,
+        0
+      ]
+    },
+    {
+      "id": "zhao",
+      "label": {
+        "en": "Zhao command",
+        "zh-Hans": "赵氏指挥处"
+      },
+      "position": [
+        -650,
+        -600,
+        0
+      ]
+    }
+  ],
+  "reconstructionNote": "Compressed space, timings, capacities, communication methods and counterfactual withdrawal are authored game design. Proper names follow Tongjian; Shiji variants remain in the source journal. Version 2 introduces interactive tactical rounds within the agreed operation window. Legacy version 1 remains replayable under its own definition and save revision.",
+  "operation": {
+    "watchThreshold": 3,
+    "screenLoss": 4,
+    "disruptedLoss": 12,
+    "reserveLoss": 8,
+    "quickAssaultLoss": 10,
+    "heldAssaultLoss": 4,
+    "minimumReserve": 20
+  }
+}

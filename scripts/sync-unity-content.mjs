@@ -16,10 +16,10 @@ const outputs = [
 ];
 const contents = await readFile(source);
 // Additive development encounter. Copying it does not admit it to a release.
-for (const target of ["apps/web/src/generated", "apps/unity/Assets/StreamingAssets", "apps/unreal/Content/StreamingAssets"]) {
-  const output = resolve(root, target, "jinyang.v1.json");
+for (const version of [1, 2]) for (const target of ["apps/web/src/generated", "apps/unity/Assets/StreamingAssets", "apps/unreal/Content/StreamingAssets"]) {
+  const output = resolve(root, target, `jinyang.v${version}.json`);
   await mkdir(dirname(output), { recursive: true });
-  await copyFile(resolve(root, "content/encounters/jinyang.v1.json"), output);
+  await copyFile(resolve(root, `content/encounters/jinyang.v${version}.json`), output);
 }
 // One authored interlude for all clients. Native/engine presentation admission
 // remains separate; copying a definition is not a claim of a native port.

@@ -16,6 +16,12 @@ struct FShiJinyangAlly
 };
 struct FShiJinyangState
 {
+    struct FOperation
+    {
+        FString Phase, Approach = TEXT("none"), Enemy, Reserve = TEXT("ready");
+        bool WaterOpen = false, FrontHeld = false;
+        int32 Losses = 0, Round = 0;
+    } Operation;
     TArray<FString> History;
     int32 Tick = 0, Treasury = 0, Force = 0, Deadline = 0, Watch = 0;
     int32 Window = -1, OperationWindow = 0, DiversionReady = -1, ExitReady = -1, ExitCapacity = 0;
@@ -37,6 +43,7 @@ public:
     const TMap<FString, FShiJinyangCommand>& GetCommands() const { return Commands; }
     const TSharedPtr<FJsonObject>& GetDefinition() const { return Definition; }
     const FString& GetFingerprint() const { return Fingerprint; }
+    int32 GetVersion() const { return Version; }
     TSharedPtr<FJsonObject> AllyResponse(const FString& Id) const
     { return State.Allies.Contains(Id) ? Respond(Id) : nullptr; }
 private:
@@ -44,8 +51,11 @@ private:
     TMap<FString, int32> Parameters;
     TMap<FString, FShiJinyangCommand> Commands;
     FString Fingerprint;
+    int32 Version = 1;
+    TArray<FString> CommandIds;
     FShiJinyangState State;
     void Reset();
-    void Resolve();
+    void Resolve(bool AttackingIntact = false, bool ForcedExit = false);
+    void PerformOperation(const FString& Id);
     TSharedPtr<FJsonObject> Respond(const FString& Ally) const;
 };

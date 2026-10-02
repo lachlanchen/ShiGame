@@ -79,6 +79,16 @@ The two plans must work in different disclosed conditions and leave different co
 
 An enemy response is visible: extra sentries, a moved patrol, a closed approach or an ally delaying its force. The player receives an opportunity to adapt before the irreversible operation.
 
+### Interactive operation, revision 2
+
+The agreed date now starts an operation before it grants an ending. Zhao commands its vanguard and reserve. Han and Wei remain bound to their own received commitments. The source sequence is embankment seizure → redirected water → disorder in Zhi's force → attacks on both flanks and the front. Guard reinforcement, reserve allocation, recoverable disruption and numerical losses are gameplay reconstruction.
+
+An exposed approach produces an observable reinforced guard. The player can screen the breach workers with the reserve or rush while retaining it. A screened breach costs supplies and some force; a quiet rush can conserve both. Rushing the reinforced guard drives the workers back and costs force. The retained reserve can recover the breach, or a previously prepared exit can save a remnant. Attacking the intact front leads to defeat.
+
+Once the water is through, the player can advance Zhao immediately or spend supplies holding its front while the allied wings close. Both can win with different losses. The ending carries actual surviving force and treasury into the same estate record. These are tactical rounds within the agreed operation window; inspecting the scene does not consume time or change ally readiness.
+
+Revision 1 chronicles continue to replay under their original definition. New revision 2 chronicles use a separate save and include the operation orders; neither version silently reinterprets the other's earned ending. Full cinematic, novice and device acceptance remain separate production gates.
+
 ## Cast and source interpretation
 
 | Actor | Authority / interest | Game behavior |

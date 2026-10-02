@@ -45,8 +45,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiJinyangReplayParity, "SHI.Jinyang.Performed
 bool FShiJinyangReplayParity::RunTest(const FString& Arguments)
 {
     FString Definition, Fixture, Error;
-    if (!FFileHelper::LoadFileToString(Definition, *(FPaths::ProjectContentDir() / TEXT("StreamingAssets/jinyang.v1.json")))
-        || !FFileHelper::LoadFileToString(Fixture, *(FPaths::ProjectDir() / TEXT("../../content/conformance/jinyang-replays.v1.json"))))
+    for (int32 Version : {1,2})
+    {
+    if (!FFileHelper::LoadFileToString(Definition, *(FPaths::ProjectContentDir() / FString::Printf(TEXT("StreamingAssets/jinyang.v%d.json"),Version)))
+        || !FFileHelper::LoadFileToString(Fixture, *(FPaths::ProjectDir() / FString::Printf(TEXT("../../content/conformance/jinyang-replays.v%d.json"),Version))))
     { AddError(TEXT("Missing Jinyang shared definition/fixture")); return false; }
     TSharedPtr<FJsonObject> Root;
     if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Fixture), Root)) return false;
@@ -78,7 +80,9 @@ bool FShiJinyangReplayParity::RunTest(const FString& Arguments)
         TestFalse(TEXT("Reject foreign version without modifying model"), Model.Restore(TEXT("{\"revision\":2,\"definitionFingerprint\":\"bad\",\"history\":[]}"), Error));
         TestEqual(TEXT("Rejected restore preserves ledger"), Model.ExportSave(), Before);
     }
-    AddInfo(FString::Printf(TEXT("Jinyang full-state TS/C++ replay parity: %d checkpoints."), Checkpoints));
+    AddInfo(FString::Printf(TEXT("Jinyang v%d full-state TS/C++ replay parity: %d checkpoints."), Version, Checkpoints));
+    }
+    if (!FFileHelper::LoadFileToString(Definition, *(FPaths::ProjectContentDir() / TEXT("StreamingAssets/jinyang.v1.json")))) return false;
     FShiJinyangModel Guard;
     TestTrue(TEXT("Geography guard baseline"), Guard.Initialize(Definition, Error));
     const FString Before = Guard.ExportSave();

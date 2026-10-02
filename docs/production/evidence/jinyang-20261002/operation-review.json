@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-02",
+  "encounter": "jinyang-encounter-v2",
+  "reviewStatus": "agent-development-review",
+  "releaseApproved": false,
+  "g1Passed": false,
+  "provenance": "Actual Unreal 5.8.1 player captures; original project staging with Epic engine primitive meshes/materials. No final historical likeness or generated asset claim.",
+  "images": [
+    {
+      "file": "operation-disruption.png",
+      "sha256": "f37b536eab726a62a4218e6ff37be7dc59740a8b5de77f197a880e349fbd11c4",
+      "scope": "Cold-restored eight-order disruption, force68/loss12, reserve available; clarity successor."
+    },
+    {
+      "file": "operation-recovery.png",
+      "sha256": "792e78d999282e93d563697119060dec2cbac7f1e26d9cd3acbc6f2e19721581",
+      "scope": "Actual complete recovery route ending, force56/reserves18; before defeat-only spacing correction."
+    },
+    {
+      "file": "operation-defeat.png",
+      "sha256": "de6282540c5e741476113e403fc4935fe4ed5f4000863e85999e9dcaccf219cc",
+      "scope": "Final compiled cold restore of actual archived defeat; separated formations, unchanged save hash."
+    }
+  ],
+  "recordings": [
+    {
+      "route": "operation-recovery",
+      "completeUninterruptedRoute": true,
+      "seconds": 292.066667,
+      "orders": 11,
+      "outcome": "coordinated-reversal",
+      "sha256": "ba9c3fd58d51fef86bd49568014acd7c80d6f2cada000f0c7906ad5489d99fb2"
+    },
+    {
+      "route": "operation-defeat-before-cold",
+      "completeUninterruptedRoute": false,
+      "orders": 8,
+      "outcome": null,
+      "sha256": "3729bf3e0daaa95d50c6f7616ad9f34df024c0b74c51833365cfc77b7174c1bd"
+    },
+    {
+      "route": "operation-defeat-after-cold",
+      "completeUninterruptedRoute": false,
+      "additionalOrders": 1,
+      "outcome": "isolated-defeat",
+      "sha256": "3b94a20d10bcb1b8c34cc7c8daf493c3382d738f06cf2b9b24cd789568d30c8b"
+    },
+    {
+      "route": "withdrawal",
+      "completeUninterruptedRoute": true,
+      "seconds": 45.266667,
+      "orders": 2,
+      "outcome": "costly-withdrawal",
+      "sha256": "39ca98335d07203bae6ab32ce9253899e1b7df6cc18d6fca6a3f8dcbb693a8ae"
+    }
+  ],
+  "coldDisruptionSaveSha256": "2f7cf0cf174c329a87d2bdf06241d81f48208ad44f407ef3c129c03cf3ed6a56",
+  "finalDefeatSaveSha256": "a5d3cca70a6b3e88016a97303d17972965d9c232cb1e8ac7ce0c43bef4b872b7",
+  "review": "Real keyboard input, no movement skips or outcome injection. Full videos decoded, sampled recovery contact sheet and selected disruption/recovery/defeat/withdrawal frames inspected. Not every-frame animation, human comprehension or performance approval. Private movies retained.",
+  "audio": {
+    "source": "own-game master mixer",
+    "seconds": 286.57,
+    "nonzero": true,
+    "peakDbfs": -22.3,
+    "listeningAccepted": false,
+    "musiaIntegrated": false
+  },
+  "validation": {
+    "sharedCoreTests": 113,
+    "webTests": 416,
+    "legacyNativeReplayStates": 52,
+    "operationNativeReplayStates": 109,
+    "nativeMotionTest": "passed",
+    "nativeExit": "forced Linux TestExit 1; tests reported Success"
+  },
+  "limits": [
+    "Approximately five-minute automated route; intended 15–20-minute chapter pacing unqualified.",
+    "Original cast, contact-correct animation, period art, Musia score, local film inserts, physical audio, novice/device acceptance and beta delivery remain incomplete.",
+    "Final defeat spacing was observed in cold restore; full defeat recordings precede that presentation-only correction."
+  ]
+}

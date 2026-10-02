@@ -1,7 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { jinyangFingerprint, JINYANG_COMMAND_IDS, type JinyangDefinition } from "../packages/game-core/src/jinyang-encounter";
-const d = JSON.parse(await readFile(resolve("content/encounters/jinyang.v1.json"), "utf8"));
+import { jinyangFingerprint, jinyangCommandIds, type JinyangDefinition } from "../packages/game-core/src/jinyang-encounter";
+for (const version of [1, 2]) {
+const d = JSON.parse(await readFile(resolve(`content/encounters/jinyang.v${version}.json`), "utf8"));
 jinyangFingerprint(d as JinyangDefinition);
 const check = (condition: unknown, message: string) => { if (!condition) throw Error(message); };
 check(d.status === "development-blockout" && d.classification === "gameplay-reconstruction", "Jinyang release/source boundary");
@@ -20,11 +21,12 @@ for (const command of d.commands) {
   for (const locale of ["en", "zh-Hans"])
     check(typeof command.label[locale] === "string" && command.label[locale].length > 0 && command.label[locale].length <= 160, "Command label incomplete");
 }
-check(JINYANG_COMMAND_IDS.every(id => d.commands.filter((c: { id: string }) => c.id === id).length === 1), "Command set mismatch");
+check(jinyangCommandIds(d).every(id => d.commands.filter((c: { id: string }) => c.id === id).length === 1), "Command set mismatch");
 check(d.sourceReferences.length === 2 && d.sourceAnchors.every((id: string) => d.sourceReferences.some((s: { id: string }) => s.id === id)), "Unresolved historical anchors");
 check(d.sourceReferences.every((s: { publicParallel: string }) => s.publicParallel.startsWith("https://zh.wikisource.org/wiki/")), "Primary-source reference missing");
 for (const target of ["apps/web/src/generated", "apps/unity/Assets/StreamingAssets", "apps/unreal/Content/StreamingAssets"]) {
-  const copy = JSON.parse(await readFile(resolve(target, "jinyang.v1.json"), "utf8"));
+  const copy = JSON.parse(await readFile(resolve(target, `jinyang.v${version}.json`), "utf8"));
   check(JSON.stringify(copy) === JSON.stringify(d), "Jinyang client export differs: " + target);
 }
-console.log("Jinyang contract: 13 performed orders, 7 bounded sites, two reviewed UI lanes, resolved source anchors, identical client exports; development only.");
+console.log(`Jinyang v${version}: ${d.commands.length} performed orders, 7 bounded sites, two reviewed UI lanes, resolved source anchors, identical client exports; development only.`);
+}

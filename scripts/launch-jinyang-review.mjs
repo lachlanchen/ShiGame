@@ -8,7 +8,9 @@ import net from "node:net";
 const run = promisify(execFile);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const engine = process.env.SHI_UNREAL_ROOT || "/home/lachlan/UnrealEngine/UE_5.8.1";
-const evidence = resolve(process.argv[2] || resolve(root, ".runtime/jinyang-desktop-review"));
+const evidence = resolve(process.argv.slice(2).find(arg => !arg.startsWith("--")) || resolve(root, ".runtime/jinyang-desktop-review"));
+const version=process.argv.includes("--legacy") ? 1 : 2;
+const saveName=process.argv.find(arg=>arg.startsWith("--save="))?.slice(7) || `chronicle.v${version}.json`;
 const display = ":121", vnc = 5921, novnc = 6121;
 const children = [];
 const logs = [];
@@ -43,7 +45,7 @@ async function start(name, executable, args) {
   child.on("error", e => finish(name + ": " + e.message));
   children.push({ name, child });
   await writeFile(resolve(evidence, "owned-processes.json"), JSON.stringify({
-    display, vnc, novnc, evidence, processes: children.map(x => ({ name: x.name, pid: x.child.pid })),
+    display, vnc, novnc, evidence, saveName, processes: children.map(x => ({ name: x.name, pid: x.child.pid })),
   }, null, 2));
   return child;
 }
@@ -65,7 +67,8 @@ try {
   const player = await start("player", resolve(engine, "Engine/Binaries/Linux/UnrealEditor"), [
     resolve(root, "apps/unreal/SHI.uproject"), "/Engine/Maps/Entry?game=/Script/SHI.ShiJinyangGameMode",
     "-game", "-windowed", "-ResX=1920", "-ResY=1080", "-WinX=0", "-WinY=0", "-nosplash", "-vulkan",
-    "-ShiJinyangSave=" + resolve(evidence, "chronicle.v1.json"),
+    "-ShiJinyangSave=" + resolve(evidence, saveName),
+    ...(version===1 ? ["-ShiJinyangLegacy"] : []),
     "-ShiAudioReview",
     "-abslog=" + resolve(evidence, "engine.log"),
   ]);
