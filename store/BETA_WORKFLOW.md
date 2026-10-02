@@ -59,9 +59,25 @@ AAB upload. [Receipt](beta-9-candidate.json) and
 [test notes](../docs/production/ANDROID_READING_INSET_20261002.md#distributed-to-the-existing-internal-testers)
 separate local upgrade/offline qualification from provider availability and
 still-pending Play-delivered physical-device feedback. Production remains1;
-no tester, price or market changes. TestFlight remains a separate signing gate;
-no iOS upgrade was uploaded in this checkpoint. Preserve all retained artifacts
-and reconcile live state before preparing a successor. Do not reuse build9.
+no tester, price or market changes. Native **TestFlight 1.0.1 (2)** subsequently
+became available in the existing SHI Internal group; Apple reports VALID,
+unexpired and IN_BETA_TESTING. English and Simplified Chinese testing notes are
+saved. [iOS receipt](beta-ios-2.json) records the exact source, IPA, upload and
+qualification boundaries. Public store builds remain unchanged. Preserve all
+retained artifacts and reconcile live state before preparing a successor.
+Do not re-upload Android9 or iOS2.
+
+The iOS update includes the reviewed chapter, Chen council and Fan Yang
+continuation, not the separately gated tactical crossing or retreat/refuge QA.
+The new Android tactical candidate remains unsubmitted; its web payload passes
+validation but signed packaging and installed-app qualification are unfinished.
+Do not confuse that candidate with the already distributed Android9.
+
+Signing lesson: unlock and archive/export in the **same SSH security context**.
+An unlock in another session does not establish signing access for a new one.
+A real scoped codesign probe verified the working context; no keychain ACL,
+partition, certificate or search-list change was needed. Reuse the existing
+private owner-authorized configuration without putting credentials in this repo.
 
 ## Historical September 30 candidate preparation
 

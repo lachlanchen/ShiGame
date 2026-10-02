@@ -1,5 +1,21 @@
 # SHI mobile publication
 
+## Native TestFlight update available — 2026-10-02
+
+Native **1.0.1 (2)** is VALID, unexpired and IN_BETA_TESTING in the existing
+SHI Internal group. Its single upload succeeded; automatic group attachment
+and notifications were already enabled. Saved English/Chinese testing notes
+and read back availability at00:27:59 UTC. [Exact receipt](beta-ios-2.json).
+
+This adds the reviewed chapter-to-Chen-to-Fan-Yang continuation and durable
+saved reactions compared with build1. The revised tactical crossing and later
+retreat/refuge remain gated QA content. No new cinematic music/video, physical
+device acceptance, public release or new tester membership is claimed.
+
+Public iOS remains1.0.0/build1; Google internal remains1.0.0(9), and Google
+Production remainsbuild1. Preserve those releases. The unsubmitted tactical
+Android candidate still needs signed packaging and installed-app tests.
+
 ## Android public release completed — 2026-10-02
 
 This supersedes the earlier Google review/managed-hold state below. Submission3

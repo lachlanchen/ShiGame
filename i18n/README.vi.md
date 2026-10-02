@@ -45,7 +45,7 @@ Mượt mà nghĩa là lệnh phản hồi nhanh, lưu bền vững trước ph�
 
 ## Giới hạn phát hành
 
-Ngày 2 tháng 10 năm 2026, bản di động đã phát hành số 1 vẫn tách biệt với phần phát triển mới. Bản Apple có thể tải xuống; Google Production đã phát hành bản số 1 ngày 2 tháng 10, với trang cửa hàng Mỹ được xác minh ở mức 0,99 USD và 169 thị trường mục tiêu. TestFlight vẫn chỉ có bản số 1. Hội đồng, Phạm Dương, rút lui và trú ẩn có kiểm thử giới hạn; một số phần chỉ dành QA. Nhân vật chưa phải mỹ thuật điện ảnh cuối cùng. Kiểm thử không thay duyệt người thật và hiệu năng thiết bị. GitHub theo mốc đã kiểm tra; beta cần ký, thử nâng cấp và xác nhận khả dụng. Không cài bộ lịch tự động hằng ngày.
+Ngày 2 tháng 10 năm 2026, bản di động đã phát hành số 1 vẫn tách biệt với phần phát triển mới. Bản Apple có thể tải xuống; Google Production đã phát hành bản số 1 ngày 2 tháng 10, với trang cửa hàng Mỹ được xác minh ở mức 0,99 USD và 169 thị trường mục tiêu. TestFlight 1.0.1 (2) và bản thử nghiệm nội bộ Google 1.0.0 (9) đã có cho những người thử nghiệm hiện tại; các bản trên cửa hàng công khai không thay đổi. Hội đồng, Phạm Dương, rút lui và trú ẩn có kiểm thử giới hạn; một số phần chỉ dành QA. Nhân vật chưa phải mỹ thuật điện ảnh cuối cùng. Kiểm thử không thay duyệt người thật và hiệu năng thiết bị. GitHub theo mốc đã kiểm tra; beta cần ký, thử nâng cấp và xác nhận khả dụng. Không cài bộ lịch tự động hằng ngày.
 
 [Beta workflow](../store/BETA_WORKFLOW.md) · [Native evidence](../docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](../docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](../docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 

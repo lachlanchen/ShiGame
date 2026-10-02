@@ -45,7 +45,7 @@ Smoothness means responsive orders, a durable save before a matching reaction, a
 
 ## Release boundaries
 
-As of October 2, 2026, released mobile build 1 remains separate from newer development. Apple is downloadable; Google Production build 1 was published October 2, with the US listing verified at US$0.99 and 169 target markets. TestFlight still contains only build 1. Council/Fan Yang/retreat/refuge development has bounded tests, but some continuation content is QA-only. Character studies are not final film-quality art. Tests do not replace human review or physical-device performance. GitHub updates follow validated checkpoints; internal betas also require signing, upgrade tests and provider availability. No automatic daily scheduler is installed.
+As of October 2, 2026, released mobile build 1 remains separate from newer development. Apple is downloadable; Google Production build 1 was published October 2, with the US listing verified at US$0.99 and 169 target markets. TestFlight 1.0.1 (2) and Google internal 1.0.0 (9) are available to the existing testers; public store builds remain unchanged. Council/Fan Yang/retreat/refuge development has bounded tests, but some continuation content is QA-only. Character studies are not final film-quality art. Tests do not replace human review or physical-device performance. GitHub updates follow validated checkpoints; internal betas also require signing, upgrade tests and provider availability. No automatic daily scheduler is installed.
 
 [Beta workflow](store/BETA_WORKFLOW.md) · [Native evidence](docs/production/NATIVE_REFUGE_UI_20261001.md) · [Local video rights](docs/production/LOCAL_VIDEO_RELEASE_GATE_20261001.md) · [Cloth study](docs/production/COUNCIL_GUSSET_CLOTH_20261001.md)
 

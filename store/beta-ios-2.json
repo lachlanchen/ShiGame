@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "platform": "ios",
+  "version": "1.0.1",
+  "build": "2",
+  "bundleId": "art.lazying.shi",
+  "appId": "6816377548",
+  "status": "available-to-existing-internal-testers",
+  "sourceCommit": "f26fc9708f3ce4cc2ab5acae6f6c583c87d3de13",
+  "iosSourceUnchangedFromCommit": true,
+  "sourceArchiveSHA256": "8fd06a116ccabae39dcd1790759102fa0f8e788a4b90f5c594ed195f1d9d387a",
+  "ipaSHA256": "a0f95bcc09cb4577301c6fcf6723d31f11a029799a2c59c33d25b19e61495797",
+  "ipaBytes": 5203500,
+  "signingTeam": "Q8M2S2FY77",
+  "campaignSHA256": "0144569248b68b056d3d711ec87242a19a13eb3fbe5ede9c4a7cd6a6dd8fba58",
+  "deliveryUUID": "444855c8-1751-4652-a01e-e7e27bbaaebc",
+  "buildId": "444855c8-1751-4652-a01e-e7e27bbaaebc",
+  "uploadedAtUTC": "2026-10-02T00:25:51Z",
+  "availabilityVerifiedAtUTC": "2026-10-02T00:27:59.446477+00:00",
+  "processingState": "VALID",
+  "internalBuildState": "IN_BETA_TESTING",
+  "expired": false,
+  "group": "SHI Internal",
+  "groupId": "5e838323-59f0-4c27-bb3b-9212651ac32d",
+  "alreadyAutomaticallyAttached": true,
+  "autoNotifyEnabled": true,
+  "testerMembershipChanged": false,
+  "testNotesLocales": ["en-US", "zh-Hans"],
+  "changesSinceBuild1": [
+    "Continue Chapter I into consequential Chen council and Fan Yang negotiations",
+    "Save decisions and unread reactions before presentation, with relaunch recovery",
+    "Preserve released chronicles across reviewed prose changes"
+  ],
+  "qualification": [
+    "Signed native archive/export, strict code-sign verification and exact identity/version checks passed",
+    "Apple altool package validation and the single upload succeeded",
+    "All packaged canonical JSON resources match the synchronized source; Xcode-optimized keyart matches decoded source pixels",
+    "Profile matches the SHI app and LazyingArt team; debugging disabled; privacy manifest present; draft resources excluded",
+    "Fresh native typechecks, shared content/localization parity and 13 native save-policy checks passed",
+    "Reused documented source-equivalent native chapter/council/Fan Yang routes and installed-container upgrade evidence; production gameplay inputs are unchanged since 45cf0f9, while subsequent native work is gated QA content"
+  ],
+  "limitations": [
+    "No new physical-device or owner-installation result; simulator/source-level evidence retains its documented scope",
+    "Revised tactical crossing and retreat/refuge previews are not included in this formal native build",
+    "No new generated music or cinematic video admitted",
+    "Internal TestFlight availability is not App Store review approval of this update"
+  ],
+  "publicReleaseChanged": false,
+  "publicStoreVersion": "1.0.0",
+  "googleChangedInThisSubmission": false
+}
