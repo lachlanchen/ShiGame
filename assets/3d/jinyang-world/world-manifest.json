@@ -1,0 +1,173 @@
+{
+  "id": "shi-jinyang-world-v1",
+  "classification": "original-gameplay-reconstruction",
+  "seed": 20261003,
+  "units": "metres, exported to centimetres",
+  "walkRectsCentimetres": [
+    [
+      -2500,
+      -1450,
+      -200,
+      180
+    ],
+    [
+      -600,
+      -100,
+      -400,
+      1380
+    ],
+    [
+      -650,
+      800,
+      1640,
+      1000
+    ],
+    [
+      600,
+      -700,
+      800,
+      980
+    ],
+    [
+      -650,
+      -700,
+      1630,
+      -470
+    ],
+    [
+      970,
+      -700,
+      1230,
+      980
+    ],
+    [
+      970,
+      180,
+      2300,
+      710
+    ],
+    [
+      460,
+      700,
+      880,
+      1210
+    ],
+    [
+      770,
+      -810,
+      1330,
+      -400
+    ],
+    [
+      700,
+      60,
+      1100,
+      215
+    ]
+  ],
+  "palette": {
+    "Earth": [
+      0.2,
+      0.135,
+      0.075
+    ],
+    "Stone": [
+      0.28,
+      0.25,
+      0.19
+    ],
+    "Plaster": [
+      0.46,
+      0.35,
+      0.2
+    ],
+    "Timber": [
+      0.075,
+      0.038,
+      0.018
+    ],
+    "Roof": [
+      0.1,
+      0.13,
+      0.13
+    ],
+    "Thatch": [
+      0.31,
+      0.23,
+      0.095
+    ],
+    "Grass": [
+      0.14,
+      0.19,
+      0.075
+    ],
+    "Leaf": [
+      0.2,
+      0.27,
+      0.12
+    ],
+    "Reed": [
+      0.3,
+      0.3,
+      0.13
+    ],
+    "Bronze": [
+      0.28,
+      0.23,
+      0.1
+    ],
+    "Cloth": [
+      0.52,
+      0.4,
+      0.24
+    ],
+    "Charcoal": [
+      0.025,
+      0.031,
+      0.029
+    ],
+    "Mountain": [
+      0.105,
+      0.16,
+      0.18
+    ],
+    "Ember": [
+      0.85,
+      0.32,
+      0.06
+    ]
+  },
+  "layers": {
+    "Ground": {
+      "objects": 10,
+      "vertices": 80,
+      "faces": 60
+    },
+    "Architecture": {
+      "objects": 168,
+      "vertices": 6338,
+      "faces": 5755
+    },
+    "Details": {
+      "objects": 911,
+      "vertices": 20112,
+      "faces": 19525
+    },
+    "Horizon": {
+      "objects": 1,
+      "vertices": 6561,
+      "faces": 6400
+    },
+    "Tunic": {
+      "objects": 1,
+      "vertices": 120,
+      "faces": 98
+    },
+    "Robe": {
+      "objects": 1,
+      "vertices": 96,
+      "faces": 74
+    }
+  },
+  "historicalScope": "Flood siege context from Tongjian I; buildings, routes, flora and dimensions are scenery reconstruction."
+}

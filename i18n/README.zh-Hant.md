@@ -22,6 +22,8 @@ SHI將逐卷完成，以《資治通鑑》公元前403年至公元959年的歷�
 
 晉陽已有可操作的Unreal動作灰盒：執行命令、外交聯絡、三類結局，以及保存的資產與仕途記錄。詳見[開發評審](../docs/production/JINYANG_BLOCKOUT_20261002.md)。這不是完成的電影級畫面，也不是新的行動測試版。現有已發佈章節與測試版本的記錄見下文。
 
+10月3日桌面開發版新增可步行探索的城門里坊與堤道、11處可查看的地標、眼平與第三人稱視角，並可儲存和繼續探索。[建置與操作說明](../docs/production/JINYANG_EXPLORATION_20261003.md)。環境與人物美術仍在製作中；這不是行動商店更新。
+
 [全系列設計](../docs/design/GAME_DESIGN_DOCUMENT.md) · [第一卷](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [交付驗收](../docs/production/SHI_WORKABLE_GOAL.md)
 
 ![晉陽場景概念圖——製作目標，並非遊戲截圖](../assets/art/lookdev/jinyang-scene-target-v1.png)

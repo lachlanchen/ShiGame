@@ -5,6 +5,7 @@
 class UStaticMeshComponent;
 class UStaticMesh;
 class UMaterialInterface;
+class UCapsuleComponent;
 
 /** Articulated motion blockout, not final character art or authenticated dress. */
 UCLASS()
@@ -21,13 +22,17 @@ public:
     void FaceAtRest(float Yaw) { FinalYaw = Yaw; }
     void SetSettledPose(const FVector& Location, float Yaw, bool Working = false);
     void FinishMotion();
+    void SetExternalLocomotion(bool Enabled, float Speed, float Dt);
+    void SetWalkCollision(bool Enabled);
     bool IsMoving() const { return Waypoints.Num() > 0; }
     virtual void Tick(float DeltaSeconds) override;
 private:
     UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> Parts;
+    UPROPERTY() TObjectPtr<UCapsuleComponent> WalkObstacle;
     TArray<FVector> Waypoints;
     bool bCarrying = false, bWorking = false;
     bool bReceiving = false;
+    bool bExternal = false, bExternalMoving = false;
     float FinalYaw = 0.f;
     float Distance = 0.f, WorkTime = 0.f;
     void Pose();

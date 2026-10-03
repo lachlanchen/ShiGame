@@ -22,6 +22,8 @@ SHIは巻ごとに完成させていきます。『資治通鑑』が扱う紀�
 
 晋陽には、命令の実行、外交、3系統の結末、領地・官職などの記録を保存するUnrealの操作可能な動作検証版ができました。[開発レビュー](../docs/production/JINYANG_BLOCKOUT_20261002.md)をご覧ください。完成した映像表現や新しいモバイルベータではありません。既存の公開済みの章とベータ配信の記録は下記にまとめています。
 
+10月3日のデスクトップ開発ビルドでは、城門の街区と堤道を歩けるようになりました。11か所の調査地点、目線・三人称カメラ、探索の保存・再開に対応しています。[ビルドと操作](../docs/production/JINYANG_EXPLORATION_20261003.md)。環境と人物のアートは制作途中であり、モバイルストアの更新ではありません。
+
 [シリーズ設計](../docs/design/GAME_DESIGN_DOCUMENT.md) · [第1巻](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [納品の判定基準](../docs/production/SHI_WORKABLE_GOAL.md)
 
 ![晋陽の場面コンセプト — 制作目標であり、ゲーム画面ではありません](../assets/art/lookdev/jinyang-scene-target-v1.png)

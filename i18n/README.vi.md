@@ -22,6 +22,8 @@ Người chơi ra quyết định, tiến hành ngoại giao và liên lạc, g�
 
 Tấn Dương hiện có bản kiểm chứng chuyển động tương tác trong Unreal, với các lệnh được thực hiện, ngoại giao, ba nhóm kết cục và hồ sơ tài sản, chức vị được lưu lại. Xem [báo cáo phát triển](../docs/production/JINYANG_BLOCKOUT_20261002.md). Đây chưa phải hình ảnh điện ảnh hoàn thiện hay bản thử nghiệm di động mới. Các chương đã phát hành và bằng chứng phân phối bản thử nghiệm được trình bày bên dưới.
 
+Bản phát triển máy tính ngày 3 tháng 10 bổ sung khu dân cư bên cổng thành và đường đê có thể đi bộ, 11 địa điểm để xem xét, góc nhìn ngang tầm mắt và góc nhìn thứ ba, cùng khả năng lưu và tiếp tục khám phá. [Bản dựng và điều khiển](../docs/production/JINYANG_EXPLORATION_20261003.md). Mỹ thuật bối cảnh và nhân vật vẫn đang hoàn thiện; đây không phải bản cập nhật trên cửa hàng di động.
+
 [Thiết kế toàn bộ loạt game](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Tập I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Tiêu chí bàn giao](../docs/production/SHI_WORKABLE_GOAL.md)
 
 ![Ý tưởng cảnh Tấn Dương — mục tiêu sản xuất, không phải ảnh chụp game](../assets/art/lookdev/jinyang-scene-target-v1.png)

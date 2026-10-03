@@ -22,6 +22,8 @@ El jugador toma decisiones, practica la diplomacia y establece contactos. Su pos
 
 Jinyang ya cuenta con un prototipo interactivo de movimiento en Unreal: órdenes ejecutadas, diplomacia, tres tipos de desenlace y un registro guardado de patrimonio y carrera. Véase la [revisión de desarrollo](../docs/production/JINYANG_BLOCKOUT_20261002.md). No es arte cinematográfico terminado ni una nueva beta móvil. Los capítulos publicados y las constancias de las betas se describen abajo.
 
+La versión de desarrollo para escritorio del 3 de octubre añade un barrio junto a la puerta y diques transitables, 11 lugares que examinar, cámaras a la altura de los ojos y en tercera persona, y exploración que puede retomarse. [Compilación y controles](../docs/production/JINYANG_EXPLORATION_20261003.md). El arte del entorno y los personajes sigue en desarrollo; no es una actualización de las tiendas móviles.
+
 [Diseño de la serie](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Volumen I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Criterios de entrega](../docs/production/SHI_WORKABLE_GOAL.md)
 
 ![Concepto de la escena de Jinyang: objetivo de producción, no captura del juego](../assets/art/lookdev/jinyang-scene-target-v1.png)

@@ -2,6 +2,21 @@
 #include "Misc/AutomationTest.h"
 #include "Engine/World.h"
 #include "ShiJinyangFigure.h"
+#include "ShiJinyangGameMode.h"
+#include "ShiJinyangWorldSave.h"
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiJinyangExplorationInterface, "SHI.Jinyang.ExplorationInterface",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FShiJinyangExplorationInterface::RunTest(const FString& Arguments)
+{
+    for(int32 Mask=0;Mask<16;++Mask)
+    {
+        const bool Hide=Mask&1,Intro=Mask&2,Inspect=Mask&4,Paused=Mask&8;
+        TestEqual(TEXT("Only unmodal scenic mode can hide the interface"),
+            AShiJinyangGameMode::IsExplorationInterfaceVisible(Hide,Intro,Inspect,Paused),Mask!=1);
+    }
+    return true;
+}
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiJinyangMotionEndpoints, "SHI.Jinyang.MotionEndpoints",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
@@ -31,6 +46,35 @@ bool FShiJinyangMotionEndpoints::RunTest(const FString& Arguments)
     TestTrue(TEXT("Workstation skip/resume facing"),Natural->GetActorTransform().Equals(Skipped->GetActorTransform(),.01f)
         && Natural->GetActorTransform().Equals(Resumed->GetActorTransform(),.01f));
     World->DestroyWorld(false);
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiJinyangExplorationSave, "SHI.Jinyang.ExplorationSave",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FShiJinyangExplorationSave::RunTest(const FString& Arguments)
+{
+    const TSet<FString> Known={TEXT("quarter"),TEXT("watch")};
+    FShiJinyangWorldSave A;A.Position=FVector(-870,-20,210);A.Look=FRotator(-15,95,0);
+    A.bEyeLevel=true;A.Visited={TEXT("watch"),TEXT("quarter")};
+    FShiJinyangWorldSave B;
+    TestTrue(TEXT("Exploration roundtrip parses"),FShiJinyangWorldSave::Read(A.Write(),Known,B));
+    TestEqual(TEXT("View, visits and location roundtrip exactly"),B.Write(),A.Write());
+    TestFalse(TEXT("Cosmetic save has no campaign history"),A.Write().Contains(TEXT("history")));
+    const FString Before=B.Write();
+    for(const FString Bad:{TEXT("{\"revision\":1,\"position\":[false,0,100]}"),
+        TEXT("{\"revision\":1,\"position\":[-1840,-550,\"100\"]}"),
+        TEXT("{\"revision\":2,\"position\":[-1840,-550,100]}"),
+        TEXT("{\"revision\":1,\"position\":[90000,0,100]}"),
+        TEXT("{\"revision\":1,\"position\":[-1840,-550,100],\"look\":[false,0]}"),
+        TEXT("{\"revision\":1,\"position\":[-1840,-550,-100]}"),TEXT("null")})
+    {
+        TestFalse(TEXT("Malformed/out-of-bounds cosmetic state rejected"),FShiJinyangWorldSave::Read(Bad,Known,B));
+        TestEqual(TEXT("Rejected state never partially mutates accepted location"),B.Write(),Before);
+    }
+    TestTrue(TEXT("Old exploration save remains compatible"),FShiJinyangWorldSave::Read(
+        TEXT("{\"revision\":1,\"position\":[-1840,-550,100],\"visited\":[\"quarter\",\"invented\",42]}"),Known,B));
+    TestEqual(TEXT("Only known places retained"),B.Visited.Num(),1);
+    TestEqual(TEXT("Old save receives default view"),B.Look,FRotator(-12,0,0));
+    TestTrue(TEXT("Eye-level default stays off"),!B.bEyeLevel);
     return true;
 }
 #endif

@@ -22,6 +22,8 @@ Players make decisions, conduct diplomacy and liaison, and build a position thro
 
 Jinyang now has an interactive Unreal motion blockout with performed orders, diplomacy, three ending families and a saved estate/career record. See the [development review](docs/production/JINYANG_BLOCKOUT_20261002.md). It is not finished cinematic art or a new mobile beta. Existing released chapters and beta receipts are described below.
 
+The October 3 desktop development build adds a walkable gate quarter and levees, 11 inspectable landmarks, eye-level/third-person cameras and resumable exploration. [Build and controls](docs/production/JINYANG_EXPLORATION_20261003.md). Environment and character art remain works in progress; this is not a mobile-store update.
+
 [Series design](docs/design/GAME_DESIGN_DOCUMENT.md) · [Volume I](docs/design/JINYANG_CHAPTER_DESIGN.md) · [Delivery gates](docs/production/SHI_WORKABLE_GOAL.md)
 
 ![Jinyang scene concept — production target, not a game screenshot](assets/art/lookdev/jinyang-scene-target-v1.png)

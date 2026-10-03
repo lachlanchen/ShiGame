@@ -22,6 +22,8 @@ SHI는 한 권씩 완성해 나갑니다. 『자치통감』의 기원전 403년
 
 진양에는 이제 명령 실행, 외교, 세 가지 결말 유형, 저장되는 영지·경력 기록을 갖춘 Unreal의 조작 가능한 동작 검증판이 있습니다. [개발 검토](../docs/production/JINYANG_BLOCKOUT_20261002.md)를 확인하세요. 완성된 영화 수준의 그래픽이나 새로운 모바일 베타는 아닙니다. 기존 출시 장과 베타 배포 기록은 아래에 설명되어 있습니다.
 
+10월 3일 데스크톱 개발 빌드에는 걸어 다닐 수 있는 성문 마을과 제방, 살펴볼 수 있는 장소 11곳, 눈높이·3인칭 카메라, 저장 후 이어 하는 탐험이 추가되었습니다. [빌드와 조작법](../docs/production/JINYANG_EXPLORATION_20261003.md). 배경과 캐릭터 아트는 아직 제작 중이며 모바일 스토어 업데이트는 아닙니다.
+
 [시리즈 설계](../docs/design/GAME_DESIGN_DOCUMENT.md) · [제1권](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [납품 기준](../docs/production/SHI_WORKABLE_GOAL.md)
 
 ![진양 장면 콘셉트 — 제작 목표이며 게임 스크린샷이 아닙니다](../assets/art/lookdev/jinyang-scene-target-v1.png)

@@ -7,6 +7,7 @@
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "Components/LightComponent.h"
+#include "Components/DirectionalLightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Engine/DirectionalLight.h"
@@ -85,6 +86,7 @@ void AShiJinyangGameMode::BeginPlay()
     SelectSite(TEXT("wall"));
     if (!Model.GetState().Operation.Phase.IsEmpty()) SetOperationVisuals(true);
     if (!Model.GetState().Outcome.IsEmpty()) SetOutcomeCamera();
+    if (bWorldReady) StartExploration();
     RefreshScreen();
     UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_READY history=%d save=%s blockout=true"), Model.GetState().History.Num(), *SavePath);
 }
@@ -100,7 +102,7 @@ AStaticMeshActor* AShiJinyangGameMode::Box(const FVector& P, const FVector& Scal
 AShiJinyangFigure* AShiJinyangGameMode::Figure(const FVector& P, const FLinearColor& Color)
 {
     auto* A = GetWorld()->SpawnActor<AShiJinyangFigure>(FVector(P.X, P.Y, 2), FRotator::ZeroRotator);
-    A->Initialize(Cube, Sphere, Cylinder, BasicMaterial, Color); Figures.Add(A); return A;
+    A->Initialize(Cube, Sphere, Cylinder, BasicMaterial, Color);A->SetWalkCollision(bWorldReady);Figures.Add(A);return A;
 }
 void AShiJinyangGameMode::CreateWorld()
 {
@@ -116,6 +118,9 @@ void AShiJinyangGameMode::CreateWorld()
         Sites.Add(S->GetStringField(TEXT("id")), FVector(P[0]->AsNumber(), P[1]->AsNumber(), P[2]->AsNumber()));
     }
     // Deliberately compressed schematic terrain, not archaeological measurement.
+    bWorldReady=FParse::Param(FCommandLine::Get(),TEXT("ShiExplore")) && CreateExplorationWorld();
+    if (!bWorldReady)
+    {
     Box(FVector(400, 200, -75), FVector(38, 31, 1.5), FLinearColor(.15, .12, .075));
     Water = Box(FVector(450, 150, -.5), FVector(23, 23, .02), FLinearColor(.055, .18, .23));
     Box(FVector(-650, -300, -18), FVector(12, 12, .4), FLinearColor(.28, .23, .15));
@@ -134,6 +139,7 @@ void AShiJinyangGameMode::CreateWorld()
     Box(FVector(1260, 450, -18), FVector(3.6, 4.5, .4), FLinearColor(.31, .27, .18));
     Box(FVector(1850, 450, -18), FVector(7.8, 4.5, .4), FLinearColor(.31, .27, .18));
     Box(FVector(720, 250, 35), FVector(5, 1, .7), FLinearColor(.26, .21, .14));
+    }
     for (const auto& Pair : Sites)
     {
         const FLinearColor C = Pair.Key == TEXT("han") ? FLinearColor(.58, .34, .18)
@@ -142,10 +148,13 @@ void AShiJinyangGameMode::CreateWorld()
         const FVector P = Pair.Value;
         auto* Marker = Box(P + FVector(0, 0, 18), FVector(.45, .45, .36), C);
         Marker->Tags.Add(FName(*Pair.Key)); Markers.Add(Pair.Key, Marker);
+        if (bWorldReady) { Marker->SetActorHiddenInGame(true);Marker->SetActorEnableCollision(false); }
         if (Pair.Key == TEXT("han") || Pair.Key == TEXT("wei") || Pair.Key == TEXT("zhi"))
         {
-            Box(P + FVector(0, 0, -18), FVector(5.2, 4.5, .4), FLinearColor(.3, .26, .17));
-            Box(P + FVector(100, 0, 65), FVector(1.4, 1.7, 1.3), C);
+            if (!bWorldReady) {
+                Box(P + FVector(0, 0, -18), FVector(5.2, 4.5, .4), FLinearColor(.3, .26, .17));
+                Box(P + FVector(100, 0, 65), FVector(1.4, 1.7, 1.3), C);
+            }
             if (Pair.Key != TEXT("zhi"))
             {
                 Box(P + FVector(-140, 100, 90), FVector(.035,.035,1.8), FLinearColor(.22,.13,.06));
@@ -155,6 +164,8 @@ void AShiJinyangGameMode::CreateWorld()
     }
     CreateFigures();
     auto* Sun = GetWorld()->SpawnActor<ADirectionalLight>(FVector(0, 0, 1400), FRotator(-38, -32, 0));
+    if (bWorldReady) { Sun->GetLightComponent()->SetMobility(EComponentMobility::Movable);
+        Cast<UDirectionalLightComponent>(Sun->GetLightComponent())->bAtmosphereSunLight=true; }
     Sun->GetLightComponent()->SetIntensity(4.f);
     Sun->GetLightComponent()->SetLightColor(FLinearColor(1.f, .89f, .71f));
     auto* Sky = GetWorld()->SpawnActor<ASkyLight>();
@@ -295,6 +306,7 @@ void AShiJinyangGameMode::SelectSite(const FString& Id)
 }
 void AShiJinyangGameMode::RefreshScreen()
 {
+    if (bWorldReady && bExploring) { RefreshExplorationScreen();return; }
     if (!GEngine || !GEngine->GameViewport) return;
     if (Screen) GEngine->GameViewport->RemoveViewportWidgetContent(Screen.ToSharedRef());
     auto Top = SNew(SVerticalBox);
@@ -359,6 +371,8 @@ void AShiJinyangGameMode::RefreshScreen()
     if (BusyTime > 0) Context->AddSlot().AutoHeight()[SNew(SButton).Text(FText::FromString(Text(TEXT("Skip movement · keeps this order"), TEXT("跳过动作 · 保留本次命令"))))
         .OnClicked_Lambda([this]() { SkipMovement(); return FReply::Handled(); })];
     auto Tools = SNew(SHorizontalBox);
+    if (bWorldReady) Tools->AddSlot().AutoWidth().Padding(5,0)[SNew(SButton).Text(FText::FromString(Text(TEXT("Walk the world · V"),TEXT("走入世界 · V"))))
+        .OnClicked_Lambda([this]() { ToggleExploration();return FReply::Handled(); })];
     Tools->AddSlot().AutoWidth()[SNew(SButton).Text(FText::FromString(Sound && Sound->IsSoundEnabled() ? Text(TEXT("Sound on · M"), TEXT("声音已开启 · M")) : Text(TEXT("Enable sound · M"), TEXT("开启声音 · M"))))
         .OnClicked_Lambda([this]() { if (Sound) Sound->SetSoundEnabled(!Sound->IsSoundEnabled()); RefreshScreen(); return FReply::Handled(); })];
     Tools->AddSlot().AutoWidth().Padding(5, 0)[SNew(SButton).Text(FText::FromString(bPaused ? Text(TEXT("Resume · Space"), TEXT("继续 · 空格")) : Text(TEXT("Pause / overview · Space"), TEXT("暂停 / 全局视图 · 空格"))))
@@ -698,6 +712,9 @@ void AShiJinyangGameMode::Tick(float Dt)
     Super::Tick(Dt);
     auto* PC = GetWorld()->GetFirstPlayerController();
     if (!PC || !Camera.IsValid()) return;
+    if(bWorldReady)TickResidents(Dt);
+    if (bWorldReady && PC->WasInputKeyJustPressed(EKeys::V) && !bExploreIntro) ToggleExploration();
+    if (bWorldReady && bExploring) { TickExploration(Dt); if (bExploring) return; }
     if (PC->WasInputKeyJustPressed(EKeys::H) && Screen)
     {
         bHideHud = !bHideHud;
@@ -792,6 +809,7 @@ void AShiJinyangGameMode::Tick(float Dt)
 }
 void AShiJinyangGameMode::EndPlay(const EEndPlayReason::Type Reason)
 {
+    if (bWorldReady) SaveExploration();
     if (Sound) Sound->Stop();
     if (bAudioRecording) UAudioMixerBlueprintLibrary::StopRecordingOutput(this,EAudioRecordingExportType::WavFile,
         TEXT("jinyang-mixer-interrupted"),FPaths::GetPath(SavePath));

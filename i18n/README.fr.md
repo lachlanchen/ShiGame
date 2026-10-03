@@ -22,6 +22,8 @@ Le joueur prend des décisions, mène des négociations diplomatiques et établi
 
 Jinyang dispose désormais d’une maquette interactive de mouvements dans Unreal, avec des ordres exécutés, de la diplomatie, trois familles de dénouements et un registre sauvegardé du patrimoine et de la carrière. Voir le [bilan de développement](../docs/production/JINYANG_BLOCKOUT_20261002.md). Ce n’est ni une réalisation cinématographique achevée ni une nouvelle bêta mobile. Les chapitres publiés et les justificatifs des bêtas figurent ci-dessous.
 
+La version de développement pour ordinateur du 3 octobre ajoute un quartier de la porte et des digues praticables, 11 lieux à examiner, des caméras à hauteur des yeux et à la troisième personne, et une exploration que l’on peut reprendre. [Compilation et commandes](../docs/production/JINYANG_EXPLORATION_20261003.md). Les décors et les personnages restent en cours de réalisation ; ce n’est pas une mise à jour des boutiques mobiles.
+
 [Conception de la série](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Volume I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Critères de livraison](../docs/production/SHI_WORKABLE_GOAL.md)
 
 ![Concept de la scène de Jinyang — cible de production, pas une capture du jeu](../assets/art/lookdev/jinyang-scene-target-v1.png)

@@ -9,6 +9,7 @@ class AShiJinyangFigure;
 class UShiSoundscapeComponent;
 class UStaticMesh;
 class UMaterialInterface;
+class AShiJinyangExplorer;
 
 struct FShiJinyangPresentationBeat
 {
@@ -26,6 +27,9 @@ public:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
     virtual void EndPlay(const EEndPlayReason::Type Reason) override;
+    // Hide scenic chrome without concealing the controls that own input.
+    static bool IsExplorationInterfaceVisible(bool HideHud, bool Intro, bool Inspect, bool Paused)
+    { return !HideHud || Intro || Inspect || Paused; }
 private:
     FShiJinyangModel Model;
     FString DefinitionText, SavePath, LastSaved, SelectedSite = TEXT("wall"), Note;
@@ -54,6 +58,30 @@ private:
     UPROPERTY() TObjectPtr<UStaticMesh> Sphere;
     UPROPERTY() TObjectPtr<UStaticMesh> Cylinder;
     UPROPERTY() TObjectPtr<UMaterialInterface> BasicMaterial;
+    bool bWorldReady = false, bExploring = false, bExploreIntro = false, bWorldInspect = false;
+    bool bWorldPaused = false;
+    int32 GuideIndex=0;
+    TArray<FString> GuidePlaces;
+    TArray<TWeakObjectPtr<AShiJinyangFigure>> Residents;
+    TArray<TArray<FVector>> ResidentRoutes;
+    TArray<bool> ResidentGoingOut;
+    TArray<float> ResidentWait;
+    TWeakObjectPtr<AShiJinyangExplorer> Explorer;
+    FString NearbyPlace, InspectedPlace;
+    TSet<FString> VisitedPlaces;
+    TMap<FString,FVector> WorldPlaces;
+    bool CreateExplorationWorld();
+    void StartExploration();
+    void ToggleExploration();
+    void TickExploration(float Dt);
+    void RefreshExplorationScreen();
+    void SaveExploration() const;
+    void InspectNearby();
+    void PauseExploration(bool Pause);
+    void TickResidents(float Dt);
+    FString ExplorationGuide() const;
+    FString PlaceName(const FString& Id) const;
+    FString PlaceStory(const FString& Id) const;
     void CreateWorld();
     void CreateFigures();
     FVector ForceDestination(int32 Index) const;

@@ -125,6 +125,14 @@ policy and private runtime handoff before booting a simulator. Select one
 SHI-owned simulator by its exact UUID; never use `booted` on a shared Mac or
 erase a simulator. Shut down only that owned simulator after collecting evidence.
 
+Keep build products separate for production, aftermath-preview and upgrade-QA
+identities. Reusing the same DerivedData products across those configurations can
+leave resources that the successor project no longer copies. On October 3 the
+bundle-boundary test correctly rejected six stale draft files in a reused QA
+cache. Preserve the failed result and rebuild into a fresh identity-specific
+DerivedData directory; do not weaken the boundary test or delete shared caches.
+Sharing the installed SDK is safe; sharing an old app bundle is not a clean build.
+
 `project-qa.yml` creates **SHI QA**, bundle `art.lazying.shi.aftermathqa`, with
 signing disabled. It must never be archived, uploaded or submitted. Keep the
 formal store source/artifact directory separate and unchanged.

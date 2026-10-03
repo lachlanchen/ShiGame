@@ -22,6 +22,8 @@ Spielende treffen Entscheidungen, betreiben Diplomatie und vermitteln zwischen M
 
 Jinyang besitzt jetzt einen interaktiven Bewegungs-Blockout in Unreal mit ausgeführten Befehlen, Diplomatie, drei Ausgangsarten und einem gespeicherten Besitz- und Laufbahnprotokoll. Siehe den [Entwicklungsbericht](../docs/production/JINYANG_BLOCKOUT_20261002.md). Dies ist weder fertige Filmkunst noch eine neue mobile Beta. Die bisherigen Veröffentlichungen und Beta-Nachweise stehen weiter unten.
 
+Der Desktop-Entwicklungsbuild vom 3. Oktober ergänzt ein begehbares Torviertel und Deiche, 11 untersuchbare Orte, Augenhöhe- und Verfolgerkamera sowie fortsetzbare Erkundung. [Build und Steuerung](../docs/production/JINYANG_EXPLORATION_20261003.md). Umgebung und Figuren sind grafisch noch in Arbeit; dies ist kein Update für die mobilen Stores.
+
 [Serienkonzept](../docs/design/GAME_DESIGN_DOCUMENT.md) · [Band I](../docs/design/JINYANG_CHAPTER_DESIGN.md) · [Lieferkriterien](../docs/production/SHI_WORKABLE_GOAL.md)
 
 ![Jinyang-Szenenkonzept — Produktionsziel, kein Spiel-Screenshot](../assets/art/lookdev/jinyang-scene-target-v1.png)

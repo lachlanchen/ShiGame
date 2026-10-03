@@ -11,6 +11,7 @@ const engine = process.env.SHI_UNREAL_ROOT || "/home/lachlan/UnrealEngine/UE_5.8
 const evidence = resolve(process.argv.slice(2).find(arg => !arg.startsWith("--")) || resolve(root, ".runtime/jinyang-desktop-review"));
 const version=process.argv.includes("--legacy") ? 1 : 2;
 const saveName=process.argv.find(arg=>arg.startsWith("--save="))?.slice(7) || `chronicle.v${version}.json`;
+const packageRoot=process.argv.find(arg=>arg.startsWith("--package="))?.slice(10);
 const display = ":121", vnc = 5921, novnc = 6121;
 const children = [];
 const logs = [];
@@ -64,11 +65,13 @@ try {
   if (!ready) throw Error("Owned X display did not start.");
   await start("vnc", "x11vnc", ["-display", display, "-localhost", "-no6", "-nopw", "-forever", "-shared", "-rfbport", String(vnc)]);
   await start("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:" + novnc, "127.0.0.1:" + vnc]);
-  const player = await start("player", resolve(engine, "Engine/Binaries/Linux/UnrealEditor"), [
-    resolve(root, "apps/unreal/SHI.uproject"), "/Engine/Maps/Entry?game=/Script/SHI.ShiJinyangGameMode",
+  const player = await start("player", packageRoot ? resolve(packageRoot,"SHI/Binaries/Linux/SHI") : resolve(engine, "Engine/Binaries/Linux/UnrealEditor"), [
+    ...(packageRoot ? [] : [resolve(root, "apps/unreal/SHI.uproject")]), "/Engine/Maps/Entry?game=/Script/SHI.ShiJinyangGameMode",
     "-game", "-windowed", "-ResX=1920", "-ResY=1080", "-WinX=0", "-WinY=0", "-nosplash", "-vulkan",
     "-ShiJinyangSave=" + resolve(evidence, saveName),
     ...(version===1 ? ["-ShiJinyangLegacy"] : []),
+    ...(process.argv.includes("--explore") ? ["-ShiExplore"] : []),
+    ...(process.argv.includes("--zh") ? ["-ShiLocale=zh-Hans"] : []),
     "-ShiAudioReview",
     "-abslog=" + resolve(evidence, "engine.log"),
   ]);
