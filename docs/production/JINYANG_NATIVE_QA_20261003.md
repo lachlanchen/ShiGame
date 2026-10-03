@@ -1,6 +1,6 @@
 # Jinyang native QA preparation
 
-2026-10-03. This is **configuration and SDK qualification**, not a compiled mobile application or store submission. It follows the [defense review and touch repairs](JINYANG_DEFENSE_BUILD_20261003.md).
+2026-10-03. This records **configuration, SDK qualification and the first current-source native Mac editor-module build**, not a packaged mobile application or store submission. It follows the [defense review and touch repairs](JINYANG_DEFENSE_BUILD_20261003.md).
 
 ## Player-facing purpose
 
@@ -73,8 +73,20 @@ The installed Xcode manual on an existing Mac confirms that per-process `XCODE_X
 
 This file prepares a candidate path; it has **not** yet produced a compiled Unreal application. Before transfer, check the actual bundle identifier, architecture, staged content, entitlements and nested executable inventory. Unset `XCODE_XCCONFIG_FILE` before signing on the existing signing host. A valid development profile and actual successful signing/verification are required before installing the separate QA app. Neither the unsigned artifact nor local Mac ad-hoc signing qualifies a TestFlight upload.
 
+## Native Mac compilation — October 3 evening
+
+The official **5.8.3 / 58210709** installation completed file relocation and verification successfully; the staging area was removed. Final `Build.version`, `Apple_SDK.json` and Apple build-tool source match the previously pinned manifest hashes. The temporary download-network changes were rolled back, and the completed frozen launcher was closed before building. The GUI's missing completion statistics did not override the worker's successful verification and installed-file evidence.
+
+The first actual Mac compilation exposed a defect that the small standalone input/layout tests could not detect: `.DPIScale(this, ...)` selected a Slate shared-pointer delegate, but its owner is an Unreal actor. Both walking and command touch overlays now use `.DPIScale_UObject(this, ...)`, retaining dynamic scaling with the correct owner lifetime. The static wiring check guards this binding; native compilation is the authoritative API/template check.
+
+Source **`17f6c6100855b662facb57af1f6826bd2519e8a1`**, Mac QA v3, bundled .NET 10 and Xcode 27 successfully compiled the **arm64 SHIEditor module** with a four-action parallelism limit. The corrected incremental build finished with exit zero in **6.67 seconds**. `libUnrealEditor-SHI.dylib` is Mach-O arm64, SHA-256 **`319fc2ec1544bb02893c8ba47e6be286c090ecc78ee23e69587e7d60ae573092`**. This compiles the touch/layout entry changes and worker-camera policy; it is not a packaged game or observed visual behavior.
+
+Fifteen combined QA/viewport/resource checks, 52 legacy plus 109 current replay checkpoints, standalone C++ input/layout/camera checks, Unreal static validation and repository/story/profile checks pass. The separate four-suite native Jinyang run has been launched; its report must be retrieved and evaluated before claiming a native automation pass. A tunnel observation timeout does not authorize restarting the run.
+
+The vendor's editor wrapper has an ad-hoc signature whose nested Steam-library check reports a mismatch. The library, main executable and signature record each match the official download manifest. No macOS security policy was disabled and no vendor binary was re-signed to conceal the warning. Compilation succeeds; runtime execution and packaging remain separate checks.
+
 ## Next acceptance gate
 
-Compile the latest source, run the four native Jinyang suites, and confirm effective game mode, locale, landscape and application identity in an actual package. Launch from the icon, verify readable controls and upward touch look, then play defense → liaison → operation plus withdrawal. Test pause/background/cold resume, scrolling, audio and save failure/retry. Desktop touch emulation is not physical iPad/Mi 10 Pro qualification.
+Retrieve the four native Jinyang suite results, then package the current source and confirm effective game mode, locale, landscape and application identity. Launch from the icon, verify readable controls and upward touch look, then play defense → liaison → operation plus withdrawal. Test pause/background/cold resume, scrolling, audio and save failure/retry. Desktop touch emulation is not physical iPad/Mi 10 Pro qualification.
 
 Only after installed-device and audiovisual review should a signed beta be prepared for explicitly authorized submission. Existing store apps, saved games and the previous verified Linux player remain intact. Final cast/animation, accepted Musia score, integrated film and the complete cinematic chapter remain open.
