@@ -4,6 +4,7 @@ import { execFile, spawn } from "node:child_process";
 import { promisify } from "node:util";
 import { readFile, writeFile, copyFile, access, stat } from "node:fs/promises";
 import { resolve } from "node:path";
+import { recordedViewport } from "./jinyang-review-viewport.mjs";
 const run = promisify(execFile);
 const evidence = resolve(process.argv[2] || ".runtime/jinyang-desktop-review");
 const routeName = process.argv[3] || "quiet-recovery";
@@ -28,11 +29,15 @@ const routes = {
 };
 if (!routes[routeName]) throw Error("Unknown review route");
 const ownership = JSON.parse(await readFile(resolve(evidence,"owned-processes.json"),"utf8"));
+const viewport = recordedViewport(ownership);
 const player = ownership.processes.find(p => p.name === "player");
 if (ownership.display !== ":121" || !player?.pid) throw Error("Not the dedicated SHI review");
 const command = await readFile(`/proc/${player.pid}/cmdline`,"utf8");
 if (!command.includes("ShiJinyangGameMode") || !command.includes(evidence)) throw Error("Player ownership mismatch");
 const env = {...process.env,DISPLAY:ownership.display,XAUTHORITY:""};
+const { stdout: displayGeometry } = await run("xdotool", ["getdisplaygeometry"], { env });
+if (displayGeometry.trim() !== `${viewport.width} ${viewport.height}`)
+  throw Error("Actual isolated display does not match the recorded viewport; no input sent.");
 const pause = ms => new Promise(r => setTimeout(r,ms));
 const key = async k => { await run("xdotool",["key",k],{env}); await pause(500); };
 const logPath = resolve(evidence,"engine.log"), savePath = resolve(evidence,ownership.saveName || "chronicle.v1.json");
@@ -67,7 +72,7 @@ let audioStarted = false;
 const events = [], started = Date.now();
 try {
   recording = spawn("ffmpeg",["-hide_banner","-loglevel","error","-f","x11grab","-framerate","15",
-    "-video_size","1920x1080","-i",":121.0","-vf","scale=1280:720","-c:v","libx264",
+    "-video_size",`${viewport.width}x${viewport.height}`,"-i",":121.0","-vf","scale=w='trunc(min(1280,iw)/2)*2':h=-2","-c:v","libx264",
     "-threads","2","-preset","veryfast","-crf","24","-pix_fmt","yuv420p",videoPath],
     {env,stdio:["pipe","ignore","inherit"]});
   recordingClosed = new Promise((resolve,reject)=> { recording.once("error",reject); recording.once("exit",(code)=> code===0?resolve():reject(Error("Recorder exit "+code))); });
@@ -109,7 +114,7 @@ try {
   await copyFile(resolve(evidence,"jinyang-mixer.wav"),resolve(evidence,captureName+"-mixer.wav"));
   await writeFile(resolve(evidence,captureName+"-input-review.json"),JSON.stringify({route:routeName,
     started:new Date(started).toISOString(),seconds:(Date.now()-started)/1000,events,
-    completed, firstOrder, stopAfter:stopAfter || null,
+    completed, firstOrder, viewport, stopAfter:stopAfter || null,
     input:"actual xdotool keyboard; no skips; save inspected read-only",visualReview:"pending",
     capture:"15fps capture is not measured engine frame rate; mixer audio is not physical speaker acceptance"},null,2));
   console.log((completed ? (firstOrder ? "Ending segment" : "Complete route") : "Intermediate segment")+" recorded: "+videoPath);

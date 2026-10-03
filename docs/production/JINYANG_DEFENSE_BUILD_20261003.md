@@ -37,4 +37,6 @@ Next, in one admitted isolated review runtime:
 2. Walk alongside the performed response, pause/resume and skip, then cold restore. Continue into liaison and the operation with the earned preparation intact.
 3. Play a materially different escape/withdrawal route. Check failed-save feedback, touch controls and small-window layout through actual input.
 
+The isolated review launcher accepts `--viewport=844x390` (or `--viewport=390x844`) with `--explore --touch --zh`. Use a separate evidence directory for each run and stop the previous owned stack first. X display, game resolution and the fit guard use the same bounded dimensions; the recorder verifies them and preserves the aspect ratio rather than forcing a desktop-sized capture. Missing legacy viewport metadata means the original 1920×1080 default; malformed metadata is rejected. Viewport/parser and resource-gate tests do not count as an observed phone-layout pass, and desktop touch emulation does not replace physical-device testing.
+
 G1–G4 remain open. This checkpoint is not final character/animation quality, accepted Musia music or LocalVideoGen film, a finished chapter, a physical-device test, a new TestFlight build, a Google internal update or a public release.

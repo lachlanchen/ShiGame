@@ -5,6 +5,8 @@ import { readFile, mkdir, open, writeFile, access } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import net from "node:net";
+import { assessMemory } from "./check-workstation-resources.mjs";
+import { viewportArgument } from "./jinyang-review-viewport.mjs";
 const run = promisify(execFile);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const engine = process.env.SHI_UNREAL_ROOT || "/home/lachlan/UnrealEngine/UE_5.8.1";
@@ -13,6 +15,7 @@ const version=process.argv.includes("--legacy") ? 1 : 2;
 const saveName=process.argv.find(arg=>arg.startsWith("--save="))?.slice(7) || `chronicle.v${version}.json`;
 const packageRoot=process.argv.find(arg=>arg.startsWith("--package="))?.slice(10);
 const display = ":121", vnc = 5921, novnc = 6121;
+const viewport = viewportArgument(process.argv.slice(2));
 const children = [];
 const logs = [];
 let finish;
@@ -27,11 +30,8 @@ for (const path of ["/tmp/.X121-lock", "/tmp/.X11-unix/X121"]) {
   if (exists) throw Error("Display :121 already has a lock/socket; no duplicate stack started.");
 }
 const mem = await readFile("/proc/meminfo", "utf8");
-const number = key => Number(mem.match(new RegExp("^" + key + ":\\s+(\\d+)", "m"))?.[1]);
-if (number("MemAvailable") < 24 * 1024 * 1024)
-  throw Error("Less than 24 GiB available; no runtime started.");
-if (number("SwapTotal") && (number("SwapTotal") - number("SwapFree")) / number("SwapTotal") > .75)
-  throw Error("Swap exceeds 75%; no runtime started. Inspect only obsolete SHI-owned jobs.");
+if (!assessMemory(mem).allowed)
+  throw Error("SHI review requires >=24 GiB available RAM and <=75% swap use; no runtime started. Inspect only obsolete SHI-owned jobs.");
 for (const port of [vnc, novnc]) {
   await new Promise((resolve, reject) => {
     const s = net.createServer();
@@ -46,7 +46,7 @@ async function start(name, executable, args) {
   child.on("error", e => finish(name + ": " + e.message));
   children.push({ name, child });
   await writeFile(resolve(evidence, "owned-processes.json"), JSON.stringify({
-    display, vnc, novnc, evidence, saveName, processes: children.map(x => ({ name: x.name, pid: x.child.pid })),
+    display, vnc, novnc, viewport, evidence, saveName, processes: children.map(x => ({ name: x.name, pid: x.child.pid })),
   }, null, 2));
   return child;
 }
@@ -57,7 +57,7 @@ async function stop(child) {
   if (child.exitCode === null && !child.signalCode) child.kill("SIGKILL");
 }
 try {
-  await start("xvfb", "Xvfb", [display, "-screen", "0", "1920x1080x24", "-ac", "-nolisten", "tcp"]);
+  await start("xvfb", "Xvfb", [display, "-screen", "0", `${viewport.width}x${viewport.height}x24`, "-ac", "-nolisten", "tcp"]);
   let ready = false;
   for (let i = 0; i < 40; i++) {
     try { await run("xdpyinfo", [], { env }); ready = true; break; } catch { await pause(250); }
@@ -67,7 +67,7 @@ try {
   await start("novnc", "websockify", ["--web=/usr/share/novnc", "127.0.0.1:" + novnc, "127.0.0.1:" + vnc]);
   const player = await start("player", packageRoot ? resolve(packageRoot,"SHI/Binaries/Linux/SHI") : resolve(engine, "Engine/Binaries/Linux/UnrealEditor"), [
     ...(packageRoot ? [] : [resolve(root, "apps/unreal/SHI.uproject")]), "/Engine/Maps/Entry?game=/Script/SHI.ShiJinyangGameMode",
-    "-game", "-windowed", "-ResX=1920", "-ResY=1080", "-WinX=0", "-WinY=0", "-nosplash", "-vulkan",
+    "-game", "-windowed", `-ResX=${viewport.width}`, `-ResY=${viewport.height}`, "-WinX=0", "-WinY=0", "-nosplash", "-vulkan",
     "-ShiJinyangSave=" + resolve(evidence, saveName),
     ...(version===1 ? ["-ShiJinyangLegacy"] : []),
     ...(process.argv.includes("--explore") ? ["-ShiExplore"] : []),
@@ -81,7 +81,7 @@ try {
     try {
       const { stdout } = await run("xdotool", ["search", "--onlyvisible", "--pid", String(player.pid)], { env });
       const id = stdout.trim().split("\n").at(-1);
-      if (id) await run("xdotool", ["windowmap", id, "windowmove", id, "0", "0", "windowsize", id, "1920", "1080", "windowfocus", id], { env });
+      if (id) await run("xdotool", ["windowmap", id, "windowmove", id, "0", "0", "windowsize", id, String(viewport.width), String(viewport.height), "windowfocus", id], { env });
     } catch {}
   }, 2000);
   const url = "http://127.0.0.1:6121/vnc.html?host=127.0.0.1&port=6121&autoconnect=1&resize=scale&view_only=0&shared=0";
