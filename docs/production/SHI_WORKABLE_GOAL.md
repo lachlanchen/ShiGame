@@ -97,6 +97,10 @@ The goal optimization also starts the selected encounter, not a new design resta
 
 The immediate next action is to compile this source in an admitted resource lane, run native replay/preview tests, then play wall → preview/cancel → dispatch → walk alongside → pause/resume/skip → cold restore → diplomacy/operation. Check an alternative exit route, failed-save feedback and the small-window scroll layout. This step must become observed gameplay before expanding its crew allocation or cinematic performance. Native/touch qualification proceeds alongside, not as another unchanged Qin compatibility run.
 
+## Native qualification follow-through — 2026-10-03
+
+The previously source-only defense and touch work now compiles in Unreal 5.8.1. Four native Jinyang suites pass, including 52 + 109 replay checkpoints and forecast assertions; a new Linux development package was built successfully. [Build receipt and remaining review](JINYANG_DEFENSE_BUILD_20261003.md). The post-build swap gate prevents a new GUI launch at this checkpoint, so actual-input/visual qualification remains the next action. Mac mini console/login setup works and official engine installation has started, but its DNS/download and compatible Apple toolchain qualification are not complete. No mobile beta or finished chapter is claimed.
+
 ## Initial checkpoint — 2026-10-02
 
 G0 design is written. Local Tongjian main text and supplied modern Chinese translation for the Jinyang coordination passage have been read and pinned privately. The whole-history campaign map and source separation are established. Remaining G0 work: reconcile parallel source wording/date and complete the chapter's cast/geography packet; other periods are roadmap, not fully researched scripts.
