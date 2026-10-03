@@ -4,7 +4,7 @@
 #include "Misc/Paths.h"
 #if PLATFORM_WINDOWS
 #include "Windows/WindowsHWrapper.h"
-#elif PLATFORM_UNIX || PLATFORM_MAC
+#elif PLATFORM_UNIX || PLATFORM_MAC || PLATFORM_IOS || PLATFORM_ANDROID
 #include <stdio.h>
 #endif
 
@@ -47,10 +47,18 @@ bool FShiAtomicSaveFile::WriteUtf8(const FString& Path, const FString& Json, FSt
     {
         // Do not use IFileManager::Move: its replacement path deletes the old
         // save before moving the new one. Keep both paths on one filesystem.
+        // OpenWrite resolves Unreal paths through the platform's writable
+        // container. Native rename must use those SAME physical paths: on iOS
+        // ProjectSavedDir is not itself an absolute POSIX Documents path.
+        auto& Files = FPlatformFileManager::Get().GetPlatformFile();
+        const FString NativeDestination = Files.ConvertToAbsolutePathForExternalAppForWrite(*Destination);
+        const FString NativeTemporary = Files.ConvertToAbsolutePathForExternalAppForWrite(*Temporary);
+        if (NativeDestination.IsEmpty() || NativeTemporary.IsEmpty()
+            || FPaths::GetPath(NativeDestination) != FPaths::GetPath(NativeTemporary)) return false;
 #if PLATFORM_WINDOWS
-        return !!MoveFileExW(*Temporary, *Destination, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
-#elif PLATFORM_UNIX || PLATFORM_MAC
-        return rename(TCHAR_TO_UTF8(*Temporary), TCHAR_TO_UTF8(*Destination)) == 0;
+        return !!MoveFileExW(*NativeTemporary, *NativeDestination, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
+#elif PLATFORM_UNIX || PLATFORM_MAC || PLATFORM_IOS || PLATFORM_ANDROID
+        return rename(TCHAR_TO_UTF8(*NativeTemporary), TCHAR_TO_UTF8(*NativeDestination)) == 0;
 #else
         return false;
 #endif

@@ -93,7 +93,11 @@ void AShiJinyangGameMode::BeginPlay()
     {
         LastSaved = Model.ExportSave();
         if (!FShiAtomicSaveFile::WriteUtf8(SavePath, LastSaved, Error))
-        { bSaveBlocked = true; Note = Error; }
+        {
+            bSaveBlocked = true;
+            Note = Text(TEXT("Cannot save this plan yet. No decision has been applied."), TEXT("暂时无法保存方案，尚未执行任何决定。"));
+            UE_LOG(LogTemp, Warning, TEXT("SHI_JINYANG_SAVE_BLOCKED %s"), *Error);
+        }
     }
     CreateWorld(); ApplySettledVisuals(true);
     Sound = NewObject<UShiSoundscapeComponent>(this);
@@ -105,7 +109,7 @@ void AShiJinyangGameMode::BeginPlay()
     if (!Model.GetState().Outcome.IsEmpty()) SetOutcomeCamera();
     if (bWorldReady) StartExploration();
     RefreshScreen();
-    UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_READY history=%d save=%s blockout=true"), Model.GetState().History.Num(), *SavePath);
+    UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_READY history=%d save=%s saveBlocked=%d blockout=true"), Model.GetState().History.Num(), *SavePath, bSaveBlocked);
 }
 AStaticMeshActor* AShiJinyangGameMode::Box(const FVector& P, const FVector& Scale, const FLinearColor& Color)
 {

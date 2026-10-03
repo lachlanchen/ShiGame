@@ -7,18 +7,22 @@
 #include "ShiAtomicSaveFile.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiAtomicSaveTest, "SHI.Persistence.AtomicReplacement",
-    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::ClientContext | EAutomationTestFlags::EngineFilter)
 
 bool FShiAtomicSaveTest::RunTest(const FString& Parameters)
 {
     auto& Files = FPlatformFileManager::Get().GetPlatformFile();
     const FString Directory = FPaths::ProjectSavedDir() / TEXT("Automation/AtomicSave") / FGuid::NewGuid().ToString(EGuidFormats::Digits);
+    // Includes the relative, case-sensitive Saved path used on actual mobile
+    // devices, not only an absolute desktop scratch directory.
     const FString Path = Directory / TEXT("chronicle.json");
     const FString Old = TEXT("{\"chapter\":\"第一章\",\"turn\":1}");
     const FString New = TEXT("{\"chapter\":\"陈地议事\",\"turn\":2}");
     FString Error, Actual, TemporarySeen;
     TestFalse(TEXT("Empty path rejected"), FShiAtomicSaveFile::WriteUtf8(TEXT(""), New, Error));
     if (!TestTrue(TEXT("Create original save"), FShiAtomicSaveFile::WriteUtf8(Path, Old, Error))) return false;
+    const FString NativePath = Files.ConvertToAbsolutePathForExternalAppForWrite(*FPaths::ConvertRelativePathToFull(Path));
+    TestFalse(TEXT("Writable platform path is resolved"), NativePath.IsEmpty());
     bool ReplacementReached = false;
     TestFalse(TEXT("Injected replacement failure reported"), FShiAtomicSaveFile::WriteWithReplacementForTest(Path, New, Error,
         [&](const FString& Destination, const FString& Temporary)
@@ -31,6 +35,8 @@ bool FShiAtomicSaveTest::RunTest(const FString& Parameters)
             TestTrue(TEXT("Candidate fully written before replacement"), FFileHelper::LoadFileToString(Candidate, *Temporary));
             TestEqual(TEXT("UTF8 candidate roundtrip"), Candidate, New);
             TestEqual(TEXT("Temporary stays on same directory/filesystem"), FPaths::GetPath(Temporary), FPaths::GetPath(Destination));
+            TestEqual(TEXT("Mapped temporary shares the writable container directory"),
+                FPaths::GetPath(Files.ConvertToAbsolutePathForExternalAppForWrite(*Temporary)), FPaths::GetPath(NativePath));
             return false;
         }));
     TestTrue(TEXT("Replacement boundary exercised"), ReplacementReached);
@@ -57,6 +63,12 @@ bool FShiAtomicSaveTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Cleanup test sentinel"), Files.DeleteFile(*Sentinel));
     TestTrue(TEXT("Cleanup test directory"), Files.DeleteDirectory(*Blocked));
     TestTrue(TEXT("Cleanup test save"), Files.DeleteFile(*Path));
+    const FString UnicodePath = Directory / TEXT("纪事.json");
+    TestTrue(TEXT("Unicode save filename creates"), FShiAtomicSaveFile::WriteUtf8(UnicodePath, Old, Error));
+    TestTrue(TEXT("Unicode save filename replaces"), FShiAtomicSaveFile::WriteUtf8(UnicodePath, New, Error));
+    TestTrue(TEXT("Unicode save remains engine-readable"), FFileHelper::LoadFileToString(Actual, *UnicodePath));
+    TestEqual(TEXT("Unicode replacement content exact"), Actual, New);
+    TestTrue(TEXT("Cleanup Unicode save"), Files.DeleteFile(*UnicodePath));
     TestTrue(TEXT("No temporary files leaked"), Files.DeleteDirectory(*Directory));
     return !HasAnyErrors();
 }
