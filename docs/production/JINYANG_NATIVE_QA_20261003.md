@@ -29,7 +29,20 @@ SDK paths, signing identities, provisioning profiles, credentials and shared Xco
 - The combined Jinyang checks pass twelve Node tests, 52 legacy and 109 current replay checkpoints, and the exact standalone C++ input/layout checks. The new configuration entry code and earlier touch fixes still need native compilation and runtime verification.
 - Unreal's installed **5.8.1** `UnrealBuildTool -Mode=ValidatePlatforms -Platforms=Android -OutputSDKs` completed with explicit `##PlatformValidate: Android VALID r27c`. This mode only qualifies SDK discovery; exit zero alone would not establish validity.
 - The process selected the existing NDK **28.2.13676358** and JDK **21** through per-command environment. The printed `r27c` is the engine's preferred version, **not** a measurement of the selected NDK. No SDK was downloaded or globally reconfigured. This is not Gradle, cook, signing, target-API/store-policy or installed-device qualification.
-- The Mac mini's one official Unreal 5.8.3 installation is still constructing files. The compatible Xcode 26.6 Metal compiler separately passed a real compile/link probe. No Mac game build has begun; inspect the installed engine's actual SDK range before selecting the toolchain.
+- The Mac mini's one official Unreal installation is still constructing files. Reading its completed staging metadata identifies **5.8.3, changelist 58210709** and an Apple SDK range of **15.2.0–27.9.0** (preferred 26.1.1); both Mac and iOS inherit this range. This differs from the older Linux 5.8.1 metadata and admits the mini's existing **Xcode 27.0 / 27A266a**. Staging metadata is not completed installation: verify the final installed files before building.
+- Xcode 27's first-launch check passed. Its Mac, iPhoneOS and iPhoneSimulator SDKs each report 27.0. The actual Metal compiler **32023.921** compiled and linked the same small compute shader separately for all three targets, exit zero. This proves tool execution, not Unreal shader compatibility, a running simulator app or a native SHI build. Xcode 26.6's earlier Mac probe remains valid but is no longer the preferred next attempt; no shared Xcode selection or system package was changed.
+
+### Apple toolchain evidence
+
+The download's `Build.version` SHA-256 is `eab58750e84719489f3ee0d42d05a533ceb357eb3ee511777e9408d27a85f43c`; `Apple_SDK.json` is `860167ec94a1979927272b03c28f0771dcfddd688fe60d58b405183459428ab8`. The probe source hash is `246043d1e274b8d8de0c90829fa8d42a4f0a11f37da4648dda840398dbf93bb4`.
+
+| Compiled target | Linked Metal library SHA-256 |
+| --- | --- |
+| macOS | `d19f9e3a385befe09c47dd354d807fa6d7b5c7343161740c3db420b92dca1e7b` |
+| iPhoneOS | `cfc176314df213ca0e5f21e6318761fd3211e7d0cfdd859b7a0846a15f0f0401` |
+| iPhoneSimulator | `b32cb50aff24afbfa19373ccca5bc9df9cd0f34ec5fcc6422f106697ca5261b8` |
+
+Next use the existing Xcode 27 path through per-command `DEVELOPER_DIR`, subject to final installed-engine SDK validation. Do not install older shared first-launch components to work around a version limit that does not apply to this candidate.
 
 ## Next acceptance gate
 
