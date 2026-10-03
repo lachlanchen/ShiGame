@@ -6,7 +6,7 @@
 
 A native test app must open the explorable Jinyang chapter from its icon, without desktop command-line switches. `ShiJinyangGameMode` now reads `StartInExploration` and `InitialLocale` from `[SHI.Jinyang]` in game configuration. Explicit desktop `ShiExplore` and `ShiLocale` arguments remain supported. The canonical default game mode and existing Qin release configurations are unchanged.
 
-The isolated profile uses application identifier `art.lazying.shi.jinyangqa`, display name **SHI Jinyang QA**, development packaging and Simplified Chinese. It is not an upgrade to either current store application. Mobile profiles select landscape, conventional mobile rendering, the Jinyang world and required primitive/touch assets. Canonical non-UFS content remains staged. Android includes offline data inside the APK and uses app-scoped external files; no Google Play services or advertising is enabled. The Mac profile preserves the desktop renderer and is an optional development target, not a mobile-release prerequisite.
+The isolated profile uses application identifier `art.lazying.shi.jinyangqa`, display name **SHI Jinyang QA**, development packaging and Simplified Chinese. It is not an upgrade to either current store application. Mobile profiles select landscape, conventional mobile rendering, the Jinyang world and required primitive/touch assets. Canonical non-UFS content remains staged. Android includes offline data inside the APK and uses app-scoped external files; no Google Play services or advertising is enabled. The Mac profile preserves the desktop renderer for the requested native macOS version; it is a separate package, not proof of iOS delivery. The active goal includes all three platforms, superseding earlier optional-Mac milestone wording.
 
 Profile **v2** explicitly selects `EFIGSCJK` internationalization data and stages `en` and `zh-Hans`. The installed engine's `BaseGame.ini` otherwise inherits `English`/`en`; its AutomationTool uses these settings to select ICU data and localization resources. This packaging correction supports the two current QA UI lanes. It does not establish glyph/layout acceptance or claim that the Jinyang scene is translated into all eleven planned languages. Generate a new v2 directory; preserve the earlier v1 receipt rather than overwrite it.
 
@@ -45,6 +45,22 @@ The download's `Build.version` SHA-256 is `eab58750e84719489f3ee0d42d05a533ceb35
 | iPhoneSimulator | `b32cb50aff24afbfa19373ccca5bc9df9cd0f34ec5fcc6422f106697ca5261b8` |
 
 Next use the existing Xcode 27 path through per-command `DEVELOPER_DIR`, subject to final installed-engine SDK validation. Do not install older shared first-launch components to work around a version limit that does not apply to this candidate.
+
+### Installed-package architecture evidence
+
+The exact pending 5.8.3 manifest was decoded with the existing official BuildPatchTool 1.9.0. Its SHA-256 is `a32b6361640dd02a936342d3b0bb4bfefb04d37b475867a7d4fcfd774c5df2eb`. The launcher's recorded selection is core, engine source, Android and iOS: **58,547,965,677 installed bytes**, independently matched by filtering the manifest. Its much larger all-components size includes unselected editor symbols; it is not the chosen installation workload. Allocated staging-disk usage is not an exact completion percentage.
+
+The completed staged `BaseEngine.ini` matches the manifest SHA-256 `3852b5278529a5ea48a6b91928713a30d902f7d6553aac785959123f84590f91`. Its declared installed configurations are:
+
+| Requested target | Declared architectures | Next qualification |
+| --- | --- | --- |
+| Mac editor/game | `arm64`, `x64` | Compile the current module and run the native suites on Apple Silicon, then package/playtest |
+| Android game | `arm64`, `x64` | Use the QA profile's `arm64` selection and qualify the real phone build |
+| iOS game | Device `arm64` only | Build a device candidate and test on the paired iPad |
+
+The manifest contains no `Engine/Intermediate/Build/IOS/iossimulator` objects, and the installed-platform configuration declares no `iossimulator` target. A few third-party simulator libraries do not qualify a complete simulator engine. This is evidence about **this downloaded package**, not a claim that Unreal never supports iOS simulators. Do not force a simulator target or rebuild the whole engine merely to avoid the available physical-device route. Existing SwiftUI-client simulator results remain separate from the new Unreal chapter.
+
+A fresh read-only device check found the iPad paired and available. Its USB host has a matching development provisioning profile for the isolated QA identifier, includes that device, and lists a certificate also present in the host's valid signing-identity inventory. The mini's default keychain search reported no valid signing identities. The intended split is therefore compilation on the roomy mini, followed by signing/device installation on the existing signing host, after validating the supported unsigned-build path, actual key access, bundle entitlements and free space. Do not copy private keys, modify shared keychains or overwrite the installed store app. No signing operation, installation, UI automation or device playtest has been performed by this inventory.
 
 ## Next acceptance gate
 
