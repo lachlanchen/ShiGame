@@ -38,7 +38,9 @@ private:
     bool bSaveBlocked = false, bPaused = false, bReducedMotion = false, bRestartArmed = false, bChinese = false;
     float BusyTime = 0.f;
     FString ActivePresentation;
-    bool bFollowingEnvoy = false;
+    bool bFollowingAction = false;
+    TWeakObjectPtr<AShiJinyangFigure> ActionSubject;
+    TArray<FVector> ActionCameraRoute;
     bool bHideHud = false;
     bool bAudioReview = false, bAudioRecording = false;
     TArray<FShiJinyangPresentationBeat> Beats;
@@ -107,6 +109,9 @@ private:
     void Present(const FString& Id);
     void TickPresentation(float DeltaSeconds);
     void BeginNextBeat();
+    void FollowPresentation(int32 FigureIndex, const TArray<FVector>& Route);
+    void FramePresentationCamera();
+    void ToggleCameraMotion();
     void SetDiplomaticVisuals(const FString& Camp, bool Instant);
     void SetOutcomeCamera();
     void SetOperationVisuals(bool Instant);

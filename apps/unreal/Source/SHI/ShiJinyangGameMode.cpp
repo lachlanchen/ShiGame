@@ -1,4 +1,5 @@
 #include "ShiJinyangGameMode.h"
+#include "ShiJinyangCamera.h"
 #include "ShiJinyangFigure.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiAtomicSaveFile.h"
@@ -315,7 +316,7 @@ int32 AShiJinyangGameMode::CommandKey(const FString& Id) const
 void AShiJinyangGameMode::SelectSite(const FString& Id)
 {
     if (!Sites.Contains(Id)) return;
-    bFollowingEnvoy = false;
+    bFollowingAction = false;
     SelectedSite = Id;
     UE_LOG(LogTemp,Display,TEXT("SHI_JINYANG_SITE site=%s"),*Id);
     const FVector P = Sites[Id];
@@ -410,7 +411,7 @@ void AShiJinyangGameMode::RefreshScreen()
     Tools->AddSlot().AutoWidth().Padding(5, 0)[SNew(SButton).Text(FText::FromString(bPaused ? Text(TEXT("Resume · Space"), TEXT("继续 · 空格")) : Text(TEXT("Pause / overview · Space"), TEXT("暂停 / 全局视图 · 空格"))))
         .OnClicked_Lambda([this]() { TogglePause(); return FReply::Handled(); })];
     Tools->AddSlot().AutoWidth()[SNew(SButton).Text(FText::FromString(bReducedMotion ? Text(TEXT("Reduced camera motion"), TEXT("减少镜头运动")) : Text(TEXT("Reduce camera motion"), TEXT("减少镜头运动"))))
-        .OnClicked_Lambda([this]() { bReducedMotion = !bReducedMotion; SelectSite(SelectedSite); return FReply::Handled(); })];
+        .OnClicked_Lambda([this]() { ToggleCameraMotion(); return FReply::Handled(); })];
     if(bTouchControls)
     {
         // Two scrollable navigation rows and a bounded order card retain real
@@ -424,7 +425,7 @@ void AShiJinyangGameMode::RefreshScreen()
         AddTool(Sound && Sound->IsSoundEnabled()?Text(TEXT("Mute"),TEXT("静音")):Text(TEXT("Sound"),TEXT("声音")),
             [this](){if(Sound)Sound->SetSoundEnabled(!Sound->IsSoundEnabled());RefreshScreen();});
         AddTool(bPaused?Text(TEXT("Resume"),TEXT("继续")):Text(TEXT("Pause"),TEXT("暂停")),[this](){TogglePause();});
-        AddTool(Text(TEXT("Motion"),TEXT("镜头")),[this](){bReducedMotion=!bReducedMotion;SelectSite(SelectedSite);});
+        AddTool(Text(TEXT("Motion"),TEXT("镜头")),[this](){ToggleCameraMotion();});
         const auto Ink=FLinearColor(.018,.027,.04,.96);
         auto TouchOverlay=SNew(SOverlay)
             +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(16)
@@ -480,6 +481,7 @@ void AShiJinyangGameMode::Present(const FString& Id)
 {
     BusyTime = .5f;
     Beats.Empty(); BeatIndex = -1; BeatHold = 0.f;
+    bFollowingAction = false; ActionSubject.Reset(); ActionCameraRoute.Empty();
     ActivePresentation = Id;
     Note = Text(TEXT("Order saved. Watch the people carry it out."), TEXT("命令已存档。观察人们执行。"));
     if (!Model.GetState().Operation.Phase.IsEmpty())
@@ -490,16 +492,28 @@ void AShiJinyangGameMode::Present(const FString& Id)
             Model.GetState().Operation.Losses,Model.GetState().Force,Model.GetState().Operation.Round);
         return;
     }
+    const int32 SubjectIndex = ShiJinyangCamera::SubjectIndex(TCHAR_TO_UTF8(*Id));
     if (Id == TEXT("brace") && Figures.IsValidIndex(16))
-        Figures[16]->MoveAlong({Sites[TEXT("wall")] + FVector(-80, 0, 0)}, true);
+    {
+        const TArray<FVector> Route = {Sites[TEXT("wall")] + FVector(-80, 0, 0)};
+        Figures[16]->MoveAlong(Route, true); FollowPresentation(SubjectIndex, Route);
+    }
     if (Id == TEXT("diversion") && Figures.IsValidIndex(17))
-        Figures[17]->MoveAlong({FVector(-500, -580, 0), FVector(700, -580, 0), FVector(700, 166, 0)}, true);
+    {
+        const TArray<FVector> Route = {FVector(-500, -580, 0), FVector(700, -580, 0), FVector(700, 166, 0)};
+        Figures[17]->MoveAlong(Route, true); FollowPresentation(SubjectIndex, Route);
+    }
     if (Id == TEXT("escape"))
-        for (int32 I = 12; I < 14; ++I) Figures[I]->MoveAlong({FVector(-550, -100, 0), FVector(-550, 530 + (I - 12) * 80, 0)}, true);
+        for (int32 I = 12; I < 14; ++I)
+        {
+            const TArray<FVector> Route = {FVector(-550, -100, 0), FVector(-550, 530 + (I - 12) * 80, 0)};
+            Figures[I]->MoveAlong(Route, true);
+            if (I == SubjectIndex) FollowPresentation(SubjectIndex, Route);
+        }
     const bool Han = Id.EndsWith(TEXT("-han")), Wei = Id.EndsWith(TEXT("-wei"));
     if ((Han || Wei) && Envoy.IsValid())
     {
-        bFollowingEnvoy = true;
+        bFollowingAction = true;
         const FString Camp = Han ? TEXT("han") : TEXT("wei");
         const FVector P = Sites[Camp] + FVector(-170, -20, 0);
         const FVector Start = Sites[TEXT("zhao")] + FVector(90, 70, 0);
@@ -517,7 +531,7 @@ void AShiJinyangGameMode::Present(const FString& Id)
     }
     if (Id == TEXT("relay") && Envoy.IsValid())
     {
-        bFollowingEnvoy = true;
+        bFollowingAction = true;
         Beats.Add({{FVector(-550,650,0), FVector(-550,900,0), FVector(430,900,0), FVector(430,880,0)}, TEXT("han"), 4.f});
         Beats.Add({{FVector(430,900,0), FVector(1100,900,0), FVector(1100,-580,0), FVector(830,-580,0), FVector(830,-620,0)}, TEXT("wei"), 4.f});
         Beats.Add({{FVector(830,-580,0), FVector(-500,-580,0), Sites[TEXT("zhao")] + FVector(90,70,0)}, TEXT(""), 0.f});
@@ -531,7 +545,7 @@ void AShiJinyangGameMode::Present(const FString& Id)
     if (!Model.GetState().Outcome.IsEmpty())
     {
         const auto& S = Model.GetState();
-        Beats.Empty(); BeatIndex = -1; bFollowingEnvoy = false;
+        Beats.Empty(); BeatIndex = -1; bFollowingAction = false;
         SetOutcomeCamera();
         if (S.Outcome == TEXT("coordinated-reversal"))
         {
@@ -563,13 +577,55 @@ void AShiJinyangGameMode::BeginNextBeat()
     ++BeatIndex; bBeatResponseStarted = false; BeatHold = 0.f;
     if (!Beats.IsValidIndex(BeatIndex)) return;
     const auto& Beat = Beats[BeatIndex];
-    if (Beat.Route.Num() && Envoy.IsValid()) Envoy->MoveAlong(Beat.Route);
+    if (Beat.Route.Num() && Envoy.IsValid())
+    {
+        Envoy->MoveAlong(Beat.Route);
+        // Explicit site selection/manual pan suspends following for this order.
+        if (bFollowingAction)
+            FollowPresentation(ShiJinyangCamera::SubjectIndex(TCHAR_TO_UTF8(*ActivePresentation)), Beat.Route);
+    }
     if (!Beat.Route.Num() && Sites.Contains(Beat.Camp))
     {
         const FVector P = Sites[Beat.Camp];
         CameraTarget = P + FVector(-480,-620,520);
         RotationTarget = (P + FVector(0,0,90) - CameraTarget).Rotation();
     }
+}
+void AShiJinyangGameMode::FollowPresentation(int32 FigureIndex, const TArray<FVector>& Route)
+{
+    if (!Figures.IsValidIndex(FigureIndex) || !Figures[FigureIndex].IsValid()) return;
+    ActionSubject = Figures[FigureIndex]; bFollowingAction = true;
+    ActionCameraRoute = Route;
+    ActionCameraRoute.Insert(ActionSubject->GetActorLocation(), 0);
+    FramePresentationCamera();
+}
+void AShiJinyangGameMode::FramePresentationCamera()
+{
+    if (!bFollowingAction || !ActionSubject.IsValid() || !Camera.IsValid() || bExploring || bPaused) return;
+    const FVector Focus = ActionSubject->GetActorLocation() + FVector(0, 0, 100);
+    CameraTarget = ActionSubject->GetActorLocation() + FVector(-480, -500, 380);
+    RotationTarget = (Focus - CameraTarget).Rotation();
+    if (bReducedMotion)
+    {
+        FBox Bounds(ForceInit);
+        for (const FVector& Point : ActionCameraRoute) Bounds += Point;
+        Bounds += ActionSubject->GetActorLocation();
+        const FVector Center = Bounds.GetCenter() + FVector(0, 0, 90);
+        const FVector2D Size = ExplorationUiSize();
+        const float Distance = ShiJinyangCamera::RouteDistance(static_cast<float>(Bounds.GetExtent().Size()) + 150.f,
+            Camera->GetCameraComponent()->FieldOfView, static_cast<float>(Size.X / FMath::Max(1.0, Size.Y)));
+        CameraTarget = Center + FVector(-480, -620, 520).GetSafeNormal() * Distance;
+        RotationTarget = (Center - CameraTarget).Rotation();
+        // One route-establishing cut; no per-frame tracking in reduced-motion mode.
+        Camera->SetActorLocationAndRotation(CameraTarget, RotationTarget);
+    }
+}
+void AShiJinyangGameMode::ToggleCameraMotion()
+{
+    bReducedMotion = !bReducedMotion;
+    const bool Follow = bFollowingAction;
+    SelectSite(SelectedSite); bFollowingAction = Follow;
+    FramePresentationCamera();
 }
 void AShiJinyangGameMode::SetDiplomaticVisuals(const FString& Camp, bool Instant)
 {
@@ -744,13 +800,15 @@ void AShiJinyangGameMode::TogglePause()
 {
     bPaused = !bPaused;
     for (const auto& F : Figures) if (F.IsValid()) F->SetActorTickEnabled(!bPaused);
-    SelectSite(SelectedSite);
+    const bool Follow = bFollowingAction;
+    SelectSite(SelectedSite); bFollowingAction = Follow;
+    if (!bPaused) FramePresentationCamera();
 }
 void AShiJinyangGameMode::SkipMovement()
 {
     if (BusyTime <= 0) return;
     for (const auto& F : Figures) if (F.IsValid()) F->FinishMotion();
-    BusyTime = 0; bFollowingEnvoy = false;
+    BusyTime = 0; bFollowingAction = false; ActionSubject.Reset(); ActionCameraRoute.Empty();
     Beats.Empty(); BeatIndex = -1;
     ApplySettledVisuals(false); SelectSite(SelectedSite);
     if (!Model.GetState().Outcome.IsEmpty()) SetOutcomeCamera();
@@ -768,7 +826,8 @@ void AShiJinyangGameMode::Restart()
         || !FShiAtomicSaveFile::WriteUtf8(SavePath, Fresh.ExportSave(), Error))
     { Note = Error; RefreshScreen(); return; }
     Model = MoveTemp(Fresh); LastSaved = Model.ExportSave(); bRestartArmed = false; bPaused = false;
-    Beats.Empty(); BeatIndex = -1; BusyTime = 0; bFollowingEnvoy = false;
+    Beats.Empty(); BeatIndex = -1; BusyTime = 0; bFollowingAction = false;
+    ActionSubject.Reset(); ActionCameraRoute.Empty();
     // Recreate only this chapter's figures; prior chronicle stays in the route archive.
     for (const auto& F : Figures) if (F.IsValid()) F->Destroy();
     Figures.Empty(); Envoy.Reset();
@@ -781,10 +840,15 @@ void AShiJinyangGameMode::Restart()
 void AShiJinyangGameMode::Tick(float Dt)
 {
     Super::Tick(Dt);
-    if(bTouchControls)
+    if(bTouchControls || (bReducedMotion && bFollowingAction))
     {
         const auto Size=ExplorationUiSize();
-        if(!Size.Equals(LastUiSize,.5f)){LastUiSize=Size;RefreshScreen();}
+        if(!Size.Equals(LastUiSize,.5f))
+        {
+            LastUiSize=Size;
+            if(bTouchControls)RefreshScreen();
+            if(bReducedMotion && bFollowingAction)FramePresentationCamera();
+        }
     }
     auto* PC = GetWorld()->GetFirstPlayerController();
     if (!PC || !Camera.IsValid()) return;
@@ -843,12 +907,10 @@ void AShiJinyangGameMode::Tick(float Dt)
     if (PC->IsInputKeyDown(EKeys::S)) Pan.X -= 1;
     if (PC->IsInputKeyDown(EKeys::D)) Pan.Y += 1;
     if (PC->IsInputKeyDown(EKeys::A)) Pan.Y -= 1;
+    if (!Pan.IsNearlyZero()) bFollowingAction = false;
     CameraTarget += Pan * Dt * 450;
-    if (bFollowingEnvoy && !bPaused && Envoy.IsValid() && Envoy->IsMoving())
-    {
-        CameraTarget = Envoy->GetActorLocation() + FVector(-480, -500, 380);
-        RotationTarget = (Envoy->GetActorLocation() + FVector(0, 0, 100) - CameraTarget).Rotation();
-    }
+    if (ShiJinyangCamera::ShouldTrack(bFollowingAction, bPaused, bReducedMotion, bExploring,
+        ActionSubject.IsValid() && ActionSubject->IsMoving())) FramePresentationCamera();
     Camera->SetActorLocation(FMath::VInterpTo(Camera->GetActorLocation(), CameraTarget, Dt, bReducedMotion ? 1000.f : 3.f));
     Camera->SetActorRotation(FMath::RInterpTo(Camera->GetActorRotation(), RotationTarget, Dt, bReducedMotion ? 1000.f : 3.f));
     TickPresentation(Dt);
@@ -886,7 +948,8 @@ void AShiJinyangGameMode::TickPresentation(float Dt)
         for (const auto& F : Figures) if (F.IsValid() && F->IsMoving()) BusyTime = FMath::Max(BusyTime, .1f);
         if (BusyTime <= 0)
         {
-            ApplySettledVisuals(false); Beats.Empty(); BeatIndex = -1; bFollowingEnvoy = false;
+            ApplySettledVisuals(false); Beats.Empty(); BeatIndex = -1; bFollowingAction = false;
+            ActionSubject.Reset(); ActionCameraRoute.Empty();
             if (!Model.GetState().Outcome.IsEmpty()) SetOutcomeCamera();
             RefreshScreen();
             UE_LOG(LogTemp,Display,TEXT("SHI_JINYANG_SETTLED history=%d skipped=false outcome=%s"),Model.GetState().History.Num(),*Model.GetState().Outcome);

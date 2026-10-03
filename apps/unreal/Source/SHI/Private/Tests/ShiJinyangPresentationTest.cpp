@@ -3,6 +3,7 @@
 #include "Engine/World.h"
 #include "ShiJinyangFigure.h"
 #include "ShiJinyangGameMode.h"
+#include "ShiJinyangCamera.h"
 #include "ShiJinyangWorldSave.h"
 #include "GameFramework/TouchInterface.h"
 #include "InputCoreTypes.h"
@@ -28,6 +29,14 @@ bool FShiJinyangExplorationInterface::RunTest(const FString& Arguments)
     TestEqual(TEXT("Look stick overrides inverted template pitch"),Touch->Controls[1].InputScale,FVector2D(1,1));
     TestTrue(TEXT("Look maps to the direct-pitch input adapter"),Touch->Controls[1].AltInputKey==EKeys::Gamepad_RightY);
     TestTrue(TEXT("Walking maps to the movement input adapter"),Touch->Controls[0].AltInputKey==EKeys::Gamepad_LeftY);
+    TestEqual(TEXT("Diversion camera follows the worker, not the distant destination"),
+        ShiJinyangCamera::SubjectIndex("diversion"),17);
+    TestEqual(TEXT("Envoy orders keep the canonical envoy"),ShiJinyangCamera::SubjectIndex("relay"),18);
+    TestEqual(TEXT("Operation keeps its authored formation view"),ShiJinyangCamera::SubjectIndex("execute"),-1);
+    TestFalse(TEXT("Reduced motion never tracks per frame"),ShiJinyangCamera::ShouldTrack(true,false,true,false,true));
+    TestFalse(TEXT("Walking view is never taken over"),ShiJinyangCamera::ShouldTrack(true,false,false,true,true));
+    TestTrue(TEXT("Wider phones need a more distant fixed route view"),
+        ShiJinyangCamera::RouteDistance(900,60,844.f/390)>ShiJinyangCamera::RouteDistance(900,60,4.f/3));
     return true;
 }
 

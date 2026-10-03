@@ -1,5 +1,6 @@
 #include "../apps/unreal/Source/SHI/ShiJinyangInput.h"
 #include "../apps/unreal/Source/SHI/ShiJinyangLayout.h"
+#include "../apps/unreal/Source/SHI/ShiJinyangCamera.h"
 #include <cassert>
 #include <cstdio>
 #include <limits>
@@ -56,5 +57,21 @@ int main()
         assert(Layout.NavigationWidth==View.X-32);
     }
     assert(std::isfinite(ShiJinyangLayout::Resolve(Bad,Bad).CardWidth));
-    std::puts("Jinyang native input and layout: axes, dead zones, rates, invalid values, density compensation and landscape/portrait bounds pass.");
+    using namespace ShiJinyangCamera;
+    assert(SubjectIndex("brace")==16 && SubjectIndex("diversion")==17 && SubjectIndex("escape")==12);
+    for(auto Id:{"quiet-han","quiet-wei","escort-han","escort-wei","relay"})assert(SubjectIndex(Id)==18);
+    for(auto Id:{"wait","execute","withdraw","early-date","aligned-date","open-water","invented-han"})
+        assert(SubjectIndex(Id)==-1);
+    for(int Mask=0;Mask<32;++Mask)
+        assert(ShouldTrack(Mask&1,Mask&2,Mask&4,Mask&8,Mask&16)==(Mask==17));
+    for(float Aspect:{320.f/568,4.f/3,16.f/9,844.f/390,4.f})
+    {
+        const float Radius=900, Distance=RouteDistance(Radius,60,Aspect);
+        const float AngularRadius=std::asin(Radius/Distance);
+        assert(AngularRadius < 60.f*.00872664626f);
+        assert(AngularRadius < std::atan(std::tan(60.f*.00872664626f)/Aspect));
+    }
+    assert(RouteDistance(900,60,844.f/390)>RouteDistance(900,60,4.f/3));
+    assert(std::isfinite(RouteDistance(Bad,Bad,Bad)) && RouteDistance(-1,0,0)>0);
+    std::puts("Jinyang input/layout/camera: input rates and bounds, density compensation, action subjects, manual/reduced-motion policy and route framing pass.");
 }
