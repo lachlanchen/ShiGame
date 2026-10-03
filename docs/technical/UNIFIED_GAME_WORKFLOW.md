@@ -69,7 +69,7 @@ Use real arrangement/transition work for related variants; verify tempo/key/phra
 
 ## End-to-end production and release
 
-Order: chapter causal design → shared-rule experiment → complete engine blockout with audio → novice playtest → character/action polish → short local video previews → final media → device qualification → reproducible test release.
+Content loop: chapter causal design → shared-rule experiment → complete engine encounter with audio → novice playtest → integrated character/action and short-film refinement → qualified test release. Native/touch feasibility and target-device builds start alongside the first complete encounter, not after final media. Repeat device profiling as assets mature; simulator compatibility of the old client does not qualify the new chapter.
 
 One current SHI runtime and one heavy job. Preserve other projects, pinned device routes and shared reservations. Use the Mac mini/7050/3040/KVM routes according to the current private handoff and actual availability; do not occupy every machine. Capture evidence, then stop this session's unused runtime.
 

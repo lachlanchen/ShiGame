@@ -138,6 +138,12 @@ export function availableJinyangCommands(d: JinyangDefinition, s: JinyangState):
   });
 }
 
+/** Inspect a preparation without spending time or supplies. No separate forecast rules. */
+export function previewJinyangDefense(d: JinyangDefinition, before: JinyangState, id: JinyangCommandId): JinyangState | null {
+  if (!["brace", "diversion", "escape"].includes(id) || !availableJinyangCommands(d, before).includes(id)) return null;
+  return commitJinyang(d, before, id);
+}
+
 export function commitJinyang(d: JinyangDefinition, before: JinyangState, id: JinyangCommandId): JinyangState {
   if (!availableJinyangCommands(d, before).includes(id)) throw Error("Unavailable Jinyang order: " + id);
   const s = structuredClone(before);

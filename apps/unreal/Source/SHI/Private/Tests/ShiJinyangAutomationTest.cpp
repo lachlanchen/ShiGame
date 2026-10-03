@@ -68,6 +68,27 @@ bool FShiJinyangReplayParity::RunTest(const FString& Arguments)
             if (I && !TestTrue(Name + TEXT(" performed order"), Model.Commit(Commands[I - 1]->AsString(), Error))) return false;
             auto Actual = MakeShared<FJsonValueObject>(Model.StateObject());
             if (!TestTrue(Name + FString::Printf(TEXT(" complete state %d"), I), Same(Actual, Expected[I]))) return false;
+            const FString BeforePreview=Model.ExportSave();
+            for (const FString Job : {TEXT("brace"),TEXT("diversion"),TEXT("escape")})
+            {
+                FShiJinyangState Forecast;
+                const bool Allowed=Model.Available().Contains(Job);
+                TestEqual(TEXT("Defense preview only offers legal work"),Model.PreviewDefense(Job,Forecast),Allowed);
+                if (Allowed)
+                {
+                    FShiJinyangModel Dispatched=Model;
+                    if (!TestTrue(TEXT("Previewed work can be dispatched"),Dispatched.Commit(Job,Error)))return false;
+                    TestEqual(TEXT("Forecast supply balance"),Forecast.Treasury,Dispatched.GetState().Treasury);
+                    TestEqual(TEXT("Forecast time"),Forecast.Tick,Dispatched.GetState().Tick);
+                    TestEqual(TEXT("Forecast deadline"),Forecast.Deadline,Dispatched.GetState().Deadline);
+                    TestEqual(TEXT("Forecast watch"),Forecast.Watch,Dispatched.GetState().Watch);
+                    TestEqual(TEXT("Forecast exit capacity"),Forecast.ExitCapacity,Dispatched.GetState().ExitCapacity);
+                    TestEqual(TEXT("Forecast deadline outcome"),Forecast.Outcome,Dispatched.GetState().Outcome);
+                }
+                TestEqual(TEXT("Inspecting work never spends or appends orders"),Model.ExportSave(),BeforePreview);
+            }
+            FShiJinyangState NotDefense;
+            TestFalse(TEXT("No tactical omniscience through work preview"),Model.PreviewDefense(TEXT("execute"),NotDefense));
             FShiJinyangModel Resume;
             if (!Resume.Initialize(Definition, Error) || !Resume.Restore(Model.ExportSave(), Error)) { AddError(Error); return false; }
             TestTrue(Name + TEXT(" complete state after resume"), Same(MakeShared<FJsonValueObject>(Resume.StateObject()), Expected[I]));

@@ -68,6 +68,7 @@ private:
     TArray<float> ResidentWait;
     TWeakObjectPtr<AShiJinyangExplorer> Explorer;
     FString NearbyPlace, InspectedPlace;
+    FString DefenseChoice, DefenseError;
     TSet<FString> VisitedPlaces;
     TMap<FString,FVector> WorldPlaces;
     bool CreateExplorationWorld();
@@ -77,6 +78,10 @@ private:
     void RefreshExplorationScreen();
     void SaveExploration() const;
     void InspectNearby();
+    bool IsDefenseStation() const;
+    void ChooseDefenseWork(const FString& Id);
+    void DispatchDefenseWork();
+    FString DefenseForecast(const FString& Id) const;
     void PauseExploration(bool Pause);
     void TickResidents(float Dt);
     FString ExplorationGuide() const;
@@ -90,6 +95,7 @@ private:
     void SelectSite(const FString& Id);
     void Issue(const FString& Id);
     void Present(const FString& Id);
+    void TickPresentation(float DeltaSeconds);
     void BeginNextBeat();
     void SetDiplomaticVisuals(const FString& Camp, bool Instant);
     void SetOutcomeCamera();

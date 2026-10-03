@@ -205,6 +205,15 @@ TSharedPtr<FJsonObject> FShiJinyangModel::Respond(const FString& Id) const
     else Out->SetStringField(TEXT("executionIssue"), Issue);
     return Out;
 }
+bool FShiJinyangModel::PreviewDefense(const FString& Id, FShiJinyangState& After) const
+{
+    if (Id != TEXT("brace") && Id != TEXT("diversion") && Id != TEXT("escape")) return false;
+    FShiJinyangModel Candidate = *this;
+    FString Error;
+    if (!Candidate.Commit(Id, Error)) return false;
+    After = Candidate.GetState();
+    return true;
+}
 bool FShiJinyangModel::Commit(const FString& Id, FString& Error)
 {
     if (!Available().Contains(Id)) { Error = TEXT("Unavailable Jinyang order: ") + Id; return false; }

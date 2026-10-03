@@ -27,6 +27,7 @@
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
+#include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Styling/CoreStyle.h"
@@ -195,13 +196,69 @@ FString AShiJinyangGameMode::PlaceStory(const FString& Id) const
 }
 void AShiJinyangGameMode::InspectNearby()
 {
-    if (NearbyPlace.IsEmpty()) return;
+    if (NearbyPlace.IsEmpty() || bWorldPaused || bExploreIntro) return;
+    DefenseChoice.Reset();DefenseError.Reset();
     InspectedPlace=NearbyPlace;VisitedPlaces.Add(NearbyPlace);bWorldInspect=true;
     if (GuidePlaces.IsValidIndex(GuideIndex) && GuidePlaces[GuideIndex]==NearbyPlace)
     { for(int32 I=1;I<=GuidePlaces.Num();++I)if(!VisitedPlaces.Contains(GuidePlaces[(GuideIndex+I)%GuidePlaces.Num()])){GuideIndex=(GuideIndex+I)%GuidePlaces.Num();break;} }
     if (Sites.Contains(NearbyPlace)) SelectedSite=NearbyPlace;
     Explorer->SetWalkingEnabled(false);SaveExploration();RefreshScreen();
     UE_LOG(LogTemp,Display,TEXT("SHI_WORLD_INSPECT place=%s history=%d"),*NearbyPlace,Model.GetState().History.Num());
+}
+bool AShiJinyangGameMode::IsDefenseStation() const
+{
+    return bExploring && bWorldInspect
+        && (InspectedPlace==TEXT("wall") || InspectedPlace==TEXT("stores"));
+}
+void AShiJinyangGameMode::ChooseDefenseWork(const FString& Id)
+{
+    FShiJinyangState After;
+    if (!IsDefenseStation() || bWorldPaused || bPaused || BusyTime>0 || bSaveBlocked
+        || !Model.PreviewDefense(Id,After)) return;
+    DefenseChoice=Id;DefenseError.Reset();RefreshScreen();
+    UE_LOG(LogTemp,Display,TEXT("SHI_WORLD_DEFENSE_PREVIEW id=%s history=%d"),*Id,Model.GetState().History.Num());
+}
+FString AShiJinyangGameMode::DefenseForecast(const FString& Id) const
+{
+    FShiJinyangState After;
+    if (!Model.PreviewDefense(Id,After)) return FString();
+    const auto& Before=Model.GetState();
+    const auto& Command=Model.GetCommands()[Id];
+    FString Summary=bChinese
+        ? FString::Printf(TEXT("用时 %d · 消耗储备 %d\n余下时段 %d → %d · 储备 %d → %d"),
+            Command.Time,Command.Cost,Before.Deadline-Before.Tick,After.Deadline-After.Tick,Before.Treasury,After.Treasury)
+        : FString::Printf(TEXT("%d windows · %d supplies\nTime remaining %d → %d · Supplies %d → %d"),
+            Command.Time,Command.Cost,Before.Deadline-Before.Tick,After.Deadline-After.Tick,Before.Treasury,After.Treasury);
+    if (Id==TEXT("brace")) Summary+=Text(TEXT("\nShore up the wall: buy time for the envoys."),
+        TEXT("\n加固防线，为出使争取时间。"));
+    else if (Id==TEXT("diversion")) Summary+=Text(TEXT("\nPrepare the breach. The water stays closed until the operation."),
+        TEXT("\n准备堤口；到行动时才决水。"));
+    else Summary+=bChinese
+        ? FString::Printf(TEXT("\n准备退路，最多容纳 %d 人；不是全军撤离。"),After.ExitCapacity)
+        : FString::Printf(TEXT("\nPrepare an exit for at most %d people, not the whole force."),After.ExitCapacity);
+    if (After.Watch>Before.Watch) Summary+=bChinese
+        ? FString::Printf(TEXT("\n敌军警戒 +%d；可能影响后续行动。"),After.Watch-Before.Watch)
+        : FString::Printf(TEXT("\nEnemy watch +%d; later operations may be harder."),After.Watch-Before.Watch);
+    if (!After.Outcome.IsEmpty()) Summary+=Text(TEXT("\nWARNING: this order passes the city's deadline and ends the position."),
+        TEXT("\n注意：这道命令超过守城期限，将结束当前局势。"));
+    return Summary;
+}
+void AShiJinyangGameMode::DispatchDefenseWork()
+{
+    FShiJinyangState After;
+    if (!IsDefenseStation() || bWorldPaused || bPaused || BusyTime>0 || bSaveBlocked
+        || !Model.PreviewDefense(DefenseChoice,After)) return;
+    const int32 Before=Model.GetState().History.Num();
+    const FString Id=DefenseChoice;
+    Issue(Id); // Sole campaign write: validates availability and external save changes.
+    if (Model.GetState().History.Num()!=Before+1)
+    { DefenseError=Note;RefreshScreen();return; }
+    bWorldInspect=false;DefenseChoice.Reset();Explorer->SetWalkingEnabled(true);
+    const FString Site=Model.GetCommands()[Id].Site;
+    const int32 Destination=GuidePlaces.IndexOfByKey(Site);
+    if (Destination!=INDEX_NONE)GuideIndex=Destination;
+    RefreshScreen();
+    UE_LOG(LogTemp,Display,TEXT("SHI_WORLD_DEFENSE_DISPATCH id=%s history=%d"),*Id,Model.GetState().History.Num());
 }
 void AShiJinyangGameMode::TickExploration(float Dt)
 {
@@ -215,6 +272,13 @@ void AShiJinyangGameMode::TickExploration(float Dt)
     }
     if (bWorldInspect)
     {
+        if (IsDefenseStation())
+        {
+            if (PC->WasInputKeyJustPressed(EKeys::One))ChooseDefenseWork(TEXT("brace"));
+            if (PC->WasInputKeyJustPressed(EKeys::Two))ChooseDefenseWork(TEXT("diversion"));
+            if (PC->WasInputKeyJustPressed(EKeys::Three))ChooseDefenseWork(TEXT("escape"));
+            if (PC->WasInputKeyJustPressed(EKeys::Enter)){DispatchDefenseWork();return;}
+        }
         if (PC->WasInputKeyJustPressed(EKeys::Escape) || PC->WasInputKeyJustPressed(EKeys::E))
         {bWorldInspect=false;Explorer->SetWalkingEnabled(true);RefreshScreen();}
         return;
@@ -228,6 +292,7 @@ void AShiJinyangGameMode::TickExploration(float Dt)
         {SaveExploration();UKismetSystemLibrary::QuitGame(this,PC,EQuitPreference::Quit,false);}
         return;
     }
+    if (PC->WasInputKeyJustPressed(EKeys::BackSpace) && BusyTime>0)SkipMovement();
     if (PC->WasInputKeyJustPressed(EKeys::C)) {Explorer->SetEyeLevel(!Explorer->IsEyeLevel());SaveExploration();}
     if (PC->WasInputKeyJustPressed(EKeys::G)) {GuideIndex=(GuideIndex+1)%GuidePlaces.Num();}
     if (PC->WasInputKeyJustPressed(EKeys::H) && Screen)
@@ -258,18 +323,33 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
     {return SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(Ink).Padding(24)[Child];};
     auto Top=SNew(SVerticalBox);
     Top->AddSlot().AutoHeight()[Label(Text(TEXT("SHI  /  JINYANG"),TEXT("势  /  晋阳")),25,true)];
-    Top->AddSlot().AutoHeight().Padding(0,7)[Label(Text(TEXT("Follow the dry lanes. Look beyond the walls."),TEXT("沿干燥的堤道行走，也看看城外。")),14)];
+    Top->AddSlot().AutoHeight().Padding(0,7)[Label(Objective(),14)];
     Top->AddSlot().AutoHeight().Padding(0,3)[SNew(STextBlock).Text_Lambda([this](){return FText::FromString(ExplorationGuide());})
         .Font(FCoreStyle::GetDefaultFontStyle("Regular",14)).ColorAndOpacity(Gold)];
     Top->AddSlot().AutoHeight().Padding(0,3)[Label(bChinese
         ? FString::Printf(TEXT("已查看 %d / %d 处 · 步行不消耗回合"),VisitedPlaces.Num(),WorldPlaces.Num())
         : FString::Printf(TEXT("%d / %d places inspected · Walking spends no turn"),VisitedPlaces.Num(),WorldPlaces.Num()),12)];
+    const auto& State=Model.GetState();
+    if (State.Outcome.IsEmpty())Top->AddSlot().AutoHeight().Padding(0,3)[Label(bChinese
+        ? FString::Printf(TEXT("储备 %d · 守城余下 %d 时段"),State.Treasury,FMath::Max(0,State.Deadline-State.Tick))
+        : FString::Printf(TEXT("Supplies %d · %d windows before the deadline"),State.Treasury,FMath::Max(0,State.Deadline-State.Tick)),13)];
     auto Controls=SNew(SVerticalBox);
     Controls->AddSlot().AutoHeight()[Label(Text(TEXT("WASD  Walk     Shift  Jog     Right-drag / arrows  Look"),TEXT("WASD 行走    Shift 快步    右键拖动 / 方向键 环视")),13)];
     Controls->AddSlot().AutoHeight().Padding(0,5)[Label(Text(TEXT("E Inspect   V Command   C Eye-level   G Landmark\nEsc Pause   M Sound   H Hide interface"),TEXT("E 查看   V 指挥   C 眼平视角   G 地标\nEsc 暂停   M 声音   H 隐藏界面")),13)];
     auto Overlay=SNew(SOverlay)
         +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(28)[Panel(Top)]
         +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(28)[Panel(Controls)];
+    if (BusyTime>0 && !bWorldInspect && !bWorldPaused)
+    {
+        auto Work=SNew(SVerticalBox);
+        Work->AddSlot().AutoHeight()[Label(Text(TEXT("Order committed · work underway"),TEXT("命令已下达 · 正在执行")),18,true)];
+        Work->AddSlot().AutoHeight().Padding(0,7)[Label(Text(TEXT("Follow the workers, or keep exploring. Skipping movement never repeats the order."),
+            TEXT("可跟随队伍，也可继续查看城内。略过动作不会重复下令。")),14)];
+        Work->AddSlot().AutoHeight().Padding(0,6)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(16,10))
+            .Text(FText::FromString(Text(TEXT("Skip movement · Backspace"),TEXT("略过动作 · Backspace"))))
+            .OnClicked_Lambda([this](){SkipMovement();return FReply::Handled();})];
+        Overlay->AddSlot().HAlign(HAlign_Right).VAlign(VAlign_Top).Padding(28)[SNew(SBox).WidthOverride(400)[Panel(Work)]];
+    }
     if (!NearbyPlace.IsEmpty() && !bExploreIntro && !bWorldInspect && !bWorldPaused)
     {
         auto Prompt=SNew(SVerticalBox);Prompt->AddSlot().AutoHeight()[Label(PlaceName(NearbyPlace),22,true)];
@@ -284,7 +364,37 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
         Card->AddSlot().AutoHeight()[Label(bExploreIntro?Text(TEXT("AN ALLIANCE CAN TURN"),TEXT("合纵之间")):PlaceName(InspectedPlace),28,true)];
         Card->AddSlot().AutoHeight().Padding(0,18)[Label(bExploreIntro?
             Text(TEXT("Jinyang. An earlier flashback in Tongjian's first volume.\n\nZhi's army has brought the water against Zhao. Han and Wei stand with the besiegers—for now. Enter the city, meet its people, and decide where to commit your strength."),
-                 TEXT("晋阳。《资治通鉴》卷一追叙的前史。\n\n智氏引水围赵，韩、魏也在围城军中——但他们各有打算。走入城内，查看防线，再决定把力量用在哪里。")):PlaceStory(InspectedPlace),18)];
+                 TEXT("晋阳。《资治通鉴》卷一追叙的前史。\n\n智氏引水围赵，韩、魏也在围城军中——但他们各有打算。走入城内，查看防线，再决定把力量用在哪里。")):
+            IsDefenseStation()?Text(TEXT("Choose the next job. All three draw from the supplies and time you also need for diplomacy."),
+                TEXT("先做哪一件？守城、备战与退路，都要用去出使也需要的储备和时间。")):PlaceStory(InspectedPlace),18)];
+        if (IsDefenseStation())
+        {
+            const TArray<FString> Jobs={TEXT("brace"),TEXT("diversion"),TEXT("escape")};
+            for (int32 I=0;I<Jobs.Num();++I)
+            {
+                const FString Id=Jobs[I];const auto& Job=Model.GetCommands()[Id];
+                FShiJinyangState Forecast;
+                const bool Available=Model.PreviewDefense(Id,Forecast);
+                const FString Status=State.History.Contains(Id)?Text(TEXT(" · ordered"),TEXT(" · 已下令")):
+                    !Available?Text(TEXT(" · unavailable"),TEXT(" · 当前不可用")):TEXT("");
+                const FString Caption=FString::Printf(TEXT("%s%d  %s%s"),DefenseChoice==Id?TEXT("› "):TEXT(""),
+                    I+1,*(bChinese?Job.Chinese:Job.English),*Status);
+                Card->AddSlot().AutoHeight().Padding(0,4)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(16,10))
+                    .IsEnabled(Available && BusyTime<=0 && !bSaveBlocked && !bWorldPaused && !bPaused)
+                    .Text(FText::FromString(Caption))
+                    .OnClicked_Lambda([this,Id](){ChooseDefenseWork(Id);return FReply::Handled();})];
+            }
+            if (!DefenseChoice.IsEmpty())
+            {
+                Card->AddSlot().AutoHeight().Padding(0,8)[Label(DefenseForecast(DefenseChoice),15)];
+                Card->AddSlot().AutoHeight().Padding(0,6)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(18,12))
+                    .IsEnabled(BusyTime<=0 && !bSaveBlocked && !bWorldPaused && !bPaused)
+                    .Text(FText::FromString(Text(TEXT("Dispatch this work · Enter"),TEXT("下令执行 · Enter"))))
+                    .OnClicked_Lambda([this](){DispatchDefenseWork();return FReply::Handled();})];
+            }
+            if (bSaveBlocked)Card->AddSlot().AutoHeight().Padding(0,6)[Label(Note,14)];
+            else if (!DefenseError.IsEmpty())Card->AddSlot().AutoHeight().Padding(0,6)[Label(DefenseError,14)];
+        }
         Card->AddSlot().AutoHeight().Padding(0,8)[Label(Text(TEXT("Historical situation: Tongjian I. Walkable geography, dress and dialogue are reconstruction."),TEXT("史事依据《通鉴》卷一；可行走地形、衣着及场景表演属重构。")),12)];
         Card->AddSlot().AutoHeight().Padding(0,15)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,13))
             .Text(FText::FromString(bExploreIntro?Text(TEXT("Enter the world · Enter"),TEXT("走入世界 · Enter")):Text(TEXT("Return to the world · E"),TEXT("继续行走 · E"))))
@@ -292,7 +402,8 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
         if (bWorldInspect && Sites.Contains(InspectedPlace))Card->AddSlot().AutoHeight()[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,12))
             .Text(FText::FromString(Text(TEXT("Consider orders here · V"),TEXT("在此筹划命令 · V"))))
             .OnClicked_Lambda([this](){ToggleExploration();return FReply::Handled();})];
-        Overlay->AddSlot().HAlign(HAlign_Right).VAlign(VAlign_Center).Padding(35)[SNew(SBox).WidthOverride(560)[Panel(Card)]];
+        Overlay->AddSlot().HAlign(HAlign_Right).VAlign(VAlign_Center).Padding(35)
+            [SNew(SBox).WidthOverride(560).MaxDesiredHeight(640)[Panel(SNew(SScrollBox)+SScrollBox::Slot()[Card])]];
     }
     if (bWorldPaused)
     {

@@ -390,7 +390,7 @@ void AShiJinyangGameMode::RefreshScreen()
 void AShiJinyangGameMode::Issue(const FString& Id)
 {
     UE_LOG(LogTemp, Display, TEXT("SHI_JINYANG_INPUT id=%s blocked=%d paused=%d busy=%.2f restart=%d"), *Id, bSaveBlocked, bPaused, BusyTime, bRestartArmed);
-    if (bSaveBlocked || bPaused || BusyTime > 0 || bRestartArmed) return;
+    if (bSaveBlocked || bPaused || bWorldPaused || BusyTime > 0 || bRestartArmed) return;
     FShiJinyangModel Candidate = Model; FString Error;
     if (!Candidate.Commit(Id, Error)) { Note = Error; RefreshScreen(); return; }
     FString Current;
@@ -714,7 +714,11 @@ void AShiJinyangGameMode::Tick(float Dt)
     if (!PC || !Camera.IsValid()) return;
     if(bWorldReady)TickResidents(Dt);
     if (bWorldReady && PC->WasInputKeyJustPressed(EKeys::V) && !bExploreIntro) ToggleExploration();
-    if (bWorldReady && bExploring) { TickExploration(Dt); if (bExploring) return; }
+    if (bWorldReady && bExploring)
+    {
+        TickExploration(Dt);
+        if (bExploring) { TickPresentation(Dt); return; }
+    }
     if (PC->WasInputKeyJustPressed(EKeys::H) && Screen)
     {
         bHideHud = !bHideHud;
@@ -771,7 +775,13 @@ void AShiJinyangGameMode::Tick(float Dt)
     }
     Camera->SetActorLocation(FMath::VInterpTo(Camera->GetActorLocation(), CameraTarget, Dt, bReducedMotion ? 1000.f : 3.f));
     Camera->SetActorRotation(FMath::RInterpTo(Camera->GetActorRotation(), RotationTarget, Dt, bReducedMotion ? 1000.f : 3.f));
-    if (!bPaused && BusyTime > 0)
+    TickPresentation(Dt);
+}
+void AShiJinyangGameMode::TickPresentation(float Dt)
+{
+    // An order must settle even when the player stays in the walking world.
+    // Inspection never advances strategic time; only the already-saved order animates.
+    if (!bPaused && !bWorldPaused && !bExploreIntro && BusyTime > 0)
     {
         if (Beats.IsValidIndex(BeatIndex) && Envoy.IsValid() && !Envoy->IsMoving())
         {

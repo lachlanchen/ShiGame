@@ -35,6 +35,8 @@ class FShiJinyangModel
 public:
     bool Initialize(const FString& Definition, FString& Error);
     bool Commit(const FString& Id, FString& Error);
+    // Read-only preparation preview, using precisely the same transition as Commit.
+    bool PreviewDefense(const FString& Id, FShiJinyangState& After) const;
     bool Restore(const FString& Save, FString& Error);
     FString ExportSave() const;
     TSharedPtr<FJsonObject> StateObject() const;
