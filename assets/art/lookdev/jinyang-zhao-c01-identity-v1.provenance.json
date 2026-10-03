@@ -1,0 +1,70 @@
+{
+  "id": "jinyang-zhao-c01-identity-v1",
+  "type": "character-identity-reference",
+  "created": "2026-10-03",
+  "castId": "jinyang-c01-zhao-xiangzi",
+  "asset": "jinyang-zhao-c01-identity-v1.png",
+  "sha256": "0f4df0535099c075495bbcefa22e583f1db0089bfa3a40c6dd29ffe4a288090a",
+  "image": {
+    "width": 1672,
+    "height": 941,
+    "format": "PNG"
+  },
+  "provider": "Codex built-in image generation",
+  "intendedUse": "Original Zhao Xiangzi facial identity, hair/beard, broad silhouette and palette reference for Blender/Unreal and later reference-locked film. Not runtime art or an approved costume texture.",
+  "historicalBasis": {
+    "role": "Zhao Xiangzi in the Jinyang flashback of Tongjian volume 1, before the 403 BCE recognition.",
+    "sourceUnit": "zizhi-tongjian-chunk-00017-p002",
+    "boundary": "Original and supplied translation were read for the role and liaison context. They do not establish this face, age, physique, hair, costume or performance. Those are original casting/reconstruction choices; no private translation is reproduced."
+  },
+  "generation": {
+    "mode": "built-in",
+    "isolatedPasses": 2,
+    "steps": [
+      {
+        "pass": 1,
+        "inputAsset": "jinyang-scene-target-v1.png",
+        "inputSha256": "2a1544f89733b90bf99904ee7e5590cbac6636791493141ef1f5a9e6fd77743d",
+        "inputUse": "Use only the dark blue-grey leader at the left foreground as a casting/style reference, not the brown-clothed envoy.",
+        "outputSha256": "626145ee2a3e725f441bdccf18e48b01fc716083d5300bbe2f271cb01a33798b",
+        "disposition": "Retained privately as a superseded candidate; identity promising, patterned costume did not meet brief.",
+        "prompt": "Use case: historical-scene.\nAsset type: SHI cinematic game character identity anchor and Blender sculpt/costume reference, one landscape production sheet.\nInput image 1 is the existing Jinyang environment concept, a style and original-casting reference, NOT a historical photograph and NOT an edit target. Derive the SAME original adult Zhao leader standing at the far left foreground in dark blue-grey clothing. Do not use the pointing brown-clothed envoy or any background soldier.\nPrimary request: create a high-quality, photorealistic, internally consistent reference of this one man, Zhao Xiangzi, for the Jinyang chapter before the 403 BCE three-Jin recognition. This is an original game casting proposal; not an authenticated likeness or exact costume reconstruction.\nComposition: a clean, restrained landscape contact sheet on a warm neutral grey studio background. Left half: one complete head-to-toe three-quarter standing view, relaxed arms slightly clear of torso, two natural hands, both feet on the ground. Right half: three equally sized large head-and-shoulder portraits in one row, straight front, three-quarter, and true side profile. Exactly the same face, age, hairline, hairstyle, facial-hair pattern, neck, collar and clothing in every view. No extra people.\nIdentity: preserve the reference leader's broad angular cheekbones, strong slightly convex nose bridge, heavy straight eyebrows, deep-set dark brown eyes, tied-back black hair and compact moustache with short chin beard. Adult around forty as casting choice, not a factual age claim. Natural sun texture, subtle eye lines, calm attentive expression; no beauty retouching or exaggerated angry villain face.\nCostume direction: restrained ancient Jin cross-collar long robe in matte muted indigo, ecru inner collar, narrow dark edging, plain woven waist sash, practical dark closed footwear. Preserve the reference's calm blue-grey silhouette and grounded material quality, but OMIT ornate embroidery, tall ornamental headpiece, large metal buckle, jewelry and weapons; tie the compact hair bun with a plain dark band. The robe closes consistently to the wearer's right in all views. No later imperial insignia or fantasy armor. Fingers and clothing folds must be anatomically credible.\nLighting: broad soft neutral daylight, accurately readable skin and cloth, no cinematic darkness or dramatic rim light, enough contrast for sculpting. Realistically detailed skin, hair and fabric, sophisticated film-production reference quality.\nSmall clean text only at top: \"SHI / JINYANG\" and \"ZHAO XIANGZI · CAST C01\". Under portraits use \"FRONT\", \"THREE-QUARTER\", \"PROFILE\". Bottom: \"Original casting study — not a historical likeness\". No other text, no watermark. Avoid contradictory costume layers, face drift between views, duplicated limbs, swords, crowns, modern objects, Japanese samurai styling and European medieval armor."
+      },
+      {
+        "pass": 2,
+        "inputSha256": "626145ee2a3e725f441bdccf18e48b01fc716083d5300bbe2f271cb01a33798b",
+        "outputSha256": "0f4df0535099c075495bbcefa22e583f1db0089bfa3a40c6dd29ffe4a288090a",
+        "disposition": "Selected for bounded identity-reference use only. Plain-cloth correction failed: decorative motifs remain.",
+        "prompt": "Use case: precise-object-edit.\nEdit this Zhao Xiangzi production reference sheet with ONE correction only: replace ALL decorative motifs, embroidery, brocade, damask patterns and ornamental lines on the blue-grey outer robe and dark collar edging with restrained, unpatterned matte plain-woven cloth, including every portrait view. Retain natural fabric grain, seams, folds, worn edges, the indigo/blue-grey color, and the ivory inner collar. The surface should read as good-quality practical unpatterned textile, not a printed costume. Also keep the sash plain as it already is.\nPreserve everything else exactly: the same original man's face and identity, every facial feature and facial-hair pattern, age, hairline and hair bun, all four views, camera angles, body proportions, hands, footwear, robe construction and closure, expressions, lighting, background, composition, aspect ratio and every existing label. Do not redesign, add ornaments or change the text. This is an original fictionalized casting study for historical game production, not a historical portrait."
+      }
+    ]
+  },
+  "review": {
+    "status": "agent-visual-review-identity-reference-only",
+    "reviewed": "2026-10-03",
+    "releaseApproved": false,
+    "runtimeIntegrated": false,
+    "acceptedForReference": [
+      "Recognizable original identity across full-body, front, three-quarter and profile views.",
+      "Angular cheeks, strong slightly convex nose bridge, dark brows/eyes, tied dark bun, compact moustache and pointed chin beard.",
+      "Restrained indigo/blue-grey and ivory palette; full-body silhouette and readable neutral lighting."
+    ],
+    "rejectedOrUnqualified": [
+      "Decorative robe/collar/sash motifs remain after the correction request. Do not transfer them to final materials; author and review plain woven cloth.",
+      "Sheet views are perspective casting references, not mutually calibrated orthographic geometry; local face and cloth details vary.",
+      "Exact historical likeness, age, garment construction, closure and footwear are not established by the cited passage.",
+      "Back view, anatomy under clothing, rig, facial deformation, supported animated contact and small-screen recognition are untested.",
+      "No game import, animation, audio, video continuity, native build or mobile device acceptance."
+    ],
+    "nextGate": "Use this bounded face reference in one complete defense/dispatch-to-liaison scene after native source qualification. No third isolated portrait generation pass."
+  },
+  "runtimeBoundary": {
+    "gameplayAuthority": false,
+    "campaignOrSaveChanges": false,
+    "bindings": []
+  },
+  "rights": {
+    "coordinationOwner": "owner-company",
+    "status": "not-asserted-for-release"
+  }
+}

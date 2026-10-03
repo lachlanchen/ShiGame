@@ -91,6 +91,8 @@ Revision 1 chronicles continue to replay under their original definition. New re
 
 ## Cast and source interpretation
 
+Zhao's original [C01 identity reference](../art/JINYANG_CAST_C01.md) now fixes a facial direction for the next integrated performance. It is not runtime art or an approved costume: patterned cloth remains rejected, and modeling, animation and mobile review are still pending. Other actors retain separate identities.
+
 | Actor | Authority / interest | Game behavior |
 | --- | --- | --- |
 | Zhao Xiangzi | Preserve the Zhao position and its supporting population | Direct Zhao tasks, authorize missions, commit resources and accept settlement terms |
