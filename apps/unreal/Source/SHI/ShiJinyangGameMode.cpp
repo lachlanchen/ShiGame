@@ -440,7 +440,7 @@ void AShiJinyangGameMode::RefreshScreen()
             +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(16,0,16,16)
                 [SNew(SBox).WidthOverride(Layout.NavigationWidth).HeightOverride(52)
                     [SNew(SScrollBox).Orientation(Orient_Horizontal).ScrollBarVisibility(EVisibility::Collapsed)+SScrollBox::Slot()[SitesBar]]];
-        Screen=SNew(SDPIScaler).DPIScale(this,&AShiJinyangGameMode::TouchUiCompensation)[SNew(SSafeZone)[TouchOverlay]];
+        Screen=SNew(SDPIScaler).DPIScale_UObject(this,&AShiJinyangGameMode::TouchUiCompensation)[SNew(SSafeZone)[TouchOverlay]];
         GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(),100);
         Screen->SetVisibility(bHideHud?EVisibility::Collapsed:EVisibility::SelfHitTestInvisible);
         return;

@@ -147,4 +147,11 @@ test("static native entry wiring retains config and explicit desktop launch over
   assert.match(cpp,/GConfig->GetString\(TEXT\("SHI.Jinyang"\),TEXT\("InitialLocale"\),Locale,GGameIni\)/);
   assert.match(cpp,/GConfig->GetBool\(TEXT\("SHI.Jinyang"\),TEXT\("StartInExploration"\),StartInExploration,GGameIni\)/);
   assert.match(cpp,/StartInExploration \|\| FParse::Param\(FCommandLine::Get\(\),TEXT\("ShiExplore"\)\)/);
+  const world=await readFile(resolve(root,"apps/unreal/Source/SHI/ShiJinyangWorld.cpp"),"utf8");
+  // The owner is an AActor/UObject, not a Slate TSharedFromThis instance.
+  // Actual native compilation remains the authoritative template/API check.
+  for(const source of [cpp,world]) {
+    assert.match(source,/\.DPIScale_UObject\(this,&AShiJinyangGameMode::TouchUiCompensation\)/);
+    assert.doesNotMatch(source,/\.DPIScale\(this,&AShiJinyangGameMode::TouchUiCompensation\)/);
+  }
 });

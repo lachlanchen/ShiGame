@@ -553,7 +553,7 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
                 .MaxDesiredHeight_Lambda([this](){return FOptionalSize(FMath::Clamp(ExplorationUiSize().Y-40.f,160.f,640.f));})
                 [Panel(SNew(SScrollBox)+SScrollBox::Slot()[Menu])]];
     }
-    Screen=SNew(SDPIScaler).DPIScale(this,&AShiJinyangGameMode::TouchUiCompensation)[SNew(SSafeZone)[Overlay]];
+    Screen=SNew(SDPIScaler).DPIScale_UObject(this,&AShiJinyangGameMode::TouchUiCompensation)[SNew(SSafeZone)[Overlay]];
     GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(),100);
     Screen->SetVisibility(IsExplorationInterfaceVisible(bHideHud,bExploreIntro,bWorldInspect,bWorldPaused)
         ? EVisibility::SelfHitTestInvisible : EVisibility::Collapsed);
