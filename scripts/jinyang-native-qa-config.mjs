@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Produce two QA-only config files in a NEW directory; never patch a working project. */
+/** Produce QA-only configuration in a NEW directory; never patch a working project. */
 import { readFile, writeFile, mkdir, realpath } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { resolve, dirname, relative, isAbsolute } from "node:path";
@@ -8,6 +8,17 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 export const qaIdentifier="art.lazying.shi.jinyangqa";
 const sha=bytes=>createHash("sha256").update(bytes).digest("hex");
+// Apply only through per-command XCODE_XCCONFIG_FILE on the unsigned build host.
+// SDK conditions preserve local Mac editor/helper signing during an iOS cook.
+const iosUnsignedXcconfig=`// SHI QA: unsigned iPhoneOS intermediate, NOT an installable or store-signed app.
+// Unset XCODE_XCCONFIG_FILE before signing on the paired device's host.
+CODE_SIGNING_ALLOWED[sdk=iphoneos*] = NO
+CODE_SIGNING_REQUIRED[sdk=iphoneos*] = NO
+CODE_SIGN_IDENTITY[sdk=iphoneos*] =
+PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*] =
+DEVELOPMENT_TEAM[sdk=iphoneos*] =
+CODE_SIGN_STYLE[sdk=iphoneos*] = Manual
+`;
 
 /** Replace only the named section keys, preserving unrelated values and comments. */
 export function overrideIni(source,section,values) {
@@ -57,6 +68,16 @@ export function renderQaConfig(engine,game,platform) {
       bEnableGooglePlaySupport:"False",bSupportAdMob:"False",
     },
   });
+  if(platform!=="Android")engine=apply(engine,{
+    // Modern Unreal Xcode projects use this section for BOTH Apple platforms.
+    // IOSRuntimeSettings alone does not establish the generated bundle identity.
+    "/Script/MacTargetPlatform.XcodeProjectSettings":{
+      BundleIdentifier:qaIdentifier,ApplicationDisplayName:"SHI Jinyang QA",
+      bUseAutomaticCodeSigning:"False",bUseAppStoreConnect:"False",
+      bMacSignToRunLocally:"True",CodeSigningTeam:"",
+      IOSProvisioningProfile:"",IOSSigningIdentity:"",
+    },
+  });
   // Mobile renderer qualification, not a promise of desktop Lumen/Nanite on a phone.
   if(platform!=="Mac")engine=apply(engine,{
     "/Script/Engine.RendererSettings":{
@@ -98,13 +119,17 @@ export async function prepareQaConfig(destination,platform) {
   // Exclusive creation means an existing source/config directory is never overwritten.
   await mkdir(destination,{mode:0o700});
   const files={"DefaultEngine.ini":result.engine,"DefaultGame.ini":result.game};
+  if(platform==="IOS")files["UnsignedIOS.xcconfig"]=iosUnsignedXcconfig;
   for(const [name,text] of Object.entries(files))await writeFile(resolve(destination,name),text,{flag:"wx"});
-  const receipt={profile:"jinyang-native-qa-v2",platform,applicationId:qaIdentifier,
+  const receipt={profile:"jinyang-native-qa-v3",platform,applicationId:qaIdentifier,
     sourceConfig:{engine:sha(engine),game:sha(game)},
     outputs:Object.fromEntries(Object.entries(files).map(([name,text])=>[name,sha(text)])),
     qualification:"configuration only; not a compiled, installed, signed or submitted application",
     apply:"Use only in an isolated SHI staging checkout after preserving its original Config files.",
     engineRequirements:"Use the installed engine SDK metadata; this profile does not install or pin shared SDKs.",
+    signing:platform==="IOS"
+      ? "Unsigned preparation only: per-command XCODE_XCCONFIG_FILE=<absolute UnsignedIOS.xcconfig>. Unset it before separately signing with the paired host's valid profile. Actual Unreal build/sign/install remains required."
+      : platform==="Mac"?"Local ad-hoc signing only; not notarized or distributable.":"Unchanged Android development-signing workflow.",
   };
   await writeFile(resolve(destination,"qa-config-receipt.json"),JSON.stringify(receipt,null,2)+"\n",{flag:"wx"});
   return receipt;

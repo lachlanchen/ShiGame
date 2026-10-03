@@ -53,6 +53,23 @@ test("mobile rendering and landscape scope do not change the desktop baseline",(
   assert.equal(one(renderQaConfig(engine,game,"Mac").engine,"/Script/Engine.RendererSettings","r.DynamicGlobalIlluminationMethod"),"1");
   assert.equal(one(engine,"/Script/EngineSettings.GameMapsSettings","GlobalDefaultGameMode"),"/Script/SHI.ShiGameMode");
 });
+test("modern Apple identity and signing stay isolated from store configuration",()=>{
+  const section="/Script/MacTargetPlatform.XcodeProjectSettings";
+  const seeded=engine+`\n[${section}]\nBundleIdentifier=art.lazying.shi\nbUseAutomaticCodeSigning=True\nbUseAppStoreConnect=True\nCodeSigningTeam=old-team\nIOSProvisioningProfile=old-profile\nIOSSigningIdentity=old-identity\n`;
+  for(const platform of ["IOS","Mac"]) {
+    const output=renderQaConfig(seeded,game,platform);
+    assert.equal(one(output.engine,section,"BundleIdentifier"),qaIdentifier);
+    assert.equal(one(output.engine,section,"ApplicationDisplayName"),"SHI Jinyang QA");
+    assert.equal(one(output.engine,section,"bUseAutomaticCodeSigning"),"False");
+    assert.equal(one(output.engine,section,"bUseAppStoreConnect"),"False");
+    assert.equal(one(output.engine,section,"bMacSignToRunLocally"),"True");
+    for(const key of ["CodeSigningTeam","IOSProvisioningProfile","IOSSigningIdentity"])
+      assert.equal(one(output.engine,section,key),"");
+    assert.doesNotMatch(output.engine,/old-team|old-profile|old-identity/);
+  }
+  assert.deepEqual(values(renderQaConfig(engine,game,"Android").engine,section,"BundleIdentifier"),values(engine,section,"BundleIdentifier"));
+  assert.doesNotMatch(engine,/bMacSignToRunLocally=True/);
+});
 test("cook profile retains world, shapes, touch UI and canonical non-UFS content",()=>{
   const output=renderQaConfig(engine,game,"IOS");
   assert.deepEqual(values(output.game,"/Script/UnrealEd.ProjectPackagingSettings","DirectoriesToAlwaysCook"),[
@@ -87,7 +104,7 @@ test("preparation is exclusive, hash-receipted and never writes canonical or exi
   try {
     const destination=resolve(stage,"new");
     const receipt=await prepareQaConfig(destination,"IOS");
-    assert.equal(receipt.profile,"jinyang-native-qa-v2");
+    assert.equal(receipt.profile,"jinyang-native-qa-v3");
     assert.equal(receipt.sourceConfig.engine,hash(engine));
     assert.equal(receipt.sourceConfig.game,hash(game));
     for(const [name,expected] of Object.entries(receipt.outputs))
@@ -100,6 +117,29 @@ test("preparation is exclusive, hash-receipted and never writes canonical or exi
     await assert.rejects(()=>prepareQaConfig("relative","IOS"),/absolute/);
     assert.equal(await readFile(resolve(source,"DefaultEngine.ini"),"utf8"),engine);
     assert.equal(await readFile(resolve(source,"DefaultGame.ini"),"utf8"),game);
+  } finally {await rm(stage,{recursive:true,force:true});}
+});
+test("unsigned iOS companion scopes every override to the device SDK, never Mac helpers",async()=>{
+  const stage=await mkdtemp(resolve(tmpdir(),"shi-native-qa-signing-test-"));
+  try {
+    for(const platform of ["IOS","Mac","Android"]) {
+      const destination=resolve(stage,platform);
+      const receipt=await prepareQaConfig(destination,platform);
+      assert.equal(Object.hasOwn(receipt.outputs,"UnsignedIOS.xcconfig"),platform==="IOS");
+      if(platform!=="IOS") {
+        await assert.rejects(()=>readFile(resolve(destination,"UnsignedIOS.xcconfig")),{code:"ENOENT"});
+        continue;
+      }
+      const text=await readFile(resolve(destination,"UnsignedIOS.xcconfig"),"utf8");
+      const settings=text.split("\n").filter(line=>line && !line.startsWith("//"));
+      assert.deepEqual(settings,[
+        "CODE_SIGNING_ALLOWED[sdk=iphoneos*] = NO","CODE_SIGNING_REQUIRED[sdk=iphoneos*] = NO",
+        "CODE_SIGN_IDENTITY[sdk=iphoneos*] =","PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*] =",
+        "DEVELOPMENT_TEAM[sdk=iphoneos*] =","CODE_SIGN_STYLE[sdk=iphoneos*] = Manual",
+      ]);
+      assert.equal(hash(text),receipt.outputs["UnsignedIOS.xcconfig"]);
+      assert.match(receipt.signing,/Unset it before separately signing/);
+    }
   } finally {await rm(stage,{recursive:true,force:true});}
 });
 test("static native entry wiring retains config and explicit desktop launch overrides",async()=>{

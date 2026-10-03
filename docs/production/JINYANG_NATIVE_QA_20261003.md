@@ -10,6 +10,8 @@ The isolated profile uses application identifier `art.lazying.shi.jinyangqa`, di
 
 Profile **v2** explicitly selects `EFIGSCJK` internationalization data and stages `en` and `zh-Hans`. The installed engine's `BaseGame.ini` otherwise inherits `English`/`en`; its AutomationTool uses these settings to select ICU data and localization resources. This packaging correction supports the two current QA UI lanes. It does not establish glyph/layout acceptance or claim that the Jinyang scene is translated into all eleven planned languages. Generate a new v2 directory; preserve the earlier v1 receipt rather than overwrite it.
 
+Profile **v3** retains that language-data correction and fixes modern Apple project generation. Both Apple profiles now set the QA bundle identity and display name in `/Script/MacTargetPlatform.XcodeProjectSettings`, disable automatic signing/App Store Connect, clear inherited iOS signing selections, and select local ad-hoc signing for Mac. The earlier iOS-only identity setting did not establish the identity of the modern Xcode project. Canonical release configuration remains unchanged; a local Mac signature is not notarization or distribution approval.
+
 ## Reproduce without changing release configuration
 
 From a source checkout, with an existing parent directory:
@@ -21,13 +23,14 @@ node scripts/jinyang-native-qa-config.mjs Mac /absolute/new-mac-config-directory
 npm run validate:jinyang
 ```
 
-The generator exclusively creates a new directory containing two INI files and a SHA-256 receipt. It rejects existing destinations and paths inside the canonical Unreal project, including symlinked parents. Apply its output **only to a dedicated staging checkout**, after recording source commit and preimage hashes and preserving original configuration. Do not overwrite a working release checkout or apply multiple platform profiles simultaneously. Generated profiles are private build inputs, not tracked source or build evidence.
+The generator exclusively creates a new directory containing two INI files and a SHA-256 receipt; IOS v3 additionally contains `UnsignedIOS.xcconfig`. It rejects existing destinations and paths inside the canonical Unreal project, including symlinked parents. Apply its output **only to a dedicated staging checkout**, after recording source commit and preimage hashes and preserving original configuration. Do not overwrite a working release checkout or apply multiple platform profiles simultaneously. Generate a fresh v3 directory rather than modifying v1/v2 evidence. Generated profiles are private build inputs, not tracked source or build evidence.
 
 SDK paths, signing identities, provisioning profiles, credentials and shared Xcode selection are deliberately absent. Use the installed engine's SDK metadata and per-command environment. Do not force an installed-engine rebuild through an unsupported custom target merely to choose this configuration.
 
 ## Checks actually performed
 
 - Seven configuration tests pass: isolated identity/entry, renderer/orientation scope, cook closure, explicit bilingual language-data packaging, INI merging, exclusive/hash-receipted preparation with symlink protection, and static native-entry wiring.
+- V3 adds two passing cases for modern Apple identity/manual-signing isolation and an iPhoneOS-only unsigned companion: **nine configuration cases**. These are generator tests, not native build/signing results.
 - The combined Jinyang checks pass thirteen Node tests, 52 legacy and 109 current replay checkpoints, and the exact standalone C++ input/layout checks. The new configuration entry code and earlier touch fixes still need native compilation and runtime verification.
 - Unreal's installed **5.8.1** `UnrealBuildTool -Mode=ValidatePlatforms -Platforms=Android -OutputSDKs` completed with explicit `##PlatformValidate: Android VALID r27c`. This mode only qualifies SDK discovery; exit zero alone would not establish validity.
 - The process selected the existing NDK **28.2.13676358** and JDK **21** through per-command environment. The printed `r27c` is the engine's preferred version, **not** a measurement of the selected NDK. No SDK was downloaded or globally reconfigured. This is not Gradle, cook, signing, target-API/store-policy or installed-device qualification.
@@ -61,6 +64,14 @@ The completed staged `BaseEngine.ini` matches the manifest SHA-256 `3852b5278529
 The manifest contains no `Engine/Intermediate/Build/IOS/iossimulator` objects, and the installed-platform configuration declares no `iossimulator` target. A few third-party simulator libraries do not qualify a complete simulator engine. This is evidence about **this downloaded package**, not a claim that Unreal never supports iOS simulators. Do not force a simulator target or rebuild the whole engine merely to avoid the available physical-device route. Existing SwiftUI-client simulator results remain separate from the new Unreal chapter.
 
 A fresh read-only device check found the iPad paired and available. Its USB host has a matching development provisioning profile for the isolated QA identifier, includes that device, and lists a certificate also present in the host's valid signing-identity inventory. The mini's default keychain search reported no valid signing identities. The intended split is therefore compilation on the roomy mini, followed by signing/device installation on the existing signing host, after validating the supported unsigned-build path, actual key access, bundle entitlements and free space. Do not copy private keys, modify shared keychains or overwrite the installed store app. No signing operation, installation, UI automation or device playtest has been performed by this inventory.
+
+### Unsigned intermediate preparation — not device acceptance
+
+The pending 5.8.3 manifest exactly matches the locally inspected `AppleExports.cs`, `XcodeProject.cs` and `ApplePlatform.Automation.cs` hashes. These files confirm the modern configuration section, automatic provisioning flag and additional Xcode options at staging/packaging. `AppleToolChain.cs` differs between the two versions: its final installed implementation still needs inspection before the native build. Do not assume that AutomationTool's `-NoCodeSign` flag alone disables every modern Xcode signing step, or skip post-build finalization by pretending the build originated in Xcode.
+
+The installed Xcode manual on an existing Mac confirms that per-process `XCODE_XCCONFIG_FILE` overrides build settings, including command-line settings. Apple's [configuration-file reference](https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project) describes SDK-conditional settings. IOS v3 supplies an unsigned-device override using `[sdk=iphoneos*]` for every setting so a host Mac editor/helper retains its signing behavior. Apply the absolute companion path **only to the unsigned iOS build command**, not a shell profile, service or shared environment. Do not use automatic provisioning, portal updates or credentials on the unsigned build host.
+
+This file prepares a candidate path; it has **not** yet produced a compiled Unreal application. Before transfer, check the actual bundle identifier, architecture, staged content, entitlements and nested executable inventory. Unset `XCODE_XCCONFIG_FILE` before signing on the existing signing host. A valid development profile and actual successful signing/verification are required before installing the separate QA app. Neither the unsigned artifact nor local Mac ad-hoc signing qualifies a TestFlight upload.
 
 ## Next acceptance gate
 
