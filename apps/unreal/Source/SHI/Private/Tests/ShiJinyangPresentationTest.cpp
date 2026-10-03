@@ -4,6 +4,8 @@
 #include "ShiJinyangFigure.h"
 #include "ShiJinyangGameMode.h"
 #include "ShiJinyangWorldSave.h"
+#include "GameFramework/TouchInterface.h"
+#include "InputCoreTypes.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShiJinyangExplorationInterface, "SHI.Jinyang.ExplorationInterface",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
@@ -15,6 +17,17 @@ bool FShiJinyangExplorationInterface::RunTest(const FString& Arguments)
         TestEqual(TEXT("Only unmodal scenic mode can hide the interface"),
             AShiJinyangGameMode::IsExplorationInterfaceVisible(Hide,Intro,Inspect,Paused),Mask!=1);
     }
+    auto* Touch=NewObject<UTouchInterface>();
+    AShiJinyangGameMode::NormalizeTouchAxes(nullptr);
+    AShiJinyangGameMode::NormalizeTouchAxes(Touch);
+    Touch->Controls.SetNum(2);
+    Touch->Controls[0].InputScale=FVector2D(-1,-1);
+    Touch->Controls[1].InputScale=FVector2D(1,-1);
+    AShiJinyangGameMode::NormalizeTouchAxes(Touch);
+    TestEqual(TEXT("Moving stick has explicit non-inverted scale"),Touch->Controls[0].InputScale,FVector2D(1,1));
+    TestEqual(TEXT("Look stick overrides inverted template pitch"),Touch->Controls[1].InputScale,FVector2D(1,1));
+    TestTrue(TEXT("Look maps to the direct-pitch input adapter"),Touch->Controls[1].AltInputKey==EKeys::Gamepad_RightY);
+    TestTrue(TEXT("Walking maps to the movement input adapter"),Touch->Controls[0].AltInputKey==EKeys::Gamepad_LeftY);
     return true;
 }
 

@@ -3,6 +3,7 @@
 #include "ShiJinyangFigure.h"
 #include "ShiJinyangWorldSave.h"
 #include "ShiJinyangInput.h"
+#include "ShiJinyangLayout.h"
 #include "ShiAtomicSaveFile.h"
 #include "ShiSoundscapeComponent.h"
 #include "Camera/CameraActor.h"
@@ -15,6 +16,7 @@
 #include "Engine/PostProcessVolume.h"
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
+#include "Engine/UserInterfaceSettings.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -33,6 +35,7 @@
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Layout/SSafeZone.h"
+#include "Widgets/Layout/SDPIScaler.h"
 #include "Widgets/SViewport.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Text/STextBlock.h"
@@ -124,6 +127,16 @@ void AShiJinyangGameMode::StartExploration()
     UE_LOG(LogTemp,Display,TEXT("SHI_WORLD_READY position=%s yaw=%.2f eyeLevel=%d visited=%d"),
         *State.Position.ToString(),State.Look.Yaw,State.bEyeLevel,VisitedPlaces.Num());
 }
+void AShiJinyangGameMode::NormalizeTouchAxes(UTouchInterface* Interface)
+{
+    if(!Interface || Interface->Controls.Num()<2)return;
+    auto& Move=Interface->Controls[0];auto& Look=Interface->Controls[1];
+    Move.MainInputKey=EKeys::Gamepad_LeftX;Move.AltInputKey=EKeys::Gamepad_LeftY;
+    Look.MainInputKey=EKeys::Gamepad_RightX;Look.AltInputKey=EKeys::Gamepad_RightY;
+    // Direct-pitch control expects the joystick's upward-positive Y convention,
+    // regardless of an engine template configured for inverted AddControllerPitchInput.
+    Move.InputScale=FVector2D(1,1);Look.InputScale=FVector2D(1,1);
+}
 void AShiJinyangGameMode::ConfigureWalkingTouch()
 {
     if(!bTouchControls)return;
@@ -144,8 +157,7 @@ void AShiJinyangGameMode::ConfigureWalkingTouch()
         {
             auto& Move=WalkingTouchInterface->Controls[0];auto& Look=WalkingTouchInterface->Controls[1];
             Move.Center=FVector2D(.13,-.22);Look.Center=FVector2D(.87,-.22);
-            Move.MainInputKey=EKeys::Gamepad_LeftX;Move.AltInputKey=EKeys::Gamepad_LeftY;
-            Look.MainInputKey=EKeys::Gamepad_RightX;Look.AltInputKey=EKeys::Gamepad_RightY;
+            NormalizeTouchAxes(WalkingTouchInterface.Get());
         }
     }
     else UE_LOG(LogTemp,Error,TEXT("SHI_TOUCH_UNAVAILABLE missing engine touch interface"));
@@ -388,6 +400,18 @@ FVector2D AShiJinyangGameMode::ExplorationUiSize() const
     }
     return FVector2D(1280,720);
 }
+float AShiJinyangGameMode::TouchUiCompensation() const
+{
+    if(!bTouchControls || !GEngine || !GEngine->GameViewport)return 1.f;
+    const auto Viewport=GEngine->GameViewport->GetGameViewportWidget();
+    if(!Viewport.IsValid())return 1.f;
+    FVector2D Pixels;GEngine->GameViewport->GetViewportSize(Pixels);
+    if(Pixels.X<=0 || Pixels.Y<=0)return 1.f;
+    const float GameDpi=GetDefault<UUserInterfaceSettings>()->GetDPIScaleBasedOnSize(
+        FIntPoint(FMath::RoundToInt(Pixels.X),FMath::RoundToInt(Pixels.Y)));
+    const float PlatformDpi=Viewport->GetCachedGeometry().GetAccumulatedLayoutTransform().GetScale();
+    return ShiJinyangLayout::TouchCompensation(GameDpi,PlatformDpi);
+}
 void AShiJinyangGameMode::RefreshExplorationScreen()
 {
     if (!GEngine || !GEngine->GameViewport)return;
@@ -425,8 +449,9 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
             TouchActions->AddSlot().AutoWidth().Padding(3,0)
                 [SNew(SBox).MinDesiredWidth(68).MinDesiredHeight(48)
                     [SNew(SButton).IsFocusable(false).IsEnabled(Enabled).HAlign(HAlign_Center)
-                        .ContentPadding(FMargin(10,12)).Text(FText::FromString(Caption))
-                        .OnClicked_Lambda([Action](){Action();return FReply::Handled();})]];
+                        .ContentPadding(FMargin(10,12))
+                        .OnClicked_Lambda([Action](){Action();return FReply::Handled();})
+                        [Label(Caption,16)]]];
         };
         AddAction(Text(TEXT("Orders"),TEXT("指挥")),[this](){ToggleExploration();},BusyTime<=0);
         AddAction(Text(TEXT("View"),TEXT("视角")),[this](){Explorer->SetEyeLevel(!Explorer->IsEyeLevel());SaveExploration();});
@@ -440,17 +465,19 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
         Work->AddSlot().AutoHeight()[Label(Text(TEXT("Order committed · work underway"),TEXT("命令已下达 · 正在执行")),18,true)];
         Work->AddSlot().AutoHeight().Padding(0,7)[Label(Text(TEXT("Follow the workers, or keep exploring. Skipping movement never repeats the order."),
             TEXT("可跟随队伍，也可继续查看城内。略过动作不会重复下令。")),14)];
-        Work->AddSlot().AutoHeight().Padding(0,6)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(16,10))
-            .Text(FText::FromString(Text(TEXT("Skip movement · Backspace"),TEXT("略过动作 · Backspace"))))
-            .OnClicked_Lambda([this](){SkipMovement();return FReply::Handled();})];
-        Overlay->AddSlot().HAlign(HAlign_Right).VAlign(VAlign_Top).Padding(28)[SNew(SBox).WidthOverride(400)[Panel(Work)]];
+        Work->AddSlot().AutoHeight().Padding(0,6)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(16,14))
+            .OnClicked_Lambda([this](){SkipMovement();return FReply::Handled();})
+            [Label(Text(TEXT("Skip movement · Backspace"),TEXT("略过动作 · Backspace")),16)]];
+        Overlay->AddSlot().HAlign(HAlign_Right).VAlign(bTouchControls?VAlign_Bottom:VAlign_Top)
+            .Padding(bTouchControls?FMargin(16,16,16,80):FMargin(28))
+            [SNew(SBox).WidthOverride_Lambda([this](){return FOptionalSize(FMath::Min(400.f,ExplorationUiSize().X-32.f));})[Panel(Work)]];
     }
-    if (!NearbyPlace.IsEmpty() && !bExploreIntro && !bWorldInspect && !bWorldPaused)
+    if (!NearbyPlace.IsEmpty() && !bExploreIntro && !bWorldInspect && !bWorldPaused && BusyTime<=0)
     {
         auto Prompt=SNew(SVerticalBox);Prompt->AddSlot().AutoHeight()[Label(PlaceName(NearbyPlace),22,true)];
-        Prompt->AddSlot().AutoHeight().Padding(0,6)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(15,9))
-            .Text(FText::FromString(Text(TEXT("Inspect · E"),TEXT("查看 · E"))))
-            .OnClicked_Lambda([this](){InspectNearby();return FReply::Handled();})];
+        Prompt->AddSlot().AutoHeight().Padding(0,6)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(15,14))
+            .OnClicked_Lambda([this](){InspectNearby();return FReply::Handled();})
+            [Label(Text(TEXT("Inspect · E"),TEXT("查看 · E")),16)]];
         Overlay->AddSlot().HAlign(HAlign_Center).VAlign(VAlign_Bottom).Padding(0,0,0,130)[Panel(Prompt)];
     }
     if (bExploreIntro || bWorldInspect)
@@ -474,33 +501,33 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
                     !Available?Text(TEXT(" · unavailable"),TEXT(" · 当前不可用")):TEXT("");
                 const FString Caption=FString::Printf(TEXT("%s%d  %s%s"),DefenseChoice==Id?TEXT("› "):TEXT(""),
                     I+1,*(bChinese?Job.Chinese:Job.English),*Status);
-                Card->AddSlot().AutoHeight().Padding(0,4)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(16,10))
+                Card->AddSlot().AutoHeight().Padding(0,4)[SNew(SButton).IsFocusable(false).TouchMethod(EButtonTouchMethod::PreciseTap).ContentPadding(FMargin(16,14))
                     .IsEnabled(Available && BusyTime<=0 && !bSaveBlocked && !bWorldPaused && !bPaused)
-                    .Text(FText::FromString(Caption))
-                    .OnClicked_Lambda([this,Id](){ChooseDefenseWork(Id);return FReply::Handled();})];
+                    .OnClicked_Lambda([this,Id](){ChooseDefenseWork(Id);return FReply::Handled();})
+                    [Label(Caption,16)]];
             }
             if (!DefenseChoice.IsEmpty())
             {
                 Card->AddSlot().AutoHeight().Padding(0,8)[Label(DefenseForecast(DefenseChoice),15)];
-                Card->AddSlot().AutoHeight().Padding(0,6)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(18,12))
+                Card->AddSlot().AutoHeight().Padding(0,6)[SNew(SButton).IsFocusable(false).TouchMethod(EButtonTouchMethod::PreciseTap).ContentPadding(FMargin(18,14))
                     .IsEnabled(BusyTime<=0 && !bSaveBlocked && !bWorldPaused && !bPaused)
-                    .Text(FText::FromString(Text(TEXT("Dispatch this work · Enter"),TEXT("下令执行 · Enter"))))
-                    .OnClicked_Lambda([this](){DispatchDefenseWork();return FReply::Handled();})];
+                    .OnClicked_Lambda([this](){DispatchDefenseWork();return FReply::Handled();})
+                    [Label(Text(TEXT("Dispatch this work · Enter"),TEXT("下令执行 · Enter")),16)]];
             }
             if (bSaveBlocked)Card->AddSlot().AutoHeight().Padding(0,6)[Label(Note,14)];
             else if (!DefenseError.IsEmpty())Card->AddSlot().AutoHeight().Padding(0,6)[Label(DefenseError,14)];
         }
         Card->AddSlot().AutoHeight().Padding(0,8)[Label(Text(TEXT("Historical situation: Tongjian I. Walkable geography, dress and dialogue are reconstruction."),TEXT("史事依据《通鉴》卷一；可行走地形、衣着及场景表演属重构。")),12)];
-        Card->AddSlot().AutoHeight().Padding(0,15)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,13))
-            .Text(FText::FromString(bExploreIntro?Text(TEXT("Enter the world · Enter"),TEXT("走入世界 · Enter")):Text(TEXT("Return to the world · E"),TEXT("继续行走 · E"))))
-            .OnClicked_Lambda([this](){bExploreIntro=false;bWorldInspect=false;Explorer->SetWalkingEnabled(true);if(Sound)Sound->ResumePreferredFromGesture();RefreshScreen();return FReply::Handled();})];
-        if (bWorldInspect && Sites.Contains(InspectedPlace))Card->AddSlot().AutoHeight()[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,12))
-            .Text(FText::FromString(Text(TEXT("Consider orders here · V"),TEXT("在此筹划命令 · V"))))
-            .OnClicked_Lambda([this](){ToggleExploration();return FReply::Handled();})];
+        Card->AddSlot().AutoHeight().Padding(0,15)[SNew(SButton).IsFocusable(false).TouchMethod(EButtonTouchMethod::PreciseTap).ContentPadding(FMargin(20,14))
+            .OnClicked_Lambda([this](){bExploreIntro=false;bWorldInspect=false;Explorer->SetWalkingEnabled(true);if(Sound)Sound->ResumePreferredFromGesture();RefreshScreen();return FReply::Handled();})
+            [Label(bExploreIntro?Text(TEXT("Enter the world · Enter"),TEXT("走入世界 · Enter")):Text(TEXT("Return to the world · E"),TEXT("继续行走 · E")),16)]];
+        if (bWorldInspect && Sites.Contains(InspectedPlace))Card->AddSlot().AutoHeight()[SNew(SButton).IsFocusable(false).TouchMethod(EButtonTouchMethod::PreciseTap).ContentPadding(FMargin(20,14))
+            .OnClicked_Lambda([this](){ToggleExploration();return FReply::Handled();})
+            [Label(Text(TEXT("Consider orders here · V"),TEXT("在此筹划命令 · V")),16)]];
         Overlay->AddSlot().HAlign(bTouchControls?HAlign_Center:HAlign_Right).VAlign(VAlign_Center).Padding(16)
             [SNew(SBox)
-                .WidthOverride_Lambda([this](){return FOptionalSize(FMath::Clamp(ExplorationUiSize().X-40.f,200.f,560.f));})
-                .MaxDesiredHeight_Lambda([this](){return FOptionalSize(FMath::Clamp(ExplorationUiSize().Y-40.f,160.f,640.f));})
+                .WidthOverride_Lambda([this](){const auto S=ExplorationUiSize();return FOptionalSize(ShiJinyangLayout::Resolve(S.X,S.Y).CardWidth);})
+                .MaxDesiredHeight_Lambda([this](){const auto S=ExplorationUiSize();return FOptionalSize(ShiJinyangLayout::Resolve(S.X,S.Y).CardHeight);})
                 [Panel(SNew(SScrollBox)+SScrollBox::Slot()[Card])]];
     }
     if (bWorldPaused)
@@ -508,15 +535,15 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
         auto Menu=SNew(SVerticalBox);Menu->AddSlot().AutoHeight()[Label(Text(TEXT("Rest a moment"),TEXT("暂歇")),28,true)];
         Menu->AddSlot().AutoHeight().Padding(0,14)[Label(Text(TEXT("Your decisions and position are saved locally."),TEXT("已在本机保留决策与行走位置。")),17)];
         Menu->AddSlot().AutoHeight().Padding(0,8)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,14))
-            .Text(FText::FromString(Text(TEXT("Return to the world · Esc"),TEXT("继续行走 · Esc"))))
-            .OnClicked_Lambda([this](){PauseExploration(false);return FReply::Handled();})];
+            .OnClicked_Lambda([this](){PauseExploration(false);return FReply::Handled();})
+            [Label(Text(TEXT("Return to the world · Esc"),TEXT("继续行走 · Esc")),16)]];
         Menu->AddSlot().AutoHeight().Padding(0,8)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,14))
-            .Text(FText::FromString(Text(TEXT("Reduced camera motion · R"),TEXT("减弱镜头运动 · R"))))
-            .OnClicked_Lambda([this](){bReducedMotion=!bReducedMotion;Explorer->SetReducedMotion(bReducedMotion);RefreshScreen();return FReply::Handled();})];
+            .OnClicked_Lambda([this](){bReducedMotion=!bReducedMotion;Explorer->SetReducedMotion(bReducedMotion);RefreshScreen();return FReply::Handled();})
+            [Label(Text(TEXT("Reduced camera motion · R"),TEXT("减弱镜头运动 · R")),16)]];
         Menu->AddSlot().AutoHeight().Padding(0,8)[Label(bReducedMotion?Text(TEXT("Reduced motion is on"),TEXT("已开启减弱运动")):Text(TEXT("Reduced motion is off"),TEXT("未开启减弱运动")),13)];
         Menu->AddSlot().AutoHeight().Padding(0,8)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,14))
-            .Text(FText::FromString(Sound && Sound->IsSoundEnabled()?Text(TEXT("Mute sound"),TEXT("关闭声音")):Text(TEXT("Enable sound"),TEXT("开启声音"))))
-            .OnClicked_Lambda([this](){if(Sound)Sound->SetSoundEnabled(!Sound->IsSoundEnabled());RefreshScreen();return FReply::Handled();})];
+            .OnClicked_Lambda([this](){if(Sound)Sound->SetSoundEnabled(!Sound->IsSoundEnabled());RefreshScreen();return FReply::Handled();})
+            [Label(Sound && Sound->IsSoundEnabled()?Text(TEXT("Mute sound"),TEXT("关闭声音")):Text(TEXT("Enable sound"),TEXT("开启声音")),16)]];
         if(!bTouchControls)Menu->AddSlot().AutoHeight().Padding(0,8)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,14))
             .Text(FText::FromString(Text(TEXT("Save and leave · Q"),TEXT("保存并退出 · Q"))))
             .OnClicked_Lambda([this](){SaveExploration();UKismetSystemLibrary::QuitGame(this,GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,false);return FReply::Handled();})];
@@ -526,7 +553,8 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
                 .MaxDesiredHeight_Lambda([this](){return FOptionalSize(FMath::Clamp(ExplorationUiSize().Y-40.f,160.f,640.f));})
                 [Panel(SNew(SScrollBox)+SScrollBox::Slot()[Menu])]];
     }
-    Screen=SNew(SSafeZone)[Overlay];GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(),100);
+    Screen=SNew(SDPIScaler).DPIScale(this,&AShiJinyangGameMode::TouchUiCompensation)[SNew(SSafeZone)[Overlay]];
+    GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(),100);
     Screen->SetVisibility(IsExplorationInterfaceVisible(bHideHud,bExploreIntro,bWorldInspect,bWorldPaused)
         ? EVisibility::SelfHitTestInvisible : EVisibility::Collapsed);
 }

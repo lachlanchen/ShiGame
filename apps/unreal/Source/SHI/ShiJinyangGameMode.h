@@ -31,6 +31,7 @@ public:
     // Hide scenic chrome without concealing the controls that own input.
     static bool IsExplorationInterfaceVisible(bool HideHud, bool Intro, bool Inspect, bool Paused)
     { return !HideHud || Intro || Inspect || Paused; }
+    static void NormalizeTouchAxes(UTouchInterface* Interface);
 private:
     FShiJinyangModel Model;
     FString DefinitionText, SavePath, LastSaved, SelectedSite = TEXT("wall"), Note;
@@ -80,6 +81,8 @@ private:
     void SyncWalkingTouch();
     void SuspendWalkingInput();
     FVector2D ExplorationUiSize() const;
+    float TouchUiCompensation() const;
+    FVector2D LastUiSize=FVector2D::ZeroVector;
     void ToggleExploration();
     void TickExploration(float Dt);
     void RefreshExplorationScreen();

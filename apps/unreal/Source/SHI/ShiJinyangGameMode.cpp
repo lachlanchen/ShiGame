@@ -2,6 +2,7 @@
 #include "ShiJinyangFigure.h"
 #include "ShiSoundscapeComponent.h"
 #include "ShiAtomicSaveFile.h"
+#include "ShiJinyangLayout.h"
 #include "AudioMixerBlueprintLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Camera/CameraActor.h"
@@ -35,6 +36,9 @@
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
+#include "Widgets/Layout/SScrollBox.h"
+#include "Widgets/Layout/SSafeZone.h"
+#include "Widgets/Layout/SDPIScaler.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Styling/CoreStyle.h"
@@ -318,10 +322,16 @@ void AShiJinyangGameMode::RefreshScreen()
     if (bWorldReady && bExploring) { RefreshExplorationScreen();return; }
     if (!GEngine || !GEngine->GameViewport) return;
     if (Screen) GEngine->GameViewport->RemoveViewportWidgetContent(Screen.ToSharedRef());
+    const auto UiSize=ExplorationUiSize();
+    const auto Layout=ShiJinyangLayout::Resolve(UiSize.X,UiSize.Y);
+    const float ContextWrap=bTouchControls?Layout.CommandWidth-30.f:430.f;
+    auto ButtonLabel=[&](const FString& Caption)
+    {return SNew(STextBlock).Text(FText::FromString(Caption)).AutoWrapText(true)
+        .Font(FCoreStyle::GetDefaultFontStyle("Regular",bTouchControls?16:12));};
     auto Top = SNew(SVerticalBox);
-    Top->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Text(TEXT("JINYANG · ZHAO COMMAND"), TEXT("晋阳 · 赵氏指挥")))).Font(FCoreStyle::GetDefaultFontStyle("Bold", 24))];
-    Top->AddSlot().AutoHeight().Padding(0, 8)[SNew(STextBlock).Text(FText::FromString(Objective())).Font(FCoreStyle::GetDefaultFontStyle("Regular", 18)).WrapTextAt(650)];
-    Top->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Text(TEXT("Development motion blockout · earlier Tongjian flashback · reconstructed orders"), TEXT("动作灰盒开发版 · 通鉴前史 · 操作属游戏重构")))).Font(FCoreStyle::GetDefaultFontStyle("Regular", 12))];
+    Top->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Text(TEXT("JINYANG · ZHAO COMMAND"), TEXT("晋阳 · 赵氏指挥")))).Font(FCoreStyle::GetDefaultFontStyle("Bold", bTouchControls?20:24))];
+    Top->AddSlot().AutoHeight().Padding(0, 8)[SNew(STextBlock).Text(FText::FromString(Objective())).Font(FCoreStyle::GetDefaultFontStyle("Regular", bTouchControls?16:18)).WrapTextAt(bTouchControls?FMath::Min(500.f,UiSize.X-62.f):650.f)];
+    if(!bTouchControls)Top->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Text(TEXT("Development motion blockout · earlier Tongjian flashback · reconstructed orders"), TEXT("动作灰盒开发版 · 通鉴前史 · 操作属游戏重构")))).Font(FCoreStyle::GetDefaultFontStyle("Regular", 12))];
     auto SitesBar = SNew(SHorizontalBox);
     if (Model.GetDefinition()) for (const auto& Raw : Model.GetDefinition()->GetArrayField(TEXT("sites")))
     {
@@ -330,12 +340,12 @@ void AShiJinyangGameMode::RefreshScreen()
         const TMap<FString, FString> ShortZh = {{TEXT("wall"),TEXT("防线")},{TEXT("embankment"),TEXT("堤道")},{TEXT("route"),TEXT("退路")},{TEXT("han"),TEXT("韩营")},{TEXT("wei"),TEXT("魏营")},{TEXT("zhi"),TEXT("智营")},{TEXT("zhao"),TEXT("指挥")}};
         const FString Label = (Id == SelectedSite ? TEXT("[") : TEXT(""))
             + (bChinese ? ShortZh[Id] : ShortEn[Id]) + (Id == SelectedSite ? TEXT("]") : TEXT(""));
-        SitesBar->AddSlot().AutoWidth().Padding(2)[SNew(SBox).WidthOverride(68).HeightOverride(44)
-            [SNew(SButton).ContentPadding(FMargin(4)).HAlign(HAlign_Center).VAlign(VAlign_Center).Text(FText::FromString(Label))
-            .OnClicked_Lambda([this, Id]() { SelectSite(Id); return FReply::Handled(); })]];
+        SitesBar->AddSlot().AutoWidth().Padding(2)[SNew(SBox).WidthOverride(68).HeightOverride(bTouchControls?48:44)
+            [SNew(SButton).IsFocusable(false).TouchMethod(EButtonTouchMethod::PreciseTap).ContentPadding(FMargin(4)).HAlign(HAlign_Center).VAlign(VAlign_Center)
+            .OnClicked_Lambda([this, Id]() { SelectSite(Id); return FReply::Handled(); })[ButtonLabel(Label)]]];
     }
     auto Context = SNew(SVerticalBox);
-    Context->AddSlot().AutoHeight().Padding(0, 8)[SNew(STextBlock).Text(FText::FromString(SiteReport())).WrapTextAt(430).Font(FCoreStyle::GetDefaultFontStyle("Regular", 16))];
+    Context->AddSlot().AutoHeight().Padding(0, 8)[SNew(STextBlock).Text(FText::FromString(SiteReport())).WrapTextAt(ContextWrap).Font(FCoreStyle::GetDefaultFontStyle("Regular", 16))];
     const auto Actions = ContextCommands();
     for (int32 I = 0; I < Actions.Num(); ++I)
     {
@@ -346,17 +356,18 @@ void AShiJinyangGameMode::RefreshScreen()
         if (!Model.GetState().Operation.Phase.IsEmpty()) Label=bChinese
             ? FString::Printf(TEXT("%d  %s · 储备 %d"),CommandKey(Id),*C.Chinese,C.Cost)
             : FString::Printf(TEXT("%d  %s · reserves %d"),CommandKey(Id),*C.English,C.Cost);
-        Context->AddSlot().AutoHeight().Padding(0, 3)[SNew(SButton).ContentPadding(FMargin(8,7))
+        Context->AddSlot().AutoHeight().Padding(0, 3)[SNew(SButton).IsFocusable(false).TouchMethod(EButtonTouchMethod::PreciseTap).ContentPadding(FMargin(8,bTouchControls?14:7))
             .IsEnabled(!bSaveBlocked && !bPaused && BusyTime <= 0)
             .OnClicked_Lambda([this, Id]() { Issue(Id); return FReply::Handled(); })
-            [SNew(STextBlock).Text(FText::FromString(Label)).WrapTextAt(408)]];
+            [SNew(STextBlock).Text(FText::FromString(Label)).WrapTextAt(ContextWrap-16.f)
+                .Font(FCoreStyle::GetDefaultFontStyle("Regular",bTouchControls?16:12))]];
     }
     if (!Model.GetState().Outcome.IsEmpty() && BusyTime <= 0)
     {
         const FString Outcome = Model.GetState().Outcome;
         const FString Ending = Outcome == TEXT("coordinated-reversal") ? Text(TEXT("The alliance turns the siege"), TEXT("联盟扭转围城"))
             : Outcome == TEXT("costly-withdrawal") ? Text(TEXT("A remnant gets out"), TEXT("带着余部撤离")) : Text(TEXT("The position is lost"), TEXT("阵地失守"));
-        Context->AddSlot().AutoHeight().Padding(0, 6)[SNew(STextBlock).Text(FText::FromString(Ending)).Font(FCoreStyle::GetDefaultFontStyle("Bold", 20)).WrapTextAt(430)];
+        Context->AddSlot().AutoHeight().Padding(0, 6)[SNew(STextBlock).Text(FText::FromString(Ending)).Font(FCoreStyle::GetDefaultFontStyle("Bold", 20)).WrapTextAt(ContextWrap)];
         if (Model.GetState().Estate)
         {
             const auto E = Model.GetState().Estate;
@@ -368,17 +379,21 @@ void AShiJinyangGameMode::RefreshScreen()
             const FString Summary = bChinese
                 ? FString::Printf(TEXT("可调兵力 %d · 储备 %d · %s\n权利主张与义务已存档。分配章节正在制作。"), Force, Treasury, *Office)
                 : FString::Printf(TEXT("Available remnant %d · reserves %d · %s\nClaims and obligations saved. Settlement chapter is in development."), Force, Treasury, *Office);
-            Context->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Summary)).WrapTextAt(430)];
+            Context->AddSlot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Summary)).WrapTextAt(ContextWrap)
+                .Font(FCoreStyle::GetDefaultFontStyle("Regular",bTouchControls?14:12))];
         }
-        Context->AddSlot().AutoHeight().Padding(0, 8)[SNew(SButton)
-            .Text(FText::FromString(bRestartArmed ? Text(TEXT("Confirm: archive and start again · R"), TEXT("确认：保留纪事，重新开始 · R")) : Text(TEXT("Try a different plan · R"), TEXT("尝试另一种方案 · R"))))
-            .IsEnabled(!bSaveBlocked && BusyTime <= 0).OnClicked_Lambda([this]() { Restart(); return FReply::Handled(); })];
-        if (bRestartArmed) Context->AddSlot().AutoHeight()[SNew(SButton).Text(FText::FromString(Text(TEXT("Cancel"), TEXT("取消"))))
-            .OnClicked_Lambda([this]() { bRestartArmed = false; RefreshScreen(); return FReply::Handled(); })];
+        Context->AddSlot().AutoHeight().Padding(0, 8)[SNew(SButton).IsFocusable(false).TouchMethod(EButtonTouchMethod::PreciseTap).ContentPadding(FMargin(8,bTouchControls?14:7))
+            .IsEnabled(!bSaveBlocked && BusyTime <= 0).OnClicked_Lambda([this]() { Restart(); return FReply::Handled(); })
+            [ButtonLabel(bRestartArmed ? Text(TEXT("Confirm: archive and start again · R"), TEXT("确认：保留纪事，重新开始 · R")) : Text(TEXT("Try a different plan · R"), TEXT("尝试另一种方案 · R")))]];
+        if (bRestartArmed) Context->AddSlot().AutoHeight()[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(8,bTouchControls?14:7))
+            .OnClicked_Lambda([this]() { bRestartArmed = false; RefreshScreen(); return FReply::Handled(); })
+            [ButtonLabel(Text(TEXT("Cancel"),TEXT("取消")))]];
     }
-    Context->AddSlot().AutoHeight().Padding(0, 7)[SNew(STextBlock).Text(FText::FromString(Note)).WrapTextAt(430)];
-    if (BusyTime > 0) Context->AddSlot().AutoHeight()[SNew(SButton).Text(FText::FromString(Text(TEXT("Skip movement · keeps this order"), TEXT("跳过动作 · 保留本次命令"))))
-        .OnClicked_Lambda([this]() { SkipMovement(); return FReply::Handled(); })];
+    Context->AddSlot().AutoHeight().Padding(0, 7)[SNew(STextBlock).Text(FText::FromString(Note)).WrapTextAt(ContextWrap)
+        .Font(FCoreStyle::GetDefaultFontStyle("Regular",bTouchControls?14:12))];
+    if (BusyTime > 0) Context->AddSlot().AutoHeight()[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(8,bTouchControls?14:7))
+        .OnClicked_Lambda([this]() { SkipMovement(); return FReply::Handled(); })
+        [ButtonLabel(Text(TEXT("Skip movement · keeps this order"),TEXT("跳过动作 · 保留本次命令")))]];
     auto Tools = SNew(SHorizontalBox);
     if (bWorldReady) Tools->AddSlot().AutoWidth().Padding(5,0)[SNew(SButton).Text(FText::FromString(Text(TEXT("Walk the world · V"),TEXT("走入世界 · V"))))
         .OnClicked_Lambda([this]() { ToggleExploration();return FReply::Handled(); })];
@@ -388,6 +403,39 @@ void AShiJinyangGameMode::RefreshScreen()
         .OnClicked_Lambda([this]() { TogglePause(); return FReply::Handled(); })];
     Tools->AddSlot().AutoWidth()[SNew(SButton).Text(FText::FromString(bReducedMotion ? Text(TEXT("Reduced camera motion"), TEXT("减少镜头运动")) : Text(TEXT("Reduce camera motion"), TEXT("减少镜头运动"))))
         .OnClicked_Lambda([this]() { bReducedMotion = !bReducedMotion; SelectSite(SelectedSite); return FReply::Handled(); })];
+    if(bTouchControls)
+    {
+        // Two scrollable navigation rows and a bounded order card retain real
+        // touch targets in landscape and portrait. Never shrink the entire HUD.
+        auto TouchTools=SNew(SHorizontalBox);
+        auto AddTool=[&](FString Caption,TFunction<void()> Action)
+        {TouchTools->AddSlot().AutoWidth().Padding(3,0)[SNew(SBox).MinDesiredWidth(80).MinDesiredHeight(48)
+            [SNew(SButton).IsFocusable(false).TouchMethod(EButtonTouchMethod::PreciseTap).HAlign(HAlign_Center).ContentPadding(FMargin(10,12))
+                .OnClicked_Lambda([Action](){Action();return FReply::Handled();})[ButtonLabel(Caption)]]];};
+        if(bWorldReady)AddTool(Text(TEXT("Walk"),TEXT("行走")),[this](){ToggleExploration();});
+        AddTool(Sound && Sound->IsSoundEnabled()?Text(TEXT("Mute"),TEXT("静音")):Text(TEXT("Sound"),TEXT("声音")),
+            [this](){if(Sound)Sound->SetSoundEnabled(!Sound->IsSoundEnabled());RefreshScreen();});
+        AddTool(bPaused?Text(TEXT("Resume"),TEXT("继续")):Text(TEXT("Pause"),TEXT("暂停")),[this](){TogglePause();});
+        AddTool(Text(TEXT("Motion"),TEXT("镜头")),[this](){bReducedMotion=!bReducedMotion;SelectSite(SelectedSite);});
+        const auto Ink=FLinearColor(.018,.027,.04,.96);
+        auto TouchOverlay=SNew(SOverlay)
+            +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(16)
+                [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(Ink).Padding(12)[Top]]
+            +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(16,16,16,128)
+                [SNew(SBox).WidthOverride(Layout.CommandWidth).MaxDesiredHeight(Layout.CommandHeight)
+                    [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(Ink).Padding(12)
+                        [SNew(SScrollBox)+SScrollBox::Slot()[Context]]]]
+            +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(16,0,16,72)
+                [SNew(SBox).WidthOverride(Layout.NavigationWidth).HeightOverride(52)
+                    [SNew(SScrollBox).Orientation(Orient_Horizontal).ScrollBarVisibility(EVisibility::Collapsed)+SScrollBox::Slot()[TouchTools]]]
+            +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(16,0,16,16)
+                [SNew(SBox).WidthOverride(Layout.NavigationWidth).HeightOverride(52)
+                    [SNew(SScrollBox).Orientation(Orient_Horizontal).ScrollBarVisibility(EVisibility::Collapsed)+SScrollBox::Slot()[SitesBar]]];
+        Screen=SNew(SDPIScaler).DPIScale(this,&AShiJinyangGameMode::TouchUiCompensation)[SNew(SSafeZone)[TouchOverlay]];
+        GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(),100);
+        Screen->SetVisibility(bHideHud?EVisibility::Collapsed:EVisibility::SelfHitTestInvisible);
+        return;
+    }
     Screen = SNew(SOverlay)
         + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(22)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(FLinearColor(.018,.027,.04,.96)).ForegroundColor(FLinearColor::White).Padding(15)[Top]]
         + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(22,22,22,86)[SNew(SBox).WidthOverride(460)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(FLinearColor(.018,.027,.04,.96)).ForegroundColor(FLinearColor::White).Padding(15)[Context]]]
@@ -406,7 +454,13 @@ void AShiJinyangGameMode::Issue(const FString& Id)
     if (!FFileHelper::LoadFileToString(Current, *SavePath) || Current != LastSaved)
     { bSaveBlocked = true; Note = Text(TEXT("Save changed outside this session. Reload before issuing more orders."), TEXT("存档已被其他会话修改。请重新载入后操作。")); RefreshScreen(); return; }
     const FString NewSave = Candidate.ExportSave();
-    if (!FShiAtomicSaveFile::WriteUtf8(SavePath, NewSave, Error)) { Note = Error; RefreshScreen(); return; }
+    if (!FShiAtomicSaveFile::WriteUtf8(SavePath, NewSave, Error))
+    {
+        UE_LOG(LogTemp,Warning,TEXT("SHI_SAVE_WRITE_FAILED %s"),*Error);
+        Note=Text(TEXT("Could not save; no order was applied. Check storage access and free space, then retry."),
+            TEXT("无法保存，命令尚未执行。请检查存储权限和可用空间，然后重试。"));
+        RefreshScreen();return;
+    }
     Model = MoveTemp(Candidate); LastSaved = NewSave;
     if (Sound) { Sound->ResumePreferredFromGesture(); Sound->PlayCue(FName(TEXT("commit"))); }
     Present(Id);
@@ -719,6 +773,11 @@ void AShiJinyangGameMode::Restart()
 void AShiJinyangGameMode::Tick(float Dt)
 {
     Super::Tick(Dt);
+    if(bTouchControls)
+    {
+        const auto Size=ExplorationUiSize();
+        if(!Size.Equals(LastUiSize,.5f)){LastUiSize=Size;RefreshScreen();}
+    }
     auto* PC = GetWorld()->GetFirstPlayerController();
     if (!PC || !Camera.IsValid()) return;
     if(bWorldReady)TickResidents(Dt);

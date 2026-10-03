@@ -1,4 +1,5 @@
 #include "../apps/unreal/Source/SHI/ShiJinyangInput.h"
+#include "../apps/unreal/Source/SHI/ShiJinyangLayout.h"
 #include <cassert>
 #include <cstdio>
 #include <limits>
@@ -38,5 +39,22 @@ int main()
     const auto Invalid=Resolve(Bad,Bad,Bad,Bad,Bad,Bad,Bad,Bad,Bad,Bad,Bad);
     assert(Invalid.Forward==0 && Invalid.Side==0 && Invalid.Yaw==0 && Invalid.Pitch==0);
     assert(Resolve(0,0,0,0,0,0,1,0,0,0,-1).Yaw==0);
-    std::puts("Jinyang native input: dead zone, bounded diagonal/mixed input, 30/60/120 fps look, mouse, resume clamp and invalid values pass.");
+    // A 48-unit control must remain 48 logical units after the engine's DPI curve.
+    for(float Platform:{1.f,2.f,3.f})for(float Game:{.444f,.667f,1.f,2.f})
+    {
+        const float Compensation=ShiJinyangLayout::TouchCompensation(Game,Platform);
+        assert(Near(48.f*Game/Platform*Compensation,48.f));
+        assert(Near(48.f*Game*Compensation,48.f*Platform));
+    }
+    assert(ShiJinyangLayout::TouchCompensation(Bad,Bad)==1.f);
+    assert(ShiJinyangLayout::TouchCompensation(0,-1)==1.f);
+    for(auto View:{FStick{844,390},FStick{390,844},FStick{320,568},FStick{1280,720}})
+    {
+        const auto Layout=ShiJinyangLayout::Resolve(View.X,View.Y);
+        assert(Layout.CardWidth<=View.X-32 && Layout.CardHeight<=View.Y-32);
+        assert(Layout.CommandWidth<=View.X-32 && Layout.CommandHeight+214<=View.Y);
+        assert(Layout.NavigationWidth==View.X-32);
+    }
+    assert(std::isfinite(ShiJinyangLayout::Resolve(Bad,Bad).CardWidth));
+    std::puts("Jinyang native input and layout: axes, dead zones, rates, invalid values, density compensation and landscape/portrait bounds pass.");
 }
