@@ -61,6 +61,16 @@ test("cook profile retains world, shapes, touch UI and canonical non-UFS content
   assert.deepEqual(values(output.game,"/Script/UnrealEd.ProjectPackagingSettings","DirectoriesToAlwaysStageAsNonUFS"),['(Path="StreamingAssets")']);
   assert.doesNotMatch(output.game,/DirectoriesToAlwaysCook=.*Daze/);
 });
+test("Chinese-first QA packages English and Simplified Chinese language data explicitly",()=>{
+  for(const platform of ["IOS","Android","Mac"]) {
+    const output=renderQaConfig(engine,game,platform);
+    const section="/Script/UnrealEd.ProjectPackagingSettings";
+    assert.equal(one(output.game,section,"InternationalizationPreset"),"EFIGSCJK");
+    assert.deepEqual(values(output.game,section,"CulturesToStage"),["en","zh-Hans"]);
+    assert.match(output.game,/!CulturesToStage=ClearArray/);
+  }
+  assert.doesNotMatch(game,/InternationalizationPreset=EFIGSCJK/);
+});
 test("INI override preserves unrelated sections and rejects multiline injection",()=>{
   const output=overrideIni("; kept\n[A]\nKey=old\n+List=old\nKeep=yes\n[B]\nKey=other\n[A]\nKey=again\n","A",{Key:"new",List:["one","two"]});
   assert.equal(one(output,"A","Key"),"new");
@@ -77,6 +87,7 @@ test("preparation is exclusive, hash-receipted and never writes canonical or exi
   try {
     const destination=resolve(stage,"new");
     const receipt=await prepareQaConfig(destination,"IOS");
+    assert.equal(receipt.profile,"jinyang-native-qa-v2");
     assert.equal(receipt.sourceConfig.engine,hash(engine));
     assert.equal(receipt.sourceConfig.game,hash(game));
     for(const [name,expected] of Object.entries(receipt.outputs))

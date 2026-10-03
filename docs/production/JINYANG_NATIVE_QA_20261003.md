@@ -8,6 +8,8 @@ A native test app must open the explorable Jinyang chapter from its icon, withou
 
 The isolated profile uses application identifier `art.lazying.shi.jinyangqa`, display name **SHI Jinyang QA**, development packaging and Simplified Chinese. It is not an upgrade to either current store application. Mobile profiles select landscape, conventional mobile rendering, the Jinyang world and required primitive/touch assets. Canonical non-UFS content remains staged. Android includes offline data inside the APK and uses app-scoped external files; no Google Play services or advertising is enabled. The Mac profile preserves the desktop renderer and is an optional development target, not a mobile-release prerequisite.
 
+Profile **v2** explicitly selects `EFIGSCJK` internationalization data and stages `en` and `zh-Hans`. The installed engine's `BaseGame.ini` otherwise inherits `English`/`en`; its AutomationTool uses these settings to select ICU data and localization resources. This packaging correction supports the two current QA UI lanes. It does not establish glyph/layout acceptance or claim that the Jinyang scene is translated into all eleven planned languages. Generate a new v2 directory; preserve the earlier v1 receipt rather than overwrite it.
+
 ## Reproduce without changing release configuration
 
 From a source checkout, with an existing parent directory:
@@ -25,8 +27,8 @@ SDK paths, signing identities, provisioning profiles, credentials and shared Xco
 
 ## Checks actually performed
 
-- Six configuration tests pass: isolated identity/entry, renderer/orientation scope, cook closure, INI merging, exclusive/hash-receipted preparation with symlink protection, and static native-entry wiring.
-- The combined Jinyang checks pass twelve Node tests, 52 legacy and 109 current replay checkpoints, and the exact standalone C++ input/layout checks. The new configuration entry code and earlier touch fixes still need native compilation and runtime verification.
+- Seven configuration tests pass: isolated identity/entry, renderer/orientation scope, cook closure, explicit bilingual language-data packaging, INI merging, exclusive/hash-receipted preparation with symlink protection, and static native-entry wiring.
+- The combined Jinyang checks pass thirteen Node tests, 52 legacy and 109 current replay checkpoints, and the exact standalone C++ input/layout checks. The new configuration entry code and earlier touch fixes still need native compilation and runtime verification.
 - Unreal's installed **5.8.1** `UnrealBuildTool -Mode=ValidatePlatforms -Platforms=Android -OutputSDKs` completed with explicit `##PlatformValidate: Android VALID r27c`. This mode only qualifies SDK discovery; exit zero alone would not establish validity.
 - The process selected the existing NDK **28.2.13676358** and JDK **21** through per-command environment. The printed `r27c` is the engine's preferred version, **not** a measurement of the selected NDK. No SDK was downloaded or globally reconfigured. This is not Gradle, cook, signing, target-API/store-policy or installed-device qualification.
 - The Mac mini's one official Unreal installation is still constructing files. Reading its completed staging metadata identifies **5.8.3, changelist 58210709** and an Apple SDK range of **15.2.0–27.9.0** (preferred 26.1.1); both Mac and iOS inherit this range. This differs from the older Linux 5.8.1 metadata and admits the mini's existing **Xcode 27.0 / 27A266a**. Staging metadata is not completed installation: verify the final installed files before building.

@@ -73,6 +73,9 @@ export function renderQaConfig(engine,game,platform) {
     "SHI.Jinyang":{StartInExploration:"True",InitialLocale:"zh-Hans",NativeQATarget:platform},
     "/Script/UnrealEd.ProjectPackagingSettings":{
       BuildConfiguration:"PPBC_Development",ForDistribution:"False",FullRebuild:"False",
+      // The engine base otherwise stages English-only ICU/localization data,
+      // while this QA app explicitly starts with the reviewed Chinese UI lane.
+      InternationalizationPreset:"EFIGSCJK",CulturesToStage:["en","zh-Hans"],
       DirectoriesToAlwaysCook:[
         '(Path="/Engine/BasicShapes")','(Path="/Engine/MobileResources/HUD")',
         '(Path="/Game/SHI/Art/JinyangWorld")',
@@ -96,7 +99,7 @@ export async function prepareQaConfig(destination,platform) {
   await mkdir(destination,{mode:0o700});
   const files={"DefaultEngine.ini":result.engine,"DefaultGame.ini":result.game};
   for(const [name,text] of Object.entries(files))await writeFile(resolve(destination,name),text,{flag:"wx"});
-  const receipt={profile:"jinyang-native-qa-v1",platform,applicationId:qaIdentifier,
+  const receipt={profile:"jinyang-native-qa-v2",platform,applicationId:qaIdentifier,
     sourceConfig:{engine:sha(engine),game:sha(game)},
     outputs:Object.fromEntries(Object.entries(files).map(([name,text])=>[name,sha(text)])),
     qualification:"configuration only; not a compiled, installed, signed or submitted application",
