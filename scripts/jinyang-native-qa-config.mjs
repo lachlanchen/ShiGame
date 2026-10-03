@@ -75,7 +75,9 @@ export function renderQaConfig(engine,game,platform) {
       BundleIdentifier:qaIdentifier,ApplicationDisplayName:"SHI Jinyang QA",
       bUseAutomaticCodeSigning:"False",bUseAppStoreConnect:"False",
       bMacSignToRunLocally:"True",CodeSigningTeam:"",
-      IOSProvisioningProfile:"",IOSSigningIdentity:"",
+      // FFilePath is a reflected struct, not a string. A blank RHS makes the
+      // actual cooker fail LoadConfig even when Xcode project generation passes.
+      IOSProvisioningProfile:'(FilePath="")',IOSSigningIdentity:"",
     },
   });
   // Mobile renderer qualification, not a promise of desktop Lumen/Nanite on a phone.
@@ -121,7 +123,7 @@ export async function prepareQaConfig(destination,platform) {
   const files={"DefaultEngine.ini":result.engine,"DefaultGame.ini":result.game};
   if(platform==="IOS")files["UnsignedIOS.xcconfig"]=iosUnsignedXcconfig;
   for(const [name,text] of Object.entries(files))await writeFile(resolve(destination,name),text,{flag:"wx"});
-  const receipt={profile:"jinyang-native-qa-v3",platform,applicationId:qaIdentifier,
+  const receipt={profile:"jinyang-native-qa-v4",platform,applicationId:qaIdentifier,
     sourceConfig:{engine:sha(engine),game:sha(game)},
     outputs:Object.fromEntries(Object.entries(files).map(([name,text])=>[name,sha(text)])),
     qualification:"configuration only; not a compiled, installed, signed or submitted application",

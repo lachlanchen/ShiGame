@@ -55,7 +55,7 @@ test("mobile rendering and landscape scope do not change the desktop baseline",(
 });
 test("modern Apple identity and signing stay isolated from store configuration",()=>{
   const section="/Script/MacTargetPlatform.XcodeProjectSettings";
-  const seeded=engine+`\n[${section}]\nBundleIdentifier=art.lazying.shi\nbUseAutomaticCodeSigning=True\nbUseAppStoreConnect=True\nCodeSigningTeam=old-team\nIOSProvisioningProfile=old-profile\nIOSSigningIdentity=old-identity\n`;
+  const seeded=engine+`\n[${section}]\nBundleIdentifier=art.lazying.shi\nbUseAutomaticCodeSigning=True\nbUseAppStoreConnect=True\nCodeSigningTeam=old-team\nIOSProvisioningProfile=(FilePath="old-profile")\nIOSSigningIdentity=old-identity\n`;
   for(const platform of ["IOS","Mac"]) {
     const output=renderQaConfig(seeded,game,platform);
     assert.equal(one(output.engine,section,"BundleIdentifier"),qaIdentifier);
@@ -63,8 +63,9 @@ test("modern Apple identity and signing stay isolated from store configuration",
     assert.equal(one(output.engine,section,"bUseAutomaticCodeSigning"),"False");
     assert.equal(one(output.engine,section,"bUseAppStoreConnect"),"False");
     assert.equal(one(output.engine,section,"bMacSignToRunLocally"),"True");
-    for(const key of ["CodeSigningTeam","IOSProvisioningProfile","IOSSigningIdentity"])
+    for(const key of ["CodeSigningTeam","IOSSigningIdentity"])
       assert.equal(one(output.engine,section,key),"");
+    assert.equal(one(output.engine,section,"IOSProvisioningProfile"),'(FilePath="")');
     assert.doesNotMatch(output.engine,/old-team|old-profile|old-identity/);
   }
   assert.deepEqual(values(renderQaConfig(engine,game,"Android").engine,section,"BundleIdentifier"),values(engine,section,"BundleIdentifier"));
@@ -104,7 +105,7 @@ test("preparation is exclusive, hash-receipted and never writes canonical or exi
   try {
     const destination=resolve(stage,"new");
     const receipt=await prepareQaConfig(destination,"IOS");
-    assert.equal(receipt.profile,"jinyang-native-qa-v3");
+    assert.equal(receipt.profile,"jinyang-native-qa-v4");
     assert.equal(receipt.sourceConfig.engine,hash(engine));
     assert.equal(receipt.sourceConfig.game,hash(game));
     for(const [name,expected] of Object.entries(receipt.outputs))
