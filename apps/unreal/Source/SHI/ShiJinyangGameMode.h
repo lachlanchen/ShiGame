@@ -10,6 +10,7 @@ class UShiSoundscapeComponent;
 class UStaticMesh;
 class UMaterialInterface;
 class AShiJinyangExplorer;
+class UTouchInterface;
 
 struct FShiJinyangPresentationBeat
 {
@@ -58,6 +59,8 @@ private:
     UPROPERTY() TObjectPtr<UStaticMesh> Sphere;
     UPROPERTY() TObjectPtr<UStaticMesh> Cylinder;
     UPROPERTY() TObjectPtr<UMaterialInterface> BasicMaterial;
+    UPROPERTY() TObjectPtr<UTouchInterface> WalkingTouchInterface;
+    bool bTouchControls=false,bTouchActive=false,bReviewFakesTouch=false;
     bool bWorldReady = false, bExploring = false, bExploreIntro = false, bWorldInspect = false;
     bool bWorldPaused = false;
     int32 GuideIndex=0;
@@ -73,6 +76,10 @@ private:
     TMap<FString,FVector> WorldPlaces;
     bool CreateExplorationWorld();
     void StartExploration();
+    void ConfigureWalkingTouch();
+    void SyncWalkingTouch();
+    void SuspendWalkingInput();
+    FVector2D ExplorationUiSize() const;
     void ToggleExploration();
     void TickExploration(float Dt);
     void RefreshExplorationScreen();

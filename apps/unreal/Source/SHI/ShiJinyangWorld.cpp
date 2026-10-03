@@ -2,6 +2,7 @@
 #include "ShiJinyangExplorer.h"
 #include "ShiJinyangFigure.h"
 #include "ShiJinyangWorldSave.h"
+#include "ShiJinyangInput.h"
 #include "ShiAtomicSaveFile.h"
 #include "ShiSoundscapeComponent.h"
 #include "Camera/CameraActor.h"
@@ -17,6 +18,9 @@
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/TouchInterface.h"
+#include "Framework/Application/SlateApplication.h"
+#include "GenericPlatform/GenericPlatformMisc.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/FileHelper.h"
 #include "Serialization/JsonReader.h"
@@ -28,6 +32,8 @@
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Layout/SScrollBox.h"
+#include "Widgets/Layout/SSafeZone.h"
+#include "Widgets/SViewport.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Styling/CoreStyle.h"
@@ -114,8 +120,62 @@ void AShiJinyangGameMode::StartExploration()
     PC->Possess(Explorer.Get());PC->SetControlRotation(State.Look);PC->SetViewTarget(Explorer.Get());
     Explorer->SetEyeLevel(State.bEyeLevel);Explorer->SetReducedMotion(bReducedMotion);
     bExploring=true;bExploreIntro=true;Explorer->SetWalkingEnabled(false);
+    ConfigureWalkingTouch();
     UE_LOG(LogTemp,Display,TEXT("SHI_WORLD_READY position=%s yaw=%.2f eyeLevel=%d visited=%d"),
         *State.Position.ToString(),State.Look.Yaw,State.bEyeLevel,VisitedPlaces.Num());
+}
+void AShiJinyangGameMode::ConfigureWalkingTouch()
+{
+    if(!bTouchControls)return;
+    auto* PC=GetWorld()->GetFirstPlayerController();if(!PC)return;
+    // Explicit desktop review only. This never changes the OS cursor or another application.
+    if(!FPlatformMisc::GetUseVirtualJoysticks() && FSlateApplication::IsInitialized()
+        && !FSlateApplication::Get().IsFakingTouchEvents())
+    { FSlateApplication::Get().SetGameIsFakingTouchEvents(true);bReviewFakesTouch=true; }
+    auto* Template=LoadObject<UTouchInterface>(nullptr,TEXT("/Engine/MobileResources/HUD/DefaultVirtualJoysticks.DefaultVirtualJoysticks"));
+    if(Template)
+    {
+        WalkingTouchInterface=DuplicateObject<UTouchInterface>(Template,this);
+        WalkingTouchInterface->bPreventRecenter=true;
+        WalkingTouchInterface->ActiveOpacity=.65f;WalkingTouchInterface->InactiveOpacity=.35f;
+        WalkingTouchInterface->ActivationDelay=0;WalkingTouchInterface->StartupDelay=0;
+        WalkingTouchInterface->TimeUntilReset=.2f;
+        if(WalkingTouchInterface->Controls.Num()>=2)
+        {
+            auto& Move=WalkingTouchInterface->Controls[0];auto& Look=WalkingTouchInterface->Controls[1];
+            Move.Center=FVector2D(.13,-.22);Look.Center=FVector2D(.87,-.22);
+            Move.MainInputKey=EKeys::Gamepad_LeftX;Move.AltInputKey=EKeys::Gamepad_LeftY;
+            Look.MainInputKey=EKeys::Gamepad_RightX;Look.AltInputKey=EKeys::Gamepad_RightY;
+        }
+    }
+    else UE_LOG(LogTemp,Error,TEXT("SHI_TOUCH_UNAVAILABLE missing engine touch interface"));
+    PC->bEnableTouchEvents=true;
+    PC->ActivateTouchInterface(nullptr);bTouchActive=false;
+}
+void AShiJinyangGameMode::SyncWalkingTouch()
+{
+    if(!bTouchControls)return;
+    const bool Active=bExploring && !bExploreIntro && !bWorldInspect && !bWorldPaused && !bPaused
+        && WalkingTouchInterface!=nullptr;
+    if(Active==bTouchActive)return;
+    if(auto* PC=GetWorld()->GetFirstPlayerController())
+    {
+        // Removing a touch interface flushes pressed axes; opening a card cannot leave a held stick.
+        PC->ActivateTouchInterface(Active?WalkingTouchInterface.Get():nullptr);
+        bTouchActive=Active;
+    }
+}
+void AShiJinyangGameMode::SuspendWalkingInput()
+{
+    // OS interruption cancels an uncommitted selection and requires an explicit resume.
+    // The campaign order, if any, was already atomically saved before presentation.
+    if(!bWorldReady || !Explorer.IsValid())return;
+    DefenseChoice.Reset();DefenseError.Reset();bWorldInspect=false;
+    if(auto* PC=GetWorld()->GetFirstPlayerController())PC->FlushPressedKeys();
+    SaveExploration();
+    if(bExploring && !bExploreIntro)PauseExploration(true);
+    else if(!bExploring && !bPaused)TogglePause();
+    UE_LOG(LogTemp,Display,TEXT("SHI_TOUCH_SUSPEND history=%d exploring=%d"),Model.GetState().History.Num(),bExploring);
 }
 void AShiJinyangGameMode::SaveExploration() const
 {
@@ -302,8 +362,11 @@ void AShiJinyangGameMode::TickExploration(float Dt)
     const float Side=(PC->IsInputKeyDown(EKeys::D)?1.f:0.f)-(PC->IsInputKeyDown(EKeys::A)?1.f:0.f);
     float MX=0,MY=0;if (PC->IsInputKeyDown(EKeys::RightMouseButton))PC->GetInputMouseDelta(MX,MY);
     const float Turn=(PC->IsInputKeyDown(EKeys::Right)?1.f:0.f)-(PC->IsInputKeyDown(EKeys::Left)?1.f:0.f);
-    const float Tilt=(PC->IsInputKeyDown(EKeys::Down)?1.f:0.f)-(PC->IsInputKeyDown(EKeys::Up)?1.f:0.f);
-    Explorer->Drive(Forward,Side,MX*.18f+Turn*65.f*Dt,-MY*.16f+Tilt*45.f*Dt,PC->IsInputKeyDown(EKeys::LeftShift),Dt);
+    const float Tilt=(PC->IsInputKeyDown(EKeys::Up)?1.f:0.f)-(PC->IsInputKeyDown(EKeys::Down)?1.f:0.f);
+    const auto Axes=ShiJinyangInput::Resolve(Forward,Side,Turn,Tilt,
+        PC->GetInputAnalogKeyState(EKeys::Gamepad_LeftX),PC->GetInputAnalogKeyState(EKeys::Gamepad_LeftY),
+        PC->GetInputAnalogKeyState(EKeys::Gamepad_RightX),PC->GetInputAnalogKeyState(EKeys::Gamepad_RightY),MX,MY,Dt);
+    Explorer->Drive(Axes.Forward,Axes.Side,Axes.Yaw,Axes.Pitch,PC->IsInputKeyDown(EKeys::LeftShift),Dt);
     FString Nearest;float Best=240.f;
     for (const auto& Pair:WorldPlaces)
     {
@@ -312,17 +375,31 @@ void AShiJinyangGameMode::TickExploration(float Dt)
     }
     if (Nearest!=NearbyPlace){NearbyPlace=Nearest;RefreshScreen();}
 }
+FVector2D AShiJinyangGameMode::ExplorationUiSize() const
+{
+    if(GEngine && GEngine->GameViewport)
+    {
+        const auto Viewport=GEngine->GameViewport->GetGameViewportWidget();
+        if(Viewport.IsValid())
+        {
+            const FVector2D Size=Viewport->GetCachedGeometry().GetLocalSize();
+            if(Size.X>0 && Size.Y>0)return Size;
+        }
+    }
+    return FVector2D(1280,720);
+}
 void AShiJinyangGameMode::RefreshExplorationScreen()
 {
     if (!GEngine || !GEngine->GameViewport)return;
     if (Screen)GEngine->GameViewport->RemoveViewportWidgetContent(Screen.ToSharedRef());
     const FLinearColor Ink(.014,.022,.025,.91),Gold(.76,.58,.30),Paper(.91,.87,.76);
     auto Label=[&](FString S,int32 Size,bool Bold=false)
-    {return SNew(STextBlock).Text(FText::FromString(S)).Font(FCoreStyle::GetDefaultFontStyle(Bold?"Bold":"Regular",Size)).ColorAndOpacity(Paper).WrapTextAt(500);};
+    {return SNew(STextBlock).Text(FText::FromString(S)).Font(FCoreStyle::GetDefaultFontStyle(Bold?"Bold":"Regular",Size)).ColorAndOpacity(Paper).AutoWrapText(true)
+        .WrapTextAt_Lambda([this](){return FMath::Clamp(ExplorationUiSize().X-100.f,160.f,500.f);});};
     auto Panel=[&](TSharedRef<SWidget> Child)
     {return SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"))).BorderBackgroundColor(Ink).Padding(24)[Child];};
     auto Top=SNew(SVerticalBox);
-    Top->AddSlot().AutoHeight()[Label(Text(TEXT("SHI  /  JINYANG"),TEXT("势  /  晋阳")),25,true)];
+    Top->AddSlot().AutoHeight()[Label(Text(TEXT("SHI  /  JINYANG"),TEXT("势  /  晋阳")),bTouchControls?18:25,true)];
     Top->AddSlot().AutoHeight().Padding(0,7)[Label(Objective(),14)];
     Top->AddSlot().AutoHeight().Padding(0,3)[SNew(STextBlock).Text_Lambda([this](){return FText::FromString(ExplorationGuide());})
         .Font(FCoreStyle::GetDefaultFontStyle("Regular",14)).ColorAndOpacity(Gold)];
@@ -337,8 +414,26 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
     Controls->AddSlot().AutoHeight()[Label(Text(TEXT("WASD  Walk     Shift  Jog     Right-drag / arrows  Look"),TEXT("WASD 行走    Shift 快步    右键拖动 / 方向键 环视")),13)];
     Controls->AddSlot().AutoHeight().Padding(0,5)[Label(Text(TEXT("E Inspect   V Command   C Eye-level   G Landmark\nEsc Pause   M Sound   H Hide interface"),TEXT("E 查看   V 指挥   C 眼平视角   G 地标\nEsc 暂停   M 声音   H 隐藏界面")),13)];
     auto Overlay=SNew(SOverlay)
-        +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(28)[Panel(Top)]
-        +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(28)[Panel(Controls)];
+        +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(bTouchControls?12:28)
+            [SNew(SBox).MaxDesiredWidth(bTouchControls?330:560)[Panel(Top)]];
+    if(!bTouchControls)Overlay->AddSlot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(28)[Panel(Controls)];
+    if(bTouchControls && !bExploreIntro && !bWorldInspect && !bWorldPaused)
+    {
+        auto TouchActions=SNew(SHorizontalBox);
+        auto AddAction=[&](FString Caption,TFunction<void()> Action,bool Enabled=true)
+        {
+            TouchActions->AddSlot().AutoWidth().Padding(3,0)
+                [SNew(SBox).MinDesiredWidth(68).MinDesiredHeight(48)
+                    [SNew(SButton).IsFocusable(false).IsEnabled(Enabled).HAlign(HAlign_Center)
+                        .ContentPadding(FMargin(10,12)).Text(FText::FromString(Caption))
+                        .OnClicked_Lambda([Action](){Action();return FReply::Handled();})]];
+        };
+        AddAction(Text(TEXT("Orders"),TEXT("指挥")),[this](){ToggleExploration();},BusyTime<=0);
+        AddAction(Text(TEXT("View"),TEXT("视角")),[this](){Explorer->SetEyeLevel(!Explorer->IsEyeLevel());SaveExploration();});
+        AddAction(Text(TEXT("Guide"),TEXT("地标")),[this](){GuideIndex=(GuideIndex+1)%GuidePlaces.Num();});
+        AddAction(Text(TEXT("Pause"),TEXT("暂停")),[this](){PauseExploration(true);});
+        Overlay->AddSlot().HAlign(HAlign_Center).VAlign(VAlign_Bottom).Padding(0,0,0,12)[TouchActions];
+    }
     if (BusyTime>0 && !bWorldInspect && !bWorldPaused)
     {
         auto Work=SNew(SVerticalBox);
@@ -402,8 +497,11 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
         if (bWorldInspect && Sites.Contains(InspectedPlace))Card->AddSlot().AutoHeight()[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,12))
             .Text(FText::FromString(Text(TEXT("Consider orders here · V"),TEXT("在此筹划命令 · V"))))
             .OnClicked_Lambda([this](){ToggleExploration();return FReply::Handled();})];
-        Overlay->AddSlot().HAlign(HAlign_Right).VAlign(VAlign_Center).Padding(35)
-            [SNew(SBox).WidthOverride(560).MaxDesiredHeight(640)[Panel(SNew(SScrollBox)+SScrollBox::Slot()[Card])]];
+        Overlay->AddSlot().HAlign(bTouchControls?HAlign_Center:HAlign_Right).VAlign(VAlign_Center).Padding(16)
+            [SNew(SBox)
+                .WidthOverride_Lambda([this](){return FOptionalSize(FMath::Clamp(ExplorationUiSize().X-40.f,200.f,560.f));})
+                .MaxDesiredHeight_Lambda([this](){return FOptionalSize(FMath::Clamp(ExplorationUiSize().Y-40.f,160.f,640.f));})
+                [Panel(SNew(SScrollBox)+SScrollBox::Slot()[Card])]];
     }
     if (bWorldPaused)
     {
@@ -417,11 +515,18 @@ void AShiJinyangGameMode::RefreshExplorationScreen()
             .OnClicked_Lambda([this](){bReducedMotion=!bReducedMotion;Explorer->SetReducedMotion(bReducedMotion);RefreshScreen();return FReply::Handled();})];
         Menu->AddSlot().AutoHeight().Padding(0,8)[Label(bReducedMotion?Text(TEXT("Reduced motion is on"),TEXT("已开启减弱运动")):Text(TEXT("Reduced motion is off"),TEXT("未开启减弱运动")),13)];
         Menu->AddSlot().AutoHeight().Padding(0,8)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,14))
+            .Text(FText::FromString(Sound && Sound->IsSoundEnabled()?Text(TEXT("Mute sound"),TEXT("关闭声音")):Text(TEXT("Enable sound"),TEXT("开启声音"))))
+            .OnClicked_Lambda([this](){if(Sound)Sound->SetSoundEnabled(!Sound->IsSoundEnabled());RefreshScreen();return FReply::Handled();})];
+        if(!bTouchControls)Menu->AddSlot().AutoHeight().Padding(0,8)[SNew(SButton).IsFocusable(false).ContentPadding(FMargin(20,14))
             .Text(FText::FromString(Text(TEXT("Save and leave · Q"),TEXT("保存并退出 · Q"))))
             .OnClicked_Lambda([this](){SaveExploration();UKismetSystemLibrary::QuitGame(this,GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,false);return FReply::Handled();})];
-        Overlay->AddSlot().HAlign(HAlign_Center).VAlign(VAlign_Center)[SNew(SBox).WidthOverride(560)[Panel(Menu)]];
+        Overlay->AddSlot().HAlign(HAlign_Center).VAlign(VAlign_Center).Padding(16)
+            [SNew(SBox)
+                .WidthOverride_Lambda([this](){return FOptionalSize(FMath::Clamp(ExplorationUiSize().X-40.f,200.f,560.f));})
+                .MaxDesiredHeight_Lambda([this](){return FOptionalSize(FMath::Clamp(ExplorationUiSize().Y-40.f,160.f,640.f));})
+                [Panel(SNew(SScrollBox)+SScrollBox::Slot()[Menu])]];
     }
-    Screen=Overlay;GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(),100);
+    Screen=SNew(SSafeZone)[Overlay];GEngine->GameViewport->AddViewportWidgetContent(Screen.ToSharedRef(),100);
     Screen->SetVisibility(IsExplorationInterfaceVisible(bHideHud,bExploreIntro,bWorldInspect,bWorldPaused)
         ? EVisibility::SelfHitTestInvisible : EVisibility::Collapsed);
 }

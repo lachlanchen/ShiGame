@@ -27,6 +27,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Guid.h"
 #include "Misc/App.h"
+#include "Misc/CoreDelegates.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "InputCoreTypes.h"
@@ -37,6 +38,7 @@
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Styling/CoreStyle.h"
+#include "Framework/Application/SlateApplication.h"
 
 AShiJinyangGameMode::AShiJinyangGameMode()
 {
@@ -49,6 +51,12 @@ void AShiJinyangGameMode::BeginPlay()
     FString Locale; FParse::Value(FCommandLine::Get(), TEXT("ShiLocale="), Locale);
     bChinese = Locale == TEXT("zh-Hans") || Locale == TEXT("zh");
     bReducedMotion = FParse::Param(FCommandLine::Get(), TEXT("ShiReducedMotion"));
+    bTouchControls=FPlatformMisc::GetUseVirtualJoysticks() || FParse::Param(FCommandLine::Get(),TEXT("ShiTouch"));
+    if(bTouchControls)
+    {
+        FCoreDelegates::ApplicationWillEnterBackgroundDelegate.AddUObject(this,&AShiJinyangGameMode::SuspendWalkingInput);
+        FCoreDelegates::ApplicationWillDeactivateDelegate.AddUObject(this,&AShiJinyangGameMode::SuspendWalkingInput);
+    }
     bAudioReview = FParse::Param(FCommandLine::Get(), TEXT("ShiAudioReview"));
     int32 Version = FParse::Param(FCommandLine::Get(),TEXT("ShiJinyangLegacy")) ? 1 : 2;
     SavePath = FPaths::ProjectSavedDir() / FString::Printf(TEXT("Jinyang/chronicle.v%d.json"),Version);
@@ -306,6 +314,7 @@ void AShiJinyangGameMode::SelectSite(const FString& Id)
 }
 void AShiJinyangGameMode::RefreshScreen()
 {
+    SyncWalkingTouch();
     if (bWorldReady && bExploring) { RefreshExplorationScreen();return; }
     if (!GEngine || !GEngine->GameViewport) return;
     if (Screen) GEngine->GameViewport->RemoveViewportWidgetContent(Screen.ToSharedRef());
@@ -819,6 +828,10 @@ void AShiJinyangGameMode::TickPresentation(float Dt)
 }
 void AShiJinyangGameMode::EndPlay(const EEndPlayReason::Type Reason)
 {
+    FCoreDelegates::ApplicationWillEnterBackgroundDelegate.RemoveAll(this);
+    FCoreDelegates::ApplicationWillDeactivateDelegate.RemoveAll(this);
+    if (bTouchControls)if(auto* PC=GetWorld()->GetFirstPlayerController())PC->ActivateTouchInterface(nullptr);
+    if (bReviewFakesTouch && FSlateApplication::IsInitialized())FSlateApplication::Get().SetGameIsFakingTouchEvents(false);
     if (bWorldReady) SaveExploration();
     if (Sound) Sound->Stop();
     if (bAudioRecording) UAudioMixerBlueprintLibrary::StopRecordingOutput(this,EAudioRecordingExportType::WavFile,

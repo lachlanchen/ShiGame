@@ -71,6 +71,7 @@ try {
     "-ShiJinyangSave=" + resolve(evidence, saveName),
     ...(version===1 ? ["-ShiJinyangLegacy"] : []),
     ...(process.argv.includes("--explore") ? ["-ShiExplore"] : []),
+    ...(process.argv.includes("--touch") ? ["-ShiTouch"] : []),
     ...(process.argv.includes("--zh") ? ["-ShiLocale=zh-Hans"] : []),
     "-ShiAudioReview",
     "-abslog=" + resolve(evidence, "engine.log"),
