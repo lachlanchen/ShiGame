@@ -23,6 +23,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/CommandLine.h"
+#include "Misc/ConfigCacheIni.h"
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
@@ -52,7 +53,10 @@ FString AShiJinyangGameMode::Text(const TCHAR* En, const TCHAR* Zh) const { retu
 void AShiJinyangGameMode::BeginPlay()
 {
     Super::BeginPlay();
-    FString Locale; FParse::Value(FCommandLine::Get(), TEXT("ShiLocale="), Locale);
+    FString Locale;
+    if(GConfig)GConfig->GetString(TEXT("SHI.Jinyang"),TEXT("InitialLocale"),Locale,GGameIni);
+    FString LocaleOverride;
+    if(FParse::Value(FCommandLine::Get(), TEXT("ShiLocale="),LocaleOverride))Locale=LocaleOverride;
     bChinese = Locale == TEXT("zh-Hans") || Locale == TEXT("zh");
     bReducedMotion = FParse::Param(FCommandLine::Get(), TEXT("ShiReducedMotion"));
     bTouchControls=FPlatformMisc::GetUseVirtualJoysticks() || FParse::Param(FCommandLine::Get(),TEXT("ShiTouch"));
@@ -130,7 +134,11 @@ void AShiJinyangGameMode::CreateWorld()
         Sites.Add(S->GetStringField(TEXT("id")), FVector(P[0]->AsNumber(), P[1]->AsNumber(), P[2]->AsNumber()));
     }
     // Deliberately compressed schematic terrain, not archaeological measurement.
-    bWorldReady=FParse::Param(FCommandLine::Get(),TEXT("ShiExplore")) && CreateExplorationWorld();
+    bool StartInExploration=false;
+    if(GConfig)GConfig->GetBool(TEXT("SHI.Jinyang"),TEXT("StartInExploration"),StartInExploration,GGameIni);
+    // Native icons cannot depend on a desktop review command line. The isolated
+    // QA configuration opts into this scene; the normal Qin/default build is unchanged.
+    bWorldReady=(StartInExploration || FParse::Param(FCommandLine::Get(),TEXT("ShiExplore"))) && CreateExplorationWorld();
     if (!bWorldReady)
     {
     Box(FVector(400, 200, -75), FVector(38, 31, 1.5), FLinearColor(.15, .12, .075));

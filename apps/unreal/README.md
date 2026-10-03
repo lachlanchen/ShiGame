@@ -41,6 +41,8 @@ Runtime chronicles are written under Unreal's ignored `Saved/SaveGames/shi-chapt
 
 ## Prepare and validate
 
+For the new Jinyang mobile lane, use the [isolated native QA preparation](../../docs/production/JINYANG_NATIVE_QA_20261003.md). It selects the explorable chapter from a native app icon without modifying the canonical Qin defaults. Configuration/SDK checks are not a compiled or installed mobile build.
+
 ```bash
 npm run sync:content
 ./scripts/unreal-pipeline.sh preflight
